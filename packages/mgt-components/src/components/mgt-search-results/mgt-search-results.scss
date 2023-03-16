@@ -94,12 +94,12 @@ $bookmark-padding: var(--bookmark-padding, 10px);
   }
 }
 
-.search-results-paging-active {
+.search-results-page-active {
   border-bottom-style: solid;
   border-bottom-color: var(--accent-base-color);
 }
 
-.search-results-paging {
+.search-results-page {
   svg {
     height: 12px;
   }

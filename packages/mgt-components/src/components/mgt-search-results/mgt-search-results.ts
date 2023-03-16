@@ -17,7 +17,9 @@ import {
   Providers,
   ProviderState,
   customElement,
-  mgtHtml
+  mgtHtml,
+  BetaGraph,
+  BatchResponse
 } from '@microsoft/mgt-element';
 
 import { schemas } from '../../graph/cacheStores';
@@ -29,13 +31,6 @@ import { getNameFromUrl, getRelativeDisplayDate, sanitizeSummary, trimFileExtens
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { fluentSkeleton, fluentButton, fluentTooltip } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-//import * as AdaptiveCards from 'adaptivecards';
-//import * as ACData from 'adaptivecards-templating';
-
-/* @ts-ignore */
-//const AdaptiveCards = window.AdaptiveCards;
-/* @ts-ignore */
-//const ACData = window.ACData;
 
 registerFluentComponents(fluentSkeleton, fluentButton, fluentTooltip);
 
@@ -47,6 +42,16 @@ interface CacheResponse extends CacheItem {
    * json representing a response as string
    */
   response?: string;
+}
+
+/**
+ * Object representing a thumbnail
+ */
+interface Thumbnail {
+  /**
+   * The url of the Thumbnail
+   */
+  url?: string;
 }
 
 /**
@@ -417,9 +422,10 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     }
 
     return html`
-      <div class="search-results"></div>
       ${headerTemplate}
-      ${renderedTemplate}
+      <div class="search-results">
+        ${renderedTemplate}
+      </div>
       ${footerTemplate}`;
   }
 
@@ -467,9 +473,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           }
 
           response = await request.post({ requests: [requestOptions] });
-          // Should we get thumbnails? Based on the properties I think!
 
           if (this.fetchThumbnail) {
+            let thumbnailResponse: Map<string, BatchResponse> = null;
+            const thumbnailBatch = graph.createBatch();
+            const thumbnailBatchBeta = BetaGraph.fromGraph(graph).createBatch();
+
             for (let i = 0; i < response.value[0].hitsContainers[0].hits.length; i++) {
               const element = response.value[0].hitsContainers[0].hits[i];
               if (
@@ -477,32 +486,38 @@ export class MgtSearchResults extends MgtTemplatedComponent {
                 (element.resource['@odata.type'] == '#microsoft.graph.driveItem' ||
                   element.resource['@odata.type'] == '#microsoft.graph.listItem')
               ) {
-                let thumbnail = null;
                 if (element.resource['@odata.type'] == '#microsoft.graph.listItem') {
-                  try {
-                    const thumbnailResponse = await graph
-                      .api(`/sites/${element.resource.parentReference.siteId}/pages/${element.resource.id}`)
-                      .version('beta')
-                      .get();
-                    thumbnail = { url: thumbnailResponse.thumbnailWebUrl };
-                  } catch (e) {
-                    // no-op
-                  }
+                  thumbnailBatchBeta.get(
+                    i.toString(),
+                    `/sites/${element.resource.parentReference.siteId}/pages/${element.resource.id}`
+                  );
                 } else {
-                  try {
-                    thumbnail = await graph
-                      .api(
-                        `/drives/${element.resource.parentReference.driveId}/items/${element.resource.id}/thumbnails/0/medium`
-                      )
-                      .version(this.version)
-                      .get();
-                  } catch (e) {
-                    // no-op
-                  }
+                  thumbnailBatch.get(
+                    i.toString(),
+                    `/drives/${element.resource.parentReference.driveId}/items/${element.resource.id}/thumbnails/0/medium`
+                  );
                 }
-
-                response.value[0].hitsContainers[0].hits[i].resource.thumbnail = thumbnail;
               }
+            }
+
+            const augmentResponse = (thumbnailResponse: Map<string, BatchResponse>) => {
+              if (thumbnailResponse && thumbnailResponse.size > 0) {
+                for (const [key, value] of thumbnailResponse) {
+                  let result = response.value[0].hitsContainers[0].hits[key];
+                  const thumbnail: Thumbnail =
+                    result.resource['@odata.type'] == '#microsoft.graph.listItem'
+                      ? { url: value.content.thumbnailWebUrl }
+                      : { url: value.content.url };
+                  result.resource.thumbnail = thumbnail;
+                }
+              }
+            };
+
+            try {
+              augmentResponse(await thumbnailBatch.executeAll());
+              augmentResponse(await thumbnailBatchBeta.executeAll());
+            } catch {
+              // no-op
             }
           }
 
@@ -546,30 +561,38 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       html`
         ${[...Array(this.size)].map(() => {
           return html`
-          <div class="search-result-grid">
-            <div class="search-result-icon">
-              <fluent-skeleton style="width: 32px; height: 32px;" shape="rect" shimmer></fluent-skeleton>
-            </div>
-            <div class="searc-result-content">
-              <div class="search-result-name">
-                <fluent-skeleton style="border-radius: 4px; margin-top: 10px; height: 10px; width: 20%" shape="rect" shimmer></fluent-skeleton>
-              </div>
-              <div class="search-result-info">
-                <div class="search-result-author">
-                  <fluent-skeleton style="width: 24px; height: 24px;" shape="circle" shimmer></fluent-skeleton>
+            <div class="search-result">
+              <div class="search-result-grid">
+                <div class="search-result-icon">
+                  <fluent-skeleton style="width: 32px; height: 32px;" shape="rect" shimmer></fluent-skeleton>
                 </div>
-                <div class="search-result-date">
-                  <fluent-skeleton style="border-radius: 4px; margin-top: 2%; margin-left: 5px; height: 10px; width: 200px" shape="rect" shimmer></fluent-skeleton>
+                <div class="searc-result-content">
+                  <div class="search-result-name">
+                    <fluent-skeleton style="border-radius: 4px; margin-top: 10px; height: 10px; width: 20%" shape="rect" shimmer></fluent-skeleton>
+                  </div>
+                  <div class="search-result-info">
+                    <div class="search-result-author">
+                      <fluent-skeleton style="width: 24px; height: 24px;" shape="circle" shimmer></fluent-skeleton>
+                    </div>
+                    <div class="search-result-date">
+                      <fluent-skeleton style="border-radius: 4px; margin-top: 2%; margin-left: 5px; height: 10px; width: 200px" shape="rect" shimmer></fluent-skeleton>
+                    </div>
+                  </div>
+                  <fluent-skeleton style="border-radius: 4px; margin-top: 10px; height: 10px;" shape="rect" shimmer></fluent-skeleton>
+                  <fluent-skeleton style="border-radius: 4px; margin-top: 10px; height: 10px;" shape="rect" shimmer></fluent-skeleton>
                 </div>
-              </div>
-              <fluent-skeleton style="border-radius: 4px; margin-top: 10px; height: 10px;" shape="rect" shimmer></fluent-skeleton>
-              <fluent-skeleton style="border-radius: 4px; margin-top: 10px; height: 10px;" shape="rect" shimmer></fluent-skeleton>
+                ${
+                  this.fetchThumbnail &&
+                  html`
+                    <div class="search-result-thumbnail">
+                      <fluent-skeleton style="width: 126px; height: 72px;" shape="rect" shimmer></fluent-skeleton>
+                    </div>
+                  `
+                }  
+              </div>          
+              <hr class="search-result-separator" />
             </div>
-            <div class="search-result-thumbnail">
-              <fluent-skeleton style="width: 126px; height: 72px;" shape="rect" shimmer></fluent-skeleton>
-            </div>  
-          </div>          
-          <hr class="search-result-separator" />`;
+          `;
         })}
        `
     );
@@ -599,8 +622,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           return this.renderList(result);
         case '#microsoft.graph.listItem':
           return this.renderListItem(result);
-        case '#microsoft.graph.externalItem':
-          return this.renderExternalItem(result);
         case '#microsoft.graph.search.bookmark':
           return this.renderBookmark(result);
         default:
@@ -609,7 +630,41 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Renders the footer with pages if required
+   * @param hitsContainer Search results
+   * @returns
+   */
   private renderFooter(hitsContainer: SearchHitsContainer): TemplateResult {
+    if (this.pagingRequired(hitsContainer)) {
+      const pages = this.getActivePages(hitsContainer.total);
+
+      return html`
+        <div class="search-results-pages">
+          ${this.renderPreviousPage()}
+          ${this.renderFirstPage(pages)}
+          ${this.renderAllPages(pages)}                
+          ${this.renderNextPage()}
+        </div>
+      `;
+    }
+  }
+
+  /**
+   * Validates if paging is required based on the provided results
+   * @param hitsContainer
+   * @returns
+   */
+  private pagingRequired(hitsContainer: SearchHitsContainer): boolean {
+    return hitsContainer?.moreResultsAvailable || this.currentPage * this.size < hitsContainer?.total;
+  }
+
+  /**
+   * Gets a list of active pages to render for paging purposes
+   * @param totalResults Total number of results of the search query
+   * @returns
+   */
+  private getActivePages(totalResults: number): any[] {
     const getFirstPage = () => {
       const medianPage = this.currentPage - Math.floor(this.pagingMax / 2) - 1;
 
@@ -619,93 +674,158 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         return 0;
       }
     };
-    if (hitsContainer?.moreResultsAvailable || this.currentPage * this.size < hitsContainer?.total) {
-      let pages = [];
-      const firstPage = getFirstPage();
 
-      if (firstPage + 1 > this.pagingMax - this.currentPage || this.pagingMax == this.currentPage) {
-        for (
-          let i = firstPage + 1;
-          i < Math.ceil(hitsContainer.total / this.size) &&
-          i < this.pagingMax + (this.currentPage - 1) &&
-          pages.length < this.pagingMax - 2;
-          ++i
-        ) {
-          pages.push({ number: i + 1 });
-        }
-      } else {
-        for (let i = firstPage; i < this.pagingMax; ++i) {
-          pages.push({ number: i + 1 });
-        }
+    let pages = [];
+    const firstPage = getFirstPage();
+
+    if (firstPage + 1 > this.pagingMax - this.currentPage || this.pagingMax == this.currentPage) {
+      for (
+        let i = firstPage + 1;
+        i < Math.ceil(totalResults / this.size) &&
+        i < this.pagingMax + (this.currentPage - 1) &&
+        pages.length < this.pagingMax - 2;
+        ++i
+      ) {
+        pages.push({ number: i + 1 });
       }
-
-      return html`
-              ${
-                this.currentPage > 1
-                  ? html`<fluent-button appearance="stealth" class="search-results-paging" title="Back" @click="${
-                      this.onPageBackClick
-                    }">${getSvg(SvgIcon.ChevronLeft)}</fluent-button>`
-                  : nothing
-              }
-              ${
-                pages.some(page => page.number === 1)
-                  ? nothing
-                  : html`<fluent-button appearance="stealth" class="search-results-paging" @click="${
-                      this.onFirstPageClick
-                    }">1</fluent-button>
-                  ${
-                    this.currentPage - Math.floor(this.pagingMax / 2) > 0
-                      ? html`<fluent-tooltip anchor="page-back-dot" position="top">${strings.back} ${Math.ceil(
-                          this.pagingMax / 2
-                        )} ${strings.pages}</fluent-tooltip>
-                      <fluent-button id="page-back-dot" appearance="stealth" class="search-results-paging" @click="${() =>
-                        this.onPageClick(this.currentPage - Math.ceil(this.pagingMax / 2))}">...
-                          </fluent-button>`
-                      : nothing
-                  }`
-              }
-              ${pages.map(
-                page =>
-                  html`
-                  <fluent-button appearance="stealth" class="${
-                    page.number === this.currentPage ? 'search-results-paging-active' : 'search-results-paging'
-                  }" @click="${() => this.onPageClick(page.number)}">${page.number}</fluent-button>`
-              )}
-              ${
-                !this.isLastPage()
-                  ? html`<fluent-button appearance="stealth" class="search-results-paging" title="Next" @click="${
-                      this.onPageNextClick
-                    }">${getSvg(SvgIcon.ChevronRight)}</fluent-button>`
-                  : nothing
-              }
-          `;
+    } else {
+      for (let i = firstPage; i < this.pagingMax; ++i) {
+        pages.push({ number: i + 1 });
+      }
     }
+
+    return pages;
   }
 
+  /**
+   * Renders all sequential pages buttons
+   * @param pages
+   * @returns
+   */
+  private renderAllPages(pages: any[]): TemplateResult {
+    return html`
+      ${pages.map(
+        page =>
+          html`
+            <fluent-button 
+              appearance="stealth" 
+              class="${page.number === this.currentPage ? 'search-results-page-active' : 'search-results-page'}" 
+              @click="${() => this.onPageClick(page.number)}">
+                ${page.number}
+            </fluent-button>`
+      )}`;
+  }
+
+  /**
+   * Renders the "First page" button
+   * @param pages
+   * @returns
+   */
+  private renderFirstPage(pages: any[]): TemplateResult {
+    return html`
+      ${
+        pages.some(page => page.number === 1)
+          ? nothing
+          : html`<fluent-button appearance="stealth" class="search-results-page" @click="${
+              this.onFirstPageClick
+            }">1</fluent-button>
+          ${
+            this.currentPage - Math.floor(this.pagingMax / 2) > 0
+              ? html`<fluent-tooltip anchor="page-back-dot" position="top">${strings.back} ${Math.ceil(
+                  this.pagingMax / 2
+                )} ${strings.pages}</fluent-tooltip>
+              <fluent-button id="page-back-dot" appearance="stealth" class="search-results-page" @click="${() =>
+                this.onPageClick(this.currentPage - Math.ceil(this.pagingMax / 2))}">...
+                  </fluent-button>`
+              : nothing
+          }`
+      }`;
+  }
+
+  /**
+   * Renders the "Previous page" button
+   * @returns
+   */
+  private renderPreviousPage(): TemplateResult {
+    return html`
+      ${
+        this.currentPage > 1 &&
+        html`
+          <fluent-button 
+            appearance="stealth" 
+            class="search-results-page" 
+            title="Back" 
+            @click="${this.onPageBackClick}">
+              ${getSvg(SvgIcon.ChevronLeft)}
+            </fluent-button>`
+      }`;
+  }
+
+  /**
+   * Renders the "Next page" button
+   * @returns
+   */
+  private renderNextPage(): TemplateResult {
+    return html`
+      ${
+        !this.isLastPage() &&
+        html`
+          <fluent-button 
+            appearance="stealth" 
+            class="search-results-page" 
+            title="Next" 
+            @click="${this.onPageNextClick}">
+              ${getSvg(SvgIcon.ChevronRight)}
+            </fluent-button>`
+      }`;
+  }
+
+  /**
+   * Triggers a specific page click
+   * @param pageNumber
+   */
   private onPageClick(pageNumber: number) {
     this.currentPage = pageNumber;
     this.scrollToFirstResult();
   }
 
+  /**
+   * Triggers a first page click
+   */
   private onFirstPageClick() {
     this.currentPage = 1;
     this.scrollToFirstResult();
   }
 
+  /**
+   * Triggers a previous page click
+   * @param page
+   */
   private onPageBackClick(page: any) {
     this.currentPage--;
     this.scrollToFirstResult();
   }
 
+  /**
+   * Triggers a next page click
+   * @param page
+   */
   private onPageNextClick(page: any) {
     this.currentPage++;
     this.scrollToFirstResult();
   }
 
+  /**
+   * Validates if the current page is the last page of the collection
+   * @returns
+   */
   private isLastPage() {
     return this.currentPage === Math.ceil(this.response.value[0].hitsContainers[0].total / this.size);
   }
 
+  /**
+   * Scroll to the top of the search results
+   */
   private scrollToFirstResult() {
     const target = this.renderRoot.querySelector('.search-results') as HTMLElement;
     target.scrollIntoView({
@@ -714,229 +834,249 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     });
   }
 
+  /**
+   * Gets the resource type (entity) of a search result
+   * @param resource
+   * @returns
+   */
   private getResourceType(resource: any) {
     return resource['@odata.type'].split('.').pop();
   }
 
+  /**
+   * Renders a driveItem entity
+   * @param result
+   * @returns
+   */
   private renderDriveItem(result: SearchHit): HTMLTemplateResult {
     let resource: any = result.resource as any;
     return mgtHtml`
-          <div class="search-result-grid">
-            <div class="search-result-icon">
-              <mgt-file 
-                .fileDetails="${result.resource}" 
-                view="image" 
-                class="file-icon">
-              </mgt-file>
+      <div class="search-result-grid">
+        <div class="search-result-icon">
+          <mgt-file 
+            .fileDetails="${result.resource}" 
+            view="image" 
+            class="file-icon">
+          </mgt-file>
+        </div>
+        <div class="search-result-content">
+          <div class="search-result-name">
+            <a href="${resource.webUrl}?Web=1" target="_blank">${trimFileExtension(resource.name)}</a>
+          </div>
+          <div class="search-result-info">
+            <div class="search-result-author">
+              <mgt-person 
+                person-query=${resource.lastModifiedBy.user.email} 
+                view="oneLine"
+                person-card="hover"
+                show-presence="true">
+              </mgt-person>
             </div>
-            <div class="search-result-content">
-              <div class="search-result-name">
-                <a href="${resource.webUrl}?Web=1" target="_blank">${trimFileExtension(resource.name)}</a>
-              </div>
-              <div class="search-result-info">
-                <div class="search-result-author">
-                  <mgt-person 
-                    person-query=${resource.lastModifiedBy.user.email} 
-                    view="oneLine"
-                    person-card="hover"
-                    show-presence="true">
-                  </mgt-person>
-                </div>
-                <div class="search-result-date">
-                  &nbsp; ${strings.modified} ${getRelativeDisplayDate(new Date(resource.lastModifiedDateTime))}
-                </div>
-              </div>
-              <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-            </div>  
-            ${
-              resource.thumbnail?.url
-                ? html`<div class="search-result-thumbnail">
+            <div class="search-result-date">
+              &nbsp; ${strings.modified} ${getRelativeDisplayDate(new Date(resource.lastModifiedDateTime))}
+            </div>
+          </div>
+          <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
+        </div>  
+        ${
+          resource.thumbnail?.url &&
+          html`
+          <div class="search-result-thumbnail">
             <a href="${resource.webUrl}" target="_blank"><img src="${resource.thumbnail?.url}" /></a>
           </div>`
-                : nothing
-            }
-            
-          </div>          
-          <hr class="search-result-separator" />
-              
-              
-          `;
+        }
+        
+      </div>          
+      <hr class="search-result-separator" />
+    `;
   }
 
+  /**
+   * Renders a site entity
+   * @param result
+   * @returns
+   */
   private renderSite(result: SearchHit): HTMLTemplateResult {
     let resource: any = result.resource as any;
     return html`
-          <div class="search-result-grid">
-            <div class="search-result-icon">
-              <img src="${resource.webUrl}/_api/siteiconmanager/getsitelogo" />
+      <div class="search-result-grid">
+        <div class="search-result-icon">
+          <img src="${resource.webUrl}/_api/siteiconmanager/getsitelogo" />
+        </div>
+        <div class="searc-result-content">
+          <div class="search-result-name">
+            <a href="${resource.webUrl}" target="_blank">${resource.displayName}</a>
+          </div>
+          <div class="search-result-info">
+            <div class="search-result-url">
+              <a href="${resource.webUrl}" target="_blank">${resource.webUrl}</a>
             </div>
-            <div class="searc-result-content">
-              <div class="search-result-name">
-                <a href="${resource.webUrl}" target="_blank">${resource.displayName}</a>
-              </div>
-              <div class="search-result-info">
-                <div class="search-result-url">
-                  <a href="${resource.webUrl}" target="_blank">${resource.webUrl}</a>
-                </div>
-              </div>
-              <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-            </div>  
-          </div>          
-          <hr class="search-result-separator" />
-          `;
+          </div>
+          <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
+        </div>  
+      </div>          
+      <hr class="search-result-separator" />
+    `;
   }
 
+  /**
+   * Renders a list entity
+   * @param result
+   * @returns
+   */
   private renderList(result: SearchHit): HTMLTemplateResult {
     let resource: any = result.resource as any;
     return mgtHtml`
-          <div class="search-result-grid">
-            <div class="search-result-icon">
-              <mgt-file 
-                .fileDetails="${result.resource}" 
-                view="image">
-              </mgt-file>
-            </div>
-            <div class="search-result-content">
-              <div class="search-result-name">
-                <a href="${resource.webUrl}?Web=1" target="_blank">${trimFileExtension(
-      resource.name || getNameFromUrl(resource.webUrl)
-    )}</a>
-              </div>
-              <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-            </div>  
-        </div>          
-        <hr class="search-result-separator" />
-        `;
+      <div class="search-result-grid">
+        <div class="search-result-icon">
+          <mgt-file 
+            .fileDetails="${result.resource}" 
+            view="image">
+          </mgt-file>
+        </div>
+        <div class="search-result-content">
+          <div class="search-result-name">
+            <a href="${resource.webUrl}?Web=1" target="_blank">
+              ${trimFileExtension(resource.name || getNameFromUrl(resource.webUrl))}
+            </a>
+          </div>
+          <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
+        </div>  
+      </div>          
+      <hr class="search-result-separator" />
+    `;
   }
 
+  /**
+   * Renders a listItem entity
+   * @param result
+   * @returns
+   */
   private renderListItem(result: SearchHit): HTMLTemplateResult {
     let resource: any = result.resource as any;
     return mgtHtml`
-          <div class="search-result-grid">
-            <div class="search-result-icon">
-              ${resource.webUrl.endsWith('.aspx') ? getSvg(SvgIcon.News) : getSvg(SvgIcon.File)}
+      <div class="search-result-grid">
+        <div class="search-result-icon">
+          ${resource.webUrl.endsWith('.aspx') ? getSvg(SvgIcon.News) : getSvg(SvgIcon.File)}
+        </div>
+        <div class="search-result-content">
+          <div class="search-result-name">
+            <a href="${resource.webUrl}?Web=1" target="_blank">
+              ${trimFileExtension(resource.name || getNameFromUrl(resource.webUrl))}
+            </a>
+          </div>
+          <div class="search-result-info">
+            <div class="search-result-author">
+              <mgt-person 
+                person-query=${resource.lastModifiedBy.user.email} 
+                view="oneLine"
+                person-card="hover"
+                show-presence="true">
+              </mgt-person>
             </div>
-            <div class="search-result-content">
-              <div class="search-result-name">
-                <a href="${resource.webUrl}?Web=1" target="_blank">${trimFileExtension(
-      resource.name || getNameFromUrl(resource.webUrl)
-    )}</a>
-              </div>
-              <div class="search-result-info">
-                <div class="search-result-author">
-                  <mgt-person 
-                    person-query=${resource.lastModifiedBy.user.email} 
-                    view="oneLine"
-                    person-card="hover"
-                    show-presence="true">
-                  </mgt-person>
-                </div>
-                <div class="search-result-date">
-                  &nbsp; ${strings.modified} ${getRelativeDisplayDate(new Date(resource.lastModifiedDateTime))}
-                </div>
-              </div>
-              <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-            </div>        
-            ${
-              resource.thumbnail?.url
-                ? html`       
-            <div class="search-result-thumbnail">
-              <a href="${resource.webUrl}" target="_blank"><img src="${resource.thumbnail?.url || nothing}" /></a>
-            </div>  `
-                : nothing
-            }
-        </div>          
-        <hr class="search-result-separator" />
-        `;
+            <div class="search-result-date">
+              &nbsp; ${strings.modified} ${getRelativeDisplayDate(new Date(resource.lastModifiedDateTime))}
+            </div>
+          </div>
+          <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
+        </div>        
+        ${
+          resource.thumbnail?.url &&
+          html`       
+          <div class="search-result-thumbnail">
+            <a href="${resource.webUrl}" target="_blank"><img src="${resource.thumbnail?.url || nothing}" /></a>
+          </div>`
+        }
+      </div>          
+      <hr class="search-result-separator" />
+    `;
   }
 
+  /**
+   * Renders a person entity
+   * @param result
+   * @returns
+   */
   private renderPerson(result: SearchHit): HTMLTemplateResult {
     let resource: any = result.resource as any;
     return mgtHtml`
-          <div class="search-result">
-            <mgt-person 
-              view="fourLines" 
-              person-query=${resource.userPrincipalName} 
-              person-card="hover"
-              show-presence="true">
-            </mgt-person> 
-          </div>          
-          <hr class="search-result-separator" />
-          `;
+      <div class="search-result">
+        <mgt-person 
+          view="fourLines" 
+          person-query=${resource.userPrincipalName} 
+          person-card="hover"
+          show-presence="true">
+        </mgt-person> 
+      </div>          
+      <hr class="search-result-separator" />
+    `;
   }
 
-  private renderExternalItem(result: SearchHit): HTMLTemplateResult {
-    /*let resource: any = result.resource as any;
-
-    // Create an AdaptiveCard instance
-    var adaptiveCard = new AdaptiveCards.AdaptiveCard();
-
-    if (result.resultTemplateId) {
-      const resultTemplate = this.response.value[0].resultTemplates[result.resultTemplateId].body;
-      var template = new ACData.Template(resultTemplate);
-      var card = template.expand({
-        $root: resource.properties
-      });
-      adaptiveCard.parse(card);
-      var renderedCard = adaptiveCard.render();
-      return html`
-        <div .innerHTML="${renderedCard.outerHTML}"> </div>
-        `;
-    } else {
-      return mgtHtml`
-          <div class="search-result-grid">
-            <div class="search-result-content">
-              <div class="search-result-name">
-                ${resource}
-              </div>
-            </div>  
-          </div>          
-          <hr class="search-result-separator" />`;
-    }*/
-    return html``;
-  }
-
+  /**
+   * Renders a bookmark entity
+   * @param result
+   * @returns
+   */
   private renderBookmark(result: SearchHit): HTMLTemplateResult {
     let resource: any = result.resource as any;
     return mgtHtml`
-          <div class="search-result-grid search-result-bookmark">
-            <div class="search-result-icon">
-              ${getSvg(SvgIcon.DoubleBookmark)}
-            </div>
-            <div class="search-result-content">
-              <div class="search-result-name">
-                <a href="${resource.webUrl}?Web=1" target="_blank">${resource.displayName}</a>
-              </div>
-              <div class="search-result-summary">${resource.description}</div>
-            </div>  
-          </div>          
-          <hr class="search-result-separator" />
-              
-              
-          `;
+      <div class="search-result-grid search-result-bookmark">
+        <div class="search-result-icon">
+          ${getSvg(SvgIcon.DoubleBookmark)}
+        </div>
+        <div class="search-result-content">
+          <div class="search-result-name">
+            <a href="${resource.webUrl}?Web=1" target="_blank">${resource.displayName}</a>
+          </div>
+          <div class="search-result-summary">${resource.description}</div>
+        </div>  
+      </div>          
+      <hr class="search-result-separator" />
+          
+          
+    `;
   }
 
+  /**
+   * Renders any entity
+   * @param result
+   * @returns
+   */
   private renderDefault(result: SearchHit): HTMLTemplateResult {
     let resource: any = result.resource as any;
     return mgtHtml`
-          <div class="search-result-grid">
-            <div class="search-result-content">
-              <div class="search-result-name">
-                <a href="${resource.webUrl}?Web=1" target="_blank">${trimFileExtension(resource.name)}</a>
-              </div>
-              <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-            </div>  
-          </div>          
-          <hr class="search-result-separator" />
-              
-              
-          `;
+      <div class="search-result-grid">
+        <div class="search-result-content">
+          <div class="search-result-name">
+            <a href="${resource.webUrl}?Web=1" target="_blank">${trimFileExtension(resource.name)}</a>
+          </div>
+          <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
+        </div>  
+      </div>          
+      <hr class="search-result-separator" />
+    `;
   }
 
+  /**
+   * Validates if cache should be retrieved
+   * @returns
+   */
   private shouldRetrieveCache(): boolean {
     return getIsResponseCacheEnabled() && this.cacheEnabled && !this.isRefreshing;
   }
 
+  /**
+   * Validates if cache should be updated
+   * @returns
+   */
+  private shouldUpdateCache(): boolean {
+    return getIsResponseCacheEnabled() && this.cacheEnabled;
+  }
+
+  /**
+   * Builds the appropriate RequestOption for the search query
+   * @returns
+   */
   private getRequestOptions(): SearchRequest | BetaSearchRequest {
     var requestOptions: SearchRequest = {
       entityTypes: this.entityTypes as EntityType[],
@@ -961,9 +1101,5 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     }
 
     return requestOptions;
-  }
-
-  private shouldUpdateCache(): boolean {
-    return getIsResponseCacheEnabled() && this.cacheEnabled;
   }
 }
