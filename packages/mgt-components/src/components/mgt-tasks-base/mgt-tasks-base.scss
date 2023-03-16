@@ -32,7 +32,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
       justify-content: left;
     }
 
-    .NewTaskButton{
+    .NewTaskButton {
       justify-content: right;
       &::part(control) {
         font-weight: 700;
@@ -61,6 +61,85 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
       &.Incomplete {
         border: 1px dotted var(--neutral-layer-3);
       }
+
+      &.NewTask {
+      }
+
+      .TaskDetailsContainer {
+        display: flex;
+        flex-direction: column;
+        row-gap: 12px;
+        width: 100%;
+
+        .Top {
+          display: flex;
+          justify-content: space-between;
+          column-gap: 4px;
+
+          &.AddNewTask {
+            flex-direction: row;
+          }
+          .CheckAndTitle {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+            width: 100%;
+            row-gap: 12px;
+
+            .TaskContent {
+              display: grid;
+              grid-auto-flow: column;
+              column-gap: 12px;
+            }
+          }
+
+          .TaskOptions {
+            &.NewTaskActionButtons {
+              display: flex;
+              flex-direction: column;
+              row-gap: 12px;
+            }
+          }
+        }
+        .Bottom {
+          display: grid;
+          grid-auto-flow: column;
+          grid-auto-columns: 25%;
+
+          .TaskGroup,
+          .TaskBucket,
+          .TaskDue {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            .TaskIcon {
+              width: 16px;
+              height: 16px;
+            }
+
+            .TaskIconText {
+              color: var(--neutral-foreground-hint);
+              font-size: 12px;
+              font-weight: 600;
+              white-space: normal;
+            }
+          }
+        }
+
+        .TaskDetails {
+          display: flex;
+          flex-direction: column;
+          row-gap: 8px;
+
+          .TaskTitle {
+            color: var(--foreground-on-neutral-rest);
+          }
+          .TaskBody {
+            display: flex;
+          }
+        }
+      }
     }
   }
 
@@ -69,6 +148,59 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
     &::part(control) {
       border-radius: 50%;
+    }
+
+    &::part(label) {
+      font-size: medium;
+      font-weight: 600;
+    }
+  }
+
+  fluent-text-field {
+    &.NewTask {
+      width: 100%;
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  :host {
+    fluent-select {
+      width: 100%;
+    }
+    .Tasks {
+      .Task {
+        .TaskDetailsContainer {
+          .Bottom {
+            display: grid;
+            grid-auto-flow: row;
+            grid-auto-columns: unset;
+            row-gap: 4px;
+          }
+          .Top {
+            &.AddNewTask {
+              flex-direction: column;
+              row-gap: 12px;
+
+              .CheckAndTitle {
+                .TaskContent {
+                  display: grid;
+                  grid-auto-flow: row;
+                  row-gap: 12px;
+                  width: 100%;
+                }
+              }
+
+              .TaskOptions {
+                &.NewTaskActionButtons {
+                  flex-direction: row;
+                  column-gap: 4px;
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
