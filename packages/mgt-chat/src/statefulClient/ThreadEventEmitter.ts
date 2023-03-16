@@ -23,7 +23,8 @@ export type ChatEvent =
   | 'chatThreadDeleted'
   | 'chatThreadPropertiesUpdated'
   | 'participantsAdded'
-  | 'participantsRemoved';
+  | 'participantsRemoved'
+  | 'chatMessageNotificationsSubscribed';
 
 export class ThreadEventEmitter {
   private emitter: EventEmitter = new EventEmitter();
@@ -65,5 +66,9 @@ export class ThreadEventEmitter {
   }
   participantsRemoved(e: ParticipantsRemovedEvent) {
     this.emitter.emit('participantsRemoved', e);
+  }
+
+  chatMessageNotificationsSubscribed(messagesResource: string) {
+    this.emitter.emit('chatMessageNotificationsSubscribed', messagesResource);
   }
 }

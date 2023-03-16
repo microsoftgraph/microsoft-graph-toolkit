@@ -2,8 +2,8 @@
   "name": "@microsoft/mgt-chat",
   "version": "3.0.0",
   "description": "Chat component for providing Teams conversations via a React component built using the ACS UI library",
-  "main": "./dist/cjs/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/es6/index.js",
+  "types": "./dist/es6/index.d.ts",
   "module": "./dist/es6/index.js",
   "source": "./src/index.ts",
   "keywords": [
@@ -15,8 +15,8 @@
   ],
   "scripts": {
     "build": "npm-run-all clean build:compile",
-    "build:compile": "parcel build",
-    "build:watch": "parcel watch",
+    "build:compile": "npm-run-all compile",
+    "build:watch": "npm-run-all compile:watch",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",

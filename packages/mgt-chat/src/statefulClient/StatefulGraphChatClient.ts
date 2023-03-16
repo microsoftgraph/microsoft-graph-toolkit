@@ -35,6 +35,7 @@ type GraphChatClient = Pick<
   Pick<SendBoxProps, 'onSendMessage'> &
   Pick<ErrorBarProps, 'activeErrorMessages'> & {
     status: 'initial' | 'subscribing to notifications' | 'loading messages' | 'ready' | 'error';
+    chat?: Chat;
   };
 
 type StatefulClient<T> = {
@@ -210,9 +211,18 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
    */
   private async updateFollowedChat() {
     // Subscribe to notifications for messages
+    this.notifyStateChange((draft: GraphChatClient) => {
+      draft.status = 'subscribing to notifications';
+    });
+    // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
+    // this client will then load the chat and messages when that event listener is called
     await this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, this._eventEmitter);
-    // Subscribe to notifications for the chat itself?
-    // load Chat Data
+  }
+
+  private async loadChatData() {
+    this.notifyStateChange((draft: GraphChatClient) => {
+      draft.status = 'loading messages';
+    });
     this._chat = await loadChat(this.graph, this._chatId);
     const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
     this._nextLink = messages.nextLink;
@@ -226,6 +236,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         .filter(m => m.messageType === 'message' && m.body?.content)
         .map(m => graphChatMessageToACSChatMessage(m, this._userId));
       draft.onLoadPreviousChatMessages = this._nextLink ? this.loadMoreMessages : undefined;
+      draft.status = this._nextLink ? 'loading messages' : 'ready';
+      draft.chat = this._chat;
     });
   }
 
@@ -413,6 +425,14 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     });
   };
 
+  private onChatNotificationsSubscribed = (messagesResource: string): void => {
+    if (messagesResource.includes(`/${this._chatId}/`)) {
+      void this.loadChatData();
+    } else {
+      // better clean this up as we don't want to be listening to events for other chats
+    }
+  };
+
   /**
    * Register event listeners for chat events to be triggered from the notification service
    */
@@ -420,6 +440,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this._eventEmitter.on('chatMessageReceived', this.onMessageReceived);
     this._eventEmitter.on('chatMessageDeleted', this.onMessageDeleted);
     this._eventEmitter.on('chatMessageEdited', this.onMessageEdited);
+    this._eventEmitter.on('chatMessageNotificationsSubscribed', this.onChatNotificationsSubscribed);
   }
 
   /**
@@ -451,7 +472,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     onDeleteMessage: this.deleteMessage,
     onSendMessage: this.sendMessage,
     onUpdateMessage: this.updateMessage,
-    activeErrorMessages: []
+    activeErrorMessages: [],
+    chat: this._chat
   };
 }
 

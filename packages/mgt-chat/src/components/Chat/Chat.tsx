@@ -11,8 +11,7 @@ import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import ChatHeader from '../ChatHeader/ChatHeader';
 
-import * as styles from './chat.module.scss';
-
+import { styles } from './chat.styles';
 registerIcons({ icons: DEFAULT_COMPONENT_ICONS });
 interface IMgtChatProps {
   chatId: string;
@@ -32,8 +31,8 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
       <div className={styles.chat}>
         {chatState.userId && chatState.messages.length > 0 ? (
           <>
-            <ChatHeader />
-            <div className={styles.chat__messages}>
+            <ChatHeader chat={chatState.chat} />
+            <div className={styles.chatMessages}>
               <MessageThread
                 userId={chatState.userId}
                 messages={chatState.messages}
@@ -57,7 +56,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 }}
               />
             </div>
-            <div className={styles.chat__input}>
+            <div className={styles.chatInput}>
               <SendBox autoFocus="sendBoxTextField" onSendMessage={chatState.onSendMessage} />
             </div>
             <ErrorBar activeErrorMessages={chatState.activeErrorMessages} />

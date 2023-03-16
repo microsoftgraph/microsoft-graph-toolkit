@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import './App.css';
-import { Get, Login, Picker } from '@microsoft/mgt-react';
+import { Get, Login } from '@microsoft/mgt-react';
 import { Chat } from '@microsoft/mgt-chat';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import ChatListTemplate from './components/ChatListTemplate/ChatListTemplate';
@@ -26,7 +26,7 @@ function App() {
           <Get resource="me/chats?$expand=members" scopes={['chat.read']} cacheEnabled={true}>
             <ChatListTemplate template="default" onSelected={chatSelected} />
           </Get>
-          Rendering chat: {chatId}
+          Selected chat: {chatId}
         </div>
         <div className="chat-pane">{chatId && <Chat chatId={chatId} />}</div>
       </main>
