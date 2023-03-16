@@ -27,6 +27,7 @@ $person-card-expanded-background-color-hover: var(
 $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-color, var(--neutral-foreground-rest));
 $person-card-icon-color: var(--person-card-icon-color, var(--accent-foreground-rest));
 $person-card-chat-input-hover-color: var(--person-card-chat-input-hover-color, var(--neutral-fill-input-active));
+$person-card-chat-input-border-color: var(--person-card-chat-input-border-color, var(--neutral-foreground-hint));
 $person-card-chat-input-focus-color: var(--person-card-chat-input-focus-color, var(--neutral-layer-2));
 $person-card-icon-hover-color: var(--person-card-icon-hover-color, var(--accent-foreground-hover));
 $person-card-show-more-color: var(--person-card-show-more-color, var(--accent-base-color));

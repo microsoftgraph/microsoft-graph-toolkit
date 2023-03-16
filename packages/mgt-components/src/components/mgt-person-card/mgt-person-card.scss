@@ -357,6 +357,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       width: 300px;
       margin-inline-start: 16px;
       border-radius: 4px;
+      border: 1px solid $person-card-chat-input-border-color;
     }
 
     .send-message-icon {
@@ -367,7 +368,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
     svg {
       height: 17px;
       width: 16px;
-      fill: set-var(icon__color, $theme-default, $common);
+      fill: $person-card-chat-input-border-color;
 
       &:hover {
         filter: brightness(0.5);
