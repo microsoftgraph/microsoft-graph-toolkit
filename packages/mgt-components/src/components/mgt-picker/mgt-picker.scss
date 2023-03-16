@@ -9,8 +9,6 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-picker.theme.scss';
 
-$picker-background-color: set-var(background-color, $theme-default, $picker);
-
 :host {
   font-family: $font-family;
 }

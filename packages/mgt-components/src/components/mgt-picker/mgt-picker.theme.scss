@@ -7,12 +7,4 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$picker: (
-  background-color: (
-    _var: background-color,
-    light: $background-color__main--light,
-    dark: $background-color__main--dark
-  )
-);
-
-@include create-themes($picker);
+$picker-background-color: var(--picker-background-color, transparent);
