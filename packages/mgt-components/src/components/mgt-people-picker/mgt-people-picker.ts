@@ -5,10 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { User } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
   findGroups,
@@ -82,7 +80,6 @@ export { PersonType, UserType } from '../../graph/graph.people';
  * @cssprop --people-picker-remove-selected-close-icon-color - {Color} the remove selected person close icon color.
  */
 @customElement('people-picker')
-// @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -122,7 +119,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected get input(): HTMLInputElement {
-    // return this.renderRoot.querySelector('.search-box__input');
     return this.renderRoot.querySelector('fluent-text-field') as HTMLInputElement;
   }
 
@@ -730,8 +726,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderInput(selectedPeopleTemplate: TemplateResult): TemplateResult {
-    const hasSelectedPeople = this.selectedPeople?.length > 0;
-
     const placeholder = !this.disabled
       ? this.placeholder
         ? this.placeholder
@@ -866,7 +860,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       mgtHtml`
          <div class="message-parent">
            <mgt-spinner></mgt-spinner>
-           <div aria-label="loading" class="loading-text">
+           <div aria-label="${this.strings.loadingMessage}" class="loading-text">
              ${this.strings.loadingMessage}
            </div>
          </div>
@@ -913,12 +907,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       <ul
         id="suggestions-list"
         class="searched-people-list"
+        role="listbox"
         aria-label="${this.strings.suggestedContacts}">
           ${repeat(
             filteredPeople,
             person => person.id,
             person => html`
               <li
+              role="option"
               id="${person.id}"
               aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
               class="searched-people-list-result"
@@ -1267,6 +1263,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (this.input) {
       this.input.setAttribute('aria-expanded', 'true');
     }
+    this._arrowSelectionCount = 0;
   }
 
   /**
@@ -1345,6 +1342,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.clearHighlighted();
     this._isFocused = true;
     this.loadState();
+    this.showFlyout();
   }
 
   // handle input blur
@@ -1372,17 +1370,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Handles input from the key up events on the keyboard.
    */
   private onUserKeyUp(event: KeyboardEvent): void {
-    const isPaste = (event.ctrlKey || event.metaKey) && event.code === 'KeyV';
-    const isCmdOrCtrlKey = ['ControlLeft', 'ControlRight'].includes(event.code) || event.ctrlKey || event.metaKey;
-    const isArrowKey = ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.code);
+    const keyName = event.key;
+    const isCmdOrCtrlKey = event.getModifierState('Control') || event.getModifierState('Meta');
+    const isPaste = isCmdOrCtrlKey && keyName === 'v';
+    const isArrowKey = ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(keyName);
 
     if ((!isPaste && isCmdOrCtrlKey) || isArrowKey) {
-      if (isCmdOrCtrlKey || ['ArrowLeft', 'ArrowRight'].includes(event.code)) {
+      if (isCmdOrCtrlKey || ['ArrowLeft', 'ArrowRight'].includes(keyName)) {
         // Only hide the flyout when you're doing selections with Left/Right Arrow key
         this.hideFlyout();
       }
 
-      if (['ArrowDown'].includes(event.code)) {
+      if (keyName === 'ArrowDown') {
         if (!this.flyout.isOpen && this._isFocused) {
           this.handleUserSearch();
         }
@@ -1390,30 +1389,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    if (event.shiftKey) {
-      return;
-    }
+    if (['Tab', 'Enter', 'Shift'].includes(keyName)) return;
 
-    if (event.code === 'ShiftLeft') {
-      return;
-    }
-
-    if (event.code === 'Tab') {
-      return;
-    }
-
-    if (event.code === 'Enter') {
-      return;
-    }
-
-    if (event.code === 'Escape') {
+    if (keyName === 'Escape') {
       this.clearInput();
       this._foundPeople = [];
       this._arrowSelectionCount = -1;
       return;
     }
 
-    if (event.code === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
+    if (keyName === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
       this.clearHighlighted();
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
@@ -1424,7 +1409,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    if (event.code === 'Comma' || event.code === 'Semicolon') {
+    if ([';', ','].includes(keyName)) {
       if (this.allowAnyEmail) {
         this._setAnyEmail = true;
         event.preventDefault();
@@ -1471,7 +1456,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private handleSuggestionClick(person: IDynamicPerson): void {
     this.addPerson(person);
     this.hideFlyout();
-    this.input.focus();
   }
 
   /**
@@ -1501,12 +1485,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param event - event tracked on user input (keydown)
    */
   private onUserKeyDown(event: KeyboardEvent): void {
+    const keyName = event.key;
     const selectedList = this.renderRoot.querySelector('.selected-list');
-    const isCmdOrCtrlKey = event.ctrlKey || event.metaKey;
+    const isCmdOrCtrlKey = event.getModifierState('Control') || event.getModifierState('Meta');
     if (isCmdOrCtrlKey && selectedList) {
       const selectedPeople = selectedList.querySelectorAll('mgt-person.selected-list-item-person');
       this.hideFlyout();
-      if (isCmdOrCtrlKey && event.code === 'ArrowLeft') {
+      if (isCmdOrCtrlKey && keyName === 'ArrowLeft') {
         this._currentHighlightedUserPos =
           (this._currentHighlightedUserPos - 1 + selectedPeople.length) % selectedPeople.length;
         if (this._currentHighlightedUserPos >= 0 && !Number.isNaN(this._currentHighlightedUserPos)) {
@@ -1514,7 +1499,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } else {
           this._currentHighlightedUserPos = 0;
         }
-      } else if (isCmdOrCtrlKey && event.code === 'ArrowRight') {
+      } else if (isCmdOrCtrlKey && keyName === 'ArrowRight') {
         const person = this._highlightedUsers.pop();
         if (person) {
           const personParent = person.parentElement;
@@ -1523,7 +1508,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             this._currentHighlightedUserPos++;
           }
         }
-      } else if (isCmdOrCtrlKey && event.code === 'KeyA') {
+      } else if (isCmdOrCtrlKey && keyName === 'a') {
         this._highlightedUsers = [];
         selectedPeople.forEach(person => this._highlightedUsers.push(person));
       }
@@ -1539,16 +1524,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    // const input = event.target as HTMLInputElement;
-
-    if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
+    if (keyName === 'ArrowUp' || keyName === 'ArrowDown') {
       this.handleArrowSelection(event);
-      if (this.input?.value?.length > 0) {
+      if (this.input.value?.length > 0) {
         event.preventDefault();
       }
     }
 
-    if (event.code === 'Enter') {
+    if (keyName === 'Enter') {
       if (!event.shiftKey && this._foundPeople) {
         event.preventDefault();
         event.stopPropagation();
@@ -1561,19 +1544,24 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
       } else if (this.allowAnyEmail) {
         this.handleAnyEmail();
+      } else {
+        this.showFlyout();
       }
     }
 
-    if (event.code === 'Escape') {
+    if (keyName === 'Escape') {
       event.stopPropagation();
     }
 
-    if (event.code === 'Tab') {
-      //   this.hideFlyout();
-      this._arrowSelectionCount = 0;
+    if (keyName === 'Tab') {
+      if (this._arrowSelectionCount <= 0) {
+        this._arrowSelectionCount = 0;
+      } else {
+        this.hideFlyout();
+      }
     }
 
-    if (event.code === 'Comma' || event.code === 'Semicolon') {
+    if ([';', ','].includes(keyName)) {
       if (this.allowAnyEmail) {
         event.preventDefault();
         event.stopPropagation();
@@ -1714,7 +1702,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (peopleList && peopleList?.children?.length) {
       if (event) {
         // update arrow count
-        if (event.code === 'ArrowUp') {
+        if (event.key === 'ArrowUp') {
           if (this._arrowSelectionCount === -1) {
             this._arrowSelectionCount = 0;
           } else {
@@ -1722,7 +1710,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               (this._arrowSelectionCount - 1 + peopleList.children.length) % peopleList.children.length;
           }
         }
-        if (event.code === 'ArrowDown') {
+        if (event.key === 'ArrowDown') {
           if (this._arrowSelectionCount === -1) {
             this._arrowSelectionCount = 0;
           } else {
