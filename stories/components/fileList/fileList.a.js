@@ -74,7 +74,7 @@ export const openFolderBreadcrumbs = () => html`
         margin: 0;
         padding: 10px 16px;
         list-style: none;
-        background-color: #ffffff;
+        background-color: var(--neutral-layer-1);
         font-size: 12px;
       }
 
@@ -84,17 +84,17 @@ export const openFolderBreadcrumbs = () => html`
 
       ul.breadcrumb li + li:before {
         padding: 8px;
-        color: black;
+        color: var(--foreground-on-accent-fill);
         content: '\/';
       }
 
       ul.breadcrumb li a {
-        color: #0275d8;
+        color: var(--accent-fill-rest);
         text-decoration: none;
       }
 
       ul.breadcrumb li a:hover {
-        color: #01447e;
+        color: var(--accent-fill-hover);
         text-decoration: underline;
       }
     </style>
