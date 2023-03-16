@@ -133,7 +133,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-  protected render() {
+  protected render(): TemplateResult {
     const provider = Providers.globalProvider;
     if (!provider || provider.state !== ProviderState.SignedIn) {
       return html``;
