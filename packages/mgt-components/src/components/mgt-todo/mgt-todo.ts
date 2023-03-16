@@ -262,8 +262,7 @@ export class MgtTodo extends MgtTasksBase {
       <fluent-text-field
         appearance="outline"
         id="new-taskName-input"
-        label="new-taskName-input"
-        aria-label="new-taskName-input"
+        aria-label="${this.strings.newTaskLabel}"
         .value=${this._newTaskName}
         placeholder="${this.strings.newTaskPlaceholder}"
         @keydown="${(e: KeyboardEvent) => {
@@ -343,7 +342,7 @@ export class MgtTodo extends MgtTasksBase {
         <div class="TaskDue">${taskDueTemplate}</div>
         <fluent-button class="TaskDelete"
           @click="${(e: Event) => this.removeTask(e, task.id)}"
-          label=${this.strings.deleteTaskLabel}>
+          aria-label="${this.strings.deleteTaskLabel}">
           ${getSvg(SvgIcon.Delete)}
         </fluent-button>
       </div>

@@ -15,6 +15,7 @@
 export const strings = {
   cancelNewTaskSubtitle: 'Cancel',
   newTaskPlaceholder: 'Add a task',
+  newTaskLabel: 'New Task Input',
   addTaskButtonSubtitle: 'Add',
   deleteTaskLabel: 'Delete Task',
   dueDate: 'Due date',
