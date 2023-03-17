@@ -1148,6 +1148,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         return getSvg(SvgIcon.Email);
       case '#microsoft.graph.event':
         return getSvg(SvgIcon.Event);
+      case 'microsoft.graph.chatMessage':
+        return getSvg(SvgIcon.SmallChat);
       default:
         return getSvg(SvgIcon.FileOuter);
     }
