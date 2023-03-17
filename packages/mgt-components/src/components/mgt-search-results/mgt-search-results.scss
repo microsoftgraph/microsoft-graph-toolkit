@@ -88,6 +88,11 @@ $bookmark-padding: var(--bookmark-padding, 10px);
   img {
     width: 100%;
   }
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .search-results-page-active {

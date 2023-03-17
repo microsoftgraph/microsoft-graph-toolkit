@@ -328,6 +328,14 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   private isRefreshing: boolean = false;
   private readonly SEARCH_ENDPOINT: string = '/search/query';
+  private readonly DEFAULT_FIELDS: string[] = [
+    'webUrl',
+    'lastModifiedBy',
+    'lastModifiedDateTime',
+    'summary',
+    'displayName',
+    'name'
+  ];
   private _currentPage: number = 1;
   @state()
   public get currentPage(): number {
@@ -1047,15 +1055,50 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     let resource: any = result.resource as any;
     return mgtHtml`
       <div class="search-result-grid">
+        <div class="search-result-icon">
+          ${this.getResourceIcon(resource)}
+        </div>
         <div class="search-result-content">
           <div class="search-result-name">
-            <a href="${resource.webUrl}?Web=1" target="_blank">${trimFileExtension(resource.name)}</a>
+            <a href="${this.getResourceUrl(resource)}?Web=1" target="_blank">${this.getResourceName(resource)}</a>
           </div>
           <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
         </div>  
       </div>          
       <fluent-divider></fluent-divider>
     `;
+  }
+
+  /**
+   * Gets default resource URLs
+   * @param resource
+   * @returns
+   */
+  private getResourceUrl(resource: any): string {
+    return resource.webUrl || resource.url || resource.webLink;
+  }
+
+  /**
+   * Gets default resource Names
+   * @param resource
+   * @returns
+   */
+  private getResourceName(resource: any): string {
+    return resource.displayName || resource.subject || trimFileExtension(resource.name);
+  }
+
+  /**
+   * Gets default resource icon
+   * @param resource
+   * @returns
+   */
+  private getResourceIcon(resource: any) {
+    switch (resource['@odata.type']) {
+      case '#microsoft.graph.message':
+        return getSvg(SvgIcon.Email);
+      default:
+        return getSvg(SvgIcon.File);
+    }
   }
 
   /**
@@ -1086,7 +1129,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       },
       from: this.from ? this.from : undefined,
       size: this.size ? this.size : undefined,
-      fields: this.fields ? this.fields : undefined,
+      fields: this.getFields(),
       enableTopResults: this.enableTopResults ? this.enableTopResults : undefined
     };
 
@@ -1102,5 +1145,17 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     }
 
     return requestOptions;
+  }
+
+  /**
+   * Gets the fields and default fields for default render methods
+   * @returns
+   */
+  private getFields(): string[] {
+    if (this.fields) {
+      return this.DEFAULT_FIELDS.concat(this.fields);
+    }
+
+    return undefined;
   }
 }

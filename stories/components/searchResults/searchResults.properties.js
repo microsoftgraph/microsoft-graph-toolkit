@@ -35,7 +35,7 @@ export const setSearchResultsScopes = () => html`
 `;
 
 export const setSearchResultsContentSources = () => html`
-  <mgt-search-results query-string="contoso" entity-types="externalItem" content-sources="contosoProducts">
+  <mgt-search-results query-string="contoso" entity-types="externalItem" content-sources="/external/connections/contosoProducts" scopes="ExternalItem.Read.All">
   </mgt-search-results>
 `;
 
@@ -44,8 +44,8 @@ export const setSearchResultsVersion = () => html`
   </mgt-search-results>
 `;
 
-export const setSearchResultsFromAndSize = () => html`
-  <mgt-search-results query-string="contoso" from="100" size="20">
+export const setSearchResultsSize = () => html`
+  <mgt-search-results query-string="contoso" size="20">
   </mgt-search-results>
 `;
 
@@ -60,7 +60,7 @@ export const setSearchResultsFetchThumbnail = () => html`
 `;
 
 export const setSearchResultsFields = () => html`
-  <mgt-search-results query-string="contoso" entity-types="driveItem" fields="Title,ID,ContentTypeId">
+  <mgt-search-results query-string="contoso" version="beta" entity-types="driveItem" fields="Title,ID,ContentTypeId">
   </mgt-search-results>
 `;
 

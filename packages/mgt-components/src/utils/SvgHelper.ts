@@ -580,27 +580,27 @@ export function getSvg(svgIcon: SvgIcon, color?: string) {
 
     case SvgIcon.News:
       return html`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" className={classes.svg} focusable="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" focusable="false">
         <path d="M2048 512v896q0 53-20 99t-55 81-82 55-99 21H249q-51 0-96-20t-79-53-54-79-20-97V256h1792v256h256zm-128 128h-128v704q0 26-19 45t-45 19q-26 0-45-19t-19-45V384H128v1031q0 25 9 47t26 38 39 26 47 10h1543q27 0 50-10t40-27 28-41 10-50V640zm-384 0H256V512h1280v128zm0 768h-512v-128h512v128zm0-256h-512v-128h512v128zm0-256h-512V768h512v128zm-640 512H256V765h640v643zm-512-128h384V893H384v387z" />
       </svg>
     `;
 
     case SvgIcon.DoubleBookmark:
       return html`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" className={classes.svg} focusable="false">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" focusable="false">
           <path d="M1792 0v1767l-256-128v385l-640-320-640 320V256h256V0h1280zm-384 1816V384H384v1432l512-256 512 256zm256-256V128H640v128h896v1240l128 64z" />
         </svg>
       `;
 
     case SvgIcon.ChevronLeft:
       return html`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" className={classes.svg} focusable="false">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" focusable="false">
           <path d="M1443 2045L421 1024 1443 3l90 90-930 931 930 931-90 90z" />
         </svg>`;
 
     case SvgIcon.ChevronRight:
       return html`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" className={classes.svg} focusable="false">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" focusable="false">
           <path d="M515 1955l930-931L515 93l90-90 1022 1021L605 2045l-90-90z" />
         </svg>`;
   }
