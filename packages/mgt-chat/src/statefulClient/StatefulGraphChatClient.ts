@@ -8,7 +8,14 @@ import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
 import { produce } from 'immer';
 import { v4 as uuid } from 'uuid';
-import { loadChat, loadChatThread, loadMoreChatMessages, MessageCollection, sendChatMessage } from './graph.chat';
+import {
+  loadChat,
+  loadChatThread,
+  loadMoreChatMessages,
+  MessageCollection,
+  sendChatMessage,
+  updateChatMessage
+} from './graph.chat';
 import { graphChatMessageToACSChatMessage } from './acs.chat';
 
 type GraphChatClient = Pick<
@@ -19,6 +26,7 @@ type GraphChatClient = Pick<
   | 'disableEditing'
   | 'onLoadPreviousChatMessages'
   | 'numberOfChatMessagesToReload'
+  | 'onUpdateMessage'
 > &
   Pick<SendBoxProps, 'onSendMessage'> &
   Pick<ErrorBarProps, 'activeErrorMessages'> & { onResendMessage: (messageId: string) => Promise<void> };
@@ -231,6 +239,32 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     }
   };
 
+  public updateMessage = async (messageId: string, content: string) => {
+    if (!messageId || !content) return;
+    const message = this._state.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+    if (message?.mine && message.content) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        const updating = draft.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+        if (updating) {
+          updating.content = content;
+          updating.status = 'sending';
+        }
+      });
+      try {
+        await updateChatMessage(this.graph, this._chatId, messageId, content);
+        this.notifyStateChange((draft: GraphChatClient) => {
+          const updated = draft.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+          updated.status = 'delivered';
+        });
+      } catch (e) {
+        this.notifyStateChange((draft: GraphChatClient) => {
+          const updating = draft.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+          updating.status = 'failed';
+        });
+      }
+    }
+  };
+
   private get graph(): IGraph {
     return Providers.globalProvider.graph.forComponent('mgt-chat');
   }
@@ -243,6 +277,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     numberOfChatMessagesToReload: this._messagesPerCall,
     onSendMessage: this.sendMessage,
     onResendMessage: this.resendMessage,
+    onUpdateMessage: this.updateMessage,
     activeErrorMessages: []
   };
 }
