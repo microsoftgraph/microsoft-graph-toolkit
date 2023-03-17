@@ -1,20 +1,20 @@
-import { mergeStyles } from '@fluentui/react';
-const styles = {
-  chat: mergeStyles({
+import { mergeStyleSets } from '@fluentui/react';
+const chatStyles = mergeStyleSets({
+  chat: {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
     overflow: 'auto'
-  }),
+  },
 
-  chatMessages: mergeStyles({
+  chatMessages: {
     height: 'auto',
     overflow: 'auto'
-  }),
+  },
 
-  chatInput: mergeStyles({
+  chatInput: {
     overflow: 'unset'
-  })
-};
+  }
+});
 
-export { styles };
+export { chatStyles };

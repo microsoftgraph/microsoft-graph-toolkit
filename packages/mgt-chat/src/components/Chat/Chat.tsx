@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ErrorBar,
-  FluentThemeProvider,
-  MessageThread,
-  SendBox,
-  DEFAULT_COMPONENT_ICONS
-} from '@azure/communication-react';
-import { registerIcons } from '@fluentui/react';
+import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import ChatHeader from '../ChatHeader/ChatHeader';
 
-import { styles } from './chat.styles';
-registerIcons({ icons: DEFAULT_COMPONENT_ICONS });
+import { chatStyles } from './chat.styles';
+import { registerAppIcons } from '../styles/registerIcons';
+
+registerAppIcons();
+
 interface IMgtChatProps {
   chatId: string;
 }
@@ -28,11 +24,11 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
   }, [setChatState]);
   return (
     <FluentThemeProvider>
-      <div className={styles.chat}>
+      <div className={chatStyles.chat}>
         {chatState.userId && chatState.messages.length > 0 ? (
           <>
-            <ChatHeader chat={chatState.chat} />
-            <div className={styles.chatMessages}>
+            <ChatHeader chat={chatState.chat} currentUserId={chatState.userId} />
+            <div className={chatStyles.chatMessages}>
               <MessageThread
                 userId={chatState.userId}
                 messages={chatState.messages}
@@ -56,7 +52,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 }}
               />
             </div>
-            <div className={styles.chatInput}>
+            <div className={chatStyles.chatInput}>
               <SendBox autoFocus="sendBoxTextField" onSendMessage={chatState.onSendMessage} />
             </div>
             <ErrorBar activeErrorMessages={chatState.activeErrorMessages} />
