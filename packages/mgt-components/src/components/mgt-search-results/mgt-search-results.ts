@@ -228,8 +228,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     return this._size;
   }
   public set size(value) {
-    if (value > 1000) {
-      this._size = 1000;
+    if (value > this.MAX_PAGE_SIZE) {
+      this._size = this.MAX_PAGE_SIZE;
     } else {
       this._size = value;
     }
@@ -328,6 +328,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   private isRefreshing: boolean = false;
   private readonly SEARCH_ENDPOINT: string = '/search/query';
+  private readonly MAX_PAGE_SIZE: number = 1000;
   private readonly DEFAULT_FIELDS: string[] = [
     'webUrl',
     'lastModifiedBy',
