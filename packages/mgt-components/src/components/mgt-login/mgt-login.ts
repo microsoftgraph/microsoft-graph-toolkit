@@ -314,7 +314,7 @@ export class MgtLogin extends MgtTemplatedComponent {
         ?disabled=${this.isLoadingState}
         @click=${this.onClick}
         class=${loginClasses}>
-        ${signedInOrOutTpl}
+          ${buttonContentTemplate}
       </fluent-button>`;
   }
 
