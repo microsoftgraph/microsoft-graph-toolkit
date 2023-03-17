@@ -8,5 +8,7 @@
 export const strings = {
   modified: 'modified on',
   back: 'Back',
-  pages: 'pages'
+  next: 'Next',
+  pages: 'pages',
+  page: 'Page'
 };
