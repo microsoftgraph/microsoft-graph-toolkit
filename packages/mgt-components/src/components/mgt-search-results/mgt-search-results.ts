@@ -901,7 +901,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           resource.thumbnail?.url &&
           html`
           <div class="search-result-thumbnail">
-            <a href="${resource.webUrl}" target="_blank"><img src="${resource.thumbnail?.url}" /></a>
+            <a href="${resource.webUrl}" target="_blank"><img alt="${resource.name}" src="${resource.thumbnail?.url}" /></a>
           </div>`
         }
         
@@ -920,7 +920,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     return html`
       <div class="search-result-grid">
         <div class="search-result-icon">
-          <img src="${resource.webUrl}/_api/siteiconmanager/getsitelogo" />
+          <img alt="${resource.displayName}" src="${resource.webUrl}/_api/siteiconmanager/getsitelogo" />
         </div>
         <div class="searc-result-content">
           <div class="search-result-name">
@@ -1003,7 +1003,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           resource.thumbnail?.url &&
           html`       
           <div class="search-result-thumbnail">
-            <a href="${resource.webUrl}" target="_blank"><img src="${resource.thumbnail?.url || nothing}" /></a>
+            <a href="${resource.webUrl}" target="_blank"><img alt="${trimFileExtension(
+            resource.name || getNameFromUrl(resource.webUrl)
+          )}" src="${resource.thumbnail?.url || nothing}" /></a>
           </div>`
         }
       </div>          

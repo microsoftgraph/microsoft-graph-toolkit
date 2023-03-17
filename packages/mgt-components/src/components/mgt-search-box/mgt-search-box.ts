@@ -115,6 +115,7 @@ class MgtSearchBox extends MgtBaseComponent {
         appearance="outline"
         value=${this.searchTerm ?? this.searchTerm}
         placeholder=${this.placeholder ? this.placeholder : strings.placeholder}
+        title="${strings.placeholder}"
         @input=${(e: Event) => this.onInputChanged(e)}
         @change=${(e: Event) => this.onInputChanged(e)}
       >
