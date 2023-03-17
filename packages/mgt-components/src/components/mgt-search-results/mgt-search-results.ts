@@ -29,10 +29,10 @@ import { EntityType, SearchHit, SearchHitsContainer, SearchRequest } from '@micr
 import { SearchRequest as BetaSearchRequest } from '@microsoft/microsoft-graph-types-beta';
 import { getNameFromUrl, getRelativeDisplayDate, sanitizeSummary, trimFileExtension } from '../../utils/Utils';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
-import { fluentSkeleton, fluentButton, fluentTooltip } from '@fluentui/web-components';
+import { fluentSkeleton, fluentButton, fluentTooltip, fluentDivider } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 
-registerFluentComponents(fluentSkeleton, fluentButton, fluentTooltip);
+registerFluentComponents(fluentSkeleton, fluentButton, fluentTooltip, fluentDivider);
 
 /**
  * Object to be stored in cache representing a generic query
@@ -344,8 +344,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * Synchronizes property values when attributes change.
    *
    * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
+   * @param {*} oldval
+   * @param {*} newval
    * @memberof MgtSearchResults
    */
   public attributeChangedCallback(name, oldval, newval) {
@@ -585,7 +585,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
                   `
                 }  
               </div>          
-              <hr class="search-result-separator" />
+              <fluent-divider></fluent-divider>            
             </div>
           `;
         })}
@@ -890,7 +890,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         }
         
       </div>          
-      <hr class="search-result-separator" />
+      <fluent-divider></fluent-divider>
     `;
   }
 
@@ -918,7 +918,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
         </div>  
       </div>          
-      <hr class="search-result-separator" />
+      <fluent-divider></fluent-divider>
     `;
   }
 
@@ -946,7 +946,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
         </div>  
       </div>          
-      <hr class="search-result-separator" />
+      <fluent-divider></fluent-divider>
     `;
   }
 
@@ -991,7 +991,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           </div>`
         }
       </div>          
-      <hr class="search-result-separator" />
+      <fluent-divider></fluent-divider>
     `;
   }
 
@@ -1011,7 +1011,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           show-presence="true">
         </mgt-person> 
       </div>          
-      <hr class="search-result-separator" />
+      <fluent-divider></fluent-divider>
     `;
   }
 
@@ -1034,9 +1034,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           <div class="search-result-summary">${resource.description}</div>
         </div>  
       </div>          
-      <hr class="search-result-separator" />
-          
-          
+      <fluent-divider></fluent-divider>
     `;
   }
 
@@ -1056,7 +1054,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
         </div>  
       </div>          
-      <hr class="search-result-separator" />
+      <fluent-divider></fluent-divider>
     `;
   }
 
