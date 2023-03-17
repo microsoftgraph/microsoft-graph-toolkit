@@ -437,6 +437,7 @@ export class MgtPeople extends MgtTemplatedComponent {
         if (this.groupId) {
           this.people = await findGroupMembers(graph, null, this.groupId, this.showMax, PersonType.person);
         } else if (this.userIds || this.peopleQueries) {
+          console.log('people user ids ', this.userIds);
           this.userIds
             ? (this.people = await getUsersForUserIds(graph, this.userIds, '', '', this._fallbackDetails))
             : (this.people = await getUsersForPeopleQueries(graph, this.peopleQueries, this._fallbackDetails));
@@ -445,6 +446,10 @@ export class MgtPeople extends MgtTemplatedComponent {
         } else {
           this.people = await getPeople(graph);
         }
+
+        console.log({
+          people: this.people
+        });
 
         // populate presence for people
         if (this.showPresence) {
