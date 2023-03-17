@@ -20,7 +20,7 @@ export const setSearchResultsQueryString = () => html`
 `;
 
 export const setSearchResultsQueryTemplate = () => html`
-  <mgt-search-results query-string="contoso" query-template="{searchTerm} IsDocument=true">
+  <mgt-search-results version="beta" query-string="contoso" query-template="({searchTerms}) Title:Northwind">
   </mgt-search-results>
 `;
 
@@ -35,12 +35,12 @@ export const setSearchResultsScopes = () => html`
 `;
 
 export const setSearchResultsContentSources = () => html`
-  <mgt-search-results query-string="contoso" entity-types="externalItem" contentSources="contosoProducts">
+  <mgt-search-results query-string="contoso" entity-types="externalItem" content-sources="contosoProducts">
   </mgt-search-results>
 `;
 
 export const setSearchResultsVersion = () => html`
-  <mgt-search-results query-string="contoso" entity-types="bookmark" version="beta">
+  <mgt-search-results query-string="contoso" entity-types="bookmark" version="beta" scopes="Bookmark.Read.All">
   </mgt-search-results>
 `;
 
@@ -50,7 +50,7 @@ export const setSearchResultsFromAndSize = () => html`
 `;
 
 export const setSearchResultsPagingMax = () => html`
-  <mgt-search-results query-string="contoso" paging-max="7">
+  <mgt-search-results query-string="contoso" paging-max="10">
   </mgt-search-results>
 `;
 
@@ -60,12 +60,12 @@ export const setSearchResultsFetchThumbnail = () => html`
 `;
 
 export const setSearchResultsFields = () => html`
-  <mgt-search-results query-string="contoso" fields="Title,Id,ContentType">
+  <mgt-search-results query-string="contoso" entity-types="driveItem" fields="Title,ID,ContentTypeId">
   </mgt-search-results>
 `;
 
 export const setSearchResultsEnableTopResults = () => html`
-  <mgt-search-results query-string="contoso" enable-top-results>
+  <mgt-search-results query-string="contoso" entity-types="message" enable-top-results scopes="Mail.Read">
   </mgt-search-results>
 `;
 

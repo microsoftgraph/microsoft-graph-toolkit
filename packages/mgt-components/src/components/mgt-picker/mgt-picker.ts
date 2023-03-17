@@ -146,7 +146,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   private isRefreshing: boolean;
 
   @state() private response: any[];
-  @state() private error: any[];
 
   constructor() {
     super();

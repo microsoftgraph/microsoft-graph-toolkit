@@ -6,7 +6,7 @@
  */
 
 import { html, PropertyValues, TemplateResult } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 
 import { equals } from '../utils/equals';
 import { MgtBaseComponent } from './baseComponent';
@@ -56,6 +56,14 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * @memberof MgtTemplatedComponent
    */
   @property({ attribute: false }) public templateContext: TemplateContext;
+
+  /**
+   *
+   * Gets or sets the error (if any) of the request
+   * @type any
+   * @memberof MgtSearchResults
+   */
+  @state() protected error: any;
 
   /**
    * Holds all templates defined by developer
@@ -180,6 +188,22 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     }
 
     return templates;
+  }
+
+  /**
+   * Renders an error
+   * @returns
+   */
+  protected renderError(): TemplateResult {
+    if (this.hasTemplate(`error`)) {
+      return this.renderTemplate(`error`, this.error);
+    }
+
+    return html`
+      <div class="error">
+        ${this.error}
+      </div>
+    `;
   }
 
   private removeUnusedSlottedElements() {

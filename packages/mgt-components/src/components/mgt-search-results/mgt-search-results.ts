@@ -326,15 +326,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    */
   @property({ attribute: false }) public response: any;
 
-  /**
-   *
-   * Gets or sets the error (if any) of the request
-   * @type any
-   * @memberof MgtSearchResults
-   */
-  //@property({ attribute: false }) public error: any;
-  @state() private error: any;
-
   private isRefreshing: boolean = false;
   private readonly SEARCH_ENDPOINT: string = '/search/query';
   private _currentPage: number = 1;
@@ -635,20 +626,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   }
 
   /**
-   * Renders an error
-   * @returns
-   */
-  private renderError(): TemplateResult {
-    if (this.hasTemplate(`error`)) {
-      return this.renderTemplate(`error`, this.error);
-    }
-
-    return html`
-      <pre>${this.error}</pre>
-    `;
-  }
-
-  /**
    * Renders the footer with pages if required
    * @param hitsContainer Search results
    * @returns
@@ -764,9 +741,14 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       }`;
   }
 
+  /**
+   * Constructs the "dot dot dot" button title
+   * @returns
+   */
   private getDotButtonTitle() {
     return `${strings.back} ${Math.ceil(this.pagingMax / 2)} ${strings.pages}`;
   }
+
   /**
    * Renders the "Previous page" button
    * @returns
