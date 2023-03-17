@@ -1076,7 +1076,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @returns
    */
   private getResourceUrl(resource: any): string {
-    return resource.webUrl || resource.url || resource.webLink;
+    return resource.webUrl || resource.url || resource.webLink || '#';
   }
 
   /**
@@ -1097,6 +1097,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     switch (resource['@odata.type']) {
       case '#microsoft.graph.message':
         return getSvg(SvgIcon.Email);
+      case '#microsoft.graph.event':
+        return getSvg(SvgIcon.Event);
       default:
         return getSvg(SvgIcon.File);
     }
