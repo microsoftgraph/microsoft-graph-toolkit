@@ -43,6 +43,3 @@ package-lock.json
 # storybook
 storybook-static/
 custom-elements.json
-
-# build
-.parcel-cache/

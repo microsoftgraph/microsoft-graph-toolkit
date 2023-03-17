@@ -35,7 +35,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/react": "^17.0.00",
-    "parcel": "^2.8.3",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-scripts": "5.0.1",
