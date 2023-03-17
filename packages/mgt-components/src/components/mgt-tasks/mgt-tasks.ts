@@ -969,9 +969,9 @@ export class MgtTasks extends MgtTemplatedComponent {
         @input=${(e: KeyboardEvent) => (this._newTaskName = (e.target as HTMLInputElement).value)}>
       </fluent-text-field>`;
 
-    const groups = this._groups;
-    if (groups.length > 0 && !this._newTaskGroupId) {
-      this._newTaskGroupId = groups[0].id;
+    // const groups = this._groups;
+    if (this._groups.length > 0 && !this._newTaskGroupId) {
+      this._newTaskGroupId = this._groups[0].id;
     }
     // const group =
     //   this.dataSource === TasksSource.todo
@@ -1311,7 +1311,6 @@ export class MgtTasks extends MgtTemplatedComponent {
 
       const taskPeople = this.dataSource !== TasksSource.todo ? this.renderAssignedPeople(task, iconColor) : null;
 
-      console.log('has some poele', this.dataSource !== TasksSource.todo);
       taskDetails = html`${group} ${folder} ${taskPeople} ${taskDue}`;
     }
 
@@ -1329,14 +1328,16 @@ export class MgtTasks extends MgtTemplatedComponent {
             </div>
           `;
 
+    const taskClasses = classMap({
+      Task: true,
+      Complete: completed,
+      Incomplete: !completed,
+      ReadOnly: this.readOnly
+    });
+
     return html`
       <div
-        class=${classMap({
-          Task: true,
-          Complete: completed,
-          Incomplete: !completed,
-          ReadOnly: this.readOnly
-        })}
+        class=${taskClasses}
         @click=${() => this.handleTaskClick(task)}>
         <div class="TaskDetailsContainer">
           <div class="Top">
@@ -1444,19 +1445,21 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const assignedPeople = task ? Object.keys(task.assignments).map(key => key) : [];
 
-    console.log(assignedPeople, assignedPeople.toString());
-
-    const assignedPeopleHTML = mgtHtml`
+    const personAddIcon = (color: string) => html`
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.5004 12.0003C20.5379 12.0003 23.0004 14.4627 23.0004 17.5003C23.0004 20.5378 20.5379 23.0003 17.5004 23.0003C14.4628 23.0003 12.0004 20.5378 12.0004 17.5003C12.0004 14.4627 14.4628 12.0003 17.5004 12.0003ZM12.0226 13.9996C11.7259 14.4629 11.4864 14.9663 11.314 15.4999L4.25278 15.5002C3.83919 15.5002 3.50391 15.8355 3.50391 16.2491V16.8267C3.50391 17.3624 3.69502 17.8805 4.04287 18.2878C5.29618 19.7555 7.26206 20.5013 10.0004 20.5013C10.5968 20.5013 11.1567 20.4659 11.6806 20.3954C11.9258 20.8903 12.2333 21.3489 12.5921 21.7618C11.7966 21.922 10.9317 22.0013 10.0004 22.0013C6.8545 22.0013 4.46849 21.0962 2.90219 19.2619C2.32242 18.583 2.00391 17.7195 2.00391 16.8267V16.2491C2.00391 15.007 3.01076 14.0002 4.25278 14.0002L12.0226 13.9996ZM17.5004 14.0002L17.4105 14.0083C17.2064 14.0453 17.0455 14.2063 17.0084 14.4104L17.0004 14.5002L16.9994 17.0003H14.5043L14.4144 17.0083C14.2103 17.0454 14.0494 17.2063 14.0123 17.4104L14.0043 17.5003L14.0123 17.5901C14.0494 17.7942 14.2103 17.9552 14.4144 17.9922L14.5043 18.0003H16.9994L17.0004 20.5002L17.0084 20.5901C17.0455 20.7942 17.2064 20.9551 17.4105 20.9922L17.5004 21.0002L17.5902 20.9922C17.7943 20.9551 17.9553 20.7942 17.9923 20.5901L18.0004 20.5002L17.9994 18.0003H20.5043L20.5941 17.9922C20.7982 17.9552 20.9592 17.7942 20.9962 17.5901L21.0043 17.5003L20.9962 17.4104C20.9592 17.2063 20.7982 17.0454 20.5941 17.0083L20.5043 17.0003H17.9994L18.0004 14.5002L17.9923 14.4104C17.9553 14.2063 17.7943 14.0453 17.5902 14.0083L17.5004 14.0002ZM10.0004 2.00488C12.7618 2.00488 15.0004 4.24346 15.0004 7.00488C15.0004 9.76631 12.7618 12.0049 10.0004 12.0049C7.23894 12.0049 5.00036 9.76631 5.00036 7.00488C5.00036 4.24346 7.23894 2.00488 10.0004 2.00488ZM10.0004 3.50488C8.06737 3.50488 6.50036 5.07189 6.50036 7.00488C6.50036 8.93788 8.06737 10.5049 10.0004 10.5049C11.9334 10.5049 13.5004 8.93788 13.5004 7.00488C13.5004 5.07189 11.9334 3.50488 10.0004 3.50488Z" fill="${color}" />
+  </svg>
+    `;
+    const assignedPeopleTemplate = mgtHtml`
       <mgt-people
         class="people people-${taskId}"
-        .userIds="${assignedPeople.toString()}"
-        .personCardInteraction=${PersonCardInteraction.none}
+        user-ids=${assignedPeople.toString()}
         @click=${(e: MouseEvent) => handlePpleClick(e)}
         @keydown=${(e: KeyboardEvent) => handlePpleKeydown(e)}>
           <template data-type="no-data">
-            ${getSvg(SvgIcon.PersonAdd, 'var(--neutral-foreground-hint)')}
+            No data found ${personAddIcon('yellow')}
           </template>
-        </mgt-people>`;
+      </mgt-people>`;
 
     const handlePpickerKeydown = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
@@ -1477,7 +1480,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         light-dismiss
         class=${classMap(taskAssigneeClasses)}
         @closed=${() => this.updateAssignedPeople(task)}>
-          ${assignedPeopleHTML}
+          ${assignedPeopleTemplate}
           <div slot="flyout" class=${classMap({ Picker: true })}>
             ${picker}
           </div>
