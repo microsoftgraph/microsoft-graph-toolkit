@@ -73,10 +73,10 @@ const getIsResponseCacheEnabled = (): boolean =>
  *
  * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes
  * *
- * @cssprop --bookmark-border-radius - {Length} Border radius of a bookmark
- * @cssprop --bookmark-box-shadow - {Length} Box shadow of a bookmark
- * @cssprop --bookmark-border - {Length} Border of a bookkmark
- * @cssprop --bookmark-padding - {Length} Padding of a bookkmark
+ * @cssprop --answer-border-radius - {Length} Border radius of an answer
+ * @cssprop --answer-box-shadow - {Length} Box shadow of an answer
+ * @cssprop --answer-border - {Length} Border of an answer
+ * @cssprop --answer-padding - {Length} Padding of an answer
  *
  * @class mgt-search-results
  * @extends {MgtTemplatedComponent}
@@ -628,6 +628,10 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           return this.renderListItem(result);
         case '#microsoft.graph.search.bookmark':
           return this.renderBookmark(result);
+        case '#microsoft.graph.search.acronym':
+          return this.renderAcronym(result);
+        case '#microsoft.graph.search.qna':
+          return this.renderQnA(result);
         default:
           return this.renderDefault(result);
       }
@@ -969,7 +973,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     return mgtHtml`
       <div class="search-result-grid">
         <div class="search-result-icon">
-          ${resource.webUrl.endsWith('.aspx') ? getSvg(SvgIcon.News) : getSvg(SvgIcon.File)}
+          ${resource.webUrl.endsWith('.aspx') ? getSvg(SvgIcon.News) : getSvg(SvgIcon.FileOuter)}
         </div>
         <div class="search-result-content">
           <div class="search-result-name">
@@ -1030,11 +1034,38 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @returns
    */
   private renderBookmark(result: SearchHit): HTMLTemplateResult {
+    return this.renderAnswer(result, SvgIcon.DoubleBookmark);
+  }
+
+  /**
+   * Renders an acronym entity
+   * @param result
+   * @returns
+   */
+  private renderAcronym(result: SearchHit): HTMLTemplateResult {
+    return this.renderAnswer(result, SvgIcon.BookOpen);
+  }
+
+  /**
+   * Renders a qna entity
+   * @param result
+   * @returns
+   */
+  private renderQnA(result: SearchHit): HTMLTemplateResult {
+    return this.renderAnswer(result, SvgIcon.BookQuestion);
+  }
+
+  /**
+   * Renders an answer entity
+   * @param result
+   * @returns
+   */
+  private renderAnswer(result: SearchHit, icon: SvgIcon): HTMLTemplateResult {
     let resource: any = result.resource as any;
-    return mgtHtml`
-      <div class="search-result-grid search-result-bookmark">
+    return html`
+      <div class="search-result-grid search-result-answer">
         <div class="search-result-icon">
-          ${getSvg(SvgIcon.DoubleBookmark)}
+          ${getSvg(icon)}
         </div>
         <div class="search-result-content">
           <div class="search-result-name">
@@ -1072,7 +1103,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
                 `
             }            
           </div>
-          <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
+          <div class="search-result-summary" .innerHTML="${this.getResultSummary(result)}"></div>
         </div>  
       </div>          
       <fluent-divider></fluent-divider>
@@ -1098,6 +1129,15 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   }
 
   /**
+   * Gets default result summary
+   * @param resource
+   * @returns
+   */
+  private getResultSummary(result: any): string {
+    return sanitizeSummary(result.summary || result.resource?.description);
+  }
+
+  /**
    * Gets default resource icon
    * @param resource
    * @returns
@@ -1109,7 +1149,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       case '#microsoft.graph.event':
         return getSvg(SvgIcon.Event);
       default:
-        return getSvg(SvgIcon.File);
+        return getSvg(SvgIcon.FileOuter);
     }
   }
 

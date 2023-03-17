@@ -65,7 +65,7 @@ export const setSearchResultsFields = () => html`
 `;
 
 export const setSearchResultsEnableTopResults = () => html`
-  <mgt-search-results query-string="contoso" entity-types="message" enable-top-results scopes="Mail.Read">
+  <mgt-search-results query-string="marketing" entity-types="message" enable-top-results scopes="Mail.Read">
   </mgt-search-results>
 `;
 

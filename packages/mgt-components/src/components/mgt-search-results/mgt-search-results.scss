@@ -1,13 +1,13 @@
 @import '../../styles/shared-styles.scss';
 
-$bookmark-border-radius: var(--bookmark-border-radius, 4px);
-$bookmark-box-shadow: var(
-  --bookmark-box-shadow,
+$answer-border-radius: var(--answer-border-radius, 4px);
+$answer-box-shadow: var(
+  --answer-box-shadow,
   0px 3.2px 7.2px rgba(0, 0, 0, 0.132),
   0px 0.6px 1.8px rgba(0, 0, 0, 0.108)
 );
-$bookmark-border: var(--bookmark-border, none);
-$bookmark-padding: var(--bookmark-padding, 10px);
+$answer-border: var(--answer-border, none);
+$answer-padding: var(--answer-padding, 10px);
 
 .search-results {
   scroll-margin: 100px;
@@ -110,9 +110,9 @@ $bookmark-padding: var(--bookmark-padding, 10px);
   }
 }
 
-.search-result-bookmark {
-  box-shadow: $bookmark-box-shadow;
-  border-radius: $bookmark-border-radius;
-  border: $bookmark-border;
-  padding: $bookmark-padding;
+.search-result-answer {
+  box-shadow: $answer-box-shadow;
+  border-radius: $answer-border-radius;
+  border: $answer-border;
+  padding: $answer-padding;
 }
