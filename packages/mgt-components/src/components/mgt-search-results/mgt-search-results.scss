@@ -105,8 +105,12 @@ $answer-padding: var(--answer-padding, 10px);
 }
 
 .search-results-page {
-  svg {
+  svg,
+  svg > path {
     height: 12px;
+    fill: var(--neutral-foreground-rest);
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
   }
 }
 
