@@ -1054,14 +1054,23 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    */
   private renderDefault(result: SearchHit): HTMLTemplateResult {
     let resource: any = result.resource as any;
-    return mgtHtml`
+    const resourceUrl = this.getResourceUrl(resource);
+    return html`
       <div class="search-result-grid">
         <div class="search-result-icon">
           ${this.getResourceIcon(resource)}
         </div>
         <div class="search-result-content">
           <div class="search-result-name">
-            <a href="${this.getResourceUrl(resource)}?Web=1" target="_blank">${this.getResourceName(resource)}</a>
+            ${
+              resourceUrl
+                ? html`
+                  <a href="${resourceUrl}?Web=1" target="_blank">${this.getResourceName(resource)}</a>
+                `
+                : html`
+                  ${this.getResourceName(resource)}
+                `
+            }            
           </div>
           <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
         </div>  
@@ -1076,7 +1085,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @returns
    */
   private getResourceUrl(resource: any): string {
-    return resource.webUrl || resource.url || resource.webLink || '#';
+    return resource.webUrl || resource.url || resource.webLink || null;
   }
 
   /**
