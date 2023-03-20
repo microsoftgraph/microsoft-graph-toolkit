@@ -394,9 +394,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render(): TemplateResult {
-    let renderedTemplate = null;
-    let headerTemplate = null;
-    let footerTemplate = null;
+    let renderedTemplate: TemplateResult = null;
+    let headerTemplate: TemplateResult = null;
+    let footerTemplate: TemplateResult = null;
 
     // tslint:disable-next-line: no-string-literal
     if (this.hasTemplate('header')) {
