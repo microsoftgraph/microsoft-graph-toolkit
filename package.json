@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "3.0.0",
+  "version": "3.0.0-preview.1",
   "workspaces": {
     "packages": [
       "packages/*",
@@ -160,8 +160,6 @@
   },
   "resolutions": {
     "@microsoft/microsoft-graph-client": "3.0.2",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
     "responselike": "2.0.0"
   }
 }

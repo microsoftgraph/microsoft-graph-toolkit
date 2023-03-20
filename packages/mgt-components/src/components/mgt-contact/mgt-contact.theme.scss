@@ -6,8 +6,18 @@
  */
 
 @import '../../styles/shared-sass-variables.scss';
-@import '../../components/mgt-file/mgt-file.theme.scss';
 
-$file-list-background-color: var(--file-list-background-color, var(--neutral-layer-1));
-$show-more-button-background-color: var(--show-more-button-background-color, var(--neutral-layer-1));
-$show-more-button-background-color--hover: var(--show-more-button-background-color-hover, var(--neutral-layer-2));
+$contact-theme: (
+  person-card-contact-link-color: (
+    _var: --person-card-contact-link-color,
+    light: $link__color--light,
+    dark: $link__color--dark
+  ),
+  person-card-contact-link-hover-color: (
+    _var: --person-card-contact-link-hover-color,
+    light: $link__color__hover--light,
+    dark: $link__color__hover--dark
+  )
+);
+
+@include create-themes($contact-theme);
