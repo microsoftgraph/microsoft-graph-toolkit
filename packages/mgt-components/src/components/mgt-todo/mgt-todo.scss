@@ -16,6 +16,7 @@
     width: auto;
     &.NewTask {
       margin: 14px 0 0 0;
+      max-width: 800px;
     }
     &.Complete {
       text-decoration: line-through;
@@ -41,13 +42,13 @@
       }
     }
     .title {
-      width: 600px;
+      width: 550px;
     }
     .TaskDelete {
       display: flex;
     }
     .TaskDue {
-      width: 111px;
+      width: 174px;
       height: 32px;
       text-decoration: inherit;
       display: flex;
@@ -109,29 +110,29 @@
 }
 
 :host {
-    fluent-button {
-        &.TaskDelete.neutral,
-        &.task-add-icon.neutral,
-        &.task-cancel-icon.neutral {
-            fill: $task-color;
+  fluent-button {
+    &.TaskDelete.neutral,
+    &.task-add-icon.neutral,
+    &.task-cancel-icon.neutral {
+      fill: $task-color;
 
-            &::part(control) {
-                border: none;
-                background: inherit;
+      &::part(control) {
+        border: none;
+        background: inherit;
 
-                svg {
-                    fill: $task-color;
-                }
-            }
+        svg {
+          fill: $task-color;
         }
+      }
     }
-    
-    fluent-radio {
-        &::part(control) {
-            margin-inline-start: 10px;
-        }
-        &::part(label) {
-            margin-inline-end: unset;
-        }
+  }
+
+  fluent-radio {
+    &::part(control) {
+      margin-inline-start: 10px;
     }
+    &::part(label) {
+      margin-inline-end: unset;
+    }
+  }
 }

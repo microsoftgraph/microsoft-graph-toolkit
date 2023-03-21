@@ -9,7 +9,6 @@ import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { strings } from './strings';
-import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentTextField, fluentButton, fluentCalendar } from '@fluentui/web-components';
 
@@ -63,17 +62,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    */
   @property({ attribute: 'initial-id', type: String })
   public initialId: string;
-
-  /**
-   * Gets the flyout element
-   *
-   * @protected
-   * @type {MgtFlyout}
-   * @memberof MgtTasksBase
-   */
-  protected get flyout(): MgtFlyout {
-    return this.renderRoot.querySelector('.flyout');
-  }
 
   private _previousMediaQuery: ComponentMediaQuery;
 
@@ -189,7 +177,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   }
 
   /**
-   * Render the generic picker.
+   * Render the panel for creating a new task.
    *
    * @protected
    * @memberof MgtTasksBase
