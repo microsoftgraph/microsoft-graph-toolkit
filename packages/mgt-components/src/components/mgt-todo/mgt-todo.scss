@@ -11,6 +11,7 @@
 :host {
   @extend :host;
   border-radius: 8px;
+
   .Task {
     @extend .Task;
     width: auto;
@@ -87,6 +88,26 @@
           margin-inline-start: 10px;
           background-color: $task-background-color;
           color: $task-color;
+        }
+
+        input {
+          flex: 1;
+          border: var(--task-new-border, none);
+          border-bottom: 1px solid $task-color;
+          outline: none;
+          border-radius: 0;
+        }
+
+        input:hover {
+          border-bottom: 1px solid $task-date-input-hover-color;
+        }
+
+        input:active {
+          border-bottom: 1px solid $task-date-input-active-color;
+        }
+
+        input:focus {
+          border-bottom: 1px solid $task-date-input-active-color;
         }
       }
     }
