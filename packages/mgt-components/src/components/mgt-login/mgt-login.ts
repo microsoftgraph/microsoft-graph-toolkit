@@ -508,7 +508,8 @@ export class MgtLogin extends MgtTemplatedComponent {
           .showPresence=${this.showPresence}
           .avatarSize=${displayConfig.avatarSize}
           line2-property="email"
-          class="signed-in-person"/>`
+          class="signed-in-person"
+        ></mgt-person`
     );
   }
 
