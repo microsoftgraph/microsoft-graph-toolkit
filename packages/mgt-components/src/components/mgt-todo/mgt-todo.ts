@@ -11,7 +11,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { IGraph, customElement, mgtHtml } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
-import { getDateString, getDateMap } from '../../utils/Utils';
+import { getDateString } from '../../utils/Utils';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import '../mgt-person/mgt-person';
 import { MgtTasksBase } from '../mgt-tasks-base/mgt-tasks-base';
