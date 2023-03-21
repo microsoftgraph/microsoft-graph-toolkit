@@ -262,6 +262,7 @@ export class MgtFileGrid extends MgtFileListBase {
                 <div
                   class="${this.isSelected(f) ? 'file-row selected' : 'file-row'}"
                   @click=${() => this.onSelectorClicked(f)}
+                  data-drive-item-id=${f.id}
                 >
                   <div class="cell">${this.renderSelector(f)}</div>
                   <div class="cell">${this.renderFileIcon(f)}</div>

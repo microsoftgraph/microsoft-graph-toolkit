@@ -117,7 +117,7 @@ class MgtFileListComposite extends MgtFileListBase {
    */
   public connectedCallback(): void {
     super.connectedCallback();
-    this.breadcrumb.push({
+    const rootBreadcrumb = {
       name: this.breadcrumbRootName,
       siteId: this.siteId,
       groupId: this.groupId,
@@ -131,7 +131,9 @@ class MgtFileListComposite extends MgtFileListBase {
       insightType: this.insightType,
       itemId: this.itemId,
       id: 'root-item'
-    });
+    };
+    console.log('rootBreadcrumb', rootBreadcrumb);
+    this.breadcrumb.push(rootBreadcrumb);
   }
 
   /**
@@ -245,11 +247,10 @@ class MgtFileListComposite extends MgtFileListBase {
     const item = e.detail;
     if (item.folder) {
       // load folder contents, update breadcrumb
-      this.breadcrumb = [...this.breadcrumb, { name: item.name, itemId: item.id, id: item.id }];
+      this.breadcrumb = [...this.breadcrumb, { name: item.name, itemId: item.id, id: item.id, driveId: this.driveId }];
       // clear any existing query properties
       this.siteId = null;
       this.groupId = null;
-      this.driveId = null;
       this.userId = null;
       this.files = null;
       this.fileExtensions = null;
