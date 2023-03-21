@@ -108,29 +108,30 @@
   }
 }
 
-:host fluent-button.TaskDelete.neutral::part(control),
-:host fluent-button.task-add-icon.neutral::part(control),
-:host fluent-button.task-cancel-icon.neutral::part(control) {
-  border: none;
-  background: inherit;
-  svg {
-    fill: $task-color;
-  }
-}
-
 :host {
-  fluent-radio {
-    &::part(control) {
-      margin-inline-start: 10px;
-    }
-    &::part(label) {
-      margin-inline-end: unset;
-    }
-  }
-}
+    fluent-button {
+        &.TaskDelete.neutral,
+        &.task-add-icon.neutral,
+        &.task-cancel-icon.neutral {
+            fill: $task-color;
 
-:host fluent-button.TaskDelete.neutral svg,
-:host fluent-button.task-add-icon.neutral svg,
-:host fluent-button.task-cancel-icon.neutral svg {
-  fill: $task-color;
+            &::part(control) {
+                border: none;
+                background: inherit;
+
+                svg {
+                    fill: $task-color;
+                }
+            }
+        }
+    }
+    
+    fluent-radio {
+        &::part(control) {
+            margin-inline-start: 10px;
+        }
+        &::part(label) {
+            margin-inline-end: unset;
+        }
+    }
 }
