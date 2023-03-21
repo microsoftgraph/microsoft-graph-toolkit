@@ -532,7 +532,7 @@ export class MgtLogin extends MgtTemplatedComponent {
          <div id="accounts">
              <fluent-listbox class="accounts" name="Account list">
               ${accounts.map(account => {
-                if (account?.id !== provider.getActiveAccount().id) {
+                if (account.id !== provider.getActiveAccount().id) {
                   const details = localStorage.getItem(account.id + this._userDetailsKey);
                   return mgtHtml`
                     <fluent-option class="account-option" value="${account.name}" role="option">
@@ -544,7 +544,7 @@ export class MgtLogin extends MgtTemplatedComponent {
                           }
                         }}
                         .personDetails=${details ? JSON.parse(details) : null}
-                        .fallbackDetails=${{ displayName: account?.name, mail: account?.mail }}
+                        .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
                         .view=${PersonViewType.twolines}
                         class="account"/>
                     </fluent-option>`;
