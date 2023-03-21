@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, TemplateResult } from 'lit';
+import { CSSResult, html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import {
@@ -89,7 +89,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
     return styles;
   }
   /**
@@ -99,12 +99,13 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtLogin
    */
-  protected get strings() {
+  protected get strings(): Record<string, string> {
     return strings;
   }
 
   /**
-   * allows developer to use specific user details for login
+   * Allows developer to use specific user details for login.
+   *
    * @type {IDynamicPerson}
    */
   @property({
@@ -114,19 +115,21 @@ export class MgtLogin extends MgtTemplatedComponent {
   public userDetails: IDynamicPerson;
 
   /**
-   * determines if presence is shown for logged in user
+   * Determines if presence is shown for logged in user
    * defaults to false
+   *
    * @type {boolean}
    */
   @property({
     attribute: 'show-presence',
     type: Boolean
   })
-  public showPresence = false;
+  public showPresence: boolean = false;
 
   /**
-   * determines the view style to apply to the logged in user
+   * Determines the view style to apply to the logged in user
    * options are 'full', 'compact', 'avatar', defaults to 'full'
+   *
    * @type {LoginViewType}
    */
   @property({
@@ -158,11 +161,20 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   /**
-   * determines if login menu popup should be showing
+   * Determines if login menu popup should be showing.
+   *
+   * @private
    * @type {boolean}
    */
   @property({ attribute: false }) private _isFlyoutOpen: boolean;
 
+  /**
+   * The image blob string
+   *
+   * @private
+   * @type {string}
+   * @memberof MgtLogin
+   */
   private _image: string;
 
   /**
@@ -241,8 +253,11 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
+   *
+   * @protected
+   * @returns {TemplateResult}
    */
-  protected render() {
+  protected render(): TemplateResult {
     return html`
       <div class="login-root">
         ${this.renderButton()}
@@ -255,7 +270,6 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Load state into the component.
    *
    * @protected
-   * @returns
    * @memberof MgtLogin
    */
   protected async loadState() {
@@ -281,19 +295,20 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
-  private buildAriaLabel(isSignedIn: boolean, defaultLabel: string) {
+  private buildAriaLabel(isSignedIn: boolean, defaultLabel: string): string {
     if (!isSignedIn) return defaultLabel;
 
     return (defaultLabel = this.userDetails ? this.userDetails.displayName : this.strings.signInLinkSubtitle);
   }
 
   /**
-   * Render the button.
+   * Render the sign in or sign out button.
    *
    * @protected
    * @memberof MgtLogin
+   * @returns {TemplateResult}
    */
-  protected renderButton() {
+  protected renderButton(): TemplateResult {
     const isSignedIn = Providers.globalProvider?.state === ProviderState.SignedIn;
     const ariaLabel = this.buildAriaLabel(isSignedIn, this.strings.signInLinkSubtitle);
     const loginClasses = classMap({
@@ -330,8 +345,9 @@ export class MgtLogin extends MgtTemplatedComponent {
    *
    * @protected
    * @memberof MgtLogin
+   * @returns {TemplateResult}
    */
-  protected renderFlyout() {
+  protected renderFlyout(): TemplateResult {
     return mgtHtml`
       <mgt-flyout
         class="flyout"
@@ -350,7 +366,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Render the flyout menu content.
    *
    * @protected
-   * @returns
+   * @returns {TemplateResult}
    * @memberof MgtLogin
    */
   protected renderFlyoutContent(): TemplateResult {
@@ -390,10 +406,10 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Render the flyout person details.
    *
    * @protected
-   * @returns
+   * @returns {TemplateResult}
    * @memberof MgtLogin
    */
-  protected renderFlyoutPersonDetails(personDetails: IDynamicPerson, personImage: string) {
+  protected renderFlyoutPersonDetails(personDetails: IDynamicPerson, personImage: string): TemplateResult {
     const template = this.renderTemplate('flyout-person-details', { personDetails, personImage });
     return (
       template ||
@@ -404,7 +420,8 @@ export class MgtLogin extends MgtTemplatedComponent {
           .view=${ViewType.twolines}
           .line2Property=${'email'}
           ?vertical-layout=${this.usesVerticalPersonCard}
-          class="person" />`
+          class="person">
+        </mgt-person>`
     );
   }
 
@@ -412,10 +429,10 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Render the flyout commands.
    *
    * @protected
-   * @returns
+   * @returns {TemplateResult}
    * @memberof MgtLogin
    */
-  protected renderFlyoutCommands() {
+  protected renderFlyoutCommands(): TemplateResult {
     const template = this.renderTemplate('flyout-commands', { handleSignOut: () => this.logout() });
     return (
       template ||
@@ -435,10 +452,10 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Render the button content.
    *
    * @protected
-   * @returns
+   * @returns {TemplateResult}
    * @memberof MgtLogin
    */
-  protected renderButtonContent() {
+  protected renderButtonContent(): TemplateResult {
     if (this.userDetails) {
       return this.renderSignedInButtonContent(this.userDetails, this._image);
     } else {
@@ -447,7 +464,7 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   /**
-   * Renders multi account content to add additional users
+   * Renders the button to allow adding accounts.
    *
    * @protected
    * @returns
@@ -492,10 +509,10 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Render the button content when the user is signed in.
    *
    * @protected
-   * @returns
+   * @returns {TemplateResult}
    * @memberof MgtLogin
    */
-  protected renderSignedInButtonContent(personDetails: IDynamicPerson, personImage: string) {
+  protected renderSignedInButtonContent(personDetails: IDynamicPerson, personImage: string): TemplateResult {
     const template = this.renderTemplate('signed-in-button-content', { personDetails, personImage });
     const displayConfig = this.parsePersonDisplayConfiguration();
     return (
@@ -514,12 +531,12 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   /**
-   * POC for multi accounts - temporary
+   * Renders multiple accounts that can be used to sign in.
    *
-   * @return {*}
+   * @return {TemplateResult}
    * @memberof MgtLogin
    */
-  renderAccounts() {
+  renderAccounts(): TemplateResult {
     if (
       Providers.globalProvider.state === ProviderState.SignedIn &&
       Providers.globalProvider.isMultiAccountSupportedAndEnabled
@@ -560,7 +577,7 @@ export class MgtLogin extends MgtTemplatedComponent {
   /**
    * Set one of the non-active accounts as the active account
    *
-   * @param {*} account
+   * @param {IProviderAccount} account
    * @memberof MgtLogin
    */
   private setActiveAccount(account: IProviderAccount) {
@@ -585,7 +602,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtLogin
    */
-  protected renderSignedOutButtonContent() {
+  protected renderSignedOutButtonContent(): TemplateResult {
     const template = this.renderTemplate('signed-out-button-content', null);
     return (
       template ||
@@ -620,7 +637,13 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
-  private onClick() {
+  /**
+   * Handles the click on the button in the flyout.
+   *
+   * @private
+   * @memberof MgtLogin
+   */
+  private onClick(): void {
     if (this.userDetails && this._isFlyoutOpen) {
       this.hideFlyout();
     } else if (this.userDetails) {
