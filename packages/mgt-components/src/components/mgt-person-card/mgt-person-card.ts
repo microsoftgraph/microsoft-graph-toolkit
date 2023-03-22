@@ -533,7 +533,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       : html``;
     return html`
       <div class="root" dir=${this.direction}>
-        <div class=${this._smallView ? 'small' : ''}>
+        <div class=${classMap({ small: this._smallView })}>
           ${navigationTemplate}
           ${closeCardTemplate}
           <div class="person-details-container">${personDetailsTemplate}</div>
@@ -545,7 +545,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private handleEndOfCard(e: KeyboardEvent) {
-    if (e && e.code === 'Tab') {
+    if (e.key === 'Tab') {
       const endOfCardEl = this.renderRoot.querySelector('#end-of-container') as HTMLElement;
       if (endOfCardEl) {
         endOfCardEl.blur();
@@ -928,7 +928,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           }}
           @keydown="${(e: KeyboardEvent) => this.sendQuickMessageOnEnter(e)}">
         </fluent-text-field>
-        <fluent-button class="send-message-icon" 
+        <fluent-button class="send-message-icon"
           @click=${() => this.sendQuickMessage()}
           ?disabled=${this.isSending}>
           ${!this.isSending ? getSvg(SvgIcon.Send) : getSvg(SvgIcon.Confirmation)}
