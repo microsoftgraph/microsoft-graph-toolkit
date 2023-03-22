@@ -2,9 +2,6 @@
 @import '../../styles/shared-styles.scss';
 @import '../mgt-file-list/mgt-file-list.theme.scss';
 
-$file-item-background-color--hover: set-var(list__item__background-color--hover, $theme-default, $file-list);
-$file-item-background-color--active: set-var(list__item__background-color--active, $theme-default, $file-list);
-$background-color: set-var(list__background-color, $theme-default, $file-list);
 $file-list-border-radius: var(--file-list-border-radius, 4px);
 $file-list-box-shadow: var(
   --file-list-box-shadow,
@@ -67,10 +64,10 @@ $progress-ring-size: var(--progress-ring-size, 24px);
     display: contents;
     &:hover > .header,
     &:hover > .cell {
-      background-color: $file-item-background-color--hover;
+      background-color: var(--neutral-layer-2);
 
       .mgt-file-item {
-        --file-background-color: $file-item-background-color--hover;
+        --file-background-color: var(--neutral-layer-2);
       }
       .file-selector {
         border: var(--neutral-foreground-rest) solid 1px;
@@ -86,9 +83,9 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   }
 
   .selected {
-    background-color: $file-item-background-color--active;
+    background-color: var(--file-background-color-active, var(--neutral-layer-3));
     .mgt-file-item {
-      --file-background-color: $file-item-background-color--active;
+      --file-background-color: var(--file-background-color-active, var(--neutral-layer-3));
     }
   }
   .file-selector {

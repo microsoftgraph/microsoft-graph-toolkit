@@ -40,23 +40,28 @@ import { MgtFileBase } from './mgt-file-base';
  * @class MgtFile
  * @extends {MgtTemplatedComponent}
  *
- * @cssprop --file-type-icon-height - {Length} file type icon height
- * @cssprop --file-border - {String} file item border style
- * @cssprop --file-box-shadow - {String} file item box shadow style
- * @cssprop --file-background-color - {Color} file background color
- * @cssprop --font-family - {String} Font family
- * @cssprop --font-size - {Length} Font size
- * @cssprop --font-weight - {Length} Font weight
- * @cssprop --text-transform - {String} text transform
- * @cssprop --color -{Color} text color
- * @cssprop --line2-font-size - {Length} Line 2 font size
- * @cssprop --line2-font-weight - {Length} Line 2 font weight
- * @cssprop --line2-color - {Color} Line 2 color
- * @cssprop --line2-text-transform - {String} Line 2 text transform
- * @cssprop --line3-font-size - {Length} Line 2 font size
- * @cssprop --line3-font-weight - {Length} Line 2 font weight
- * @cssprop --line3-color - {Color} Line 2 color
- * @cssprop --line3-text-transform - {String} Line 2 text transform
+ * @cssprop --file-type-icon-height - {Length} file type icon height. Default value is 28px.
+ * @cssprop --file-border - {String} file item border style. Default value is "1px solid transparent".
+ * @cssprop --file-border-radius - {String} the border radius of the file component. Default value is 4px.
+ * @cssprop --file-box-shadow - {String} the box-shadow of the component. Default value is none.
+ * @cssprop --file-background-color - {Color} the background-color of the component.
+ * @cssprop --file-background-color-focus - {Color} the background-color of the component on focus.
+ * @cssprop --file-background-color-hover - {Color} the background-color of the component on hover.
+ * @cssprop --file-padding - {String} the padding around the file component. Default value is 0px.
+ * @cssprop --file-padding-inline-start - {Length} the padding between file icon and file details. Default value is 14px.
+ * @cssprop --file-margin - {String} the margin around the file component. Default value is 0px.
+ * @cssprop --file-line1-font-size - {Length} the first line text font size. Default value is 12px.
+ * @cssprop --file-line1-font-weight - {Length} the first line text font weight. Default value is 400.
+ * @cssprop --file-line1-color - {Color} the first line text color.
+ * @cssprop --file-line1-text-transform - {String} the first line text text transform. Default value is initial.
+ * @cssprop --file-line2-font-size - {Length} the second line text font size. Default value is 12px.
+ * @cssprop --file-line2-font-weight - {Length} the second line text font weight. Default value is 400.
+ * @cssprop --file-line2-color - {Color} the second line text color.
+ * @cssprop --file-line2-text-transform - {String} the second line text text transform. Default value is initial.
+ * @cssprop --file-line3-font-size - {Length} the third line text font size. Default value is 12px.
+ * @cssprop --file-line3-font-weight - {Length} the third line text font weight. Default value is 400.
+ * @cssprop --file-line3-color - {Color} the third line text color.
+ * @cssprop --file-line3-text-transform - {String} the third line text text transform. Default value is 400.
  */
 
 @customElement('file')
@@ -271,15 +276,10 @@ export class MgtFile extends MgtFileBase {
       fileTemplate = html`
         <div class="item">
           ${fileTypeIconTemplate} ${fileDetailsTemplate}
-        </div>
-      `;
+        </div>`;
     }
 
-    return html`
-      <span dir=${this.direction}>
-        ${fileTemplate}
-      </span>
-    `;
+    return fileTemplate;
   }
 
   /**
