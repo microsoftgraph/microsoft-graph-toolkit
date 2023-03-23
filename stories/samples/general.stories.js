@@ -10,7 +10,10 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 
 export default {
   title: 'Samples / General',
-  decorators: [withCodeEditor]
+  decorators: [withCodeEditor],
+  parameters: {
+    viewMode: 'story'
+  }
 };
 
 export const LoginToShowAgenda = () => html`
