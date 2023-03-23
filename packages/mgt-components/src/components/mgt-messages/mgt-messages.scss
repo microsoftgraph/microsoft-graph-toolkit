@@ -42,7 +42,7 @@ $message-from-line-height: var(--message-subject-line-height, 16px);
       justify-content: space-between;
 
       &:hover {
-        background-color: $gray_hover;
+        background-color: $message-hover-color;
         cursor: pointer;
       }
 

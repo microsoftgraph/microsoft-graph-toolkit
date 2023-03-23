@@ -15,6 +15,7 @@ import {
   mgtHtml
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
+import { classMap } from 'lit/directives/class-map.js';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -142,6 +143,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   public asCompactView() {
     this._isCompact = true;
+    this._isFullView = false;
     this.requestUpdate();
     return this;
   }
@@ -579,29 +581,10 @@ export class MgtFileList extends MgtTemplatedComponent {
       return this.renderNoData();
     }
 
-    return this._isCompact
-      ? this.renderCompactView()
-      : this.renderTemplate('default', { files: this.files }) || this.renderFiles();
-  }
-
-  /**
-   * Render the compact view
-   *
-   * @returns {TemplateResult}
-   * @memberof MgtFileList
-   */
-  public renderCompactView(): TemplateResult {
-    let contentTemplate: TemplateResult;
-    let files = this.files.slice(0, 3);
-    contentTemplate = html`
-      ${files.map(file => this.renderFile(file))}
-    `;
-
-    return html`
-      <div class="root compact" dir=${this.direction}>
-        ${contentTemplate}
-      </div>
-    `;
+    return (
+      this.renderTemplate('default', { files: this._isCompact ? this.files : this.files.slice(0, 3) }) ||
+      this.renderFiles()
+    );
   }
 
   /**
@@ -643,8 +626,14 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof mgtFileList
    */
   protected renderFiles(): TemplateResult {
+    let files = this._isCompact ? this.files.slice(0, 3) : this.files;
+    const classes = classMap({
+      compact: this._isCompact,
+      'file-list-wrapper': true,
+      fullView: this._isFullView
+    });
     return html`
-      <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+      <div id="file-list-wrapper" class=${classes} dir=${this.direction}>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
         ${this._isFullView ? html`<div class="title">${this.strings.filesSectionTitle}</div>` : null}
         <ul
@@ -656,11 +645,11 @@ export class MgtFileList extends MgtTemplatedComponent {
             class="file-item"
             @keydown="${this.onFileListKeyDown}"
             @focus="${this.onFocusFirstItem}"
-            @click=${(e: UIEvent) => this.handleItemSelect(this.files[0], e)}>
-            ${this.renderFile(this.files[0])}
+            @click=${(e: UIEvent) => this.handleItemSelect(files[0], e)}>
+            ${this.renderFile(files[0])}
           </li>
           ${repeat(
-            this.files.slice(1),
+            files.slice(1),
             f => f.id,
             f => html`
               <li
@@ -673,7 +662,10 @@ export class MgtFileList extends MgtTemplatedComponent {
           )}
         </ul>
         ${
-          !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
+          !this.hideMoreFilesButton &&
+          this.pageIterator &&
+          (this.pageIterator.hasNext || this._preloadedFiles.length) &&
+          !this._isCompact
             ? this.renderMoreFileButton()
             : null
         }

@@ -7,7 +7,7 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$profile-background-color: var(--profile-background-color, transparent);
+$profile-background-color: var(--profile-background-color, --neutral-layer-1);
 $profile-title-color: var(--profile-background-color, var(--neutral-foreground-hint));
 $profile-token-item-color: var(--profile-token-item-color, var(--neutral-foreground-rest));
 $profile-token-overflow-color: var(--profile-token-overflow-color, var(--accent-foreground-rest));

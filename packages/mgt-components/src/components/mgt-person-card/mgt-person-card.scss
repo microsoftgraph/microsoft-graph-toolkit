@@ -41,8 +41,9 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   overflow: hidden;
   user-select: none;
   border-radius: 8px;
-  border: 1px solid set-var(background-color__sub1, $theme-default, $common);
   background-color: $person-card-background-color;
+  --file-list-background-color: transparent;
+  --file-list-box-shadow: none;
 
   .small {
     max-height: 100vh;
@@ -290,7 +291,8 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
           &.section-nav__icon {
             cursor: pointer;
             box-sizing: border-box;
-            width: 48px;
+            width: 53px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -302,6 +304,8 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
             &:hover {
               background: $person-card-fluent-background-color-hover;
               border-radius: 4px;
+              z-index: 0;
+              position: relative;
             }
           }
         }
@@ -379,6 +383,10 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       }
     }
   }
+}
+
+:host div.activeIndicator {
+  width: 10px;
 }
 
 :host .person-root.large,

@@ -124,7 +124,7 @@
 
       &:hover {
         cursor: pointer;
-        background-color: set-var(background-color--hover, $theme-default, $common);
+        background-color: $organization-coworker-hover-color;
       }
 
       .coworker__person {

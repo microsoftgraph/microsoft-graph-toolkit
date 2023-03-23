@@ -15,3 +15,4 @@ $organization-active-org-member-target-background-color: var(
   --organization-active-org-member-target-background-color,
   var(--neutral-fill-active)
 );
+$organization-coworker-hover-color: var(--organization-coworker-hover-color, var(-neutral-fill-hover));

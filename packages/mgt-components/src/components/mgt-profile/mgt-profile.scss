@@ -13,6 +13,7 @@
 :host {
   position: relative;
   user-select: none;
+  background-color: $profile-background-color;
 
   .root {
     padding: 20px 0;

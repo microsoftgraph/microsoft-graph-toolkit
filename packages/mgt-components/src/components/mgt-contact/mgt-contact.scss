@@ -38,6 +38,9 @@
         margin-left: 20px;
         margin-top: 10px;
         line-height: 20px;
+        svg {
+          fill: $contact-copy-icon-color;
+        }
       }
 
       .part__details {
