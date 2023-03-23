@@ -147,6 +147,17 @@ export class MgtContact extends BasePersonCardSection {
     return this.strings.contactSectionTitle;
   }
 
+  /**
+   * The title for display when rendered as a full card.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtContact
+   */
+  public get cardTitle(): string {
+    return this.strings.contactSectionTitle;
+  }
+
   // Defines the skeleton for what contact fields are available and what they do.
 
   /**
@@ -225,7 +236,6 @@ export class MgtContact extends BasePersonCardSection {
 
     return html`
       <div class="root" dir=${this.direction}>
-        <div class="title" tabindex="0">${this.displayName}</div>
         ${contentTemplate}
       </div>
     `;

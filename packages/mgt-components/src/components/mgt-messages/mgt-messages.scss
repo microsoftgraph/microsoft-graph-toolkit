@@ -21,17 +21,8 @@ $message-from-line-height: var(--message-subject-line-height, 16px);
   user-select: none;
 
   .root {
-    padding: 20px 0;
-
     &.compact {
       padding: 0;
-    }
-
-    .title {
-      font-size: 14px;
-      font-weight: 600;
-      color: set-var(title__color__subtitle, $theme-default, $common);
-      margin: 0 20px 12px 20px;
     }
 
     .message {

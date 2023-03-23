@@ -11,7 +11,8 @@ import {
   Providers,
   ProviderState,
   customElement,
-  mgtHtml
+  mgtHtml,
+  MgtTemplatedComponent
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
@@ -46,7 +47,7 @@ import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
 import { fluentProgressRing, fluentDesignSystemProvider } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { BasePersonCardSection } from '../BasePersonCardSection';
+import { CardSection } from '../BasePersonCardSection';
 
 registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
 
@@ -93,7 +94,8 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
 
 @customElement('file-list')
 // @customElement('mgt-file-list')
-export class MgtFileList extends BasePersonCardSection {
+export class MgtFileList extends MgtTemplatedComponent implements CardSection {
+  private _isCompact = false;
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -135,6 +137,17 @@ export class MgtFileList extends BasePersonCardSection {
    * @memberof MgtFileList
    */
   public get displayName(): string {
+    return this.strings.filesSectionTitle;
+  }
+
+  /**
+   * The title for the card when rendered as a card full.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtFileList
+   */
+  public get cardTitle(): string {
     return this.strings.filesSectionTitle;
   }
 
@@ -556,9 +569,40 @@ export class MgtFileList extends BasePersonCardSection {
    */
   protected clearState(): void {
     super.clearState();
+    this._isCompact = false;
     this.files = null;
   }
 
+  /**
+   * Set the section to compact view mode
+   *
+   * @returns
+   * @memberof BasePersonCardSection
+   */
+  public asCompactView() {
+    this._isCompact = true;
+    this.requestUpdate();
+    return this;
+  }
+
+  /**
+   * Set the section to full view mode
+   *
+   * @returns
+   * @memberof BasePersonCardSection
+   */
+  public asFullView() {
+    this._isCompact = false;
+    this.requestUpdate();
+    return this;
+  }
+
+  /**
+   * Render the file list
+   *
+   * @return {*}
+   * @memberof MgtFileList
+   */
   public render() {
     if (!this.files && this.isLoadingState) {
       return this.renderLoading();
@@ -568,7 +612,7 @@ export class MgtFileList extends BasePersonCardSection {
       return this.renderNoData();
     }
 
-    return this.isCompact ? this.renderCompactView() : this.renderFullView();
+    return this._isCompact ? this.renderCompactView() : this.renderFullView();
   }
 
   /**
@@ -645,7 +689,6 @@ export class MgtFileList extends BasePersonCardSection {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
-        <div class="title">${this.strings.filesSectionTitle}</div>
         <ul
           id="file-list"
           class="file-list"

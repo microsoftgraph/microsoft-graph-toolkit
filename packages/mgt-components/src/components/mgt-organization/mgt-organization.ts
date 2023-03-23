@@ -84,6 +84,17 @@ export class MgtOrganization extends BasePersonCardSection {
   }
 
   /**
+   * The title for display when rendered as a full card.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtOrganization
+   */
+  public get cardTitle(): string {
+    return this.strings.organizationSectionTitle;
+  }
+
+  /**
    * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
@@ -154,7 +165,6 @@ export class MgtOrganization extends BasePersonCardSection {
 
     return html`
        <div class="root" dir=${this.direction}>
-         <div class="title" tabindex="0">${this.strings.organizationSectionTitle}</div>
          ${contentTemplate}
        </div>
      `;

@@ -42,7 +42,7 @@ export * from './mgt-person-card.types';
 
 import { fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { BasePersonCardSection } from '../BasePersonCardSection';
+import { BasePersonCardSection, CardSection } from '../BasePersonCardSection';
 
 registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
 
@@ -343,14 +343,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @type {any[]}
    * @memberof MgtPersonCard
    */
-  protected sections: BasePersonCardSection[];
+  protected sections: CardSection[];
 
   @state() private _cardState: MgtPersonCardState;
   @state() private _isStateLoading: boolean;
 
   private _history: MgtPersonCardStateHistory[];
   private _chatInput: string;
-  private _currentSection: BasePersonCardSection;
+  private _currentSection: CardSection;
   private _personDetails: IDynamicPerson;
   private _me: User;
   private _smallView;
@@ -803,7 +803,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const additionalPanelTemplates = this.sections.map((section, i) => {
       return html`
         <fluent-tab-panel slot="tabpanel">
-          <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
+          <div class="inserted">
+            <div class="title">${section.cardTitle}</div>
+            ${this._currentSection ? section.asFullView() : null}
+          </div>
         </fluent-tab-panel>
       `;
     });
@@ -1307,7 +1310,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return businessPhones;
   }
 
-  private updateCurrentSection(section: BasePersonCardSection) {
+  private updateCurrentSection(section: CardSection) {
     if (section) {
       const sectionName = section.tagName.toLowerCase();
       const tabs: HTMLElement = this.renderRoot.querySelector(`#${sectionName}-Tab`);

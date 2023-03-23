@@ -1,4 +1,4 @@
-import { OfficeGraphInsightString,ViewType,IDynamicPerson,ResponseType,DataChangedDetail,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { OfficeGraphInsightString,ViewType,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -45,6 +45,7 @@ export type FileProps = {
 export type FileListProps = {
 	fileListQuery?: string;
 	displayName?: string;
+	cardTitle?: string;
 	fileQueries?: string[];
 	files?: MicrosoftGraph.DriveItem[];
 	siteId?: string;
@@ -62,7 +63,6 @@ export type FileListProps = {
 	enableFileUpload?: boolean;
 	maxUploadFile?: number;
 	excludedFileExtensions?: string[];
-	personDetails?: IDynamicPerson;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	itemClick?: (e: CustomEvent<MicrosoftGraph.DriveItem>) => void;

@@ -48,6 +48,17 @@ export class MgtProfile extends BasePersonCardSection {
   }
 
   /**
+   * The title for display when rendered as a full card.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtOrganization
+   */
+  public get cardTitle(): string {
+    return this.strings.AboutCompactSectionTitle;
+  }
+
+  /**
    * Returns true if the profile contains data
    * that can be rendered
    *
@@ -156,7 +167,6 @@ export class MgtProfile extends BasePersonCardSection {
 
     return html`
        <div class="root" dir=${this.direction}>
-         <div class="title">${this.strings.AboutCompactSectionTitle}</div>
          ${this.renderSubSections()}
        </div>
      `;
