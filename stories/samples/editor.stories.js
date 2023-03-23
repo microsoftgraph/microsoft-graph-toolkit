@@ -10,7 +10,10 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 
 export default {
   title: 'Editor',
-  decorators: [withCodeEditor]
+  decorators: [withCodeEditor],
+  parameters: {
+    viewMode: 'story'
+  }
 };
 
 export const Editor = () => html`
