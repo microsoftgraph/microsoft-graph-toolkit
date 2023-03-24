@@ -29,8 +29,6 @@ jobs:
         run: |
           echo "installing yarn"
           npm install -g yarn
-          echo "installing lerna"
-          npm install -g lerna@6.4.1
           echo "installing deps for packages"
           yarn
       - name: Extract tag name
