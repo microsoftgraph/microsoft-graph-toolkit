@@ -7,7 +7,7 @@
 
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
-import { html } from 'lit';
+import { TemplateResult, html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -31,6 +31,13 @@ import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { strings } from './strings';
+import { SvgIcon, getSvg } from '../../utils/SvgHelper';
+
+import { fluentSelect, fluentTextField } from '@fluentui/web-components';
+
+import { registerFluentComponents } from '../../utils/FluentComponents';
+
+registerFluentComponents(fluentSelect, fluentTextField);
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -401,8 +408,8 @@ export class MgtTasks extends MgtTemplatedComponent {
    * Synchronizes property values when attributes change.
    *
    * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
+   * @param {*} oldVal
+   * @param {*} newVal
    * @memberof MgtTasks
    */
   public attributeChangedCallback(name: string, oldVal: string, newVal: string) {
@@ -481,11 +488,11 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
-    let header;
+    let header: TemplateResult;
 
     if (!this.hideHeader) {
       header = html`
-        <div class="Header" dir=${this.direction}>
+        <div class="Header">
           ${this.renderPlanOptions()}
         </div>
       `;
@@ -493,7 +500,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     return html`
       ${header}
-      <div class="Tasks" dir=${this.direction}>
+      <div class="Tasks">
         ${this._isNewTaskVisible ? this.renderNewTask() : null} ${loadingTask}
         ${repeat(
           tasks,
@@ -790,24 +797,24 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private onAddTaskKeyDown(e: KeyboardEvent) {
-    if (e.code === 'Enter') {
+    if (e.key === 'Enter') {
       this.onAddTaskClick;
     }
   }
 
   private newTaskButtonKeydown(e: KeyboardEvent) {
-    if (e.code === 'Enter') {
+    if (e.key === 'Enter') {
       this.isNewTaskVisible = !this.isNewTaskVisible;
     }
   }
 
   private newTaskVisible(e: KeyboardEvent) {
-    if (e.code === 'Enter') {
+    if (e.key === 'Enter') {
       this.isNewTaskVisible = false;
     }
   }
 
-  private renderPlanOptions() {
+  private renderPlanOptions(): TemplateResult {
     const p = Providers.globalProvider;
 
     if (!p || p.state !== ProviderState.SignedIn) {
@@ -815,40 +822,51 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     if (this._inTaskLoad && !this._hasDoneInitialLoad) {
-      return html`
-        <span class="LoadingHeader"></span>
-      `;
+      return html`<span class="LoadingHeader"></span>`;
     }
 
+    // const addButton =
+    //   this.readOnly || this._isNewTaskVisible
+    //     ? null
+    //     : html`
+    //         <div
+    //           tabindex="0"
+    //           class="AddBarItem NewTaskButton"
+    //           @click="${() => {
+    //             this.isNewTaskVisible = !this.isNewTaskVisible;
+    //           }}"
+    //           @keydown="${this.newTaskButtonKeydown}"
+    //         >
+    //           <span class="TaskIcon"></span>
+    //           <span>${this.strings.addTaskButtonSubtitle}</span>
+    //         </div>
+    //       `;
     const addButton =
       this.readOnly || this._isNewTaskVisible
         ? null
         : html`
-            <div
-              tabindex="0"
-              class="AddBarItem NewTaskButton"
-              @click="${() => {
-                this.isNewTaskVisible = !this.isNewTaskVisible;
-              }}"
-              @keydown="${this.newTaskButtonKeydown}"
-            >
-              <span class="TaskIcon"></span>
-              <span>${this.strings.addTaskButtonSubtitle}</span>
-            </div>
-          `;
+          <fluent-button
+            appearance="accent"
+            class="NewTaskButton"
+            @keydown=${this.newTaskButtonKeydown}
+            @click=${() => (this.isNewTaskVisible = !this.isNewTaskVisible)}>
+              <span slot="start">${getSvg(SvgIcon.Add, 'currentColor')}</span>
+              ${this.strings.addTaskButtonSubtitle}
+          </fluent-button>
+        `;
 
     if (this.dataSource === TasksSource.planner) {
       const currentGroup = this._groups.find(d => d.id === this._currentGroup) || {
         title: this.res.BASE_SELF_ASSIGNED
       };
       const groupOptions = {
-        [this.res.BASE_SELF_ASSIGNED]: e => {
+        [this.res.BASE_SELF_ASSIGNED]: () => {
           this._currentGroup = null;
           this._currentFolder = null;
         }
       };
       for (const group of this._groups) {
-        groupOptions[group.title] = e => {
+        groupOptions[group.title] = () => {
           this._currentGroup = group.id;
           this._currentFolder = null;
         };
@@ -857,11 +875,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         <mgt-arrow-options class="arrow-options" .options="${groupOptions}" .value="${currentGroup.title}"></mgt-arrow-options>
       `;
 
-      const divider = !this._currentGroup
-        ? null
-        : html`
-            <span class="TaskIcon Divider">/</span>
-          `;
+      const divider = !this._currentGroup ? null : html`<span class="TaskIcon Divider">/</span>`;
 
       const currentFolder = this._folders.find(d => d.id === this._currentFolder) || {
         name: this.res.BUCKETS_SELF_ASSIGNED
@@ -882,14 +896,13 @@ export class MgtTasks extends MgtTemplatedComponent {
         ? html`
             <span class="PlanTitle">
               ${this._folders[0] && this._folders[0].name}
-            </span>
-          `
+            </span>`
         : mgtHtml`
             <mgt-arrow-options class="arrow-options" .options="${folderOptions}" .value="${currentFolder.name}"></mgt-arrow-options>
           `;
 
       return html`
-        <div class="TitleCont">
+        <div class="Title">
           ${groupSelect} ${divider} ${!this._currentGroup ? null : folderSelect}
         </div>
         ${addButton}
@@ -923,7 +936,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           `;
 
       return html`
-        <span class="TitleCont">
+        <span class="Title">
           ${folderSelect}
         </span>
         ${addButton}
@@ -931,50 +944,84 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   }
   private renderNewTask() {
+    const iconColor = 'var(--neutral-foreground-hint)';
+
+    // const taskTitle = html`
+    //   <input
+    //     type="text"
+    //     placeholder=${this.strings.newTaskPlaceholder}
+    //     .value="${this._newTaskName}"
+    //     label="new-taskName-input"
+    //     aria-label="new-taskName-input"
+    //     role="textbox"
+    //     @input="${(e: Event) => {
+    //       this._newTaskName = (e.target as HTMLInputElement).value;
+    //     }}"
+    //   />
+    // `;
+
     const taskTitle = html`
-      <input
-        type="text"
+      <fluent-text-field
         placeholder=${this.strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
-        label="new-taskName-input"
-        aria-label="new-taskName-input"
-        role="textbox"
-        @input="${(e: Event) => {
-          this._newTaskName = (e.target as HTMLInputElement).value;
-        }}"
-      />
-    `;
-    const groups = this._groups;
-    if (groups.length > 0 && !this._newTaskGroupId) {
-      this._newTaskGroupId = groups[0].id;
+        class="NewTask"
+        aria-label=${this.strings.newTaskPlaceholder}
+        @input=${(e: KeyboardEvent) => (this._newTaskName = (e.target as HTMLInputElement).value)}>
+      </fluent-text-field>`;
+
+    // const groups = this._groups;
+    if (this._groups.length > 0 && !this._newTaskGroupId) {
+      this._newTaskGroupId = this._groups[0].id;
     }
+    // const group =
+    //   this.dataSource === TasksSource.todo
+    //     ? null
+    //     : this._currentGroup
+    //     ? html`
+    //         <span class="NewTaskGroup">
+    //           ${this.renderPlannerIcon(iconColor)}
+    //           <span>${this.getPlanTitle(this._currentGroup)}</span>
+    //         </span>
+    //       `
+    //     : html`
+    //         <span class="NewTaskGroup">
+    //           ${this.renderPlannerIcon(iconColor)}
+    //           <select aria-label="new task group"
+    //             .value="${this._newTaskGroupId}"
+    //             @change="${(e: Event) => {
+    //               this._newTaskGroupId = (e.target as HTMLInputElement).value;
+    //             }}"
+    //           >
+    //             ${this._groups.map(
+    //               plan => html`
+    //                 <option value="${plan.id}">${plan.title}</option>
+    //               `
+    //             )}
+    //           </select>
+    //         </span>
+    //       `;
+
+    const groupOptions = html`
+      ${repeat(
+        this._groups,
+        group => group.id,
+        group => html`<fluent-option value="${group.id}">${group.title}</fluent-option>`
+      )}`;
+
     const group =
       this.dataSource === TasksSource.todo
         ? null
         : this._currentGroup
         ? html`
-            <span class="NewTaskGroup">
-              ${this.renderPlannerIcon()}
-              <span>${this.getPlanTitle(this._currentGroup)}</span>
-            </span>
-          `
+          <span class="NewTaskGroup">
+            ${this.renderPlannerIcon(iconColor)}
+            <span>${this.getPlanTitle(this._currentGroup)}</span>
+          </span>`
         : html`
-            <span class="NewTaskGroup">
-              ${this.renderPlannerIcon()}
-              <select aria-label="new task group"
-                .value="${this._newTaskGroupId}"
-                @change="${(e: Event) => {
-                  this._newTaskGroupId = (e.target as HTMLInputElement).value;
-                }}"
-              >
-                ${this._groups.map(
-                  plan => html`
-                    <option value="${plan.id}">${plan.title}</option>
-                  `
-                )}
-              </select>
-            </span>
-          `;
+            <fluent-select>
+              <span slot="start">${this.renderPlannerIcon(iconColor)}</span>
+              ${this._groups.length > 0 ? groupOptions : html`<fluent-option selected>No groups found</fluent-option>`}
+            </fluent-select>`;
 
     const folders = this._folders.filter(
       folder =>
@@ -984,88 +1031,165 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (folders.length > 0 && !this._newTaskFolderId) {
       this._newTaskFolderId = folders[0].id;
     }
+    // const taskFolder = this._currentFolder
+    //   ? html`
+    //       <span class="NewTaskBucket">
+    //         ${this.renderBucketIcon(iconColor)}
+    //         <span>${this.getFolderName(this._currentFolder)}</span>
+    //       </span>
+    //     `
+    //   : html`
+    //       <span class="NewTaskBucket">
+    //         ${this.renderBucketIcon(iconColor)}
+    //         <select aria-label="new task bucket"
+    //           .value="${this._newTaskFolderId}"
+    //           @change="${(e: Event) => {
+    //             this._newTaskFolderId = (e.target as HTMLInputElement).value;
+    //           }}"
+    //         >
+    //           ${folders.map(
+    //             folder => html`
+    //               <option value="${folder.id}">${folder.name}</option>
+    //             `
+    //           )}
+    //         </select>
+    //       </span>
+    //     `;
+
+    const folderOptions = html`
+      ${repeat(
+        folders,
+        folder => folder.id,
+        folder => html`<fluent-option value="${folder.id}">${folder.name}</fluent-option>`
+      )}`;
+
     const taskFolder = this._currentFolder
       ? html`
           <span class="NewTaskBucket">
-            ${this.renderBucketIcon()}
+            ${this.renderBucketIcon(iconColor)}
             <span>${this.getFolderName(this._currentFolder)}</span>
           </span>
         `
       : html`
-          <span class="NewTaskBucket">
-            ${this.renderBucketIcon()}
-            <select aria-label="new task bucket"
-              .value="${this._newTaskFolderId}"
-              @change="${(e: Event) => {
-                this._newTaskFolderId = (e.target as HTMLInputElement).value;
-              }}"
-            >
-              ${folders.map(
-                folder => html`
-                  <option value="${folder.id}">${folder.name}</option>
-                `
-              )}
-            </select>
-          </span>
-        `;
+         <fluent-select>
+          <span slot="start">${this.renderBucketIcon(iconColor)}</span>
+          ${folders.length > 0 ? folderOptions : html`<fluent-option selected>No folders found</fluent-option>`}
+        </fluent-select>`;
+
+    // const taskDue = html`
+    //   <span class="NewTaskDue">
+    //   ${this.renderCalendarIcon()}
+    //     <input
+    //       type="date"
+    //       label="new-taskDate-input"
+    //       aria-label="new-taskDate-input"
+    //       role="textbox"
+    //       .value="${this.dateToInputValue(this._newTaskDueDate)}"
+    //       @change="${(e: Event) => {
+    //         const value = (e.target as HTMLInputElement).value;
+    //         if (value) {
+    //           this._newTaskDueDate = new Date(value + 'T17:00');
+    //         } else {
+    //           this._newTaskDueDate = null;
+    //         }
+    //       }}"
+    //     />
+    //   </span>
+    // `;
+
+    const handleDateChange = (e: UIEvent) => {
+      const value = (e.target as HTMLInputElement).value;
+      if (value) {
+        this._newTaskDueDate = new Date(value + 'T17:00');
+      } else {
+        this._newTaskDueDate = null;
+      }
+    };
 
     const taskDue = html`
-      <span class="NewTaskDue">
-      ${this.renderCalendarIcon()}
-        <input
-          type="date"
-          label="new-taskDate-input"
-          aria-label="new-taskDate-input"
-          role="textbox"
-          .value="${this.dateToInputValue(this._newTaskDueDate)}"
-          @change="${(e: Event) => {
-            const value = (e.target as HTMLInputElement).value;
-            if (value) {
-              this._newTaskDueDate = new Date(value + 'T17:00');
-            } else {
-              this._newTaskDueDate = null;
-            }
-          }}"
-        />
-      </span>
-    `;
+      <fluent-text-field
+        type="date"
+        class="NewTask"
+        aria-label="${this.strings.addTaskDate}"
+        .value="${this.dateToInputValue(this._newTaskDueDate)}"
+        @change=${(e: UIEvent) => handleDateChange(e)}>
+      </fluent-text-field>`;
 
-    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null);
+    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null, iconColor);
 
-    const taskAdd = this._newTaskBeingAdded
-      ? html`
-          <div class="TaskAddButtonContainer"></div>
-        `
+    // const taskAdd = this._newTaskBeingAdded
+    //   ? html`
+    //       <div class="TaskAddButtonContainer"></div>
+    //     `
+    //   : html`
+    //       <div class="TaskAddButtonContainer ${this._newTaskName === '' ? 'Disabled' : ''}">
+    //         <div tabindex="0" class="TaskIcon TaskAdd"
+    //           @click="${this.onAddTaskClick}"
+    //           @keydown="${this.onAddTaskKeyDown}">
+    //           <span>${this.strings.addTaskButtonSubtitle}</span>
+    //         </div>
+    //         <div tabindex="0" class="TaskIcon TaskCancel"
+    //           @click="${() => (this.isNewTaskVisible = false)}"
+    //           @keydown="${this.newTaskVisible}">
+    //           <span>${this.strings.cancelNewTaskSubtitle}</span>
+    //         </div>
+    //       </div>
+    //     `;
+
+    const newTaskActionButtons = this._newTaskBeingAdded
+      ? html`<div class="TaskAddButtonContainer"></div>`
       : html`
-          <div class="TaskAddButtonContainer ${this._newTaskName === '' ? 'Disabled' : ''}">
-            <div tabindex="0" class="TaskIcon TaskAdd"
-              @click="${this.onAddTaskClick}"
-              @keydown="${this.onAddTaskKeyDown}">
-              <span>${this.strings.addTaskButtonSubtitle}</span>
-            </div>
-            <div tabindex="0" class="TaskIcon TaskCancel"
-              @click="${() => (this.isNewTaskVisible = false)}"
-              @keydown="${this.newTaskVisible}">
-              <span>${this.strings.cancelNewTaskSubtitle}</span>
-            </div>
-          </div>
-        `;
+          <fluent-button
+            @click=${this.onAddTaskClick}
+            @keydown=${this.onAddTaskKeyDown}
+            appearance="neutral">
+              ${this.strings.addTaskButtonSubtitle}
+          </fluent-button>
+          <fluent-button
+            @click=${() => (this.isNewTaskVisible = false)}
+            @keydown=${this.newTaskVisible}
+            appearance="neutral">
+              ${this.strings.cancelNewTaskSubtitle}
+          </fluent-button>`;
+
+    // return html`
+    //   <div class="Task NewTask Incomplete">
+    //     <div class="TaskContent">
+    //       <div class="TaskDetailsContainer">
+    //         <div class="TaskTitle">
+    //           ${taskTitle}
+    //         </div>
+    //         <div class="TaskDetails">
+    //           ${group} ${taskFolder} ${taskDue} ${taskPeople}
+    //         </div>
+    //       </div>
+    //     </div>
+    //     ${taskAdd}
+    //   </div>
+    // `;
 
     return html`
-      <div class="Task NewTask Incomplete">
-        <div class="TaskContent">
-          <div class="TaskDetailsContainer">
-            <div class="TaskTitle">
-              ${taskTitle}
-            </div>
-            <div class="TaskDetails">
-              ${group} ${taskFolder} ${taskDue} ${taskPeople}
+    <div
+      class=${classMap({
+        Task: true,
+        NewTask: true
+      })}>
+      <div class="TaskDetailsContainer">
+        <div class="Top AddNewTask">
+          <div class="CheckAndTitle">
+            ${taskTitle}
+            <div class="TaskContent">
+              <div class="TaskGroup">${group}</div>
+              <div class="TaskBucket">${taskFolder}</div>
+              ${taskPeople}
+              <div class="TaskDue">${taskDue}</div>
             </div>
           </div>
+          <div class="TaskOptions NewTaskActionButtons">${newTaskActionButtons}</div>
         </div>
-        ${taskAdd}
       </div>
-    `;
+    </div>
+  `;
   }
 
   private togglePeoplePicker(task: ITask) {
@@ -1129,21 +1253,21 @@ export class MgtTasks extends MgtTemplatedComponent {
       TaskIcon: true
     };
 
-    const taskCheckContent = isLoading
-      ? html`
-          
-        `
-      : completed
-      ? html`
-          
-        `
-      : null;
+    // const taskCheckContent = isLoading
+    //   ? html`
+    //       
+    //     `
+    //   : completed
+    //   ? html`
+    //       
+    //     `
+    //   : null;
 
-    const taskCheck = html`
-      <span tabindex="0" class=${classMap(
-        taskCheckClasses
-      )}><span class="TaskCheckContent">${taskCheckContent}</span></span>
-    `;
+    // const taskCheck = html`
+    //   <span tabindex="0" class=${classMap(
+    //     taskCheckClasses
+    //   )}><span class="TaskCheckContent">${taskCheckContent}</span></span>
+    // `;
 
     const groupTitle = this._currentGroup ? null : this.getPlanTitle(task.topParentId);
     const folderTitle = this._currentFolder ? null : this.getFolderName(task.immediateParentId);
@@ -1157,41 +1281,37 @@ export class MgtTasks extends MgtTemplatedComponent {
     let taskDetails = this.renderTemplate('task-details', context, `task-details-${task.id}`);
 
     if (!taskDetails) {
+      const iconColor = 'var(--neutral-foreground-hint)';
       const group =
         this.dataSource === TasksSource.todo || this._currentGroup
           ? null
           : html`
-              <div class="TaskDetail TaskGroup">
-                ${this.renderPlannerIcon()}
-                <span>${this.getPlanTitle(task.topParentId)}</span>
+              <div class="TaskGroup">
+                <span class="TaskIcon">${this.renderPlannerIcon(iconColor)}</span>
+                <span class="TaskIconText">${this.getPlanTitle(task.topParentId)}</span>
               </div>
             `;
 
       const folder = this._currentFolder
         ? null
         : html`
-            <div class="TaskDetail TaskBucket">
-              ${this.renderBucketIcon()}
-              <span>${this.getFolderName(task.immediateParentId)}</span>
+            <div class="TaskBucket">
+              <span class="TaskIcon">${this.renderBucketIcon(iconColor)}</span>
+              <span class="TaskIconText">${this.getFolderName(task.immediateParentId)}</span>
             </div>
           `;
 
       const taskDue = !dueDate
         ? null
         : html`
-            <div class="TaskDetail TaskDue">
-              <span>Due ${getShortDateString(dueDate)}</span>
+            <div class="TaskDue">
+              <span class="TaskIconText">${this.strings.due}${getShortDateString(dueDate)}</span>
             </div>
           `;
 
-      const taskPeople = this.dataSource !== TasksSource.todo ? this.renderAssignedPeople(task) : null;
+      const taskPeople = this.dataSource !== TasksSource.todo ? this.renderAssignedPeople(task, iconColor) : null;
 
-      taskDetails = html`
-        <div class="TaskTitle">
-          ${name}
-        </div>
-        ${group} ${folder} ${taskPeople} ${taskDue}
-      `;
+      taskDetails = html`${group} ${folder} ${taskPeople} ${taskDue}`;
     }
 
     const taskOptions =
@@ -1208,126 +1328,162 @@ export class MgtTasks extends MgtTemplatedComponent {
             </div>
           `;
 
+    const taskClasses = classMap({
+      Task: true,
+      Complete: completed,
+      Incomplete: !completed,
+      ReadOnly: this.readOnly
+    });
+
     return html`
       <div
-        class=${classMap({
-          Complete: completed,
-          Incomplete: !completed,
-          ReadOnly: this.readOnly,
-          Task: true
-        })}
-      >
-        <div
-          class="TaskContent"
-          @click=${() => {
-            this.handleTaskClick(task);
-          }}
-        >
-          <span
-            class=${classMap({
-              Complete: completed,
-              Incomplete: !completed,
-              TaskCheckContainer: true
-            })}
-            @click="${e => {
-              if (!this.readOnly) {
-                if (!task.completed) {
-                  this.completeTask(task);
-                } else {
-                  this.uncompleteTask(task);
-                }
-
-                e.stopPropagation();
-                e.preventDefault();
-              }
-            }}"
-            @keydown="${(e: KeyboardEvent) => {
-              if (e.code === 'Enter') {
-                if (!this.readOnly) {
-                  if (!task.completed) {
-                    this.completeTask(task);
-                  } else {
-                    this.uncompleteTask(task);
-                  }
-
-                  e.stopPropagation();
-                  e.preventDefault();
-                }
-              }
-            }}"
-          >
-            ${taskCheck}
-          </span>
-          <div class="TaskDetailsContainer ${this.mediaQuery} ${this._currentGroup ? 'NoPlan' : ''}">
-            ${taskDetails}
+        class=${taskClasses}
+        @click=${() => this.handleTaskClick(task)}>
+        <div class="TaskDetailsContainer">
+          <div class="Top">
+            <div class="CheckAndTitle">
+              <fluent-checkbox
+                @click=${(e: MouseEvent) => this.checkTask(e, task)}
+                @keydown=${(e: KeyboardEvent) => this.handleTaskCheckKeyDown(e, task)}
+                ?checked=${completed}>
+                  ${name}
+              </fluent-checkbox>
+            </div>
+            <div class="TaskOptions">${taskOptions}</div>
           </div>
-          ${taskOptions}
-
+          <div class="Bottom">${taskDetails}</div>
         </div>
       </div>
     `;
+    // return html`
+    //   <div
+    //     class=${classMap({
+    //       Task: true,
+    //       Complete: completed,
+    //       Incomplete: !completed,
+    //       ReadOnly: this.readOnly
+    //     })}>
+    //     <div
+    //       class="TaskContent"
+    //       @click=${() => this.handleTaskClick(task)}>
+    //       <span
+    //         class=${classMap({
+    //           Complete: completed,
+    //           Incomplete: !completed,
+    //           TaskCheckContainer: true
+    //         })}
+    //         @click=${(e: MouseEvent) => this.checkTask(e, task)}
+    //         @keydown=${(e: KeyboardEvent) => this.handleTaskCheckKeyDown(e, task)}>
+    //         ${taskCheck}
+    //       </span>
+    //       <div class="TaskDetailsContainer ${this.mediaQuery} ${this._currentGroup ? 'NoPlan' : ''}">
+    //         ${taskDetails}
+    //       </div>
+    //       ${taskOptions}
+
+    //     </div>
+    //   </div>
+    // `;
   }
 
-  private renderAssignedPeople(task: ITask) {
-    let assignedPeopleHTML = null;
+  private handleTaskCheckKeyDown(e: KeyboardEvent, task: ITask) {
+    if (e.key === 'Enter') {
+      if (!this.readOnly) {
+        if (!task.completed) {
+          this.completeTask(task);
+        } else {
+          this.uncompleteTask(task);
+        }
 
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }
+  }
+
+  private checkTask(e: MouseEvent, task: ITask) {
+    if (!this.readOnly) {
+      if (!task.completed) {
+        this.completeTask(task);
+      } else {
+        this.uncompleteTask(task);
+      }
+
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  }
+
+  private renderPlannerIcon = (iconColor: string) => {
+    return getSvg(SvgIcon.Planner, iconColor);
+  };
+  private renderBucketIcon = (iconColor: string) => {
+    return getSvg(SvgIcon.Milestone, iconColor);
+  };
+
+  private renderAssignedPeople(task: ITask, iconColor: string): TemplateResult {
     const taskAssigneeClasses = {
       NewTaskAssignee: task === null,
       TaskAssignee: task !== null,
       TaskDetail: task !== null
     };
 
-    const assignedPeople = task
-      ? Object.keys(task.assignments).map(key => {
-          return key;
-        })
-      : [];
-
-    const noPeopleTemplate = html`
-      <template data-type="no-data">
-        <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-      </template>
-    `;
-
     const taskId = task ? task.id : 'newTask';
     taskAssigneeClasses[`flyout-${taskId}`] = true;
 
-    assignedPeopleHTML = mgtHtml`
+    const handlePpleClick = (e: MouseEvent) => {
+      this.togglePeoplePicker(task);
+      e.stopPropagation();
+    };
+
+    const handlePpleKeydown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        this.togglePeoplePicker(task);
+        e.stopPropagation();
+      }
+    };
+
+    const assignedPeople = task ? Object.keys(task.assignments).map(key => key) : [];
+
+    const personAddIcon = (color: string) => html`
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="${color}" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.5004 12.0003C20.5379 12.0003 23.0004 14.4627 23.0004 17.5003C23.0004 20.5378 20.5379 23.0003 17.5004 23.0003C14.4628 23.0003 12.0004 20.5378 12.0004 17.5003C12.0004 14.4627 14.4628 12.0003 17.5004 12.0003ZM12.0226 13.9996C11.7259 14.4629 11.4864 14.9663 11.314 15.4999L4.25278 15.5002C3.83919 15.5002 3.50391 15.8355 3.50391 16.2491V16.8267C3.50391 17.3624 3.69502 17.8805 4.04287 18.2878C5.29618 19.7555 7.26206 20.5013 10.0004 20.5013C10.5968 20.5013 11.1567 20.4659 11.6806 20.3954C11.9258 20.8903 12.2333 21.3489 12.5921 21.7618C11.7966 21.922 10.9317 22.0013 10.0004 22.0013C6.8545 22.0013 4.46849 21.0962 2.90219 19.2619C2.32242 18.583 2.00391 17.7195 2.00391 16.8267V16.2491C2.00391 15.007 3.01076 14.0002 4.25278 14.0002L12.0226 13.9996ZM17.5004 14.0002L17.4105 14.0083C17.2064 14.0453 17.0455 14.2063 17.0084 14.4104L17.0004 14.5002L16.9994 17.0003H14.5043L14.4144 17.0083C14.2103 17.0454 14.0494 17.2063 14.0123 17.4104L14.0043 17.5003L14.0123 17.5901C14.0494 17.7942 14.2103 17.9552 14.4144 17.9922L14.5043 18.0003H16.9994L17.0004 20.5002L17.0084 20.5901C17.0455 20.7942 17.2064 20.9551 17.4105 20.9922L17.5004 21.0002L17.5902 20.9922C17.7943 20.9551 17.9553 20.7942 17.9923 20.5901L18.0004 20.5002L17.9994 18.0003H20.5043L20.5941 17.9922C20.7982 17.9552 20.9592 17.7942 20.9962 17.5901L21.0043 17.5003L20.9962 17.4104C20.9592 17.2063 20.7982 17.0454 20.5941 17.0083L20.5043 17.0003H17.9994L18.0004 14.5002L17.9923 14.4104C17.9553 14.2063 17.7943 14.0453 17.5902 14.0083L17.5004 14.0002ZM10.0004 2.00488C12.7618 2.00488 15.0004 4.24346 15.0004 7.00488C15.0004 9.76631 12.7618 12.0049 10.0004 12.0049C7.23894 12.0049 5.00036 9.76631 5.00036 7.00488C5.00036 4.24346 7.23894 2.00488 10.0004 2.00488ZM10.0004 3.50488C8.06737 3.50488 6.50036 5.07189 6.50036 7.00488C6.50036 8.93788 8.06737 10.5049 10.0004 10.5049C11.9334 10.5049 13.5004 8.93788 13.5004 7.00488C13.5004 5.07189 11.9334 3.50488 10.0004 3.50488Z" fill="${color}" />
+  </svg>
+    `;
+    const assignedPeopleTemplate = mgtHtml`
       <mgt-people
         class="people people-${taskId}"
-        .userIds="${assignedPeople}"
-        .personCardInteraction=${PersonCardInteraction.none}
-        @click=${(e: MouseEvent) => {
-          this.togglePeoplePicker(task);
-          e.stopPropagation();
-        }}
-        @keydown=${(e: KeyboardEvent) => {
-          if (e.code === 'Enter') {
-            this.togglePeoplePicker(task);
-            e.stopPropagation();
-          }
-        }}
-        >${noPeopleTemplate}
-      </mgt-people>
-    `;
+        user-ids=${assignedPeople.toString()}
+        @click=${(e: MouseEvent) => handlePpleClick(e)}
+        @keydown=${(e: KeyboardEvent) => handlePpleKeydown(e)}>
+          <template data-type="no-data">
+            No data found ${personAddIcon('yellow')}
+          </template>
+      </mgt-people>`;
+
+    const handlePpickerKeydown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.stopPropagation();
+      }
+    };
+
     const picker = mgtHtml`
       <mgt-people-picker
         class="people-picker picker-${taskId}"
         @click=${(e: MouseEvent) => e.stopPropagation()}
-        @keydown=${(e: KeyboardEvent) => {
-          if (e.code === 'Enter') {
-            e.stopPropagation();
-          }
-        }}
-      ></mgt-people-picker>
+        @keydown=${(e: KeyboardEvent) => handlePpickerKeydown(e)}>
+      </mgt-people-picker>
     `;
 
     return mgtHtml`
-      <mgt-flyout light-dismiss class=${classMap(taskAssigneeClasses)} @closed=${e => this.updateAssignedPeople(task)}>
-        ${assignedPeopleHTML}
-        <div slot="flyout" class=${classMap({ Picker: true })}>
-          ${picker}
-        </div>
+      <mgt-flyout
+        light-dismiss
+        class=${classMap(taskAssigneeClasses)}
+        @closed=${() => this.updateAssignedPeople(task)}>
+          ${assignedPeopleTemplate}
+          <div slot="flyout" class=${classMap({ Picker: true })}>
+            ${picker}
+          </div>
       </mgt-flyout>
     `;
   }
@@ -1360,46 +1516,6 @@ export class MgtTasks extends MgtTemplatedComponent {
           </div>
         </div>
       </div>
-    `;
-  }
-
-  private renderPlannerIcon() {
-    return html`
-      <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M7.223 1.156C6.98 1.26 6.769 1.404 6.586 1.586C6.403 1.768 6.261 1.98 6.157 2.223C6.052 2.465 6 2.724 6 3H2V17H14V3H10C10 2.724 9.948 2.465 9.844 2.223C9.74 1.98 9.596 1.768 9.414 1.586C9.231 1.404 9.02 1.26 8.777 1.156C8.535 1.053 8.276 1 8 1C7.723 1 7.465 1.053 7.223 1.156ZM5 4H7V3C7 2.86 7.026 2.729 7.078 2.609C7.13 2.49 7.202 2.385 7.293 2.293C7.384 2.202 7.49 2.131 7.609 2.079C7.73 2.026 7.859 2 8 2C8.14 2 8.271 2.026 8.39 2.079C8.511 2.131 8.616 2.202 8.707 2.293C8.798 2.385 8.87 2.49 8.922 2.609C8.974 2.729 9 2.86 9 3V4H11V5H5V4ZM12 6V4H13V16H3V4H4V6H12Z"
-          fill="#3C3C3C"
-        />
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M7.35156 12.3517L5.49956 14.2037L4.14856 12.8517L4.85156 12.1487L5.49956 12.7967L6.64856 11.6487L7.35156 12.3517Z"
-          fill="#3C3C3C"
-        />
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M7.35156 8.35168L5.49956 10.2037L4.14856 8.85168L4.85156 8.14868L5.49956 8.79668L6.64856 7.64868L7.35156 8.35168Z"
-          fill="#3C3C3C"
-        />
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 14H12.001V13H8V14Z" fill="#3C3C3C" />
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 10H12.001V9H8V10Z" fill="#3C3C3C" />
-      </svg>
-    `;
-  }
-
-  private renderBucketIcon() {
-    return html`
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M14 2H2V4H3H5H6H10H11H13H14V2ZM10 5H6V6H10V5ZM5 5H3V14H13V5H11V6C11 6.55228 10.5523 7 10 7H6C5.44772 7 5 6.55228 5 6V5ZM1 5H2V14V15H3H13H14V14V5H15V4V2V1H14H2H1V2V4V5Z"
-          fill="#3C3C3C"
-        />
-      </svg>
     `;
   }
 
@@ -1462,7 +1578,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   private isTaskInSelectedGroupFilter(task: ITask) {
     return (
       task.topParentId === this._currentGroup ||
-      (!this._currentGroup && this.getTaskSource().isAssignedToMe(task, this._me.id))
+      (!this._currentGroup && this.getTaskSource().isAssignedToMe(task, this._me?.id))
     );
   }
 
