@@ -9,7 +9,6 @@ import { User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, state, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
-import { nanoid } from 'nanoid/non-secure';
 import {
   findGroups,
   getGroupsForGroupIds,
@@ -85,7 +84,6 @@ interface IFocusable {
  */
 @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
-  private _uid: string;
   /**
    * Array of styles to apply to the element. The styles should be defined
    * user the `css` tag function.
@@ -596,7 +594,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    this._uid = nanoid();
     this.clearState();
     this._showLoading = true;
     this.showMax = 6;
@@ -777,7 +774,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            placeholder=${placeholder}
            autocomplete="off"
            aria-label=${this.ariaLabel || ''}
-           aria-controls="${this._uid}-suggestions-list"
+           aria-controls="suggestions-list"
            aria-haspopup="listbox"
            aria-autocomplete="list"
            aria-expanded="false"
@@ -937,7 +934,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     return html`
       <ul
-        id="${this._uid}-suggestions-list"
+        id="suggestions-list"
         aria-label="${this.strings.suggestedContacts}"
         class="people-list"
         role="listbox"
