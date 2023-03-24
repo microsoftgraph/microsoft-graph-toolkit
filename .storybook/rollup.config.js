@@ -17,7 +17,8 @@ const getBabelConfig = isEs5 => {
       'node_modules/lit-element/**/*',
       'node_modules/lit-html/**/*',
       'node_modules/@microsoft/microsoft-graph-client/lib/es/**/*',
-      'node_modules/msal/lib-es6/**/*'
+      'node_modules/msal/lib-es6/**/*',
+      'node_modules/nanoid/**/*'
     ]
   };
 };
@@ -27,7 +28,7 @@ const es6Bundle = {
   output: {
     dir: 'assets',
     entryFileNames: 'mgt.storybook.js',
-    format: 'esm',
+    format: 'esm'
   },
   plugins: [
     babel({

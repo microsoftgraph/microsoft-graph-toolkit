@@ -9,7 +9,7 @@ import { User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, state, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
-import { nanoid } from 'nanoid';
+import { nanoid } from 'nanoid/non-secure';
 import {
   findGroups,
   getGroupsForGroupIds,
