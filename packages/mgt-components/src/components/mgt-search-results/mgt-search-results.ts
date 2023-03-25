@@ -25,24 +25,36 @@ import {
 import { schemas } from '../../graph/cacheStores';
 import { strings } from './strings';
 import { styles } from './mgt-search-results-css';
-import { EntityType, SearchHit, SearchHitsContainer, SearchRequest } from '@microsoft/microsoft-graph-types';
+import {
+  DirectoryObject,
+  Drive,
+  DriveItem,
+  EntityType,
+  List,
+  ListItem,
+  Message,
+  SearchHit,
+  SearchHitsContainer,
+  SearchRequest,
+  SearchResponse,
+  SearchResult,
+  Site
+} from '@microsoft/microsoft-graph-types';
 import { SearchRequest as BetaSearchRequest } from '@microsoft/microsoft-graph-types-beta';
-import { getNameFromUrl, getRelativeDisplayDate, sanitizeSummary, trimFileExtension } from '../../utils/Utils';
+import {
+  getIsResponseCacheEnabled,
+  getNameFromUrl,
+  getRelativeDisplayDate,
+  getResponseInvalidationTime,
+  sanitizeSummary,
+  trimFileExtension
+} from '../../utils/Utils';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { fluentSkeleton, fluentButton, fluentTooltip, fluentDivider } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
+import { CacheResponse } from '../CacheResponse';
 
 registerFluentComponents(fluentSkeleton, fluentButton, fluentTooltip, fluentDivider);
-
-/**
- * Object to be stored in cache representing a generic query
- */
-interface CacheResponse extends CacheItem {
-  /**
-   * json representing a response as string
-   */
-  response?: string;
-}
 
 /**
  * Object representing a thumbnail
@@ -55,18 +67,44 @@ interface Thumbnail {
 }
 
 /**
- * Defines the expiration time
+ * Object representing a Search Answer
  */
-const getResponseInvalidationTime = (currentInvalidationPeriod: number): number =>
-  currentInvalidationPeriod ||
-  CacheService.config.response.invalidationPeriod ||
-  CacheService.config.defaultInvalidationPeriod;
+type Answer = {
+  '@odata.type': string;
+  displayName?: string;
+  description?: string;
+  webUrl?: string;
+};
 
 /**
- * Whether the response store is enabled
+ * Object representing a search resource supporting thumbnails
  */
-const getIsResponseCacheEnabled = (): boolean =>
-  CacheService.config.response.isEnabled && CacheService.config.isEnabled;
+type ThumbnailResource = {
+  thumbnail: Thumbnail;
+};
+
+type UserResource = {
+  lastModifiedBy?: {
+    user?: {
+      email?: string;
+    };
+  };
+  userPrincipalName?: string;
+};
+
+/**
+ * Object representing a Search Resource
+ */
+type SearchResource = Partial<
+  DriveItem & Site & List & Message & ListItem & Drive & DirectoryObject & Answer & ThumbnailResource & UserResource
+>;
+
+/**
+ * Object representing a full Search Response
+ */
+type FullSearchResponse = {
+  value: SearchResponse[];
+};
 
 /**
  * Custom element for making Microsoft Graph get queries
@@ -96,6 +134,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     return styles;
   }
 
+  /**
+   * Gets all the localization strings for the component
+   */
   protected get strings() {
     return strings;
   }
@@ -111,7 +152,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'query-string',
-    reflect: true,
     type: String
   })
   public get queryString(): string {
@@ -324,7 +364,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @type any
    * @memberof MgtSearchResults
    */
-  @property({ attribute: false }) public response: any;
+  @state() private response: any;
 
   private isRefreshing: boolean = false;
   private readonly SEARCH_ENDPOINT: string = '/search/query';
@@ -357,7 +397,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @param {*} newval
    * @memberof MgtSearchResults
    */
-  public attributeChangedCallback(name, oldval, newval) {
+  public attributeChangedCallback(name: string, oldval: string, newval: string) {
     super.attributeChangedCallback(name, oldval, newval);
     this.requestStateUpdate();
   }
@@ -409,7 +449,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       renderedTemplate = this.renderLoading();
     } else if (this.error) {
       renderedTemplate = this.renderError();
-      // tslint:disable-next-line: no-string-literal
     } else if (this.response && this.response?.value[0]?.hitsContainers[0]) {
       renderedTemplate = html`${this.response?.value[0]?.hitsContainers[0]?.hits?.map(result =>
         this.renderResult(result)
@@ -448,14 +487,14 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
     if (this.queryString) {
       try {
-        const requestOptions: any = this.getRequestOptions();
+        const requestOptions = this.getRequestOptions();
 
         let cache: CacheStore<CacheResponse>;
         const key = JSON.stringify({
           endpoint: `${this.version}${this.SEARCH_ENDPOINT}`,
           requestOptions: requestOptions
         });
-        let response = null;
+        let response: FullSearchResponse = null;
 
         if (this.shouldRetrieveCache()) {
           cache = CacheService.getCache<CacheResponse>(schemas.search, schemas.search.stores.responses);
@@ -481,20 +520,21 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
             for (let i = 0; i < response.value[0].hitsContainers[0].hits.length; i++) {
               const element = response.value[0].hitsContainers[0].hits[i];
+              const resource = element.resource as SearchResource;
               if (
-                (element.resource.size > 0 || element.resource.webUrl?.endsWith('.aspx')) &&
-                (element.resource['@odata.type'] == '#microsoft.graph.driveItem' ||
-                  element.resource['@odata.type'] == '#microsoft.graph.listItem')
+                (resource.size > 0 || resource.webUrl?.endsWith('.aspx')) &&
+                (resource['@odata.type'] == '#microsoft.graph.driveItem' ||
+                  resource['@odata.type'] == '#microsoft.graph.listItem')
               ) {
-                if (element.resource['@odata.type'] == '#microsoft.graph.listItem') {
+                if (resource['@odata.type'] == '#microsoft.graph.listItem') {
                   thumbnailBatchBeta.get(
                     i.toString(),
-                    `/sites/${element.resource.parentReference.siteId}/pages/${element.resource.id}`
+                    `/sites/${resource.parentReference.siteId}/pages/${resource.id}`
                   );
                 } else {
                   thumbnailBatch.get(
                     i.toString(),
-                    `/drives/${element.resource.parentReference.driveId}/items/${element.resource.id}/thumbnails/0/medium`
+                    `/drives/${resource.parentReference.driveId}/items/${resource.id}/thumbnails/0/medium`
                   );
                 }
               }
@@ -507,12 +547,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             const augmentResponse = (thumbnailResponse: Map<string, BatchResponse>) => {
               if (thumbnailResponse && thumbnailResponse.size > 0) {
                 for (const [key, value] of thumbnailResponse) {
-                  let result = response.value[0].hitsContainers[0].hits[key];
+                  let result: SearchHit = response.value[0].hitsContainers[0].hits[key];
                   const thumbnail: Thumbnail =
                     result.resource['@odata.type'] == '#microsoft.graph.listItem'
                       ? { url: value.content.thumbnailWebUrl }
                       : { url: value.content.url };
-                  result.resource.thumbnail = thumbnail;
+                  (result.resource as SearchResource).thumbnail = thumbnail;
                 }
               }
             };
@@ -525,13 +565,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             }
           }
 
-          if (!equals(this.response, response)) {
-            this.response = response;
-          }
-
           if (this.shouldUpdateCache() && response) {
             cache = CacheService.getCache<CacheResponse>(schemas.search, schemas.search.stores.responses);
-            cache.putValue(key, { response: JSON.stringify(response) });
+            await cache.putValue(key, { response: JSON.stringify(response) });
           }
         }
 
@@ -562,34 +598,35 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   protected renderLoading(): TemplateResult {
     return (
       this.renderTemplate('loading', null) ||
+      // creates an array of n items where n is the current max number of results, this builds a shimmer for that many results
       html`
         ${[...Array(this.size)].map(() => {
           return html`
             <div class="search-result">
               <div class="search-result-grid">
                 <div class="search-result-icon">
-                  <fluent-skeleton style="width: 32px; height: 32px;" shape="rect" shimmer></fluent-skeleton>
+                  <fluent-skeleton class="search-result-icon__shimmer" shape="rect" shimmer></fluent-skeleton>
                 </div>
                 <div class="searc-result-content">
                   <div class="search-result-name">
-                    <fluent-skeleton style="border-radius: 4px; margin-top: 10px; height: 10px; width: 20%" shape="rect" shimmer></fluent-skeleton>
+                    <fluent-skeleton class="search-result-name__shimmer" shape="rect" shimmer></fluent-skeleton>
                   </div>
                   <div class="search-result-info">
                     <div class="search-result-author">
-                      <fluent-skeleton style="width: 24px; height: 24px;" shape="circle" shimmer></fluent-skeleton>
+                      <fluent-skeleton class="search-result-author__shimmer" shape="circle" shimmer></fluent-skeleton>
                     </div>
                     <div class="search-result-date">
-                      <fluent-skeleton style="border-radius: 4px; margin-top: 2%; margin-left: 5px; height: 10px; width: 200px" shape="rect" shimmer></fluent-skeleton>
+                      <fluent-skeleton class="search-result-date__shimmer" shape="rect" shimmer></fluent-skeleton>
                     </div>
                   </div>
-                  <fluent-skeleton style="border-radius: 4px; margin-top: 10px; height: 10px;" shape="rect" shimmer></fluent-skeleton>
-                  <fluent-skeleton style="border-radius: 4px; margin-top: 10px; height: 10px;" shape="rect" shimmer></fluent-skeleton>
+                  <fluent-skeleton class="search-result-content__shimmer" shape="rect" shimmer></fluent-skeleton>
+                  <fluent-skeleton class="search-result-content__shimmer" shape="rect" shimmer></fluent-skeleton>
                 </div>
                 ${
                   this.fetchThumbnail &&
                   html`
                     <div class="search-result-thumbnail">
-                      <fluent-skeleton style="width: 126px; height: 72px;" shape="rect" shimmer></fluent-skeleton>
+                      <fluent-skeleton class="search-result-thumbnail__shimmer" shape="rect" shimmer></fluent-skeleton>
                     </div>
                   `
                 }  
@@ -641,9 +678,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Renders the footer with pages if required
    * @param hitsContainer Search results
-   * @returns
    */
-  private renderFooter(hitsContainer: SearchHitsContainer): TemplateResult {
+  private renderFooter(hitsContainer: SearchHitsContainer) {
     if (this.pagingRequired(hitsContainer)) {
       const pages = this.getActivePages(hitsContainer.total);
 
@@ -661,18 +697,16 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Validates if paging is required based on the provided results
    * @param hitsContainer
-   * @returns
    */
-  private pagingRequired(hitsContainer: SearchHitsContainer): boolean {
+  private pagingRequired(hitsContainer: SearchHitsContainer) {
     return hitsContainer?.moreResultsAvailable || this.currentPage * this.size < hitsContainer?.total;
   }
 
   /**
    * Gets a list of active pages to render for paging purposes
    * @param totalResults Total number of results of the search query
-   * @returns
    */
-  private getActivePages(totalResults: number): any[] {
+  private getActivePages(totalResults: number) {
     const getFirstPage = () => {
       const medianPage = this.currentPage - Math.floor(this.pagingMax / 2) - 1;
 
@@ -708,9 +742,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Renders all sequential pages buttons
    * @param pages
-   * @returns
    */
-  private renderAllPages(pages: any[]): TemplateResult {
+  private renderAllPages(pages: any[]) {
     return html`
       ${pages.map(
         page =>
@@ -728,9 +761,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Renders the "First page" button
    * @param pages
-   * @returns
    */
-  private renderFirstPage(pages: any[]): TemplateResult {
+  private renderFirstPage(pages: any[]) {
     return html`
       ${
         pages.some(page => page.number === 1)
@@ -758,7 +790,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Constructs the "dot dot dot" button title
-   * @returns
    */
   private getDotButtonTitle() {
     return `${strings.back} ${Math.ceil(this.pagingMax / 2)} ${strings.pages}`;
@@ -766,7 +797,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders the "Previous page" button
-   * @returns
    */
   private renderPreviousPage() {
     return this.currentPage > 1
@@ -783,7 +813,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders the "Next page" button
-   * @returns
    */
   private renderNextPage() {
     return !this.isLastPage()
@@ -836,7 +865,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Validates if the current page is the last page of the collection
-   * @returns
    */
   private isLastPage() {
     return this.currentPage === Math.ceil(this.response.value[0].hitsContainers[0].total / this.size);
@@ -856,19 +884,17 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Gets the resource type (entity) of a search result
    * @param resource
-   * @returns
    */
-  private getResourceType(resource: any) {
+  private getResourceType(resource: SearchResource) {
     return resource['@odata.type'].split('.').pop();
   }
 
   /**
    * Renders a driveItem entity
    * @param result
-   * @returns
    */
-  private renderDriveItem(result: SearchHit): HTMLTemplateResult {
-    let resource: any = result.resource as any;
+  private renderDriveItem(result: SearchHit) {
+    let resource = result.resource as SearchResource;
     return mgtHtml`
       <div class="search-result-grid">
         <div class="search-result-icon">
@@ -916,11 +942,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @returns
    */
   private renderSite(result: SearchHit): HTMLTemplateResult {
-    let resource: any = result.resource as any;
+    let resource = result.resource as SearchResource;
     return html`
       <div class="search-result-grid">
         <div class="search-result-icon">
-          <img alt="${resource.displayName}" src="${resource.webUrl}/_api/siteiconmanager/getsitelogo" />
+          ${this.getResourceIcon(resource)}
         </div>
         <div class="searc-result-content">
           <div class="search-result-name">
@@ -972,7 +998,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @returns
    */
   private renderListItem(result: SearchHit): HTMLTemplateResult {
-    let resource: any = result.resource as any;
+    let resource = result.resource as SearchResource;
     return mgtHtml`
       <div class="search-result-grid">
         <div class="search-result-icon">
@@ -1019,7 +1045,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @returns
    */
   private renderPerson(result: SearchHit): HTMLTemplateResult {
-    let resource: any = result.resource as any;
+    let resource = result.resource as SearchResource;
     return mgtHtml`
       <div class="search-result">
         <mgt-person 
@@ -1036,37 +1062,33 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Renders a bookmark entity
    * @param result
-   * @returns
    */
-  private renderBookmark(result: SearchHit): HTMLTemplateResult {
+  private renderBookmark(result: SearchHit) {
     return this.renderAnswer(result, SvgIcon.DoubleBookmark);
   }
 
   /**
    * Renders an acronym entity
    * @param result
-   * @returns
    */
-  private renderAcronym(result: SearchHit): HTMLTemplateResult {
+  private renderAcronym(result: SearchHit) {
     return this.renderAnswer(result, SvgIcon.BookOpen);
   }
 
   /**
    * Renders a qna entity
    * @param result
-   * @returns
    */
-  private renderQnA(result: SearchHit): HTMLTemplateResult {
+  private renderQnA(result: SearchHit) {
     return this.renderAnswer(result, SvgIcon.BookQuestion);
   }
 
   /**
    * Renders an answer entity
    * @param result
-   * @returns
    */
-  private renderAnswer(result: SearchHit, icon: SvgIcon): HTMLTemplateResult {
-    let resource: any = result.resource as any;
+  private renderAnswer(result: SearchHit, icon: SvgIcon) {
+    let resource = result.resource as SearchResource;
     return html`
       <div class="search-result-grid search-result-answer">
         <div class="search-result-icon">
@@ -1074,7 +1096,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         </div>
         <div class="search-result-content">
           <div class="search-result-name">
-            <a href="${resource.webUrl}?Web=1" target="_blank">${resource.displayName}</a>
+            <a href="${this.getResourceUrl(resource)}?Web=1" target="_blank">${resource.displayName}</a>
           </div>
           <div class="search-result-summary">${resource.description}</div>
         </div>  
@@ -1086,10 +1108,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Renders any entity
    * @param result
-   * @returns
    */
-  private renderDefault(result: SearchHit): HTMLTemplateResult {
-    let resource: any = result.resource as any;
+  private renderDefault(result: SearchHit) {
+    let resource = result.resource as SearchResource;
     const resourceUrl = this.getResourceUrl(resource);
     return html`
       <div class="search-result-grid">
@@ -1118,37 +1139,35 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Gets default resource URLs
    * @param resource
-   * @returns
    */
-  private getResourceUrl(resource: any): string {
-    return resource.webUrl || resource.url || resource.webLink || null;
+  private getResourceUrl(resource: SearchResource) {
+    return resource.webUrl || /*resource.url ||*/ resource.webLink || null;
   }
 
   /**
    * Gets default resource Names
    * @param resource
-   * @returns
    */
-  private getResourceName(resource: any): string {
+  private getResourceName(resource: SearchResource) {
     return resource.displayName || resource.subject || trimFileExtension(resource.name);
   }
 
   /**
    * Gets default result summary
    * @param resource
-   * @returns
    */
-  private getResultSummary(result: any): string {
-    return sanitizeSummary(result.summary || result.resource?.description);
+  private getResultSummary(result: SearchHit) {
+    return sanitizeSummary(result.summary || (result.resource as SearchResource)?.description || null);
   }
 
   /**
    * Gets default resource icon
    * @param resource
-   * @returns
    */
-  private getResourceIcon(resource: any) {
+  private getResourceIcon(resource: SearchResource) {
     switch (resource['@odata.type']) {
+      case '#microsoft.graph.site':
+        return getSvg(SvgIcon.Globe);
       case '#microsoft.graph.message':
         return getSvg(SvgIcon.Email);
       case '#microsoft.graph.event':

@@ -19,6 +19,22 @@ export const searchBox = () => html`
   </mgt-search-box>
 `;
 
+export const localization = () => html`
+  <mgt-search-box>
+  </mgt-search-box>
+  <script>
+  import { LocalizationHelper } from '@microsoft/mgt';
+  LocalizationHelper.strings = {
+    _components: {
+      'search-box': {
+        placeholder: 'Search for 🔥 stuff',
+        title: 'Search for content'
+      },
+    }
+  }
+  </script>
+`;
+
 export const events = () => html`
   <!-- Open dev console and change the search box value -->
   <!-- See js tab for event subscription -->

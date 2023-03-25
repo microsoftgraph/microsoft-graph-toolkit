@@ -1,7 +1,5 @@
 @import '../../styles/shared-styles.scss';
 
-$search-input-width: var(--search-input-width, 100%);
-
 :host fluent-search {
-  width: $search-input-width;
+  width: 100%;
 }

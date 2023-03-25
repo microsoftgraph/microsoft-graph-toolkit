@@ -5,6 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { CacheService } from '@microsoft/mgt-element';
+
 export function getRelativeDisplayDate(date: Date): string {
   const now = new Date();
 
@@ -254,15 +256,18 @@ export function formatBytes(bytes, decimals = 2) {
 }
 
 /**
- * Convert bytes to human readable.
+ * Formats the a provided summary to valid html
  *
  * @param summary
  * @returns string
  */
 export function sanitizeSummary(summary: string): string {
-  summary = summary?.replace(/<ddd\/>/gi, '...');
-  summary = summary?.replace(/<c0>/gi, '<b>');
-  summary = summary?.replace(/<\/c0>/gi, '</b>');
+  if (summary) {
+    summary = summary?.replace(/<ddd\/>/gi, '...');
+    summary = summary?.replace(/<c0>/gi, '<b>');
+    summary = summary?.replace(/<\/c0>/gi, '</b>');
+  }
+
   return summary;
 }
 
@@ -284,4 +289,25 @@ export function getNameFromUrl(webUrl: string): string {
   const url = new URL(webUrl);
   let name = url.pathname.split('/').pop();
   return name.replace(/-/g, ' ');
+}
+
+/**
+ * Defines the expiration time
+ * @param currentInvalidationPeriod
+ * @returns number
+ */
+export function getResponseInvalidationTime(currentInvalidationPeriod: number): number {
+  return (
+    currentInvalidationPeriod ||
+    CacheService.config.response.invalidationPeriod ||
+    CacheService.config.defaultInvalidationPeriod
+  );
+}
+
+/**
+ * Whether the response store is enabled
+ * @returns boolean
+ */
+export function getIsResponseCacheEnabled(): boolean {
+  return CacheService.config.response.isEnabled && CacheService.config.isEnabled;
 }

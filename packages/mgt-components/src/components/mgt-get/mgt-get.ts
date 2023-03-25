@@ -22,6 +22,7 @@ import {
 import { getPhotoForResource } from '../../graph/graph.photos';
 import { getDocumentThumbnail } from '../../graph/graph.files';
 import { schemas } from '../../graph/cacheStores';
+import { CacheResponse } from '../CacheResponse';
 
 /**
  * Enumeration to define what types of query are available
@@ -39,16 +40,6 @@ export enum ResponseType {
    * Fetches a call as image
    */
   image = 'image'
-}
-
-/**
- * Object to be stored in cache representing a generic query
- */
-interface CacheResponse extends CacheItem {
-  /**
-   * json representing a response as string
-   */
-  response?: string;
 }
 
 /**

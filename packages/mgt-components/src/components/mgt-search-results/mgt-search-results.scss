@@ -38,6 +38,13 @@ $answer-padding: var(--answer-padding, 10px);
 }
 
 .search-result-date {
+  &__shimmer {
+    border-radius: 4px;
+    margin-top: 2%;
+    margin-left: 5px;
+    height: 10px;
+    width: 200px;
+  }
   padding-top: 3px;
 }
 
@@ -47,6 +54,10 @@ $answer-padding: var(--answer-padding, 10px);
 }
 
 .search-result-thumbnail {
+  &__shimmer {
+    width: 126px;
+    height: 72px;
+  }
   img {
     height: 72px;
     max-width: 126px;
@@ -68,7 +79,20 @@ $answer-padding: var(--answer-padding, 10px);
   }
 }
 
+.search-result-content {
+  &__shimmer {
+    border-radius: 4px;
+    margin-top: 10px;
+    height: 10px;
+  }
+}
 .search-result-name {
+  &__shimmer {
+    border-radius: 4px;
+    margin-top: 10px;
+    height: 10px;
+    width: 20%;
+  }
   font-size: 16px;
   font-weight: 600;
   margin: 4px 0px;
@@ -81,7 +105,18 @@ $answer-padding: var(--answer-padding, 10px);
   }
 }
 
+.search-result-author {
+  &__shimmer {
+    width: 24px;
+    height: 24px;
+  }
+}
+
 .search-result-icon {
+  &__shimmer {
+    width: 32px;
+    height: 32px;
+  }
   width: 30px;
   height: 30px;
 

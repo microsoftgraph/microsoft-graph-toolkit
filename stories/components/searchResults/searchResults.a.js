@@ -21,3 +21,22 @@ export const searchResults = () => html`
     query-string="contoso">
   </mgt-search-results>
 `;
+
+export const localization = () => html`
+  <mgt-search-results entity-types="driveItem" query-string="contoso">
+  </mgt-search-results>
+  <script>
+  import { LocalizationHelper } from '@microsoft/mgt';
+  LocalizationHelper.strings = {
+    _components: {
+      'search-results': {
+        modified: 'edited on',
+        back: 'Previous',
+        next: 'Next one',
+        pages: 'sheets',
+        page: 'Sheet'
+      },
+    }
+  }
+  </script>
+`;

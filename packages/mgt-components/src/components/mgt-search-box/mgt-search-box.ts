@@ -21,8 +21,6 @@ registerFluentComponents(fluentSearch);
  *
  * @fires {CustomEvent<string>} searchTermChanged - Fired when the search term is changed
  *
- * @cssprop --search-input-width - {Length} Search input width
- *
  * @class MgtSearchBox
  * @extends {MgtBaseComponent}
  */
@@ -115,16 +113,16 @@ class MgtSearchBox extends MgtBaseComponent {
         appearance="outline"
         value=${this.searchTerm ?? this.searchTerm}
         placeholder=${this.placeholder ? this.placeholder : strings.placeholder}
-        title="${strings.placeholder}"
-        @input=${(e: Event) => this.onInputChanged(e)}
-        @change=${(e: Event) => this.onInputChanged(e)}
+        title=${this.title ? this.title : strings.title}
+        @input=${this.onInputChanged}
+        @change=${this.onInputChanged}
       >
       </fluent-search>`;
   }
 
-  private onInputChanged(e: Event) {
+  private onInputChanged = (e: Event) => {
     this.searchTerm = (e.target as HTMLInputElement).value;
-  }
+  };
 
   /**
    * Fires and debounces the custom event to listeners

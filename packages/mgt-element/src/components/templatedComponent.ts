@@ -60,10 +60,10 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   /**
    *
    * Gets or sets the error (if any) of the request
-   * @type any
+   * @type object
    * @memberof MgtSearchResults
    */
-  @state() protected error: any;
+  @state() protected error: object;
 
   /**
    * Holds all templates defined by developer

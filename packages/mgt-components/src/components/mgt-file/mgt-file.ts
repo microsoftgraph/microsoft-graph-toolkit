@@ -295,7 +295,6 @@ export class MgtFile extends MgtTemplatedComponent {
    * @memberof MgtFile
    */
   @property({
-    attribute: 'file-details',
     type: Object
   })
   public get fileDetails(): DriveItem {

@@ -6,5 +6,6 @@
  */
 
 export const strings = {
-  placeholder: 'Search'
+  placeholder: 'Search',
+  title: 'Search'
 };

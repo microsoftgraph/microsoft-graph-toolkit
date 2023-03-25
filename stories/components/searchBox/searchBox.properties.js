@@ -23,3 +23,8 @@ export const setSearchBoxDebounceDelay = () => html`
   <mgt-search-box debounce-delay="1000">
   </mgt-search-box>
 `;
+
+export const setPlaceholder = () => html`
+  <mgt-search-box placeholder="Search for content...">
+  </mgt-search-box>
+`;
