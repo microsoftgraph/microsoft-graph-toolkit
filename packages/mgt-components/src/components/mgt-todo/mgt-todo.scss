@@ -11,13 +11,13 @@
 :host {
   @extend :host;
   border-radius: 8px;
+  width: 100%;
 
   .Task {
     @extend .Task;
-    width: auto;
+    width: 100%;
     &.NewTask {
       margin: 14px 0 0 0;
-      max-width: 800px;
     }
     &.Complete {
       text-decoration: line-through;
@@ -32,7 +32,7 @@
     flex-direction: row;
     align-items: center;
     padding: 2px;
-    height: 34px;
+    line-height: 24px;
 
     border-radius: 4px;
     .Task {
@@ -43,13 +43,14 @@
       }
     }
     .title {
-      width: 550px;
+      flex-grow: 1;
     }
     .TaskDelete {
       display: flex;
     }
     .TaskDue {
-      width: 174px;
+      min-width: 120px;
+      margin-inline-end: 12px;
       height: 32px;
       text-decoration: inherit;
       display: flex;
@@ -71,7 +72,7 @@
   }
 
   fluent-text-field {
-    width: 800px;
+    width: 100%;
     height: 34px;
 
     div:nth-child(2) {
@@ -148,12 +149,19 @@
     }
   }
 
+  fluent-radio-group {
+    &::part(positioning-region) {
+      width: 100%;
+    }
+  }
+
   fluent-radio {
     &::part(control) {
       margin-inline-start: 10px;
     }
     &::part(label) {
       margin-inline-end: unset;
+      width: 100%;
     }
   }
 }

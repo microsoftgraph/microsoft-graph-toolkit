@@ -45,7 +45,6 @@ export type TodoFilter = (task: TodoTask) => boolean;
  * @class MgtTodo
  * @extends {MgtTasksBase}
  *
- * @cssprop --tasks-background-color - {Color} Task background color
  * @cssprop --tasks-header-padding - {String} Tasks header padding
  * @cssprop --tasks-title-padding - {String} Tasks title padding
  * @cssprop --tasks-plan-title-font-size - {Length} Tasks plan title font size

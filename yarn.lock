@@ -2370,7 +2370,7 @@
     "@uifabric/utilities" "^7.38.2"
     tslib "^1.10.0"
 
-"@fluentui/web-components@^2.5.3":
+"@fluentui/web-components@^2.5.12":
   version "2.5.12"
   resolved "https://registry.yarnpkg.com/@fluentui/web-components/-/web-components-2.5.12.tgz#c58893f5d3904281849ff1a91f1ea843f09c4247"
   integrity sha512-g5mbTMUo6cs6oPSy8qjtPiCP2hgsThPvyTPqfRgkBoaFhJgAd4nmrhbWh6+yRpU6ZR2kQqg5jRQMiBmnnzw57g==

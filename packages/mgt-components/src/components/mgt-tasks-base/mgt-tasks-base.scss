@@ -22,8 +22,6 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
   font-family: $font-family;
   display: flex;
   flex-direction: column;
-  background-color: $task-background-color;
-  padding: var(--tasks-padding, 12px);
   color: $color;
 
   input[type='date']::-webkit-inner-spin-button,
