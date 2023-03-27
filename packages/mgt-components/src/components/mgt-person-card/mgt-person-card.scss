@@ -44,6 +44,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   background-color: $person-card-background-color;
   --file-list-background-color: transparent;
   --file-list-box-shadow: none;
+  --file-background-color: transparent;
 
   .small {
     max-height: 100vh;
@@ -244,10 +245,13 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
     .section-nav {
       border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
       height: 36px;
-      padding-bottom: 2px;
 
       fluent-tabs {
         grid-template-columns: minmax(1px, 0.1fr);
+
+        .horizontal::part(activeIndicator) {
+          width: 10px;
+        }
 
         fluent-tab-panel {
           max-height: 360px;
@@ -292,7 +296,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
             cursor: pointer;
             box-sizing: border-box;
             width: 53px;
-            height: 38px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -383,10 +387,6 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       }
     }
   }
-}
-
-:host div.activeIndicator {
-  width: 10px;
 }
 
 :host .person-root.large,
