@@ -94,7 +94,6 @@ export type FileListProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	itemClick?: (e: CustomEvent<MicrosoftGraph.DriveItem>) => void;
-	selectionChanged?: (e: CustomEvent<MicrosoftGraph.DriveItem[]>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 

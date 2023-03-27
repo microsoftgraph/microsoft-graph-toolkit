@@ -1,6 +1,6 @@
 import { customElement, mgtHtml, Providers } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { html, nothing } from 'lit';
+import { html, nothing, PropertyValueMap } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { OfficeGraphInsightString } from '../../graph/types';
 import { BreadcrumbInfo } from '../mgt-breadcrumb/mgt-breadcrumb';
@@ -111,29 +111,52 @@ class MgtFileListComposite extends MgtFileListBase {
   public useGridView: boolean;
 
   /**
+   * Helper function to set properties of a give breadcrumb to match the current state of the component
+   *
+   * @param c {FileListBreadCrumb}
+   */
+  private updateBreadcrumb(c: FileListBreadCrumb) {
+    c.siteId = this.siteId;
+    c.groupId = this.groupId;
+    c.driveId = this.driveId;
+    c.userId = this.userId;
+    c.files = this.files;
+    c.fileExtensions = this.fileExtensions;
+    c.fileListQuery = this.fileListQuery;
+    c.fileQueries = this.fileQueries;
+    c.itemPath = this.itemPath;
+    c.insightType = this.insightType;
+    c.itemId = this.itemId;
+  }
+
+  /**
    * Override connectedCallback to set initial breadcrumbstate.
    *
    * @memberof MgtFileList
    */
   public connectedCallback(): void {
     super.connectedCallback();
-    const rootBreadcrumb = {
+    const rootBreadcrumb: FileListBreadCrumb = {
       name: this.breadcrumbRootName,
-      siteId: this.siteId,
-      groupId: this.groupId,
-      driveId: this.driveId,
-      userId: this.userId,
-      files: this.files,
-      fileExtensions: this.fileExtensions,
-      fileListQuery: this.fileListQuery,
-      fileQueries: this.fileQueries,
-      itemPath: this.itemPath,
-      insightType: this.insightType,
-      itemId: this.itemId,
       id: 'root-item'
     };
+    this.updateBreadcrumb(rootBreadcrumb);
     // console.log('rootBreadcrumb', rootBreadcrumb);
     this.breadcrumb.push(rootBreadcrumb);
+  }
+
+  /**
+   * Implemented to overcome React wrapping challenges
+   *
+   * @param changedProperties
+   */
+  protected updated(changedProperties: PropertyValueMap<this> | Map<PropertyKey, unknown>): void {
+    super.updated(changedProperties);
+    // Update the last item in the breadcrumb to the current state
+    // Necessary as React wrapped component don't set properties on the initial render
+    // this casues connectecCallback logic to be called before properties are set
+    const currentBreadcrumb = this.breadcrumb[this.breadcrumb.length - 1];
+    this.updateBreadcrumb(currentBreadcrumb);
   }
 
   /**
@@ -200,9 +223,9 @@ class MgtFileListComposite extends MgtFileListBase {
           .fileExtensions=${this.fileExtensions || nothing}
           .itemView=${this.itemView || nothing}
           .pageSize=${this.pageSize || nothing}
-          .hideMoreFilesButton=${this.hideMoreFilesButton || nothing}
+          ?hide-more-files-button=${this.hideMoreFilesButton || nothing}
           .maxFileSize=${this.maxFileSize || nothing}
-          .enableFileUpload=${this.enableFileUpload || nothing}
+          ?enable-file-upload=${this.enableFileUpload || nothing}
           .maxUploadFile=${this.maxUploadFile || nothing}
           .excludedFileExtensions=${this.excludedFileExtensions || nothing}
           .commands=${this.commands}
@@ -224,9 +247,9 @@ class MgtFileListComposite extends MgtFileListBase {
           .fileExtensions=${this.fileExtensions || nothing}
           .itemView=${this.itemView || nothing}
           .pageSize=${this.pageSize || nothing}
-          .hideMoreFilesButton=${this.hideMoreFilesButton || nothing}
+          ?hide-more-files-button=${this.hideMoreFilesButton || nothing}
           .maxFileSize=${this.maxFileSize || nothing}
-          .enableFileUpload=${this.enableFileUpload || nothing}
+          ?enable-file-upload=${this.enableFileUpload || nothing}
           .maxUploadFile=${this.maxUploadFile || nothing}
           .excludedFileExtensions=${this.excludedFileExtensions || nothing}
           @itemClick=${this.handleItemClick}
