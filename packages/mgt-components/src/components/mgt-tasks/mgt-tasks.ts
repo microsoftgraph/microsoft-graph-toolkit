@@ -33,11 +33,11 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { strings } from './strings';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 
-import { fluentSelect, fluentTextField } from '@fluentui/web-components';
+import { fluentSelect, fluentTextField, fluentDivider } from '@fluentui/web-components';
 
 import { registerFluentComponents } from '../../utils/FluentComponents';
 
-registerFluentComponents(fluentSelect, fluentTextField);
+registerFluentComponents(fluentSelect, fluentTextField, fluentDivider);
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -407,9 +407,9 @@ export class MgtTasks extends MgtTemplatedComponent {
   /**
    * Synchronizes property values when attributes change.
    *
-   * @param {*} name
-   * @param {*} oldVal
-   * @param {*} newVal
+   * @param {string} name
+   * @param {string} oldVal
+   * @param {string} newVal
    * @memberof MgtTasks
    */
   public attributeChangedCallback(name: string, oldVal: string, newVal: string) {
@@ -822,22 +822,6 @@ export class MgtTasks extends MgtTemplatedComponent {
       return html`<span class="LoadingHeader"></span>`;
     }
 
-    // const addButton =
-    //   this.readOnly || this._isNewTaskVisible
-    //     ? null
-    //     : html`
-    //         <div
-    //           tabindex="0"
-    //           class="AddBarItem NewTaskButton"
-    //           @click="${() => {
-    //             this.isNewTaskVisible = !this.isNewTaskVisible;
-    //           }}"
-    //           @keydown="${this.newTaskButtonKeydown}"
-    //         >
-    //           <span class="TaskIcon"></span>
-    //           <span>${this.strings.addTaskButtonSubtitle}</span>
-    //         </div>
-    //       `;
     const addButton =
       this.readOnly || this._isNewTaskVisible
         ? null
@@ -872,7 +856,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         <mgt-arrow-options class="arrow-options" .options="${groupOptions}" .value="${currentGroup.title}"></mgt-arrow-options>
       `;
 
-      const divider = !this._currentGroup ? null : html`<span class="TaskIcon Divider">/</span>`;
+      const divider = !this._currentGroup ? null : html`<fluent-divider></fluent-divider>`;
 
       const currentFolder = this._folders.find(d => d.id === this._currentFolder) || {
         name: this.res.BUCKETS_SELF_ASSIGNED
@@ -943,20 +927,6 @@ export class MgtTasks extends MgtTemplatedComponent {
   private renderNewTask() {
     const iconColor = 'var(--neutral-foreground-hint)';
 
-    // const taskTitle = html`
-    //   <input
-    //     type="text"
-    //     placeholder=${this.strings.newTaskPlaceholder}
-    //     .value="${this._newTaskName}"
-    //     label="new-taskName-input"
-    //     aria-label="new-taskName-input"
-    //     role="textbox"
-    //     @input="${(e: Event) => {
-    //       this._newTaskName = (e.target as HTMLInputElement).value;
-    //     }}"
-    //   />
-    // `;
-
     const taskTitle = html`
       <fluent-text-field
         placeholder=${this.strings.newTaskPlaceholder}
@@ -966,37 +936,9 @@ export class MgtTasks extends MgtTemplatedComponent {
         @input=${(e: KeyboardEvent) => (this._newTaskName = (e.target as HTMLInputElement).value)}>
       </fluent-text-field>`;
 
-    // const groups = this._groups;
     if (this._groups.length > 0 && !this._newTaskGroupId) {
       this._newTaskGroupId = this._groups[0].id;
     }
-    // const group =
-    //   this.dataSource === TasksSource.todo
-    //     ? null
-    //     : this._currentGroup
-    //     ? html`
-    //         <span class="NewTaskGroup">
-    //           ${this.renderPlannerIcon(iconColor)}
-    //           <span>${this.getPlanTitle(this._currentGroup)}</span>
-    //         </span>
-    //       `
-    //     : html`
-    //         <span class="NewTaskGroup">
-    //           ${this.renderPlannerIcon(iconColor)}
-    //           <select aria-label="new task group"
-    //             .value="${this._newTaskGroupId}"
-    //             @change="${(e: Event) => {
-    //               this._newTaskGroupId = (e.target as HTMLInputElement).value;
-    //             }}"
-    //           >
-    //             ${this._groups.map(
-    //               plan => html`
-    //                 <option value="${plan.id}">${plan.title}</option>
-    //               `
-    //             )}
-    //           </select>
-    //         </span>
-    //       `;
 
     const groupOptions = html`
       ${repeat(
@@ -1028,30 +970,6 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (folders.length > 0 && !this._newTaskFolderId) {
       this._newTaskFolderId = folders[0].id;
     }
-    // const taskFolder = this._currentFolder
-    //   ? html`
-    //       <span class="NewTaskBucket">
-    //         ${this.renderBucketIcon(iconColor)}
-    //         <span>${this.getFolderName(this._currentFolder)}</span>
-    //       </span>
-    //     `
-    //   : html`
-    //       <span class="NewTaskBucket">
-    //         ${this.renderBucketIcon(iconColor)}
-    //         <select aria-label="new task bucket"
-    //           .value="${this._newTaskFolderId}"
-    //           @change="${(e: Event) => {
-    //             this._newTaskFolderId = (e.target as HTMLInputElement).value;
-    //           }}"
-    //         >
-    //           ${folders.map(
-    //             folder => html`
-    //               <option value="${folder.id}">${folder.name}</option>
-    //             `
-    //           )}
-    //         </select>
-    //       </span>
-    //     `;
 
     const folderOptions = html`
       ${repeat(
@@ -1073,27 +991,6 @@ export class MgtTasks extends MgtTemplatedComponent {
           ${folders.length > 0 ? folderOptions : html`<fluent-option selected>No folders found</fluent-option>`}
         </fluent-select>`;
 
-    // const taskDue = html`
-    //   <span class="NewTaskDue">
-    //   ${this.renderCalendarIcon()}
-    //     <input
-    //       type="date"
-    //       label="new-taskDate-input"
-    //       aria-label="new-taskDate-input"
-    //       role="textbox"
-    //       .value="${this.dateToInputValue(this._newTaskDueDate)}"
-    //       @change="${(e: Event) => {
-    //         const value = (e.target as HTMLInputElement).value;
-    //         if (value) {
-    //           this._newTaskDueDate = new Date(value + 'T17:00');
-    //         } else {
-    //           this._newTaskDueDate = null;
-    //         }
-    //       }}"
-    //     />
-    //   </span>
-    // `;
-
     const handleDateChange = (e: UIEvent) => {
       const value = (e.target as HTMLInputElement).value;
       if (value) {
@@ -1114,25 +1011,6 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null, iconColor);
 
-    // const taskAdd = this._newTaskBeingAdded
-    //   ? html`
-    //       <div class="TaskAddButtonContainer"></div>
-    //     `
-    //   : html`
-    //       <div class="TaskAddButtonContainer ${this._newTaskName === '' ? 'Disabled' : ''}">
-    //         <div tabindex="0" class="TaskIcon TaskAdd"
-    //           @click="${this.onAddTaskClick}"
-    //           @keydown="${this.onAddTaskKeyDown}">
-    //           <span>${this.strings.addTaskButtonSubtitle}</span>
-    //         </div>
-    //         <div tabindex="0" class="TaskIcon TaskCancel"
-    //           @click="${() => (this.isNewTaskVisible = false)}"
-    //           @keydown="${this.newTaskVisible}">
-    //           <span>${this.strings.cancelNewTaskSubtitle}</span>
-    //         </div>
-    //       </div>
-    //     `;
-
     const newTaskActionButtons = this._newTaskBeingAdded
       ? html`<div class="TaskAddButtonContainer"></div>`
       : html`
@@ -1148,22 +1026,6 @@ export class MgtTasks extends MgtTemplatedComponent {
             appearance="neutral">
               ${this.strings.cancelNewTaskSubtitle}
           </fluent-button>`;
-
-    // return html`
-    //   <div class="Task NewTask Incomplete">
-    //     <div class="TaskContent">
-    //       <div class="TaskDetailsContainer">
-    //         <div class="TaskTitle">
-    //           ${taskTitle}
-    //         </div>
-    //         <div class="TaskDetails">
-    //           ${group} ${taskFolder} ${taskDue} ${taskPeople}
-    //         </div>
-    //       </div>
-    //     </div>
-    //     ${taskAdd}
-    //   </div>
-    // `;
 
     return html`
     <div
@@ -1240,31 +1102,6 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private renderTask(task: ITask) {
     const { name = 'Task', completed = false, dueDate } = task;
-
-    const isLoading = this._loadingTasks.includes(task.id);
-
-    const taskCheckClasses = {
-      Complete: !isLoading && completed,
-      Loading: isLoading,
-      TaskCheck: true,
-      TaskIcon: true
-    };
-
-    // const taskCheckContent = isLoading
-    //   ? html`
-    //       
-    //     `
-    //   : completed
-    //   ? html`
-    //       
-    //     `
-    //   : null;
-
-    // const taskCheck = html`
-    //   <span tabindex="0" class=${classMap(
-    //     taskCheckClasses
-    //   )}><span class="TaskCheckContent">${taskCheckContent}</span></span>
-    // `;
 
     const groupTitle = this._currentGroup ? null : this.getPlanTitle(task.topParentId);
     const folderTitle = this._currentFolder ? null : this.getFolderName(task.immediateParentId);
@@ -1352,35 +1189,6 @@ export class MgtTasks extends MgtTemplatedComponent {
         </div>
       </div>
     `;
-    // return html`
-    //   <div
-    //     class=${classMap({
-    //       Task: true,
-    //       Complete: completed,
-    //       Incomplete: !completed,
-    //       ReadOnly: this.readOnly
-    //     })}>
-    //     <div
-    //       class="TaskContent"
-    //       @click=${() => this.handleTaskClick(task)}>
-    //       <span
-    //         class=${classMap({
-    //           Complete: completed,
-    //           Incomplete: !completed,
-    //           TaskCheckContainer: true
-    //         })}
-    //         @click=${(e: MouseEvent) => this.checkTask(e, task)}
-    //         @keydown=${(e: KeyboardEvent) => this.handleTaskCheckKeyDown(e, task)}>
-    //         ${taskCheck}
-    //       </span>
-    //       <div class="TaskDetailsContainer ${this.mediaQuery} ${this._currentGroup ? 'NoPlan' : ''}">
-    //         ${taskDetails}
-    //       </div>
-    //       ${taskOptions}
-
-    //     </div>
-    //   </div>
-    // `;
   }
 
   private handleTaskCheckKeyDown(e: KeyboardEvent, task: ITask) {
@@ -1516,21 +1324,6 @@ export class MgtTasks extends MgtTemplatedComponent {
         </div>
       </div>
     `;
-  }
-
-  /**
-   * Render a calendar icon.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtTodo
-   */
-  protected renderCalendarIcon() {
-    return html`
-          <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 11C5.55228 11 6 10.5523 6 10C6 9.44771 5.55228 9 5 9C4.44772 9 4 9.44771 4 10C4 10.5523 4.44772 11 5 11ZM6 13C6 13.5523 5.55228 14 5 14C4.44772 14 4 13.5523 4 13C4 12.4477 4.44772 12 5 12C5.55228 12 6 12.4477 6 13ZM8 11C8.55229 11 9 10.5523 9 10C9 9.44771 8.55229 9 8 9C7.44771 9 7 9.44771 7 10C7 10.5523 7.44771 11 8 11ZM9 13C9 13.5523 8.55229 14 8 14C7.44771 14 7 13.5523 7 13C7 12.4477 7.44771 12 8 12C8.55229 12 9 12.4477 9 13ZM11 11C11.5523 11 12 10.5523 12 10C12 9.44771 11.5523 9 11 9C10.4477 9 10 9.44771 10 10C10 10.5523 10.4477 11 11 11ZM15 5.5C15 4.11929 13.8807 3 12.5 3H3.5C2.11929 3 1 4.11929 1 5.5V14.5C1 15.8807 2.11929 17 3.5 17H12.5C13.8807 17 15 15.8807 15 14.5V5.5ZM2 7H14V14.5C14 15.3284 13.3284 16 12.5 16H3.5C2.67157 16 2 15.3284 2 14.5V7ZM3.5 4H12.5C13.3284 4 14 4.67157 14 5.5V6H2V5.5C2 4.67157 2.67157 4 3.5 4Z" fill="#717171"/>
-          </svg>
-        `;
   }
 
   private getTaskSource(): ITaskSource {
