@@ -162,6 +162,12 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
       font-size: medium;
       font-weight: 600;
     }
+
+    &.checked {
+      &::part(label) {
+        text-decoration: line-through;
+      }
+    }
   }
 
   fluent-text-field {
