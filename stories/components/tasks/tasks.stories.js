@@ -7,6 +7,7 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Components / mgt-tasks',
@@ -22,13 +23,4 @@ export default {
 
 export const tasks = () => html`
   <mgt-tasks></mgt-tasks>
-`;
-
-export const darkTheme = () => html`
-  <mgt-tasks class="mgt-dark"></mgt-tasks>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
 `;
