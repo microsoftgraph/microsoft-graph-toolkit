@@ -125,8 +125,8 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
             gap: 6px;
 
             .TaskIcon {
-              width: 16px;
-              height: 16px;
+              display: flex;
+              place-content: center;
             }
 
             .TaskIconText {
@@ -175,8 +175,13 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
   fluent-select {
     [slot='start'] {
-      width: 16px;
-      height: 16px;
+      margin-top: 5px;
+    }
+  }
+
+  mgt-people {
+    [slot='no-data'] {
+      margin-top: 8px;
     }
   }
 }
