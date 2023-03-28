@@ -10,5 +10,6 @@ export const strings = {
   newTaskPlaceholder: 'Adding a task...',
   addTaskButtonSubtitle: 'Add',
   due: 'Due ',
-  addTaskDate: 'Add the task date'
+  addTaskDate: 'Add the task date',
+  assign: 'Assign'
 };
