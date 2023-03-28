@@ -44,7 +44,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   background-color: $person-card-background-color;
   --file-list-background-color: transparent;
   --file-list-box-shadow: none;
-  --file-background-color: transparent;
+  --file-item-background-color: transparent;
 
   .small {
     max-height: 100vh;
@@ -249,10 +249,6 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       fluent-tabs {
         grid-template-columns: minmax(1px, 0.1fr);
 
-        .horizontal::part(activeIndicator) {
-          width: 10px;
-        }
-
         fluent-tab-panel {
           max-height: 360px;
           min-height: 360px;
@@ -394,6 +390,10 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 :host mgt-person.person-root.large,
 :host mgt-person.person-root.threelines {
   --person-avatar-size-3-lines: 75px;
+}
+
+:host fluent-tabs.horizontal::part(activeIndicator) {
+  width: 10px;
 }
 
 :host fluent-button.section__show-more.lightweight::part(control),
