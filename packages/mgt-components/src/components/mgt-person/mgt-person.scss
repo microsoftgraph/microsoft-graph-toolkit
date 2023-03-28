@@ -125,7 +125,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
         bottom: 0;
         right: 0;
         position: absolute;
-        border-radius: 52%;
+        border-radius: 50%;
         background-color: var(--neutral-layer-1);
         border: 1px solid var(--neutral-layer-1);
 
@@ -207,8 +207,8 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
   }
 }
 
-[dir="rtl"]{
-  .presence-wrapper{
+[dir='rtl'] {
+  .presence-wrapper {
     right: unset !important;
     left: 0px;
   }
