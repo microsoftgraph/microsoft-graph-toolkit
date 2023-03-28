@@ -175,6 +175,15 @@ export interface MgtFileUploadConfig {
    *  @type {string[]}
    */
   excludedFileExtensions?: string[];
+
+  /**
+   * The element to use as the drop target for drag and drop.
+   * Will use the parent element if not specified and available.
+   *
+   * @type {HTMLElement}
+   * @memberof MgtFileUploadConfig
+   */
+  dropTarget?: () => HTMLElement;
 }
 
 // tslint:disable-next-line: completed-docs
@@ -189,6 +198,8 @@ interface FileWithPath extends File {
  * @export
  * @class MgtFileUpload
  * @extends {MgtBaseComponent}
+ *
+ * @fires - fileUploadSuccess {undefined} - Fired when a file is successfully uploaded.
  *
  * @cssprop --file-upload-background-color-drag - {Color} background color of the file list when you upload by drag and drop.
  * @cssprop --file-upload-button-background-color - {Color} background color of the file upload button.
@@ -271,6 +282,8 @@ export class MgtFileUpload extends MgtBaseComponent {
   private _maximumFileSize: boolean = false;
   private _excludedFileType: boolean = false;
 
+  private _dropTarget: HTMLElement;
+
   constructor() {
     super();
     this.filesToUpload = [];
@@ -281,14 +294,6 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @returns
    */
   public render(): TemplateResult {
-    if (this.parentElement !== null) {
-      const root = this.parentElement;
-      root.addEventListener('dragenter', this.handleonDragEnter);
-      root.addEventListener('dragleave', this.handleonDragLeave);
-      root.addEventListener('dragover', this.handleonDragOver);
-      root.addEventListener('drop', this.handleonDrop);
-    }
-
     return html`
         <div id="file-upload-dialog" class="file-upload-dialog">
           <!-- Modal content -->
@@ -322,7 +327,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           </fluent-dialog>
         </div>
         <div id="file-upload-border"></div>
-        <div class="file-upload-area-button">
+        <div part="upload-button-wrapper" class="file-upload-area-button">
           <input
             id="file-upload-input"
             title="${this.strings.uploadButtonLabel}"
@@ -334,7 +339,6 @@ export class MgtFileUpload extends MgtBaseComponent {
           />
           <fluent-button
             appearance="accent"
-            class="file-upload-button"
             @click=${this.onFileUploadClick}
             label=${this.strings.uploadButtonLabel}>
               <span slot="start">${getSvg(SvgIcon.Upload)}</span>
@@ -345,6 +349,20 @@ export class MgtFileUpload extends MgtBaseComponent {
           ${this.renderFolderTemplate(this.filesToUpload)}
         </div>
        `;
+  }
+
+  // TODO: remove these event listeners when component is disconnected
+  // TODO: only add eventlistners we don't have them already
+  public attachEventListeners() {
+    const root = this.fileUploadList.dropTarget?.() || this.parentElement;
+    if (root === this._dropTarget) return;
+    if (root) {
+      root.addEventListener('dragenter', this.handleonDragEnter);
+      root.addEventListener('dragleave', this.handleonDragLeave);
+      root.addEventListener('dragover', this.handleonDragOver);
+      root.addEventListener('drop', this.handleonDrop);
+      this._dropTarget = root;
+    }
   }
 
   /**
@@ -540,7 +558,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   protected handleonDragEnter = async (event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
-
+    console.log('enter', event.target);
     this._dragCounter++;
     if (event.dataTransfer.items && event.dataTransfer.items.length > 0) {
       event.dataTransfer.dropEffect = this._dropEffect;
@@ -557,6 +575,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   protected handleonDragLeave = (event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
+    console.log('leave', event.target);
 
     this._dragCounter--;
     if (this._dragCounter === 0) {
@@ -1057,6 +1076,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       fileUpload.completed = true;
       super.requestStateUpdate(true);
       clearFilesCache();
+      this.fireCustomEvent('fileUploadSuccess', undefined, true, true, true);
     }, 500);
   }
 

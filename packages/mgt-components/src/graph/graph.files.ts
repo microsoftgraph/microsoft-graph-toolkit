@@ -1307,6 +1307,15 @@ export async function renameDriveItem(graph: IGraph, item: DriveItem, newName: s
   }
 }
 
+export const addFolder = async (graph: IGraph, driveId: string, itemId: string, name: string) => {
+  const data = {
+    name,
+    folder: {},
+    '@microsoft.graph.conflictBehavior': 'rename'
+  };
+  await graph.api(`/drives/${driveId}/items/${itemId}/children`).post(data);
+};
+
 /**
  * delete a drive item
  */

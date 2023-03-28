@@ -7,7 +7,7 @@
 
 import { GraphPageIterator, Providers, ProviderState, customElement, mgtHtml } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { html, TemplateResult } from 'lit';
+import { html, PropertyValueMap, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
@@ -35,7 +35,7 @@ import { ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
-import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
+import { MgtFileUpload, MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
 import {
   fluentProgressRing,
@@ -137,6 +137,11 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
     this.maxUploadFile = 10;
     this.enableFileUpload = false;
     this._preloadedFiles = [];
+  }
+
+  protected updated(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
+    super.updated(changedProperties);
+    (this.renderRoot.querySelector('mgt-file-upload') as MgtFileUpload)?.attachEventListeners();
   }
 
   /**

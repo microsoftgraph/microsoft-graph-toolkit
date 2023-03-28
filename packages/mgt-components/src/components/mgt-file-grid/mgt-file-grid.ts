@@ -42,14 +42,14 @@ import { classMap } from 'lit/directives/class-map.js';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import '../mgt-menu/mgt-menu';
 import { MgtFileListBase } from '../mgt-file-list/mgt-file-list-base';
-import { Command } from '../mgt-menu/mgt-menu';
+import { MenuCommand } from '../mgt-menu/mgt-menu';
 import '../mgt-person/mgt-person';
 import { formatBytes, getRelativeDisplayDate } from '../../utils/Utils';
 
 registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider, fluentButton);
 
 // re-export to ensure it's in the final package as mgt-menu is internal only
-export { Command };
+export { MenuCommand };
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -131,13 +131,13 @@ export class MgtFileGrid extends MgtFileListBase {
   /**
    * Property to set the available actions on the file context menu
    *
-   * @type {Command<MicrosoftGraph.DriveItem>[]}
+   * @type {MenuCommand<MicrosoftGraph.DriveItem>[]}
    * @memberof MgtFileGrid
    */
   @property({
     attribute: false
   })
-  public commands: Command<DriveItem>[] = [];
+  public commands: MenuCommand<DriveItem>[] = [];
 
   private _preloadedFiles: DriveItem[];
   private pageIterator: GraphPageIterator<DriveItem>;
@@ -529,16 +529,6 @@ export class MgtFileGrid extends MgtFileListBase {
 
   private raiseItemClickedEvent(file: DriveItem) {
     this.fireCustomEvent('itemClick', file);
-  }
-
-  /**
-   * Remove accessibility keyboard focused when out of file list
-   *
-   */
-  private onFileListOut() {
-    const fileList = this.renderRoot.querySelector('.file-list');
-    const focusedItem = fileList.children[this._focusedItemIndex];
-    focusedItem?.classList.remove('focused');
   }
 
   /**

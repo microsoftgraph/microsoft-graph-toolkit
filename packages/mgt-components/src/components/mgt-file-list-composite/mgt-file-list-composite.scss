@@ -1,4 +1,6 @@
 :host {
+  position: relative;
+
   fluent-dialog::part(control) {
     height: auto;
     width: auto;
@@ -22,5 +24,16 @@
   }
   &::part(dialog-input) {
     width: 100%;
+  }
+
+  &::part(upload-button-wrapper) {
+    margin: 0;
+    display: block;
+  }
+
+  .command-bar {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
   }
 }

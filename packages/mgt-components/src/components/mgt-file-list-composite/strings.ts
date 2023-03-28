@@ -16,5 +16,8 @@ export const strings = {
   shareFileTitle: 'Share file: ',
   shareViewOnlyLink: 'View only link',
   shareEditableLink: 'Edit link',
-  copyToClipboardButton: 'Copy to clipboard'
+  copyToClipboardButton: 'Copy to clipboard',
+  newFolderTitle: 'New folder',
+  newFolderPlaceholder: 'Folder name',
+  newFolderButton: 'Create'
 };

@@ -199,12 +199,14 @@ export abstract class MgtBaseComponent extends LitElement {
     eventName: string,
     detail?: any,
     bubbles: boolean = false,
-    cancelable: boolean = false
+    cancelable: boolean = false,
+    composed: boolean = false
   ): boolean {
     const event = new CustomEvent(eventName, {
       bubbles,
       cancelable,
-      detail
+      detail,
+      composed
     });
     return this.dispatchEvent(event);
   }

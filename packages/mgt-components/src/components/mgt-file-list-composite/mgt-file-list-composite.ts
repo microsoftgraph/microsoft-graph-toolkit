@@ -1,18 +1,22 @@
-import { customElement, mgtHtml, Providers } from '@microsoft/mgt-element';
+import { customElement, mgtHtml, Providers, ProviderState } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { html, nothing, PropertyValueMap } from 'lit';
+import { html, nothing, PropertyValueMap, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { repeat } from 'lit/directives/repeat.js';
 import { OfficeGraphInsightString } from '../../graph/types';
 import { BreadcrumbInfo } from '../mgt-breadcrumb/mgt-breadcrumb';
 import { MgtFileListBase } from '../mgt-file-list/mgt-file-list-base';
 import { strings } from './strings';
 import '../mgt-file-grid/mgt-file-grid';
-import { Command } from '../mgt-menu/mgt-menu';
-import { clearFilesCache, deleteDriveItem, renameDriveItem, shareDriveItem } from '../../graph/graph.files';
+import '../mgt-file-list/mgt-file-upload/mgt-file-upload';
+import { MenuCommand } from '../mgt-menu/mgt-menu';
+import { addFolder, clearFilesCache, deleteDriveItem, renameDriveItem, shareDriveItem } from '../../graph/graph.files';
 import { styles } from './mgt-file-list-composite-css';
-import { fluentButton, fluentDialog, fluentTextField } from '@fluentui/web-components';
+import { ButtonAppearance, fluentButton, fluentDialog, fluentTextField } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { MgtFileGrid } from '../mgt-file-grid/mgt-file-grid';
+import { MgtFileUpload, MgtFileUploadConfig } from '../mgt-file-list/mgt-file-upload/mgt-file-upload';
 
 registerFluentComponents(fluentButton, fluentDialog, fluentTextField);
 
@@ -37,6 +41,14 @@ type FileListBreadCrumb = {
 } & BreadcrumbInfo;
 
 const alwaysRender = () => true;
+
+type CommandBarItem = {
+  text: string;
+  glyph?: unknown;
+  onClick: (e: MouseEvent) => void;
+  class?: string;
+  appearance?: ButtonAppearance;
+};
 
 /**
  * A File list composite component
@@ -68,7 +80,7 @@ class MgtFileListComposite extends MgtFileListBase {
   constructor() {
     super();
     this.breadcrumbRootName = strings.rootNode;
-    this.commands = [
+    this.menuCommands = [
       {
         id: 'share-edit',
         name: 'Create editable link',
@@ -85,6 +97,8 @@ class MgtFileListComposite extends MgtFileListBase {
       { id: 'delete', name: 'Delete', onClickFunction: this.showDeleteDialog, shouldRender: alwaysRender },
       { id: 'download', name: 'Download', onClickFunction: this.downloadFile, shouldRender: f => !f.folder }
     ];
+
+    this.comandBarItems = [{ text: 'New folder', onClick: this.showNewFolderDialog, appearance: 'accent' }];
   }
 
   /**
@@ -141,12 +155,13 @@ class MgtFileListComposite extends MgtFileListBase {
       id: 'root-item'
     };
     this.updateBreadcrumb(rootBreadcrumb);
-    // console.log('rootBreadcrumb', rootBreadcrumb);
     this.breadcrumb.push(rootBreadcrumb);
+
+    this.addEventListener('fileUploadSuccess', this.onFileUploadSuccess);
   }
 
   /**
-   * Implemented to overcome React wrapping challenges
+   * Implemented to overcome React wrapping challenges and attach event listeners after rendering
    *
    * @param changedProperties
    */
@@ -157,6 +172,7 @@ class MgtFileListComposite extends MgtFileListBase {
     // this casues connectecCallback logic to be called before properties are set
     const currentBreadcrumb = this.breadcrumb[this.breadcrumb.length - 1];
     this.updateBreadcrumb(currentBreadcrumb);
+    this.uploadButton?.attachEventListeners();
   }
 
   /**
@@ -174,6 +190,9 @@ class MgtFileListComposite extends MgtFileListBase {
 
   @state()
   private deleteDialogVisible = false;
+
+  @state()
+  private newFolderDialogVisible = false;
 
   @state()
   private renameDialogVisible = false;
@@ -194,22 +213,81 @@ class MgtFileListComposite extends MgtFileListBase {
    * @memberof MgtFileComposite
    */
   public render() {
+    if (!Providers.globalProvider || Providers.globalProvider.state !== ProviderState.SignedIn) return nothing;
     return html`
-      <a id="file-link" style="display:none"  target="_blank"></a>
-      ${this.renderBreadcrumb()}
-      ${this.renderFiles()}
-      ${this.renderDeleteDialog()}
-      ${this.renderRenameDialog()}
-      ${this.renderShareDialog()}
+      <div>
+        ${this.renderCommandBar()}
+        <a id="file-link" style="display:none"  target="_blank"></a>
+        ${this.renderBreadcrumb()}
+        ${this.renderFiles()}
+        ${this.renderDeleteDialog()}
+        ${this.renderNewFolderDialog()}
+        ${this.renderRenameDialog()}
+        ${this.renderShareDialog()}
+      </div>
     `;
   }
 
-  private commands: Command<DriveItem>[] = [];
+  private menuCommands: MenuCommand<DriveItem>[] = [];
 
+  private comandBarItems: CommandBarItem[] = [];
+
+  private get uploadButton(): MgtFileUpload {
+    return this.renderRoot.querySelector('mgt-file-upload');
+  }
+
+  private renderCommandBar(): TemplateResult | typeof nothing {
+    if (this.comandBarItems?.length < 1) return nothing;
+
+    return html`
+      <div class="command-bar">
+        ${repeat(
+          this.comandBarItems,
+          item => item.text,
+          item => html`
+          <fluent-button
+            class=${item.class}
+            appearance=${ifDefined(item.appearance)}
+            @click=${item.onClick}
+          >
+            ${item.text}
+          </fluent-button>
+        `
+        )}
+        ${this.enableFileUpload ? this.renderFileUpload() : nothing}
+      </div>
+`;
+  }
+
+  /**
+   * Render MgtFileUpload sub component
+   *
+   * @returns
+   */
+  private renderFileUpload(): TemplateResult | typeof nothing {
+    if (!this.enableFileUpload) return nothing;
+    const fileUploadConfig: MgtFileUploadConfig = {
+      graph: Providers.globalProvider.graph.forComponent(this),
+      driveId: this.driveId,
+      excludedFileExtensions: this.excludedFileExtensions,
+      groupId: this.groupId,
+      itemId: this.itemId,
+      itemPath: this.itemPath,
+      userId: this.userId,
+      siteId: this.siteId,
+      maxFileSize: this.maxFileSize,
+      maxUploadFile: this.maxUploadFile,
+      dropTarget: () => this
+    };
+    return mgtHtml`
+      <mgt-file-upload .fileUploadList=${fileUploadConfig} exportparts="upload-button-wrapper" ></mgt-file-upload>
+    `;
+  }
   private renderFiles() {
     return this.useGridView
       ? mgtHtml`
         <mgt-file-grid
+          id="files"
           .fileListQuery=${this.fileListQuery || nothing}
           .itemId=${this.itemId || nothing}
           .itemPath=${this.itemPath || nothing}
@@ -225,15 +303,15 @@ class MgtFileListComposite extends MgtFileListBase {
           .pageSize=${this.pageSize || nothing}
           ?hide-more-files-button=${this.hideMoreFilesButton || nothing}
           .maxFileSize=${this.maxFileSize || nothing}
-          ?enable-file-upload=${this.enableFileUpload || nothing}
           .maxUploadFile=${this.maxUploadFile || nothing}
           .excludedFileExtensions=${this.excludedFileExtensions || nothing}
-          .commands=${this.commands}
+          .commands=${this.menuCommands}
           @itemClick=${this.handleItemClick}
         ></mgt-file-grid>
 `
       : mgtHtml`
         <mgt-file-list
+          id="files"
           .fileListQuery=${this.fileListQuery || nothing}
           .itemId=${this.itemId || nothing}
           .itemPath=${this.itemPath || nothing}
@@ -249,7 +327,6 @@ class MgtFileListComposite extends MgtFileListBase {
           .pageSize=${this.pageSize || nothing}
           ?hide-more-files-button=${this.hideMoreFilesButton || nothing}
           .maxFileSize=${this.maxFileSize || nothing}
-          ?enable-file-upload=${this.enableFileUpload || nothing}
           .maxUploadFile=${this.maxUploadFile || nothing}
           .excludedFileExtensions=${this.excludedFileExtensions || nothing}
           @itemClick=${this.handleItemClick}
@@ -332,6 +409,44 @@ class MgtFileListComposite extends MgtFileListBase {
             </fluent-button>
           </div>
         </div>
+      </fluent-dialog>
+`;
+  }
+
+  private renderNewFolderDialog() {
+    return html`
+      <fluent-dialog
+        id="new-folder-dialog"
+        dir=${this.direction}
+        aria-label="New folder dialog"
+        modal="true"
+        .hidden=${!this.newFolderDialogVisible}
+        @close=${this.cancelNewFolder}
+        @cancel=${this.cancelNewFolder}
+      >
+        <form part="dialog-body" @submit=${this.addNewFolder}>
+          <h2>${strings.newFolderTitle}</h2>
+
+          <p>
+            <fluent-text-field
+              id="new-folder-name"
+              part="dialog-input"
+              appearance="outline"
+              placeholder=${strings.newFolderPlaceholder}
+              required
+              auto-focus
+              maxlength="200"
+            ></fluent-text-field>
+          </p>
+          <div part="button-row">
+            <fluent-button appearance="accent" type="submit">
+              ${strings.newFolderButton}
+            </fluent-button>
+            <fluent-button appearance="outline" @click=${this.cancelNewFolder}>
+              ${strings.cancel}
+            </fluent-button>
+          </div>
+        </form>
       </fluent-dialog>
 `;
   }
@@ -453,6 +568,11 @@ class MgtFileListComposite extends MgtFileListBase {
     }
   };
 
+  private showNewFolderDialog = (e: UIEvent): void => {
+    e.stopPropagation();
+    this.newFolderDialogVisible = true;
+  };
+
   private showRenameFileDialog = (e: UIEvent, file: DriveItem): void => {
     e.stopPropagation();
     this._activeFile = file;
@@ -486,6 +606,31 @@ class MgtFileListComposite extends MgtFileListBase {
     this.renameDialogVisible = false;
   };
 
+  private cancelNewFolder = (e: UIEvent) => {
+    e.stopPropagation();
+    this.newFolderDialogVisible = false;
+  };
+
+  private reloadFiles() {
+    const grid = this.renderRoot.querySelector('#files') as MgtFileGrid;
+    grid.reload(true);
+  }
+
+  private addNewFolder = async (e: UIEvent) => {
+    e.preventDefault(); // stop form submission and page refresh
+    e.stopPropagation();
+    const input: HTMLInputElement = this.renderRoot.querySelector('#new-folder-name');
+    const newFolderName = input.value;
+    if (newFolderName) {
+      const graph = Providers.globalProvider.graph.forComponent(this);
+      await addFolder(graph, this.driveId, this.itemId || 'root', newFolderName);
+      // need to refresh the list being shown....
+      this.reloadFiles();
+      this.newFolderDialogVisible = false;
+      this.requestStateUpdate();
+    }
+  };
+
   private performRename = async (e: UIEvent) => {
     e.preventDefault(); // stop form submission and page refresh
     e.stopPropagation();
@@ -495,8 +640,7 @@ class MgtFileListComposite extends MgtFileListBase {
       const graph = Providers.globalProvider.graph.forComponent(this);
       await renameDriveItem(graph, this._activeFile, newFileName);
       // need to refresh the list being shown....
-      const grid = this.renderRoot.querySelector('mgt-file-grid') as MgtFileGrid;
-      grid.reload(true);
+      this.reloadFiles();
       this.renameDialogVisible = false;
       this._activeFile = null;
       this.requestStateUpdate();
@@ -518,5 +662,9 @@ class MgtFileListComposite extends MgtFileListBase {
     e.stopPropagation();
     this._activeFile = null;
     this.deleteDialogVisible = false;
+  };
+
+  private onFileUploadSuccess = (e: CustomEvent<undefined>) => {
+    this.reloadFiles();
   };
 }

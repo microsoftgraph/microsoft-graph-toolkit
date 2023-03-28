@@ -14,13 +14,13 @@ registerFluentComponents(fluentButton, fluentMenu, fluentMenuItem, fluentAnchore
 /**
  * Data type for menu items commands
  */
-export type Command<T> = {
+export type MenuCommand<T> = {
   // tslint:disable: completed-docs
   id: string;
   name: string;
   glyph?: TemplateResult;
   onClickFunction?: (e: UIEvent, item: T) => void;
-  subcommands?: Command<T>[];
+  subcommands?: MenuCommand<T>[];
   shouldRender: (item: T) => boolean;
   // tslint:enable: completed-docs
 };
@@ -71,7 +71,7 @@ class MgtMenu<T extends { id: string }> extends MgtTemplatedComponent {
    * @memberof MgtMenu
    */
   @property({ attribute: false })
-  public commands: Command<T>[] = [];
+  public commands: MenuCommand<T>[] = [];
   /**
    * Render the component
    *
@@ -114,7 +114,7 @@ class MgtMenu<T extends { id: string }> extends MgtTemplatedComponent {
     this._menuOpen = false;
   };
 
-  private renderMenuItems(commands: Command<T>[]): unknown {
+  private renderMenuItems(commands: MenuCommand<T>[]): unknown {
     return repeat(
       commands,
       command => command.id,
@@ -122,7 +122,7 @@ class MgtMenu<T extends { id: string }> extends MgtTemplatedComponent {
     );
   }
 
-  private renderMenuItem(command: Command<T>) {
+  private renderMenuItem(command: MenuCommand<T>) {
     return command.shouldRender(this.item)
       ? html`
           <fluent-menu-item
