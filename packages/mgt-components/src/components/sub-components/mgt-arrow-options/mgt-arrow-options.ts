@@ -27,7 +27,6 @@ import { styles } from './mgt-arrow-options-css';
  * @extends {MgtBaseComponent}
  */
 @customElement('arrow-options')
-// @customElement('mgt-arrow-options')
 export class MgtArrowOptions extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -104,7 +103,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
    */
   public render() {
     return html`
-      <span class="Header" @click=${e => this.onHeaderClick(e)}>
+      <span class="Header" @click=${this.onHeaderClick}>
         <span class="CurrentValue">${this.value}</span>
       </span>
       <div class=${classMap({ Menu: true, Open: this.open, Closed: !this.open })}>

@@ -29,11 +29,9 @@ mgt-dot-options .DotIcon {
 :host .Menu,
 mgt-dot-options .Menu {
   position: absolute;
-  box-shadow: set-var(box-shadow__color, $theme-default, $common) 0px 0px 40px 5px;
-  background: set-var(background-color, $theme-default, $common);
+  background-color: var(--neutral-fill-rest);
   z-index: 1;
   display: none;
-  color: set-var(color, $theme-default, $common);
   white-space: nowrap;
   transform: var(--dot-options-translateX, translateX(-50px));
 }
@@ -52,12 +50,12 @@ mgt-dot-options .DotMenu .DotItem {
 
 :host .DotMenu .DotItem:hover,
 mgt-dot-options .DotMenu .DotItem:hover {
-  background: set-var(background-color--hover, $theme-default, $common);
+  background-color: var(--neutral-fill-hover);
 }
 
 :host .DotMenu .DotItem:active,
 mgt-dot-options .DotMenu .DotItem:active {
-  background: set-var(background-color--active, $theme-default, $common);
+  background-color: var(--neutral-fill-active);
 }
 
 :host .DotMenu .DotItemName,
