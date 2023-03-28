@@ -110,7 +110,7 @@ type FullSearchResponse = {
  * Custom element for making Microsoft Graph get queries
  *
  * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes
- * *
+ *
  * @cssprop --answer-border-radius - {Length} Border radius of an answer
  * @cssprop --answer-box-shadow - {Length} Box shadow of an answer
  * @cssprop --answer-border - {Length} Border of an answer
@@ -392,13 +392,13 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Synchronizes property values when attributes change.
    *
-   * @param {*} name
-   * @param {*} oldval
-   * @param {*} newval
+   * @param {string} name
+   * @param {string} oldValue
+   * @param {string} newValue
    * @memberof MgtSearchResults
    */
-  public attributeChangedCallback(name: string, oldval: string, newval: string) {
-    super.attributeChangedCallback(name, oldval, newval);
+  public attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    super.attributeChangedCallback(name, oldValue, newValue);
     this.requestStateUpdate();
   }
 
@@ -438,7 +438,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     let headerTemplate: TemplateResult = null;
     let footerTemplate: TemplateResult = null;
 
-    // tslint:disable-next-line: no-string-literal
     if (this.hasTemplate('header')) {
       headerTemplate = this.renderTemplate('header', this.response);
     }
@@ -970,7 +969,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @returns
    */
   private renderList(result: SearchHit): HTMLTemplateResult {
-    let resource: any = result.resource as any;
+    let resource: any = result.resource as SearchResource;
     return mgtHtml`
       <div class="search-result-grid">
         <div class="search-result-icon">
@@ -1213,9 +1212,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
     if (this.entityTypes.includes('externalItem')) {
       requestOptions.contentSources = this.contentSources;
-      /*requestOptions.resultTemplateOptions = {
-        enableResultTemplate: true
-      };*/
     }
 
     if (this.version === 'beta') {

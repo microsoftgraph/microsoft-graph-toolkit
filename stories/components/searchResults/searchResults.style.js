@@ -9,17 +9,19 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-search-box / Style',
-  component: 'search-box',
+  title: 'Components / mgt-search-results / Style',
+  component: 'search-results',
   decorators: [withCodeEditor]
 };
 
 export const customCSSProperties = () => html`
   <style>
-    mgt-search-box {
-      --search-input-width: 200px;
+    mgt-search-results {
+      --answer-border-radius: 10px;
+      --answer-box-shadow: 0px 2px 30px pink;;
+      --answer-border: dotted 2px white;;
+      --answer-padding: 8px 0px;
     }
   </style>
-
-  <mgt-search-box></mgt-search-box>
+  <mgt-search-results query-string="yammer" entity-types="bookmark" version="beta"></mgt-search-results>
 `;
