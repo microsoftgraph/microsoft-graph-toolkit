@@ -6,13 +6,13 @@
  */
 @import '../../styles/shared-sass-variables.scss';
 
-$agenda__event__time__color: var(--agenda-event-time-color, var(--neutral-foreground-rest));
-$agenda__event__subject__color: var(--agenda-event-subject-color, var(--neutral-foreground-rest));
-$agenda__event__location__color: var(--agenda-event-location-color, var(--neutral-foreground-rest));
-$agenda__event__attendees__color: var(--agenda-event-attendees-color, var(--neutral-foreground-rest));
-$agenda__header__color: var(--agenda-header-color, var(--neutral-foreground-rest));
-$agenda__background-color: var(--agenda-background-color, var(--neutral-layer-floating));
-$agenda__header__background-color: var(--agenda-header-background-color, var(--neutral-layer-floating));
-$agenda__header__border-color: var(--agenda-header-border-color, var(--neutral-foreground-rest));
-$agenda__event__background-color: var(--agenda-event-border-color, var(--neutral-layer-floating));
-$agenda__event__background-color: var(--agenda-event-background-color, var(--neutral-layer-floating));
+$agenda-event-time-color: var(--agenda-event-time-color, var(--neutral-foreground-rest));
+$agenda-event-subject-color: var(--agenda-event-subject-color, var(--neutral-foreground-rest));
+$agenda-event-location-color: var(--agenda-event-location-color, var(--neutral-foreground-rest));
+$agenda-event-attendees-color: var(--agenda-event-attendees-color, var(--neutral-foreground-rest));
+$agenda-header-color: var(--agenda-header-color, var(--neutral-foreground-rest));
+$agenda-background-color: var(--agenda-background-color, var(--neutral-layer-floating));
+$agenda-header-background-color: var(--agenda-header-background-color, var(--neutral-layer-floating));
+$agenda-header-border-color: var(--agenda-header-border-color, var(--neutral-foreground-rest));
+$agenda-event-background-color: var(--agenda-event-border-color, var(--neutral-layer-floating));
+$agenda-event-background-color: var(--agenda-event-background-color, var(--neutral-layer-floating));

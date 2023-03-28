@@ -9,20 +9,30 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-agenda.theme.scss';
 
+$agenda-header-margin: var(--agenda-header-margin, 18px 0px 12px 10px);
+$agenda-header-font-size: var(--agenda-header-font-size, 24px);
+$agenda-event-row-gap: var(--agenda-event-row-gap, 14px);
+$agenda-event-border: var(--agenda-event-border, solid 2px rgba(0, 0, 0, 0));
+$agenda-event-box-shadow: var(--agenda-event-box-shadow, var(--elevation-shadow-card-rest));
+$agenda-event-padding: var(--agenda-event-padding, 12px);
+$agenda-event-time-font-size: var(--agenda-event-time-font-size, 12px);
+$agenda-event-subject-font-size: var(--agenda-event-subject-font-size, 20px);
+$agenda-event-location-font-size: var(--agenda-event-location-font-size, 12px);
+
 :host,
 mgt-agenda {
   --card-height: auto;
   --card-width: 99%;
-  background-color: $agenda__background-color;
+  background-color: $agenda-background-color;
 
   .header {
-    margin: var(--agenda-header-margin, 18px 0px 12px 10px);
+    margin: $agenda-header-margin;
     font-family: $font-family;
-    font-size: var(--agenda-header-font-size, 24px);
+    font-size: $agenda-header-font-size;
     font-style: normal;
     font-weight: 400;
     line-height: 32px;
-    color: $agenda__header__color;
+    color: $agenda-header-color;
     opacity: 0.9;
   }
 
@@ -30,17 +40,17 @@ mgt-agenda {
   .group {
     display: flex;
     flex-direction: column;
-    row-gap: var(--event-row-gap, 14px);
+    row-gap: $agenda-event-row-gap;
 
     & > .group:first-child > .header {
       margin-top: 0;
     }
 
     .event {
-      background: $agenda__event__background-color;
-      border: var(--event-border, solid 2px rgba(0, 0, 0, 0));
-      box-shadow: var(--elevation-shadow-card-rest, --event-box-shadow);
-      padding: var(--event-padding, 12px);
+      background: $agenda-event-background-color;
+      border: $agenda-event-border;
+      box-shadow: $agenda-event-box-shadow;
+      padding: $agenda-event-padding;
       position: relative;
       display: flex;
       flex: 1 1 auto;
@@ -59,11 +69,11 @@ mgt-agenda {
       }
 
       &-time-container {
-        font-family: var(--default-font-family);
+        font-family: $font-family;
         font-style: normal;
         font-weight: 600;
         font-size: 12px;
-        color: $agenda__event__time__color;
+        color: $agenda-event-time-color;
         width: 112px;
         height: 16px;
 
@@ -71,16 +81,11 @@ mgt-agenda {
           margin-bottom: 1px;
           width: 100%;
         }
-        .event {
-          &-time-loading {
-            // @include loading-element;
-          }
-        }
       }
 
       &-time {
-        font-size: var(--event-time-font-size, 12px);
-        color: $agenda__event__time__color;
+        font-size: $agenda-event-time-font-size;
+        color: $agenda-event-time-color;
         font-weight: 600;
       }
 
@@ -99,20 +104,15 @@ mgt-agenda {
           flex-direction: column;
           padding-inline-start: 0px;
         }
-        .event {
-          &-subject-loading {
-            // @include loading-element;
-          }
-        }
       }
 
       &-subject {
         font-family: $font-family;
         font-style: normal;
         font-weight: 400;
-        font-size: var(--event-subject-font-size, 20px);
+        font-size: $agenda-event-subject-font-size;
         line-height: 28px;
-        color: $agenda__event__subject__color;
+        color: $agenda-event-subject-color;
         mix-blend-mode: normal;
         position: inherit;
         bottom: 8px;
@@ -128,9 +128,9 @@ mgt-agenda {
             font-family: $font-family;
             font-style: normal;
             font-weight: 400;
-            font-size: var(--event-location-font-size, 12px);
+            font-size: $agenda-event-location-font-size;
             line-height: 16px;
-            color: $agenda__event__location__color;
+            color: $agenda-event-location-color;
 
             &-loading {
               width: 90px;
@@ -147,7 +147,7 @@ mgt-agenda {
               height: 12px;
 
               path {
-                stroke: $agenda__event__location__color;
+                stroke: $agenda-event-location-color;
               }
             }
             &-loading {
@@ -183,7 +183,7 @@ fluent-card.event {
 }
 
 :host mgt-people {
-  --color: $agenda__event__attendees__color;
+  --color: $agenda-event-attendees-color;
 }
 
 :host fluent-tooltip {
