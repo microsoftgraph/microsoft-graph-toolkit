@@ -139,6 +139,7 @@ mgt-agenda {
             }
           }
           &-location-icon {
+            display: inline-flex;
             svg {
               position: relative;
               top: 2px;
