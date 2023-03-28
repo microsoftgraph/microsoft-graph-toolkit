@@ -215,7 +215,7 @@ class MgtFileListComposite extends MgtFileListBase {
   public render() {
     if (!Providers.globalProvider || Providers.globalProvider.state !== ProviderState.SignedIn) return nothing;
     return html`
-      <div>
+      <div class="root">
         ${this.renderCommandBar()}
         <a id="file-link" style="display:none"  target="_blank"></a>
         ${this.renderBreadcrumb()}

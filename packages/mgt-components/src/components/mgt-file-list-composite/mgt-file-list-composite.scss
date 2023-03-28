@@ -1,6 +1,7 @@
 :host {
-  position: relative;
-
+  .root {
+    position: relative;
+  }
   fluent-dialog::part(control) {
     height: auto;
     width: auto;
