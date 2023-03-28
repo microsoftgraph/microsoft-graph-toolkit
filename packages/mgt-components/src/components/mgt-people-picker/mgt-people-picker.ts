@@ -556,7 +556,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private defaultPeople: IDynamicPerson[];
 
   // tracking of user arrow key input for selection
-  @state() private _arrowSelectionCount: number = 0;
+  @state() private _arrowSelectionCount: number = -1;
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
@@ -1263,7 +1263,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (this.input) {
       this.input.setAttribute('aria-expanded', 'true');
     }
-    this._arrowSelectionCount = 0;
+    this._arrowSelectionCount = -1;
   }
 
   /**
@@ -1348,7 +1348,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // handle input blur
   private lostFocus() {
     this._isFocused = false;
-    this._arrowSelectionCount = -1;
     if (this.input) {
       this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
@@ -1554,11 +1553,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     if (keyName === 'Tab') {
-      if (this._arrowSelectionCount <= 0) {
-        this._arrowSelectionCount = 0;
-      } else {
-        this.hideFlyout();
-      }
+      this.hideFlyout();
     }
 
     if ([';', ','].includes(keyName)) {
