@@ -6,30 +6,13 @@
  */
 @import '../../styles/shared-sass-variables.scss';
 
-$event__time__color: var(--event-time-color, set-var(color, $theme-default, $common));
-$event__subject__color: var(--event-subject-color, set-var(color__sub1, $theme-default, $common));
-$event__location__color: var(--event-location-color, set-var(color, $theme-default, $common));
-$event__attendees__color: var(--event-attendees-color, set-var(color, $theme-default, $common));
-$header__color: var(--agenda-header-color, set-var(color__sub1, $theme-default, $common));
-
-$agenda: (
-  event__background-color: (
-    _var: --event-background-color,
-    light: $background-color__main--light,
-    dark: $background-color__sub1--dark
-  ),
-  background-color: (
-    _var: background-color,
-    light: transparent,
-    dark: 'transparent !important'
-  )
-);
-
-@mixin loading-element {
-  &.loading-element {
-    background: set-var(event__background-color, $theme-default, $agenda);
-    border-radius: 1px;
-  }
-}
-
-@include create-themes($agenda);
+$agenda__event__time__color: var(--agenda-event-time-color, var(--neutral-foreground-rest));
+$agenda__event__subject__color: var(--agenda-event-subject-color, var(--neutral-foreground-rest));
+$agenda__event__location__color: var(--agenda-event-location-color, var(--neutral-foreground-rest));
+$agenda__event__attendees__color: var(--agenda-event-attendees-color, var(--neutral-foreground-rest));
+$agenda__header__color: var(--agenda-header-color, var(--neutral-foreground-rest));
+$agenda__background-color: var(--agenda-background-color, var(--neutral-layer-floating));
+$agenda__header__background-color: var(--agenda-header-background-color, var(--neutral-layer-floating));
+$agenda__header__border-color: var(--agenda-header-border-color, var(--neutral-foreground-rest));
+$agenda__event__background-color: var(--agenda-event-border-color, var(--neutral-layer-floating));
+$agenda__event__background-color: var(--agenda-event-background-color, var(--neutral-layer-floating));
