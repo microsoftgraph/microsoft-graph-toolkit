@@ -902,7 +902,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         };
       }
 
-      folderOptions[this.res.BUCKETS_SELF_ASSIGNED] = e => {
+      folderOptions[this.res.BUCKETS_SELF_ASSIGNED] = () => {
         this._currentFolder = null;
       };
 
@@ -924,6 +924,16 @@ export class MgtTasks extends MgtTemplatedComponent {
       `;
     }
   }
+
+  private handleDateChange = (e: UIEvent) => {
+    const value = (e.target as HTMLInputElement).value;
+    if (value) {
+      this._newTaskDueDate = new Date(value + 'T17:00');
+    } else {
+      this._newTaskDueDate = null;
+    }
+  };
+
   private renderNewTask() {
     const iconColor = 'var(--neutral-foreground-hint)';
 
@@ -991,22 +1001,13 @@ export class MgtTasks extends MgtTemplatedComponent {
           ${folders.length > 0 ? folderOptions : html`<fluent-option selected>No folders found</fluent-option>`}
         </fluent-select>`;
 
-    const handleDateChange = (e: UIEvent) => {
-      const value = (e.target as HTMLInputElement).value;
-      if (value) {
-        this._newTaskDueDate = new Date(value + 'T17:00');
-      } else {
-        this._newTaskDueDate = null;
-      }
-    };
-
     const taskDue = html`
       <fluent-text-field
         type="date"
         class="NewTask"
         aria-label="${this.strings.addTaskDate}"
         .value="${this.dateToInputValue(this._newTaskDueDate)}"
-        @change=${(e: UIEvent) => handleDateChange(e)}>
+        @change=${this.handleDateChange}>
       </fluent-text-field>`;
 
     const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null, iconColor);
@@ -1226,6 +1227,24 @@ export class MgtTasks extends MgtTemplatedComponent {
     return getSvg(SvgIcon.Milestone, iconColor);
   };
 
+  private handlePpleClick = (e: MouseEvent) => {
+    this.togglePeoplePicker(task);
+    e.stopPropagation();
+  };
+
+  private handlePpleKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      this.togglePeoplePicker(task);
+      e.stopPropagation();
+    }
+  };
+
+  private handlePpickerKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.stopPropagation();
+    }
+  };
+
   private renderAssignedPeople(task: ITask, iconColor: string): TemplateResult {
     const taskAssigneeClasses = {
       NewTaskAssignee: task === null,
@@ -1236,27 +1255,14 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskId = task ? task.id : 'newTask';
     taskAssigneeClasses[`flyout-${taskId}`] = true;
 
-    const handlePpleClick = (e: MouseEvent) => {
-      this.togglePeoplePicker(task);
-      e.stopPropagation();
-    };
-
-    const handlePpleKeydown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        this.togglePeoplePicker(task);
-        e.stopPropagation();
-      }
-    };
-
     const assignedPeople = task ? Object.keys(task.assignments).map(key => key) : [];
 
-    const personAddIcon = (color: string) => html``;
     const assignedPeopleTemplate = mgtHtml`
       <mgt-people
         class="people people-${taskId}"
         .userIds=${assignedPeople}
-        @click=${handlePpleClick}
-        @keydown=${handlePpleKeydown}>
+        @click=${this.handlePpleClick}
+        @keydown=${this.handlePpleKeydown}>
           <template data-type="no-data">
             <span style="display:flex;place-content:center;gap:4px;">
               <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="svg" fill="currentColor">
@@ -1267,17 +1273,11 @@ export class MgtTasks extends MgtTemplatedComponent {
           </template>
       </mgt-people>`;
 
-    const handlePpickerKeydown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        e.stopPropagation();
-      }
-    };
-
     const picker = mgtHtml`
       <mgt-people-picker
         class="people-picker picker-${taskId}"
         @click=${(e: MouseEvent) => e.stopPropagation()}
-        @keydown=${handlePpickerKeydown}>
+        @keydown=${this.handlePpickerKeydown}>
       </mgt-people-picker>
     `;
 
