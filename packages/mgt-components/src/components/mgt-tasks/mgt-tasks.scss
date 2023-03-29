@@ -47,10 +47,6 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
       &::part(control) {
         font-weight: 700;
       }
-
-      &::part(start) {
-        margin-top: 6px;
-      }
     }
   }
 
