@@ -170,6 +170,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     &.checked {
       &::part(label) {
         text-decoration: line-through;
+        color: var(--neutral-foreground-hint);
       }
     }
   }
