@@ -43,9 +43,11 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
     .NewTaskButton {
       justify-content: right;
+
       &::part(control) {
         font-weight: 700;
       }
+
       &::part(start) {
         margin-top: 6px;
       }
@@ -69,6 +71,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
       &.Complete {
         border: $task-border-completed;
       }
+
       &.Incomplete {
         border: 1px dotted var(--neutral-layer-3);
       }
@@ -87,6 +90,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
           &.AddNewTask {
             flex-direction: row;
           }
+
           .CheckAndTitle {
             display: flex;
             align-items: flex-start;
@@ -109,6 +113,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
             }
           }
         }
+
         .Bottom {
           display: grid;
           grid-auto-flow: column;
@@ -143,6 +148,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
           .TaskTitle {
             color: var(--foreground-on-neutral-rest);
           }
+
           .TaskBody {
             display: flex;
           }
@@ -176,12 +182,6 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     }
   }
 
-  fluent-select {
-    [slot='start'] {
-      margin-top: 5px;
-    }
-  }
-
   mgt-people {
     [slot='no-data'] {
       margin-top: 8px;
@@ -194,6 +194,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     fluent-select {
       width: 100%;
     }
+
     .Tasks {
       .Task {
         .TaskDetailsContainer {
@@ -202,7 +203,14 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
             grid-auto-flow: row;
             grid-auto-columns: unset;
             row-gap: 4px;
+
+            .TaskGroup,
+            .TaskBucket,
+            .TaskDue {
+              margin-inline-start: 8px;
+            }
           }
+
           .Top {
             &.AddNewTask {
               flex-direction: column;
