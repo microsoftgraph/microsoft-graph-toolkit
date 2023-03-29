@@ -52,7 +52,7 @@ $progress-ring-size: var(--progress-ring-size, 24px);
 
   &.compact,
   &.fullView {
-    padding-inline-start: 10px;
+    padding-inline: 10px;
   }
   .title {
     font-size: 14px;
