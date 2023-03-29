@@ -352,7 +352,8 @@ export class MgtTodo extends MgtTasksBase {
       Complete: isCompleted,
       Incomplete: !isCompleted,
       ReadOnly: this.readOnly,
-      Task: true
+      Task: true,
+      checked: isCompleted ? true : false
     });
 
     const taskCheckContent = isCompleted

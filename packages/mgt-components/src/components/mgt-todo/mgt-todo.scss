@@ -16,6 +16,7 @@
   .Task {
     @extend .Task;
     width: 100%;
+    background-color: $task-background-color;
     &.NewTask {
       margin: 14px 0 0 0;
     }
@@ -89,6 +90,10 @@
           margin-inline-start: 10px;
           background-color: $task-background-color;
           color: $task-color;
+          cursor: pointer;
+          &::after {
+            cursor: pointer;
+          }
         }
 
         input {
@@ -158,6 +163,8 @@
   fluent-radio {
     &::part(control) {
       margin-inline-start: 10px;
+      background: none;
+      border-color: $task-color;
     }
     &::part(label) {
       margin-inline-end: unset;
