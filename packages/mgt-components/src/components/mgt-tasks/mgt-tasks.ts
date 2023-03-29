@@ -1224,19 +1224,19 @@ export class MgtTasks extends MgtTemplatedComponent {
     return getSvg(SvgIcon.Milestone, iconColor);
   };
 
-  private handlePpleClick = (e: MouseEvent) => {
+  private handlePeopleClick = (e: MouseEvent, task: ITask) => {
     this.togglePeoplePicker(task);
     e.stopPropagation();
   };
 
-  private handlePpleKeydown = (e: KeyboardEvent) => {
+  private handlePeopleKeydown = (e: KeyboardEvent, task: ITask) => {
     if (e.key === 'Enter') {
       this.togglePeoplePicker(task);
       e.stopPropagation();
     }
   };
 
-  private handlePpickerKeydown = (e: KeyboardEvent) => {
+  private handlePeoplePickerKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.stopPropagation();
     }
@@ -1258,8 +1258,8 @@ export class MgtTasks extends MgtTemplatedComponent {
       <mgt-people
         class="people people-${taskId}"
         .userIds=${assignedPeople}
-        @click=${this.handlePpleClick}
-        @keydown=${this.handlePpleKeydown}>
+        @click=${(e: MouseEvent) => this.handlePeopleClick(e, task)}
+        @keydown=${(e: KeyboardEvent) => this.handlePeopleKeydown(e, task)}>
           <template data-type="no-data">
             <span style="display:flex;place-content:center;gap:4px;">
               <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="svg" fill="currentColor">
@@ -1274,7 +1274,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       <mgt-people-picker
         class="people-picker picker-${taskId}"
         @click=${(e: MouseEvent) => e.stopPropagation()}
-        @keydown=${this.handlePpickerKeydown}>
+        @keydown=${this.handlePeoplePickerKeydown}>
       </mgt-people-picker>
     `;
 
