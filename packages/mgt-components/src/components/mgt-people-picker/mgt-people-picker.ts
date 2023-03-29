@@ -937,7 +937,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         id="suggestions-list"
         aria-label="${this.strings.suggestedContacts}"
         class="people-list"
-        role="listbox">
+        role="listbox"
+        aria-live="polite"
+      >
          ${repeat(
            filteredPeople,
            person => person.id,
