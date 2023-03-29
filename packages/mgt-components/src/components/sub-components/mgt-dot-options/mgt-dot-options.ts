@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { fluentMenu, fluentMenuItem } from '@fluentui/web-components';
+import { fluentMenu, fluentMenuItem, fluentButton } from '@fluentui/web-components';
 import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -13,7 +13,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { styles } from './mgt-dot-options-css';
 
-registerFluentComponents(fluentMenu, fluentMenuItem);
+registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
 
 /**
  * Defines the event functions passed to the option item.
@@ -79,11 +79,11 @@ export class MgtDotOptions extends MgtBaseComponent {
     const menuOptions = Object.keys(this.options);
 
     return html`
-      <span
-        tabindex="0"
+      <fluent-button
+        appearance="stealth"
         @click=${this.onDotClick}
         @keydown=${this.onDotKeydown}
-        class="DotIcon">\uE712</span>
+        class="DotIcon">\uE712</fluent-button>
       <fluent-menu class=${classMap({ Menu: true, Open: this.open })}>
         ${menuOptions.map(opt => this.getMenuOption(opt, this.options[opt]))}
       </fluent-menu>`;
