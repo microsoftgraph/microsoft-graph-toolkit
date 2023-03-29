@@ -1,5 +1,8 @@
-import { makeDecorator } from '@storybook/addons';
+import addons, { makeDecorator } from '@storybook/addons';
+
+import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/IProvider';
 import { EditorElement } from './editor';
+import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from '../../env';
 
 const mgtScriptName = './mgt.storybook.js';
 
@@ -154,6 +157,7 @@ export const withCodeEditor = makeDecorator({
         }
       }
     }
+
     const themeToggleCss = disableThemeToggle
       ? ''
       : `
@@ -177,12 +181,33 @@ export const withCodeEditor = makeDecorator({
         <mgt-theme-toggle mode="light"></mgt-theme-toggle>
       </header>
 `;
-    const loadEditorContent = () => {
-      let providerInitCode = `
-        import {Providers, MockProvider} from "${mgtScriptName}";
-        Providers.globalProvider = new MockProvider(true);
-      `;
 
+    let providerInitCode = `
+      import {Providers, MockProvider} from "${mgtScriptName}";
+      Providers.globalProvider = new MockProvider(true);
+    `;
+
+    const channel = addons.getChannel();
+    channel.on(SETPROVIDER_EVENT, params => {
+      if (params.state === ProviderState.SignedIn && params.name === 'MgtMockProvider') {
+        providerInitCode = `
+          import { Providers, MockProvider } from "${mgtScriptName}";
+          Providers.globalProvider = new MockProvider(true);
+        `;
+      } else if (params.state === ProviderState.SignedIn && params.name === 'MgtMsal2Provider') {
+        providerInitCode = `
+          import { Providers, Msal2Provider, LoginType } from "${mgtScriptName}";
+          Providers.globalProvider = new Msal2Provider({
+            clientId: "${CLIENTID}",
+            loginType: LoginType.Popup,
+            redirectUri: "${window.location.origin}/${AUTH_PAGE}"
+          });`;
+      }
+
+      loadEditorContent();
+    });
+
+    const loadEditorContent = () => {
       const storyElement = document.createElement('iframe');
 
       storyElement.addEventListener(
@@ -201,8 +226,7 @@ export const withCodeEditor = makeDecorator({
             <head>
               <script type="module" src="${mgtScriptName}"></script>
               <script type="module">
-                import {Providers, MockProvider} from "${mgtScriptName}";
-                Providers.globalProvider = new MockProvider(true);
+                ${providerInitCode}
               </script>
               <style>
                 html, body {
