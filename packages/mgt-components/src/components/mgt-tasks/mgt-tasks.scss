@@ -125,6 +125,8 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
             .TaskIcon {
               display: flex;
               place-content: center;
+              width: 20px;
+              height: 20px;
             }
 
             .TaskIconText {
