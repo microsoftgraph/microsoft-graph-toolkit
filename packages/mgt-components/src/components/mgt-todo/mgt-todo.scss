@@ -13,7 +13,8 @@
   border-radius: 8px;
   width: 100%;
 
-  .Task {
+  .Task,
+  &.LoadingTask {
     @extend .Task;
     width: 100%;
     background-color: $task-background-color;
@@ -25,54 +26,54 @@
       border: set-var(border, $theme-default, $tasks);
       background: $task-background-color--completed;
     }
-  }
 
-  .TaskDetails {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 2px;
-    line-height: 24px;
-
-    border-radius: 4px;
-    .Task {
-      > div {
-        display: flex;
-        align-items: center;
-        width: 200px;
-      }
-    }
-    .title {
-      flex-grow: 1;
-    }
-    .TaskDelete {
+    .TaskDetails {
+      box-sizing: border-box;
       display: flex;
-    }
-    .TaskDue {
-      min-width: 120px;
-      margin-inline-end: 12px;
-      height: 32px;
-      text-decoration: inherit;
-      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 2px;
+      line-height: 24px;
 
-      .TaskCalendar {
-        display: flex;
-        margin-top: 5px;
-        margin-inline-end: 10px;
-
-        svg {
-          fill: $task-color;
+      border-radius: 4px;
+      .Task {
+        > div {
+          display: flex;
+          align-items: center;
+          width: 200px;
         }
       }
-      .TaskDueDate {
+      .Title {
+        flex-grow: 1;
+      }
+      .TaskDelete {
         display: flex;
-        margin-top: 5px;
+      }
+      .TaskDue {
+        min-width: 120px;
+        margin-inline-end: 12px;
+        height: 32px;
+        text-decoration: inherit;
+        display: flex;
+
+        .TaskCalendar {
+          display: flex;
+          margin-top: 5px;
+          margin-inline-end: 10px;
+
+          svg {
+            fill: $task-color;
+          }
+        }
+        .TaskDueDate {
+          display: flex;
+          margin-top: 5px;
+        }
       }
     }
   }
 
-  fluent-text-field {
+  fluent-text-field.NewTask {
     width: 100%;
     height: 34px;
 

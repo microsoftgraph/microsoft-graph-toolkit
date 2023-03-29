@@ -260,6 +260,7 @@ export class MgtTodo extends MgtTasksBase {
     const newTaskDetails = html`
       <fluent-text-field
         appearance="outline"
+        class="NewTask"
         id="new-taskName-input"
         aria-label="${this.strings.newTaskLabel}"
         .value=${this._newTaskName}
@@ -337,7 +338,7 @@ export class MgtTodo extends MgtTasksBase {
     } else {
       taskDetailsTemplate = html`
       <div class="TaskDetails">
-        <div class="title">${task.title}</div>
+        <div class="Title">${task.title}</div>
         <div class="TaskDue">${taskDueTemplate}</div>
         <fluent-button class="TaskDelete"
           @click="${(e: Event) => this.removeTask(e, task.id)}"

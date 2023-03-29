@@ -154,23 +154,10 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   protected renderLoadingTask() {
     return html`
       <div class="Task LoadingTask">
-        <div class="TaskContent">
-          <div class="TaskCheckContainer">
-            <div class="TaskCheck"></div>
-          </div>
-          <div class="TaskDetailsContainer">
-            <div class="TaskTitle"></div>
-            <div class="TaskDetails">
-              <span class="TaskDetail">
-                <div class="TaskDetailIcon"></div>
-                <div class="TaskDetailName"></div>
-              </span>
-              <span class="TaskDetail">
-                <div class="TaskDetailIcon"></div>
-                <div class="TaskDetailName"></div>
-              </span>
-            </div>
-          </div>
+        <div class="TaskDetails">
+          <div class="Title"></div>
+          <div class="TaskDue"></div>
+          <div class="TaskDelete"></div>
         </div>
       </div>
     `;

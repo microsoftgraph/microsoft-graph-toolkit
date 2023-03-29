@@ -638,43 +638,6 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         }
       }
     }
-
-    &.LoadingTask {
-      .TaskCheckContainer {
-        cursor: default;
-      }
-      .TaskDetails {
-        display: flex;
-      }
-      .TaskCheck {
-        background: #f2f2f2;
-        border-color: #f2f2f2;
-        cursor: default;
-      }
-      .TaskDetailIcon {
-        width: 16px;
-        height: 16px;
-        margin: 5px;
-        background: #f2f2f2;
-      }
-      .TaskTitle {
-        background: #f2f2f2;
-        max-width: 400px;
-        height: 20px;
-        margin-right: 20px !important;
-      }
-      .TaskDetail {
-        margin-right: 12px;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
-      .TaskDetailName {
-        width: 81px;
-        height: 10px;
-        background: #f2f2f2;
-      }
-    }
   }
 }
 
