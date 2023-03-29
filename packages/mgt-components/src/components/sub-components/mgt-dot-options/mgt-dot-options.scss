@@ -11,54 +11,26 @@
 
 $dot-options-translateX: var(--dot-options-translateX, translateX(-50px));
 
-:host,
-mgt-dot-options {
+:host {
   font-family: $font-family;
-}
+  position: relative;
 
-:host .DotIcon,
-mgt-dot-options .DotIcon {
-  display: inline-block;
-  font-family: 'FabricMDL2Icons';
-  min-width: 40px;
-  min-height: 30px;
-  text-align: center;
-  line-height: 30px;
-}
+  .DotIcon {
+    font-family: 'FabricMDL2Icons';
+    display: flex;
+    place-content: flex-end;
+  }
 
-:host .Menu,
-mgt-dot-options .Menu {
-  position: absolute;
-  background-color: var(--neutral-fill-rest);
-  z-index: 1;
-  display: none;
-  white-space: nowrap;
-  transform: var(--dot-options-translateX, translateX(-50px));
-}
+  .Menu {
+    display: none;
 
-:host .DotMenu.Open .Menu,
-mgt-dot-options .DotMenu.Open .Menu {
-  display: block;
-}
-
-:host .DotMenu .DotItem,
-mgt-dot-options .DotMenu .DotItem {
-  direction: ltr;
-  text-align: left;
-  padding: 10px 10px 8px 10px;
-}
-
-:host .DotMenu .DotItem:hover,
-mgt-dot-options .DotMenu .DotItem:hover {
-  background-color: var(--neutral-fill-hover);
-}
-
-:host .DotMenu .DotItem:active,
-mgt-dot-options .DotMenu .DotItem:active {
-  background-color: var(--neutral-fill-active);
-}
-
-:host .DotMenu .DotItemName,
-mgt-dot-options .DotMenu .DotItemName {
-  direction: rtl;
+    &.Open {
+      z-index: 1;
+      display: unset;
+      position: absolute;
+      top: 16px;
+      right: 0px;
+      width: max-content;
+    }
+  }
 }
