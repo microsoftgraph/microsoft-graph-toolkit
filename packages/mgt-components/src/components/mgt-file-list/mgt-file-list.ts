@@ -774,6 +774,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   /**
    * Handles setting the focusedItemIndex to 0 when you focus on the first item
    * in the file list.
+   *
    * @returns void
    */
   private onFocusFirstItem = () => (this._focusedItemIndex = 0);
