@@ -240,7 +240,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const calendarTemplate = html`
       ${getSvg(SvgIcon.Calendar)}
-      <input
+      <fluent-text-field
         type="date"
         id="new-taskDate-input"
         class="date"
@@ -253,8 +253,8 @@ export class MgtTodo extends MgtTasksBase {
           } else {
             this._newTaskDueDate = null;
           }
-        }}"
-      />
+        }}">
+      </fluent-text-field>
     `;
 
     const newTaskDetails = html`

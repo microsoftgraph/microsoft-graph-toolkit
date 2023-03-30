@@ -81,7 +81,8 @@
       display: flex;
       align-items: center;
       .calendar {
-        display: inherit;
+        display: flex;
+        align-items: center;
 
         svg {
           fill: $task-color;
@@ -91,9 +92,10 @@
           margin-inline-start: 10px;
           background-color: $task-background-color;
           color: $task-color;
+          width: auto;
           cursor: pointer;
           &::after {
-            cursor: pointer;
+            border-bottom: none;
           }
         }
 
@@ -130,6 +132,7 @@
 
     &::part(control) {
       padding: 0;
+      cursor: pointer;
     }
     &::part(root) {
       background: none;
