@@ -349,9 +349,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return this._selectedPeople;
   }
   public set selectedPeople(value: IDynamicPerson[]) {
-    if (!value) value = [];
     if (!arraysAreEqual(this._selectedPeople, value)) {
       this._selectedPeople = value;
+      this.requestUpdate();
     }
   }
 
