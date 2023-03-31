@@ -81,6 +81,11 @@ interface IFocusable {
  * @cssprop --placeholder-color--focus - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
+ * @cssprop --people-picker-flyout-line1-text-font-size - {String} the font size of the line 1 text on the flyout results. Default is 14px.
+ * @cssprop --people-picker-flyout-line1-text-font-weight - {String} the font weight of the line 1 text on the flyout results. Default is normal.
+ * @cssprop --people-picker-flyout-line2-text-font-size - {String} the font size of the line 2 text on the flyout results. Default is 12px.
+ * @cssprop --people-picker-flyout-line2-text-font-weight - {String} the font weight of the line 2 text on the flyout results. Default is normal.
+ *
  */
 @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
