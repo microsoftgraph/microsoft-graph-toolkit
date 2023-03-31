@@ -1,7 +1,7 @@
 # mgt-taxonomy-picker
 
 ## Overview
-The taxonomy picker is a component that can query the Microsoft Graph API for Taxonomy and render a dropdown control allowing selection of **a single** term based on the specified term set id and a combination of the specified term set id and the specified term id. 
+The taxonomy picker is a component that can query the [Microsoft Graph API for Taxonomy](https://learn.microsoft.com/en-us/graph/api/resources/termstore-term?view=graph-rest-1.0) and render a dropdown control allowing selection of **a single** term based on the specified term set id and a combination of the specified term set id and the specified term id. 
 
 > **Note**
 > This capability used to support a single selection coming from the term store. This will be reviewed in the future.  
@@ -59,7 +59,7 @@ Shows French labels of the terms marked with a green box in the image above.
 | placeholder                  | placeholder                 | The placeholder to use in the combobox. No default value is provided.                                                                                                                                        | string                     |
 | termset-id                  | termsetId                 | The Id of the termset where the terms are present. The terms under the termset will be shown if `term-id` is not passed                                                                                                                                         | string                     |
 | term-id                  | termId                 | The id of the term where the terms are present.                                                                                                                                            | Number                     |
-| locale                  | locale                | The locale of the terms that need to be displayed. This will be useful only when terms have multiple lables in different languages.                                                                                                                                                                        | String                     |
+| locale                  | locale                | The locale of the terms that need to be displayed. This will be useful only when terms have multiple labels in different languages.                                                                                                                                                                        | String                     |
 | default-selected-term-id                    | defaultSelectedTermId                  | Optional. The id of the term that should be selected by default.     | String |
 | version                   | version                 | Optional API version to use when making the GET request. Default is `beta`.                                                                                                                                                           | String                     |
 | cache-enabled             | cacheEnabled            | Optional Boolean. When set, it indicates that the response from the resource will be cached. Default is `false`.                                                                                  | Boolean                    |
