@@ -352,6 +352,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!value) value = [];
     if (!arraysAreEqual(this._selectedPeople, value)) {
       this._selectedPeople = value;
+      this.requestUpdate();
     }
   }
 
