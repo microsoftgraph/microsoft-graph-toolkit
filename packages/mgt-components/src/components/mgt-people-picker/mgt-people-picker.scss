@@ -9,6 +9,11 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-people-picker.theme.scss';
 
+$flyout-line1-text-font-size: var(--people-picker-flyout-line1-text-font-size, 14px);
+$flyout-line1-text-font-weight: var(--people-picker-flyout-line1-text-font-weight, normal);
+$flyout-line2-text-font-size: var(--people-picker-flyout-line2-text-font-size, 12px);
+$flyout-line2-text-font-weight: var(--people-picker-flyout-line1-text-font-weight, normal);
+
 // Main
 :host {
   font-family: $font-family;
@@ -130,13 +135,13 @@ mgt-people-picker .root {
           .people-person-text-area {
             margin-left: 13px;
             flex: 1 1 0;
-            max-height: 40px;
+            min-height: 40px;
             overflow: hidden;
             color: $dropdown-item__text__color;
 
             .people-person-text {
-              font-size: 14px;
-              font-weight: normal;
+              font-size: $flyout-line1-text-font-size;
+              font-weight: $flyout-line1-text-font-weight;
               margin: 0;
               padding: 0;
               &.highlight-search-text {
@@ -288,8 +293,8 @@ mgt-people-picker .message-parent {
 mgt-people-picker .people-person-job-title {
   flex: 100%;
   order: 3;
-  font-weight: normal;
-  font-size: 12px;
+  font-size: $flyout-line2-text-font-size;
+  font-weight: $flyout-line2-text-font-weight;
   &.uppercase {
     text-transform: uppercase;
   }
