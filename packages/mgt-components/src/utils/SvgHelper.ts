@@ -242,7 +242,7 @@ import { html } from 'lit';
  * @param svgIcon defined by name
  * @param color hex value
  */
-export function getSvg(svgIcon: SvgIcon, color?: string, filled?: boolean) {
+export function getSvg(svgIcon: SvgIcon, color?: string) {
   switch (svgIcon) {
     case SvgIcon.ArrowRight:
       return html`
