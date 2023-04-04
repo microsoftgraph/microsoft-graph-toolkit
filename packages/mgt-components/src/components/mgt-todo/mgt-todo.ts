@@ -233,7 +233,7 @@ export class MgtTodo extends MgtTasksBase {
     const cancelIcon = html`
       <fluent-button
         class="task-cancel-icon" 
-        @click="${() => this.clearNewTaskData()}">
+        @click="${this.clearNewTaskData}">
         ${getSvg(SvgIcon.Cancel)}
       </fluent-button>
     `;
