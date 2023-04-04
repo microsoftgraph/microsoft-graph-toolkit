@@ -130,7 +130,7 @@ export class MgtTodo extends MgtTasksBase {
   private _isLoadingTasks: boolean;
   private _loadingTasks: string[];
   private _newTaskDueDate: Date;
-  private _newTaskName: string;
+@state()  private _newTaskName: string;
   private _isNewTaskBeingAdded: boolean;
   private _graph: IGraph;
   @state() private currentList: TodoTaskList;
