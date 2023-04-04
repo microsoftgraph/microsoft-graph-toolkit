@@ -11,7 +11,10 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 export default {
   title: 'Samples / Templating',
   component: 'get',
-  decorators: [withCodeEditor]
+  decorators: [withCodeEditor],
+  parameters: {
+    viewMode: 'story'
+  }
 };
 
 export const PersonCardAdditionalDetails = () => html`
