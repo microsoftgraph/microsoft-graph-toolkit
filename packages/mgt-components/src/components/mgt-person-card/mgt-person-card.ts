@@ -745,6 +745,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="section-nav">
         ${sectionNavTemplate}
       </div>
+      <hr class="divider"/>
       <div
         class="section-host ${this._smallView ? 'small' : ''} ${this._smallView ? 'small' : ''}"
         @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}

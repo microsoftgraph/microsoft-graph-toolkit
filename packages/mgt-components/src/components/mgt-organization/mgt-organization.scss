@@ -43,20 +43,20 @@
     .title {
       font-size: 14px;
       font-weight: 600;
-      color: set-var(title__color__subtitle, $theme-default, $common);
+      color: $organization-title-color;
       margin: 0 20px 20px 20px;
       line-height: 19px;
     }
 
     .subtitle {
-      color: set-var(title__color__sub2, $theme-default, $common);
+      color: $organization-sub-title-color;
       font-size: 14px;
       margin: 0 20px 8px 20px;
     }
 
     .divider {
       display: flex;
-      background: set-var(line-seperator__color, $theme-default, $common);
+      background: $organization-coworker-border-color;
       height: 1px;
       margin-top: 26px;
       margin-bottom: 18px;
@@ -80,11 +80,11 @@
       }
 
       &:not(.org-member--target) {
-        border: 1px solid set-var(line-seperator__color, $theme-default, $common);
+        border: 1px solid $organization-coworker-border-color;
 
         &:hover {
           cursor: pointer;
-          background-color: set-var(background-color--hover, $theme-default, $common);
+          background-color: $organization-hover-color;
         }
       }
 
@@ -97,20 +97,20 @@
 
         .org-member__name {
           font-size: 16px;
-          color: set-var(color__sub1, $theme-default, $common);
+          color: $organization-title-color;
           font-weight: 600;
         }
 
         .org-member__title,
         .org-member__department {
           font-weight: 14px;
-          color: set-var(color__sub2, $theme-default, $common);
+          color: $organization-sub-title-color;
         }
       }
     }
 
     .org-member__separator:not(:last-child) {
-      border: 1px solid set-var(line-seperator__color, $theme-default, $common);
+      border: 1px solid $organization-coworker-border-color;
       box-sizing: border-box;
       width: 0;
       margin: 0 50%;

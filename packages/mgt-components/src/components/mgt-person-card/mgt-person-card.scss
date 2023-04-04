@@ -105,7 +105,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
     flex-direction: column;
     padding-inline-start: 22px;
     padding-block: 36px;
-    border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
+    border-bottom: 1px solid $person-card-border-color;
 
     .person-image {
       --person-avatar-top-spacing: #{$person-card-avatar-top-spacing};
@@ -211,7 +211,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
           content: '';
           width: 90%;
           transform: translateX(-50%);
-          border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
+          border-bottom: 1px solid $person-card-border-color;
           left: 50%;
           bottom: 0;
         }
@@ -224,7 +224,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 
         &__title {
           flex-grow: 1;
-          color: set-var(title__color__subtitle, $theme-default, $common);
+          color: $person-card-line1-text-color;
           font-size: 14px;
           font-weight: 600;
           line-height: 19px;
@@ -251,10 +251,16 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
         }
       }
     }
+    .divider {
+      z-index: 100;
+      position: relative;
+      width: 375px;
+      margin: 0;
+      color: $person-card-divider-color;
+    }
 
     .section-nav {
-      border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
-      height: 36px;
+      height: 35px;
 
       fluent-tabs {
         grid-template-columns: minmax(1px, 0.1fr);
@@ -414,9 +420,9 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   &.icon::part(control) {
     border: none;
     padding: 0;
-    background-color: none;
-    &:hover {
-      background-color: none;
+    background: none;
+    :hover {
+      background: none;
     }
   }
 }
