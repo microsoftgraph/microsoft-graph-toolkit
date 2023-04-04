@@ -197,7 +197,7 @@ export class MgtTodo extends MgtTasksBase {
    * @returns
    * @memberof MgtTodo
    */
-  protected async addTask() {
+  private addTask = async () => {
     if (this._isNewTaskBeingAdded || !this.newTaskName) {
       return;
     }
