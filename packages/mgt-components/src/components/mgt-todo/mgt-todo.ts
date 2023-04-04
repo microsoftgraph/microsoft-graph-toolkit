@@ -225,7 +225,7 @@ export class MgtTodo extends MgtTasksBase {
     const addIcon = html`
       <fluent-button 
         class="task-add-icon" 
-        @click="${() => this.addTask()}">
+        @click="${this.addTask}">
         ${getSvg(SvgIcon.Add)}
       </fluent-button>
     `;
