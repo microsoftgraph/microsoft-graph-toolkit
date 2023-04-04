@@ -107,7 +107,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       .contact-icon {
         height: 100%;
         width: 100%;
-        border-radius: 50%;
+        border-radius: $person-avatar-border-radius;
       }
 
       .initials,
