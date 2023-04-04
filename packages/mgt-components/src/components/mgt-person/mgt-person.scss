@@ -47,7 +47,6 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
   mgt-flyout {
     [slot='anchor'] {
       display: flex;
-      // margin-inline-start: $person-details-spacing;
 
       &.vertical {
         flex-direction: column;
@@ -110,7 +109,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       .contact-icon {
         height: 100%;
         width: 100%;
-        border-radius: 50%;
+        border-radius: $person-avatar-border-radius;
         margin-block-start: $person-avatar-top-spacing;
       }
 
