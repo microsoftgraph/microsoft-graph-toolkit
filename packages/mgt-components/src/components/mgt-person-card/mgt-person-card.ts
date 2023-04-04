@@ -635,57 +635,57 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-         <div class="icon"
-           @click=${() => this.emailUser()}
-           @mouseenter=${() => this.setHoveredState('email', true)}
-           @mouseleave=${() => this.setHoveredState('email', false)}
-           tabindex=0
-           role="button">
-           ${this.isHovered('email') ? getSvg(SvgIcon.SmallEmailHovered) : getSvg(SvgIcon.SmallEmail)}
-         </div>
-       `;
+        <fluent-button class="icon"
+          @click=${() => this.emailUser()}
+          @mouseenter=${() => this.setHoveredState('email', true)}
+          @mouseleave=${() => this.setHoveredState('email', false)}>
+          <span class=${classMap({ filled: this.isHovered('email'), regular: !this.isHovered('email') })}>
+            ${getSvg(SvgIcon.SmallEmail)}
+          </span>
+        </fluent-button>
+      `;
     }
 
     // Chat
     let chat: TemplateResult;
     if (userPerson?.userPrincipalName) {
       chat = html`
-         <div class="icon"
-           @click=${() => this.chatUser()}
-           @mouseenter=${() => this.setHoveredState('chat', true)}
-           @mouseleave=${() => this.setHoveredState('chat', false)}
-           tabindex=0
-           role="button">
-           ${this.isHovered('chat') ? getSvg(SvgIcon.SmallChatHovered) : getSvg(SvgIcon.SmallChat)}
-         </div>
+        <fluent-button class="icon"
+          @click=${() => this.chatUser()}
+          @mouseenter=${() => this.setHoveredState('chat', true)}
+          @mouseleave=${() => this.setHoveredState('chat', false)}>
+          <span class=${classMap({ filled: this.isHovered('chat'), regular: !this.isHovered('chat') })}>
+            ${getSvg(SvgIcon.SmallChat)}
+          </span>
+        </fluent-button>
        `;
     }
 
     // Video
     let video: TemplateResult;
     video = html`
-        <div class="icon"
+        <fluent-button class="icon"
            @click=${() => this.videoCallUser()}
            @mouseenter=${() => this.setHoveredState('video', true)}
-           @mouseleave=${() => this.setHoveredState('video', false)}
-           tabindex=0
-           role="button">
-           ${this.isHovered('video') ? getSvg(SvgIcon.VideoHovered) : getSvg(SvgIcon.Video)}
-         </div>
+           @mouseleave=${() => this.setHoveredState('video', false)}>
+           <span class=${classMap({ filled: this.isHovered('video'), regular: !this.isHovered('video') })}>
+            ${getSvg(SvgIcon.Video)}
+          </span>
+        </fluent-button>
       `;
 
     // Call
     let call: TemplateResult;
     if (userPerson.userPrincipalName) {
       call = html`
-         <div class="icon"
+         <fluent-button class="icon"
            @click=${() => this.callUser()}
            @mouseenter=${() => this.setHoveredState('call', true)}
-           @mouseleave=${() => this.setHoveredState('call', false)}
-           tabindex=0
-           role="button">
-           ${this.isHovered('call') ? getSvg(SvgIcon.CallHovered) : getSvg(SvgIcon.Call)}
-         </div>
+           @mouseleave=${() => this.setHoveredState('call', false)}>
+           <span class=${classMap({ filled: this.isHovered('call'), regular: !this.isHovered('call') })}>
+            ${getSvg(SvgIcon.Call)}
+          </span>
+        </fluent-button>
        `;
     }
 
@@ -705,14 +705,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-      <div
+      <fluent-button
         class="expanded-details-button"
         @click=${this.showExpandedDetails}
-        @keydown=${this.handleKeyDown}
-        tabindex=0
       >
         ${getSvg(SvgIcon.ExpandDown)}
-      </div>
+      </fluent-button>
      `;
   }
 
@@ -1321,15 +1319,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         ) {
           e.stopPropagation();
         }
-      }
-    }
-  }
-
-  private handleKeyDown(e: KeyboardEvent) {
-    // enter activates person-card
-    if (e) {
-      if (e.code === 'Enter') {
-        this.showExpandedDetails();
       }
     }
   }

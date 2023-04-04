@@ -31,8 +31,8 @@ $person-card-line3-line-height: var(--person-card-line3-line-height, 19px);
 $person-card-avatar-size: var(--person-card-avatar-size, 75px);
 $person-card-details-left-spacing: var(--person-card-details-left-spacing, 15px);
 $person-card-avatar-top-spacing: var(--person-card-avatar-top-spacing, 15px);
-$person-card-details-bottom-spacing: var(--person-card-details-bottom-spacing, 10px);
-$person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing, 91px);
+$person-card-details-bottom-spacing: var(--person-card-details-bottom-spacing, 0px);
+$person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing, 83px);
 
 :host {
   box-shadow: set-var(box-shadow, $theme-default, $common);
@@ -141,15 +141,20 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       .icon {
         display: flex;
         align-items: center;
-        cursor: pointer;
         font-size: 13px;
         white-space: nowrap;
 
         &:not(:last-child) {
-          margin-inline-end: 38px;
+          margin-inline-end: 28px;
         }
 
         svg {
+          .filled {
+            display: none;
+          }
+          .regular {
+            display: block;
+          }
           path {
             fill: $person-card-icon-color;
           }
@@ -158,6 +163,12 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
         &:active,
         &:hover {
           svg {
+            .filled {
+              display: block;
+            }
+            .regular {
+              display: none;
+            }
             path {
               fill: $person-card-icon-hover-color;
             }
@@ -175,7 +186,6 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
     .expanded-details-button {
       display: flex;
       justify-content: center;
-      align-items: center;
       height: 32px;
       svg {
         path {
@@ -396,9 +406,19 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   --person-avatar-size-3-lines: 75px;
 }
 
-:host fluent-button.section__show-more.lightweight::part(control),
-:host fluent-button.close-button.lightweight::part(control) {
-  background: $person-card-fluent-background-color;
+:host fluent-button {
+  &.section__show-more.lightweight::part(control),
+  &.close-button.lightweight::part(control) {
+    background: $person-card-fluent-background-color;
+  }
+  &.icon::part(control) {
+    border: none;
+    padding: 0;
+    background-color: none;
+    &:hover {
+      background-color: none;
+    }
+  }
 }
 
 [dir='rtl'] {
