@@ -426,7 +426,7 @@ export class MgtTodo extends MgtTasksBase {
    * @protected
    * @memberof MgtTodo
    */
-  protected clearNewTaskData(): void {
+  protected clearNewTaskData = (): void => {
     super.clearNewTaskData();
     this._newTaskDueDate = null;
     this._newTaskName = '';
