@@ -9,6 +9,7 @@ import { screen } from 'testing-library__dom';
 import { fixture } from '@open-wc/testing-helpers';
 import { enableFetchMocks } from 'jest-fetch-mock';
 import fetchMock from 'jest-fetch-mock';
+import userEvent from '@testing-library/user-event';
 import { MockProvider, Providers } from '@microsoft/mgt-element';
 import { userPhotoBatchResponse } from './__test_data/mock-responses';
 import './mgt-person';
@@ -40,26 +41,20 @@ describe('mgt-person - tests', () => {
           body: JSON.stringify(userPhotoBatchResponse)
         })
       );
+    Providers.globalProvider = new MockProvider(true);
   });
 
   it('should render', async () => {
-    Providers.globalProvider = new MockProvider(true);
     person = await fixture('<mgt-person person-query="me" view="twoLines"></mgt-person>');
     const img = await screen.findAllByAltText('Photo for Megan Bowen');
     expect(img).not.toBeNull();
   });
 
   it('should pop up a flyout on click', async () => {
-    Providers.globalProvider = new MockProvider(true);
     person = await fixture('<mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>');
-    const img = await screen.findAllByAltText('Photo for Megan Bowen');
-    expect(img).not.toBeNull();
-    expect(img.length).toBe(1);
-    // test that there is no flyout
     expect(screen.queryByTestId('flyout-slot')).toBeNull();
-
-    img[0].click();
-
+    const user = userEvent.setup();
+    await user.click(person);
     expect(screen.queryByTestId('flyout-slot')).toBeDefined();
   });
 });
