@@ -27,6 +27,11 @@
       background: $task-background-color--completed;
     }
 
+    :hover {
+      background-color: $task-background-color-hover;
+      border-radius: 8px;
+    }
+
     .TaskDetails {
       box-sizing: border-box;
       display: flex;
@@ -90,7 +95,6 @@
 
         .date {
           margin-inline-start: 10px;
-          background-color: $task-background-color;
           color: $task-color;
           width: auto;
           cursor: pointer;

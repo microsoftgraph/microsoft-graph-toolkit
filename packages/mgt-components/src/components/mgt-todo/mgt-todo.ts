@@ -96,18 +96,6 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   /**
-   * The name of a potential new task
-   *
-   * @readonly
-   * @protected
-   * @type {string}
-   * @memberof MgtTasksBase
-   */
-  protected get newTaskName(): string {
-    return this._newTaskName;
-  }
-
-  /**
    * Optional filter function when rendering tasks
    *
    * @type {TodoFilter}
@@ -130,7 +118,7 @@ export class MgtTodo extends MgtTasksBase {
   private _isLoadingTasks: boolean;
   private _loadingTasks: string[];
   private _newTaskDueDate: Date;
-@state()  private _newTaskName: string;
+  @state() private _newTaskName: string;
   private _isNewTaskBeingAdded: boolean;
   private _graph: IGraph;
   @state() private currentList: TodoTaskList;
@@ -142,12 +130,7 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
-  }
-
-  protected createRenderRoot() {
-    const root = super.createRenderRoot();
-    root.addEventListener('selectionChanged', this.handleSelectionChanged);
-    return root;
+    this.addEventListener('selectionChanged', this.handleSelectionChanged);
   }
 
   /**
@@ -198,7 +181,7 @@ export class MgtTodo extends MgtTasksBase {
    * @memberof MgtTodo
    */
   private addTask = async () => {
-    if (this._isNewTaskBeingAdded || !this.newTaskName) {
+    if (this._isNewTaskBeingAdded || !this._newTaskName) {
       return;
     }
 
@@ -208,11 +191,11 @@ export class MgtTodo extends MgtTasksBase {
     try {
       await this.createNewTask();
     } finally {
-      this.clearNewTaskData();
+      this.clearNewTaskData;
       this._isNewTaskBeingAdded = false;
       this.requestUpdate();
     }
-  }
+  };
 
   /**
    * Render the panel for creating a new task
@@ -245,14 +228,7 @@ export class MgtTodo extends MgtTasksBase {
         class="date"
         aria-label="${this.strings.newTaskDateInputLabel}"
         .value="${this.dateToInputValue(this._newTaskDueDate)}"
-        @change="${(e: Event) => {
-          const value = (e.target as HTMLInputElement).value;
-          if (value) {
-            this._newTaskDueDate = new Date(value + 'T17:00');
-          } else {
-            this._newTaskDueDate = null;
-          }
-        }}">
+        @change="${this.handleTextChange}">
       </fluent-text-field>
     `;
 
@@ -264,17 +240,8 @@ export class MgtTodo extends MgtTasksBase {
         aria-label="${this.strings.newTaskLabel}"
         .value=${this._newTaskName}
         placeholder="${this.strings.newTaskPlaceholder}"
-        @keydown="${(e: KeyboardEvent) => {
-          if (e.key === 'Enter') {
-            this.addTask();
-          }
-        }}"
-        @input="${(e: Event) => {
-          if ((e.target as HTMLInputElement).id === 'new-taskName-input') {
-            this._newTaskName = (e.target as HTMLInputElement).value;
-            this.requestUpdate();
-          }
-        }}">
+        @keydown="${this.handleKeyDown}"
+        @input="${this.handleInput}">
         <div slot="start" class="start">${addIcon}</div>
         ${
           this._newTaskName
@@ -340,7 +307,7 @@ export class MgtTodo extends MgtTasksBase {
         <div class="Title">${task.title}</div>
         <div class="TaskDue">${taskDueTemplate}</div>
         <fluent-button class="TaskDelete"
-          @click="${(e: Event) => this.removeTask(e, task.id)}"
+          @click="${this.removeTask(task.id)}"
           aria-label="${this.strings.deleteTaskLabel}">
           ${getSvg(SvgIcon.Delete)}
         </fluent-button>
@@ -405,7 +372,7 @@ export class MgtTodo extends MgtTasksBase {
   protected async createNewTask(): Promise<void> {
     const listId = this.currentList.id;
     const taskData = {
-      title: this.newTaskName
+      title: this._newTaskName
     };
 
     if (this._newTaskDueDate) {
@@ -427,10 +394,10 @@ export class MgtTodo extends MgtTasksBase {
    * @memberof MgtTodo
    */
   protected clearNewTaskData = (): void => {
-    super.clearNewTaskData();
+    super.clearNewTaskData;
     this._newTaskDueDate = null;
     this._newTaskName = '';
-  }
+  };
 
   /**
    * Clear the state of the component
@@ -475,7 +442,7 @@ export class MgtTodo extends MgtTasksBase {
     this.requestUpdate();
   }
 
-  private async removeTask(e: Event, taskId: string) {
+  private async removeTask(taskId: string) {
     this._tasks = this._tasks.filter(t => t.id !== taskId);
     this.requestUpdate();
 
@@ -498,4 +465,26 @@ export class MgtTodo extends MgtTasksBase {
       e.preventDefault();
     }
   }
+
+  private handleKeyDown = (e: KeyboardEvent): void => {
+    if (e.key === 'Enter') {
+      this.addTask;
+    }
+  };
+
+  private handleInput = (e: Event): void => {
+    if ((e.target as HTMLInputElement).id === 'new-taskName-input') {
+      this._newTaskName = (e.target as HTMLInputElement).value;
+      this.requestUpdate();
+    }
+  };
+
+  private handleTextChange = (e: Event): void => {
+    const value = (e.target as HTMLInputElement).value;
+    if (value) {
+      this._newTaskDueDate = new Date(value + 'T17:00');
+    } else {
+      this._newTaskDueDate = null;
+    }
+  };
 }
