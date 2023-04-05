@@ -59,7 +59,7 @@ export class BatchRequest {
    */
   public id: string;
 
-  constructor(index, id, resource: string, method: string) {
+  constructor(index: number, id: string, resource: string, method: string) {
     if (resource.charAt(0) !== '/') {
       resource = '/' + resource;
     }

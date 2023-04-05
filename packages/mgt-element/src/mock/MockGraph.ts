@@ -122,7 +122,7 @@ class MockMiddleware implements Middleware {
    * @return {string} the base url for the mock graph to use.
    * @memberof MockMiddleware
    */
-  public static async getBaseUrl() {
+  public static async getBaseUrl(): Promise<string> {
     if (!this._baseUrl) {
       const sessionEndpoint = this._sessionCache?.getItem('endpointURL');
       if (sessionEndpoint) {
