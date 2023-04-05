@@ -146,7 +146,7 @@ export class MgtTodo extends MgtTasksBase {
 
   protected createRenderRoot() {
     const root = super.createRenderRoot();
-    root.addEventListener('selectionChanged', (e: CustomEvent) => this.handleSelectionChanged(e));
+    root.addEventListener('selectionChanged', this.handleSelectionChanged);
     return root;
   }
 
