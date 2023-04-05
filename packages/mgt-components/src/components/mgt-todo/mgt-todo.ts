@@ -177,10 +177,10 @@ export class MgtTodo extends MgtTasksBase {
    * Create a new todo task and add it to the list
    *
    * @protected
-   * @returns
+   * @returns {Promise<void>}
    * @memberof MgtTodo
    */
-  private addTask = async () => {
+  protected addTask = async (): Promise<void> => {
     if (this._isNewTaskBeingAdded || !this._newTaskName) {
       return;
     }
@@ -191,7 +191,7 @@ export class MgtTodo extends MgtTasksBase {
     try {
       await this.createNewTask();
     } finally {
-      this.clearNewTaskData;
+      this.clearNewTaskData();
       this._isNewTaskBeingAdded = false;
       this.requestUpdate();
     }
@@ -204,7 +204,7 @@ export class MgtTodo extends MgtTasksBase {
    * @returns {TemplateResult}
    * @memberof MgtTodo
    */
-  protected renderNewTask(): TemplateResult {
+  protected renderNewTask = (): TemplateResult => {
     const addIcon = html`
       <fluent-button 
         class="task-add-icon" 
@@ -228,7 +228,7 @@ export class MgtTodo extends MgtTasksBase {
         class="date"
         aria-label="${this.strings.newTaskDateInputLabel}"
         .value="${this.dateToInputValue(this._newTaskDueDate)}"
-        @change="${this.handleTextChange}">
+        @change="${this.handleDateChange}">
       </fluent-text-field>
     `;
 
@@ -265,23 +265,23 @@ export class MgtTodo extends MgtTasksBase {
           : html``
       }  
      `;
-  }
+  };
 
-  protected async handleSelectionChanged(e: CustomEvent) {
+  protected handleSelectionChanged = async (e: CustomEvent) => {
     let list = e.detail;
     this.currentList = list;
     await this.loadTasks(list);
-  }
+  };
 
   /**
    * Render a task in the list.
    *
    * @protected
    * @param {TodoTask} task
-   * @returns
+   * @returns {TemplateResult}
    * @memberof MgtTodo
    */
-  protected renderTask(task: TodoTask) {
+  protected renderTask = (task: TodoTask) => {
     const context = { task, list: this.currentList };
 
     if (this.hasTemplate('task')) {
@@ -307,7 +307,7 @@ export class MgtTodo extends MgtTasksBase {
         <div class="Title">${task.title}</div>
         <div class="TaskDue">${taskDueTemplate}</div>
         <fluent-button class="TaskDelete"
-          @click="${this.removeTask(task.id)}"
+          @click="${() => this.removeTask(task.id)}"
           aria-label="${this.strings.deleteTaskLabel}">
           ${getSvg(SvgIcon.Delete)}
         </fluent-button>
@@ -330,22 +330,22 @@ export class MgtTodo extends MgtTasksBase {
       : null;
 
     return html`
-      <fluent-radio class=${taskClasses} @click="${(e: Event) => this.handleTaskCheckClick(e, task)}">
+      <fluent-radio class=${taskClasses} @click="${() => this.handleTaskCheckClick(task)}">
         <div slot="checked-indicator">
           <span class="TaskCheckContent">${taskCheckContent}</span>
         </div>
         ${taskDetailsTemplate}
       </fluent-radio>
     `;
-  }
+  };
 
   /**
    * loads tasks from dataSource
    *
-   * @returns
+   * @returns {Promise<void>}
    * @memberof MgtTodo
    */
-  protected async loadState(): Promise<void> {
+  protected loadState = async (): Promise<void> => {
     const provider = Providers.globalProvider;
     if (!provider || provider.state !== ProviderState.SignedIn) {
       return;
@@ -360,13 +360,13 @@ export class MgtTodo extends MgtTasksBase {
     if (currentList) {
       await this.loadTasks(currentList);
     }
-  }
+  };
 
   /**
    * Send a request the Graph to create a new todo task item
    *
    * @protected
-   * @returns {Promise<any>}
+   * @returns {Promise<void>}
    * @memberof MgtTodo
    */
   protected async createNewTask(): Promise<void> {
@@ -405,26 +405,26 @@ export class MgtTodo extends MgtTasksBase {
    * @protected
    * @memberof MgtTodo
    */
-  protected clearState(): void {
+  protected clearState = (): void => {
     super.clearState();
     this.currentList = null;
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
-  }
+  };
 
-  private async loadTasks(list: TodoTaskList): Promise<void> {
+  private loadTasks = async (list: TodoTaskList): Promise<void> => {
+    console.log('lets try this this');
     this._isLoadingTasks = true;
     this.currentList = list;
-    this.requestUpdate();
 
     this._tasks = await getTodoTasks(this._graph, list.id);
 
     this._isLoadingTasks = false;
     this.requestUpdate();
-  }
+  };
 
-  private async updateTaskStatus(task: TodoTask, taskStatus: TaskStatus): Promise<void> {
+  private updateTaskStatus = async (task: TodoTask, taskStatus: TaskStatus): Promise<void> => {
     this._loadingTasks = [...this._loadingTasks, task.id];
     this.requestUpdate();
 
@@ -440,9 +440,9 @@ export class MgtTodo extends MgtTasksBase {
 
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
     this.requestUpdate();
-  }
+  };
 
-  private async removeTask(taskId: string) {
+  private removeTask = async (taskId: string): Promise<void> => {
     this._tasks = this._tasks.filter(t => t.id !== taskId);
     this.requestUpdate();
 
@@ -450,36 +450,32 @@ export class MgtTodo extends MgtTasksBase {
     await deleteTodoTask(this._graph, listId, taskId);
 
     this._tasks = this._tasks.filter(t => t.id !== taskId);
-  }
+  };
 
-  private handleTaskCheckClick(e: Event, task: TodoTask) {
-    this.handleTaskClick(e, task);
+  private handleTaskCheckClick(task: TodoTask) {
+    this.handleTaskClick(task);
     if (!this.readOnly) {
       if ((TaskStatus as any)[task.status] === TaskStatus.completed) {
         this.updateTaskStatus(task, TaskStatus.notStarted);
       } else {
         this.updateTaskStatus(task, TaskStatus.completed);
       }
-
-      e.stopPropagation();
-      e.preventDefault();
     }
   }
 
-  private handleKeyDown = (e: KeyboardEvent): void => {
-    if (e.key === 'Enter') {
-      this.addTask;
-    }
-  };
-
-  private handleInput = (e: Event): void => {
+  private handleInput = (e: MouseEvent) => {
     if ((e.target as HTMLInputElement).id === 'new-taskName-input') {
       this._newTaskName = (e.target as HTMLInputElement).value;
-      this.requestUpdate();
     }
   };
 
-  private handleTextChange = (e: Event): void => {
+  private handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      this.addTask();
+    }
+  };
+
+  private handleDateChange = (e: Event) => {
     const value = (e.target as HTMLInputElement).value;
     if (value) {
       this._newTaskDueDate = new Date(value + 'T17:00');

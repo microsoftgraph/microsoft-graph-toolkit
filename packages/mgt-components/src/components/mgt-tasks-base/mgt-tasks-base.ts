@@ -236,9 +236,9 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @param {TodoTask} task
    * @memberof MgtTasksBase
    */
-  protected handleTaskClick(e: Event, task: any) {
+  protected handleTaskClick = (task: any) => {
     this.fireCustomEvent('taskClick', { task });
-  }
+  };
 
   /**
    * Convert a date to a properly formatted string
