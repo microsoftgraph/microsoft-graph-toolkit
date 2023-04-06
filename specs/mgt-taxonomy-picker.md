@@ -1,10 +1,13 @@
 # mgt-taxonomy-picker
 
 ## Overview
-The taxonomy picker is a component that can query the [Microsoft Graph API for Taxonomy](https://learn.microsoft.com/en-us/graph/api/resources/termstore-term?view=graph-rest-1.0) and render a dropdown control allowing selection of **a single** term based on the specified term set id and a combination of the specified term set id and the specified term id. 
+The taxonomy picker is a component that can query the [Microsoft Graph API for Taxonomy](https://learn.microsoft.com/graph/api/resources/termstore-term?view=graph-rest-1.0) and render a dropdown control with terms, allowing selection of **a single** term based on the specified term set `id` or a combination of the specified term set `id` and the specified term `id`. 
+
+The component retrieves the first level terms that are present under a specified termset or term. If only the term set id is provided, it returns the first level terms under that termset. If both the term set id and term id are provided, it returns the first level terms under the specified term.
+
 
 > **Note**
-> This capability used to support a single selection coming from the term store. This will be reviewed in the future.  
+> This capability currently supports a **single** selection of terms coming from the term store. This will be reviewed in the future.  
 
 ## User Scenarios
 
@@ -54,33 +57,31 @@ Shows French labels of the terms marked with a green box in the image above.
 
 ## Properties and Attributes
 
-| Attribute                 | Property                | Description                                                                                                                                                                                                                           | Type                       |
-| ------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| placeholder                  | placeholder                 | The placeholder to use in the combobox. No default value is provided.                                                                                                                                        | string                     |
-| termset-id                  | termsetId                 | The Id of the termset where the terms are present. The terms under the termset will be shown if `term-id` is not passed                                                                                                                                         | string                     |
-| term-id                  | termId                 | The id of the term where the terms are present.                                                                                                                                            | Number                     |
-| locale                  | locale                | The locale of the terms that need to be displayed. This will be useful only when terms have multiple labels in different languages.                                                                                                                                                                        | String                     |
-| default-selected-term-id                    | defaultSelectedTermId                  | Optional. The id of the term that should be selected by default.     | String |
-| version                   | version                 | Optional API version to use when making the GET request. Default is `beta`.                                                                                                                                                           | String                     |
-| cache-enabled             | cacheEnabled            | Optional Boolean. When set, it indicates that the response from the resource will be cached. Default is `false`.                                                                                  | Boolean                    |
-| cache-invalidation-period | cacheInvalidationPeriod | Optional number of milliseconds. When set in combination with `cacheEnabled`, the delay before the cache reaches its invalidation period will be modified by this value. Default is `0` and will use the default invalidation period. | Number                     |
-
-
+| Attribute | Property | Description | Type |
+| - | - | - | - |
+| placeholder | placeholder | Optional. The placeholder to use in the combobox. Default value is `Select a term`. | string |
+| termset-id | termsetId | Mandatory. The ID of the termset to retrieve first level terms from. | string |
+| term-id | termId | Optional. The ID of the term to retrieve first level terms from. If not provided, the function retrieves the first level terms under the termset specified by `termset-id`. <br> *Note* that this term must be one of the terms under the termset with ID `termset-id`. | Number |
+| locale | locale | Optional. The locale of the terms that need to be displayed. This will be useful only when terms have multiple labels in different languages. | String |
+| default-selected-term-id | defaultSelectedTermId | Optional. The id of the term that should be selected by default. | String |
+| version | version | Optional. API version to use when making the GET request. Default is `beta`. | String |
+| cache-enabled | cacheEnabled | Optional. When set, it indicates that the response from the resource will be cached. Default is `false`.| Boolean |
+| cache-invalidation-period | cacheInvalidationPeriod | Optional. (Number of milliseconds) When set in combination with `cacheEnabled`, the delay before the cache reaches its invalidation period will be modified by this value. Default is `0` and will use the default invalidation period. | Number |
 
 ## Events
 
-| Event            | When is it fired                                | Custom data |
-| ---------------- | ----------------------------------------------- | ----------- |
-| selectionChanged | Fired when the user makes a change in selection | The selected term which will of the type `TermStore.Term`        |
+| Event | When is it fired | Custom data |
+| - | - | - |
+| selectionChanged | Fired when the user makes a change in selection | The selected term which will of the type `TermStore.Term` |
 
 ## Templates
 
-| Data type     | Data Context                           | Description                                                                                  |
-| ------------- | -------------------------------------- | -------------------------------------------------------------------------------------------- |
-| default       | null: no data                          | The template used to override the rendering of the entire component.                         |
-| loading       | null: no data                          | The template used to render the state of the picker while the request to Graph is being made. |
-| error         | null: no data                          | The template used there is an error.
-| no-data         | null: no data                     | The template used if no terms are present.                         |                                              |
+| Data type | Data Context | Description |
+| - | - | - |
+| default | null: no data | The template used to override the rendering of the entire component. |
+| loading | null: no data | The template used to render the state of the picker while the request to Graph is being made. |
+| error | error | The template used there is an error.| 
+| no-data | no data | The template used if no terms are present. |
 
 ## APIs and Permissions
 
