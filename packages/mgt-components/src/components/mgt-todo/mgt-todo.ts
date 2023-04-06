@@ -205,13 +205,16 @@ export class MgtTodo extends MgtTasksBase {
    * @memberof MgtTodo
    */
   protected renderNewTask = (): TemplateResult => {
-    const addIcon = html`
-      <fluent-button 
-        class="task-add-icon" 
-        @click="${this.addTask}">
-        ${getSvg(SvgIcon.Add)}
-      </fluent-button>
-    `;
+    const addIcon = this._newTaskName
+      ? html`
+        <fluent-radio
+          class="task-add-icon"
+          @click="${this.addTask}">
+        </fluent-radio>
+      `
+      : html`
+        <span class="addIcon">${getSvg(SvgIcon.Add)}</span>
+      `;
 
     const cancelIcon = html`
       <fluent-button
@@ -414,7 +417,6 @@ export class MgtTodo extends MgtTasksBase {
   };
 
   private loadTasks = async (list: TodoTaskList): Promise<void> => {
-    console.log('lets try this this');
     this._isLoadingTasks = true;
     this.currentList = list;
 

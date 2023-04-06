@@ -16,6 +16,7 @@ $task-background-color--completed: #{var(--task-complete-background, var(--neutr
 $task-date-input-active-color: #{var(--task-date-input-focus, var(--accent-fill-rest))};
 $task-date-input-hover-color: #{var(--task-date-input-hover-color, var(--neutral-layer-1))};
 $task-background-color-hover: #{var(--task-background-color-hover, var(--neutral-fill-hover))};
+$task-box-shadow: #{var(--task-box-shadow, var(--elevation-shadow-card-active))};
 
 $tasks: (
   border: (

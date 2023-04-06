@@ -16,10 +16,13 @@
   .Task,
   &.LoadingTask {
     @extend .Task;
+    margin-block: 1px;
+    box-shadow: $task-box-shadow;
     width: 100%;
     background-color: $task-background-color;
     &.NewTask {
-      margin: 14px 0 0 0;
+      margin: 14px 0 1px 0;
+      box-shadow: $task-box-shadow;
     }
     &.Complete {
       text-decoration: line-through;
@@ -81,6 +84,13 @@
   fluent-text-field.NewTask {
     width: 100%;
     height: 34px;
+
+    div.start {
+      .addIcon {
+        display: flex;
+        margin-inline: 10px;
+      }
+    }
 
     div:nth-child(2) {
       display: flex;

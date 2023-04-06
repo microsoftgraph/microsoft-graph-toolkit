@@ -22,6 +22,8 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * @export
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --picker-background-color - {Color} Picker component background color
  */
 // @customElement('mgt-picker')
 @customElement('picker')
