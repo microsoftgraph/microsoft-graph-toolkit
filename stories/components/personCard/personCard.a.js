@@ -7,11 +7,18 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Components / mgt-person-card',
   component: 'person-card',
-  decorators: [withCodeEditor]
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: { code: '<mgt-person-card person-query="me" id="online" show-presence></mgt-person-card>' }
+    }
+  }
 };
 
 export const personCard = () => html`

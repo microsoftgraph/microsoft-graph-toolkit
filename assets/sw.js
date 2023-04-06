@@ -4,16 +4,16 @@ if (!self.define) {
   const n = (n, e) => (
     (n = new URL(n + '.js', e).href),
     i[n] ||
-    new Promise(i => {
-      if ('document' in self) {
-        const c = document.createElement('script');
-        (c.src = n), (c.onload = i), document.head.appendChild(c);
-      } else (c = n), importScripts(n), i();
-    }).then(() => {
-      let c = i[n];
-      if (!c) throw new Error(`Module ${n} didn’t register its module`);
-      return c;
-    })
+      new Promise(i => {
+        if ('document' in self) {
+          const c = document.createElement('script');
+          (c.src = n), (c.onload = i), document.head.appendChild(c);
+        } else (c = n), importScripts(n), i();
+      }).then(() => {
+        let c = i[n];
+        if (!c) throw new Error(`Module ${n} didn’t register its module`);
+        return c;
+      })
   );
   self.define = (e, o) => {
     const f = c || ('document' in self ? document.currentScript.src : '') || location.href;
@@ -32,7 +32,6 @@ define(['./workbox-dae083bf'], function (c) {
     c.precacheAndRoute(
       [
         { url: 'favicon.png', revision: '1bc73a93f5aa3c02fe25899cf0a2e10d' },
-        { url: 'github.png', revision: 'a2f37fc5d3cdf6e15dd31e5a16050b93' },
         { url: 'graff.png', revision: '374e94d8e3aed9fa88a9923e5eaacea2' },
         { url: 'icons/100x100-icon.png', revision: 'fba112b56be61bcb1ade15c2f96fe129' },
         { url: 'icons/1024x1024-icon.png', revision: 'b1cfd1dd029d2fbde88ff06c573dc290' },
@@ -98,8 +97,7 @@ define(['./workbox-dae083bf'], function (c) {
         { url: 'icons/96x96-icon.png', revision: '521fb6b0d2e5e477b71c5dac1b022b9c' },
         { url: 'manifest.json', revision: 'ee016e1fe5c51f6cca2a570d121c33b8' },
         { url: 'mgt.png', revision: '0a1f53f06c9711cf7d83128cd76e7f8e' },
-        { url: 'mgt.storybook.js', revision: 'bebf2959d77ab8a92a7afa4f4780472a' },
-        { url: 'npm.png', revision: '2f06f214d1f56e962303c702f8186d6f' }
+        { url: 'mgt.storybook.js', revision: 'bebf2959d77ab8a92a7afa4f4780472a' }
       ],
       { ignoreURLParametersMatching: [/^utm_/, /^fbclid$/] }
     );
