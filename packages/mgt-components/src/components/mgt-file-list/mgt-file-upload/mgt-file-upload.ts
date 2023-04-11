@@ -5,28 +5,27 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { fluentButton, fluentCheckbox, fluentDialog, fluentProgress } from '@fluentui/web-components';
+import { customElement, IGraph, MgtBaseComponent, mgtHtml } from '@microsoft/mgt-element';
+import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { styles } from './mgt-file-upload-css';
-import { strings } from './strings';
-import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
-import { formatBytes } from '../../../utils/Utils';
-import { IGraph, MgtBaseComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
-import { ViewType } from '../../../graph/types';
-import { DriveItem } from '@microsoft/microsoft-graph-types';
+import { classMap } from 'lit/directives/class-map.js';
 import {
   clearFilesCache,
   getGraphfile,
   getUploadSession,
-  sendFileContent,
   sendFileChunck,
-  deleteSessionFile
+  sendFileContent
 } from '../../../graph/graph.files';
-
+import { ViewType } from '../../../graph/types';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
-import { fluentButton, fluentCheckbox, fluentProgress, fluentCard } from '@fluentui/web-components';
+import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
+import { formatBytes } from '../../../utils/Utils';
+import { styles } from './mgt-file-upload-css';
+import { strings } from './strings';
 
-registerFluentComponents(fluentProgress, fluentButton, fluentCheckbox, fluentCard);
+registerFluentComponents(fluentProgress, fluentButton, fluentCheckbox, fluentDialog);
 
 /**
  * Upload conflict behavior status
@@ -191,26 +190,29 @@ interface FileWithPath extends File {
  * @class MgtFileUpload
  * @extends {MgtBaseComponent}
  *
- * @cssprop --file-upload-border- {String} File upload border top style
- * @cssprop --file-upload-background-color - {Color} File upload background color with opacity style
- * @cssprop --file-upload-button-float - {string} Upload button float position
- * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
- * @cssprop --file-upload-dialog-background-color - {Color} Background color of dialog
- * @cssprop --file-upload-dialog-content-background-color - {Color} Background color of dialog content
- * @cssprop --file-upload-dialog-content-color - {Color} Color of dialog content
- * @cssprop --file-upload-button-color - {Color} Text color of upload button
- * @cssprop --file-upload-dialog-primarybutton-background-color - {Color} Background color of primary button
- * @cssprop --file-upload-dialog-primarybutton-color - {Color} Color text of primary button
- * @cssprop --file-item-margin - {String} File item margin
- * @cssprop --file-item-background-color--hover - {Color} File item background hover color
- * @cssprop --file-item-border-top - {String} File item border top style
- * @cssprop --file-item-border-left - {String} File item border left style
- * @cssprop --file-item-border-right - {String} File item border right style
- * @cssprop --file-item-border-bottom - {String} File item border bottom style
- * @cssprop --file-item-background-color--active - {Color} File item background active color
+ * @cssprop --file-upload-background-color-drag - {Color} background color of the file list when you upload by drag and drop.
+ * @cssprop --file-upload-button-background-color - {Color} background color of the file upload button.
+ * @cssprop --file-upload-button-background-color-hover - {Color} background color of the file upload button on hover.
+ * @cssprop --file-upload-button-text-color - {Color} text color of the file upload button.
+ * @cssprop --file-upload-dialog-background-color - {Color} background color of the file upload dialog box (appears when uploaded files exist).
+ * @cssprop --file-upload-dialog-text-color - {Color} text color of the file upload dialog box content.
+ * @cssprop --file-upload-dialog-replace-button-background-color - {Color} background color of the replace button in the dialog box.
+ * @cssprop --file-upload-dialog-replace-button-background-color-hover - {Color} background color of the replace button in the dialog box when you hover on it.
+ * @cssprop --file-upload-dialog-replace-button-text-color - {Color} text color of the replace button in the dialog box.
+ * @cssprop --file-upload-dialog-keep-both-button-background-color - {Color} background color of the keep-both button in the dialog box.
+ * @cssprop --file-upload-dialog-keep-both-button-background-color-hover - {Color} background color of the keep-both button in the dialog box when you hover on it.
+ * @cssprop --file-upload-dialog-keep-both-button-text-color - {Color} text color of the keep-both button in the dialog box.
+ * @cssprop --file-upload-border-drag - {String} the border of the file list when you upload files via drag and drop. Default value is 1px dashed #0078d4.
+ * @cssprop --file-upload-button-border - {String} the border of the file upload button. Default value is none.
+ * @cssprop --file-upload-dialog-replace-button-border - {String} the border of the file upload replace button in the dialog box. Default value is
+ * @cssprop --file-upload-dialog-keep-both-button-border - {String} the border of the file upload keep both button in the dialog box. Default value is none.
+ * @cssprop --file-upload-dialog-border - {String} the border of the file upload dialog box. Default value is "1px solid var(--neutral-fill-rest)".
+ * @cssprop --file-upload-dialog-width - {String} the width of the file upload dialog box. Default value is auto.
+ * @cssprop --file-upload-dialog-height - {String} the height of the file upload dialog box. Default value is auto.
+ * @cssprop --file-upload-dialog-padding - {String} the padding of the file upload dialog box. Default value is 24px;
  */
+
 @customElement('file-upload')
-// @customElement('mgt-file-upload')
 export class MgtFileUpload extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -256,7 +258,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   // variable manage drag style when mouse over
   private _dragCounter: number = 0;
   // variable avoids removal of files after drag and drop, https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect
-  private _dropEffect: string = 'copy';
+  private _dropEffect: DataTransfer['dropEffect'] = 'copy';
   // variable defined max chuck size "4MB" for large files .
   private _maxChunckSize: number = 4 * 1024 * 1024;
   private _dialogTitle: string = '';
@@ -290,31 +292,37 @@ export class MgtFileUpload extends MgtBaseComponent {
     return html`
         <div id="file-upload-dialog" class="file-upload-dialog">
           <!-- Modal content -->
-          <fluent-card class="file-upload-dialog-content">
-            <span class="file-upload-dialog-close" id="file-upload-dialog-close" >${getSvg(SvgIcon.Cancel)}</span>
+          <fluent-dialog modal="true" class="file-upload-dialog-content">
+            <span
+              class="file-upload-dialog-close"
+              id="file-upload-dialog-close">
+                ${getSvg(SvgIcon.Cancel)}
+            </span>
             <div class="file-upload-dialog-content-text">
               <h2 class="file-upload-dialog-title">${this._dialogTitle}</h2>
               <div>${this._dialogContent}</div>
-              <div class="file-upload-dialog-check-wrapper">
-                <fluent-checkbox id="file-upload-dialog-check" class="file-upload-dialog-check" >
-                  <span>${this._dialogCheckBox}</span>
+                <fluent-checkbox
+                  id="file-upload-dialog-check"
+                  class="file-upload-dialog-check">
+                    ${this._dialogCheckBox}
                 </fluent-checkbox>
-              </div>
             </div>
             <div class="file-upload-dialog-editor">
-              <fluent-button class="file-upload-dialog-ok">
-              ${this._dialogPrimaryButton}
+              <fluent-button
+                appearance="accent"
+                class="file-upload-dialog-ok">
+                ${this._dialogPrimaryButton}
               </fluent-button>
-              <fluent-button class="file-upload-dialog-cancel">
-              ${this._dialogSecondaryButton}
+              <fluent-button
+                appearance="outline"
+                class="file-upload-dialog-cancel">
+                ${this._dialogSecondaryButton}
               </fluent-button>
             </div>
-          </fluent-card>
+          </fluent-dialog>
         </div>
-        <div id="file-upload-border" >
-        </div>
+        <div id="file-upload-border"></div>
         <div class="file-upload-area-button">
-        <div>
           <input
             id="file-upload-input"
             title="${this.strings.uploadButtonLabel}"
@@ -324,15 +332,17 @@ export class MgtFileUpload extends MgtBaseComponent {
             multiple="true"
             @change="${this.onFileUploadChange}"
           />
-          <fluent-button class="file-upload-button" @click=${this.onFileUploadClick} label=${
-      this.strings.uploadButtonLabel
-    }>
-            ${getSvg(SvgIcon.Upload)} <span class="upload-text">${this.strings.buttonUploadFile}</span>
+          <fluent-button
+            appearance="accent"
+            class="file-upload-button"
+            @click=${this.onFileUploadClick}
+            label=${this.strings.uploadButtonLabel}>
+              <span slot="start">${getSvg(SvgIcon.Upload)}</span>
+              <span class="upload-text">${this.strings.buttonUploadFile}</span>
           </fluent-button>
         </div>
-        </div>
         <div class="file-upload-Template">
-        ${this.renderFolderTemplate(this.filesToUpload)}
+          ${this.renderFolderTemplate(this.filesToUpload)}
         </div>
        `;
   }
@@ -345,7 +355,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   protected renderFolderTemplate(fileItems: MgtFileUploadItem[]) {
     const folderStructure: string[] = [];
     if (fileItems.length > 0) {
-      const TemplateFileItems = fileItems.map(fileItem => {
+      const templateFileItems = fileItems.map(fileItem => {
         if (folderStructure.indexOf(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/'))) === -1) {
           if (fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')) !== '') {
             folderStructure.push(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')));
@@ -358,8 +368,7 @@ export class MgtFileUpload extends MgtBaseComponent {
                     folder: 'Folder'
                   }}
                   .view=${ViewType.oneline}
-                  class="mgt-file-item"
-                >
+                  class="mgt-file-item">
                 </mgt-file>
               </div>
             </div>
@@ -371,10 +380,9 @@ export class MgtFileUpload extends MgtBaseComponent {
           return html`${this.renderFileTemplate(fileItem, 'file-upload-folder-tab')}`;
         }
       });
-      return html`${TemplateFileItems}`;
-    } else {
-      return null;
+      return html`${templateFileItems}`;
     }
+    return html``;
   }
 
   /**
@@ -384,14 +392,24 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @returns
    */
   protected renderFileTemplate(fileItem: MgtFileUploadItem, folderTabStyle: string) {
+    const completed = classMap({
+      'file-upload-table': true,
+      upload: fileItem.completed
+    });
+    const folder =
+      folderTabStyle + (fileItem.fieldUploadResponse === 'lastModifiedDateTime' ? ' file-upload-dialog-success' : '');
+
+    const description = classMap({
+      description: fileItem.fieldUploadResponse === 'description'
+    });
+
+    const completedTemplate = !fileItem.completed ? this.renderFileUploadTemplate(fileItem) : html``;
+
     return mgtHtml`
-        <div class="${fileItem.completed ? 'file-upload-table' : 'file-upload-table upload'}">
-          <div class="${
-            folderTabStyle +
-            (fileItem.fieldUploadResponse === 'lastModifiedDateTime' ? ' file-upload-dialog-success' : '')
-          }">
+        <div class="${completed}">
+          <div class="${folder}">
             <div class='file-upload-cell'>
-              <div style=${fileItem.fieldUploadResponse === 'description' ? 'opacity: 0.5;' : ''}>
+              <div class="${description}">
                 <div class="file-upload-status">
                   ${fileItem.iconStatus}
                 </div>
@@ -399,16 +417,15 @@ export class MgtFileUpload extends MgtBaseComponent {
                   .fileDetails=${fileItem.driveItem}
                   .view=${fileItem.view}
                   .line2Property=${fileItem.fieldUploadResponse}
-                  class="mgt-file-item"
-                  >
+                  part="upload"
+                  class="mgt-file-item">
                 </mgt-file>
               </div>
             </div>
-              ${fileItem.completed === false ? this.renderFileUploadTemplate(fileItem) : null}
+              ${completedTemplate}
             </div>
           </div>
-        </div>
-        `;
+        </div>`;
   }
 
   /**
@@ -418,22 +435,30 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @returns
    */
   protected renderFileUploadTemplate(fileItem: MgtFileUploadItem) {
+    const completed = classMap({
+      'file-upload-table': true,
+      upload: fileItem.completed
+    });
     return html`
     <div class='file-upload-cell'>
       <div class='file-upload-table file-upload-name' >
         <div class='file-upload-cell'>
-          <div title="${fileItem.file.name}" class='file-upload-filename'>${fileItem.file.name}</div>
+          <div
+            title="${fileItem.file.name}"
+            class='file-upload-filename'>
+            ${fileItem.file.name}
+          </div>
         </div>
       </div>
       <div class='file-upload-table'>
         <div class='file-upload-cell'>
-          <div class="${fileItem.completed ? 'file-upload-table' : 'file-upload-table upload'}">
-            <fluent-progress class="file-upload-bar" value="${fileItem.percent}" ></fluent-progress>
-            <div class='file-upload-cell' style="padding-left:5px">
+          <div class="${completed}">
+            <fluent-progress class="file-upload-bar" value="${fileItem.percent}"></fluent-progress>
+            <div class='file-upload-cell percent-indicator'>
               <span>${fileItem.percent}%</span>
               <span
                 class="file-upload-cancel"
-                @click=${e => this.deleteFileUploadSession(fileItem)}>
+                @click=${() => this.deleteFileUploadSession(fileItem)}>
                 ${getSvg(SvgIcon.Cancel)}
               </span>
             </div>
@@ -479,7 +504,6 @@ export class MgtFileUpload extends MgtBaseComponent {
         // Responses that confirm cancelation of session.
         // 404 means (The upload session was not found/The resource could not be found/)
         // 409 means The resource has changed since the caller last read it; usually an eTag mismatch
-        const response = await deleteSessionFile(this.fileUploadList.graph, fileItem.uploadUrl);
         fileItem.uploadUrl = undefined;
         fileItem.completed = true;
         this.setUploadFail(fileItem, strings.cancelUploadFile);
@@ -513,7 +537,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    * @param event
    */
-  protected handleonDragEnter = async event => {
+  protected handleonDragEnter = async (event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -530,7 +554,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    * @param event
    */
-  protected handleonDragLeave = event => {
+  protected handleonDragLeave = (event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -546,7 +570,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    * @param event
    */
-  protected handleonDrop = async event => {
+  protected handleonDrop = async (event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -1062,7 +1086,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     return new Promise<string | ArrayBuffer>((resolve, reject) => {
       const myReader: FileReader = new FileReader();
 
-      myReader.onloadend = e => {
+      myReader.onloadend = () => {
         resolve(myReader.result);
       };
 
