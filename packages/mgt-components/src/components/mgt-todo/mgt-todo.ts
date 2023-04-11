@@ -45,41 +45,7 @@ export type TodoFilter = (task: TodoTask) => boolean;
  * @class MgtTodo
  * @extends {MgtTasksBase}
  *
- * @cssprop --tasks-header-padding - {String} Tasks header padding
- * @cssprop --tasks-title-padding - {String} Tasks title padding
- * @cssprop --tasks-plan-title-font-size - {Length} Tasks plan title font size
- * @cssprop --tasks-plan-title-padding - {String} Tasks plan title padding
- * @cssprop --tasks-new-button-width - {String} Tasks new button width
- * @cssprop --tasks-new-button-height - {String} Tasks new button height
- * @cssprop --tasks-new-button-color - {Color} Tasks new button color
- * @cssprop --tasks-new-button-background - {String} Tasks new button background
- * @cssprop --tasks-new-button-border - {String} Tasks new button border
- * @cssprop --tasks-new-button-hover-background - {Color} Tasks new button hover background
- * @cssprop --tasks-new-button-active-background - {Color} Tasks new button active background
- * @cssprop --task-margin - {String} Task margin
- * @cssprop --task-background - {Color} Task background
- * @cssprop --task-border - {String} Task border
- * @cssprop --task-header-color - {Color} Task header color
- * @cssprop --task-header-margin - {String} Task header margin
- * @cssprop --task-new-margin - {String} Task new margin
- * @cssprop --task-new-border - {String} Task new border
- * @cssprop --task-new-input-margin - {String} Task new input margin
- * @cssprop --task-new-input-padding - {String} Task new input padding
- * @cssprop --task-new-input-font-size - {Length} Task new input font size
- * @cssprop --task-new-select-border - {String} Task new select border
- * @cssprop --task-new-add-button-background - {Color} Task new add button background
- * @cssprop --task-new-add-button-disabled-background - {Color} Task new add button disabled background
- * @cssprop --task-new-cancel-button-color - {Color} Task new cancel button color
- * @cssprop --task-complete-background - {Color} Task complete background
- * @cssprop --task-complete-border - {String} Task complete border
- * @cssprop --task-icon-alignment - {String} Task icon alignment
- * @cssprop --task-icon-background - {Color} Task icon color
- * @cssprop --task-icon-background-completed - {Color} Task icon background color when completed
- * @cssprop --task-icon-border - {String} Task icon border styles
- * @cssprop --task-icon-border-completed - {String} Task icon border style when task is completed
- * @cssprop --task-icon-border-radius - {String} Task icon border radius
- * @cssprop --task-icon-color - {Color} Task icon color
- * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
+ *
  */
 @customElement('todo')
 // @customElement('mgt-todo')
@@ -323,7 +289,7 @@ export class MgtTodo extends MgtTasksBase {
       Incomplete: !isCompleted,
       ReadOnly: this.readOnly,
       Task: true,
-      checked: isCompleted ? true : false
+      checked: isCompleted
     });
 
     const taskCheckContent = isCompleted
@@ -335,7 +301,7 @@ export class MgtTodo extends MgtTasksBase {
     return html`
       <fluent-radio class=${taskClasses} @click="${() => this.handleTaskCheckClick(task)}">
         <div slot="checked-indicator">
-          <span class="TaskCheckContent">${taskCheckContent}</span>
+          ${taskCheckContent}
         </div>
         ${taskDetailsTemplate}
       </fluent-radio>

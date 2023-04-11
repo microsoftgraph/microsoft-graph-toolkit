@@ -26,7 +26,7 @@
     }
     &.Complete {
       text-decoration: line-through;
-      border: set-var(border, $theme-default, $tasks);
+      border: $task-border-completed;
       background: $task-background-color--completed;
     }
 
@@ -115,7 +115,7 @@
 
         input {
           flex: 1;
-          border: var(--task-new-border, none);
+          border: none;
           border-bottom: 1px solid $task-color;
           outline: none;
           border-radius: 0;
@@ -179,6 +179,37 @@
   }
 
   fluent-radio {
+    &.Task {
+      &.Complete {
+        // &::part(control) {
+        //   background: $task-radio-background-color;
+        // }
+        div > svg {
+          .filled {
+            display: block;
+          }
+          .regular {
+            display: none;
+          }
+          path {
+            fill: $task-radio-background-color;
+          }
+        }
+      }
+
+      div > svg {
+        .filled {
+          display: none;
+        }
+        .regular {
+          display: block;
+        }
+
+        path {
+          fill: $task-background-color;
+        }
+      }
+    }
     &::part(control) {
       margin-inline-start: 10px;
       background: none;

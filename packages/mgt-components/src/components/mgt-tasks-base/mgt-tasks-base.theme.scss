@@ -17,6 +17,9 @@ $task-date-input-active-color: #{var(--task-date-input-focus, var(--accent-fill-
 $task-date-input-hover-color: #{var(--task-date-input-hover-color, var(--neutral-layer-1))};
 $task-background-color-hover: #{var(--task-background-color-hover, var(--neutral-fill-hover))};
 $task-box-shadow: #{var(--task-box-shadow, var(--elevation-shadow-card-active))};
+$task-border-completed: #{var(--task-border-completed, var(--neutral-foreground-active))};
+$task-radio-background-color: #{var(--task-radio-background-color, var(--accent-fill-rest))};
+$task-radio-color: #{var(--task-radio-color, var(--neutral-fill-rest))};
 
 $tasks: (
   border: (
