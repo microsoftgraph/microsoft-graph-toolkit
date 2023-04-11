@@ -181,9 +181,6 @@
   fluent-radio {
     &.Task {
       &.Complete {
-        // &::part(control) {
-        //   background: $task-radio-background-color;
-        // }
         div > svg {
           .filled {
             display: block;

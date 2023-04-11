@@ -45,7 +45,15 @@ export type TodoFilter = (task: TodoTask) => boolean;
  * @class MgtTodo
  * @extends {MgtTasksBase}
  *
- *
+ * @cssprop --task-color - {Color} - Task text color
+ * @cssprop --task-background-color - {Color} - Task background color
+ * @cssprop --task-complete-background - {Color} - Task background color when completed
+ * @cssprop --task-date-input-active-color - {Color} - Task date input active color
+ * @cssprop --task-date-input-hover-color - {Color} - Task date input hover color
+ * @cssprop --task-background-color-hover - {Color} - Task background when hovered
+ * @cssprop --task-box-shadow - {Color} - Task box shadow color
+ * @cssprop --task-border-completed - {Color} - Task border color when completed
+ * @cssprop --task-radio-background-color - {Color} - Task radio background color
  */
 @customElement('todo')
 // @customElement('mgt-todo')
