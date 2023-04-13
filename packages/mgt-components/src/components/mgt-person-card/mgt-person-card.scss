@@ -256,7 +256,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       position: relative;
       width: 375px;
       margin: 0;
-      color: $person-card-divider-color;
+      border-bottom: 1px solid $person-card-border-color;
     }
 
     .section-nav {
