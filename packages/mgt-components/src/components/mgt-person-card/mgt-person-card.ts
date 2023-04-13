@@ -487,7 +487,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const closeCardTemplate = this.isExpanded
       ? html`
            <div class="close-card-container">
-             <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} >
+             <fluent-button 
+              appearance="lightweight" 
+              class="close-button" 
+              aria-label=${this.strings.closeCardLabel}
+              @click=${this.closeCard} >
                ${getSvg(SvgIcon.Close)}
              </fluent-button>
            </div>
@@ -500,7 +504,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
             <div class="nav">
               <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
                 e.code === 'Enter' ? this.goBack() : '';
-              }} @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
+              }} @click=${this.goBack}>${getSvg(SvgIcon.Back)}</div>
             </div>
           `
         : null;
@@ -636,12 +640,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (getEmailFromGraphEntity(person)) {
       email = html`
         <fluent-button class="icon"
-          @click=${() => this.emailUser()}
-          @mouseenter=${() => this.setHoveredState('email', true)}
-          @mouseleave=${() => this.setHoveredState('email', false)}>
-          <span class=${classMap({ filled: this.isHovered('email'), regular: !this.isHovered('email') })}>
-            ${getSvg(SvgIcon.SmallEmail)}
-          </span>
+          aria-label="${this.strings.emailButtonLabel} ${person.displayName}"
+          @click=${this.emailUser}>
+          ${getSvg(SvgIcon.SmallEmail)}
         </fluent-button>
       `;
     }
@@ -649,14 +650,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     // Chat
     let chat: TemplateResult;
     if (userPerson?.userPrincipalName) {
+      const ariaLabel = `${this.strings.chatButtonLabel} ${person.displayName}`;
       chat = html`
         <fluent-button class="icon"
-          @click=${() => this.chatUser()}
-          @mouseenter=${() => this.setHoveredState('chat', true)}
-          @mouseleave=${() => this.setHoveredState('chat', false)}>
-          <span class=${classMap({ filled: this.isHovered('chat'), regular: !this.isHovered('chat') })}>
-            ${getSvg(SvgIcon.SmallChat)}
-          </span>
+          aria-label=${ariaLabel}
+          @click=${this.chatUser}>
+          ${getSvg(SvgIcon.SmallChat)}
         </fluent-button>
        `;
     }
@@ -665,12 +664,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let video: TemplateResult;
     video = html`
         <fluent-button class="icon"
-           @click=${() => this.videoCallUser()}
-           @mouseenter=${() => this.setHoveredState('video', true)}
-           @mouseleave=${() => this.setHoveredState('video', false)}>
-           <span class=${classMap({ filled: this.isHovered('video'), regular: !this.isHovered('video') })}>
-            ${getSvg(SvgIcon.Video)}
-          </span>
+          aria-label="${this.strings.videoButtonLabel} ${person.displayName}"
+          @click=${this.videoCallUser}>
+          ${getSvg(SvgIcon.Video)}
         </fluent-button>
       `;
 
@@ -679,12 +675,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (userPerson.userPrincipalName) {
       call = html`
          <fluent-button class="icon"
-           @click=${() => this.callUser()}
-           @mouseenter=${() => this.setHoveredState('call', true)}
-           @mouseleave=${() => this.setHoveredState('call', false)}>
-           <span class=${classMap({ filled: this.isHovered('call'), regular: !this.isHovered('call') })}>
-            ${getSvg(SvgIcon.Call)}
-          </span>
+          aria-label="${this.strings.callButtonLabel} ${person.displayName}"
+          @click=${this.callUser}>
+          ${getSvg(SvgIcon.Call)}
         </fluent-button>
        `;
     }
@@ -706,6 +699,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
       <fluent-button
+        aria-label=${this.strings.expandDetailsLabel}
         class="expanded-details-button"
         @click=${this.showExpandedDetails}
       >
@@ -840,6 +834,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
             <div class="section__title" tabindex=0>${section.displayName}</div>
               <fluent-button
                 appearance="lightweight"
+                aria-label=${this.strings.renderOverviewSectionLabel}
                 class="section__show-more"
                 @click=${() => this.updateCurrentSection(section)}
               >
@@ -928,7 +923,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           @keydown="${(e: KeyboardEvent) => this.sendQuickMessageOnEnter(e)}">
         </fluent-text-field>
         <fluent-button class="send-message-icon"
-          @click=${() => this.sendQuickMessage()}
+          aria-label=${this.strings.sendMessageLabel}
+          @click=${this.sendQuickMessage}
           ?disabled=${this.isSending}>
           ${!this.isSending ? getSvg(SvgIcon.Send) : getSvg(SvgIcon.Confirmation)}
         </fluent-button>
@@ -1263,27 +1259,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return person && person.personImage ? person.personImage : null;
   }
 
-  @state() private hoverStates: Record<HoverStatesActions, boolean> = {
-    // triggers a re-render when hovering on the CTA icons
-    email: false,
-    chat: false,
-    video: false,
-    call: false
-  };
-
   private clearInputData() {
     this._chatInput = '';
     this.requestUpdate();
   }
-
-  private setHoveredState = (icon: string, hoverState: boolean) => {
-    this.hoverStates[icon] = hoverState;
-    this.hoverStates = { ...this.hoverStates };
-  };
-
-  private isHovered = (icon: string) => {
-    return this.hoverStates[icon];
-  };
 
   private getPersonBusinessPhones(person: Person): string[] {
     const phones = person.phones;
