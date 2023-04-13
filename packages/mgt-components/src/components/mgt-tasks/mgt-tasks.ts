@@ -357,7 +357,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property() private _currentGroup: string;
   @property() private _currentFolder: string;
 
-  private _me: User = null;
+  @state() private _me: User = null;
   private previousMediaQuery: ComponentMediaQuery;
 
   constructor() {
@@ -461,18 +461,9 @@ export class MgtTasks extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    let tasks = this._tasks
-      .filter(task => this.isTaskInSelectedGroupFilter(task))
-      .filter(task => this.isTaskInSelectedFolderFilter(task))
-      .filter(task => !this._hiddenTasks.includes(task.id));
-
-    if (this.taskFilter) {
-      tasks = tasks.filter(task => this.taskFilter(task._raw));
-    }
-
     const loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
-    let header;
+    let header: TemplateResult;
 
     if (!this.hideHeader) {
       header = html`
@@ -487,7 +478,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       <div class="Tasks" dir=${this.direction}>
         ${this._isNewTaskVisible ? this.renderNewTask() : null} ${loadingTask}
         ${repeat(
-          tasks,
+          this._tasks,
           task => task.id,
           task => this.renderTask(task)
         )}
@@ -513,10 +504,9 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     this._inTaskLoad = true;
-    let meTask;
     if (!this._me) {
       const graph = provider.graph.forComponent(this);
-      meTask = getMe(graph);
+      this._me = await getMe(graph);
     }
 
     if (this.groupId && this.dataSource === TasksSource.planner) {
@@ -531,8 +521,13 @@ export class MgtTasks extends MgtTemplatedComponent {
       await this._loadAllTasks(ts);
     }
 
-    if (meTask) {
-      this._me = await meTask;
+    this._tasks = this._tasks
+      .filter(task => this.isTaskInSelectedGroupFilter(task))
+      .filter(task => this.isTaskInSelectedFolderFilter(task))
+      .filter(task => !this._hiddenTasks.includes(task.id));
+
+    if (this.taskFilter) {
+      this._tasks = this._tasks.filter(task => this.taskFilter(task._raw));
     }
 
     this._inTaskLoad = false;
