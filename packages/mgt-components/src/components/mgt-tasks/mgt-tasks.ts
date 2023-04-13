@@ -7,10 +7,11 @@
 
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
-import { html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { TemplateResult, html } from 'lit';
+import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import {
   ComponentMediaQuery,
   Providers,
@@ -187,7 +188,6 @@ const plannerAssignment = {
  * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
  */
 @customElement('tasks')
-// @customElement('mgt-tasks')
 export class MgtTasks extends MgtTemplatedComponent {
   /**
    * determines whether todo, or planner functionality for task component
@@ -366,7 +366,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property() private _currentGroup: string;
   @property() private _currentFolder: string;
 
-  private _me: User = null;
+  @state() private _me: User = null;
   private previousMediaQuery: ComponentMediaQuery;
 
   constructor() {
@@ -470,18 +470,9 @@ export class MgtTasks extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    let tasks = this._tasks
-      .filter(task => this.isTaskInSelectedGroupFilter(task))
-      .filter(task => this.isTaskInSelectedFolderFilter(task))
-      .filter(task => !this._hiddenTasks.includes(task.id));
-
-    if (this.taskFilter) {
-      tasks = tasks.filter(task => this.taskFilter(task._raw));
-    }
-
     const loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
-    let header;
+    let header: TemplateResult;
 
     if (!this.hideHeader) {
       header = html`
@@ -496,7 +487,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       <div class="Tasks" dir=${this.direction}>
         ${this._isNewTaskVisible ? this.renderNewTask() : null} ${loadingTask}
         ${repeat(
-          tasks,
+          this._tasks,
           task => task.id,
           task => this.renderTask(task)
         )}
@@ -522,10 +513,9 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     this._inTaskLoad = true;
-    let meTask;
     if (!this._me) {
       const graph = provider.graph.forComponent(this);
-      meTask = getMe(graph);
+      this._me = await getMe(graph);
     }
 
     if (this.groupId && this.dataSource === TasksSource.planner) {
@@ -540,8 +530,13 @@ export class MgtTasks extends MgtTemplatedComponent {
       await this._loadAllTasks(ts);
     }
 
-    if (meTask) {
-      this._me = await meTask;
+    this._tasks = this._tasks
+      .filter(task => this.isTaskInSelectedGroupFilter(task))
+      .filter(task => this.isTaskInSelectedFolderFilter(task))
+      .filter(task => !this._hiddenTasks.includes(task.id));
+
+    if (this.taskFilter) {
+      this._tasks = this._tasks.filter(task => this.taskFilter(task._raw));
     }
 
     this._inTaskLoad = false;
@@ -1313,6 +1308,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     const picker = mgtHtml`
       <mgt-people-picker
         class="people-picker picker-${taskId}"
+        .groupId=${ifDefined(this.groupId)}
         @click=${(e: MouseEvent) => e.stopPropagation()}
         @keydown=${(e: KeyboardEvent) => {
           if (e.code === 'Enter') {
