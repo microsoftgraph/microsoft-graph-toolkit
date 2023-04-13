@@ -6,8 +6,8 @@
  */
 
 import { html } from 'lit-element';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 import { versionInfo } from '../versionInfo';
+import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
   parameters: {
@@ -20,6 +20,10 @@ export default {
 
 export const tasks = () => html`
   <mgt-tasks></mgt-tasks>
+`;
+
+export const tasksWithGroupId = () => html`
+  <mgt-tasks group-id="45327068-6785-4073-8553-a750d6c16a45"></mgt-tasks>
 `;
 
 export const darkTheme = () => html`
