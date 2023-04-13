@@ -24,6 +24,12 @@ export const tasks = () => html`
 
 export const tasksWithGroupId = () => html`
   <mgt-tasks group-id="45327068-6785-4073-8553-a750d6c16a45"></mgt-tasks>
+  <!--
+    NOTE: the default tenant doesn't have the required Tasks.ReadWrite and
+    Group.ReadWrite.All permissions. Add &login=true to the URL and load to be
+    able to Sign In with your tenant. Lastly, you update the group-id to your
+    tenant group-id value for any group you want to try out.
+  -->
 `;
 
 export const darkTheme = () => html`

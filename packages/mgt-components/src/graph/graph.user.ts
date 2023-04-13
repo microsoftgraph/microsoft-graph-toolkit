@@ -10,7 +10,6 @@ import { User } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, PersonType } from './graph.people';
 import { schemas } from './cacheStores';
-import { UserType } from '..';
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
 
 /**
@@ -240,9 +239,9 @@ export async function getUsersForUserIds(
           cache.putValue(id, { user: JSON.stringify(user) });
         }
       }
-    }
-    if (searchInput && Object.keys(peopleSearchMatches).length) {
-      return Promise.all(Object.values(peopleSearchMatches));
+      if (searchInput && Object.keys(peopleSearchMatches).length) {
+        return Promise.all(Object.values(peopleSearchMatches));
+      }
     }
     return Promise.all(Object.values(peopleDict));
   } catch (_) {
