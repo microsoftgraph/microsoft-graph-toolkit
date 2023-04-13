@@ -224,7 +224,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @memberof MgtTasksBase
    */
   protected clearState(): void {
-    this.clearNewTaskData;
     this.requestUpdate();
   }
 
