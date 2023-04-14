@@ -5,7 +5,15 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { GraphPageIterator, Providers, ProviderState, customElement, mgtHtml } from '@microsoft/mgt-element';
+import {
+  arraysAreEqual,
+  GraphPageIterator,
+  Providers,
+  ProviderState,
+  customElement,
+  mgtHtml,
+  MgtTemplatedComponent
+} from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, PropertyValueMap, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
@@ -103,7 +111,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
    * @protected
    * @memberof MgtFileList
    */
-  protected get strings() {
+  protected get strings(): Record<string, string> {
     return strings;
   }
 
@@ -121,7 +129,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
   private _preloadedFiles: DriveItem[];
   private pageIterator: GraphPageIterator<DriveItem>;
   // tracking user arrow key input of selection for accessibility purpose
-  private _focusedItemIndex: number = -1;
+  private _focusedItemIndex = -1;
 
   @state()
   private _isLoadingMore: boolean;
@@ -141,7 +149,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
 
   protected updated(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
     super.updated(changedProperties);
-    (this.renderRoot.querySelector('mgt-file-upload') as MgtFileUpload)?.attachEventListeners();
+    this.renderRoot.querySelector<MgtFileUpload>('mgt-file-upload')?.attachEventListeners();
   }
 
   /**
@@ -152,6 +160,17 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
    * @memberof MgtFileList
    */
   public get displayName(): string {
+    return this.strings.filesSectionTitle;
+  }
+
+  /**
+   * The title for the card when rendered as a card full.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtFileList
+   */
+  public get cardTitle(): string {
     return this.strings.filesSectionTitle;
   }
 
@@ -182,6 +201,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
    */
   protected clearState(): void {
     super.clearState();
+    this._isCompact = false;
     this.files = null;
     this._isCompact = false;
     this._selectedFiles = new Map();
@@ -231,25 +251,14 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
   }
 
   /**
-   * Render the full view
-   *
-   * @return {*}  {TemplateResult}
-   * @memberof MgtFileList
-   */
-  public renderFullView(): TemplateResult {
-    return this.renderTemplate('default', { files: this.files }) || this.renderFiles();
-  }
-
-  /**
    * Render the compact view
    *
    * @returns {TemplateResult}
    * @memberof MgtFileList
    */
   public renderCompactView(): TemplateResult {
-    let contentTemplate: TemplateResult;
-    let files = this.files.slice(0, 3);
-    contentTemplate = html`
+    const files = this.files.slice(0, 3);
+    const contentTemplate = html`
       ${files.map(file => this.renderFile(file))}
     `;
 
@@ -258,6 +267,16 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
         ${contentTemplate}
       </div>
     `;
+  }
+
+  /**
+   * Render the full view
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
+  public renderFullView(): TemplateResult {
+    return this.renderTemplate('default', { files: this.files }) || this.renderFiles();
   }
 
   /**
@@ -302,11 +321,10 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
-        <div class="title">${this.strings.filesSectionTitle}</div>
         <ul
           id="file-list"
           class="file-list"
-          @blur="${this.onFileListOut}">
+        >
           <li
             tabindex="0"
             class="file-item"
@@ -350,7 +368,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
       this.renderTemplate('file', { file }, file.id) ||
       mgtHtml`
         <mgt-file
-          @click=${e => this.handleItemSelect(file, e)}
+          @click=${(e: MouseEvent) => this.handleItemSelect(file, e)}
           part="file-item"
           .fileDetails=${file}
           .view=${view}
@@ -378,7 +396,6 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
           id="show-more"
           class="show-more"
           @click=${this.renderNextPage}
-          @keydown=${this.onShowMoreKeyDown}
         >
           <span class="show-more-text">${this.strings.showMoreSubtitle}</span>
         </fluent-button>`;
@@ -409,20 +426,9 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
   }
 
   /**
-   * Handle accessibility keyboard enter event on 'show more items' button
-   *
-   * @param event
-   */
-  private onShowMoreKeyDown(event: KeyboardEvent): void {
-    if (event && event.code === 'Enter') {
-      event.preventDefault();
-      this.renderNextPage();
-    }
-  }
-
-  /**
    * Handles setting the focusedItemIndex to 0 when you focus on the first item
    * in the file list.
+   *
    * @returns void
    */
   private onFocusFirstItem = () => (this._focusedItemIndex = 0);
@@ -432,7 +438,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
    *
    * @param event
    */
-  private onFileListKeyDown(event: KeyboardEvent): void {
+  private onFileListKeyDown = (event: KeyboardEvent): void => {
     const fileList = this.renderRoot.querySelector('.file-list');
     let focusedItem: HTMLElement;
 
@@ -468,19 +474,10 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
     if (event.code === 'Tab') {
       focusedItem = fileList.children[this._focusedItemIndex] as HTMLElement;
     }
-  }
+  };
 
   private raiseItemClickedEvent(file: DriveItem) {
     this.fireCustomEvent('itemClick', file);
-  }
-
-  /**
-   * Remove accessibility keyboard focused when out of file list
-   *
-   */
-  private onFileListOut() {
-    const fileList = this.renderRoot.querySelector('.file-list');
-    const focusedItem = fileList.children[this._focusedItemIndex];
   }
 
   /**
@@ -621,7 +618,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
 
       // get index of the focused item
       const nodes = Array.from(fileList.children);
-      const li = (event.target as Element).closest('li');
+      const li = (event.target as HTMLElement).closest('li');
       const index = nodes.indexOf(li);
       this._focusedItemIndex = index;
       const clickedItem = fileList.children[this._focusedItemIndex] as HTMLElement;
@@ -635,7 +632,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
    * @protected
    * @memberof MgtFileList
    */
-  protected async renderNextPage() {
+  protected renderNextPage = async () => {
     // render next page from cache if exists, or else use iterator
     if (this._preloadedFiles.length > 0) {
       this.files = [
@@ -673,7 +670,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
     }
 
     this.requestUpdate();
-  }
+  };
 
   private handleFileClick(file: DriveItem) {
     if (file && file.webUrl) {
@@ -687,7 +684,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
    * @param name file name
    * @returns {string} file extension
    */
-  private getFileExtension(name) {
+  private getFileExtension(name: string) {
     const re = /(?:\.([^.]+))?$/;
     const fileExtension = re.exec(name)[1] || '';
 
@@ -730,9 +727,9 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
   public reload(clearCache = false) {
     if (clearCache) {
       // clear cache File List
-      clearFilesCache();
+      void clearFilesCache();
     }
 
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 }

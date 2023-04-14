@@ -7,11 +7,18 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Components/mgt-person',
   component: 'person',
-  decorators: [withCodeEditor]
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: { code: '<mgt-person person-query="me" view="twoLines"></mgt-person>' }
+    }
+  }
 };
 
 export const person = () => html`

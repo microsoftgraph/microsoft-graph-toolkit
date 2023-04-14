@@ -54,7 +54,7 @@ describe('mgt-theme-toggle - tests', () => {
     // redefine matchMedia to return true
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: jest.fn().mockImplementation(query => ({
+      value: jest.fn().mockImplementation((query: unknown) => ({
         matches: true,
         media: query,
         onchange: null,

@@ -27,7 +27,7 @@ import {
   getUserInsightsDriveItemById
 } from '../../graph/graph.files';
 import { formatBytes, getRelativeDisplayDate } from '../../utils/Utils';
-import { ViewType } from '../../graph/types';
+import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { getFileTypeIconUriByExtension } from '../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { strings } from './strings';
@@ -104,7 +104,7 @@ export class MgtFile extends MgtFileBase {
     }
 
     this._fileQuery = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -125,7 +125,7 @@ export class MgtFile extends MgtFileBase {
     }
 
     this._insightId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -146,7 +146,7 @@ export class MgtFile extends MgtFileBase {
     }
 
     this._fileDetails = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -167,7 +167,7 @@ export class MgtFile extends MgtFileBase {
     }
 
     this._fileIcon = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -225,7 +225,7 @@ export class MgtFile extends MgtFileBase {
       if (typeof ViewType[value] === 'undefined') {
         return ViewType.threelines;
       } else {
-        return ViewType[value];
+        return ViewType[value] as ViewType;
       }
     }
   })
@@ -423,7 +423,7 @@ export class MgtFile extends MgtFileBase {
     }
 
     const graph = provider.graph.forComponent(this);
-    let driveItem;
+    let driveItem: DriveItem;
 
     // evaluate to true when only item-id or item-path is provided
     const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
@@ -479,13 +479,13 @@ export class MgtFile extends MgtFileBase {
     this.driveItem = driveItem;
   }
 
-  private getTextFromProperty(driveItem: DriveItem, properties: string) {
+  private getTextFromProperty(driveItem: DriveItem, properties: string): string {
     if (!properties || properties.length === 0) {
       return null;
     }
 
     const propertyList = properties.trim().split(',');
-    let text;
+    let text: string;
     let i = 0;
 
     while (!text && i < propertyList.length) {
@@ -493,18 +493,16 @@ export class MgtFile extends MgtFileBase {
       switch (current) {
         case 'size':
           // convert size to kb, mb, gb
-          let size;
+          let size = '0';
           if (driveItem.size) {
             size = formatBytes(driveItem.size);
-          } else {
-            size = '0';
           }
           text = `${this.strings.sizeSubtitle}: ${size}`;
           break;
         case 'lastModifiedDateTime':
           // convert date time
-          let relativeDateString;
-          let lastModifiedString;
+          let relativeDateString: string;
+          let lastModifiedString: string;
           if (driveItem.lastModifiedDateTime) {
             const lastModifiedDateTime = new Date(driveItem.lastModifiedDateTime);
             relativeDateString = getRelativeDisplayDate(lastModifiedDateTime);
@@ -515,7 +513,7 @@ export class MgtFile extends MgtFileBase {
           text = lastModifiedString;
           break;
         default:
-          text = driveItem[current];
+          text = driveItem[current] as string;
       }
       i++;
     }

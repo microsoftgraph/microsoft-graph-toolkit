@@ -106,7 +106,7 @@ export class Providers {
       return null;
     }
 
-    if (!this._mePromise) {
+    if (!Boolean(this._mePromise)) {
       this._mePromise = this.getMe();
     }
 
@@ -123,11 +123,13 @@ export class Providers {
    */
   private static async getMe(): Promise<User> {
     try {
-      const response: User = await this.client.api('me').get();
+      const response: User = (await this.client.api('me').get()) as User;
       if (response && response.id) {
         return response;
       }
-    } catch {}
+    } catch {
+      // no-op
+    }
 
     return null;
   }
@@ -142,13 +144,15 @@ export class Providers {
     if (this._cacheId) {
       return this._cacheId;
     }
-    if (Providers.globalProvider && Providers.globalProvider.state == ProviderState.SignedIn) {
+    if (Providers.globalProvider?.state === ProviderState.SignedIn) {
       if (!this._cacheId) {
         const client = this.client;
         if (client) {
           try {
             this._cacheId = await this.createCacheId();
-          } catch {}
+          } catch {
+            // no-op
+          }
         }
       }
     }
@@ -237,19 +241,19 @@ export class Providers {
   private static _cacheId: string;
   private static _mePromise: Promise<User>;
 
-  private static handleProviderStateChanged() {
+  private static handleProviderStateChanged = () => {
     if (!Providers.globalProvider || Providers.globalProvider.state !== ProviderState.SignedIn) {
       // clear current signed in user info
       Providers._mePromise = null;
     }
 
     Providers._eventDispatcher.fire(ProvidersChangedState.ProviderStateChanged);
-  }
+  };
 
-  private static handleActiveAccountChanged() {
+  private static handleActiveAccountChanged = () => {
     Providers.unsetCacheId();
     Providers._activeAccountChangedDispatcher.fire(null);
-  }
+  };
 }
 
 /**

@@ -48,7 +48,7 @@ export class ElectronProvider extends IProvider {
    * @memberof ElectronProvider
    */
   setupProvider() {
-    ipcRenderer.on('mgtAuthState', async (event, authState) => {
+    ipcRenderer.on('mgtAuthState', (event, authState) => {
       if (authState === 'logged_in') {
         Providers.globalProvider.setState(ProviderState.SignedIn);
       } else if (authState === 'logged_out') {
@@ -65,7 +65,7 @@ export class ElectronProvider extends IProvider {
    * @memberof ElectronProvider
    */
   async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
-    const token = await ipcRenderer.invoke('token', options);
+    const token = (await ipcRenderer.invoke('token', options)) as string;
     return token;
   }
 

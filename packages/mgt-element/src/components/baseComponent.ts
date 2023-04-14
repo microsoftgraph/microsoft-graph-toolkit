@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, PropertyValues } from 'lit';
+import { LitElement, PropertyValueMap, PropertyValues } from 'lit';
 import { state } from 'lit/decorators.js';
 import { ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
@@ -44,7 +44,14 @@ export enum ComponentMediaQuery {
  * @extends {LitElement}
  */
 export abstract class MgtBaseComponent extends LitElement {
-  public static get version() {
+  /**
+   * Exposes the semver of the library the component is part of
+   *
+   * @readonly
+   * @static
+   * @memberof MgtBaseComponent
+   */
+  public static get version(): string {
     return PACKAGE_VERSION;
   }
 
@@ -108,19 +115,16 @@ export abstract class MgtBaseComponent extends LitElement {
 
   /**
    * determines if login component is in loading state
+   *
    * @type {boolean}
    */
-  private _isLoadingState: boolean = false;
+  private _isLoadingState = false;
 
   private _isFirstUpdated = false;
   private _currentLoadStatePromise: Promise<unknown>;
 
   constructor() {
     super();
-    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
-    this.handleDirectionChanged = this.handleDirectionChanged.bind(this);
-    this.handleProviderUpdates = this.handleProviderUpdates.bind(this);
-    this.handleActiveAccountUpdates = this.handleActiveAccountUpdates.bind(this);
     this.handleDirectionChanged();
     this.handleLocalizationChanged();
   }
@@ -158,12 +162,12 @@ export abstract class MgtBaseComponent extends LitElement {
    *
    * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated(changedProperties): void {
+  protected firstUpdated(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
     super.firstUpdated(changedProperties);
     this._isFirstUpdated = true;
     Providers.onProviderUpdated(this.handleProviderUpdates);
     Providers.onActiveAccountChanged(this.handleActiveAccountUpdates);
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -181,7 +185,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * @memberof MgtBaseComponent
    */
   protected clearState(): void {
-    // no implementation
+    // no-op
   }
 
   /**
@@ -192,19 +196,21 @@ export abstract class MgtBaseComponent extends LitElement {
    * @param {*} [detail]
    * @param {boolean} [bubbles=false]
    * @param {boolean} [cancelable=false]
+   * @param {boolean} [composed=false]
    * @return {*}  {boolean}
    * @memberof MgtBaseComponent
    */
   protected fireCustomEvent(
     eventName: string,
     detail?: any,
-    bubbles: boolean = false,
-    cancelable: boolean = false,
-    composed: boolean = false
+    bubbles = false,
+    cancelable = false,
+    composed = false
   ): boolean {
     const event = new CustomEvent(eventName, {
       bubbles,
       cancelable,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       detail,
       composed
     });
@@ -236,7 +242,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * @protected
    * @memberof MgtBaseComponent
    */
-  protected async requestStateUpdate(force: boolean = false): Promise<unknown> {
+  protected async requestStateUpdate(force = false): Promise<unknown> {
     // the component is still bootstraping - wait until first updated
     if (!this._isFirstUpdated) {
       return;
@@ -262,6 +268,7 @@ export abstract class MgtBaseComponent extends LitElement {
       return Promise.resolve();
     } else {
       // Signed in, load the internal component state
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       const loadStatePromise = new Promise<void>(async (resolve, reject) => {
         try {
           this.setLoadingState(true);
@@ -284,9 +291,12 @@ export abstract class MgtBaseComponent extends LitElement {
         // Return the load state promise.
         // If loading + forced, chain the promises.
         // This is to account for the lack of a cancellation token concept.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment
         return (this._currentLoadStatePromise =
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           this.isLoadingState && !!this._currentLoadStatePromise && force
-            ? this._currentLoadStatePromise.then(() => loadStatePromise)
+            ? // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              this._currentLoadStatePromise.then(() => loadStatePromise)
             : loadStatePromise);
       });
     }
@@ -301,21 +311,21 @@ export abstract class MgtBaseComponent extends LitElement {
     this.requestUpdate('isLoadingState');
   }
 
-  private handleProviderUpdates() {
-    this.requestStateUpdate();
-  }
+  private handleProviderUpdates = () => {
+    void this.requestStateUpdate();
+  };
 
-  private async handleActiveAccountUpdates() {
+  private handleActiveAccountUpdates = () => {
     this.clearState();
-    this.requestStateUpdate();
-  }
+    void this.requestStateUpdate();
+  };
 
-  private handleLocalizationChanged() {
+  private handleLocalizationChanged = () => {
     LocalizationHelper.updateStringsForTag(this.tagName, this.strings);
     this.requestUpdate();
-  }
+  };
 
-  private handleDirectionChanged() {
+  private handleDirectionChanged = () => {
     this.direction = LocalizationHelper.getDocumentDirection();
-  }
+  };
 }

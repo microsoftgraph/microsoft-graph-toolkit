@@ -6,13 +6,35 @@
  */
 
 import { html } from 'lit';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Components / mgt-get',
   component: 'get',
-  decorators: [withCodeEditor]
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: {
+        code: `
+<mgt-get resource="/me/messages" scopes="mail.read">
+  <template>
+    <pre>{{ JSON.stringify(value, null, 2) }}</pre>
+  </template>
+</mgt-get>`
+      }
+    }
+  }
 };
+
+export const Get = () => html`
+<mgt-get resource="/me/messages" scopes="mail.read">
+  <template>
+    <pre>{{ JSON.stringify(value, null, 2) }}</pre>
+  </template>
+</mgt-get>
+`;
 
 export const GetEmail = () => html`
   <mgt-get resource="/me/messages" version="beta" scopes="mail.read" max-pages="2">

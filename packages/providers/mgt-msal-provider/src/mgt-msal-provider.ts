@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 import { property } from 'lit/decorators.js';
-import { Providers, LoginType, MgtBaseProvider, customElement, validateBaseURL } from '@microsoft/mgt-element';
+import { Providers, LoginType, MgtBaseProvider, customElement } from '@microsoft/mgt-element';
 import { MsalConfig, MsalProvider } from './MsalProvider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
@@ -37,14 +37,14 @@ export class MgtMsalProvider extends MgtBaseProvider {
     attribute: 'login-type',
     type: String
   })
-  public loginType;
+  public loginType: string;
 
   /**
    * The authority to use.
    *
    * @memberof MgtMsalProvider
    */
-  @property() public authority;
+  @property() public authority: string;
 
   /**
    * Comma separated list of scopes
@@ -55,7 +55,7 @@ export class MgtMsalProvider extends MgtBaseProvider {
     attribute: 'scopes',
     type: String
   })
-  public scopes;
+  public scopes: string;
 
   /**
    * The redirect uri to use
@@ -66,7 +66,7 @@ export class MgtMsalProvider extends MgtBaseProvider {
     attribute: 'redirect-uri',
     type: String
   })
-  public redirectUri;
+  public redirectUri: string;
 
   /**
    * The domain hint to use during login
@@ -77,7 +77,7 @@ export class MgtMsalProvider extends MgtBaseProvider {
     attribute: 'domain-hint',
     type: String
   })
-  public domainHint;
+  public domainHint: string;
 
   /**
    * The prompt type to use during login
@@ -88,7 +88,7 @@ export class MgtMsalProvider extends MgtBaseProvider {
     attribute: 'prompt',
     type: String
   })
-  public prompt;
+  public prompt: string;
 
   /**
    * Gets whether this provider can be used in this environment
@@ -117,7 +117,7 @@ export class MgtMsalProvider extends MgtBaseProvider {
       if (this.loginType && this.loginType.length > 1) {
         let loginType: string = this.loginType.toLowerCase();
         loginType = loginType[0].toUpperCase() + loginType.slice(1);
-        const loginTypeEnum = LoginType[loginType];
+        const loginTypeEnum = LoginType[loginType] as LoginType;
         config.loginType = loginTypeEnum;
       }
 

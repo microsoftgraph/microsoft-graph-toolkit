@@ -18,7 +18,7 @@
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
-    "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
+    "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts"
   },
   "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",

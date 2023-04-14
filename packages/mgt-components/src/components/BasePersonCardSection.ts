@@ -19,6 +19,7 @@ import './sub-components/mgt-spinner/mgt-spinner';
  * This allows us to avoid forced inheritance and allow for more flexibility in the future.
  */
 export interface CardSection {
+  readonly cardTitle: string;
   tagName: string;
   asCompactView(): CardSection;
   asFullView(): CardSection;
@@ -52,7 +53,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent implem
     }
 
     this._personDetails = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -63,6 +64,15 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent implem
    * @memberof BasePersonCardSection
    */
   public abstract get displayName(): string;
+
+  /**
+   * The title for using when rendering the full card.
+   *
+   * @readonly
+   * @abstract
+   * @memberof BasePersonCardSection
+   */
+  public abstract get cardTitle(): string;
 
   /**
    * Determines the appropriate view state: full or compact
@@ -195,12 +205,13 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent implem
    */
   protected navigateCard(person: IDynamicPerson): void {
     // Search for card parent and update it's personDetails object
-    let parent: any = this.parentNode;
+    let parent: ParentNode = this.parentNode;
     while (parent) {
       parent = parent.parentNode;
 
-      if (parent && parent.host && parent.host.tagName === 'MGT-PERSON-CARD') {
-        parent = parent.host;
+      const shadowRoot = parent as ShadowRoot;
+      if (shadowRoot?.host?.tagName === 'MGT-PERSON-CARD') {
+        parent = shadowRoot.host;
         break;
       }
     }

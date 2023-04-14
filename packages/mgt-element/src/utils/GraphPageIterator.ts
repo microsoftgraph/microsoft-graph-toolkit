@@ -7,6 +7,7 @@
 
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
 import { IGraph } from '../IGraph';
+import { CollectionResponse } from '../CollectionResponse';
 
 /**
  * A helper class to assist in getting multiple pages from a resource
@@ -35,7 +36,7 @@ export class GraphPageIterator<T> {
    * @memberof GraphPageIterator
    */
   public get hasNext(): boolean {
-    return !!this._nextLink;
+    return Boolean(this._nextLink);
   }
 
   /**
@@ -50,13 +51,13 @@ export class GraphPageIterator<T> {
    * @returns a GraphPageIterator
    * @memberof GraphPageIterator
    */
-  public static async create<T>(graph: IGraph, request: GraphRequest, version?: string) {
-    const response = await request.get();
+  public static async create<T>(graph: IGraph, request: GraphRequest, version?: string): Promise<GraphPageIterator<T>> {
+    const response = (await request.get()) as CollectionResponse<T>;
     if (response && response.value) {
       const iterator = new GraphPageIterator<T>();
       iterator._graph = graph;
       iterator._value = response.value;
-      iterator._nextLink = response['@odata.nextLink'];
+      iterator._nextLink = response['@odata.nextLink'] as string;
       iterator._version = version || graph.version;
       return iterator;
     }
@@ -76,20 +77,30 @@ export class GraphPageIterator<T> {
    * @returns a GraphPageIterator
    * @memberof GraphPageIterator
    */
-  public static createFromValue<T>(graph: IGraph, value, nextLink?) {
-    let iterator = new GraphPageIterator<T>();
+  public static createFromValue<T>(graph: IGraph, value: T[], nextLink: string = null): GraphPageIterator<T> {
+    const iterator = new GraphPageIterator<T>();
 
     // create iterator from values
     iterator._graph = graph;
     iterator._value = value;
-    iterator._nextLink = nextLink ? nextLink : null;
+    iterator._nextLink = nextLink;
     iterator._version = graph.version;
 
-    return iterator || null;
+    return iterator;
   }
 
   private _graph: IGraph;
   private _nextLink: string;
+  /**
+   * Gets the next link for this request
+   *
+   * @readonly
+   * @type {string}
+   * @memberof GraphPageIterator
+   */
+  public get nextLink(): string {
+    return this._nextLink || '';
+  }
   private _version: string;
   private _value: T[];
 
@@ -102,10 +113,10 @@ export class GraphPageIterator<T> {
   public async next(): Promise<T[]> {
     if (this._nextLink) {
       const nextResource = this._nextLink.split(this._version)[1];
-      const response = await this._graph.api(nextResource).version(this._version).get();
+      const response = (await this._graph.api(nextResource).version(this._version).get()) as CollectionResponse<T>;
       if (response && response.value && response.value.length) {
         this._value = this._value.concat(response.value);
-        this._nextLink = response['@odata.nextLink'];
+        this._nextLink = response['@odata.nextLink'] as string;
         return response.value;
       }
     }
