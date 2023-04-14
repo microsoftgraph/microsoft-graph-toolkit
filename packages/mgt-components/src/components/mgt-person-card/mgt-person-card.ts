@@ -484,13 +484,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       });
     }
 
+    let ariaLabel: string;
+
+    ariaLabel = this.strings.closeCardLabel;
+
     const closeCardTemplate = this.isExpanded
       ? html`
            <div class="close-card-container">
              <fluent-button 
               appearance="lightweight" 
               class="close-button" 
-              aria-label=${this.strings.closeCardLabel}
+              aria-label=${ariaLabel}
               @click=${this.closeCard} >
                ${getSvg(SvgIcon.Close)}
              </fluent-button>
@@ -498,13 +502,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
          `
       : null;
 
+    ariaLabel = this.strings.goBackLabel;
     const navigationTemplate =
       this._history && this._history.length
         ? html`
             <div class="nav">
-              <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
-                e.code === 'Enter' ? this.goBack() : '';
-              }} @click=${this.goBack}>${getSvg(SvgIcon.Back)}</div>
+              <fluent-button 
+                appearance="lightweight"
+                class="nav__back" 
+                aria-label=${ariaLabel} 
+                @keydown=${this.handleGoBack}
+                @click=${this.goBack}>${getSvg(SvgIcon.Back)}</fluent-button>
             </div>
           `
         : null;
@@ -635,12 +643,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     person = person || this.internalPersonDetails;
     const userPerson = person as User;
 
+    let ariaLabel: string;
+
     // Email
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
+      ariaLabel = `${this.strings.emailButtonLabel} ${person.displayName}`;
       email = html`
         <fluent-button class="icon"
-          aria-label="${this.strings.emailButtonLabel} ${person.displayName}"
+          aria-label=${ariaLabel}
           @click=${this.emailUser}>
           ${getSvg(SvgIcon.SmallEmail)}
         </fluent-button>
@@ -650,7 +661,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     // Chat
     let chat: TemplateResult;
     if (userPerson?.userPrincipalName) {
-      const ariaLabel = `${this.strings.chatButtonLabel} ${person.displayName}`;
+      ariaLabel = `${this.strings.chatButtonLabel} ${person.displayName}`;
       chat = html`
         <fluent-button class="icon"
           aria-label=${ariaLabel}
@@ -662,9 +673,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     // Video
     let video: TemplateResult;
+    ariaLabel = `${this.strings.videoButtonLabel} ${person.displayName}`;
     video = html`
         <fluent-button class="icon"
-          aria-label="${this.strings.videoButtonLabel} ${person.displayName}"
+          aria-label=${ariaLabel}
           @click=${this.videoCallUser}>
           ${getSvg(SvgIcon.Video)}
         </fluent-button>
@@ -673,9 +685,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     // Call
     let call: TemplateResult;
     if (userPerson.userPrincipalName) {
+      ariaLabel = `${this.strings.callButtonLabel} ${person.displayName}`;
       call = html`
          <fluent-button class="icon"
-          aria-label="${this.strings.callButtonLabel} ${person.displayName}"
+          aria-label=${ariaLabel}
           @click=${this.callUser}>
           ${getSvg(SvgIcon.Call)}
         </fluent-button>
@@ -834,7 +847,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
             <div class="section__title" tabindex=0>${section.displayName}</div>
               <fluent-button
                 appearance="lightweight"
-                aria-label=${this.strings.renderOverviewSectionLabel}
                 class="section__show-more"
                 @click=${() => this.updateCurrentSection(section)}
               >
@@ -1306,6 +1318,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private sendQuickMessageOnEnter(e: KeyboardEvent) {
     if (e.code === 'Enter') {
       this.sendQuickMessage();
+    }
+  }
+
+  private handleGoBack(e: KeyboardEvent) {
+    if (e.code === 'Enter') {
+      this.goBack();
     }
   }
 }

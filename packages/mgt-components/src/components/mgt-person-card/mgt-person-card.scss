@@ -85,16 +85,17 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       margin-top: 9px;
       z-index: 1;
       border: 1px solid transparent;
-      &:hover {
-        background-color: $person-card-fluent-background-color-hover;
-      }
 
       svg {
-        width: 9px;
-        height: 9px;
-
         path {
           fill: $person-card-icon-color;
+        }
+      }
+      &:hover {
+        svg {
+          path {
+            fill: $person-card-close-button-hover-color;
+          }
         }
       }
     }
@@ -256,6 +257,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       position: relative;
       width: 375px;
       margin: 0;
+      border-style: none;
       border-bottom: 1px solid $person-card-border-color;
     }
 
@@ -417,7 +419,8 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   &.close-button.lightweight::part(control) {
     background: $person-card-fluent-background-color;
   }
-  &.icon::part(control) {
+  &.icon::part(control),
+  &.nav__back::part(control) {
     border: none;
     padding: 0;
     background: none;
