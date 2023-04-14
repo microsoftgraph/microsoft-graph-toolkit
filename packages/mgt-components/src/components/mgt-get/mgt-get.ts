@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit';
+import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import {
   CacheItem,
@@ -16,12 +16,36 @@ import {
   prepScopes,
   Providers,
   ProviderState,
-  customElement
+  customElement,
+  CollectionResponse
 } from '@microsoft/mgt-element';
 
 import { getPhotoForResource } from '../../graph/graph.photos';
 import { getDocumentThumbnail } from '../../graph/graph.files';
 import { schemas } from '../../graph/cacheStores';
+import { Entity } from '@microsoft/microsoft-graph-types';
+
+/**
+ * Simple holder type for an image
+ */
+type ImageValue = { image: string };
+
+/**
+ * Type guard to check if a value is an entity
+ *
+ * @param entity value to be type checked
+ * @returns {boolean} true if the value is an entity
+ */
+const isEntity = (entity: any): entity is Entity => Boolean((entity as Entity).id);
+
+/**
+ * A type guard to check if a value is a collection response
+ *
+ * @param value {*} the value to check
+ * @returns {boolean} true if the value is a collection response
+ */
+export const isCollectionResponse = (value: unknown): value is CollectionResponse<unknown> =>
+  Array.isArray((value as CollectionResponse<unknown>).value);
 
 /**
  * Enumeration to define what types of query are available
@@ -69,10 +93,10 @@ const getIsResponseCacheEnabled = (): boolean =>
  * Holder type emitted with the dataChange event
  */
 export type DataChangedDetail = {
-  // tslint:disable: completed-docs
-  response?: any;
-  error?: any;
-  // tslint:enable: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
+  response?: CollectionResponse<Entity>;
+  // eslint-disable-next-line @typescript-eslint/tslint/config
+  error?: object;
 };
 
 /**
@@ -126,7 +150,7 @@ export class MgtGet extends MgtTemplatedComponent {
     reflect: true,
     type: String
   })
-  public version: string = 'v1.0';
+  public version = 'v1.0';
 
   /**
    * Type of response
@@ -156,7 +180,7 @@ export class MgtGet extends MgtTemplatedComponent {
     reflect: true,
     type: Number
   })
-  public maxPages: number = 3;
+  public maxPages = 3;
 
   /**
    * Number of milliseconds to poll the delta API and
@@ -170,7 +194,7 @@ export class MgtGet extends MgtTemplatedComponent {
     reflect: true,
     type: Number
   })
-  public pollingRate: number = 0;
+  public pollingRate = 0;
 
   /**
    * Enables cache on the response from the specified resource
@@ -184,7 +208,7 @@ export class MgtGet extends MgtTemplatedComponent {
     reflect: true,
     type: Boolean
   })
-  public cacheEnabled: boolean = false;
+  public cacheEnabled = false;
 
   /**
    * Invalidation period of the cache for the responses in milliseconds
@@ -196,7 +220,7 @@ export class MgtGet extends MgtTemplatedComponent {
     attribute: 'cache-invalidation-period',
     type: Number
   })
-  public cacheInvalidationPeriod: number = 0;
+  public cacheInvalidationPeriod = 0;
 
   /**
    * Gets or sets the response of the request
@@ -204,18 +228,19 @@ export class MgtGet extends MgtTemplatedComponent {
    * @type any
    * @memberof MgtGet
    */
-  @property({ attribute: false }) public response: any;
+  @property({ attribute: false }) public response: CollectionResponse<Entity> | Entity | ImageValue;
 
   /**
    *
    * Gets or sets the error (if any) of the request
+   *
    * @type any
    * @memberof MgtGet
    */
-  @property({ attribute: false }) public error: any;
+  @property({ attribute: false }) public error: object;
 
-  private isPolling: boolean = false;
-  private isRefreshing: boolean = false;
+  private isPolling = false;
+  private isRefreshing = false;
 
   /**
    * Synchronizes property values when attributes change.
@@ -226,8 +251,9 @@ export class MgtGet extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   public attributeChangedCallback(name, oldval, newval) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     super.attributeChangedCallback(name, oldval, newval);
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -243,7 +269,7 @@ export class MgtGet extends MgtTemplatedComponent {
     if (hardRefresh) {
       this.clearState();
     }
-    this.requestStateUpdate(hardRefresh);
+    void this.requestStateUpdate(hardRefresh);
   }
 
   /**
@@ -266,11 +292,11 @@ export class MgtGet extends MgtTemplatedComponent {
       return this.renderTemplate('loading', null);
     } else if (this.error) {
       return this.renderTemplate('error', this.error);
-      // tslint:disable-next-line: no-string-literal
-    } else if (this.hasTemplate('value') && this.response && this.response.value) {
-      let valueContent;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
+    } else if (this.hasTemplate('value') && isCollectionResponse(this.response)) {
+      let valueContent: TemplateResult;
 
-      if (Array.isArray(this.response.value)) {
+      if (isCollectionResponse(this.response)) {
         let loading = null;
         if (this.isLoadingState && !this.isPolling) {
           loading = this.renderTemplate('loading', null);
@@ -282,12 +308,11 @@ export class MgtGet extends MgtTemplatedComponent {
         valueContent = this.renderTemplate('value', this.response);
       }
 
-      // tslint:disable-next-line: no-string-literal
       if (this.hasTemplate('default')) {
         const defaultContent = this.renderTemplate('default', this.response);
 
-        // tslint:disable-next-line: no-string-literal
-        if ((this.templates['value'] as any).templateOrder > (this.templates['default'] as any).templateOrder) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
+        if (this.templates['value'].templateOrder > this.templates['default'].templateOrder) {
           return html`
             ${defaultContent}${valueContent}
           `;
@@ -328,13 +353,13 @@ export class MgtGet extends MgtTemplatedComponent {
       try {
         let cache: CacheStore<CacheResponse>;
         const key = `${this.version}${this.resource}`;
-        let response = null;
+        let response: Entity | CollectionResponse<Entity> | ImageValue = null;
 
         if (this.shouldRetrieveCache()) {
           cache = CacheService.getCache<CacheResponse>(schemas.get, schemas.get.stores.responses);
           const result: CacheResponse = getIsResponseCacheEnabled() ? await cache.getValue(key) : null;
           if (result && getResponseInvalidationTime(this.cacheInvalidationPeriod) > Date.now() - result.timeCached) {
-            response = JSON.parse(result.response);
+            response = JSON.parse(result.response) as CollectionResponse<Entity>;
           }
         }
 
@@ -343,10 +368,11 @@ export class MgtGet extends MgtTemplatedComponent {
           let isDeltaLink = false;
 
           // if we had a response earlier with a delta link, use it instead
-          if (this.response && this.response['@odata.deltaLink']) {
-            uri = this.response['@odata.deltaLink'];
+          if (this.response?.['@odata.deltaLink']) {
+            uri = this.response['@odata.deltaLink'] as string;
             isDeltaLink = true;
           } else {
+            // TODO: Check this against the base url for the cloud in use.
             isDeltaLink = new URL(uri, 'https://graph.microsoft.com').pathname.endsWith('delta');
           }
 
@@ -358,10 +384,11 @@ export class MgtGet extends MgtTemplatedComponent {
           }
 
           if (this.type === ResponseType.json) {
-            response = await request.get();
+            response = (await request.get()) as CollectionResponse<Entity> | Entity;
 
-            if (isDeltaLink && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
-              response.value = this.response.value.concat(response.value);
+            if (isDeltaLink && isCollectionResponse(this.response) && isCollectionResponse(response)) {
+              const responseValues: Entity[] = response.value;
+              response.value = this.response.value.concat(responseValues);
             }
 
             if (!this.isPolling && !equals(this.response, response)) {
@@ -369,7 +396,7 @@ export class MgtGet extends MgtTemplatedComponent {
             }
 
             // get more pages if there are available
-            if (response && Array.isArray(response.value) && response['@odata.nextLink']) {
+            if (isCollectionResponse(response) && response['@odata.nextLink']) {
               let pageCount = 1;
               let page = response;
 
@@ -379,8 +406,8 @@ export class MgtGet extends MgtTemplatedComponent {
                 page['@odata.nextLink']
               ) {
                 pageCount++;
-                const nextResource = page['@odata.nextLink'].split(this.version)[1];
-                page = await graph.client.api(nextResource).version(this.version).get();
+                const nextResource = (page['@odata.nextLink'] as string).split(this.version)[1];
+                page = (await graph.client.api(nextResource).version(this.version).get()) as CollectionResponse<Entity>;
                 if (page && page.value && page.value.length) {
                   page.value = response.value.concat(page.value);
                   response = page;
@@ -395,7 +422,7 @@ export class MgtGet extends MgtTemplatedComponent {
               throw new Error('Only /photo/$value and /thumbnails/ endpoints support the image type');
             }
 
-            let image;
+            let image: string;
             if (this.resource.indexOf('/photo/$value') > -1) {
               // Sanitizing the resource to ensure getPhotoForResource gets the right format
               const sanitizedResource = this.resource.replace('/photo/$value', '');
@@ -419,25 +446,26 @@ export class MgtGet extends MgtTemplatedComponent {
 
           if (this.shouldUpdateCache() && response) {
             cache = CacheService.getCache<CacheResponse>(schemas.get, schemas.get.stores.responses);
-            cache.putValue(key, { response: JSON.stringify(response) });
+            await cache.putValue(key, { response: JSON.stringify(response) });
           }
         }
 
         if (!equals(this.response, response)) {
           this.response = response;
         }
-      } catch (e) {
-        this.error = e;
+      } catch (e: unknown) {
+        this.error = e as object;
       }
 
       if (this.response) {
         this.error = null;
 
         if (this.pollingRate) {
-          setTimeout(async () => {
+          setTimeout(() => {
             this.isPolling = true;
-            await this.loadState();
-            this.isPolling = false;
+            this.loadState().finally(() => {
+              this.isPolling = false;
+            });
           }, this.pollingRate);
         }
       }

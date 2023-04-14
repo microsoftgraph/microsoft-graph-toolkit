@@ -21,6 +21,7 @@ import { strings } from './strings';
 export abstract class MgtTasksBase extends MgtTemplatedComponent {
   /**
    * determines if tasks are un-editable
+   *
    * @type {boolean}
    */
   @property({ attribute: 'read-only', type: Boolean })
@@ -46,6 +47,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
   /**
    * if set, the component will only show tasks from the target list
+   *
    * @type {string}
    */
   @property({ attribute: 'target-id', type: String })
@@ -86,7 +88,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
     this.clearState();
     this._previousMediaQuery = this.mediaQuery;
-    this.onResize = this.onResize.bind(this);
   }
 
   /**
@@ -103,7 +104,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
       case 'target-id':
       case 'initial-id':
         this.clearState();
-        this.requestStateUpdate();
+        void this.requestStateUpdate();
         break;
     }
   }
@@ -250,7 +251,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
             class="TaskIcon TaskAdd"
             @click="${() => this.addTask()}"
             @keypress="${(e: KeyboardEvent) => {
-              if (e.key === 'Enter' || e.key === ' ') this.addTask();
+              if (e.key === 'Enter' || e.key === ' ') void this.addTask();
             }}"
           >
           <span>${this.strings.addTaskButtonSubtitle}</span>
@@ -418,8 +419,8 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @param {TodoTask} task
    * @memberof MgtTasksBase
    */
-  protected handleTaskClick(e: Event, task: any) {
-    this.fireCustomEvent('taskClick', { task });
+  protected handleTaskClick(e: Event, task: unknown) {
+    this.fireCustomEvent('taskClick', task);
   }
 
   /**
@@ -449,10 +450,10 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     this.requestUpdate();
   }
 
-  private onResize() {
+  private onResize = () => {
     if (this.mediaQuery !== this._previousMediaQuery) {
       this._previousMediaQuery = this.mediaQuery;
       this.requestUpdate();
     }
-  }
+  };
 }

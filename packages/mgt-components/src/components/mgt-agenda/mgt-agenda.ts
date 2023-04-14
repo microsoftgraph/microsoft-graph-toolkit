@@ -14,7 +14,8 @@ import {
   MgtTemplatedComponent,
   prepScopes,
   mgtHtml,
-  customElement
+  customElement,
+  CollectionResponse
 } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../mgt-person/mgt-person';
@@ -65,6 +66,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   /**
    * stores current date for initial calender selection in events.
+   *
    * @type {string}
    */
   @property({
@@ -80,11 +82,12 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     this._date = value;
-    this.reloadState();
+    void this.reloadState();
   }
 
   /**
    * determines if agenda events come from specific group
+   *
    * @type {string}
    */
   @property({
@@ -100,11 +103,12 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     this._groupId = value;
-    this.reloadState();
+    void this.reloadState();
   }
 
   /**
    * sets number of days until end date, 3 is the default
+   *
    * @type {number}
    */
   @property({
@@ -120,11 +124,12 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     this._days = value;
-    this.reloadState();
+    void this.reloadState();
   }
 
   /**
    * allows developer to specify a different graph query that retrieves events
+   *
    * @type {string}
    */
   @property({
@@ -140,11 +145,12 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     this._eventQuery = value;
-    this.reloadState();
+    void this.reloadState();
   }
 
   /**
    * array containing events from user agenda.
+   *
    * @type {MicrosoftGraph.Event[]}
    */
   @property({
@@ -155,6 +161,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   /**
    * allows developer to define max number of events shown
+   *
    * @type {number}
    */
   @property({
@@ -165,6 +172,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   /**
    * allows developer to define agenda to group events by day.
+   *
    * @type {boolean}
    */
   @property({
@@ -178,6 +186,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * retrieving events from Graph, eg. `Pacific Standard Time`. The preferred timezone for
    * the current user can be retrieved by calling `me/mailboxSettings` and
    * retrieving the value of the `timeZone` property.
+   *
    * @type {string}
    */
   @property({
@@ -193,7 +202,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     this._preferredTimezone = value;
-    this.reloadState();
+    void this.reloadState();
   }
 
   /**
@@ -209,19 +218,19 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   /**
    * determines width available for agenda component.
+   *
    * @type {boolean}
    */
   @property({ attribute: false }) private _isNarrow: boolean;
 
   private _eventQuery: string;
-  private _days: number = 3;
+  private _days = 3;
   private _groupId: string;
   private _date: string;
   private _preferredTimezone: string;
 
   constructor() {
     super();
-    this.onResize = this.onResize.bind(this);
   }
 
   /**
@@ -508,7 +517,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   protected renderGroups(events: MicrosoftGraph.Event[]): TemplateResult {
     // Render list, grouped by day
-    const grouped = {};
+    const grouped: Record<string, MicrosoftGraph.Event[]> = {};
 
     events.forEach(event => {
       let dateString = event?.start?.dateTime;
@@ -573,12 +582,12 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   private async reloadState() {
     this.events = null;
-    this.requestStateUpdate(true);
+    await this.requestStateUpdate(true);
   }
 
-  private onResize() {
+  private onResize = () => {
     this._isNarrow = this.offsetWidth < 600;
-  }
+  };
 
   private eventClicked(event: MicrosoftGraph.Event) {
     this.fireCustomEvent('eventClick', event);
@@ -632,12 +641,12 @@ export class MgtAgenda extends MgtTemplatedComponent {
             request = request.middlewareOptions(prepScopes(scope));
           }
 
-          const results = await request.get();
+          const results = (await request.get()) as CollectionResponse<MicrosoftGraph.Event>;
 
           if (results && results.value) {
             events = results.value;
           }
-          // tslint:disable-next-line: no-empty
+          // eslint-disable-next-line no-empty
         } catch (e) {}
       } else {
         const start = this.date ? new Date(this.date) : new Date();
