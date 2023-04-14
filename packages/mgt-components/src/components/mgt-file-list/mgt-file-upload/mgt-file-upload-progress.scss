@@ -1,0 +1,244 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../../styles/shared-sass-variables.scss';
+@import './mgt-file-upload.theme.scss';
+
+
+$file-upload-button-border: var(--file-upload-button-border, none);
+$file-upload-dialog-replace-button-border: var(--file-upload-dialog-replace-button-border, 1px solid var(--neutral-foreground-rest));
+$file-upload-dialog-keep-both-button-border: var(--file-upload-dialog-keep-both-button-border, none);
+$file-upload-dialog-border: var(--file-upload-dialog-border, 1px solid var(--neutral-fill-rest));
+$file-upload-dialog-width: var(--file-upload-dialog-width, auto);
+$file-upload-dialog-height: var(--file-upload-dialog-height, auto);
+$file-upload-dialog-padding: var(--file-upload-dialog-padding, 24px);
+$file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
+
+:host {
+  .file-upload-area-button {
+    width: auto;
+    display: flex;
+    align-items: end;
+    justify-content: end;
+    margin-inline-end: 36px;
+    margin-top: 30px;
+  }
+
+  fluent-button {
+    .upload-icon {
+      path {
+        fill: $file-upload-button-text-color;
+      }
+    }
+
+    &.file-upload-button {
+      &::part(control) {
+        border: $file-upload-button-border;
+        background: $file-upload-button-background-color;
+
+        &:hover {
+          background: $file-upload-button-background-color-hover;
+        }
+      }
+
+      .upload-text {
+        color: $file-upload-button-text-color;
+        font-weight: 400;
+        line-height: 20px;
+      }
+    }
+  }
+
+  input {
+    display: none;
+  }
+
+  fluent-progress {
+    &.file-upload-bar {
+      width: 180px;
+      margin-top: 10px;
+    }
+  }
+
+  fluent-dialog {
+    &::part(overlay) {
+      opacity: 0.5;
+    }
+
+    &::part(control) {
+      --dialog-width: $file-upload-dialog-width;
+      --dialog-height: $file-upload-dialog-height;
+      padding: $file-upload-dialog-padding;
+      border: $file-upload-dialog-border;
+    }
+
+    .file-upload-dialog- {
+      &ok {
+        background: $file-upload-dialog-keep-both-button-background-color;
+        border: $file-upload-dialog-keep-both-button-border;
+        color: $file-upload-dialog-keep-both-button-text-color;
+
+        &:hover {
+          background: $file-upload-dialog-keep-both-button-background-color-hover;
+        }
+      }
+
+      &cancel {
+        background: $file-upload-dialog-replace-button-background-color;
+        border: $file-upload-dialog-replace-button-border;
+        color: $file-upload-dialog-replace-button-text-color;
+
+        &:hover {
+          background: $file-upload-dialog-replace-button-background-color-hover;
+        }
+      }
+    }
+  }
+
+  fluent-checkbox {
+    margin-top: 12px;
+
+    .file-upload-dialog-check {
+      color: var(--file-upload-dialog-text-color, --foreground-on-accent-rest);
+    }
+  }
+}
+
+:host .file-upload-table {
+  display: flex;
+
+  &.upload {
+    display: flex;
+  }
+
+  .file-upload-cell {
+    padding: 1px 0px 1px 1px;
+    display: table-cell;
+    vertical-align: middle;
+    position: relative;
+
+    &.percent-indicator {
+      padding-inline-start: 10px;
+    }
+
+    .description {
+      opacity: 0.5;
+      position: relative;
+    }
+
+    .file-upload-filename {
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-upload-status {
+      position: absolute;
+      left: 28px;
+    }
+
+    .file-upload-cancel {
+      cursor: pointer;
+      margin-inline-start: 20px;
+    }
+
+    .file-upload-name {
+      width: auto;
+    }
+
+    .cancel-icon {
+      fill: $file-upload-dialog-text-color;
+    }
+  }
+}
+
+:host .mgt-file-item {
+  --file-background-color: transparent;
+  --file-padding: 0 12px;
+  --file-padding-inline-start: 24px;
+}
+
+:host .file-upload-Template {
+  clear: both;
+
+  .file-upload-folder-tab {
+    padding-inline-start: 20px;
+  }
+}
+
+/* The Modal (background) */
+:host .file-upload-dialog {
+  display: none;
+
+  .file-upload-dialog-content {
+    background-color: $file-upload-dialog-background-color;
+    color: $file-upload-dialog-text-color;
+  }
+
+  .file-upload-dialog-content-text {
+    margin-bottom: 36px;
+  }
+
+  .file-upload-dialog-title {
+    margin-top: 0px;
+  }
+
+  .file-upload-dialog-editor {
+    display: flex;
+    align-items: end;
+    justify-content: end;
+    gap: 5px;
+  }
+
+  .file-upload-dialog-close {
+    float: right;
+    cursor: pointer;
+
+    svg {
+      fill: $file-upload-dialog-text-color;
+      padding-right: 5px;
+    }
+  }
+
+  &.visible {
+    display: block;
+  }
+}
+
+:host fluent-checkbox.file-upload-dialog-check.hide {
+  display: none;
+}
+
+:host .file-upload-dialog-success {
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+:host #file-upload-border {
+  display: none;
+
+  &.visible {
+    border: $file-upload-border-drag;
+    background-color: $file-upload-background-color-drag;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    display: inline-block;
+  }
+}
+
+[dir="rtl"] {
+  :host .file-upload-status{
+    left: 0px;
+    right: 28px;
+  }
+}

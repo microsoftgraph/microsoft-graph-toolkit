@@ -1,6 +1,6 @@
 import { customElement, mgtHtml, Providers, ProviderState } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { html, nothing, PropertyValueMap, TemplateResult } from 'lit';
+import { CSSResult, html, nothing, PropertyValueMap, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -16,7 +16,11 @@ import { styles } from './mgt-file-list-composite-css';
 import { ButtonAppearance, fluentButton, fluentDialog, fluentTextField } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { MgtFileGrid } from '../mgt-file-grid/mgt-file-grid';
-import { MgtFileUpload, MgtFileUploadConfig } from '../mgt-file-list/mgt-file-upload/mgt-file-upload';
+import {
+  MgtFileUpload,
+  MgtFileUploadConfig,
+  MgtFileUploadItem
+} from '../mgt-file-list/mgt-file-upload/mgt-file-upload';
 
 registerFluentComponents(fluentButton, fluentDialog, fluentTextField);
 
@@ -63,7 +67,7 @@ class MgtFileListComposite extends MgtFileListBase {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
     return styles;
   }
 
@@ -123,6 +127,9 @@ class MgtFileListComposite extends MgtFileListBase {
     type: Boolean
   })
   public useGridView: boolean;
+
+  @state()
+  private fileUploadData: MgtFileUploadItem[] = [];
 
   /**
    * Helper function to set properties of a give breadcrumb to match the current state of the component
@@ -224,6 +231,7 @@ class MgtFileListComposite extends MgtFileListBase {
         ${this.renderNewFolderDialog()}
         ${this.renderRenameDialog()}
         ${this.renderShareDialog()}
+        ${this.renderUploadProgress()}
       </div>
     `;
   }
@@ -280,9 +288,21 @@ class MgtFileListComposite extends MgtFileListBase {
       dropTarget: () => this
     };
     return mgtHtml`
-      <mgt-file-upload .fileUploadList=${fileUploadConfig} exportparts="upload-button-wrapper" ></mgt-file-upload>
+      <mgt-file-upload
+        .fileUploadList=${fileUploadConfig} 
+        exportparts="upload-button-wrapper"
+        hide-inline-progress
+        @fileUploadChanged=${this.onFileUploadChanged}
+      ></mgt-file-upload>
     `;
   }
+
+  private renderUploadProgress(): TemplateResult | typeof nothing {
+    return this.fileUploadData?.length > 0
+      ? mgtHtml`<mgt-file-upload-progress .progressItems=${this.fileUploadData} ></mgt-file-upload-progress>`
+      : nothing;
+  }
+
   private renderFiles() {
     return this.useGridView
       ? mgtHtml`
@@ -343,7 +363,7 @@ class MgtFileListComposite extends MgtFileListBase {
 `;
   }
 
-  private handleItemClick(e: CustomEvent<DriveItem>): void {
+  private handleItemClick = (e: CustomEvent<DriveItem>): void => {
     const item = e.detail;
     if (item.folder) {
       // load folder contents, update breadcrumb
@@ -366,9 +386,9 @@ class MgtFileListComposite extends MgtFileListBase {
       this.driveId = item.parentReference.driveId;
       this.fireCustomEvent('itemClick', item);
     }
-  }
+  };
 
-  private handleBreadcrumbClick(e: CustomEvent<FileListBreadCrumb>): void {
+  private handleBreadcrumbClick = (e: CustomEvent<FileListBreadCrumb>): void => {
     const b = e.detail;
     this.breadcrumb = this.breadcrumb.slice(0, this.breadcrumb.indexOf(b) + 1);
     this.siteId = b.siteId;
@@ -383,7 +403,7 @@ class MgtFileListComposite extends MgtFileListBase {
     this.insightType = b.insightType;
     this.itemId = b.itemId;
     this.fireCustomEvent('breadcrumbclick', b);
-  }
+  };
 
   private renderDeleteDialog() {
     return html`
@@ -535,20 +555,20 @@ class MgtFileListComposite extends MgtFileListBase {
   }
 
   private showShareFileEditable = (e: UIEvent, file: DriveItem): void => {
-    this.showShareDialog(e, file, 'edit');
+    void this.showShareDialog(e, file, 'edit');
   };
 
   private showShareFileReadOnly = (e: UIEvent, file: DriveItem): void => {
-    this.showShareDialog(e, file, 'edit');
+    void this.showShareDialog(e, file, 'edit');
   };
 
-  private showShareDialog = (e: UIEvent, file: DriveItem, shareMode: 'view' | 'edit'): void => {
+  private showShareDialog = async (e: UIEvent, file: DriveItem, shareMode: 'view' | 'edit'): Promise<void> => {
     e.stopPropagation();
     this._activeFile = file;
     this.shareDialogVisible = true;
     this.shareMode = shareMode;
     const graph = Providers.globalProvider.graph.forComponent(this);
-    shareDriveItem(graph, this._activeFile, this.shareMode).then(share => {
+    await shareDriveItem(graph, this._activeFile, this.shareMode).then(share => {
       this.shareUrl = share.link?.webUrl;
     });
   };
@@ -556,11 +576,11 @@ class MgtFileListComposite extends MgtFileListBase {
   // needs to be an arrow function to preserve the this context
   private downloadFile = (e: UIEvent, file: DriveItem): void => {
     e.stopPropagation();
-    this.clickFileLink(file['@microsoft.graph.downloadUrl']);
+    this.clickFileLink(file['@microsoft.graph.downloadUrl'] as string);
   };
 
   private clickFileLink = (url: string) => {
-    const a = this.renderRoot.querySelector('#file-link') as HTMLAnchorElement;
+    const a: HTMLAnchorElement = this.renderRoot.querySelector('#file-link');
     a.href = url;
     if (a.href) {
       a.click();
@@ -587,7 +607,7 @@ class MgtFileListComposite extends MgtFileListBase {
 
   private copyToClipboard = async (e: UIEvent) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(this.shareUrl);
+    await navigator.clipboard.writeText(this.shareUrl);
     this.shareUrl = null;
     this.shareDialogVisible = false;
     this._activeFile = null;
@@ -612,7 +632,7 @@ class MgtFileListComposite extends MgtFileListBase {
   };
 
   private reloadFiles() {
-    const grid = this.renderRoot.querySelector('#files') as MgtFileGrid;
+    const grid: MgtFileGrid = this.renderRoot.querySelector('#files');
     grid.reload(true);
   }
 
@@ -627,7 +647,7 @@ class MgtFileListComposite extends MgtFileListBase {
       // need to refresh the list being shown....
       this.reloadFiles();
       this.newFolderDialogVisible = false;
-      this.requestStateUpdate();
+      await this.requestStateUpdate();
     }
   };
 
@@ -643,7 +663,7 @@ class MgtFileListComposite extends MgtFileListBase {
       this.reloadFiles();
       this.renameDialogVisible = false;
       this._activeFile = null;
-      this.requestStateUpdate();
+      await this.requestStateUpdate();
     }
   };
 
@@ -652,10 +672,10 @@ class MgtFileListComposite extends MgtFileListBase {
     const graph = Providers.globalProvider.graph.forComponent(this);
     await deleteDriveItem(graph, this._activeFile);
     // need to refresh the list being shown....
-    clearFilesCache();
+    await clearFilesCache();
     this.deleteDialogVisible = false;
     this._activeFile = null;
-    this.requestStateUpdate();
+    await this.requestStateUpdate();
   };
 
   private cancelDelete = (e: UIEvent) => {
@@ -664,7 +684,11 @@ class MgtFileListComposite extends MgtFileListBase {
     this.deleteDialogVisible = false;
   };
 
-  private onFileUploadSuccess = (e: CustomEvent<undefined>) => {
-    this.reloadFiles();
+  private onFileUploadChanged = (e: CustomEvent<MgtFileUploadItem[]>) => {
+    this.fileUploadData = e.detail.slice();
+  };
+
+  private onFileUploadSuccess = (e: CustomEvent<MgtFileUploadItem[]>) => {
+    // this.fileUploadData = e.detail;
   };
 }

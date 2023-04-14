@@ -62,7 +62,7 @@ class MgtMenu<T extends { id: string }> extends MgtTemplatedComponent {
   public item: T;
 
   @state()
-  private _menuOpen: boolean = false;
+  private _menuOpen = false;
 
   /**
    * Array of items to display in the menu
@@ -126,7 +126,7 @@ class MgtMenu<T extends { id: string }> extends MgtTemplatedComponent {
     return command.shouldRender(this.item)
       ? html`
           <fluent-menu-item
-            @click=${(e: UIEvent) => command.onClickFunction?.(e, this.item)}
+            @click=${(e: UIEvent) => this.onMenuItemClicked(e, command)}
           >
             ${command.name}
             ${
@@ -142,6 +142,12 @@ class MgtMenu<T extends { id: string }> extends MgtTemplatedComponent {
         `
       : nothing;
   }
+
+  private onMenuItemClicked = (e: UIEvent, command: MenuCommand<T>) => {
+    e.stopPropagation();
+    command.onClickFunction?.(e, this.item);
+    this.hideFlyout();
+  };
 
   /**
    * Show the flyout and its content.
@@ -169,12 +175,12 @@ class MgtMenu<T extends { id: string }> extends MgtTemplatedComponent {
     }
   }
 
-  private toggleMenu(e: Event) {
+  private toggleMenu = (e: Event) => {
     e.stopPropagation();
     if (this._menuOpen) {
       this.hideFlyout();
     } else {
       this.showFlyout();
     }
-  }
+  };
 }
