@@ -6,7 +6,7 @@
  */
 
 export const strings = {
-  termSetIdRequired: 'termSetId is required',
+  termsetIdRequired: 'The termsetId property or termset-id attribute is required',
   noTermsFound: 'No terms found',
   comboboxPlaceholder: 'Select a term',
   loadingMessage: 'Loading...'

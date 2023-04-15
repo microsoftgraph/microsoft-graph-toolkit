@@ -5,6 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { Position } from '../../graph/types';
 import { TermStore } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -17,34 +18,44 @@ import '../../styles/style-helper';
 registerFluentComponents(fluentCombobox, fluentOption);
 
 /**
- * Web component that allows a single entity pick from a generic endpoint from Graph. Uses mgt-get.
+ * Web component that can query the Microsoft Graph API for Taxonomy
+ * and render a dropdown control with terms,
+ * allowing selection of a single term based on
+ * the specified term set id or a combination of the specified term set id and the specified term id.
+ * Uses mgt-get.
  *
  * @fires {CustomEvent<TermStore.Term>} selectionChanged - Fired when an option is clicked/selected
  * @export
  * @class MgtTaxonomyPicker
  * @extends {MgtTemplatedComponent}
  */
-// @customElement('mgt-picker')
 @customElement('taxonomy-picker')
 export class MgtTaxonomyPicker extends MgtTemplatedComponent {
+  /**
+   * The strings to be used for localizing the component.
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtTaxonomyPicker
+   */
   protected get strings() {
     return strings;
   }
 
   /**
-   * The termSetId of the term set whose children to get.
+   * The termsetId of the term set whose children to get.
    *
    * @type {string}
    * @memberof MgtTaxonomyPicker
    */
   @property({
-    attribute: 'termset-id',
+    attribute: 'term-set-id',
     type: String
   })
-  public termSetId: string;
+  public termsetId: string;
 
   /**
-   * The termId of the term whose children to get. This term must be a child of the term set specified by termSetId.
+   * The termId of the term whose children to get. This term must be a child of the term set specified by termsetId.
    *
    * @type {string}
    * @memberof MgtTaxonomyPicker
@@ -54,6 +65,18 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     type: String
   })
   public termId: string;
+
+  /**
+   * The id of the site where the termset is located. If not specified, the termset is assumed to be at the tenant level.
+   *
+   * @type {string}
+   * @memberof MgtTaxonomyPicker
+   */
+  @property({
+    attribute: 'site-id',
+    type: String
+  })
+  public siteId: string;
 
   /**
    * The locale based on which the term names should be returned.
@@ -93,6 +116,25 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   public placeholder: string;
 
   /**
+   * The position of the dropdown. Can be 'above' or 'below'.
+   *
+   * @type {string}
+   * @memberof MgtTaxonomyPicker
+   */
+  @property({
+    attribute: 'position',
+    type: String,
+    converter: (value: Position): Position => {
+      if (value === 'above') {
+        return 'above';
+      } else {
+        return 'below';
+      }
+    }
+  })
+  public position: Position = 'below';
+
+  /**
    * The default selected term id.
    *
    * @type {string}
@@ -106,13 +148,16 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     return this._defaultSelectedTermId;
   }
   public set defaultSelectedTermId(value: string) {
-    this._defaultSelectedTermId = value;
+    if (value !== this._defaultSelectedTermId) {
+      this._defaultSelectedTermId = value;
+      this.requestStateUpdate(true);
+    }
   }
 
   /**
    * The selected term.
    *
-   * @type {string}
+   * @type {TermStore.Term}
    * @memberof MgtTaxonomyPicker
    */
   @property({
@@ -125,6 +170,18 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   public set selectedTerm(value: TermStore.Term) {
     this._selectedTerm = value;
   }
+
+  /**
+   * Determines whether component should be disabled or not
+   *
+   * @type {boolean}
+   * @memberof MgtPeoplePicker
+   */
+  @property({
+    attribute: 'disabled',
+    type: Boolean
+  })
+  public disabled: boolean;
 
   /**
    * Enables cache on the response from the specified resource.
@@ -284,7 +341,9 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    */
   protected renderTaxonomyPicker(): TemplateResult {
     return mgtHtml`
-      <fluent-combobox id="taxonomy-picker" autocomplete="list" placeholder=${this.placeholder}>
+      <fluent-combobox class="taxonomy-picker" autocomplete="both" placeholder=${this.placeholder} position=${
+      this.position
+    } ?disabled=${this.disabled}>
         ${this.terms.map(term => this.renderTaxonomyPickerItem(term))}
       </fluent-combobox>
      `;
@@ -298,16 +357,12 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    * @memberof MgtTaxonomyPicker
    */
   protected renderTaxonomyPickerItem(term: TermStore.Term): TemplateResult {
-    return this.defaultSelectedTermId && this.defaultSelectedTermId === term.id
-      ? html`
-        <fluent-option value=${term.id} selected @click=${e => this.handleClick(e, term)}> ${
-          this.renderTemplate('term', { term }, term.id) || term.labels[0].name
-        } </fluent-option>
-        `
-      : html`
-        <fluent-option value=${term.id} @click=${e => this.handleClick(e, term)}> ${
-          this.renderTemplate('term', { term }, term.id) || term.labels[0].name
-        } </fluent-option>
+    const selected: boolean = this.defaultSelectedTermId && this.defaultSelectedTermId === term.id;
+
+    return html`
+        <fluent-option value=${term.id} ?selected=${selected} @click=${e => this.handleClick(e, term)}> ${
+      this.renderTemplate('term', { term }, term.id) || term.labels[0].name
+    } </fluent-option>
         `;
   }
 
@@ -319,21 +374,29 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    * @memberof MgtTaxonomyPicker
    */
   protected renderGet(): TemplateResult {
-    // if termSetId is not specified, return error message
-    if (!this.termSetId) {
+    // if termsetId is not specified, return error message
+    if (!this.termsetId) {
       return html`
             <span>
-                ${this.strings.termSetIdRequired}
+                ${this.strings.termsetIdRequired}
             </span>
             `;
     }
 
-    let resource: string = `/termStore/sets/${this.termSetId}/children`;
+    let resource: string = `/termStore/sets/${this.termsetId}/children`;
 
-    // if both termSetId and termId are specified, then set resource to /termStore/sets/{termSetId}/terms/{termId}/children
+    // if both termsetId and termId are specified, then set resource to /termStore/sets/{termsetId}/terms/{termId}/children
     if (this.termId) {
-      resource = `/termStore/sets/${this.termSetId}/terms/${this.termId}/children`;
+      resource = `/termStore/sets/${this.termsetId}/terms/${this.termId}/children`;
     }
+
+    // if siteId is specified, then prefix /sites/{siteId}/ to the resource
+    if (this.siteId) {
+      resource = `/sites/${this.siteId}${resource}`;
+    }
+
+    // Add properties to select to the resource
+    resource += '?$select=id,labels,descriptions,properties';
 
     return mgtHtml`
       <mgt-get 
@@ -368,6 +431,11 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
       return;
     }
 
+    // if locale is specified, then convert it to lower case
+    if (this.locale) {
+      this.locale = this.locale.toLowerCase();
+    }
+
     let response = e.detail.response.value;
 
     // if response is not null and has values, if locale is specified, then
@@ -377,9 +445,9 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
       let labels = item.labels;
       if (labels && labels.length > 0) {
         if (this.locale) {
-          let label = labels.find(label => label.languageTag.toLowerCase() === this.locale.toLowerCase());
+          let label = labels.find(label => label.languageTag.toLowerCase() === this.locale);
           if (label) {
-            item.labels = [label, ...labels.filter(label => label.languageTag !== this.locale)];
+            item.labels = [label, ...labels.filter(label => label.languageTag.toLowerCase() !== this.locale)];
           }
         }
       }
