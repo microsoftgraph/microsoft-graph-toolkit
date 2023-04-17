@@ -19,8 +19,8 @@ fabricFont.appendChild(
 }
 `)
 );
-document.head!.appendChild(fabricFont);
+document.head.appendChild(fabricFont);
 
 const themeStyle = document.createElement('style');
 themeStyle.innerHTML = styles.toString();
-document.head!.appendChild(themeStyle);
+document.head.appendChild(themeStyle);

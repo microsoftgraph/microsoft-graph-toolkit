@@ -7,7 +7,7 @@
 
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
-import { html } from 'lit';
+import { html, PropertyValueMap } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -98,11 +98,11 @@ export interface TasksStringResource {
 /*
  * Filter function
  */
-// tslint:disable-next-line: completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 export type TaskFilter = (task: PlannerTask | OutlookTask) => boolean;
 
 // Strings and Resources for different task contexts
-// tslint:disable-next-line: completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 const TASK_RES = {
   todo: {
     BASE_SELF_ASSIGNED: 'All Tasks',
@@ -111,7 +111,6 @@ const TASK_RES = {
     PLANS_SELF_ASSIGNED: 'All groups',
     PLAN_NOT_FOUND: 'Group not found'
   },
-  // tslint:disable-next-line: object-literal-sort-keys
   planner: {
     BASE_SELF_ASSIGNED: 'Assigned to Me',
     BUCKETS_SELF_ASSIGNED: 'All Tasks',
@@ -121,7 +120,7 @@ const TASK_RES = {
   }
 };
 
-// tslint:disable-next-line: completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 const plannerAssignment = {
   '@odata.type': 'microsoft.graph.plannerAssignment',
   orderHint: 'string !'
@@ -215,6 +214,13 @@ export class MgtTasks extends MgtTemplatedComponent {
     return styles;
   }
 
+  /**
+   * Strings for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtTasks
+   */
   protected get strings() {
     return strings;
   }
@@ -244,6 +250,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   /**
    * determines if tasks are un-editable
+   *
    * @type {boolean}
    */
   @property({ attribute: 'read-only', type: Boolean })
@@ -251,19 +258,21 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   /**
    * determines which task source is loaded, either planner or todo
+   *
    * @type {TasksSource}
    */
   @property({
     attribute: 'data-source',
     converter: (value, type) => {
       value = value.toLowerCase();
-      return TasksSource[value] || TasksSource.planner;
+      return (TasksSource[value] as TasksSource) || TasksSource.planner;
     }
   })
   public dataSource: TasksSource = TasksSource.planner;
 
   /**
    * if set, the component will only show tasks from either this plan or group
+   *
    * @type {string}
    */
   @property({ attribute: 'target-id', type: String })
@@ -271,6 +280,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   /**
    * if set, the component will only show tasks from this bucket or folder
+   *
    * @type {string}
    */
   @property({ attribute: 'target-bucket-id', type: String })
@@ -374,7 +384,6 @@ export class MgtTasks extends MgtTemplatedComponent {
     this.clearState();
 
     this.previousMediaQuery = this.mediaQuery;
-    this.onResize = this.onResize.bind(this);
   }
 
   /**
@@ -417,10 +426,13 @@ export class MgtTasks extends MgtTemplatedComponent {
       }
 
       this.clearState();
-      this.requestStateUpdate();
+      void this.requestStateUpdate();
     }
   }
 
+  /**
+   * clears state of component
+   */
   protected clearState(): void {
     this._newTaskFolderId = '';
     this._newTaskGroupId = '';
@@ -448,7 +460,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    *
    * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated(changedProperties) {
+  protected firstUpdated(changedProperties: PropertyValueMap<any>) {
     super.firstUpdated(changedProperties);
 
     if (this.initialId && !this._currentGroup) {
@@ -476,6 +488,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       .filter(task => !this._hiddenTasks.includes(task.id));
 
     if (this.taskFilter) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       tasks = tasks.filter(task => this.taskFilter(task._raw));
     }
 
@@ -522,7 +535,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     this._inTaskLoad = true;
-    let meTask;
+    let meTask: Promise<User>;
     if (!this._me) {
       const graph = provider.graph.forComponent(this);
       meTask = getMe(graph);
@@ -540,7 +553,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       await this._loadAllTasks(ts);
     }
 
-    if (meTask) {
+    if (typeof meTask !== 'undefined') {
       this._me = await meTask;
     }
 
@@ -548,12 +561,12 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._hasDoneInitialLoad = true;
   }
 
-  private onResize() {
+  private onResize = () => {
     if (this.mediaQuery !== this.previousMediaQuery) {
       this.previousMediaQuery = this.mediaQuery;
       this.requestUpdate();
     }
-  }
+  };
 
   private async _loadTargetTodoTasks(ts: ITaskSource) {
     const groups = await ts.getTaskGroups();
@@ -650,6 +663,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     } as ITask;
 
     this._newTaskBeingAdded = true;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     newTask._raw = await ts.addTask(newTask);
     this.fireCustomEvent('taskAdded', newTask);
 
@@ -731,27 +745,29 @@ export class MgtTasks extends MgtTemplatedComponent {
     const peopleObj = {};
 
     if (people.length === 0) {
-      // tslint:disable-next-line: prefer-for-of
-      for (let i = 0; i < savedSelectedPeople.length; i++) {
-        peopleObj[savedSelectedPeople[i]] = null;
+      for (const p of savedSelectedPeople) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        peopleObj[p] = null;
       }
     }
 
     if (people) {
-      // tslint:disable-next-line: prefer-for-of
+      // eslint-disable-next-line @typescript-eslint/prefer-for-of
       for (let i = 0; i < savedSelectedPeople.length; i++) {
-        // tslint:disable-next-line: prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let j = 0; j < people.length; j++) {
           if (savedSelectedPeople[i] !== people[j].id) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             peopleObj[savedSelectedPeople[i]] = null;
             break;
           } else {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             peopleObj[savedSelectedPeople[i]] = plannerAssignment;
           }
         }
       }
 
-      // tslint:disable-next-line: prefer-for-of
+      // eslint-disable-next-line @typescript-eslint/prefer-for-of
       for (let i = 0; i < people.length; i++) {
         peopleObj[people[i].id] = plannerAssignment;
       }
@@ -765,10 +781,10 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   }
 
-  private onAddTaskClick(e: MouseEvent) {
+  private onAddTaskClick = (e: UIEvent) => {
     const picker = this.getPeoplePicker(null);
 
-    const peopleObj: any = {};
+    const peopleObj: Record<string, unknown> = {};
 
     if (picker) {
       for (const person of picker.selectedPeople) {
@@ -779,7 +795,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     if (!this._newTaskBeingAdded && this._newTaskName && (this._currentGroup || this._newTaskGroupId)) {
-      this.addTask(
+      void this.addTask(
         this._newTaskName,
         this._newTaskDueDate,
         !this._currentGroup ? this._newTaskGroupId : this._currentGroup,
@@ -787,25 +803,25 @@ export class MgtTasks extends MgtTemplatedComponent {
         peopleObj
       );
     }
-  }
+  };
 
-  private onAddTaskKeyDown(e: KeyboardEvent) {
-    if (e.code === 'Enter') {
-      this.onAddTaskClick;
+  private onAddTaskKeyDown = (e: KeyboardEvent) => {
+    if (e.code === 'Enter' || e.code === ' ') {
+      this.onAddTaskClick(e);
     }
-  }
+  };
 
-  private newTaskButtonKeydown(e: KeyboardEvent) {
+  private newTaskButtonKeydown = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
       this.isNewTaskVisible = !this.isNewTaskVisible;
     }
-  }
+  };
 
-  private newTaskVisible(e: KeyboardEvent) {
+  private newTaskVisible = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
       this.isNewTaskVisible = false;
     }
-  }
+  };
 
   private renderPlanOptions() {
     const p = Providers.globalProvider;
@@ -1092,29 +1108,23 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     if (picker && picker.selectedPeople !== mgtPeople.people) {
       mgtPeople.people = picker.selectedPeople;
-      this.assignPeople(task, picker.selectedPeople);
+      void this.assignPeople(task, picker.selectedPeople);
     }
   }
 
   private getPeoplePicker(task: ITask): MgtPeoplePicker {
     const taskId = task ? task.id : 'newTask';
-    const picker = this.renderRoot.querySelector(`.picker-${taskId}`) as MgtPeoplePicker;
-
-    return picker;
+    return this.renderRoot.querySelector<MgtPeoplePicker>(`.picker-${taskId}`);
   }
 
   private getMgtPeople(task: ITask): MgtPeople {
     const taskId = task ? task.id : 'newTask';
-    const mgtPeople = this.renderRoot.querySelector(`.people-${taskId}`) as MgtPeople;
-
-    return mgtPeople;
+    return this.renderRoot.querySelector<MgtPeople>(`.people-${taskId}`);
   }
 
   private getFlyout(task: ITask): MgtFlyout {
     const taskId = task ? task.id : 'newTask';
-    const flyout = this.renderRoot.querySelector(`.flyout-${taskId}`) as MgtFlyout;
-
-    return flyout;
+    return this.renderRoot.querySelector(`.flyout-${taskId}`);
   }
 
   private renderTask(task: ITask) {
@@ -1148,6 +1158,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     const groupTitle = this._currentGroup ? null : this.getPlanTitle(task.topParentId);
     const folderTitle = this._currentFolder ? null : this.getFolderName(task.immediateParentId);
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const context = { task: { ...task._raw, groupTitle, folderTitle } };
     const taskTemplate = this.renderTemplate('task', context, task.id);
     if (taskTemplate) {
@@ -1229,12 +1240,12 @@ export class MgtTasks extends MgtTemplatedComponent {
               Incomplete: !completed,
               TaskCheckContainer: true
             })}
-            @click="${e => {
+            @click="${(e: UIEvent) => {
               if (!this.readOnly) {
                 if (!task.completed) {
-                  this.completeTask(task);
+                  void this.completeTask(task);
                 } else {
-                  this.uncompleteTask(task);
+                  void this.uncompleteTask(task);
                 }
 
                 e.stopPropagation();
@@ -1245,9 +1256,9 @@ export class MgtTasks extends MgtTemplatedComponent {
               if (e.code === 'Enter') {
                 if (!this.readOnly) {
                   if (!task.completed) {
-                    this.completeTask(task);
+                    void this.completeTask(task);
                   } else {
-                    this.uncompleteTask(task);
+                    void this.uncompleteTask(task);
                   }
 
                   e.stopPropagation();

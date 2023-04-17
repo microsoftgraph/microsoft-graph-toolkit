@@ -65,6 +65,13 @@ export class MgtTodo extends MgtTasksBase {
   public static get styles() {
     return styles;
   }
+  /**
+   * Strings for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtTodo
+   */
   protected get strings() {
     return strings;
   }
@@ -265,6 +272,7 @@ export class MgtTodo extends MgtTasksBase {
       return this.renderTemplate('task', context, task.id);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const isCompleted = (TaskStatus as any)[task.status] === TaskStatus.completed;
 
     let taskDetailsTemplate = null;
@@ -353,7 +361,7 @@ export class MgtTodo extends MgtTasksBase {
     };
 
     if (this._newTaskDueDate) {
-      // tslint:disable-next-line: no-string-literal
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       taskData['dueDateTime'] = {
         dateTime: new Date(this._newTaskDueDate).toLocaleDateString(),
         timeZone: 'UTC'
@@ -431,10 +439,11 @@ export class MgtTodo extends MgtTasksBase {
   private handleTaskCheckClick(task: TodoTask) {
     this.handleTaskClick(task);
     if (!this.readOnly) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if ((TaskStatus as any)[task.status] === TaskStatus.completed) {
-        this.updateTaskStatus(task, TaskStatus.notStarted);
+        void this.updateTaskStatus(task, TaskStatus.notStarted);
       } else {
-        this.updateTaskStatus(task, TaskStatus.completed);
+        void this.updateTaskStatus(task, TaskStatus.completed);
       }
     }
   }

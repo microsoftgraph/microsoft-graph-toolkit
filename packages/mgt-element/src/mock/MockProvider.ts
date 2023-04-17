@@ -16,7 +16,7 @@ import { MockGraph } from './MockGraph';
  * @extends {IProvider}
  */
 export class MockProvider extends IProvider {
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   public provider: any;
 
   private _mockGraphPromise: Promise<MockGraph>;
@@ -27,7 +27,7 @@ export class MockProvider extends IProvider {
    * @memberof MockProvider
    */
   public graph: MockGraph;
-  constructor(signedIn: boolean = false, signedInAccounts: IProviderAccount[] = []) {
+  constructor(signedIn = false, signedInAccounts: IProviderAccount[] = []) {
     super();
     this._mockGraphPromise = MockGraph.create(this);
     const enableMultipleLogin = Boolean(signedInAccounts.length);
@@ -35,7 +35,7 @@ export class MockProvider extends IProvider {
     this.isMultipleAccountDisabled = !enableMultipleLogin;
     this._accounts = signedInAccounts;
 
-    this.initializeMockGraph(signedIn);
+    void this.initializeMockGraph(signedIn);
   }
 
   /**
@@ -119,7 +119,7 @@ export class MockProvider extends IProvider {
     return 'MgtMockProvider';
   }
 
-  private async initializeMockGraph(signedIn: boolean = false) {
+  private async initializeMockGraph(signedIn = false) {
     this.graph = await this._mockGraphPromise;
 
     if (signedIn) {

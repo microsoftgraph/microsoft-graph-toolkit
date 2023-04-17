@@ -24,6 +24,7 @@ registerFluentComponents(fluentTextField, fluentButton, fluentCalendar);
 export abstract class MgtTasksBase extends MgtTemplatedComponent {
   /**
    * determines if tasks are un-editable
+   *
    * @type {boolean}
    */
   @property({ attribute: 'read-only', type: Boolean })
@@ -49,6 +50,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
   /**
    * if set, the component will only show tasks from the target list
+   *
    * @type {string}
    */
   @property({ attribute: 'target-id', type: String })
@@ -74,7 +76,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
     this.clearState();
     this._previousMediaQuery = this.mediaQuery;
-    this.onResize = this.onResize.bind(this);
   }
 
   /**
@@ -91,7 +92,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
       case 'target-id':
       case 'initial-id':
         this.clearState();
-        this.requestStateUpdate();
+        void this.requestStateUpdate();
         break;
     }
   }
@@ -255,10 +256,10 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     return null;
   }
 
-  private onResize() {
+  private onResize = () => {
     if (this.mediaQuery !== this._previousMediaQuery) {
       this._previousMediaQuery = this.mediaQuery;
       this.requestUpdate();
     }
-  }
+  };
 }

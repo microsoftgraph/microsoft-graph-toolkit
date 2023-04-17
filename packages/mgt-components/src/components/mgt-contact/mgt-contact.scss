@@ -15,15 +15,6 @@
   user-select: none;
 
   .root {
-    padding: 20px 0;
-
-    .title {
-      font-size: 14px;
-      font-weight: 600;
-      color: set-var(title__color__subtitle, $theme-default, $common);
-      margin: 0 20px 12px 20px;
-    }
-
     .part {
       display: grid;
       grid-template-columns: auto 1fr auto;

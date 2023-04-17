@@ -18,6 +18,7 @@ import { TokenCredential } from '@azure/core-auth';
  * Interface represents TeamsUserCredential in TeamsFx library
  */
 export interface TeamsFxUserCredential extends TokenCredential {
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   login(scopes: string | string[], resources?: string[]): Promise<void>;
 }
 
@@ -47,6 +48,7 @@ export class TeamsFxProvider extends IProvider {
    * @type {string | string[]}
    * @memberof TeamsFxProvider
    */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private scopes: string | string[] = [];
 
   /**
@@ -63,7 +65,7 @@ export class TeamsFxProvider extends IProvider {
    * @type {string}
    * @memberof TeamsFxProvider
    */
-  private _accessToken: string = '';
+  private _accessToken = '';
 
   /**
    * Constructor of TeamsFxProvider.
@@ -128,8 +130,10 @@ export class TeamsFxProvider extends IProvider {
       if (!this._accessToken) {
         throw new Error('Access token is null');
       }
-    } catch (error) {
-      console.error('Cannot get access token due to error: ' + error.toString());
+    } catch (error: unknown) {
+      const err = error as object;
+      // eslint-disable-next-line no-console
+      console.error(`Cannot get access token due to error: ${err.toString()}`);
       this.setState(ProviderState.SignedOut);
       this._accessToken = '';
     }

@@ -12,6 +12,8 @@ import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import '../../styles/style-helper';
+import { Entity } from '@microsoft/microsoft-graph-types';
+import { DataChangedDetail } from '../mgt-get/mgt-get';
 
 registerFluentComponents(fluentCombobox, fluentOption);
 
@@ -54,7 +56,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     attribute: 'version',
     type: String
   })
-  public version: string = 'v1.0';
+  public version = 'v1.0';
 
   /**
    * Maximum number of pages to get for the resource
@@ -68,7 +70,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     attribute: 'max-pages',
     type: Number
   })
-  public maxPages: number = 3;
+  public maxPages = 3;
 
   /**
    * A placeholder for the picker
@@ -131,7 +133,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     attribute: 'cache-enabled',
     type: Boolean
   })
-  public cacheEnabled: boolean = false;
+  public cacheEnabled = false;
 
   /**
    * Invalidation period of the cache for the responses in milliseconds
@@ -143,12 +145,12 @@ export class MgtPicker extends MgtTemplatedComponent {
     attribute: 'cache-invalidation-period',
     type: Number
   })
-  public cacheInvalidationPeriod: number = 0;
+  public cacheInvalidationPeriod = 0;
 
   private isRefreshing: boolean;
 
-  @state() private response: any[];
-  @state() private error: any[];
+  @state() private response: Entity[];
+  @state() private error: object;
 
   constructor() {
     super();
@@ -171,7 +173,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (hardRefresh) {
       this.clearState();
     }
-    this.requestStateUpdate(hardRefresh);
+    void this.requestStateUpdate(hardRefresh);
   }
 
   /**
@@ -214,7 +216,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       <fluent-combobox part="picker" class="picker" id="combobox" autocomplete="list" placeholder=${this.placeholder}>
         ${this.response.map(
           item => html`
-          <fluent-option value=${item.id} @click=${e => this.handleClick(e, item)}> ${
+          <fluent-option value=${item.id} @click=${(e: MouseEvent) => this.handleClick(e, item)}> ${
             item[this.keyName]
           } </fluent-option>`
         )}
@@ -231,11 +233,11 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected renderGet(): TemplateResult {
     return mgtHtml`
-      <mgt-get 
+      <mgt-get
         resource=${this.resource}
-        version=${this.version} 
-        scopes=${this.scopes} 
-        max-pages=${this.maxPages} 
+        version=${this.version}
+        .scopes=${this.scopes}
+        max-pages=${this.maxPages}
         ?cache-enabled=${this.cacheEnabled}
         ?cache-invalidation-period=${this.cacheInvalidationPeriod}>
       </mgt-get>`;
@@ -250,15 +252,17 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected async loadState() {
     if (!this.response) {
-      let parent = this.renderRoot.querySelector('mgt-get');
-      parent.addEventListener('dataChange', (e): void => this.handleDataChange(e));
+      const parent = this.renderRoot.querySelector('mgt-get');
+      parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
     }
     this.isRefreshing = false;
+    // hack to maintain method signature contract
+    await Promise.resolve();
   }
 
-  private handleDataChange(e: any): void {
-    let response = e.detail.response.value;
-    let error = e.detail.error ? e.detail.error : null;
+  private handleDataChange(e: CustomEvent<DataChangedDetail>): void {
+    const response = e.detail.response.value;
+    const error = e.detail.error ? e.detail.error : null;
     this.response = response;
     this.error = error;
   }
