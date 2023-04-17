@@ -252,7 +252,7 @@ export class MgtTodo extends MgtTasksBase {
   };
 
   protected handleSelectionChanged = async (e: CustomEvent) => {
-    let list = e.detail;
+    const list = e.detail;
     this.currentList = list;
     await this.loadTasks(list);
   };
@@ -341,7 +341,7 @@ export class MgtTodo extends MgtTasksBase {
       this._graph = graph;
     }
 
-    let currentList = this.currentList;
+    const currentList = this.currentList;
     if (currentList) {
       await this.loadTasks(currentList);
     }

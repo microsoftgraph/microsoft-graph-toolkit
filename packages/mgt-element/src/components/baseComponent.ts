@@ -200,9 +200,9 @@ export abstract class MgtBaseComponent extends LitElement {
   protected fireCustomEvent(
     eventName: string,
     detail?: any,
-    bubbles: boolean = false,
-    cancelable: boolean = false,
-    composed: boolean = false
+    bubbles = false,
+    cancelable = false,
+    composed = false
   ): boolean {
     const event = new CustomEvent(eventName, {
       bubbles,
