@@ -794,6 +794,15 @@ export class MgtTasks extends MgtTemplatedComponent {
     this.isNewTaskVisible = !this.isNewTaskVisible;
   }
 
+  private handleNewTaskDateChange(e: Event) {
+    const value = (e.target as HTMLInputElement).value;
+    if (value) {
+      this._newTaskDueDate = new Date(value + 'T17:00');
+    } else {
+      this._newTaskDueDate = null;
+    }
+  }
+
   private handleSelectedPlan(e: Event) {
     this._newTaskGroupId = (e.target as HTMLInputElement).value;
     if (this.dataSource === TasksSource.planner) {
@@ -1018,14 +1027,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           aria-label="new-taskDate-input"
           role="textbox"
           .value="${this.dateToInputValue(this._newTaskDueDate)}"
-          @change="${(e: Event) => {
-            const value = (e.target as HTMLInputElement).value;
-            if (value) {
-              this._newTaskDueDate = new Date(value + 'T17:00');
-            } else {
-              this._newTaskDueDate = null;
-            }
-          }}"
+          @change="${this.handleNewTaskDateChange}"
         />
       </span>
     `;
