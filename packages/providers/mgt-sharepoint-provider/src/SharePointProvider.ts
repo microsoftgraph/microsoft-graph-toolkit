@@ -25,7 +25,7 @@ declare interface AadTokenProvider {
    * @param {string} x
    * @memberof AadTokenProvider
    */
-  getToken(x: string);
+  getToken(x: string): Promise<string>;
 }
 
 /**
@@ -35,8 +35,8 @@ declare interface AadTokenProvider {
  * @interface WebPartContext
  */
 declare interface WebPartContext {
-  // tslint:disable-next-line: completed-docs
-  aadTokenProviderFactory: any;
+  // eslint-disable-next-line @typescript-eslint/tslint/config
+  aadTokenProviderFactory: { getTokenProvider(): Promise<AadTokenProvider> };
 }
 
 /**
@@ -53,7 +53,7 @@ export class SharePointProvider extends IProvider {
    * @readonly
    * @memberof SharePointProvider
    */
-  get provider() {
+  get provider(): AadTokenProvider {
     return this._provider;
   }
 
@@ -100,11 +100,11 @@ export class SharePointProvider extends IProvider {
   constructor(context: WebPartContext, baseUrl: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     super();
 
-    context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
+    void context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
       this._provider = tokenProvider;
       this.baseURL = baseUrl;
       this.graph = createFromProvider(this);
-      this.internalLogin();
+      void this.internalLogin();
     });
   }
 

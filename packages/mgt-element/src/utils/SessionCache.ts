@@ -16,14 +16,32 @@ export class SessionCache {
     this.session = window.sessionStorage;
   }
 
+  /**
+   * Stores a value in session storage.
+   *
+   * @param key
+   * @param value
+   */
   setItem(key: string, value: string) {
     this.session.setItem(key, value);
   }
 
+  /**
+   * Gets the value for a given key from session storage.
+   *
+   * @param {string} key
+   * @return {*}  {string}
+   * @memberof SessionCache
+   */
   getItem(key: string): string {
     return this.session.getItem(key);
   }
 
+  /**
+   * Clears session storage.
+   *
+   * @memberof SessionCache
+   */
   clear() {
     this.session.clear();
   }
@@ -32,13 +50,18 @@ export class SessionCache {
 /**
  * Checks if a sessionStorage or a localStorage is available
  * for use in a browser.
+ *
  * @param storageType can be 'sessionStorage' or 'localStorage'.
  * @returns true if the storage is available for use.
  */
-export function storageAvailable(storageType: string): boolean {
+export const storageAvailable = (storageType: string): boolean => {
   let storage: Storage;
   try {
-    storage = window[storageType];
+    if (storageType === 'sessionStorage') {
+      storage = window.sessionStorage;
+    } else {
+      storage = window.localStorage;
+    }
     const x = '__storage_test__';
     storage.setItem(x, x);
     storage.removeItem(x);
@@ -60,4 +83,4 @@ export function storageAvailable(storageType: string): boolean {
       storage.length !== 0
     );
   }
-}
+};

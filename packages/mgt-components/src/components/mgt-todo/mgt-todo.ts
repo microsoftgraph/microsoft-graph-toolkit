@@ -88,6 +88,13 @@ export class MgtTodo extends MgtTasksBase {
   public static get styles() {
     return styles;
   }
+  /**
+   * Strings for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtTodo
+   */
   protected get strings() {
     return strings;
   }
@@ -286,6 +293,7 @@ export class MgtTodo extends MgtTasksBase {
       return this.renderTemplate('task', context, task.id);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const isCompleted = (TaskStatus as any)[task.status] === TaskStatus.completed;
     const isLoading = this._loadingTasks.includes(task.id);
     const taskCheckClasses = {
@@ -335,6 +343,7 @@ export class MgtTodo extends MgtTasksBase {
             <div class="TaskOptions">
               <mgt-dot-options
                 .options="${{
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                   [this.strings.removeTaskSubtitle]: e => this.removeTask(e, task.id)
                 }}"
               ></mgt-dot-options>
@@ -435,7 +444,7 @@ export class MgtTodo extends MgtTasksBase {
     };
 
     if (this._newTaskDueDate) {
-      // tslint:disable-next-line: no-string-literal
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       taskData['dueDateTime'] = {
         dateTime: this._newTaskDueDate.toLocaleDateString(),
         timeZone: 'UTC'
@@ -502,7 +511,7 @@ export class MgtTodo extends MgtTasksBase {
     this.requestUpdate();
   }
 
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   private async removeTask(e: { target: HTMLElement }, taskId: string) {
     this._tasks = this._tasks.filter(t => t.id !== taskId);
     this.requestUpdate();
@@ -515,10 +524,11 @@ export class MgtTodo extends MgtTasksBase {
 
   private handleTaskCheckClick(e: Event, task: TodoTask) {
     if (!this.readOnly) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if ((TaskStatus as any)[task.status] === TaskStatus.completed) {
-        this.updateTaskStatus(task, TaskStatus.notStarted);
+        void this.updateTaskStatus(task, TaskStatus.notStarted);
       } else {
-        this.updateTaskStatus(task, TaskStatus.completed);
+        void this.updateTaskStatus(task, TaskStatus.completed);
       }
 
       e.stopPropagation();

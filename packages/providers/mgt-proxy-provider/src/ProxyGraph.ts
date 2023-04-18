@@ -25,7 +25,6 @@ import { CustomHeaderMiddleware } from './CustomHeaderMiddleware';
  * @class ProxyGraph
  * @extends {Graph}
  */
-// tslint:disable-next-line: max-classes-per-file
 export class ProxyGraph extends Graph {
   constructor(baseUrl: string, getCustomHeaders: () => Promise<object>) {
     const middleware: Middleware[] = [

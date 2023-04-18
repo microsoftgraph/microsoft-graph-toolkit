@@ -9,10 +9,10 @@ import { it } from '@jest/globals';
 import { equals } from './equals';
 
 describe('objectEquals', () => {
-  const circularObject: any = {};
+  const circularObject = { a: undefined };
   circularObject.a = circularObject;
 
-  const circularArray: any = [];
+  const circularArray: unknown[] = [];
   circularArray[0] = circularArray;
 
   // Any other object that is not an object literal or an array will compare by reference
@@ -28,6 +28,7 @@ describe('objectEquals', () => {
     [{ a: { b: { c: 1 } } }, { a: { b: { c: 1 } } }],
     [{ a: [1, [2, [3]]] }, { a: [1, [2, [3]]] }],
     [circularObject, circularObject],
+    [circularObject, { a: circularObject }],
     [circularArray, circularArray],
     [
       { a: circularObject, b: circularArray },
@@ -43,7 +44,9 @@ describe('objectEquals', () => {
     [{ a: [1, 2, 3] }, { a: [3, 2, 1] }],
     [{ a: [1, [2, [3]]] }, { a: [1, [2, [4]]] }],
     [{ a: { b: [{ c: 1 }, { d: [2, 3] }] } }, { a: { b: [{ c: 1 }, { d: [3, 2] }] } }],
-    [{ a: new Date(0) }, { a: new Date(0) }]
+    [{ a: new Date() }, { a: new Date() }],
+    [circularObject, circularArray],
+    [circularObject, { b: circularObject }]
   ])('should return false between %p and %p', (o1: any, o2: any) => {
     expect(equals(o1, o2)).toBe(false);
   });

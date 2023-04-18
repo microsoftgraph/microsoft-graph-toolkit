@@ -35,16 +35,16 @@ import { registerFluentComponents } from '../../utils/FluentComponents';
 registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluentCard);
 
 /**
- *  loginViewType describes the enum strings that can be passed in to determine
- *  size of the mgt-login control.
+ * loginViewType describes the enum strings that can be passed in to determine
+ * size of the mgt-login control.
  */
 export type LoginViewType = 'avatar' | 'compact' | 'full';
 
-// tslint:disable-next-line: completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 type PersonViewConfig = {
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   view: ViewType;
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   avatarSize: AvatarSize;
 };
 
@@ -103,6 +103,7 @@ export class MgtLogin extends MgtTemplatedComponent {
 
   /**
    * allows developer to use specific user details for login
+   *
    * @type {IDynamicPerson}
    */
   @property({
@@ -114,6 +115,7 @@ export class MgtLogin extends MgtTemplatedComponent {
   /**
    * determines if presence is shown for logged in user
    * defaults to false
+   *
    * @type {boolean}
    */
   @property({
@@ -125,6 +127,7 @@ export class MgtLogin extends MgtTemplatedComponent {
   /**
    * determines the view style to apply to the logged in user
    * options are 'full', 'compact', 'avatar', defaults to 'full'
+   *
    * @type {LoginViewType}
    */
   @property({
@@ -157,6 +160,7 @@ export class MgtLogin extends MgtTemplatedComponent {
 
   /**
    * determines if login menu popup should be showing
+   *
    * @type {boolean}
    */
   @property({ attribute: false }) private _isFlyoutOpen: boolean;
@@ -170,7 +174,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtLogin
    */
-  private _userDetailsKey: string = '-userDetails';
+  private _userDetailsKey = '-userDetails';
 
   constructor() {
     super();
@@ -215,7 +219,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @returns {Promise<void>}
    * @memberof MgtLogin
    */
-  public async logout(): Promise<void> {
+  public logout = async (): Promise<void> => {
     if (!this.fireCustomEvent('logoutInitiated')) {
       return;
     }
@@ -233,7 +237,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       this.hideFlyout();
       this.fireCustomEvent('logoutCompleted');
     }
-  }
+  };
 
   /**
    * Invoked on each update to perform rendering tasks. This method must return
@@ -422,7 +426,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           .line2Property=${'email'}
           ?vertical-layout=${this.usesVerticalPersonCard}
           class="person"
-        />
+        ></mgt-person>
         `
     );
   }
@@ -486,7 +490,7 @@ export class MgtLogin extends MgtTemplatedComponent {
                class="add-account-button"
                aria-label="Sign in with different account"
                @click=${() => {
-                 this.login();
+                 void this.login();
                }}
              >
                <i class="account-switch-icon">${getSvg(SvgIcon.SelectAccount, '#000000')}</i>
@@ -538,7 +542,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           .avatarSize=${displayConfig.avatarSize}
           line2-property="email"
           class="person"
-        />
+        ></mgt-person>
        `
     );
   }
@@ -578,7 +582,7 @@ export class MgtLogin extends MgtTemplatedComponent {
                         .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
                         .view=${PersonViewType.twolines}
                         class="person"
-                      />
+                      ></mgt-person>
                     </fluent-option>
                   `;
                 }
@@ -655,13 +659,13 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
-  private onClick() {
+  private onClick = () => {
     if (this.userDetails && this._isFlyoutOpen) {
       this.hideFlyout();
     } else if (this.userDetails) {
       this.showFlyout();
     } else {
-      this.login();
+      void this.login();
     }
-  }
+  };
 }

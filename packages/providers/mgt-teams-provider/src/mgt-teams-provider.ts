@@ -47,7 +47,7 @@ export class MgtTeamsProvider extends MgtBaseProvider {
    *
    * @memberof MgtTeamsProvider
    */
-  @property() public authority;
+  @property() public authority: string;
 
   /**
    * Comma separated list of scopes.
@@ -58,7 +58,7 @@ export class MgtTeamsProvider extends MgtBaseProvider {
     attribute: 'scopes',
     type: String
   })
-  public scopes;
+  public scopes: string;
   /**
    * Gets whether this provider can be used in this environment
    *

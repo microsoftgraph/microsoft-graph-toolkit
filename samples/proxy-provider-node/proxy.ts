@@ -18,7 +18,7 @@ import getAccessTokenOnBehalfOf from './auth';
  * @param {string} incomingAuthHeader - The incoming auth header ('Bearer token')
  * @returns {Promise<string>}
  */
-async function processIncomingToken(incomingAuthHeader: string): Promise<string> {
+const processIncomingToken = async (incomingAuthHeader: string): Promise<string> => {
   // If in pass-through mode, just return the original
   if (process.env.AUTH_PASS_THROUGH === 'true') {
     return incomingAuthHeader;
@@ -35,7 +35,7 @@ async function processIncomingToken(incomingAuthHeader: string): Promise<string>
  * @param {IncomingHttpHeaders} incomingHeaders - The headers sent to the proxy
  * @returns {Promise<Headers>}
  */
-async function copyRequiredHeaders(incomingHeaders: IncomingHttpHeaders): Promise<Headers> {
+const copyRequiredHeaders = async (incomingHeaders: IncomingHttpHeaders): Promise<Headers> => {
   const graphHeaders = new Headers();
 
   // Preserve the Accept header
@@ -71,7 +71,7 @@ async function copyRequiredHeaders(incomingHeaders: IncomingHttpHeaders): Promis
  * @param {Response} res - The outgoing response
  * @returns {Promise<void>}
  */
-export default async function proxyRequest(req: Request, res: Response): Promise<void> {
+export default const proxyRequest = async (req: Request, res: Response): Promise<void> => {
   console.log(`${req.method} ${req.url}`);
 
   // Keep required headers from incoming request

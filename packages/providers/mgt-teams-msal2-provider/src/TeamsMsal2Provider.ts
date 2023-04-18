@@ -9,20 +9,30 @@ import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client
 import { Configuration, InteractionRequiredAuthError, SilentRequest } from '@azure/msal-browser';
 import {
   GraphEndpoint,
+  loginContext,
   LoginType,
   MICROSOFT_GRAPH_DEFAULT_ENDPOINT,
   ProviderState,
-  TeamsHelper
+  TeamsHelper,
+  TeamsLib
 } from '@microsoft/mgt-element';
 import { Msal2Provider, PromptType } from '@microsoft/mgt-msal2-provider';
 
-// tslint:disable-next-line: completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 declare global {
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   interface Window {
-    // tslint:disable-next-line: completed-docs
+    // eslint-disable-next-line @typescript-eslint/tslint/config
     nativeInterface: any;
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/tslint/config
+interface TeamsAuthResponse {
+  // eslint-disable-next-line @typescript-eslint/tslint/config
+  error?: string;
+  // eslint-disable-next-line @typescript-eslint/tslint/config
+  access_token?: string;
 }
 
 /**
@@ -182,10 +192,10 @@ export class TeamsMsal2Provider extends Msal2Provider {
    * @static
    * @memberof TeamsMsal2Provider
    */
-  public static get microsoftTeamsLib(): any {
+  public static get microsoftTeamsLib(): TeamsLib {
     return TeamsHelper.microsoftTeamsLib;
   }
-  public static set microsoftTeamsLib(value: any) {
+  public static set microsoftTeamsLib(value: TeamsLib) {
     TeamsHelper.microsoftTeamsLib = value;
   }
 
@@ -210,7 +220,7 @@ export class TeamsMsal2Provider extends Msal2Provider {
     // we are in popup world now - authenticate and handle it
     const teams = TeamsHelper.microsoftTeamsLib;
     if (!teams) {
-      // tslint:disable-next-line: no-console
+      // eslint-disable-next-line no-console
       console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsMsal2Provider');
       return;
     }
@@ -229,7 +239,7 @@ export class TeamsMsal2Provider extends Msal2Provider {
     let authParams: AuthParams;
 
     if (paramsString) {
-      authParams = JSON.parse(paramsString);
+      authParams = JSON.parse(paramsString) as AuthParams;
     } else {
       authParams = {};
     }
@@ -252,8 +262,8 @@ export class TeamsMsal2Provider extends Msal2Provider {
       options,
       scopes,
       loginHint: authParams.loginHint,
-      prompt: prompt,
-      baseURL: baseURL
+      prompt,
+      baseURL
     });
 
     const handleProviderState = async () => {
@@ -271,12 +281,13 @@ export class TeamsMsal2Provider extends Msal2Provider {
           if (!isInIframe) {
             sessionStorage.setItem(this._sessionStorageLoginInProgress, 'true');
           } else {
+            // eslint-disable-next-line no-console
             console.warn(
               'handleProviderState - Is in iframe... will try to login anyway... but will not set session storage variable'
             );
           }
 
-          provider.login();
+          await provider.login();
         }
       } else if (provider.state === ProviderState.SignedIn) {
         if (isSignOut) {
@@ -289,22 +300,27 @@ export class TeamsMsal2Provider extends Msal2Provider {
           const accessToken = await provider.getAccessTokenForScopes(...provider.scopes);
           teams.authentication.notifySuccess(accessToken);
         } catch (e) {
-          teams.authentication.notifyFailure(e);
+          teams.authentication.notifyFailure(e as string);
         }
       }
     };
 
-    provider.onStateChanged(handleProviderState);
-    handleProviderState();
+    const handleProviderStateSync = () => {
+      void handleProviderState();
+    };
+
+    provider.onStateChanged(handleProviderStateSync);
+    await handleProviderState();
   }
 
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   protected clientId: string;
 
   private static _localStorageParametersKey = 'msg-TeamsMsal2Provider-auth-parameters';
   private static _sessionStorageLoginInProgress = 'msg-TeamsMsal2Provider-login-in-progress';
   private static _sessionStorageLogoutInProgress = 'msg-TeamsMsal2Provider-logout-in-progress';
 
-  private teamsContext;
+  private teamsContext: loginContext;
   private _authPopupUrl: string;
   private _msalOptions: Configuration;
   private _ssoUrl: string;
@@ -332,7 +348,7 @@ export class TeamsMsal2Provider extends Msal2Provider {
 
     // If we are in SSO-mode.
     if (this._ssoUrl) {
-      this.internalLogin();
+      void this.internalLogin();
     }
   }
 
@@ -353,12 +369,13 @@ export class TeamsMsal2Provider extends Msal2Provider {
     const teams = TeamsHelper.microsoftTeamsLib;
 
     return new Promise((resolve, reject) => {
-      teams.getContext(context => {
+      void teams.getContext(context => {
         this.teamsContext = context;
 
-        const authParams: AuthParams = {
+        const loginHint = context.loginHint;
+        const authParams: Partial<AuthParams> = {
           clientId: this.clientId,
-          loginHint: context.loginHint,
+          loginHint,
           options: this._msalOptions,
           scopes: this.scopes.join(','),
           isConsent: this._autoConsent
@@ -369,18 +386,20 @@ export class TeamsMsal2Provider extends Msal2Provider {
         const url = new URL(this._authPopupUrl, new URL(window.location.href));
 
         teams.authentication.authenticate({
-          failureCallback: reason => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          failureCallback: _reason => {
             this.setState(ProviderState.SignedOut);
             reject();
           },
-          successCallback: result => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          successCallback: _result => {
             // If we are in SSO Mode, the consent has been successful. Consider logged in
             if (this._ssoUrl) {
               this.setState(ProviderState.SignedIn);
               resolve();
             } else {
               // Otherwise log in via MSAL
-              this.trySilentSignIn();
+              void this.trySilentSignIn();
               resolve();
             }
           },
@@ -404,19 +423,21 @@ export class TeamsMsal2Provider extends Msal2Provider {
     const teams = TeamsHelper.microsoftTeamsLib;
 
     return new Promise((resolve, reject) => {
-      teams.getContext(context => {
+      void teams.getContext(context => {
         this.teamsContext = context;
 
         const url = new URL(this._authPopupUrl, new URL(window.location.href));
         url.searchParams.append('signout', 'true');
 
         teams.authentication.authenticate({
-          failureCallback: reason => {
-            this.trySilentSignIn();
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          failureCallback: _reason => {
+            void this.trySilentSignIn();
             reject();
           },
-          successCallback: result => {
-            this.trySilentSignIn();
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          successCallback: _result => {
+            void this.trySilentSignIn();
             resolve();
           },
           url: url.href
@@ -436,7 +457,11 @@ export class TeamsMsal2Provider extends Msal2Provider {
     if (!this.teamsContext && TeamsHelper.microsoftTeamsLib) {
       const teams = TeamsHelper.microsoftTeamsLib;
       teams.initialize();
-      this.teamsContext = await this.getTeamsContext();
+      try {
+        this.teamsContext = await this.getTeamsContext();
+      } catch (e) {
+        throw new Error('Could not get teams context');
+      }
     }
 
     const scopes = options ? options.scopes || this.scopes : this.scopes;
@@ -446,7 +471,7 @@ export class TeamsMsal2Provider extends Msal2Provider {
       // Get token via the Teams SDK
       const clientToken = await this.getClientToken();
 
-      let url: URL = new URL(this._ssoUrl, new URL(window.location.href));
+      const url: URL = new URL(this._ssoUrl, new URL(window.location.href));
       let response: Response;
 
       // Use GET and Query String
@@ -457,7 +482,7 @@ export class TeamsMsal2Provider extends Msal2Provider {
           clientId: this.clientId
         });
 
-        response = await fetch(`${url.href}?${params}`, {
+        response = await fetch(`${url.href}?${params.toString()}`, {
           method: 'GET',
           mode: 'cors',
           cache: 'default'
@@ -472,50 +497,54 @@ export class TeamsMsal2Provider extends Msal2Provider {
             authorization: `Bearer ${clientToken}`
           },
           body: JSON.stringify({
-            scopes: scopes,
+            scopes,
             clientid: this.clientId
           }),
           mode: 'cors',
           cache: 'default'
         });
       }
+      try {
+        // Exchange token from server
+        const data: TeamsAuthResponse = (await response.json()) as TeamsAuthResponse;
 
-      // Exchange token from server
-      const data = await response.json().catch(this.unhandledFetchError);
-
-      if (!response.ok && data.error === 'consent_required') {
-        // A consent_required error means the user must consent to the requested scope, or use MFA
-        // If we are in the log in process, display a dialog
-        this._needsConsent = true;
-      } else if (!response.ok) {
-        throw data;
-      } else {
-        this._needsConsent = false;
-        return data.access_token;
+        if (!response.ok && data.error === 'consent_required') {
+          // A consent_required error means the user must consent to the requested scope, or use MFA
+          // If we are in the log in process, display a dialog
+          this._needsConsent = true;
+        } else if (!response.ok) {
+          throw data;
+        } else {
+          this._needsConsent = false;
+          return data.access_token;
+        }
+      } catch (e) {
+        this.unhandledFetchError(e);
       }
     }
     // If we are not in SSO Mode and using the Login component
     else {
-      return new Promise(async (resolve, reject) => {
+      return new Promise((resolve, reject) => {
         const accessTokenRequest: SilentRequest = {
-          scopes: scopes,
+          scopes,
           account: this.getAccount()
         };
 
-        try {
-          const response = await this.publicClientApplication.acquireTokenSilent(accessTokenRequest);
-          // return response.accessToken;
-          resolve(response.accessToken);
-        } catch (e) {
-          if (e instanceof InteractionRequiredAuthError) {
-            // nothing we can do now until we can do incremental consent
-            // return null;
-            resolve(null);
-          } else {
-            // throw e;
-            reject(e);
-          }
-        }
+        this.publicClientApplication
+          .acquireTokenSilent(accessTokenRequest)
+          .then(response => {
+            resolve(response.accessToken);
+          })
+          .catch(e => {
+            if (e instanceof InteractionRequiredAuthError) {
+              // nothing we can do now until we can do incremental consent
+              // return null;
+              resolve(null);
+            } else {
+              // throw e;
+              reject(e);
+            }
+          });
       });
     }
   }
@@ -541,7 +570,7 @@ export class TeamsMsal2Provider extends Msal2Provider {
           if (!this.scopes) {
             throw new Error('For auto consent, scopes must be provided');
           } else {
-            this.login();
+            await this.login();
             return;
           }
         } else {
@@ -564,7 +593,8 @@ export class TeamsMsal2Provider extends Msal2Provider {
         successCallback: (result: string) => {
           resolve(result);
         },
-        failureCallback: reason => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        failureCallback: _reason => {
           this.setState(ProviderState.SignedOut);
           reject();
         }
@@ -575,18 +605,21 @@ export class TeamsMsal2Provider extends Msal2Provider {
   /**
    * Retrieves the Teams context
    */
-  private async getTeamsContext() {
+  private async getTeamsContext(): Promise<loginContext> {
     return new Promise(resolve => {
       const teams = TeamsHelper.microsoftTeamsLib;
       teams.initialize();
-      teams.getContext(context => {
+      void teams.getContext(context => {
         resolve(context);
         return;
       });
     });
   }
 
-  private unhandledFetchError(err: any) {
-    console.error(`There was an error during the server side token exchange: ${err}`);
+  private unhandledFetchError(err: unknown) {
+    const message: string =
+      typeof err === 'string' ? err : typeof err === 'object' ? err.toString() : JSON.stringify(err);
+    // eslint-disable-next-line no-console
+    console.error(`There was an error during the server side token exchange: ${message}`);
   }
 }
