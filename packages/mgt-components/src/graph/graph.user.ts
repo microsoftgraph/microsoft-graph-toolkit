@@ -220,27 +220,29 @@ export async function getUsersForUserIds(
     }
   }
   try {
-    const responses = await batch.executeAll();
-    // iterate over userIds to ensure the order of ids
-    for (const id of userIds) {
-      const response = responses.get(id);
-      if (response && response.content) {
-        const user = response.content;
-        if (searchInput) {
-          const displayName = user?.displayName.toLowerCase();
-          if (displayName.contains(searchInput)) {
-            peopleSearchMatches[id] = user;
+    if (batch.hasRequests) {
+      const responses = await batch.executeAll();
+      // iterate over userIds to ensure the order of ids
+      for (const id of userIds) {
+        const response = responses.get(id);
+        if (response && response.content) {
+          const user = response.content;
+          if (searchInput) {
+            const displayName = user?.displayName.toLowerCase();
+            if (displayName.contains(searchInput)) {
+              peopleSearchMatches[id] = user;
+            }
+          } else {
+            peopleDict[id] = user;
           }
-        } else {
-          peopleDict[id] = user;
-        }
 
-        if (getIsUsersCacheEnabled()) {
-          cache.putValue(id, { user: JSON.stringify(user) });
+          if (getIsUsersCacheEnabled()) {
+            cache.putValue(id, { user: JSON.stringify(user) });
+          }
         }
-      }
-      if (searchInput && Object.keys(peopleSearchMatches).length) {
-        return Promise.all(Object.values(peopleSearchMatches));
+        if (searchInput && Object.keys(peopleSearchMatches).length) {
+          return Promise.all(Object.values(peopleSearchMatches));
+        }
       }
     }
     return Promise.all(Object.values(peopleDict));
