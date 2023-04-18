@@ -5,6 +5,10 @@
   "main": "./dist/es6/index.js",
   "types": "./dist/es6/index.d.ts",
   "module": "./dist/es6/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "keywords": [
     "microsoft graph",
     "microsoft graph toolkit",
@@ -39,5 +43,8 @@
   "devDependencies": {},
   "resolutions": {
     "react": "16.13.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
