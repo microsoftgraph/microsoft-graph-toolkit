@@ -1340,7 +1340,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (e.code === 'Enter') {
       void this.sendQuickMessage();
     }
-  };
+  }
 
   private handleGoBack(e: KeyboardEvent) {
     if (e.code === 'Enter') {
