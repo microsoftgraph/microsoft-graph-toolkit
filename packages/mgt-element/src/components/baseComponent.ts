@@ -208,6 +208,7 @@ export abstract class MgtBaseComponent extends LitElement {
       bubbles,
       cancelable,
       composed,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       detail
     });
     return this.dispatchEvent(event);

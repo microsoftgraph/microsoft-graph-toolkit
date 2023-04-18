@@ -111,6 +111,7 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.addEventListener('selectionChanged', this.handleSelectionChanged);
   }
 
@@ -251,8 +252,18 @@ export class MgtTodo extends MgtTasksBase {
      `;
   };
 
+  /**
+   * Handle a change in taskList.
+   *
+   * @protected
+   * @param {CustomEvent} e
+   * @returns {TemplateResult}
+   * @memberof MgtTodo
+   */
+
   protected handleSelectionChanged = async (e: CustomEvent) => {
-    const list = e.detail;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const list: TodoTaskList = e.detail;
     this.currentList = list;
     await this.loadTasks(list);
   };
@@ -379,7 +390,6 @@ export class MgtTodo extends MgtTasksBase {
    * @memberof MgtTodo
    */
   protected clearNewTaskData = (): void => {
-    super.clearNewTaskData;
     this._newTaskDueDate = null;
     this._newTaskName = '';
   };
@@ -454,9 +464,9 @@ export class MgtTodo extends MgtTasksBase {
     }
   };
 
-  private handleKeyDown = (e: KeyboardEvent) => {
+  private handleKeyDown = async (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
-      this.addTask();
+      await this.addTask();
     }
   };
 

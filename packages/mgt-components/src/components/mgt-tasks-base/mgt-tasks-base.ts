@@ -11,6 +11,7 @@ import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } 
 import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentTextField, fluentButton, fluentCalendar } from '@fluentui/web-components';
+import { TodoTask } from '../mgt-todo/graph.todo';
 
 registerFluentComponents(fluentTextField, fluentButton, fluentCalendar);
 
@@ -214,9 +215,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtTasksBase
    */
-  protected clearNewTaskData = (): void => {
-    this.requestUpdate();
-  };
+  protected abstract clearNewTaskData(): void;
 
   /**
    * Clear the component state.
@@ -236,7 +235,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @param {TodoTask} task
    * @memberof MgtTasksBase
    */
-  protected handleTaskClick = (task: any) => {
+  protected handleTaskClick = (task: TodoTask): void => {
     this.fireCustomEvent('taskClick', { task });
   };
 
@@ -248,7 +247,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtTasksBase
    */
-  protected dateToInputValue(date: Date) {
+  protected dateToInputValue(date: Date): string {
     if (date) {
       return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0];
     }
