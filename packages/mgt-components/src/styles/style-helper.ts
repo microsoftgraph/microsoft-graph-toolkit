@@ -18,8 +18,8 @@ fabricFont.appendChild(
 }
 `)
 );
-document.head!.appendChild(fabricFont);
+document.head.appendChild(fabricFont);
 
 const themeStyle = document.createElement('style') as HTMLStyleElement;
 themeStyle.innerHTML = styles.toString();
-document.head!.appendChild(themeStyle);
+document.head.appendChild(themeStyle);

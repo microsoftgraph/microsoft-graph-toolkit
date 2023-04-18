@@ -35,16 +35,16 @@ import { registerFluentComponents } from '../../utils/FluentComponents';
 registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluentCard);
 
 /**
- *  loginViewType describes the enum strings that can be passed in to determine
- *  size of the mgt-login control.
+ * loginViewType describes the enum strings that can be passed in to determine
+ * size of the mgt-login control.
  */
 export type LoginViewType = 'avatar' | 'compact' | 'full';
 
-// tslint:disable-next-line: completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 type PersonViewConfig = {
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   view: ViewType;
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   avatarSize: AvatarSize;
 };
 
@@ -184,7 +184,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtLogin
    */
-  private _userDetailsKey: string = '-userDetails';
+  private _userDetailsKey = '-userDetails';
 
   constructor() {
     super();
@@ -229,7 +229,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @returns {Promise<void>}
    * @memberof MgtLogin
    */
-  public async logout(): Promise<void> {
+  public logout = async (): Promise<void> => {
     if (!this.fireCustomEvent('logoutInitiated')) {
       return;
     }
@@ -247,7 +247,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       this.hideFlyout();
       this.fireCustomEvent('logoutCompleted');
     }
-  }
+  };
 
   /**
    * Invoked on each update to perform rendering tasks. This method must return
@@ -477,7 +477,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           <fluent-button
             appearance="stealth"
             aria-label="${this.strings.signInWithADifferentAccount}"
-            @click=${() => this.login()}>
+            @click=${() => void this.login()}>
             <span slot="start"><i>${getSvg(SvgIcon.SelectAccount, 'currentColor')}</i></span>
             ${this.strings.signInWithADifferentAccount}
           </fluent-button>
@@ -649,7 +649,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     } else if (this.userDetails) {
       this.showFlyout();
     } else {
-      this.login();
+      void this.login();
     }
   }
 }

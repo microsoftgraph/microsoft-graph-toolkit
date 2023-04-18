@@ -16,7 +16,7 @@ enableFetchMocks();
 
 let person: Element;
 describe('mgt-person - tests', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     fetchMock.resetMocks();
     fetchMock
       // Response for the setup of the MockGraph to call to the proxy service

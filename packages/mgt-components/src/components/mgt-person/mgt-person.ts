@@ -104,6 +104,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     return styles;
   }
 
+  /**
+   * Strings to use for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtPerson
+   */
   protected get strings() {
     return strings;
   }
@@ -122,6 +129,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   /**
    * allows developer to define name of person for component
+   *
    * @type {string}
    */
   @property({
@@ -137,11 +145,12 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     this._personQuery = value;
     this.personDetailsInternal = null;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
    * Fallback when no user is found
+   *
    * @type {IDynamicPerson}
    */
   @property({
@@ -167,6 +176,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   /**
    * user-id property allows developer to use id value to determine person
+   *
    * @type {string}
    */
   @property({
@@ -182,13 +192,14 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     this._userId = value;
     this.personDetailsInternal = null;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
    * usage property allows you to specify where the component is being used to add
    * customized personalization for it. Currently only supports "people" as used in
    * the people component.
+   *
    * @type {string}
    */
   @property({
@@ -203,11 +214,12 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._usage = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
    * determines if person component renders presence
+   *
    * @type {boolean}
    */
   @property({
@@ -230,6 +242,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   /**
    * object containing Graph details on person
    * a copy of person-details attribute
+   *
    * @type {IDynamicPerson}
    */
   @property({
@@ -249,12 +262,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._fetchedImage = null;
     this._fetchedPresence = null;
 
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
     this.requestUpdate('personDetailsInternal');
   }
 
   /**
    * object containing Graph details on person
+   *
    * @type {IDynamicPerson}
    */
   @property({
@@ -274,7 +288,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._fetchedImage = null;
     this._fetchedPresence = null;
 
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
     this.requestUpdate('personDetails');
   }
 
@@ -370,7 +384,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._avatarType = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -410,7 +424,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       if (typeof PersonCardInteraction[value] === 'undefined') {
         return PersonCardInteraction.none;
       } else {
-        return PersonCardInteraction[value];
+        return PersonCardInteraction[value] as PersonCardInteraction;
       }
     }
   })
@@ -498,7 +512,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       if (typeof ViewType[value] === 'undefined') {
         return ViewType.image;
       } else {
-        return ViewType[value];
+        return ViewType[value] as ViewType;
       }
     }
   })
@@ -519,8 +533,8 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _usage: string;
   private _avatarType: string;
 
-  private _mouseLeaveTimeout;
-  private _mouseEnterTimeout;
+  private _mouseLeaveTimeout = -1;
+  private _mouseEnterTimeout = -1;
 
   constructor() {
     super();
@@ -855,7 +869,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return html``;
     }
 
-    // tslint:disable-next-line: completed-docs
+    // eslint-disable-next-line @typescript-eslint/tslint/config
     const person: IDynamicPerson & { presenceActivity?: string; presenceAvailability?: string } = personProps;
     if (presence) {
       person.presenceActivity = presence?.activity;
@@ -1069,7 +1083,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
-      let person;
+      let person: IDynamicPerson;
       if (this._avatarType === 'photo' && !this.disableImageFetch) {
         person = await getUserWithPhoto(graph, this.userId, personProps);
       } else {
@@ -1186,13 +1200,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
-  private getTextFromProperty(personDetailsInternal: IDynamicPerson, prop: string) {
+  private getTextFromProperty(personDetailsInternal: IDynamicPerson, prop: string): string {
     if (!prop || prop.length === 0) {
       return null;
     }
 
     const properties = prop.trim().split(',');
-    let text;
+    let text: string;
     let i = 0;
 
     while (!text && i < properties.length) {
@@ -1203,7 +1217,7 @@ export class MgtPerson extends MgtTemplatedComponent {
           text = getEmailFromGraphEntity(personDetailsInternal);
           break;
         default:
-          text = personDetailsInternal[currentProp];
+          text = personDetailsInternal[currentProp] as string;
       }
       i++;
     }
@@ -1239,56 +1253,56 @@ export class MgtPerson extends MgtTemplatedComponent {
     return this.verticalLayout;
   }
 
-  private handleMouseClick(e: MouseEvent) {
+  private handleMouseClick = (e: MouseEvent) => {
     const element = e.target as HTMLElement;
     if (this.personCardInteraction === PersonCardInteraction.click && element.tagName !== 'MGT-PERSON-CARD') {
       this.showPersonCard();
     }
-  }
+  };
 
-  private handleKeyDown(e: KeyboardEvent) {
+  private handleKeyDown = (e: KeyboardEvent) => {
     // enter activates person-card
     if (e) {
       if (e.key === 'Enter') {
         this.showPersonCard();
       }
     }
-  }
+  };
 
-  private handleMouseEnter(e: MouseEvent) {
+  private handleMouseEnter = (e: MouseEvent) => {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
     if (this.personCardInteraction !== PersonCardInteraction.hover) {
       return;
     }
-    this._mouseEnterTimeout = setTimeout(this.showPersonCard.bind(this), 500);
-  }
+    this._mouseEnterTimeout = window.setTimeout(this.showPersonCard, 500);
+  };
 
-  private handleMouseLeave(e: MouseEvent) {
+  private handleMouseLeave = (e: MouseEvent) => {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
-    this._mouseLeaveTimeout = setTimeout(this.hidePersonCard.bind(this), 500);
-  }
+    this._mouseLeaveTimeout = window.setTimeout(this.hidePersonCard, 500);
+  };
 
   /**
    * hides the person card
    *
    * @memberof MgtPerson
    */
-  public hidePersonCard() {
+  public hidePersonCard = () => {
     const flyout = this.flyout;
     if (flyout) {
       flyout.close();
     }
-    const personCard = (this.querySelector('mgt-person-card') ||
-      this.renderRoot.querySelector('mgt-person-card')) as MgtPersonCard;
+    const personCard =
+      this.querySelector<MgtPersonCard>('mgt-person-card') || this.renderRoot.querySelector('mgt-person-card');
     if (personCard) {
       personCard.isExpanded = false;
       personCard.clearHistory();
     }
-  }
+  };
 
-  private showPersonCard() {
+  private showPersonCard = () => {
     if (!this._personCardShouldRender) {
       this._personCardShouldRender = true;
     }
@@ -1297,5 +1311,5 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (flyout) {
       flyout.open();
     }
-  }
+  };
 }

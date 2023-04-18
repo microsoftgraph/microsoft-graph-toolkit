@@ -34,7 +34,7 @@ export class SdkVersionMiddleware implements Middleware {
     this._providerName = providerName;
   }
 
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   public async execute(context: Context): Promise<void> {
     try {
       if (typeof context.request === 'string') {
@@ -47,17 +47,17 @@ export class SdkVersionMiddleware implements Middleware {
           ) as ComponentMiddlewareOptions;
 
           if (componentOptions) {
-            const componentVersion: string = `${componentOptions.componentName}/${this._packageVersion}`;
+            const componentVersion = `${componentOptions.componentName}/${this._packageVersion}`;
             headerParts.push(componentVersion);
           }
 
           if (this._providerName) {
-            const providerVersion: string = `${this._providerName}/${this._packageVersion}`;
+            const providerVersion = `${this._providerName}/${this._packageVersion}`;
             headerParts.push(providerVersion);
           }
 
           // Package version
-          const packageVersion: string = `mgt/${this._packageVersion}`;
+          const packageVersion = `mgt/${this._packageVersion}`;
           headerParts.push(packageVersion);
 
           // Existing SdkVersion header value
@@ -67,6 +67,7 @@ export class SdkVersionMiddleware implements Middleware {
           const sdkVersionHeaderValue = headerParts.join(', ');
           setRequestHeader(context.request, context.options, 'SdkVersion', sdkVersionHeaderValue);
         } else {
+          // eslint-disable-next-line @typescript-eslint/dot-notation
           delete context?.options?.headers['SdkVersion'];
         }
       }
