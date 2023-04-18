@@ -1302,10 +1302,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       }
     }
 
-    // TODO(musale) when is groupId and targetId used? I use it here only for
-    // the creation of new tasks.
-    const newTaskGroupId = this.groupId || this._newTaskContainerId;
-    const planGroupId = this.isNewTaskVisible ? newTaskGroupId : assignedGroup;
+    const planGroupId = this.isNewTaskVisible ? this._newTaskContainerId : assignedGroup;
 
     assignedPeopleHTML = html`
       <mgt-people
