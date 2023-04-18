@@ -7,7 +7,8 @@
 
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
-import { customElement, html, property } from 'lit-element';
+import { customElement, html, property, state, TemplateResult } from 'lit-element';
+import { ifDefined } from 'lit-html/directives/if-defined';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
@@ -230,6 +231,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       this._newTaskDueDate = null;
       this._newTaskName = '';
       this._newTaskGroupId = '';
+      this._newTaskContainerId = '';
     }
   }
 
@@ -345,6 +347,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property() private _newTaskDueDate: Date;
   @property() private _newTaskGroupId: string;
   @property() private _newTaskFolderId: string;
+  @property() private _newTaskContainerId: string;
   @property() private _groups: ITaskGroup[];
   @property() private _folders: ITaskFolder[];
   @property() private _tasks: ITask[];
@@ -787,6 +790,18 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   }
 
+  private addNewTaskButtonClick(e: MouseEvent) {
+    this.isNewTaskVisible = !this.isNewTaskVisible;
+  }
+
+  private handleSelectedPlan(e: Event) {
+    this._newTaskGroupId = (e.target as HTMLInputElement).value;
+    if (this.dataSource === TasksSource.planner) {
+      const task = this._groups.filter(iTask => iTask.id === this._newTaskGroupId);
+      this._newTaskContainerId = task.pop()?.containerId ?? this._newTaskContainerId;
+    }
+  }
+
   private newTaskVisible(e: KeyboardEvent) {
     if (e.code === 'Enter') {
       this.isNewTaskVisible = false;
@@ -813,9 +828,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             <div
               tabindex="0"
               class="AddBarItem NewTaskButton"
-              @click="${() => {
-                this.isNewTaskVisible = !this.isNewTaskVisible;
-              }}"
+              @click="${this.addNewTaskButtonClick}"
               @keydown="${this.newTaskButtonKeydown}"
             >
               <span class="TaskIcon"></span>
@@ -933,6 +946,9 @@ export class MgtTasks extends MgtTemplatedComponent {
     const groups = this._groups;
     if (groups.length > 0 && !this._newTaskGroupId) {
       this._newTaskGroupId = groups[0].id;
+      if (this.dataSource === TasksSource.planner) {
+        this._newTaskContainerId = groups[0].containerId;
+      }
     }
     const group =
       this.dataSource === TasksSource.todo
@@ -949,9 +965,7 @@ export class MgtTasks extends MgtTemplatedComponent {
               ${this.renderPlannerIcon()}
               <select aria-label="new task group"
                 .value="${this._newTaskGroupId}"
-                @change="${(e: Event) => {
-                  this._newTaskGroupId = (e.target as HTMLInputElement).value;
-                }}"
+                @change="${this.handleSelectedPlan}"
               >
                 ${this._groups.map(
                   plan => html`
@@ -1255,6 +1269,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private renderAssignedPeople(task: ITask) {
     let assignedPeopleHTML = null;
+    let assignedGroup: string;
 
     const taskAssigneeClasses = {
       NewTaskAssignee: task === null,
@@ -1276,6 +1291,19 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const taskId = task ? task.id : 'newTask';
     taskAssigneeClasses[`flyout-${taskId}`] = true;
+
+    if (!this.newTaskVisible) {
+      const planId = task?._raw?.planId;
+      if (planId) {
+        const group = this._groups.filter(group => group.id === planId);
+        assignedGroup = group.pop()?.containerId;
+      }
+    }
+
+    // TODO(musale) when is groupId and targetId used? I use it here only for
+    // the creation of new tasks.
+    const newTaskGroupId = this.groupId || this._newTaskContainerId;
+    const planGroupId = this.isNewTaskVisible ? newTaskGroupId : assignedGroup;
 
     assignedPeopleHTML = html`
       <mgt-people
@@ -1302,6 +1330,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         <div slot="flyout" class=${classMap({ Picker: true })}>
           <mgt-people-picker
             class="picker-${taskId}"
+            .groupId=${ifDefined(planGroupId)}
             @click=${(e: MouseEvent) => e.stopPropagation()}
             @keydown=${(e: KeyboardEvent) => {
               if (e.code === 'Enter') {
