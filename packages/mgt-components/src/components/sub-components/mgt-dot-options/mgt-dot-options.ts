@@ -49,13 +49,13 @@ export class MgtDotOptions extends MgtBaseComponent {
     this._clickHandler = (e: MouseEvent) => (this.open = false);
   }
 
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this._clickHandler);
   }
 
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   public disconnectedCallback() {
     window.removeEventListener('click', this._clickHandler);
     super.disconnectedCallback();
@@ -69,8 +69,8 @@ export class MgtDotOptions extends MgtBaseComponent {
   public render() {
     return html`
       <div tabindex="0" class=${classMap({ DotMenu: true, Open: this.open })}
-        @click=${e => this.onDotClick(e)}
-        @keydown=${e => this.onDotKeydown(e)}>
+        @click=${this.onDotClick}
+        @keydown=${this.onDotKeydown}>
         <span class="DotIcon">\uE712</span>
         <div tabindex="0" class="Menu">
           ${Object.keys(this.options).map(prop => this.getMenuOption(prop, this.options[prop]))}
@@ -90,16 +90,19 @@ export class MgtDotOptions extends MgtBaseComponent {
     return html`
       <div
         class="DotItem"
-        @click="${e => {
+        @click="${(e: Event) => {
           e.preventDefault();
           e.stopPropagation();
           click(e);
           this.open = false;
         }}"
-        @keydown="${e => {
-          this.handleKeydownMenuOption;
-          click(e);
-          this.open = false;
+        @keydown="${(e: KeyboardEvent) => {
+          if (e.code === 'Enter' || e.code === 'Space') {
+            e.preventDefault();
+            e.stopPropagation();
+            click(e);
+            this.open = false;
+          }
         }}"
       >
         <span class="DotItemName">
@@ -109,26 +112,19 @@ export class MgtDotOptions extends MgtBaseComponent {
     `;
   }
 
-  private onDotClick(e: MouseEvent) {
+  private onDotClick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     this.open = !this.open;
-  }
+  };
 
-  private onDotKeydown(e: KeyboardEvent) {
+  private onDotKeydown = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
       e.preventDefault();
       e.stopPropagation();
 
       this.open = !this.open;
     }
-  }
-
-  private handleKeydownMenuOption(e: KeyboardEvent) {
-    if (e.code === 'Enter') {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  }
+  };
 }

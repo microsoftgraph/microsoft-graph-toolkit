@@ -197,6 +197,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return styles;
   }
 
+  /**
+   * Strings for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtTeamsChannelPicker
+   */
   protected get strings() {
     return strings;
   }
@@ -266,7 +273,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     const input = wrapper.shadowRoot.querySelector<HTMLInputElement>('input');
     return input;
   }
-  private _inputValue: string = '';
+  private _inputValue = '';
 
   @state() private _selectedItemState: ChannelPickerItemState;
   private _items: DropdownItem[];
@@ -274,7 +281,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private _focusList: ChannelPickerItemState[] = [];
 
   // focus state
-  private debouncedSearch;
+  private debouncedSearch: () => void;
 
   // determines loading state
   @state() private _isDropdownVisible: boolean;
@@ -282,7 +289,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    this.handleWindowClick = this.handleWindowClick.bind(this);
     this.addEventListener('focus', _ => this.loadTeamsIfNotLoaded());
     this.addEventListener('mouseover', _ => this.loadTeamsIfNotLoaded());
     this.addEventListener('blur', _ => this.lostFocus());
@@ -346,10 +352,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Marks a channel selected by ID as selected in the dropdown menu.
    * It ensures the parent team is set to as expanded to show the channel.
+   *
    * @param channelId ID string of the selected channel
    */
   private markSelectedChannelInDropdown(channelId: string) {
-    const treeItem = this.renderRoot.querySelector(`[id='${channelId}']`) as HTMLElement;
+    const treeItem = this.renderRoot.querySelector(`[id='${channelId}']`);
     if (treeItem) {
       treeItem.setAttribute('selected', 'true');
       if (treeItem.parentElement) {
@@ -361,6 +368,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Invoked on each update to perform rendering tasks. This method must return a lit-html TemplateResult.
    * Setting properties inside this method will not trigger the element to update.
+   *
    * @returns
    * @memberof MgtTeamsChannelPicker
    */
@@ -405,10 +413,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
     let icon: TemplateResult;
     if (this._selectedItemState.parent.channels) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+      const src = this.teamsPhotos[this._selectedItemState.parent.item.id]?.photo;
       icon = html`<img
         class="team-photo"
         alt="${this._selectedItemState.parent.item.displayName}"
-        src=${this.teamsPhotos[this._selectedItemState.parent.item.id]?.photo} />`;
+        src=${src} />`;
     }
 
     const parentName = this._selectedItemState?.parent?.item?.displayName.trim();
@@ -478,9 +488,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * Displays the close button after selecting a channel.
    */
   protected showCloseIcon() {
-    const downChevron = this.renderRoot.querySelector('.down-chevron') as HTMLElement;
-    const upChevron = this.renderRoot.querySelector('.up-chevron') as HTMLElement;
-    const closeIcon = this.renderRoot.querySelector('.close-icon') as HTMLElement;
+    const downChevron = this.renderRoot.querySelector<HTMLElement>('.down-chevron');
+    const upChevron = this.renderRoot.querySelector<HTMLElement>('.up-chevron');
+    const closeIcon = this.renderRoot.querySelector<HTMLElement>('.close-icon');
     if (downChevron) {
       downChevron.style.display = 'none';
     }
@@ -578,7 +588,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
                 icon = html`<img
                   class="team-photo"
                   alt="${obj.item.displayName}"
-                  src=${this.teamsPhotos[obj.item.id].photo} />`;
+                  src=${
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                    this.teamsPhotos[obj.item.id].photo
+                  } />`;
               }
               return html`
                 <fluent-tree-item
@@ -685,7 +698,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       teams = await getAllMyTeams(graph);
       teams = teams.filter(t => !t.isArchived);
 
-      let teamsIds = teams.map(t => t.id);
+      const teamsIds = teams.map(t => t.id);
 
       const beta = BetaGraph.fromGraph(graph);
 
@@ -703,7 +716,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       for (const team of teams) {
         const response = responses.get(team.id);
 
-        if (response && response.content && response.content.value) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if (response?.content?.value) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
           team.channels = response.content.value.map((c: MicrosoftGraph.Team) => {
             return {
               item: c
@@ -726,11 +741,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Handles operations that are performed on the DOM when you remove a
    * channel. For example on clicking the X button.
+   *
    * @param item a selected channel item
    */
   private removeSelectedChannel(item: ChannelPickerItemState) {
     this.selectChannel(item);
-    const treeItems = this.renderRoot.querySelectorAll('fluent-tree-item') as NodeListOf<HTMLElement>;
+    const treeItems = this.renderRoot.querySelectorAll('fluent-tree-item');
     if (treeItems) {
       treeItems.forEach((treeItem: HTMLElement) => {
         treeItem.removeAttribute('expanded');
@@ -816,25 +832,25 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   private generateTreeViewState(
     tree: DropdownItem[],
-    filterString: string = '',
+    filterString = '',
     parent: ChannelPickerItemState = null
   ): ChannelPickerItemState[] {
     const treeView: ChannelPickerItemState[] = [];
     filterString = filterString.toLowerCase();
 
     if (tree) {
-      for (const state of tree) {
+      for (const item of tree) {
         let stateItem: ChannelPickerItemState;
 
-        if (filterString.length === 0 || state.item.displayName.toLowerCase().includes(filterString)) {
-          stateItem = { item: state.item, parent };
-          if (state.channels) {
-            stateItem.channels = this.generateTreeViewState(state.channels, '', stateItem);
+        if (filterString.length === 0 || item.item.displayName.toLowerCase().includes(filterString)) {
+          stateItem = { item: item.item, parent };
+          if (item.channels) {
+            stateItem.channels = this.generateTreeViewState(item.channels, '', stateItem);
             stateItem.isExpanded = filterString.length > 0;
           }
-        } else if (state.channels) {
-          const newStateItem = { item: state.item, parent };
-          const channels = this.generateTreeViewState(state.channels, filterString, newStateItem);
+        } else if (item.channels) {
+          const newStateItem = { item: item.item, parent };
+          const channels = this.generateTreeViewState(item.channels, filterString, newStateItem);
           if (channels.length > 0) {
             stateItem = newStateItem;
             stateItem.channels = channels;
@@ -852,12 +868,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   // generates a flat list from a tree to facilitate easier focus
   // navigation
-  private generateFocusList(items): any[] {
+  private generateFocusList(items: ChannelPickerItemState[]): ChannelPickerItemState[] {
     if (!items || items.length === 0) {
       return [];
     }
 
-    let array = [];
+    let array: ChannelPickerItemState[] = [];
 
     for (const item of items) {
       array.push(item);
@@ -876,17 +892,17 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   private loadTeamsIfNotLoaded() {
     if (!this.items && !this.isLoadingState) {
-      this.requestStateUpdate();
+      void this.requestStateUpdate();
     }
   }
 
-  private handleWindowClick(e: MouseEvent) {
+  private handleWindowClick = (e: MouseEvent) => {
     if (e.target !== this) {
       this.lostFocus();
     }
-  }
+  };
 
-  private gainedFocus() {
+  private gainedFocus = () => {
     this._isFocused = true;
     const input = this._input;
     if (input) {
@@ -896,9 +912,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._isDropdownVisible = true;
     this.toggleChevron();
     this.resetFocusState();
-  }
+  };
 
-  private lostFocus() {
+  private lostFocus = () => {
     const input = this._input;
     if (input) {
       input.value = this._inputValue = '';
@@ -914,7 +930,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (this._selectedItemState !== undefined) {
       this.showCloseIcon();
     }
-  }
+  };
 
   private selectChannel(item: ChannelPickerItemState) {
     if (item && this._selectedItemState !== item) {
@@ -931,7 +947,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * Hides the close icon.
    */
   private hideCloseIcon() {
-    const closeIcon = this.renderRoot.querySelector('.close-icon') as HTMLElement;
+    const closeIcon = this.renderRoot.querySelector<HTMLElement>('.close-icon');
     if (closeIcon) {
       closeIcon.style.display = 'none';
     }
@@ -942,8 +958,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * visibility.
    */
   private toggleChevron() {
-    const downChevron = this.renderRoot.querySelector('.down-chevron') as HTMLElement;
-    const upChevron = this.renderRoot.querySelector('.up-chevron') as HTMLElement;
+    const downChevron = this.renderRoot.querySelector<HTMLElement>('.down-chevron');
+    const upChevron = this.renderRoot.querySelector<HTMLElement>('.up-chevron');
     if (this._isDropdownVisible) {
       if (downChevron) {
         downChevron.style.display = 'none';

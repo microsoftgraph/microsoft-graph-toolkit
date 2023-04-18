@@ -25,8 +25,8 @@ export type IDynamicPerson = (MicrosoftGraph.User | MicrosoftGraph.Person | Micr
 };
 
 /**
- *  avatarSize describes the enum strings that can be passed in to determine
- *  size of avatar.
+ * avatarSize describes the enum strings that can be passed in to determine
+ * size of avatar.
  */
 export type AvatarSize = 'small' | 'large' | 'auto';
 
