@@ -45,6 +45,7 @@ import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { fluentTextField, fluentCard } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { strings } from './strings';
+import { Person, User } from '@microsoft/microsoft-graph-types';
 
 registerFluentComponents(fluentTextField, fluentCard);
 
