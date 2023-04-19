@@ -171,7 +171,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**

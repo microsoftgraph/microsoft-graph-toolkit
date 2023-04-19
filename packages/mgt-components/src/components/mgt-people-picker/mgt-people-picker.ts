@@ -1398,7 +1398,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Handles input from the key up events on the keyboard.
    */
-  private onUserKeyUp(event: KeyboardEvent): void {
+  private onUserKeyUp = (event: KeyboardEvent): void => {
     const keyName = event.key;
     const isCmdOrCtrlKey = event.getModifierState('Control') || event.getModifierState('Meta');
     const isPaste = isCmdOrCtrlKey && keyName === 'v';
@@ -1446,7 +1446,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       return;
     }
-  }
+  };
 
   private onUserInput = (event: InputEvent) => {
     const input = event.target as HTMLInputElement;
@@ -1515,7 +1515,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    *
    * @param event - event tracked on user input (keydown)
    */
-  private onUserKeyDown(event: KeyboardEvent): void {
+  private onUserKeyDown = (event: KeyboardEvent): void => {
     const keyName = event.key;
     const selectedList = this.renderRoot.querySelector('.selected-list');
     const isCmdOrCtrlKey = event.getModifierState('Control') || event.getModifierState('Meta');
@@ -1596,7 +1596,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.handleAnyEmail();
       }
     }
-  }
+  };
 
   /**
    * Gets the text of the highlighed people and writes it to the clipboard
