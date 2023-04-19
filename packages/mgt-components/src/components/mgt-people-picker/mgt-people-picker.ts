@@ -131,7 +131,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected get input(): HTMLInputElement {
-    return this.renderRoot.querySelector('fluent-text-field') as HTMLInputElement;
+    return this.renderRoot.querySelector('fluent-text-field');
   }
 
   /**
@@ -576,7 +576,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private defaultPeople: IDynamicPerson[];
 
   // tracking of user arrow key input for selection
-  @state() private _arrowSelectionCount: number = -1;
+  @state() private _arrowSelectionCount = -1;
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
@@ -1758,7 +1758,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
 
       for (const person of peopleList?.children) {
-        let p = person as HTMLElement;
+        const p = person as HTMLElement;
         p.setAttribute('aria-selected', 'false');
         p.blur();
         p.removeAttribute('tabindex');

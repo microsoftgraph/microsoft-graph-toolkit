@@ -862,6 +862,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderOverviewSection(): TemplateResult {
+    console.log('here');
     const compactTemplates = this.sections.map(
       (section: BasePersonCardSection) => html`
         <div class="section">

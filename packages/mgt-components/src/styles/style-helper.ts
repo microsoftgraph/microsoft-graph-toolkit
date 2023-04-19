@@ -7,7 +7,7 @@
 
 import { styles } from './theme-css';
 
-const fabricFont = document.createElement('style') as HTMLStyleElement;
+const fabricFont = document.createElement('style');
 fabricFont.appendChild(
   document.createTextNode(`
 @font-face {
@@ -20,6 +20,6 @@ fabricFont.appendChild(
 );
 document.head.appendChild(fabricFont);
 
-const themeStyle = document.createElement('style') as HTMLStyleElement;
+const themeStyle = document.createElement('style');
 themeStyle.innerHTML = styles.toString();
 document.head.appendChild(themeStyle);
