@@ -610,15 +610,8 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   public renderCompactView(): TemplateResult {
     const files = this.files.slice(0, 3);
-    const contentTemplate = html`
-      ${files.map(file => this.renderFile(file))}
-    `;
 
-    return html`
-      <div class="root compact" dir=${this.direction}>
-        ${contentTemplate}
-      </div>
-    `;
+    return this.renderFiles(files);
   }
 
   /**
@@ -628,7 +621,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    * @memberof MgtFileList
    */
   public renderFullView(): TemplateResult {
-    return this.renderTemplate('default', { files: this.files }) || this.renderFiles();
+    return this.renderTemplate('default', { files: this.files }) || this.renderFiles(this.files);
   }
 
   /**
@@ -669,14 +662,9 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    * @returns {TemplateResult}
    * @memberof mgtFileList
    */
-  protected renderFiles(): TemplateResult {
-    const files = this._isCompact ? this.files.slice(0, 3) : this.files;
-    const classes = classMap({
-      compact: this._isCompact,
-      'file-list-wrapper': true
-    });
+  protected renderFiles(files: DriveItem[]): TemplateResult {
     return html`
-      <div id="file-list-wrapper" class=${classes} dir=${this.direction}>
+      <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
         <ul
           id="file-list"

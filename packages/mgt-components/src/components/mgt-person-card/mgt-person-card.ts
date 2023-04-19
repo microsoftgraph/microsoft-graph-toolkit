@@ -368,7 +368,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _currentSection: CardSection;
   private _personDetails: IDynamicPerson;
   private _me: User;
-  private _smallView;
+  private _smallView: boolean;
   private _windowHeight;
 
   private _userId: string;
@@ -440,7 +440,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @returns {void}
    * @memberof MgtPersonCard
    */
-  public goBack(): void {
+  public goBack = (): void => {
     if (!this._history || !this._history.length) {
       return;
     }
@@ -457,7 +457,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._personDetails = historyState.state.person;
     this.personImage = historyState.personImage;
     this.loadSections();
-  }
+  };
 
   /**
    * Navigate the card back to first person and clear history
@@ -597,11 +597,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPersonCard
    */
-  protected closeCard() {
+  protected closeCard = () => {
     // reset tabs
     this.updateCurrentSection(null);
     this.isExpanded = false;
-  }
+  };
 
   /**
    * Render the state when no data is available.
@@ -693,15 +693,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     // Video
-    let video: TemplateResult;
+
     ariaLabel = `${this.strings.videoButtonLabel} ${person.displayName}`;
-    video = html`
-        <fluent-button class="icon"
-          aria-label=${ariaLabel}
-          @click=${this.videoCallUser}>
-          ${getSvg(SvgIcon.Video)}
-        </fluent-button>
-      `;
+    const video: TemplateResult = html`
+      <fluent-button class="icon"
+        aria-label=${ariaLabel}
+        @click=${this.videoCallUser}>
+        ${getSvg(SvgIcon.Video)}
+      </fluent-button>
+    `;
 
     // Call
     let call: TemplateResult;
@@ -862,7 +862,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderOverviewSection(): TemplateResult {
-    console.log('here');
     const compactTemplates = this.sections.map(
       (section: BasePersonCardSection) => html`
         <div class="section">
@@ -1086,7 +1085,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @returns {void}
    * @memberof MgtPersonCard
    */
-  protected async sendQuickMessage(): Promise<void> {
+  protected sendQuickMessage = async (): Promise<void> => {
     const message = this._chatInput.trim();
     if (!message || !message.length) {
       return;
@@ -1105,7 +1104,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     await sendMessage(this._graph, chat.id, messageData);
     this.isSending = false;
     this.clearInputData();
-  }
+  };
 
   /**
    * Use the mailto: protocol to initiate a new email to the user.
@@ -1113,7 +1112,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtPersonCard
    */
-  protected emailUser() {
+  protected emailUser = () => {
     const user = this.internalPersonDetails;
     if (user) {
       const email = getEmailFromGraphEntity(user);
@@ -1121,7 +1120,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         window.open('mailto:' + email, '_blank', 'noreferrer');
       }
     }
-  }
+  };
 
   private get hasPhone(): boolean {
     const user = this.personDetails as User;
@@ -1135,7 +1134,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtPersonCard
    */
-  protected callUser() {
+  protected callUser = () => {
     const user = this.personDetails as User;
     const person = this.personDetails as microsoftgraph.Person;
 
@@ -1151,7 +1150,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         window.open('tel:' + phone, '_blank', 'noreferrer');
       }
     }
-  }
+  };
 
   /**
    * Initiate a chat message to the user via deeplink.
@@ -1159,7 +1158,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtPersonCard
    */
-  protected chatUser(message: string = null) {
+  protected chatUser = (message: string = null) => {
     const user = this.personDetails as User;
     if (user && user.userPrincipalName) {
       const users: string = user.userPrincipalName;
@@ -1181,7 +1180,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         openWindow();
       }
     }
-  }
+  };
 
   /**
    * Initiate a teams call with video with a user via deeplink.
@@ -1189,7 +1188,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtPersonCard
    */
-  protected videoCallUser() {
+  protected videoCallUser = () => {
     const user = this.personDetails as User;
     if (user && user.userPrincipalName) {
       const users: string = user.userPrincipalName;
@@ -1208,7 +1207,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         openWindow();
       }
     }
-  }
+  };
 
   /**
    * Display the expanded details panel.
@@ -1337,15 +1336,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
   }
 
-  private sendQuickMessageOnEnter(e: KeyboardEvent) {
+  private sendQuickMessageOnEnter = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
       void this.sendQuickMessage();
     }
-  }
+  };
 
-  private handleGoBack(e: KeyboardEvent) {
+  private handleGoBack = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
       void this.goBack();
     }
-  }
+  };
 }
