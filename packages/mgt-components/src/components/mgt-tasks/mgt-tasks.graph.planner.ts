@@ -6,7 +6,8 @@
  */
 
 import { IGraph, prepScopes } from '@microsoft/mgt-element';
-import { PlannerBucket, PlannerPlan, PlannerTask } from '@microsoft/microsoft-graph-types';
+import { PlannerAssignments, PlannerBucket, PlannerPlan, PlannerTask } from '@microsoft/microsoft-graph-types';
+import { CollectionResponse } from '@microsoft/mgt-element';
 
 /**
  * async promise, allows developer to create new Planner task
@@ -15,13 +16,13 @@ import { PlannerBucket, PlannerPlan, PlannerTask } from '@microsoft/microsoft-gr
  * @returns {Promise<any>}
  * @memberof Graph
  */
-export function addPlannerTask(graph: IGraph, newTask: PlannerTask): Promise<any> {
-  return graph
+export const addPlannerTask = async (graph: IGraph, newTask: PlannerTask): Promise<PlannerTask> => {
+  return (await graph
     .api('/planner/tasks')
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Group.ReadWrite.All'))
-    .post(newTask);
-}
+    .post(newTask)) as PlannerTask;
+};
 
 /**
  * async promise, allows developer to assign people to task
@@ -32,8 +33,13 @@ export function addPlannerTask(graph: IGraph, newTask: PlannerTask): Promise<any
  * @returns {Promise<any>}
  * @memberof Graph
  */
-export function assignPeopleToPlannerTask(graph: IGraph, taskId: string, people: any, eTag: string): Promise<any> {
-  return setPlannerTaskDetails(
+export const assignPeopleToPlannerTask = async (
+  graph: IGraph,
+  taskId: string,
+  people: PlannerAssignments,
+  eTag: string
+): Promise<void> => {
+  await setPlannerTaskDetails(
     graph,
     taskId,
     {
@@ -41,7 +47,7 @@ export function assignPeopleToPlannerTask(graph: IGraph, taskId: string, people:
     },
     eTag
   );
-}
+};
 
 /**
  * async promise, allows developer to remove Planner task associated with taskId
@@ -51,14 +57,14 @@ export function assignPeopleToPlannerTask(graph: IGraph, taskId: string, people:
  * @returns {Promise<any>}
  * @memberof Graph
  */
-export function removePlannerTask(graph: IGraph, taskId: string, eTag: string): Promise<any> {
-  return graph
+export const removePlannerTask = async (graph: IGraph, taskId: string, eTag: string): Promise<void> => {
+  await graph
     .api(`/planner/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
     .header('If-Match', eTag)
     .middlewareOptions(prepScopes('Group.ReadWrite.All'))
     .delete();
-}
+};
 
 /**
  * async promise, allows developer to set a task to complete, associated with taskId
@@ -68,8 +74,8 @@ export function removePlannerTask(graph: IGraph, taskId: string, eTag: string): 
  * @returns {Promise<any>}
  * @memberof Graph
  */
-export function setPlannerTaskComplete(graph: IGraph, taskId: string, eTag: string): Promise<any> {
-  return setPlannerTaskDetails(
+export const setPlannerTaskComplete = async (graph: IGraph, taskId: string, eTag: string): Promise<void> => {
+  await setPlannerTaskDetails(
     graph,
     taskId,
     {
@@ -77,7 +83,7 @@ export function setPlannerTaskComplete(graph: IGraph, taskId: string, eTag: stri
     },
     eTag
   );
-}
+};
 
 /**
  * async promise, allows developer to set a task to incomplete, associated with taskId
@@ -87,8 +93,8 @@ export function setPlannerTaskComplete(graph: IGraph, taskId: string, eTag: stri
  * @returns {Promise<any>}
  * @memberof Graph
  */
-export function setPlannerTaskIncomplete(graph: IGraph, taskId: string, eTag: string): Promise<any> {
-  return setPlannerTaskDetails(
+export const setPlannerTaskIncomplete = async (graph: IGraph, taskId: string, eTag: string): Promise<void> => {
+  await setPlannerTaskDetails(
     graph,
     taskId,
     {
@@ -96,7 +102,7 @@ export function setPlannerTaskIncomplete(graph: IGraph, taskId: string, eTag: st
     },
     eTag
   );
-}
+};
 
 /**
  * async promise, allows developer to set details of planner task associated with a taskId
@@ -107,19 +113,20 @@ export function setPlannerTaskIncomplete(graph: IGraph, taskId: string, eTag: st
  * @returns {Promise<any>}
  * @memberof Graph
  */
-export async function setPlannerTaskDetails(
+export const setPlannerTaskDetails = async (
   graph: IGraph,
   taskId: string,
   details: PlannerTask,
   eTag: string
-): Promise<any> {
+): Promise<any> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return await graph
     .api(`/planner/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Group.ReadWrite.All'))
     .header('If-Match', eTag)
     .patch(JSON.stringify(details));
-}
+};
 
 /**
  * async promise, returns all planner plans associated with the group id
@@ -128,13 +135,17 @@ export async function setPlannerTaskDetails(
  * @returns {(Promise<PlannerPlan[]>)}
  * @memberof Graph
  */
-export async function getPlansForGroup(graph: IGraph, groupId: string): Promise<PlannerPlan[]> {
+export const getPlansForGroup = async (graph: IGraph, groupId: string): Promise<PlannerPlan[]> => {
   const scopes = 'Group.Read.All';
 
   const uri = `/groups/${groupId}/planner/plans`;
-  const plans = await graph.api(uri).header('Cache-Control', 'no-store').middlewareOptions(prepScopes(scopes)).get();
-  return plans ? plans.value : null;
-}
+  const plans = (await graph
+    .api(uri)
+    .header('Cache-Control', 'no-store')
+    .middlewareOptions(prepScopes(scopes))
+    .get()) as CollectionResponse<PlannerPlan>;
+  return plans?.value;
+};
 
 /**
  * async promise, returns a single plan from the Graph associated with the planId
@@ -143,15 +154,12 @@ export async function getPlansForGroup(graph: IGraph, groupId: string): Promise<
  * @returns {(Promise<PlannerPlan>)}
  * @memberof Graph
  */
-export async function getSinglePlannerPlan(graph: IGraph, planId: string): Promise<PlannerPlan> {
-  const plan = await graph
+export const getSinglePlannerPlan = async (graph: IGraph, planId: string): Promise<PlannerPlan> =>
+  (await graph
     .api(`/planner/plans/${planId}`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Group.Read.All'))
-    .get();
-
-  return plan;
-}
+    .get()) as PlannerPlan;
 
 /**
  * async promise, returns bucket (for tasks) associated with a planId
@@ -160,15 +168,15 @@ export async function getSinglePlannerPlan(graph: IGraph, planId: string): Promi
  * @returns {(Promise<PlannerBucket[]>)}
  * @memberof Graph
  */
-export async function getBucketsForPlannerPlan(graph: IGraph, planId: string): Promise<PlannerBucket[]> {
-  const buckets = await graph
+export const getBucketsForPlannerPlan = async (graph: IGraph, planId: string): Promise<PlannerBucket[]> => {
+  const buckets = (await graph
     .api(`/planner/plans/${planId}/buckets`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Group.Read.All'))
-    .get();
+    .get()) as CollectionResponse<PlannerBucket>;
 
-  return buckets && buckets.value;
-}
+  return buckets?.value;
+};
 
 /**
  * async promise, returns all planner plans associated with the user logged in
@@ -176,15 +184,15 @@ export async function getBucketsForPlannerPlan(graph: IGraph, planId: string): P
  * @returns {(Promise<PlannerPlan[]>)}
  * @memberof Graph
  */
-export async function getAllMyPlannerPlans(graph: IGraph): Promise<PlannerPlan[]> {
-  const plans = await graph
+export const getAllMyPlannerPlans = async (graph: IGraph): Promise<PlannerPlan[]> => {
+  const plans = (await graph
     .api('/me/planner/plans')
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Group.Read.All'))
-    .get();
+    .get()) as CollectionResponse<PlannerPlan>;
 
-  return plans && plans.value;
-}
+  return plans?.value;
+};
 
 /**
  * async promise, returns all tasks from planner associated with a bucketId
@@ -193,12 +201,12 @@ export async function getAllMyPlannerPlans(graph: IGraph): Promise<PlannerPlan[]
  * @returns {(Promise<PlannerTask[][]>)}
  * @memberof Graph
  */
-export async function getTasksForPlannerBucket(graph: IGraph, bucketId: string): Promise<PlannerTask[]> {
-  const tasks = await graph
+export const getTasksForPlannerBucket = async (graph: IGraph, bucketId: string): Promise<PlannerTask[]> => {
+  const tasks = (await graph
     .api(`/planner/buckets/${bucketId}/tasks`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Group.Read.All'))
-    .get();
+    .get()) as CollectionResponse<PlannerTask>;
 
-  return tasks && tasks.value;
-}
+  return tasks?.value;
+};

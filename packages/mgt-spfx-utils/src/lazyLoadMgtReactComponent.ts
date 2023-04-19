@@ -15,10 +15,10 @@ import * as React from 'react';
  * @param {P} props
  * @return {*}  {React.FunctionComponentElement<React.SuspenseProps>}
  */
-export function lazyLoadComponent<P>(
+export const lazyLoadComponent = <P>(
   component: React.LazyExoticComponent<any>,
   props: P
-): React.FunctionComponentElement<React.SuspenseProps> {
+): React.FunctionComponentElement<React.SuspenseProps> => {
   // imperative code analogous to:
   // <div><Suspense fallback="Loading..."><Component {...props} /></Suspense></div>
   return React.createElement(
@@ -28,4 +28,4 @@ export function lazyLoadComponent<P>(
     },
     React.createElement(component, props)
   );
-}
+};

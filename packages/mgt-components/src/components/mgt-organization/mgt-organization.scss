@@ -15,8 +15,6 @@
   user-select: none;
 
   .root {
-    padding: 20px 0;
-
     &.compact {
       padding: 0;
 
@@ -38,14 +36,6 @@
           font-size: 12px;
         }
       }
-    }
-
-    .title {
-      font-size: 14px;
-      font-weight: 600;
-      color: $organization-title-color;
-      margin: 0 20px 20px 20px;
-      line-height: 19px;
     }
 
     .subtitle {

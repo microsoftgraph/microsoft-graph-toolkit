@@ -8,19 +8,17 @@
 import React, { ReactNode, ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 import { Wc, WcProps, WcTypeProps } from 'wc-react';
-import { customElementHelper } from '@microsoft/mgt-element';
+import { customElementHelper, TemplateRenderedData } from '@microsoft/mgt-element';
 
 export class Mgt extends Wc {
   private _templates: Record<string, ReactElement>;
 
   constructor(props: WcTypeProps) {
     super(props);
-
-    this.handleTemplateRendered = this.handleTemplateRendered.bind(this);
   }
 
-  protected getTag() {
-    let tag = super.getTag();
+  protected getTag(): string {
+    let tag: string = super.getTag() as string;
     const tagPrefix = `${customElementHelper.prefix}-`;
     if (!tag.startsWith(tagPrefix)) {
       tag = tagPrefix + tag;
@@ -29,7 +27,9 @@ export class Mgt extends Wc {
     return tag;
   }
 
-  public render() {
+  // type mismatch due to version drift
+  // @ts-expect-error - TS2416: Property 'render' in type 'Mgt' is not assignable to the same property in base type 'Wc'
+  public render(): React.DOMElement<React.DOMAttributes<HTMLElement>, HTMLElement> {
     const tag = this.getTag();
     if (!tag) {
       throw new Error('"wcType" must be set!');
@@ -90,7 +90,7 @@ export class Mgt extends Wc {
    * @returns
    * @memberof Mgt
    */
-  protected handleTemplateRendered(e) {
+  protected handleTemplateRendered = (e: CustomEvent<TemplateRenderedData>) => {
     if (!this._templates) {
       return;
     }
@@ -105,7 +105,7 @@ export class Mgt extends Wc {
       template = React.cloneElement(template, { dataContext });
       ReactDOM.render(template, element);
     }
-  }
+  };
 
   /**
    * Prepares templates for rendering
@@ -120,14 +120,15 @@ export class Mgt extends Wc {
       return;
     }
 
-    const templates = {};
+    const templates: Record<string, ReactElement> = {};
 
     React.Children.forEach(children, child => {
-      const element = child as ReactElement;
-      if (element && element.props && element.props.template) {
-        templates[element.props.template] = element;
+      const element = child as ReactElement<{ template: string }>;
+      const template = element?.props?.template;
+      if (template) {
+        templates[template] = element;
       } else {
-        // tslint:disable-next-line: no-string-literal
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
         templates['default'] = element;
       }
     });

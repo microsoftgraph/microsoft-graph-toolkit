@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-const fileTypeMap = {
+const fileTypeMap: Record<string, string> = {
   PowerPoint: 'pptx',
   Word: 'docx',
   Excel: 'xlsx',
@@ -34,17 +34,36 @@ const fileTypeMap = {
   Other: 'genericfile'
 };
 
-// tslint:disable-next-line:completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 const baseUri = 'https://spoprod-a.akamaihd.net/files/fabric-cdn-prod_20201008.001/assets/item-types';
 
+/**
+ * Available icon sizes
+ */
 export type IconSize = 16 | 20 | 24 | 32 | 40 | 48 | 64 | 96;
 
-export function getFileTypeIconUri(type: string, size: IconSize, extension: 'png' | 'svg') {
-  const fileType = fileTypeMap[type] || 'genericfile';
+/**
+ * Helper to provide fluent icon image urls
+ *
+ * @param type
+ * @param size
+ * @param extension
+ * @returns
+ */
+export const getFileTypeIconUri = (type: string, size: IconSize, extension: 'png' | 'svg') => {
+  const fileType: string = fileTypeMap[type] || 'genericfile';
   return `${baseUri}/${size.toString()}/${fileType}.${extension}`;
-}
+};
 
-export function getFileTypeIconUriByExtension(type: string, size: IconSize, extension: 'png' | 'svg') {
+/**
+ * Helper to provide fluent icon image urls with the correct size
+ *
+ * @param type
+ * @param size
+ * @param extension
+ * @returns
+ */
+export const getFileTypeIconUriByExtension = (type: string, size: IconSize, extension: 'png' | 'svg') => {
   const found = Object.keys(fileTypeMap).find(key => fileTypeMap[key] === type);
   if (found) {
     return `${baseUri}/${size.toString()}/${type}.${extension}`;
@@ -54,4 +73,4 @@ export function getFileTypeIconUriByExtension(type: string, size: IconSize, exte
   } else {
     return null;
   }
-}
+};

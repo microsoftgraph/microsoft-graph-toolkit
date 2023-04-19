@@ -96,7 +96,7 @@ export class MgtFlyout extends MgtBaseComponent {
   }
 
   // Minimum distance to render from window edge
-  private _edgePadding: number = 24;
+  private _edgePadding = 24;
 
   // if the flyout is opened once, this will keep the flyout in the dom
   private _renderedOnce = false;
@@ -125,10 +125,6 @@ export class MgtFlyout extends MgtBaseComponent {
     super();
 
     this.avoidHidingAnchor = true;
-
-    this.handleWindowEvent = this.handleWindowEvent.bind(this);
-    this.handleResize = this.handleResize.bind(this);
-    this.handleKeyUp = this.handleKeyUp.bind(this);
 
     // handling when person-card is expanded and size changes
     this.addEventListener('expanded', () => {
@@ -267,9 +263,9 @@ export class MgtFlyout extends MgtBaseComponent {
           ? Math.min(window.innerHeight, document.documentElement.clientHeight)
           : window.innerHeight || document.documentElement.clientHeight;
 
-      let left: number = 0;
+      let left = 0;
       let bottom: number;
-      let top: number = 0;
+      let top = 0;
       let height: number;
       let width: number;
 
@@ -435,7 +431,7 @@ export class MgtFlyout extends MgtBaseComponent {
     }
   }
 
-  private handleWindowEvent(e: Event) {
+  private handleWindowEvent = (e: Event) => {
     const flyout = this._flyout;
 
     if (flyout) {
@@ -457,19 +453,19 @@ export class MgtFlyout extends MgtBaseComponent {
     }
 
     this.close();
-  }
+  };
 
-  private handleResize(e: Event) {
+  private handleResize = (e: Event) => {
     this.close();
-  }
+  };
 
-  private handleKeyUp(e: KeyboardEvent) {
+  private handleKeyUp = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       this.close();
     }
-  }
+  };
 
-  private handleFlyoutWheel(e: Event) {
+  private handleFlyoutWheel = (e: Event) => {
     e.preventDefault();
-  }
+  };
 }

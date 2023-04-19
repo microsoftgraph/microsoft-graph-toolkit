@@ -34,12 +34,12 @@ export interface MgtPersonCardConfig {
    * Gets or sets whether each subsection should be shown
    *
    * @type {{
-   *     contact: boolean;
-   *     organization: boolean;
-   *     mailMessages: boolean;
-   *     files: boolean;
-   *     profile: boolean;
-   *   }}
+   * contact: boolean;
+   * organization: boolean;
+   * mailMessages: boolean;
+   * files: boolean;
+   * profile: boolean;
+   * }}
    * @memberof MgtPersonCardConfig
    */
   sections: {
@@ -81,21 +81,21 @@ export interface MgtPersonCardConfig {
   };
 }
 
-// tslint:disable-next-line:completed-docs
-type UserWithManager = User & { manager?: UserWithManager };
+// eslint-disable-next-line @typescript-eslint/tslint/config
+export type UserWithManager = User & { manager?: UserWithManager };
 
-// tslint:disable-next-line:completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 export interface MgtPersonCardState {
-  // tslint:disable-next-line:completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   directReports?: User[];
-  // tslint:disable-next-line:completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   files?: SharedInsight[];
-  // tslint:disable-next-line:completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   messages?: Message[];
-  // tslint:disable-next-line:completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   people?: Person[];
-  // tslint:disable-next-line:completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   person?: UserWithManager;
-  // tslint:disable-next-line:completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   profile?: Profile;
 }

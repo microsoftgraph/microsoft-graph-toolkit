@@ -8,7 +8,7 @@
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement, MgtBaseComponent } from '@microsoft/mgt-element';
-import { fluentSwitch } from '@fluentui/web-components/dist/esm/switch';
+import { fluentSwitch } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { applyTheme } from '../../styles/theme-manager';
 import { strings } from './strings';
@@ -54,10 +54,10 @@ class MgtThemeToggle extends MgtBaseComponent {
     reflect: true,
     type: String,
     converter: {
-      fromAttribute(value: string) {
+      fromAttribute: (value: string) => {
         return value === 'dark';
       },
-      toAttribute(value: boolean) {
+      toAttribute: (value: boolean) => {
         return value ? 'dark' : 'light';
       }
     }
@@ -93,10 +93,10 @@ class MgtThemeToggle extends MgtBaseComponent {
 `;
   }
 
-  private onSwitchChanged(e: Event) {
+  private onSwitchChanged = (e: Event) => {
     this.darkModeActive = (e.target as HTMLInputElement).checked;
     this.fireCustomEvent('darkmodechanged', this.darkModeActive);
-  }
+  };
 
   private applyTheme(active: boolean) {
     const targetTheme = active ? 'dark' : 'light';

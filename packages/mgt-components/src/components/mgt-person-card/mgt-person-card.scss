@@ -280,8 +280,18 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
           scrollbar-width: thin;
 
           .inserted {
+            padding: 20px 0;
             max-width: var(--mgt-flyout-set-width, 375px);
             min-width: var(--mgt-flyout-set-width, 360px);
+            --file-list-box-shadow: none;
+            --file-list-padding: 0;
+            .title {
+              font-size: 14px;
+              font-weight: 600;
+              color: var(--title-color-subtitle, var(--neutral-foreground-rest, #1a1a1a));
+              margin: 0px 20px 20px;
+              line-height: 19px;
+            }
           }
           .overview-panel {
             max-width: var(--mgt-flyout-set-width, 375px);

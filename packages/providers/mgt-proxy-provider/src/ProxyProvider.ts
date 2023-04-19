@@ -48,7 +48,8 @@ export class ProxyProvider extends IProvider {
             this.setState(ProviderState.SignedOut);
           }
         },
-        err => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        _err => {
           this.setState(ProviderState.SignedOut);
         }
       );
