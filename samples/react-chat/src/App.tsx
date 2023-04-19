@@ -1,14 +1,14 @@
 import React, { memo, useCallback, useState } from 'react';
 import './App.css';
-import { Get, Login, Picker } from '@microsoft/mgt-react';
-import { MgtChat } from '@microsoft/mgt-chat';
-import { Chat } from '@microsoft/microsoft-graph-types';
+import { Get, Login } from '@microsoft/mgt-react';
+import { Chat } from '@microsoft/mgt-chat';
+import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import ChatListTemplate from './components/ChatListTemplate/ChatListTemplate';
 
 function App() {
   const [chatId, setChatId] = useState<string>();
   const chatSelected = useCallback(
-    (e: Chat) => {
+    (e: GraphChat) => {
       setChatId(e.id);
     },
     [setChatId]
@@ -20,16 +20,16 @@ function App() {
         Mgt Chat test harness
         <br />
         <Login />
-        <Get resource="me/chats?$expand=members" scopes={['chat.read']} cacheEnabled={true}>
-          <ChatListTemplate template="default" onSelected={chatSelected} />
-        </Get>
-        {chatId && (
-          <>
-            Rendering chat: {chatId}
-            <MgtChat chatId={chatId} />
-          </>
-        )}
       </header>
+      <main className="main">
+        <div className="chat-selector">
+          <Get resource="me/chats?$expand=members" scopes={['chat.read']} cacheEnabled={true}>
+            <ChatListTemplate template="default" onSelected={chatSelected} />
+          </Get>
+          Selected chat: {chatId}
+        </div>
+        <div className="chat-pane">{chatId && <Chat chatId={chatId} />}</div>
+      </main>
     </div>
   );
 }

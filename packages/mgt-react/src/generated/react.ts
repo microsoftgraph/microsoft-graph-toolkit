@@ -203,6 +203,10 @@ export type PickerProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type SpinnerProps = {
+	mediaQuery?: ComponentMediaQuery;
+}
+
 export type TasksProps = {
 	res?: TasksStringResource;
 	isNewTaskVisible?: boolean;
@@ -270,6 +274,8 @@ export const Person = wrapMgt<PersonProps>('person');
 export const PersonCard = wrapMgt<PersonCardProps>('person-card');
 
 export const Picker = wrapMgt<PickerProps>('picker');
+
+export const Spinner = wrapMgt<SpinnerProps>('spinner');
 
 export const Tasks = wrapMgt<TasksProps>('tasks');
 

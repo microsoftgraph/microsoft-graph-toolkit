@@ -1,1 +1,3 @@
-export { default as MgtChat } from './MgtChat/MgtChat';
+import { Chat } from './Chat/Chat';
+
+export { Chat };
