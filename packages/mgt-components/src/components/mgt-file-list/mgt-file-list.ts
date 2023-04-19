@@ -670,11 +670,10 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    * @memberof mgtFileList
    */
   protected renderFiles(): TemplateResult {
-    let files = this._isCompact ? this.files.slice(0, 3) : this.files;
+    const files = this._isCompact ? this.files.slice(0, 3) : this.files;
     const classes = classMap({
       compact: this._isCompact,
-      'file-list-wrapper': true,
-      fullView: this._isFullView
+      'file-list-wrapper': true
     });
     return html`
       <div id="file-list-wrapper" class=${classes} dir=${this.direction}>

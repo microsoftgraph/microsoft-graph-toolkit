@@ -50,9 +50,8 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   flex-direction: column;
   border-radius: 8px;
 
-  &.compact,
-  &.fullView {
-    padding-inline: 10px;
+  &.compact {
+    padding-inline: 20px;
   }
   .title {
     font-size: 14px;
