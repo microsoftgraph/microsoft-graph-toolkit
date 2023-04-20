@@ -1271,7 +1271,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private renderAssignedPeople(task: ITask) {
     let assignedPeopleHTML = null;
-    let assignedGroup: string;
+    let assignedGroupId: string;
 
     const taskAssigneeClasses = {
       NewTaskAssignee: task === null,
@@ -1298,11 +1298,11 @@ export class MgtTasks extends MgtTemplatedComponent {
       const planId = task?._raw?.planId;
       if (planId) {
         const group = this._groups.filter(group => group.id === planId);
-        assignedGroup = group.pop()?.containerId;
+        assignedGroupId = group.pop()?.containerId;
       }
     }
 
-    const planGroupId = this.isNewTaskVisible ? this._newTaskContainerId : assignedGroup;
+    const planGroupId = this.isNewTaskVisible ? this._newTaskContainerId : assignedGroupId;
 
     assignedPeopleHTML = html`
       <mgt-people
