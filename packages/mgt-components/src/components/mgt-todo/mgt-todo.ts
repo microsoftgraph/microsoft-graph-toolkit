@@ -111,7 +111,6 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.addEventListener('selectionChanged', this.handleSelectionChanged);
   }
 
@@ -261,11 +260,10 @@ export class MgtTodo extends MgtTasksBase {
    * @memberof MgtTodo
    */
 
-  protected handleSelectionChanged = async (e: CustomEvent) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  protected handleSelectionChanged = (e: CustomEvent<TodoTaskList>) => {
     const list: TodoTaskList = e.detail;
     this.currentList = list;
-    await this.loadTasks(list);
+    void this.loadTasks(list);
   };
 
   /**
