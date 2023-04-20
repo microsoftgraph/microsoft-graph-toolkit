@@ -9,9 +9,11 @@
 @import '../../../styles/shared-sass-variables.scss';
 @import './mgt-file-upload.theme.scss';
 
-
 $file-upload-button-border: var(--file-upload-button-border, none);
-$file-upload-dialog-replace-button-border: var(--file-upload-dialog-replace-button-border, 1px solid var(--neutral-foreground-rest));
+$file-upload-dialog-replace-button-border: var(
+  --file-upload-dialog-replace-button-border,
+  1px solid var(--neutral-foreground-rest)
+);
 $file-upload-dialog-keep-both-button-border: var(--file-upload-dialog-keep-both-button-border, none);
 $file-upload-dialog-border: var(--file-upload-dialog-border, 1px solid var(--neutral-fill-rest));
 $file-upload-dialog-width: var(--file-upload-dialog-width, auto);
@@ -165,7 +167,8 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
 }
 
 :host .file-upload-Template {
-  clear: both;
+  display: flex;
+  flex-direction: row;
 
   .file-upload-folder-tab {
     padding-inline-start: 20px;
@@ -236,8 +239,8 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
   }
 }
 
-[dir="rtl"] {
-  :host .file-upload-status{
+[dir='rtl'] {
+  :host .file-upload-status {
     left: 0px;
     right: 28px;
   }

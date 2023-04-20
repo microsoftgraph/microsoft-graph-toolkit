@@ -275,7 +275,6 @@ interface FileWithPath extends File {
  * @cssprop --file-upload-dialog-height - {String} the height of the file upload dialog box. Default value is auto.
  * @cssprop --file-upload-dialog-padding - {String} the padding of the file upload dialog box. Default value is 24px;
  */
-
 @customElement('file-upload')
 export class MgtFileUpload extends MgtBaseComponent {
   /**
@@ -315,7 +314,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @type {MgtFileUploadItem[]}
    * @memberof MgtFileUpload
    */
-  @property({ type: Object })
+  @property({ type: Object, attribute: null })
   public get filesToUpload(): MgtFileUploadItem[] {
     return this._filesToUpload;
   }
@@ -433,11 +432,19 @@ export class MgtFileUpload extends MgtBaseComponent {
         ${
           // slice used here to create new array on each render to ensure that file-upload-progress re-renders as the data changes
           !this.hideInlineProgress
-            ? mgtHtml`<mgt-file-upload-progress .progressItems=${this.filesToUpload.slice()} ></mgt-file-upload-progress>`
+            ? mgtHtml`
+              <mgt-file-upload-progress
+                .progressItems=${this.filesToUpload.slice()}
+                @clearnotification=${this.clearUploadNotification}
+              ></mgt-file-upload-progress>`
             : nothing
         }
        `;
   }
+
+  private clearUploadNotification = (event: CustomEvent<MgtFileUploadItem>) => {
+    this.filesToUpload = this.filesToUpload.filter(item => item !== event.detail);
+  };
 
   // TODO: remove these event listeners when component is disconnected
   // TODO: only add eventlistners we don't have them already

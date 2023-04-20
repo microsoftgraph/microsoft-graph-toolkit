@@ -22,6 +22,8 @@ registerFluentComponents(fluentProgress);
 /**
  * Component used to render progress of file upload
  *
+ * @fires {CustomEvent<MgtFileUploadItem>} clearnotification - Fired when notification is cleared
+ *
  * @export
  * @class mgt-component
  * @extends {MgtTemplatedComponent}
@@ -142,7 +144,9 @@ export class MgtFileUploadProgress extends MgtTemplatedComponent {
       description: fileItem.fieldUploadResponse === 'description'
     });
 
-    const completedTemplate = !fileItem.completed ? this.renderFileUploadTemplate(fileItem) : nothing;
+    const completedTemplate = !fileItem.completed
+      ? this.renderFileUploadTemplate(fileItem)
+      : this.renderCompletedUploadButton(fileItem);
 
     return mgtHtml`
         <div class="${completed}">
@@ -208,8 +212,28 @@ export class MgtFileUploadProgress extends MgtTemplatedComponent {
     `;
   }
 
+  private renderCompletedUploadButton(fileItem: MgtFileUploadItem) {
+    const ariaLabel = `${strings.clearNotification} ${fileItem.file.name}`;
+    return html`
+      <span class="file-upload-cell">
+        <fluent-button
+          part="file-upload-remove"
+          appearance="stealth"
+          aria-label=${ariaLabel}
+          @click=${() => this.removeNotification(fileItem)}
+        >
+          ${getSvg(SvgIcon.Cancel)}
+        </fluent-button>
+      </span>
+    `;
+  }
+
+  private removeNotification(fileItem: MgtFileUploadItem) {
+    this.fireCustomEvent('clearnotification', fileItem);
+  }
+
   /**
-   * Function delete existing file upload sessions
+   * Function to delete existing file upload sessions
    *
    * @param fileItem
    */
@@ -240,13 +264,11 @@ export class MgtFileUploadProgress extends MgtTemplatedComponent {
    * @param fileUpload
    */
   protected setUploadFail(fileUpload: MgtFileUploadItem, errorMessage: string) {
-    setTimeout(() => {
-      fileUpload.iconStatus = getSvg(SvgIcon.Fail);
-      fileUpload.view = ViewType.twolines;
-      fileUpload.driveItem.description = errorMessage;
-      fileUpload.fieldUploadResponse = 'description';
-      fileUpload.completed = true;
-      void super.requestStateUpdate(true);
-    }, 500);
+    fileUpload.iconStatus = getSvg(SvgIcon.Fail);
+    fileUpload.view = ViewType.twolines;
+    fileUpload.driveItem.description = errorMessage;
+    fileUpload.fieldUploadResponse = 'description';
+    fileUpload.completed = true;
+    void super.requestStateUpdate(true);
   }
 }

@@ -231,7 +231,6 @@ class MgtFileListComposite extends MgtFileListBase {
         ${this.renderNewFolderDialog()}
         ${this.renderRenameDialog()}
         ${this.renderShareDialog()}
-        ${this.renderUploadProgress()}
       </div>
     `;
   }
@@ -263,6 +262,7 @@ class MgtFileListComposite extends MgtFileListBase {
         `
         )}
         ${this.enableFileUpload ? this.renderFileUpload() : nothing}
+        ${this.enableFileUpload ? this.renderUploadProgress() : nothing}
       </div>
 `;
   }
@@ -299,9 +299,18 @@ class MgtFileListComposite extends MgtFileListBase {
 
   private renderUploadProgress(): TemplateResult | typeof nothing {
     return this.fileUploadData?.length > 0
-      ? mgtHtml`<mgt-file-upload-progress .progressItems=${this.fileUploadData} ></mgt-file-upload-progress>`
+      ? mgtHtml`
+        <mgt-file-upload-progress
+          .progressItems=${this.fileUploadData}
+          @clearnotification=${this.clearUploadNotification}
+        ></mgt-file-upload-progress>`
       : nothing;
   }
+
+  private clearUploadNotification = (e: CustomEvent<MgtFileUploadItem>) => {
+    const uploadComponent = this.renderRoot.querySelector<MgtFileUpload>('mgt-file-upload');
+    uploadComponent.filesToUpload = uploadComponent.filesToUpload.filter(f => f !== e.detail);
+  };
 
   private renderFiles() {
     return this.useGridView
