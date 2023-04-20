@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
-  title: 'Components | mgt-person',
+  title: 'Components / mgt-person',
   component: 'person',
   decorators: [withCodeEditor],
   parameters: {
