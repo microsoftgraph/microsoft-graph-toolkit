@@ -6,8 +6,8 @@
  */
 
 import { html } from 'lit-element';
+import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 import { versionInfo } from '../versionInfo';
-import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
   parameters: {
