@@ -131,7 +131,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected get input(): HTMLInputElement {
-    return this.renderRoot.querySelector('fluent-text-field') as HTMLInputElement;
+    return this.renderRoot.querySelector('fluent-text-field');
   }
 
   /**
@@ -576,7 +576,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private defaultPeople: IDynamicPerson[];
 
   // tracking of user arrow key input for selection
-  @state() private _arrowSelectionCount: number = -1;
+  @state() private _arrowSelectionCount = -1;
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
@@ -1398,7 +1398,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Handles input from the key up events on the keyboard.
    */
-  private onUserKeyUp(event: KeyboardEvent): void {
+  private onUserKeyUp = (event: KeyboardEvent): void => {
     const keyName = event.key;
     const isCmdOrCtrlKey = event.getModifierState('Control') || event.getModifierState('Meta');
     const isPaste = isCmdOrCtrlKey && keyName === 'v';
@@ -1446,7 +1446,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       return;
     }
-  }
+  };
 
   private onUserInput = (event: InputEvent) => {
     const input = event.target as HTMLInputElement;
@@ -1515,7 +1515,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    *
    * @param event - event tracked on user input (keydown)
    */
-  private onUserKeyDown(event: KeyboardEvent): void {
+  private onUserKeyDown = (event: KeyboardEvent): void => {
     const keyName = event.key;
     const selectedList = this.renderRoot.querySelector('.selected-list');
     const isCmdOrCtrlKey = event.getModifierState('Control') || event.getModifierState('Meta');
@@ -1596,7 +1596,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.handleAnyEmail();
       }
     }
-  }
+  };
 
   /**
    * Gets the text of the highlighed people and writes it to the clipboard
@@ -1758,7 +1758,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
 
       for (const person of peopleList?.children) {
-        let p = person as HTMLElement;
+        const p = person as HTMLElement;
         p.setAttribute('aria-selected', 'false');
         p.blur();
         p.removeAttribute('tabindex');

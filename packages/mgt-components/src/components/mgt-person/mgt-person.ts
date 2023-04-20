@@ -171,7 +171,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -231,6 +231,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   /**
    * determines person component avatar size and apply presence badge accordingly.
    * Default is "auto". When you set the view > 1, it will default to "auto".
+   *
    * @type {AvatarSize}
    */
   @property({

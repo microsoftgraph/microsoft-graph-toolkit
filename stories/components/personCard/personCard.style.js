@@ -26,28 +26,37 @@ export const darkTheme = () => html`
 export const customCSSProperties = () => html`
   <style>
     mgt-person-card {
-      --person-card-display-name-font-size: 40px;
-      --person-card-display-name-color: #ffffff;
-      --person-card-title-font-size: 20px;
-      --person-card-title-color: #ffffff;
-      --person-card-subtitle-font-size: 10px;
-      --person-card-subtitle-color: #ffffff;
-      --person-card-details-title-font-size: 10px;
-      --person-card-details-title-color: #b3bf0a;
-      --person-card-details-item-font-size: 20px;
-      --person-card-details-item-color: #3abf0a;
-      --person-card-background-color: pink;
-      --person-card-contact-link-color: red;
-      --person-card-contact-link-hover-color:green;
-      --person-card-show-more-color: red;
-      --person-card-show-more-hover-color: green;
-      --person-card-base-links-color: red;
-      --person-card-base-links-hover-color: green;
-      --person-card-tab-nav-color: red;
-      --person-card-active-org-member-color: red;
       --person-card-nav-back-arrow-hover-color: green;
-      --person-card-nav-back-arrow-color: red;
+      --person-card-icon-color: red;
+      --person-card-line1-font-size: 30px;
+      --person-card-line1-font-weight: 800;
+      --person-card-line1-line-height: 38px;
+      --person-card-line2-font-size: 24px;
+      --person-card-line2-font-weight: 600;
+      --person-card-line2-line-height: 30px;
+      --person-card-line3-font-size: 24px;
+      --person-card-line3-font-weight: 300;
+      --person-card-line3-line-height: 29px;
+      --person-card-avatar-size: 85px;
+      --person-card-details-left-spacing: 25px;
+      --person-card-avatar-top-spacing: 25px;
+      --person-card-details-bottom-spacing: 20px;
+      --person-card-background-color: pink;
+      --person-card-expanded-background-color-hover: blue;
+      --person-card-icon-hover-color: magenta;
+      --person-card-show-more-color: blue;
+      --person-card-show-more-hover-color: green;
+      --person-card-fluent-background-color: yellow;
+      --person-card-line1-text-color: purple;
+      --person-card-line2-text-color: blue;
+      --person-card-line3-text-color: green;
+      --person-card-fluent-background-color-hover: orange;
+      --organization-active-org-member-target-background-color: blue;
+      --file-list-background-color: pink;
+      --file-item-background-color: pink;
+      --person-card-base-icons-left-spacing: 110px
     }
+
   </style>
   <mgt-person-card person-query="me"></mgt-person-card>
 `;

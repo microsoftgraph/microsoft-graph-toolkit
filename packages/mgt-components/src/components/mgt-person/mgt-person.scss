@@ -16,7 +16,9 @@ $person-avatar-size: var(--person-avatar-size, 24px);
 $person-avatar-border: var(--person-avatar-border, none);
 $person-avatar-border-radius: var(--person-avatar-border-radius, 50%);
 
-$person-details-spacing: var(--person-details-spacing, 12px);
+$person-details-left-spacing: var(--person-details-left-spacing, 12px);
+$person-details-bottom-spacing: var(--person-details-bottom-spacing, 0px);
+$person-avatar-top-spacing: var(--person-avatar-top-spacing, 0px);
 
 $person-line1-font-size: var(--person-line1-font-size, #{ms-font-size-14});
 $person-line1-font-weight: var(--person-line1-font-weight, 600);
@@ -56,7 +58,8 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     }
   }
 
-  .person-root {
+  .person-root,
+  mgt-person .person-root {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -82,7 +85,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
     &.threelines,
     &.large {
-      --person-avatar-size: 56px;
+      --person-avatar-size: var(--person-avatar-size-3-lines, 56px);
     }
 
     &.fourlines {
@@ -107,6 +110,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
         height: 100%;
         width: 100%;
         border-radius: $person-avatar-border-radius;
+        margin-block-start: $person-avatar-top-spacing;
       }
 
       .initials,
@@ -121,7 +125,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       }
 
       .presence-wrapper {
-        bottom: 0;
+        bottom: var(--person-presence-wrapper-bottom, 0);
         right: 0;
         position: absolute;
         border-radius: 50%;
@@ -139,9 +143,9 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     .details-wrapper {
       display: flex;
       flex-direction: column;
-      margin-inline-start: $person-details-spacing;
+      margin-inline-start: $person-details-left-spacing;
       align-items: flex-start;
-      justify-content: center;
+      margin-block-end: $person-details-bottom-spacing;
 
       &.vertical {
         justify-content: center;

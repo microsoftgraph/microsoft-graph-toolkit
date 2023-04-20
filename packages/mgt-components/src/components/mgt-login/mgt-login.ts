@@ -124,7 +124,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     attribute: 'show-presence',
     type: Boolean
   })
-  public showPresence: boolean = false;
+  public showPresence = false;
 
   /**
    * Determines the view style to apply to the logged in user
@@ -643,7 +643,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @private
    * @memberof MgtLogin
    */
-  private onClick(): void {
+  private onClick = (): void => {
     if (this.userDetails && this._isFlyoutOpen) {
       this.hideFlyout();
     } else if (this.userDetails) {
@@ -651,5 +651,5 @@ export class MgtLogin extends MgtTemplatedComponent {
     } else {
       void this.login();
     }
-  }
+  };
 }
