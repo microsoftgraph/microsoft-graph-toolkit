@@ -937,7 +937,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected renderSearchResults(people: IDynamicPerson[]) {
     const filteredPeople = people.filter(person => person.id);
-
     return html`
       <ul
         id="suggestions-list"
@@ -950,14 +949,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            filteredPeople,
            person => person.id,
            person => {
+             const lineTwo = person.jobTitle || (person as User).mail;
+             const ariaLabel = `${this.strings.suggestedContact} ${person.displayName} ${lineTwo}`;
              return html`
                <li
                 id="${person.id}"
-                aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
+                aria-label="${ariaLabel}"
                 class="list-person"
                 role="option"
                 @click="${e => this.handleSuggestionClick(person)}">
-                 ${this.renderPersonResult(person)}
+                  ${this.renderPersonResult(person)}
                </li>
              `;
            }
