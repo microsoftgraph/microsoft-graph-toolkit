@@ -142,7 +142,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   }
 
   private _queryString: string;
-  private _entityTypes: string[] = ['driveItem', 'listItem', 'site'];
 
   /**
    * The query to send to Microsoft Search
@@ -191,12 +190,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     },
     type: String
   })
-  public get entityTypes(): string[] {
-    return this._entityTypes;
-  }
-  public set entityTypes(value) {
-    this._entityTypes = value;
-  }
+  public entityTypes: string[] = ['driveItem', 'listItem', 'site'];
 
   /**
    * The scopes to request

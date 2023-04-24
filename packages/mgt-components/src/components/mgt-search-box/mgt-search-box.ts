@@ -86,19 +86,13 @@ class MgtSearchBox extends MgtBaseComponent {
     type: Number,
     reflect: true
   })
-  public get debounceDelay() {
-    return this._debounceDelay;
-  }
-  public set debounceDelay(value) {
-    this._debounceDelay = value;
-  }
-
-  private _debounceDelay: number = 300;
+  public debounceDelay: number;
   private _searchTerm: string = '';
   private debouncedSearchTermChanged;
 
   constructor() {
     super();
+    this.debounceDelay = 300;
   }
   /**
    * Renders the component
@@ -111,7 +105,7 @@ class MgtSearchBox extends MgtBaseComponent {
       <fluent-search
         class="search-term-input"
         appearance="outline"
-        value=${this.searchTerm ?? this.searchTerm}
+        value=${this.searchTerm ?? ''}
         placeholder=${this.placeholder ? this.placeholder : strings.placeholder}
         title=${this.title ? this.title : strings.title}
         @input=${this.onInputChanged}

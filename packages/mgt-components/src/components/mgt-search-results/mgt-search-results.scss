@@ -8,13 +8,14 @@ $answer-box-shadow: var(
 );
 $answer-border: var(--answer-border, none);
 $answer-padding: var(--answer-padding, 10px);
+$font-family: var(--default-font-family);
 
 .search-results {
   scroll-margin: 100px;
 }
 
 .search-result-grid {
-  font-family: var(--default-font-family);
+  font-family: $font-family;
   font-size: 14px;
   margin: 16px 4px;
   display: grid;
