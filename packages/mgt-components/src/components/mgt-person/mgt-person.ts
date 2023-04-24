@@ -8,6 +8,7 @@
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
+import { ifDefined } from 'lit-html/directives/if-defined';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
@@ -586,7 +587,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       };
 
       personTemplate = html`
-        <div class=${classMap(rootClasses)} tabindex="0">
+        <div 
+          class=${classMap(rootClasses)}
+          tabindex=${ifDefined(this.personCardInteraction === PersonCardInteraction.click ? '0' : undefined)}
+        >
           ${imageWithPresenceTemplate} ${detailsTemplate}
         </div>
       `;
