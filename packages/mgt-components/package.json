@@ -27,7 +27,7 @@
     "build": "npm-run-all clean build:compile",
     "build:compile": "npm-run-all sass compile",
     "build:watch": "npm-run-all -p sass:watch compile:watch",
-    "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
+    "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo && shx rm 'src/**/*-css.ts' || shx true",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
