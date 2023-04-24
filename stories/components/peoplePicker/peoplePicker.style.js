@@ -43,6 +43,11 @@ export const customCssProperties = () => html`
     --color-sub1: white;
     --placeholder-color: whitesmoke; /* placeholder text color */
     --placeholder-color--focus: black ; /* placeholder text focus color */
+
+    --people-picker-flyout-line1-text-font-size: 28px;
+    --people-picker-flyout-line1-text-font-weight: 500;
+    --people-picker-flyout-line2-text-font-size: 24px;
+    --people-picker-flyout-line2-text-font-weight: 600;
   }
 </style>
 `;

@@ -91,6 +91,11 @@ interface IFocusable {
  * @cssprop --placeholder-color--focus - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
+ * @cssprop --people-picker-flyout-line1-text-font-size - {String} the font size of the line 1 text on the flyout results. Default is 14px.
+ * @cssprop --people-picker-flyout-line1-text-font-weight - {String} the font weight of the line 1 text on the flyout results. Default is normal.
+ * @cssprop --people-picker-flyout-line2-text-font-size - {String} the font size of the line 2 text on the flyout results. Default is 12px.
+ * @cssprop --people-picker-flyout-line2-text-font-weight - {String} the font weight of the line 2 text on the flyout results. Default is normal.
+ *
  */
 @customElement('people-picker')
 // @customElement('mgt-people-picker')
@@ -364,6 +369,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!value) value = [];
     if (!arraysAreEqual(this._selectedPeople, value)) {
       this._selectedPeople = value;
+      this.requestUpdate();
     }
   }
 
@@ -962,21 +968,25 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         id="suggestions-list"
         aria-label="${this.strings.suggestedContacts}"
         class="people-list"
-        role="listbox">
-          ${repeat(
-            filteredPeople,
-            person => person.id,
-            person => html`
-              <li
-              id="${person.id}"
-              aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
-              class="list-person"
-              role="option"
-              @click="${e => this.handleSuggestionClick(person)}">
-                ${this.renderPersonResult(person)}
-              </li>
-            `
-          )}
+        role="listbox"
+        aria-live="polite"
+      >
+         ${repeat(
+           filteredPeople,
+           person => person.id,
+           person => {
+             return html`
+               <li
+                id="${person.id}"
+                aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
+                class="list-person"
+                role="option"
+                @click="${e => this.handleSuggestionClick(person)}">
+                 ${this.renderPersonResult(person)}
+               </li>
+             `;
+           }
+         )}
        </ul>
      `;
   }

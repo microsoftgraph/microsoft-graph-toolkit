@@ -427,6 +427,7 @@ mgt-person .person-root {
       border: $avatar-border;
       border-radius: $avatar-border-radius;
       position: relative;
+      box-sizing: border-box;
 
       img {
         position: absolute;
