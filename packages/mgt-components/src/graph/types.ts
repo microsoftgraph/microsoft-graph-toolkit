@@ -69,6 +69,6 @@ export enum ViewType {
 }
 
 /**
- *  postion describes the position of the dropdown
+ * Postion describes the position of the dropdown
  */
 export type Position = 'above' | 'below';

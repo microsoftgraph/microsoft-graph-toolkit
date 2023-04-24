@@ -14,6 +14,7 @@ import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import '../../styles/style-helper';
+import { DataChangedDetail } from '../mgt-get/mgt-get';
 
 registerFluentComponents(fluentCombobox, fluentOption);
 
@@ -101,7 +102,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     attribute: 'version',
     type: String
   })
-  public version: string = 'beta';
+  public version = 'beta';
 
   /**
    * A placeholder for the picker.
@@ -150,7 +151,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   public set defaultSelectedTermId(value: string) {
     if (value !== this._defaultSelectedTermId) {
       this._defaultSelectedTermId = value;
-      this.requestStateUpdate(true);
+      void this.requestStateUpdate(true);
     }
   }
 
@@ -194,7 +195,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     attribute: 'cache-enabled',
     type: Boolean
   })
-  public cacheEnabled: boolean = false;
+  public cacheEnabled = false;
 
   /**
    * Invalidation period of the cache for the responses in milliseconds.
@@ -206,7 +207,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     attribute: 'cache-invalidation-period',
     type: Number
   })
-  public cacheInvalidationPeriod: number = 0;
+  public cacheInvalidationPeriod = 0;
 
   private isRefreshing: boolean;
   private _selectedTerm: TermStore.Term;
@@ -214,7 +215,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
 
   @state() private terms: TermStore.Term[];
   @state() private noTerms: boolean;
-  @state() private error: any;
+  @state() private error: object;
 
   constructor() {
     super();
@@ -236,7 +237,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     if (hardRefresh) {
       this.clearState();
     }
-    this.requestStateUpdate(hardRefresh);
+    void this.requestStateUpdate(hardRefresh);
   }
 
   /**
@@ -309,7 +310,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
       this.renderTemplate('error', null, 'error') ||
       html`
               <span>
-                ${this.error.message}
+                ${this.error}
             </span>
           `
     );
@@ -360,7 +361,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     const selected: boolean = this.defaultSelectedTermId && this.defaultSelectedTermId === term.id;
 
     return html`
-        <fluent-option value=${term.id} ?selected=${selected} @click=${e => this.handleClick(e, term)}> ${
+        <fluent-option value=${term.id} ?selected=${selected} @click=${(e: MouseEvent) => this.handleClick(e, term)}> ${
       this.renderTemplate('term', { term }, term.id) || term.labels[0].name
     } </fluent-option>
         `;
@@ -383,7 +384,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
             `;
     }
 
-    let resource: string = `/termStore/sets/${this.termsetId}/children`;
+    let resource = `/termStore/sets/${this.termsetId}/children`;
 
     // if both termsetId and termId are specified, then set resource to /termStore/sets/{termsetId}/terms/{termId}/children
     if (this.termId) {
@@ -417,14 +418,16 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    */
   protected async loadState() {
     if (!this.terms) {
-      let parent = this.renderRoot.querySelector('mgt-get');
-      parent.addEventListener('dataChange', (e): void => this.handleDataChange(e));
+      const parent = this.renderRoot.querySelector('mgt-get');
+      parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
     }
     this.isRefreshing = false;
+    // hack to maintain method signature contract
+    await Promise.resolve();
   }
 
-  private handleDataChange(e: any): void {
-    let error = e.detail.error ? e.detail.error : null;
+  private handleDataChange(e: CustomEvent<DataChangedDetail>): void {
+    const error = e.detail.error ? e.detail.error : null;
 
     if (error) {
       this.error = error;
@@ -436,18 +439,18 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
       this.locale = this.locale.toLowerCase();
     }
 
-    let response = e.detail.response.value;
+    const response = e.detail.response.value;
 
     // if response is not null and has values, if locale is specified, then
     // get the label in response that has languageTag equal to locale and make it the first label and append the rest of the labels
 
-    let terms = response.map((item: TermStore.Term) => {
-      let labels = item.labels;
+    const terms = response.map((item: TermStore.Term) => {
+      const labels = item.labels;
       if (labels && labels.length > 0) {
         if (this.locale) {
-          let label = labels.find(label => label.languageTag.toLowerCase() === this.locale);
+          const label = labels.find(l => l.languageTag.toLowerCase() === this.locale);
           if (label) {
-            item.labels = [label, ...labels.filter(label => label.languageTag.toLowerCase() !== this.locale)];
+            item.labels = [label, ...labels.filter(l => l.languageTag.toLowerCase() !== this.locale)];
           }
         }
       }
