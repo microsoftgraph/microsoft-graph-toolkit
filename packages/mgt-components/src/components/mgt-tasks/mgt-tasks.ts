@@ -21,7 +21,6 @@ import {
 } from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
-import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 import { getMe } from '../../graph/graph.user';
@@ -145,55 +144,43 @@ const plannerAssignment = {
  * @fires {CustomEvent<ITask>} taskClick - Fires when the user clicks or taps on a task.
  * @fires {CustomEvent<ITask>} taskRemoved - Fires when an existing task has been deleted.
  *
- * @cssprop --tasks-header-padding - {String} Tasks header padding
- * @cssprop --tasks-header-margin - {String} Tasks header margin
- * @cssprop --tasks-title-padding - {String} Tasks title padding
- * @cssprop --tasks-plan-title-font-size - {Length} Tasks plan title font size
- * @cssprop --tasks-plan-title-padding - {String} Tasks plan title padding
- * @cssprop --tasks-new-button-width - {String} Tasks new button width
- * @cssprop --tasks-new-button-height - {String} Tasks new button height
- * @cssprop --tasks-new-button-color - {Color} Tasks new button color
- * @cssprop --tasks-new-button-background - {String} Tasks new button background
- * @cssprop --tasks-new-button-border - {String} Tasks new button border
- * @cssprop --tasks-new-button-hover-background - {Color} Tasks new button hover background
- * @cssprop --tasks-new-button-active-background - {Color} Tasks new button active background
- * @cssprop --tasks-new-task-name-margin - {String} Tasks new task name margin
- * @cssprop --task-margin - {String} Task margin
- * @cssprop --task-box-shadow - {String} Task box shadow
- * @cssprop --task-background - {Color} Task background
- * @cssprop --task-border - {String} Task border
- * @cssprop --task-header-color - {Color} Task header color
- * @cssprop --task-header-margin - {String} Task header margin
- * @cssprop --task-detail-icon-margin -{String}  Task detail icon margin
- * @cssprop --task-new-margin - {String} Task new margin
- * @cssprop --task-new-border - {String} Task new border
- * @cssprop --task-new-line-margin - {String} Task new line margin
- * @cssprop --tasks-new-line-border - {String} Tasks new line border
- * @cssprop --task-new-input-margin - {String} Task new input margin
- * @cssprop --task-new-input-padding - {String} Task new input padding
- * @cssprop --task-new-input-font-size - {Length} Task new input font size
- * @cssprop --task-new-input-active-border - {String} Task new input active border
- * @cssprop --task-new-select-border - {String} Task new select border
- * @cssprop --task-new-add-button-background - {Color} Task new add button background
- * @cssprop --task-new-add-button-disabled-background - {Color} Task new add button disabled background
- * @cssprop --task-new-cancel-button-color - {Color} Task new cancel button color
- * @cssprop --task-complete-background - {Color} Task complete background
- * @cssprop --task-complete-border - {String} Task complete border
- * @cssprop --task-complete-header-color - {Color} Task complete header color
- * @cssprop --task-complete-detail-color - {Color} Task complete detail color
- * @cssprop --task-complete-detail-icon-color - {Color} Task complete detail icon color
- * @cssprop --tasks-background-color - {Color} Task background color
- * @cssprop --task-icon-alignment - {String} Task icon alignment
- * @cssprop --task-icon-background - {Color} Task icon color
- * @cssprop --task-icon-background-completed - {Color} Task icon background color when completed
- * @cssprop --task-icon-border - {String} Task icon border styles
- * @cssprop --task-icon-border-completed - {String} Task icon border style when task is completed
- * @cssprop --task-icon-border-radius - {String} Task icon border radius
- * @cssprop --task-icon-color - {Color} Task icon color
- * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
+ * @cssprop --tasks-header-padding - {String} Tasks header padding. Default is 0 0 14px 0.
+ * @cssprop --tasks-header-margin - {String} Tasks header margin. Default is none.
+ * TODO: add header font-size and font-weight.
+ *
+ * @cssprop --tasks-new-button-width - {String} Tasks new button width. Default is none.
+ * @cssprop --tasks-new-button-height - {String} Tasks new button height. Default is none
+ * @cssprop --tasks-new-button-text-color - {Color} Tasks new button text color.
+ * @cssprop --tasks-new-button-text-font-weight - {Color} Tasks new button text font weight. Default is 700.
+ * @cssprop --tasks-new-button-background - {String} Tasks new button background.
+ * @cssprop --tasks-new-button-border - {String} Tasks new button border. Default is none.
+ * @cssprop --tasks-new-button-background-hover - {Color} Tasks new button hover background.
+ * @cssprop --tasks-new-button-background-active - {Color} Tasks new button active background.
+ * TODO: Add other tokens for the addition of a task section.
+ *
+ * @cssprop --task-complete-checkbox-background-color - {Color} A completed task checkbox background color.
+ * @cssprop --task-complete-checkbox-text-color - {Color} A completed task checkbox check color.
+ * @cssprop --task-incomplete-checkbox-background-color - {Color} A incompleted task checkbox background color.
+ * @cssprop --task-incomplete-checkbox-background-hover-color - {Color} A incompleted task checkbox background color.
+ *
+ * @cssprop --task-title-text-font-size - {Length} Task title text font size. Default is medium.
+ * @cssprop --task-title-text-font-weight - {Length} Task title text font weight. Default is 600.
+ * @cssprop --task-complete-title-text-color - {Length} Task title color for a complete task.
+ * @cssprop --task-incomplete-title-text-color - {Length} Task title color for an incomplete task.
+ *
+ * @cssprop --task-icons-width - {Length} The icons in a task width size. Default is 20px;
+ * @cssprop --task-icons-height - {Length} The icons in a task height size. Default is 20px;
+ * @cssprop --task-icons-background-color - {Color} The icons in a task color background color.
+ * @cssprop --task-icons-text-font-color - {Color} The text beside icons in a task color background color.
+ * @cssprop --task-icons-text-font-size - {Color} The font size of the text beside icons in a task. Default is 12px.
+ * @cssprop --task-icons-text-font-weight - {Color} The font weight of the text beside icons in a task. Default is 600.
+ *
+ * TODO: Add tokens for complete and incomplete tasks
+ * @cssprop --task-background-color - {Color} The background color of a task.
+ *
  */
+
 @customElement('tasks')
-// @customElement('mgt-tasks')
 export class MgtTasks extends MgtTemplatedComponent {
   /**
    * determines whether todo, or planner functionality for task component
