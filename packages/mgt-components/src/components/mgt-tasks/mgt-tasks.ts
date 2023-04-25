@@ -178,8 +178,15 @@ const plannerAssignment = {
  * @cssprop --task-icons-text-font-size - {Color} The font size of the text beside icons in a task. Default is 12px.
  * @cssprop --task-icons-text-font-weight - {Color} The font weight of the text beside icons in a task. Default is 600.
  *
- * TODO: Add tokens for complete and incomplete tasks
- * @cssprop --task-background-color - {Color} The background color of a task.
+ * @cssprop --task-complete-background-color - {Color} The background color of a task that is complete.
+ * @cssprop --task-incomplete-background-color - {Color} The background color of a task that is incomplete.
+ * @cssprop --task-complete-border - {Length} The border of a task that is complete.  Default is 2px dotted var(--neutral-fill-strong-rest).
+ * @cssprop --task-incomplete-border - {Length} The border of a task that is incomplete. Default is 1px solid var(--neutral-fill-strong-rest).
+ * @cssprop --task-complete-border-radius - {Length} The border radius of a task that is incomplete. Default is 4px.
+ * @cssprop --task-incomplete-border-radius - {Length} The border radius of a task that is incomplete. Default is 4px.
+ * @cssprop --task-complete-padding - {Length} The padding of a task that is complete. Default is 10px.
+ * @cssprop --task-incomplete-padding - {Length} The padding of a task that is incomplete. Default is 10px.
+ * @cssprop --task-gap - {Length} The size of the gap between two tasks. Default is 4px.
  *
  */
 

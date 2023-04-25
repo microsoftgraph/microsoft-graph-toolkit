@@ -18,7 +18,6 @@
 @import '../../styles/shared-styles.scss';
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
-$task-border-completed: var(--task-complete-border, 2px dotted inherit);
 $tasks-header-padding: var(--tasks-header-padding, 0 0 14px 0);
 $tasks-header-margin: var(--tasks-header-margin, none);
 $tasks-header-text-font-size: var(--tasks-header-font-size, 24px);
@@ -39,8 +38,8 @@ $tasks-new-button-background-active: var(--tasks-new-button-background-active, v
 
 $task-title-text-font-size: var(--task-title-text-font-size, medium);
 $task-title-text-font-weight: var(--task-title-text-font-weight, 600);
-$task-complete-title-text-color: var(--task-complete-title-text-color, var(--neutral-foreground-rest));
-$task-incomplete-title-text-color: var(--task-incomplete-title-text-color, var(var(--neutral-foreground-hint)));
+$task-complete-title-text-color: var(--task-complete-title-text-color, var(--neutral-foreground-hint));
+$task-incomplete-title-text-color: var(--task-incomplete-title-text-color, var(var(--neutral-foreground-rest)));
 
 $task-icons-width: var(--task-icons-width, 20px);
 $task-icons-height: var(--task-icons-height, 20px);
@@ -56,6 +55,16 @@ $task-incomplete-checkbox-hover-bg: var(
   --task-incomplete-checkbox-background-hover-color,
   var(--neutral-fill-input-alt-hover)
 );
+
+$task-complete-bg-color: var(--task-complete-background-color, transparent);
+$task-incomplete-bg-color: var(--task-incomplete-background-color, var(--neutral-layer-1));
+$task-complete-border: var(--task-complete-border, 2px dotted var(--neutral-foreground-active));
+$task-incomplete-border: var(--task-incomplete-border, 1px solid var(--neutral-foreground-active));
+$task-complete-border-radius: var(--task-complete-border-radius, 4px);
+$task-incomplete-border-radius: var(--task-incomplete-border-radius, 4px);
+$task-complete-padding: var(--task-complete-padding, 10px);
+$task-incomplete-padding: var(--task-incomplete-padding, 10px);
+$tasks-gap: var(--tasks-gap, 4px);
 
 :host {
   background-color: var(--neutral-layer-2);
@@ -106,20 +115,23 @@ $task-incomplete-checkbox-hover-bg: var(
     row-gap: 20px;
 
     .Task {
-      background-color: var(--neutral-layer-1);
-      border-radius: 4px;
-      padding: 10px;
       display: flex;
-      column-gap: 4px;
+      column-gap: $tasks-gap;
       align-items: flex-start;
       justify-content: space-between;
 
       &.Complete {
-        border: $task-border-completed;
+        border: $task-complete-border;
+        border-radius: $task-complete-border-radius;
+        background: $task-complete-bg-color;
+        padding: $task-complete-padding;
       }
 
       &.Incomplete {
-        border: 1px dotted var(--neutral-layer-3);
+        border: $task-incomplete-border;
+        border-radius: $task-complete-border-radius;
+        background: $task-incomplete-bg-color;
+        padding: $task-incomplete-padding;
       }
 
       .TaskDetailsContainer {

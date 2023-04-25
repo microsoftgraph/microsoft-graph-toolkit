@@ -56,6 +56,16 @@ export const CustomCSSProperties = () => html`
         --task-icons-text-font-color: burlywood;
         --task-icons-text-font-size: 16px;
         --task-icons-text-font-weight: 400;
+
+        --task-complete-background-color: powderblue;
+        --task-incomplete-background-color: salmon;
+        --task-complete-border: 2px dashed green;
+        --task-incomplete-border: 2px double red;
+        --task-complete-border-radius: 8px;
+        --task-incomplete-border-radius: 12px;
+        --task-complete-padding: 8px;
+        --task-incomplete-padding: 12px;
+        --tasks-gap: 8px;
     }
   </style>
   <mgt-tasks></mgt-tasks>
