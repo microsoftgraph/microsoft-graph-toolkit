@@ -27,9 +27,11 @@ export const customCssProperties = () => html`
 <mgt-people></mgt-people>
 <style>
   mgt-people {
-    --list-margin: 10px 4px 10px 10px; /* Margin for component */
-    --avatar-margin: 20px; /* Margin for each person */
-    --color: pink /* Text color */
+    --people-list-margin: 12px;
+    --people-avatar-gap: 8px;
+    --people-overflow-font-color: orange;
+    --people-overflow-font-size: 16px;
+    --people-overflow-font-weight: 600;
   }
 </style>
 `;
