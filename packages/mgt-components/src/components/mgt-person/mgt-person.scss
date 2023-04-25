@@ -103,6 +103,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       width: $person-avatar-size;
       height: $person-avatar-size;
       position: relative;
+      box-sizing: border-box;
 
       img,
       .initials,

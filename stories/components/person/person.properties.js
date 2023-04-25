@@ -323,13 +323,17 @@ export const moreExamples = () => html`
        --line2-text-transform: uppercase;
      }
 
-     .person-initials {
-       --initials-color: yellow;
-       --initials-background-color: red;
-       --avatar-size: 60px;
-       --avatar-border-radius: 10% 35%;
-     }
-   </style>
+    .person-initials {
+      --initials-color: yellow;
+      --initials-background-color: red;
+      --avatar-size: 60px;
+      --avatar-border-radius: 10% 35%;
+    }
+
+    .person-with-avatar-border {
+      --avatar-border: 2px solid black;
+    }
+  </style>
 
    <div class="example">
      <div>Default person</div>
@@ -372,10 +376,15 @@ export const moreExamples = () => html`
      <mgt-person person-query="me" view="twoLines"></mgt-person>
    </div>
 
-   <div class="example">
-     <div>Style initials (see css tab for style)</div>
-     <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
-   </div>
+  <div class="example">
+    <div>Avatar with border (see css tab for style)</div>
+    <mgt-person class="person-with-avatar-border" person-query="me" avatar-size="large" view="oneline"></mgt-person>
+  </div>
+
+  <div class="example">
+    <div>Style initials (see css tab for style)</div>
+    <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
+  </div>
 
    <div>
      <div>Additional Person properties</div>
