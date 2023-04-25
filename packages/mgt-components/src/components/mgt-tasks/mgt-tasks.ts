@@ -151,12 +151,12 @@ const plannerAssignment = {
  * @cssprop --tasks-header-text-color: {Color} the font color of the tasks header.
  * @cssprop --tasks-header-text-hover-color: {Color} the font color of the tasks header when you hover on it.
  *
- * @cssprop --tasks-new-button-width - {String} Tasks new button width. Default is none.
- * @cssprop --tasks-new-button-height - {String} Tasks new button height. Default is none
+ * @cssprop --tasks-new-button-width - {Length} Tasks new button width. Default is none.
+ * @cssprop --tasks-new-button-height - {Length} Tasks new button height. Default is none
  * @cssprop --tasks-new-button-text-color - {Color} Tasks new button text color.
- * @cssprop --tasks-new-button-text-font-weight - {Color} Tasks new button text font weight. Default is 700.
- * @cssprop --tasks-new-button-background - {String} Tasks new button background.
- * @cssprop --tasks-new-button-border - {String} Tasks new button border. Default is none.
+ * @cssprop --tasks-new-button-text-font-weight - {Length} Tasks new button text font weight. Default is 700.
+ * @cssprop --tasks-new-button-background - {Length} Tasks new button background.
+ * @cssprop --tasks-new-button-border - {Length} Tasks new button border. Default is none.
  * @cssprop --tasks-new-button-background-hover - {Color} Tasks new button hover background.
  * @cssprop --tasks-new-button-background-active - {Color} Tasks new button active background.
  * TODO: Add other tokens for the addition of a task section.
@@ -175,8 +175,8 @@ const plannerAssignment = {
  * @cssprop --task-icons-height - {Length} The icons in a task height size. Default is 20px;
  * @cssprop --task-icons-background-color - {Color} The icons in a task color background color.
  * @cssprop --task-icons-text-font-color - {Color} The text beside icons in a task color background color.
- * @cssprop --task-icons-text-font-size - {Color} The font size of the text beside icons in a task. Default is 12px.
- * @cssprop --task-icons-text-font-weight - {Color} The font weight of the text beside icons in a task. Default is 600.
+ * @cssprop --task-icons-text-font-size - {Length} The font size of the text beside icons in a task. Default is 12px.
+ * @cssprop --task-icons-text-font-weight - {Length} The font weight of the text beside icons in a task. Default is 600.
  *
  * @cssprop --task-complete-background-color - {Color} The background color of a task that is complete.
  * @cssprop --task-incomplete-background-color - {Color} The background color of a task that is incomplete.
