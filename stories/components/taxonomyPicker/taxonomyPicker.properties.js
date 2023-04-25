@@ -26,7 +26,7 @@ export const Position = () => html`
   <mgt-taxonomy-picker term-set-id="138a652e-7f23-46f6-b480-13da2308c235" position="above"></mgt-taxonomy-picker>
 `;
 
-export const DeafultSelectedTermId = () => html`
+export const DefaultSelectedTermId = () => html`
   <mgt-taxonomy-picker term-set-id="138a652e-7f23-46f6-b480-13da2308c235" default-selected-term-id="7ab1d163-f691-4676-88b3-c2d8921b73eb"></mgt-taxonomy-picker>
 `;
 
