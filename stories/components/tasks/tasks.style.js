@@ -26,6 +26,11 @@ export const CustomCSSProperties = () => html`
     mgt-tasks {
         --tasks-header-padding: 28px 14px;
         --tasks-header-margin: 0 14px;
+        --tasks-header-font-size: large;
+        --tasks-header-font-weight: 800;
+        --tasks-header-text-color: blue;
+        --tasks-header-text-hover-color: gray;
+
         --tasks-new-button-width: 300px;
         --tasks-new-button-height: 50px;
         --tasks-new-button-text-color: orange;

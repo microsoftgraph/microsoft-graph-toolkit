@@ -21,6 +21,11 @@
 $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 $tasks-header-padding: var(--tasks-header-padding, 0 0 14px 0);
 $tasks-header-margin: var(--tasks-header-margin, none);
+$tasks-header-text-font-size: var(--tasks-header-font-size, 24px);
+$tasks-header-text-font-weight: var(--tasks-header-font-weight, 600);
+$tasks-header-text-color: var(--tasks-header-text-color, var(--neutral-foreground-hint));
+$tasks-header-text-hover-color: var(--tasks-header-text-hover-color, var(--neutral-foreground-hover));
+
 $tasks-new-button-bg: padding-box linear-gradient(var(--accent-fill-rest), var(--accent-fill-rest)),
   border-box var(--accent-stroke-control-rest);
 $tasks-new-button-width: var(--tasks-new-button-width, none);
@@ -62,6 +67,13 @@ $task-incomplete-checkbox-hover-bg: var(
     justify-content: space-between;
     padding: $tasks-header-padding;
     margin: $tasks-header-padding;
+    font-size: $tasks-header-text-font-size;
+    font-weight: $tasks-header-text-font-weight;
+    color: $tasks-header-text-color;
+
+    &:hover {
+      color: $tasks-header-text-hover-color;
+    }
 
     .Title {
       justify-content: left;

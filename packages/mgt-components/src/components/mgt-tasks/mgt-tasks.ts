@@ -146,7 +146,10 @@ const plannerAssignment = {
  *
  * @cssprop --tasks-header-padding - {String} Tasks header padding. Default is 0 0 14px 0.
  * @cssprop --tasks-header-margin - {String} Tasks header margin. Default is none.
- * TODO: add header font-size and font-weight.
+ * @cssprop --tasks-header-text-font-size: {Length} the font size of the tasks header. Default is 24px.
+ * @cssprop --tasks-header-text-font-weight: {Length} the font weight of the tasks header. Default is 600.
+ * @cssprop --tasks-header-text-color: {Color} the font color of the tasks header.
+ * @cssprop --tasks-header-text-hover-color: {Color} the font color of the tasks header when you hover on it.
  *
  * @cssprop --tasks-new-button-width - {String} Tasks new button width. Default is none.
  * @cssprop --tasks-new-button-height - {String} Tasks new button height. Default is none
