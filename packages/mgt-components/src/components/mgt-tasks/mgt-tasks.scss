@@ -18,14 +18,39 @@
 @import '../../styles/shared-styles.scss';
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
-$task-icon-alignment: var(--task-icon-alignment, flex-start);
-$task-icon-background: var(--task-icon-background, transparent);
-$task-icon-background-completed: var(--task-icon-background-completed, $ms-color-sharedGreenCyan10);
-$task-icon-border: var(--task-icon-border, solid 1px $ms-color-gray120);
-$task-icon-border-completed: var(--task-icon-border-completed, solid 1px white);
-$task-icon-border-radius: var(--task-icon-border-radius, 50%);
-$task-icon-color-completed: var(--task-icon-color-completed, white);
 $task-border-completed: var(--task-complete-border, 2px dotted inherit);
+$tasks-header-padding: var(--tasks-header-padding, 0 0 14px 0);
+$tasks-header-margin: var(--tasks-header-margin, none);
+$tasks-new-button-bg: padding-box linear-gradient(var(--accent-fill-rest), var(--accent-fill-rest)),
+  border-box var(--accent-stroke-control-rest);
+$tasks-new-button-width: var(--tasks-new-button-width, none);
+$tasks-new-button-height: var(--tasks-new-button-height, none);
+$tasks-new-button-text-color: var(--tasks-new-button-text-color, var(--foreground-on-accent-rest));
+$tasks-new-button-text-font-weight: var(--tasks-new-button-text-font-weight, 700);
+$tasks-new-button-border: var(--tasks-new-button-border, none);
+$tasks-new-button-background: var(--tasks-new-button-background, $tasks-new-button-bg);
+$tasks-new-button-background-hover: var(--tasks-new-button-background-hover, var(--accent-fill-hover));
+$tasks-new-button-background-active: var(--tasks-new-button-background-active, var(--accent-fill-active));
+
+$task-title-text-font-size: var(--task-title-text-font-size, medium);
+$task-title-text-font-weight: var(--task-title-text-font-weight, 600);
+$task-complete-title-text-color: var(--task-complete-title-text-color, var(--neutral-foreground-rest));
+$task-incomplete-title-text-color: var(--task-incomplete-title-text-color, var(var(--neutral-foreground-hint)));
+
+$task-icons-width: var(--task-icons-width, 20px);
+$task-icons-height: var(--task-icons-height, 20px);
+$task-icons-bg-color: var(--task-icons-background-color, var(--neutral-foreground-hint));
+$task-icons-text-color: var(--task-icons-text-font-color, var(--neutral-foreground-hint));
+$task-icons-text-size: var(--task-icons-text-font-size, 12px);
+$task-icons-text-weight: var(--task-icons-text-font-weight, 600);
+
+$task-complete-checkbox-bg: var(--task-complete-checkbox-background-color, var(--accent-fill-rest));
+$task-complete-checkbox-check-bg: var(--task-complete-checkbox-text-color, currentColor);
+$task-incomplete-checkbox-bg: var(--task-incomplete-checkbox-background-color, var(--neutral-fill-input-alt-rest));
+$task-incomplete-checkbox-hover-bg: var(
+  --task-incomplete-checkbox-background-hover-color,
+  var(--neutral-fill-input-alt-hover)
+);
 
 :host {
   background-color: var(--neutral-layer-2);
@@ -35,7 +60,8 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 14px;
+    padding: $tasks-header-padding;
+    margin: $tasks-header-padding;
 
     .Title {
       justify-content: left;
@@ -45,7 +71,19 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
       justify-content: right;
 
       &::part(control) {
-        font-weight: 700;
+        font-weight: $tasks-new-button-text-font-weight;
+        color: $tasks-new-button-text-color;
+        width: $tasks-new-button-width;
+        height: $tasks-new-button-height;
+        background: $tasks-new-button-background;
+
+        &:hover {
+          background: $tasks-new-button-background-hover;
+        }
+
+        &:active {
+          background: $tasks-new-button-background-active;
+        }
       }
     }
   }
@@ -125,14 +163,22 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
             .TaskIcon {
               display: flex;
               place-content: center;
-              width: 20px;
-              height: 20px;
+              width: $task-icons-width;
+              height: $task-icons-height;
+
+              svg {
+                width: $task-icons-width;
+                height: $task-icons-height;
+                path {
+                  fill: $task-icons-bg-color;
+                }
+              }
             }
 
             .TaskIconText {
-              color: var(--neutral-foreground-hint);
-              font-size: 12px;
-              font-weight: 600;
+              color: $task-icons-text-color;
+              font-size: $task-icons-text-size;
+              font-weight: $task-icons-text-weight;
               white-space: normal;
             }
           }
@@ -158,19 +204,33 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
   fluent-checkbox {
     padding-top: 1px;
 
+    // Incomplete checkbox
     &::part(control) {
       border-radius: 50%;
+      background: $task-incomplete-checkbox-bg;
+      &:hover {
+        background: $task-incomplete-checkbox-hover-bg;
+      }
     }
 
+    // Incomplete checkbox label
     &::part(label) {
-      font-size: medium;
-      font-weight: 600;
+      font-size: $task-title-text-font-size;
+      font-weight: $task-title-text-font-weight;
+      color: $task-incomplete-title-text-color;
     }
 
     &.checked {
+      // Complete checkbox
+      &::part(control) {
+        background: $task-complete-checkbox-bg;
+        color: $task-complete-checkbox-check-bg;
+      }
+
+      // Complete checkbox label
       &::part(label) {
         text-decoration: line-through;
-        color: var(--neutral-foreground-hint);
+        color: $task-complete-title-text-color;
       }
     }
   }
