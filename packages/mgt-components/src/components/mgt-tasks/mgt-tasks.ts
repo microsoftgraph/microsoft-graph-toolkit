@@ -188,6 +188,8 @@ const plannerAssignment = {
  * @cssprop --task-incomplete-padding - {Length} The padding of a task that is incomplete. Default is 10px.
  * @cssprop --task-gap - {Length} The size of the gap between two tasks. Default is 4px.
  *
+ * TODO: add props for tasks. Background, border, border-radius, padding.
+ *
  */
 
 @customElement('tasks')
@@ -1158,6 +1160,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       taskDetails = html`${group} ${folder} ${taskPeople} ${taskDue}`;
     }
 
+    // TODO: find out how to make the options classes colors match task state.
     const taskOptions =
       this.readOnly || this.hideOptions
         ? null
@@ -1176,6 +1179,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       ReadOnly: this.readOnly
     });
 
+    // TODO: change the background colors of the task when you (un)check.
     return html`
       <div
         class=${taskClasses}
