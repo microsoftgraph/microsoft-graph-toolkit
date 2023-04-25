@@ -8,5 +8,13 @@
 export const strings = {
   showMoreSectionButton: 'Show more',
   endOfCard: 'End of the card',
-  quickMessage: 'Send a quick message'
+  quickMessage: 'Send a quick message',
+  expandDetailsLabel: 'Expand details',
+  sendMessageLabel: 'Send message',
+  emailButtonLabel: 'Email',
+  callButtonLabel: 'Call',
+  chatButtonLabel: 'Chat',
+  closeCardLabel: 'Close card',
+  videoButtonLabel: 'Video',
+  goBackLabel: 'Go Back'
 };

@@ -15,6 +15,7 @@ import {
   MgtTemplatedComponent
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
+import { classMap } from 'lit/directives/class-map.js';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -609,15 +610,8 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   public renderCompactView(): TemplateResult {
     const files = this.files.slice(0, 3);
-    const contentTemplate = html`
-      ${files.map(file => this.renderFile(file))}
-    `;
 
-    return html`
-      <div class="root compact" dir=${this.direction}>
-        ${contentTemplate}
-      </div>
-    `;
+    return this.renderFiles(files);
   }
 
   /**
@@ -627,7 +621,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    * @memberof MgtFileList
    */
   public renderFullView(): TemplateResult {
-    return this.renderTemplate('default', { files: this.files }) || this.renderFiles();
+    return this.renderTemplate('default', { files: this.files }) || this.renderFiles(this.files);
   }
 
   /**
@@ -668,7 +662,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    * @returns {TemplateResult}
    * @memberof mgtFileList
    */
-  protected renderFiles(): TemplateResult {
+  protected renderFiles(files: DriveItem[]): TemplateResult {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
@@ -681,11 +675,11 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
             class="file-item"
             @keydown="${this.onFileListKeyDown}"
             @focus="${this.onFocusFirstItem}"
-            @click=${(e: UIEvent) => this.handleItemSelect(this.files[0], e)}>
-            ${this.renderFile(this.files[0])}
+            @click=${(e: UIEvent) => this.handleItemSelect(files[0], e)}>
+            ${this.renderFile(files[0])}
           </li>
           ${repeat(
-            this.files.slice(1),
+            files.slice(1),
             f => f.id,
             f => html`
               <li
@@ -698,7 +692,10 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
           )}
         </ul>
         ${
-          !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
+          !this.hideMoreFilesButton &&
+          this.pageIterator &&
+          (this.pageIterator.hasNext || this._preloadedFiles.length) &&
+          !this._isCompact
             ? this.renderMoreFileButton()
             : null
         }
