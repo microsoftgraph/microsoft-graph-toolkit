@@ -7,7 +7,7 @@ name: Build pr
 
 on:
   pull_request:
-    branches: ['**']
+    branches: [main, release/**, next/**]
 
 jobs:
   build:
