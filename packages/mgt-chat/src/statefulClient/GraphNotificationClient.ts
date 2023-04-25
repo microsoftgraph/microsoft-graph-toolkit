@@ -1,14 +1,14 @@
 import { Providers } from '@microsoft/mgt-element';
 import * as signalR from '@microsoft/signalr';
-import { graphChatMessageToACSChatMessage } from './acs.chat';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
-import { ChatMessage } from '@microsoft/microsoft-graph-types';
+import { ChatMessage, Chat, ConversationMember, AadUserConversationMember } from '@microsoft/microsoft-graph-types';
 
 const appSettings = {
   functionHost: 'https://mgtgnbfunc.azurewebsites.net', // TODO: improve how this is loaded
   defaultSubscriptionLifetimeInMinutes: 5,
   renewalThreshold: 45, //The number of seconds before subscription expires it will be renewed
-  timerInterval: 10 //The number of seconds the timer will check on expiration
+  timerInterval: 10, //The number of seconds the timer will check on expiration
+  appId: 'de25c6a1-c9e7-4681-9288-eba1b93446fb'
 };
 
 const SubscriptionMethods = {
@@ -38,6 +38,12 @@ type SubscriptionDefinition = {
 type Notification = {
   subscriptionId: string;
   changeType: ChangeTypes;
+  resource: string;
+  resourceData: {
+    id: string;
+    '@odata.type': string;
+    '@odata.id': string;
+  };
   encryptedContent: string;
 };
 
@@ -66,7 +72,7 @@ export class GraphNotificationClient {
 
   private async getToken() {
     const token = await Providers.globalProvider.getAccessToken({
-      scopes: ['de25c6a1-c9e7-4681-9288-eba1b93446fb/.default']
+      scopes: [`${appSettings.appId}/.default`]
     });
     if (!token) throw new Error('Could not retrieve token for user');
     return token;
@@ -104,12 +110,19 @@ export class GraphNotificationClient {
 
   private receiveNotificationMessage = async (notification: Notification) => {
     console.log('received notification message', notification);
-    if (!notification.encryptedContent) throw new Error('Message did not contain encrypted content');
-
-    const decryptedContent = await this.decryptChatMessageFromNotification(notification);
-    const message = graphChatMessageToACSChatMessage(decryptedContent, this.currentUserId);
-
     const emitter: ThreadEventEmitter | undefined = this.subscriptionEmitter[notification.subscriptionId];
+    if (!notification.encryptedContent) throw new Error('Message did not contain encrypted content');
+    if (notification.resource.indexOf('/messages') != -1) {
+      this.processMessageNotification(notification, emitter);
+    } else if (notification.resource.indexOf('/members') != -1) {
+      this.processMembershipNotification(notification, emitter);
+    } else {
+      this.processChatPropertiesNotification(notification, emitter);
+    }
+  };
+
+  private async processMessageNotification(notification: Notification, emitter: ThreadEventEmitter | undefined) {
+    const message = await this.decryptNotification<ChatMessage>(notification);
     switch (notification.changeType) {
       case 'created':
         emitter?.chatMessageReceived(message);
@@ -123,7 +136,35 @@ export class GraphNotificationClient {
       default:
         throw new Error('Unknown change type');
     }
-  };
+  }
+
+  private async processMembershipNotification(notification: Notification, emitter: ThreadEventEmitter | undefined) {
+    const member = await this.decryptNotification<AadUserConversationMember>(notification);
+    switch (notification.changeType) {
+      case 'created':
+        emitter?.participantAdded(member);
+        return;
+      case 'deleted':
+        emitter?.participantRemoved(member);
+        return;
+      default:
+        throw new Error('Unknown change type');
+    }
+  }
+
+  private async processChatPropertiesNotification(notification: Notification, emitter: ThreadEventEmitter | undefined) {
+    const chat = await this.decryptNotification<Chat>(notification);
+    switch (notification.changeType) {
+      case 'updated':
+        emitter?.chatThreadPropertiesUpdated(chat);
+        return;
+      case 'deleted':
+        emitter?.chatThreadDeleted(chat);
+        return;
+      default:
+        throw new Error('Unknown change type');
+    }
+  }
 
   private onSubscribed = async (subscriptionRecord: SubscriptionRecord) => {
     console.log(`Subscription created. SubscriptionId: ${subscriptionRecord.SubscriptionId}`);
@@ -174,7 +215,11 @@ export class GraphNotificationClient {
     }
   }
 
-  private async subscribeToResource(resourcePath: string, eventEmitter: ThreadEventEmitter) {
+  private async subscribeToResource(
+    resourcePath: string,
+    eventEmitter: ThreadEventEmitter,
+    changeTypes: ChangeTypes[] = ['created', 'updated', 'deleted']
+  ) {
     if (!this.connection) throw new Error('SignalR connection not initialized');
 
     const token = await this.getToken();
@@ -188,7 +233,7 @@ export class GraphNotificationClient {
     const subscriptionDefinition: SubscriptionDefinition = {
       resource: resourcePath,
       expirationTime: expirationTime,
-      changeTypes: ['created', 'updated', 'deleted'],
+      changeTypes,
       resourceData: true,
       signalRConnectionId: this.connection.connectionId
     };
@@ -267,7 +312,9 @@ export class GraphNotificationClient {
     }
   };
 
-  private decryptChatMessageFromNotification = async (notification: Notification): Promise<ChatMessage> => {
+  private decryptNotification = async <T extends ChatMessage | Chat | ConversationMember[]>(
+    notification: Notification
+  ): Promise<T> => {
     const token = await this.getToken();
 
     const response = await fetch(appSettings.functionHost + '/api/GetChatMessageFromNotification', {
@@ -309,10 +356,19 @@ export class GraphNotificationClient {
     console.log(connection);
   }
 
-  public async subscribeToChatNotifications(userId: string, threadId: string, eventEmitter: ThreadEventEmitter) {
+  public async subscribeToChatNotifications(
+    userId: string,
+    threadId: string,
+    eventEmitter: ThreadEventEmitter,
+    afterConnection: () => void
+  ) {
     if (!this.connection) await this.createSignalConnection();
-
+    afterConnection();
     this.currentUserId = userId;
-    return this.subscribeToResource(`chats/${threadId}/messages`, eventEmitter);
+    const promises: Promise<void>[] = [];
+    promises.push(this.subscribeToResource(`/chats/${threadId}/messages`, eventEmitter));
+    promises.push(this.subscribeToResource(`/chats/${threadId}/members`, eventEmitter, ['created', 'deleted']));
+    promises.push(this.subscribeToResource(`/chats/${threadId}`, eventEmitter, ['updated', 'deleted']));
+    await Promise.all(promises);
   }
 }

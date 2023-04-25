@@ -3,7 +3,7 @@ import { AadUserConversationMember, Chat } from '@microsoft/microsoft-graph-type
 import { styles } from './chat-header.styles';
 import { IconBase, IconButton, IIconProps } from '@fluentui/react';
 import { Person, PersonCardInteraction, ViewType } from '@microsoft/mgt-react';
-import { editButtonStyle, editStyles } from '../styles/common.styles';
+import { buttonIconStyle, buttonIconStyles, iconOnlyButtonStyle } from '../styles/common.styles';
 
 interface ChatHeaderProps {
   chat?: Chat;
@@ -29,13 +29,17 @@ const GroupChatHeader = ({ chat, currentUserId }: ChatHeaderProps) => {
 
   const editIcon: IIconProps = {
     iconName: 'edit-svg',
-    className: editStyles.editButton,
-    styles: { root: editButtonStyle }
+    className: (buttonIconStyles.button, iconOnlyButtonStyle),
+    styles: { root: buttonIconStyle }
   };
   return (
     <>
       {chatTitle}
-      <IconButton iconProps={editIcon} className={editStyles.editButton} ariaLabel="Name group chat" />
+      <IconButton
+        iconProps={editIcon}
+        className={(buttonIconStyles.button, iconOnlyButtonStyle)}
+        ariaLabel="Name group chat"
+      />
     </>
   );
 };

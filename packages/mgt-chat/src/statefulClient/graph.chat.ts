@@ -1,5 +1,5 @@
 import { IGraph, prepScopes } from '@microsoft/mgt-element';
-import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 
 /**
  * Generic collection response from graph
@@ -23,7 +23,9 @@ const chatOperationScopes: Record<string, string[]> = {
   loadChatMessages: ['chat.read'],
   sendChatMessage: ['chatmessage.send'],
   updateChatMessage: ['chat.readwrite'],
-  deleteChatMessage: ['chat.readwrite']
+  deleteChatMessage: ['chat.readwrite'],
+  removeChatMemeber: ['chatmember.readwrite'],
+  addChatMember: ['chatmember.readwrite']
 };
 
 /**
@@ -150,3 +152,43 @@ export const deleteChatMessage = async (graph: IGraph, chatId: string, messageId
     .api(`/me/chats/${chatId}/messages/${messageId}/softDelete`)
     .middlewareOptions(prepScopes(...chatOperationScopes.deleteChatMessage))
     .post({});
+
+export const removeChatMember = async (graph: IGraph, chatId: string, membershipId: string): Promise<void> =>
+  graph
+    .api(`/chats/${chatId}/members/${membershipId}`)
+    .middlewareOptions(prepScopes(...chatOperationScopes.deleteChatMessage))
+    .delete();
+
+export const addChatMembers = async (
+  graph: IGraph,
+  chatId: string,
+  userIds: string[],
+  visibleHistoryStartDateTime?: Date
+): Promise<void> => {
+  const body = {
+    requests: userIds.map((userId: string, index: number) => {
+      const addRequestBody: AadUserConversationMember & { '@odata.type': string; 'user@odata.bind': string } = {
+        '@odata.type': '#microsoft.graph.aadUserConversationMember',
+        'user@odata.bind': `https://graph.microsoft.com/v1.0/users/${userId}`,
+        roles: ['owner']
+      };
+      if (visibleHistoryStartDateTime) {
+        addRequestBody['visibleHistoryStartDateTime'] = visibleHistoryStartDateTime.toISOString();
+      }
+      return {
+        id: index,
+        method: 'POST',
+        url: `/chats/${chatId}/members`,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: addRequestBody
+      };
+    })
+  };
+
+  await graph
+    .api('$batch')
+    .middlewareOptions(prepScopes(...chatOperationScopes.addChatMember))
+    .post(body);
+};

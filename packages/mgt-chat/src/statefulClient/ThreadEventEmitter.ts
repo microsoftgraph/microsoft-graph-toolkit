@@ -1,16 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { ChatMessage } from '@azure/communication-react';
-import {
-  ChatThreadCreatedEvent,
-  ChatThreadDeletedEvent,
-  ChatThreadPropertiesUpdatedEvent,
-  ParticipantsAddedEvent,
-  ParticipantsRemovedEvent,
-  ReadReceiptReceivedEvent,
-  TypingIndicatorReceivedEvent
-} from '@azure/communication-signaling';
+import { ReadReceiptReceivedEvent, TypingIndicatorReceivedEvent } from '@azure/communication-signaling';
+import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { EventEmitter } from 'events';
 
 export type ChatEvent =
@@ -19,11 +11,10 @@ export type ChatEvent =
   | 'chatMessageDeleted'
   | 'typingIndicatorReceived'
   | 'readReceiptReceived'
-  | 'chatThreadCreated'
   | 'chatThreadDeleted'
   | 'chatThreadPropertiesUpdated'
-  | 'participantsAdded'
-  | 'participantsRemoved'
+  | 'participantAdded'
+  | 'participantRemoved'
   | 'chatMessageNotificationsSubscribed';
 
 export class ThreadEventEmitter {
@@ -52,20 +43,17 @@ export class ThreadEventEmitter {
   readReceiptReceived(e: ReadReceiptReceivedEvent) {
     this.emitter.emit('readReceiptReceived', e);
   }
-  chatThreadCreated(e: ChatThreadCreatedEvent) {
-    this.emitter.emit('chatThreadCreated', e);
-  }
-  chatThreadDeleted(e: ChatThreadDeletedEvent) {
+  chatThreadDeleted(e: Chat) {
     this.emitter.emit('chatThreadDeleted', e);
   }
-  chatThreadPropertiesUpdated(e: ChatThreadPropertiesUpdatedEvent) {
+  chatThreadPropertiesUpdated(e: Chat) {
     this.emitter.emit('chatThreadPropertiesUpdated', e);
   }
-  participantsAdded(e: ParticipantsAddedEvent) {
-    this.emitter.emit('participantsAdded', e);
+  participantAdded(e: AadUserConversationMember) {
+    this.emitter.emit('participantAdded', e);
   }
-  participantsRemoved(e: ParticipantsRemovedEvent) {
-    this.emitter.emit('participantsRemoved', e);
+  participantRemoved(e: AadUserConversationMember) {
+    this.emitter.emit('participantRemoved', e);
   }
 
   chatMessageNotificationsSubscribed(messagesResource: string) {

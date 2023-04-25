@@ -1,0 +1,117 @@
+import React, { useCallback, useState } from 'react';
+import {
+  Button,
+  Popover,
+  PopoverSurface,
+  PopoverTrigger,
+  Divider,
+  OnOpenChangeData,
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogContent,
+  DialogSurface,
+  DialogTitle,
+  DialogTrigger
+} from '@fluentui/react-components';
+import {
+  bundleIcon,
+  PeopleAdd24Regular,
+  PeopleAdd24Filled,
+  DoorArrowLeft20Filled,
+  DoorArrowLeft20Regular
+} from '@fluentui/react-icons';
+import { AadUserConversationMember } from '@microsoft/microsoft-graph-types';
+import { styles } from './manage-chat-members.styles';
+import { buttonIconStyles } from '../styles/common.styles';
+import { AddChatMembers } from './AddChatMembers';
+import { ListChatMembers } from './ListChatMembers';
+
+interface ManageChatMembersProps {
+  currentUserId: string;
+  members: AadUserConversationMember[];
+  removeChatMember: (membershipId: string) => Promise<void>;
+  addChatMembers: (userIds: string[], history?: Date) => Promise<void>;
+}
+
+const AddPeople = bundleIcon(PeopleAdd24Filled, PeopleAdd24Regular);
+const Leave = bundleIcon(DoorArrowLeft20Filled, DoorArrowLeft20Regular);
+
+const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatMember }: ManageChatMembersProps) => {
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [showAddMembers, setShowAddMembers] = useState(false);
+  const openAddMembers = useCallback(() => {
+    setShowAddMembers(true);
+  }, [setShowAddMembers]);
+  const closeCallout = useCallback(() => {
+    setShowAddMembers(false);
+    setIsPopoverOpen(false);
+  }, [setShowAddMembers]);
+  const handleOpenChange = useCallback((_, data: OnOpenChangeData) => setIsPopoverOpen(data.open || false), [
+    setIsPopoverOpen
+  ]);
+
+  const leaveChat = useCallback(async () => {
+    const me = members.find(member => member.userId === currentUserId);
+    me?.id && (await removeChatMember(me.id));
+    closeCallout();
+  }, [removeChatMember, members, currentUserId, closeCallout]);
+
+  return (
+    <Popover trapFocus positioning={'below-start'} open={isPopoverOpen} onOpenChange={handleOpenChange}>
+      <PopoverTrigger>
+        <Button className={styles.triggerButton} appearance="transparent" icon={<AddPeople />}>
+          {members.length}
+        </Button>
+      </PopoverTrigger>
+      <PopoverSurface className={styles.popover}>
+        {showAddMembers ? (
+          <AddChatMembers closeDialog={closeCallout} addChatMembers={addChatMembers} />
+        ) : (
+          <div>
+            <ListChatMembers
+              members={members}
+              removeChatMember={removeChatMember}
+              currentUserId={currentUserId}
+              closeParentPopover={closeCallout}
+            />
+            <Divider />
+            <Button
+              appearance="transparent"
+              icon={<AddPeople />}
+              onClick={openAddMembers}
+              className={buttonIconStyles.button}
+            >
+              Add people
+            </Button>
+            <Dialog>
+              <DialogTrigger>
+                <Button appearance="transparent" icon={<Leave />} className={buttonIconStyles.button}>
+                  Leave
+                </Button>
+              </DialogTrigger>
+              <DialogSurface>
+                <DialogBody>
+                  <DialogTitle>Leave the conversation?</DialogTitle>
+                  <DialogContent>You'll still have access to the chat history.</DialogContent>
+                  <DialogActions>
+                    <DialogTrigger disableButtonEnhancement>
+                      <Button appearance="secondary" onClick={closeCallout}>
+                        Cancel
+                      </Button>
+                    </DialogTrigger>
+                    <Button appearance="primary" onClick={leaveChat}>
+                      Leave
+                    </Button>
+                  </DialogActions>
+                </DialogBody>
+              </DialogSurface>
+            </Dialog>
+          </div>
+        )}
+      </PopoverSurface>
+    </Popover>
+  );
+};
+
+export { ManageChatMembers };

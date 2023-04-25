@@ -1,31 +1,34 @@
-import { mergeStyleSets } from '@fluentui/react/lib/Styling';
+import { mergeStyleSets, mergeStyles } from '@fluentui/react/lib/Styling';
 
 const classNames = {
-  editButton: 'edit-button',
+  buttonIcon: 'button-icon',
   icon: 'icon',
   iconFilled: 'icon-filled',
   iconUnfilled: 'icon-unfilled'
 };
 
-const editButtonStyle = {
-  width: '2rem',
-  height: '2rem'
-};
+const iconOnlyButtonStyle = mergeStyles({
+  width: '18px',
+  height: '18px'
+});
+
+const buttonIconStyle = {};
 
 const colors = {
   iconRest: '#616161',
   iconHover: '#5b5fc7'
 };
 
-const editStyles = mergeStyleSets({
-  editButton: [classNames.editButton, editButtonStyle],
+const buttonIconStyles = mergeStyleSets({
+  button: [classNames.buttonIcon, buttonIconStyle],
 
   icon: [
     classNames.icon,
     {
       fill: colors.iconRest,
-      [`.${classNames.editButton}:hover &`]: {
-        fill: colors.iconHover
+      [`.${classNames.buttonIcon}:hover &`]: {
+        fill: colors.iconHover,
+        color: colors.iconHover
       }
     }
   ],
@@ -34,7 +37,7 @@ const editStyles = mergeStyleSets({
     classNames.iconFilled,
     {
       display: 'none',
-      [`.${classNames.editButton}:hover &`]: {
+      [`.${classNames.buttonIcon}:hover &`]: {
         display: 'block'
       }
     }
@@ -44,11 +47,11 @@ const editStyles = mergeStyleSets({
     classNames.iconUnfilled,
     {
       display: 'block',
-      [`.${classNames.editButton}:hover &`]: {
+      [`.${classNames.buttonIcon}:hover &`]: {
         display: 'none'
       }
     }
   ]
 });
 
-export { editStyles, editButtonStyle };
+export { buttonIconStyles, buttonIconStyle, iconOnlyButtonStyle };
