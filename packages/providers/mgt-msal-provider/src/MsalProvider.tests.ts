@@ -46,7 +46,7 @@ describe('MSALProvider', () => {
 
     const msalProvider = new MsalProvider(config);
     await msalProvider.login();
-    // tslint:disable-next-line: no-string-literal
+    // eslint-disable-next-line @typescript-eslint/unbound-method, @typescript-eslint/dot-notation
     expect(msalProvider['_userAgentApplication'].loginPopup).toBeCalled();
   });
 
@@ -57,7 +57,7 @@ describe('MSALProvider', () => {
     };
     const msalProvider = new MsalProvider(config);
     await msalProvider.login();
-    // tslint:disable-next-line: no-string-literal
+    // eslint-disable-next-line @typescript-eslint/unbound-method, @typescript-eslint/dot-notation
     expect(msalProvider['_userAgentApplication'].loginRedirect).toBeCalled();
   });
 
@@ -68,9 +68,10 @@ describe('MSALProvider', () => {
     };
     const msalProvider = new MsalProvider(config);
     const authProviderOptions = {};
-    const _ = await msalProvider.getAccessToken(authProviderOptions);
-    // tslint:disable-next-line: no-string-literal
+    const token = await msalProvider.getAccessToken(authProviderOptions);
+    // eslint-disable-next-line @typescript-eslint/unbound-method, @typescript-eslint/dot-notation
     expect(msalProvider['_userAgentApplication'].acquireTokenSilent).toBeCalled();
+    expect(token).toBeTruthy();
   });
 
   it('logout should fire onLoginChanged callback', async () => {

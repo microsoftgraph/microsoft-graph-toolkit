@@ -258,10 +258,11 @@ import { html } from 'lit';
 
 /**
  * returns an svg
+ *
  * @param svgIcon defined by name
  * @param color hex value
  */
-export function getSvg(svgIcon: SvgIcon, color?: string) {
+export const getSvg = (svgIcon: SvgIcon, color?: string) => {
   switch (svgIcon) {
     case SvgIcon.ArrowRight:
       return html`
@@ -632,4 +633,4 @@ export function getSvg(svgIcon: SvgIcon, color?: string) {
           <path d="M14.5 19a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm0-7c.28 0 .5.22.5.5V14h1.5a.5.5 0 010 1H15v1.5a.5.5 0 01-1 0V15h-1.5a.5.5 0 010-1H14v-1.5c0-.28.22-.5.5-.5z"></path>
         </svg>`;
   }
-}
+};

@@ -58,13 +58,13 @@ export class MgtDotOptions extends MgtBaseComponent {
     this._clickHandler = (e: MouseEvent) => (this.open = false);
   }
 
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this._clickHandler);
   }
 
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   public disconnectedCallback() {
     window.removeEventListener('click', this._clickHandler);
     super.disconnectedCallback();
@@ -119,12 +119,12 @@ export class MgtDotOptions extends MgtBaseComponent {
       </fluent-menu-item>`;
   }
 
-  private onDotClick(e: MouseEvent) {
+  private onDotClick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     this.open = !this.open;
-  }
+  };
 
   private onDotKeydown(e: KeyboardEvent) {
     if (e.key === 'Enter') {
