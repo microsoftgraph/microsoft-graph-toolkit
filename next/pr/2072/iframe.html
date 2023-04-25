@@ -346,7 +346,9 @@
       appId: 'JS:GraphToolkit'
     }
   };
-  awa.init(config);</script><style>#root[hidden],
+  awa.init(config);</script><style>a {
+    text-decoration: underline !important;
+  }</style><style>#root[hidden],
       #docs-root[hidden] {
         display: none !important;
       }</style></head><body><style>html,
@@ -430,13 +432,20 @@
     color: #0360B9 !important;
   }
 
-  .css-zj0253 * .token.attr-name {
+  /* fix attributes in html rendering */
+  .mtk4, .css-zj0253 * .token.attr-name {
     color: #e50000 !important;
+  }
+
+  /* fix number colors in monaco editor */
+  .mtk7 {
+    color: #088155 !important;
   }
 
   .css-3ltsna:focus-visible {
     outline: auto;
   }
+
 
   @media (max-width: 768px) {
     .story-mgt-root {
@@ -488,4 +497,4 @@
           
       
           
-            window['STORIES'] = [{"titlePrefix":"","directory":"./stories","files":"overview.stories.mdx","importPathMatcher":"^\\.[\\\\/](?:stories\\/overview\\.stories\\.mdx)$"},{"titlePrefix":"","directory":"./stories","files":"**/*.@(js|mdx)","importPathMatcher":"^\\.[\\\\/](?:stories(?:\\/(?!\\.)(?:(?:(?!(?:^|\\/)\\.).)*?)\\/|\\/|$)(?!\\.)(?=.)[^/]*?\\.(js|mdx))$"}];</script><script src="runtime~main.269cc7e1.iframe.bundle.js"></script><script src="vendors~main.86018373.iframe.bundle.js"></script><script src="main.dfd7c7fa.iframe.bundle.js"></script></body></html>
+            window['STORIES'] = [{"titlePrefix":"","directory":"./stories","files":"overview.stories.mdx","importPathMatcher":"^\\.[\\\\/](?:stories\\/overview\\.stories\\.mdx)$"},{"titlePrefix":"","directory":"./stories","files":"**/*.@(js|mdx)","importPathMatcher":"^\\.[\\\\/](?:stories(?:\\/(?!\\.)(?:(?:(?!(?:^|\\/)\\.).)*?)\\/|\\/|$)(?!\\.)(?=.)[^/]*?\\.(js|mdx))$"}];</script><script src="runtime~main.6dea5be1.iframe.bundle.js"></script><script src="vendors~main.0d9bfab0.iframe.bundle.js"></script><script src="main.b57bc96e.iframe.bundle.js"></script></body></html>
