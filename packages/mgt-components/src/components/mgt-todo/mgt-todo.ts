@@ -324,7 +324,7 @@ export class MgtTodo extends MgtTasksBase {
       : null;
 
     return html`
-      <fluent-radio class=${taskClasses} @click="${() => this.handleTaskCheckClick(task)}">
+      <fluent-radio id=${task.id} class=${taskClasses} @click="${() => this.handleTaskCheckClick(task)}">
         <div slot="checked-indicator">
           ${taskCheckContent}
         </div>
