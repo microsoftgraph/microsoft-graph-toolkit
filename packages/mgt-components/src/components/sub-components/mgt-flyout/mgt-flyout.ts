@@ -212,7 +212,9 @@ export class MgtFlyout extends MgtBaseComponent {
 
     return html`
       <div class=${classMap(flyoutClasses)}>
-        ${anchorTemplate}
+        <div class="anchor">
+          ${anchorTemplate}
+        </div>
         <div class="scout-top"></div>
         <div class="scout-bottom"></div>
         ${flyoutTemplate}
