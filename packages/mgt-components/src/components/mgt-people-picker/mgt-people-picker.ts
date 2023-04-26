@@ -943,7 +943,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                <li
                 id="${person.id}"
                 aria-label="${ariaLabel}"
-                class="list-person"
+                class="searched-people-list-result"
                 role="option"
                 @click="${e => this.handleSuggestionClick(person)}">
                   ${this.renderPersonResult(person)}
