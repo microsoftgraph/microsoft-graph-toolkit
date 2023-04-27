@@ -78,7 +78,17 @@ export const CustomCSSProperties = () => html`
         --task-new-input-background-color: yellow;
         --task-new-input-hover-background-color: yellowgreen;
         --task-new-input-placeholder-color: black;
-    }
+
+        /** affects the date picker and the text-input field **/
+        --task-new-dropdown-border: 2px solid green;
+        --task-new-dropdown-border-radius: 8px;
+        --task-new-dropdown-background-color: yellow;
+        --task-new-dropdown-hover-background-color: yellowgreen;
+        --task-new-dropdown-placeholder-color: red;
+        --task-new-dropdown-option-text-color: blue;
+        --task-new-dropdown-list-background-color: yellow;
+        --task-new-dropdown-option-hover-background-color: yellowgreen;
+      }
   </style>
   <mgt-tasks></mgt-tasks>
 `;
