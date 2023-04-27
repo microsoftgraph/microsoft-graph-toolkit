@@ -79,7 +79,6 @@ export type GetProps = {
 	cacheEnabled?: boolean;
 	cacheInvalidationPeriod?: number;
 	response?: any;
-	error?: any;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
@@ -230,8 +229,6 @@ export type SearchResultsProps = {
 	enableTopResults?: boolean;
 	cacheEnabled?: boolean;
 	cacheInvalidationPeriod?: number;
-	response?: any;
-	error?: any;
 	currentPage?: number;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
