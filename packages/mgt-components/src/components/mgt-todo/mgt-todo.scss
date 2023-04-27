@@ -173,13 +173,7 @@
     }
   }
 
-  fluent-radio-group {
-    &::part(positioning-region) {
-      width: 100%;
-    }
-  }
-
-  fluent-radio {
+  fluent-checkbox {
     &.Task {
       &.Complete {
         div > svg {
@@ -211,7 +205,7 @@
     &::part(control) {
       margin-inline-start: 10px;
       background: none;
-      border-color: $task-color;
+      border-radius: 50%;
     }
     &::part(label) {
       margin-inline-end: unset;

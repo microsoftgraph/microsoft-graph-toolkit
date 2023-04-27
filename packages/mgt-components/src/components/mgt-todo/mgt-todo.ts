@@ -29,9 +29,9 @@ import {
 import { styles } from './mgt-todo-css';
 import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { fluentRadio, fluentRadioGroup, fluentButton } from '@fluentui/web-components';
+import { fluentCheckbox, fluentRadioGroup, fluentButton } from '@fluentui/web-components';
 
-registerFluentComponents(fluentRadio, fluentRadioGroup, fluentButton);
+registerFluentComponents(fluentCheckbox, fluentRadioGroup, fluentButton);
 
 /**
  * Filter function
@@ -133,9 +133,7 @@ export class MgtTodo extends MgtTasksBase {
       task => this.renderTask(task)
     );
     return html`
-      <fluent-radio-group orientation="vertical">
-        ${taskTemplates}
-      </fluent-radio-group>
+      ${taskTemplates}
     `;
   }
 
@@ -188,10 +186,10 @@ export class MgtTodo extends MgtTasksBase {
   protected renderNewTask = (): TemplateResult => {
     const addIcon = this._newTaskName
       ? html`
-        <fluent-radio
+        <fluent-checkbox
           class="task-add-icon"
           @click="${this.addTask}">
-        </fluent-radio>
+        </fluent-checkbox>
       `
       : html`
         <span class="addIcon">${getSvg(SvgIcon.Add)}</span>
@@ -324,12 +322,13 @@ export class MgtTodo extends MgtTasksBase {
       : null;
 
     return html`
-      <fluent-radio id=${task.id} class=${taskClasses} @click="${() => this.handleTaskCheckClick(task)}">
+      <fluent-checkbox id=${task.id} class=${taskClasses} ?checked=${isCompleted} @click="${() =>
+      this.handleTaskCheckClick(task)}">
         <div slot="checked-indicator">
           ${taskCheckContent}
         </div>
         ${taskDetailsTemplate}
-      </fluent-radio>
+      </fluent-checkbox>
     `;
   };
 
