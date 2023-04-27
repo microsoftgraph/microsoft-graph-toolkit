@@ -132,6 +132,7 @@ $tasks-padding: var(--tasks-padding, 12px);
         border-radius: $task-complete-border-radius;
         background: $task-complete-bg-color;
         padding: $task-complete-padding;
+        --dot-options-button-background-color: $task-complete-bg-color;
       }
 
       &.Incomplete {
@@ -139,6 +140,7 @@ $tasks-padding: var(--tasks-padding, 12px);
         border-radius: $task-complete-border-radius;
         background: $task-incomplete-bg-color;
         padding: $task-incomplete-padding;
+        --dot-options-button-background-color: $task-incomplete-bg-color;
       }
 
       .TaskDetailsContainer {

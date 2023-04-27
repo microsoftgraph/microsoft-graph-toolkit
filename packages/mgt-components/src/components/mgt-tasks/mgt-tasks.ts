@@ -192,9 +192,6 @@ const plannerAssignment = {
  * @cssprop --tasks-border - {Length} the border of the area the tasks are rendered. Default is none.
  * @cssprop --tasks-border-radius - {Length} the border radius of the area where the tasks are rendered. Default is none.
  * @cssprop --tasks-padding - {Length} the padding of the are where the tasks are rendered. Default is 12px.
- *
- * TODO: add props for tasks. Background, border, border-radius, padding.
- *
  */
 
 @customElement('tasks')
