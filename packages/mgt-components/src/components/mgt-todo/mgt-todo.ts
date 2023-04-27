@@ -275,14 +275,14 @@ export class MgtTodo extends MgtTasksBase {
   };
 
   /**
-   * Render a task in the list.
+   * Render task details.
    *
    * @protected
    * @param {TodoTask} task
    * @returns {TemplateResult}
    * @memberof MgtTodo
    */
-  protected renderTask = (task: TodoTask) => {
+  protected renderTaskDetails = (task: TodoTask) => {
     const context = { task, list: this.currentList };
 
     if (this.hasTemplate('task')) {
@@ -314,6 +314,18 @@ export class MgtTodo extends MgtTasksBase {
       `;
     }
 
+    return html`${taskDetailsTemplate}`;
+  };
+
+  /**
+   * Render a task in the list.
+   *
+   * @protected
+   * @param {TodoTask} task
+   * @returns {TemplateResult}
+   * @memberof MgtTodo
+   */
+  protected renderTask = (task: TodoTask) => {
     const taskClasses = classMap({
       ReadOnly: this.readOnly,
       Task: true
@@ -321,7 +333,7 @@ export class MgtTodo extends MgtTasksBase {
 
     return html`
       <fluent-checkbox id=${task.id} class=${taskClasses} @click="${() => this.handleTaskCheckClick(task)}">
-        ${taskDetailsTemplate}
+        ${this.renderTaskDetails(task)}
       </fluent-checkbox>
     `;
   };
@@ -335,37 +347,6 @@ export class MgtTodo extends MgtTasksBase {
    * @memberof MgtTodo
    */
   protected renderCompletedTask = (task: TodoTask) => {
-    const context = { task, list: this.currentList };
-
-    if (this.hasTemplate('task')) {
-      return this.renderTemplate('task', context, task.id);
-    }
-
-    let taskDetailsTemplate = null;
-
-    const taskDueTemplate = task.dueDateTime
-      ? html`
-        <span class="TaskCalendar">${getSvg(SvgIcon.Calendar)}</span>
-        <span class="TaskDueDate">${getDateString(new Date(task.dueDateTime.dateTime))}</span>
-      `
-      : html``;
-
-    if (this.hasTemplate('task-details')) {
-      taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
-    } else {
-      taskDetailsTemplate = html`
-      <div class="TaskDetails">
-        <div class="Title">${task.title}</div>
-        <div class="TaskDue">${taskDueTemplate}</div>
-        <fluent-button class="TaskDelete"
-          @click="${() => this.removeTask(task.id)}"
-          aria-label="${this.strings.deleteTaskLabel}">
-          ${getSvg(SvgIcon.Delete)}
-        </fluent-button>
-      </div>
-      `;
-    }
-
     const taskClasses = classMap({
       Complete: true,
       ReadOnly: this.readOnly,
@@ -379,7 +360,7 @@ export class MgtTodo extends MgtTasksBase {
         <div slot="checked-indicator">
           ${taskCheckContent}
         </div>
-        ${taskDetailsTemplate}
+        ${this.renderTaskDetails(task)}
       </fluent-checkbox>
     `;
   };
@@ -463,7 +444,7 @@ export class MgtTodo extends MgtTasksBase {
 
     let tasks = await getTodoTasks(this._graph, list.id);
     tasks = tasks.sort((a, b) => {
-      return new Date(a.lastModifiedDateTime).getTime() - new Date(b.lastModifiedDateTime).getTime();
+      return new Date(b.lastModifiedDateTime).getTime() - new Date(a.lastModifiedDateTime).getTime();
     });
     this._tasks = tasks;
 
