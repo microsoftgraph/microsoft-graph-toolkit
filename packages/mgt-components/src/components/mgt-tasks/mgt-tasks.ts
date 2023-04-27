@@ -161,6 +161,14 @@ const plannerAssignment = {
  * @cssprop --tasks-new-button-background-active - {Color} Tasks new button active background.
  * TODO: Add other tokens for the addition of a task section.
  *
+ *
+ * @cssprop --task-new-input-border - {Length} the border of the input for a new task. Default is fluent UI input border.
+ * @cssprop --task-new-input-border-radius - {Length} the border radius of the input for a new task. Default is fluent UI input border.
+ * @cssprop --task-new-input-background-color - {Color} the background color of the new task input.
+ * @cssprop --task-new-input-hover-background-color - {Color} the background color of the new task input when you hover.
+ * @cssprop --task-new-input-placeholder-color - {Color} the placeholder colder of the new task input.
+ *
+ *
  * @cssprop --task-complete-checkbox-background-color - {Color} A completed task checkbox background color.
  * @cssprop --task-complete-checkbox-text-color - {Color} A completed task checkbox check color.
  * @cssprop --task-incomplete-checkbox-background-color - {Color} A incompleted task checkbox background color.

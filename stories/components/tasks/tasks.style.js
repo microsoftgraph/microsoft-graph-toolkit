@@ -71,6 +71,13 @@ export const CustomCSSProperties = () => html`
         --tasks-border: 2px dashed green;
         --tasks-border-radius: 12px;
         --tasks-padding: 16px;
+
+        /** affects the date picker and the text-input field **/
+        --task-new-input-border: 2px solid green;
+        --task-new-input-border-radius: 8px;
+        --task-new-input-background-color: yellow;
+        --task-new-input-hover-background-color: yellowgreen;
+        --task-new-input-placeholder-color: black;
     }
   </style>
   <mgt-tasks></mgt-tasks>

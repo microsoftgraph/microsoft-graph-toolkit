@@ -71,6 +71,16 @@ $tasks-border: var(--tasks-border, 0);
 $tasks-border-radius: var(--tasks-border-radius, 0);
 $tasks-padding: var(--tasks-padding, 12px);
 
+$input-bg: padding-box linear-gradient(var(--neutral-fill-input-rest), var(--neutral-fill-input-rest)),
+  border-box var(--neutral-stroke-input-rest);
+$input-hover-bg: padding-box linear-gradient(var(--neutral-fill-input-hover), var(--neutral-fill-input-hover)),
+  border-box var(--neutral-stroke-input-hover);
+$task-new-input-border: var(--task-new-input-border, calc(var(--stroke-width) * 1px) solid transparent);
+$task-new-input-border-radius: var(--task-new-input-border-radius, calc(var(--control-corner-radius) * 1px));
+$task-new-input-background-color: var(--task-new-input-background-color, $input-bg);
+$task-new-input-hover-background-color: var(--task-new-input-hover-background-color, $input-hover-bg);
+$task-new-input-placeholder-color: var(--task-new-input-placeholder-color, var(--input-placeholder-rest));
+
 :host {
   background-color: $tasks-background-color;
   padding: $tasks-padding;
@@ -277,6 +287,20 @@ $tasks-padding: var(--tasks-padding, 12px);
   fluent-text-field {
     &.NewTask {
       width: 100%;
+
+      &::part(root) {
+        border: $task-new-input-border;
+        border-radius: $task-new-input-border-radius;
+        background: $task-new-input-background-color;
+
+        &:hover {
+          background: $task-new-input-hover-background-color;
+        }
+
+        &::placeholder {
+          color: $task-new-input-placeholder-color;
+        }
+      }
     }
   }
 
