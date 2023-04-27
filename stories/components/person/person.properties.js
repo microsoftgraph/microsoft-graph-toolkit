@@ -299,6 +299,7 @@ export const personQuery = () => html`
 
 export const personAvatarType = () => html`
    <mgt-person person-query="me" avatar-type="photo"></mgt-person>
+   <br>
    <mgt-person person-query="me" avatar-type="initials"></mgt-person>
  `;
 
@@ -313,24 +314,24 @@ export const moreExamples = () => html`
      }
 
      .styled-person {
-       --font-family: 'Comic Sans MS', cursive, sans-serif;
-       --color-sub1: red;
-       --avatar-size: 60px;
-       --font-size: 20px;
-       --line2-color: green;
-       --avatar-border-radius: 10% 35%;
-       --line2-text-transform: uppercase;
+       --default-font-family: 'Comic Sans MS', cursive, sans-serif;
+       --person-line1-text-color: red;
+       --person-avatar-size: 60px;
+       --default-font-size: 20px;
+       --person-line2-text-color: green;
+       --person-avatar-border-radius: 10% 35%;
+       --person-line2-text-transform: uppercase;
      }
 
     .person-initials {
-      --initials-color: yellow;
-      --initials-background-color: red;
-      --avatar-size: 60px;
-      --avatar-border-radius: 10% 35%;
+      --person-initials-text-color: yellow;
+      --person-initials-background-color: red;
+      --person-avatar-size: 60px;
+      --person-avatar-border-radius: 10% 35%;
     }
 
     .person-with-avatar-border {
-      --avatar-border: 2px solid black;
+      --person-avatar-border: 5px dotted gold;
     }
   </style>
 
@@ -382,7 +383,7 @@ export const moreExamples = () => html`
 
   <div class="example">
     <div>Style initials (see css tab for style)</div>
-    <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
+    <mgt-person avatar-type="initials" class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
   </div>
 
    <div>

@@ -10,4 +10,4 @@
 
 $file-list-background-color: var(--file-list-background-color, var(--neutral-layer-1));
 $show-more-button-background-color: var(--show-more-button-background-color, var(--neutral-layer-1));
-$show-more-button-background-color--hover: var(--show-more-button-background-color-hover, var(--neutral-layer-2));
+$show-more-button-background-color--hover: var(--show-more-button-background-color-hover, var(-neutral-fill-hover));

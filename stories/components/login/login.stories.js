@@ -110,7 +110,8 @@ export const localization = () => html`
     _components: {
       login: {
         signInLinkSubtitle: 'Sign In 🤗',
-        signOutLinkSubtitle: 'Sign Out 🙋‍♀️'
+        signOutLinkSubtitle: 'Sign Out 🙋‍♀️',
+        signInWithADifferentAccount: 'Use another account'
       },
     }
   }
@@ -128,11 +129,23 @@ Please refer to the JavaScript tab if you wish to change which accounts are bein
       name: 'Megan Bowen',
       mail: 'MeganB@M365x214355.onmicrosoft.com',
       id: '48d31887-5fad-4d73-a9f5-3c356e68a038'
-    },{
+    },
+    {
       name: 'Emily Braun',
       mail: 'EmilyB@M365x214355.onmicrosoft.com',
       id: '2804bc07-1e1f-4938-9085-ce6d756a32d2'
-    }];
+    },
+    {
+      name: 'Lynne Robbins',
+      mail: 'LynneR@M365x214355.onmicrosoft.com',
+      id: 'e8a02cc7-df4d-4778-956d-784cc9506e5a'
+    },
+    {
+      name: 'Henrietta Mueller',
+      mail: 'HenriettaM@M365x214355.onmicrosoft.com',
+      id: 'c8913c86-ceea-4d39-b1ea-f63a5b675166'
+    },
+  ];
   // initialize the auth provider globally with pre-defined signed in users
   Providers.globalProvider = new MockProvider(true, signedInAccounts);
 </script>

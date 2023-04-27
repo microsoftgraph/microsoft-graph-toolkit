@@ -80,41 +80,41 @@ export class MgtContact extends BasePersonCardSection {
 
   private _contactParts: Record<string, IContactPart> = {
     email: {
-      icon: getSvg(SvgIcon.Email, '#605e5c'),
+      icon: getSvg(SvgIcon.Email),
       onClick: () => this.sendEmail(getEmailFromGraphEntity(this._person)),
       showCompact: true,
       title: this.strings.emailTitle
     },
     chat: {
-      icon: getSvg(SvgIcon.Chat, '#605e5c'),
+      icon: getSvg(SvgIcon.Chat),
       onClick: () => this.sendChat(this._person?.userPrincipalName),
       showCompact: false,
       title: this.strings.chatTitle
     },
     businessPhone: {
-      icon: getSvg(SvgIcon.Phone, '#605e5c'),
+      icon: getSvg(SvgIcon.Phone),
       onClick: () => this.sendCall(this._person?.businessPhones?.length > 0 ? this._person.businessPhones[0] : null),
       showCompact: true,
       title: this.strings.businessPhoneTitle
     },
     cellPhone: {
-      icon: getSvg(SvgIcon.CellPhone, '#605e5c'),
+      icon: getSvg(SvgIcon.CellPhone),
       onClick: () => this.sendCall(this._person?.mobilePhone),
       showCompact: true,
       title: this.strings.cellPhoneTitle
     },
     department: {
-      icon: getSvg(SvgIcon.Department, '#605e5c'),
+      icon: getSvg(SvgIcon.Department),
       showCompact: false,
       title: this.strings.departmentTitle
     },
     title: {
-      icon: getSvg(SvgIcon.Person, '#605e5c'),
+      icon: getSvg(SvgIcon.Person),
       showCompact: false,
       title: this.strings.titleTitle
     },
     officeLocation: {
-      icon: getSvg(SvgIcon.OfficeLocation, '#605e5c'),
+      icon: getSvg(SvgIcon.OfficeLocation),
       showCompact: true,
       title: this.strings.officeLocationTitle
     }
