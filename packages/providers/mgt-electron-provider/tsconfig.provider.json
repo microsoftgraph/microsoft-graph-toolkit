@@ -7,5 +7,6 @@
     "rootDir": "src"
   },
   "references": [{ "path": "../../mgt-element" }],
-  "include": ["src/Provider"]
+  "include": ["src/Provider"],
+  "exclude": ["src/Authenticator"]
 }

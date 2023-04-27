@@ -22,7 +22,7 @@ export const customElement = (tagName: string): ((classOrDescriptor: unknown) =>
   const version = element => (element as any).packageVersion || unknownVersion;
   if (mgtElement) {
     return (classOrDescriptor: CustomElementConstructor) => {
-      // tslint:disable-next-line: no-console
+      // eslint-disable-next-line no-console
       console.error(
         `Tag name ${mgtTagName} is already defined using class ${mgtElement.name} version ${version(mgtElement)}\n`,
         `Currently registering class ${classOrDescriptor.name} with version ${version(classOrDescriptor)}\n`,

@@ -27,10 +27,11 @@ type Theme = 'light' | 'dark' | 'default' | 'contrast';
  * @param {Theme} theme - theme name, if an unknown theme is provided, the light theme will be applied
  * @param {HTMLElement} [element=document.body]
  */
-export function applyTheme(theme: Theme, element: HTMLElement = document.body): void {
+export const applyTheme = (theme: Theme, element: HTMLElement = document.body): void => {
   const settings = getThemeSettings(theme);
   applyColorScheme(settings, element);
-}
+};
+
 /**
  * Simple data holder for theme settings
  */
@@ -62,11 +63,11 @@ type ColorScheme = {
  * @param {ColorScheme} settings
  * @param {HTMLElement} [element=document.body]
  */
-function applyColorScheme(settings: ColorScheme, element: HTMLElement = document.body): void {
-  accentBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.accentBaseColor)!));
-  neutralBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.neutralBaseColor)!));
+const applyColorScheme = (settings: ColorScheme, element: HTMLElement = document.body): void => {
+  accentBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.accentBaseColor)));
+  neutralBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.neutralBaseColor)));
   baseLayerLuminance.setValueFor(element, settings.baseLayerLuminance);
-}
+};
 
 /**
  * Helper function to translate theme name to theme settings
@@ -74,7 +75,7 @@ function applyColorScheme(settings: ColorScheme, element: HTMLElement = document
  * @param {Theme} theme
  * @return {*}  {ThemeSettings}
  */
-function getThemeSettings(theme: Theme): ColorScheme {
+const getThemeSettings = (theme: Theme): ColorScheme => {
   switch (theme) {
     case 'contrast':
       return {
@@ -102,4 +103,4 @@ function getThemeSettings(theme: Theme): ColorScheme {
         baseLayerLuminance: StandardLuminance.LightMode
       };
   }
-}
+};

@@ -35,11 +35,13 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * @class MgtPeople
  * @extends {MgtTemplatedComponent}
  *
- * @cssprop --list-margin - {String} List margin for component
- * @cssprop --avatar-margin - {String} Margin for each person
+ * @cssprop --people-list-margin- {String} the margin around the list of people. Default is 8px 4px 8px 8px.
+ * @cssprop --people-avatar-gap - {String} the gap between the people in the list. Default is 4px.
+ * @cssprop --people-overflow-font-color - {Color} the color of the overflow text.
+ * @cssprop --people-overflow-font-size - {String} the text color of the overflow text. Default is 12px.
+ * @cssprop --people-overflow-font-weight - {String} the font weight of the overflow text. Default is 400.
  */
 @customElement('people')
-// @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -51,6 +53,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   /**
    * determines if agenda events come from specific group
+   *
    * @type {string}
    */
   @property({
@@ -65,7 +68,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       return;
     }
     this._groupId = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -87,11 +90,12 @@ export class MgtPeople extends MgtTemplatedComponent {
       return;
     }
     this._userIds = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
    * containing array of people used in the component.
+   *
    * @type {IDynamicPerson[]}
    */
   @property({
@@ -102,6 +106,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   /**
    * allows developer to define queries of people for component
+   *
    * @type {string[]}
    */
 
@@ -119,11 +124,12 @@ export class MgtPeople extends MgtTemplatedComponent {
       return;
     }
     this._peopleQueries = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
    * developer determined max people shown in component
+   *
    * @type {number}
    */
   @property({
@@ -134,6 +140,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   /**
    * determines if person component renders presence
+   *
    * @type {boolean}
    */
   @property({
@@ -156,7 +163,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       if (typeof PersonCardInteraction[value] === 'undefined') {
         return PersonCardInteraction.hover;
       } else {
-        return PersonCardInteraction[value];
+        return PersonCardInteraction[value] as PersonCardInteraction;
       }
     }
   })
@@ -180,7 +187,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       return;
     }
     this._resource = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -201,7 +208,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       return;
     }
     this._version = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -221,6 +228,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   /**
    * Fallback when no user is found
+   *
    * @type {IDynamicPerson[]}
    */
   @property({
@@ -237,7 +245,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
     this._fallbackDetails = value;
 
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -263,9 +271,9 @@ export class MgtPeople extends MgtTemplatedComponent {
   private _groupId: string;
   private _userIds: string[];
   private _peopleQueries: string[];
-  private _peoplePresence: {};
+  private _peoplePresence: Record<string, MicrosoftGraph.Presence> = {};
   private _resource: string;
-  private _version: string = 'v1.0';
+  private _version = 'v1.0';
   private _fallbackDetails: IDynamicPerson[];
 
   constructor() {
@@ -367,7 +375,7 @@ export class MgtPeople extends MgtTemplatedComponent {
         people: this.people
       }) ||
       html`
-        <li aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}<span></li>
+        <li aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}</span></li>
       `
     );
   }
@@ -380,7 +388,7 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @memberof MgtPeople
    */
   protected renderPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact): TemplateResult {
-    let personPresence = {
+    let personPresence: MicrosoftGraph.Presence = {
       // set up default presence
       activity: 'Offline',
       availability: 'Offline',
@@ -437,9 +445,9 @@ export class MgtPeople extends MgtTemplatedComponent {
         if (this.groupId) {
           this.people = await findGroupMembers(graph, null, this.groupId, this.showMax, PersonType.person);
         } else if (this.userIds || this.peopleQueries) {
-          this.userIds
-            ? (this.people = await getUsersForUserIds(graph, this.userIds, '', '', this._fallbackDetails))
-            : (this.people = await getUsersForPeopleQueries(graph, this.peopleQueries, this._fallbackDetails));
+          this.people = this.userIds
+            ? await getUsersForUserIds(graph, this.userIds, '', '', this._fallbackDetails)
+            : await getUsersForPeopleQueries(graph, this.peopleQueries, this._fallbackDetails);
         } else if (this.resource) {
           this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);
         } else {

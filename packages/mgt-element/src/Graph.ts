@@ -107,8 +107,8 @@ export class Graph implements IGraph {
 
     if (this._componentName) {
       request.middlewareOptions = (options: MiddlewareOptions[]): GraphRequest => {
-        const requestObj = request as any;
-        requestObj._middlewareOptions = requestObj._middlewareOptions.concat(options);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/dot-notation
+        request['_middlewareOptions'] = request['_middlewareOptions'].concat(options);
         return request;
       };
       request = request.middlewareOptions([new ComponentMiddlewareOptions(this._componentName)]);
@@ -123,8 +123,8 @@ export class Graph implements IGraph {
    * @returns {Batch}
    * @memberof Graph
    */
-  public createBatch(): Batch {
-    return new Batch(this);
+  public createBatch<T = any>(): Batch<T> {
+    return new Batch<T>(this);
   }
 
   /**
@@ -147,7 +147,7 @@ export class Graph implements IGraph {
  * @returns {Graph}
  * @memberof Graph
  */
-export function createFromProvider(provider: IProvider, version?: string, component?: Element): Graph {
+export const createFromProvider = (provider: IProvider, version?: string, component?: Element): Graph => {
   const middleware: Middleware[] = [
     new AuthenticationHandler(provider),
     new RetryHandler(new RetryHandlerOptions()),
@@ -156,7 +156,7 @@ export function createFromProvider(provider: IProvider, version?: string, compon
     new HTTPMessageHandler()
   ];
 
-  let baseURL = provider.baseURL ? provider.baseURL : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
+  const baseURL = provider.baseURL ? provider.baseURL : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
   const client = Client.initWithMiddleware({
     middleware: chainMiddleware(...middleware),
     baseUrl: baseURL
@@ -164,4 +164,4 @@ export function createFromProvider(provider: IProvider, version?: string, compon
 
   const graph = new Graph(client, version);
   return component ? graph.forComponent(component) : graph;
-}
+};

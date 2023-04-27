@@ -11,6 +11,7 @@ import { customElementHelper } from '../components/customElementHelper';
 /**
  * stringsCache ensures that the same TemplateStringsArray object is returned on subsequent calls
  * This is needed as lit-html internally uses the TemplateStringsArray object as a cache key.
+ *
  * @type {WeakMap}
  */
 const stringsCache = new WeakMap<TemplateStringsArray, TemplateStringsArray>();
@@ -22,11 +23,7 @@ const stringsCache = new WeakMap<TemplateStringsArray, TemplateStringsArray>();
  * @param strings The array of strings to be re-written
  * @param matcher A RegExp to be used for matching strings for replacement
  */
-const rewriteStrings = (
-  strings: ReadonlyArray<string>,
-  matcher: RegExp,
-  replacement: string
-): ReadonlyArray<string> => {
+const rewriteStrings = (strings: readonly string[], matcher: RegExp, replacement: string): readonly string[] => {
   const temp: string[] = [];
   for (const s of strings) {
     temp.push(s.replace(matcher, replacement));

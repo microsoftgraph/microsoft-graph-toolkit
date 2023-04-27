@@ -21,7 +21,8 @@ import {
   RedirectRequest,
   AccountInfo,
   EndSessionRequest,
-  InteractionRequiredAuthError
+  InteractionRequiredAuthError,
+  SsoSilentRequest
 } from '@azure/msal-browser';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 
@@ -169,13 +170,11 @@ export interface Msal2PublicClientApplicationConfig extends Msal2ConfigBase {
  * @export
  * @enum {number}
  */
-// tslint:disable: completed-docs
 export enum PromptType {
   SELECT_ACCOUNT = 'select_account',
   LOGIN = 'login',
   CONSENT = 'consent'
 }
-// tslint:enable: completed-docs
 
 /**
  * MSAL2Provider using msal-browser to acquire tokens for authentication
@@ -202,7 +201,7 @@ export class Msal2Provider extends IProvider {
    * @private
    * @memberof Msal2Provider
    */
-  private _loginHint;
+  private _loginHint: string;
 
   /**
    * Domain hint if provided
@@ -210,7 +209,7 @@ export class Msal2Provider extends IProvider {
    * @private
    * @memberof Msal2Provider
    */
-  private _domainHint;
+  private _domainHint: string;
 
   /**
    * Prompt type
@@ -227,7 +226,7 @@ export class Msal2Provider extends IProvider {
    * @private
    * @memberof Msal2Provider
    */
-  private _sid;
+  private _sid: string;
 
   // /**
   //  * Specifies if incremental consent is disabled
@@ -244,7 +243,7 @@ export class Msal2Provider extends IProvider {
    * @type {Configuration}
    * @memberof Msal2Provider
    */
-  // tslint:disable-next-line: variable-name
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private ms_config: Configuration;
 
   /**
@@ -283,7 +282,7 @@ export class Msal2Provider extends IProvider {
    * @type {boolean}
    * @memberof Msal2Provider
    */
-  public isMultipleAccountEnabled: boolean = true;
+  public isMultipleAccountEnabled = true;
 
   /**
    * Indicates if multi account functionality is disabled
@@ -325,7 +324,7 @@ export class Msal2Provider extends IProvider {
 
   public constructor(config: Msal2Config | Msal2PublicClientApplicationConfig) {
     super();
-    this.initProvider(config);
+    void this.initProvider(config);
   }
 
   /**
@@ -396,7 +395,7 @@ export class Msal2Provider extends IProvider {
       if (tokenResponse !== null) {
         this.handleResponse(tokenResponse?.account);
       } else {
-        this.trySilentSignIn();
+        await this.trySilentSignIn();
       }
     } catch (e) {
       throw e;
@@ -409,7 +408,7 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public async trySilentSignIn() {
-    const silentRequest: any = {
+    const silentRequest: SsoSilentRequest = {
       scopes: this.scopes,
       domainHint: this._domainHint
     };
@@ -455,7 +454,7 @@ export class Msal2Provider extends IProvider {
       this.handleResponse(response?.account);
     } else {
       const loginRedirectRequest: RedirectRequest = { ...loginRequest };
-      this._publicClientApplication.loginRedirect(loginRedirectRequest);
+      await this._publicClientApplication.loginRedirect(loginRedirectRequest);
     }
   }
 
@@ -466,7 +465,7 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public getAllAccounts() {
-    const usernames = [];
+    const usernames: IProviderAccount[] = [];
     this._publicClientApplication.getAllAccounts().forEach((account: AccountInfo) => {
       usernames.push({ name: account.name, mail: account.username, id: account.homeAccountId } as IProviderAccount);
     });
@@ -521,6 +520,16 @@ export class Msal2Provider extends IProvider {
     this.clearRequestedScopes();
   }
 
+  private storage() {
+    switch (this.ms_config.cache.cacheLocation) {
+      case 'localStorage':
+        return window.localStorage;
+      case 'sessionStorage':
+      default:
+        return window.sessionStorage;
+    }
+  }
+
   /**
    * Store the currently signed in account in storage
    *
@@ -529,10 +538,7 @@ export class Msal2Provider extends IProvider {
    */
   private setStoredAccount() {
     this.clearStoredAccount();
-    window[this.ms_config.cache.cacheLocation].setItem(
-      this.homeAccountKey,
-      this._publicClientApplication.getActiveAccount().homeAccountId
-    );
+    this.storage().setItem(this.homeAccountKey, this._publicClientApplication.getActiveAccount().homeAccountId);
   }
 
   /**
@@ -543,9 +549,7 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   private getStoredAccount() {
-    let homeId = null;
-
-    homeId = window[this.ms_config.cache.cacheLocation].getItem(this.homeAccountKey);
+    const homeId = this.storage().getItem(this.homeAccountKey);
 
     return this._publicClientApplication.getAccountByHomeId(homeId);
   }
@@ -557,7 +561,7 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   private clearStoredAccount() {
-    window[this.ms_config.cache.cacheLocation].removeItem(this.homeAccountKey);
+    this.storage().removeItem(this.homeAccountKey);
   }
 
   /**
@@ -607,7 +611,7 @@ export class Msal2Provider extends IProvider {
    */
   protected getDeniedScopes() {
     const scopesStr = sessionStorage.getItem(this.sessionStorageDeniedScopesKey);
-    return scopesStr ? JSON.parse(scopesStr) : null;
+    return scopesStr ? (JSON.parse(scopesStr) as string[]) : null;
   }
 
   /**
@@ -667,14 +671,14 @@ export class Msal2Provider extends IProvider {
     };
     this.clearStoredAccount();
     if (this._loginType === LoginType.Redirect) {
-      this._publicClientApplication.logoutRedirect(logOutRequest);
       this.setState(ProviderState.SignedOut);
+      await this._publicClientApplication.logoutRedirect(logOutRequest);
     } else {
       await this._publicClientApplication.logoutPopup({ ...logOutRequest });
       if (this._publicClientApplication.getAllAccounts.length === 1 || !this.isMultipleAccountEnabled) {
         this.setState(ProviderState.SignedOut);
       } else {
-        this.trySilentSignIn();
+        await this.trySilentSignIn();
       }
     }
   }
@@ -704,7 +708,7 @@ export class Msal2Provider extends IProvider {
         if (this._loginType === LoginType.Redirect) {
           if (!this.areScopesDenied(scopes)) {
             this.setRequestedScopes(scopes);
-            this._publicClientApplication.acquireTokenRedirect(accessTokenRequest);
+            await this._publicClientApplication.acquireTokenRedirect(accessTokenRequest);
           } else {
             throw e;
           }
@@ -712,8 +716,8 @@ export class Msal2Provider extends IProvider {
           try {
             const response = await this._publicClientApplication.acquireTokenPopup(accessTokenRequest);
             return response.accessToken;
-          } catch (e) {
-            throw e;
+          } catch (popUpErr) {
+            throw popUpErr;
           }
         }
       } else {
@@ -721,7 +725,8 @@ export class Msal2Provider extends IProvider {
         this.setState(ProviderState.SignedOut);
       }
     }
-
+    // TODO: work out if we can throw something more meaningful here
+    // eslint-disable-next-line no-throw-literal
     throw null;
   }
 }

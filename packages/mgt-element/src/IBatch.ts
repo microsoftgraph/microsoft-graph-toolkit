@@ -11,8 +11,7 @@
  * @export
  * @class BatchResponse
  */
-// tslint:disable-next-line:max-classes-per-file
-export class BatchResponse {
+export class BatchResponse<T = any> {
   /**
    * The index of the requests as it was added to the queue
    * Use this value if you need to sort the responses
@@ -37,13 +36,51 @@ export class BatchResponse {
    * @type {*}
    * @memberof BatchResponse
    */
-  public content: any;
+  public content: T;
+
   /**
    * The header of the response
+   *
    * @type {*}
    * @memberof BatchResponse
    */
-  public headers: string[];
+  public headers: Record<string, string>;
+}
+
+/**
+ * Represents a response from a request executed in a batch
+ *
+ * @interface ResponseWithBodyAndStatus
+ */
+interface ResponseWithBodyAndStatus {
+  /**
+   * The body of the response
+   *
+   * @type {string}
+   * @memberof BatchResponse
+   */
+  body: any;
+
+  /**
+   * The status code of the response
+   *
+   * @type {number}
+   * @memberof BatchResponse
+   */
+  status: number;
+}
+
+/**
+ * Wrapper for the response body of a batch request
+ */
+export interface BatchResponseBody {
+  /**
+   * Collection of responses from the batch request
+   *
+   * @type {BatchResponse[]}
+   * @memberof BatchResponseBody
+   */
+  responses: (Omit<BatchResponse, 'content'> & ResponseWithBodyAndStatus)[];
 }
 
 /**
@@ -52,7 +89,7 @@ export class BatchResponse {
  * @export
  * @interface IBatch
  */
-export interface IBatch {
+export interface IBatch<T = any> {
   /**
    * Get whether there are requests that have not been executed
    *
@@ -76,17 +113,17 @@ export interface IBatch {
    * Execute the next set of requests.
    * This will execute up to 20 requests at a time
    *
-   * @returns {Promise<Map<string, BatchResponse>>}
+   * @returns {Promise<Map<string, BatchResponse<T>>>}
    * @memberof IBatch
    */
-  executeNext(): Promise<Map<string, BatchResponse>>;
+  executeNext(): Promise<Map<string, BatchResponse<T>>>;
 
   /**
    * Execute all requests, up to 20 at a time until
    * all requests have been executed
    *
-   * @returns {Promise<Map<string, BatchResponse>>}
+   * @returns {Promise<Map<string, BatchResponse<T>>>}
    * @memberof IBatch
    */
-  executeAll(): Promise<Map<string, BatchResponse>>;
+  executeAll(): Promise<Map<string, BatchResponse<T>>>;
 }

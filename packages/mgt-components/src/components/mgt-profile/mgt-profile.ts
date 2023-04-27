@@ -48,6 +48,17 @@ export class MgtProfile extends BasePersonCardSection {
   }
 
   /**
+   * The title for display when rendered as a full card.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtOrganization
+   */
+  public get cardTitle(): string {
+    return this.strings.AboutCompactSectionTitle;
+  }
+
+  /**
    * Returns true if the profile contains data
    * that can be rendered
    *
@@ -156,7 +167,6 @@ export class MgtProfile extends BasePersonCardSection {
 
     return html`
        <div class="root" dir=${this.direction}>
-         <div class="title">${this.strings.AboutCompactSectionTitle}</div>
          ${this.renderSubSections()}
        </div>
      `;
@@ -464,17 +474,17 @@ export class MgtProfile extends BasePersonCardSection {
      `;
   }
 
-  private isPersonalInterest(interest: PersonInterest): boolean {
+  private isPersonalInterest = (interest: PersonInterest): boolean => {
     return interest.categories && interest.categories.includes('personal');
-  }
+  };
 
-  private isProfessionalInterest(interest: PersonInterest): boolean {
+  private isProfessionalInterest = (interest: PersonInterest): boolean => {
     return interest.categories && interest.categories.includes('professional');
-  }
+  };
 
-  private isBirthdayAnniversary(anniversary: PersonAnnualEvent): boolean {
+  private isBirthdayAnniversary = (anniversary: PersonAnnualEvent): boolean => {
     return anniversary.type === 'birthday';
-  }
+  };
 
   private getDisplayDate(date: Date): string {
     return date.toLocaleString('default', {
@@ -483,7 +493,7 @@ export class MgtProfile extends BasePersonCardSection {
     });
   }
 
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   private getDisplayDateRange(event: EducationalActivity): string {
     const start = new Date(event.startMonthYear).getFullYear();
     if (start === 0) {

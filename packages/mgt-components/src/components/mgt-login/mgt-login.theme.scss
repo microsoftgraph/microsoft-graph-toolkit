@@ -7,32 +7,12 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$button__color--hover: var(--button-color--hover, #{$commblue_primary});
-$button__background-color--hover: var(
-  --button-background-color--hover,
-  set-var(background-color--hover, $theme-default, $common)
-);
-$popup__background-color: var(
-  --popup-background-color,
-  var(--neutral-fill-rest, set-var(background-color, $theme-default, $common))
-);
-$popup__add-account-button-color: var(--add-account-button-color, set-var(color__sub2, $theme-default, $common));
-$popup__button-color--hover: var(
-  --popup-button-color--hover,
-  var(--neutral-fill-stealth-hover, #{$neutralFillStealthHover})
-);
-
-$login: (
-  button__color: (
-    _var: --button-color,
-    dark: $text__color__sub1--dark,
-    light: $text__color__sub1--light
-  ),
-  popup__color: (
-    _var: --popup-color,
-    dark: $text__color__sub1--dark,
-    light: $text__color__sub1--light
-  )
-);
-
-@include create-themes($login);
+$signed-out-text-color: #{var(--login-signed-out-button-text-color, var(--neutral-fill-foreground-rest))};
+$signed-in-background-color: var(--login-signed-in-background, transparent);
+$signed-in-hover-background-color: #{var(--login-signed-in-hover-background, var(--neutral-fill-stealth-hover))};
+$login-command-btn-text-color: #{var(--login-command-button-text-color, var(--neutral-fill-foreground-rest))};
+$login-command-btn-bg-color: #{var(--login-command-button-background-color, var(--neutral-fill-stealth-rest))};
+$login-command-btn-bg-hover-color: #{var(--login-command-button-hover-background-color, var(--neutral-fill-stealth-hover))};
+$login-add-account-btn-text-color: #{var(--login-add-account-button-text-color, var(--neutral-fill-foreground-rest))};
+$login-add-account-btn-bg-color: #{var(--login-add-account-button-background-color, var(--neutral-fill-stealth-rest))};
+$login-add-account-btn-hover-bg-color: #{var(--login-add-account-button-hover-background-color, var(--neutral-fill-stealth-hover))};

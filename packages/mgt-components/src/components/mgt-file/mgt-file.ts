@@ -26,7 +26,7 @@ import {
   getUserDriveItemByPath,
   getUserInsightsDriveItemById
 } from '../../graph/graph.files';
-import { getRelativeDisplayDate } from '../../utils/Utils';
+import { formatBytes, getRelativeDisplayDate } from '../../utils/Utils';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { getFileTypeIconUriByExtension } from '../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -95,7 +95,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._fileQuery = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -116,7 +116,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._siteId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -137,7 +137,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._driveId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -158,7 +158,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._groupId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -179,7 +179,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._listId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -200,7 +200,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._userId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -221,7 +221,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._itemId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -242,7 +242,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._itemPath = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -264,7 +264,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._insightType = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -285,7 +285,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._insightId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -306,7 +306,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._fileDetails = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -327,7 +327,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._fileIcon = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -385,7 +385,7 @@ export class MgtFile extends MgtTemplatedComponent {
       if (typeof ViewType[value] === 'undefined') {
         return ViewType.threelines;
       } else {
-        return ViewType[value];
+        return ViewType[value] as ViewType;
       }
     }
   })
@@ -592,7 +592,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     const graph = provider.graph.forComponent(this);
-    let driveItem;
+    let driveItem: DriveItem;
 
     // evaluate to true when only item-id or item-path is provided
     const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
@@ -648,13 +648,13 @@ export class MgtFile extends MgtTemplatedComponent {
     this.driveItem = driveItem;
   }
 
-  private getTextFromProperty(driveItem: DriveItem, properties: string) {
+  private getTextFromProperty(driveItem: DriveItem, properties: string): string {
     if (!properties || properties.length === 0) {
       return null;
     }
 
     const propertyList = properties.trim().split(',');
-    let text;
+    let text: string;
     let i = 0;
 
     while (!text && i < propertyList.length) {
@@ -662,18 +662,16 @@ export class MgtFile extends MgtTemplatedComponent {
       switch (current) {
         case 'size':
           // convert size to kb, mb, gb
-          let size;
+          let size = '0';
           if (driveItem.size) {
-            size = this.formatBytes(driveItem.size);
-          } else {
-            size = '0';
+            size = formatBytes(driveItem.size);
           }
           text = `${this.strings.sizeSubtitle}: ${size}`;
           break;
         case 'lastModifiedDateTime':
           // convert date time
-          let relativeDateString;
-          let lastModifiedString;
+          let relativeDateString: string;
+          let lastModifiedString: string;
           if (driveItem.lastModifiedDateTime) {
             const lastModifiedDateTime = new Date(driveItem.lastModifiedDateTime);
             relativeDateString = getRelativeDisplayDate(lastModifiedDateTime);
@@ -684,21 +682,11 @@ export class MgtFile extends MgtTemplatedComponent {
           text = lastModifiedString;
           break;
         default:
-          text = driveItem[current];
+          text = driveItem[current] as string;
       }
       i++;
     }
 
     return text;
-  }
-
-  private formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 }

@@ -7,9 +7,18 @@
 
 import { provideFluentDesignSystem } from '@fluentui/web-components';
 
+/**
+ * Provides a design system to the fluent components
+ */
 const designSystem = provideFluentDesignSystem();
 
-export const registerFluentComponents = (...fluentComponents) => {
+/**
+ * Registers fluent components to the design system
+ *
+ * @param fluentComponents array of fluent components to register
+ * @returns
+ */
+export const registerFluentComponents = (...fluentComponents: (() => unknown)[]) => {
   if (!fluentComponents || !fluentComponents.length) {
     return;
   }
