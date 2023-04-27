@@ -21,33 +21,29 @@ export const customCssProperties = () => html`
 <mgt-people-picker></mgt-people-picker>
 <style>
   mgt-people-picker {
-    --input-border: 3px dashed green; /* sets all input area border */
+    --people-picker-selected-option-background-color: orange;
+    --people-picker-selected-option-highlight-background-color: red;
+    --people-picker-dropdown-background-color: blue;
+    --people-picker-dropdown-result-background-color: yellow;
+    --people-picker-dropdown-result-hover-background-color: gold;
+    --people-picker-dropdown-result-focus-background-color: green;
+    --people-picker-no-results-text-color: orange;
+    --people-picker-input-background: gray;
+    --people-picker-input-border-color: yellow;
+    --people-picker-input-hover-background: green;
+    --people-picker-input-hover-border-color: red;
+    --people-picker-input-focus-background: purple;
+    --people-picker-input-focus-border-color: orange;
 
-    /* OR individual input border sides */
-    --input-border-bottom: 2px red solid;
-    --input-border-right: 2px green solid;
-    --input-border-left: 2px blue solid;
-    --input-border-top: 2px yellow solid;
+    --people-picker-input-placeholder-focus-text-color: yellow;
+    --people-picker-input-placeholder-hover-text-color: gold;
+    --people-picker-input-placeholder-text-color: white;
+    --people-picker-search-icon-color: yellow;
+    --people-picker-remove-selected-close-icon-color: blue;
 
-    --input-background-color: purple; /* input area background color */
-    --input-border-color--hover: #008394; /* input area border hover color */
-    --input-border-color--focus: #0f78d4; /* input area border focus color */
-
-    --dropdown-background-color: #ca00ca; /* selection area background color */
-    --dropdown-item-hover-background: purple; /* person background color on hover */
-    --dropdown-item-text-color: white; /* person item text color */
-    --dropdown-item-text-hover-color: gold; /* person item text color on hover */
-
-    --selected-person-background-color: black ; /* person item background color */
-
-    --color-sub1: white;
-    --placeholder-color: whitesmoke; /* placeholder text color */
-    --placeholder-color--focus: black ; /* placeholder text focus color */
-
-    --people-picker-flyout-line1-text-font-size: 28px;
-    --people-picker-flyout-line1-text-font-weight: 500;
-    --people-picker-flyout-line2-text-font-size: 24px;
-    --people-picker-flyout-line2-text-font-weight: 600;
+    /** You can also change the person tokens **/
+    --person-line1-text-color: blue;
+    --person-line2-text-color: red;
   }
 </style>
 `;

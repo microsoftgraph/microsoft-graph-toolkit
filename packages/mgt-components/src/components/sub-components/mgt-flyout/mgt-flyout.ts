@@ -199,14 +199,12 @@ export class MgtFlyout extends MgtBaseComponent {
 
     if (this.isOpen || this._renderedOnce) {
       this._renderedOnce = true;
-      const classes = classMap({
+      const smallFlyoutClasses = classMap({
         flyout: true,
         small: this._smallView
       });
       flyoutTemplate = html`
-        <div
-          class=${classes}}
-          @wheel=${this.handleFlyoutWheel}>
+        <div class=${smallFlyoutClasses} @wheel=${this.handleFlyoutWheel}>
           ${this.renderFlyout()}
         </div>
       `;
@@ -231,7 +229,7 @@ export class MgtFlyout extends MgtBaseComponent {
    */
   protected renderAnchor(): TemplateResult {
     return html`
-      <slot></slot>
+      <slot name="anchor"></slot>
     `;
   }
 

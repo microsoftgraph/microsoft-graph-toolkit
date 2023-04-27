@@ -29,6 +29,9 @@
         margin-left: 20px;
         margin-top: 10px;
         line-height: 20px;
+        svg {
+          fill: $contact-copy-icon-color;
+        }
       }
 
       .part__details {
@@ -37,19 +40,19 @@
 
         .part__title {
           font-size: 12px;
-          color: set-var(title__color__sub2, $theme-default, $common);
+          color: $contact-title-color;
           line-height: 16px;
         }
 
         .part__value {
           grid-column: 2;
-          color: set-var(color__sub1, $theme-default, $common);
+          color: $contact-value-color;
           font-size: 14px;
           font-weight: 400;
           line-height: 19px;
 
           .part__link {
-            color: set-var(person-card-contact-link-color, $theme-default, $contact-theme);
+            color: $contact-link-color;
             font-family: $font-family;
             font-size: 14px;
             cursor: pointer;
@@ -60,7 +63,7 @@
             display: inline-block;
 
             &:hover {
-              color: set-var(person-card-contact-link-hover-color, $theme-default, $contact-theme);
+              color: $contact-link-hover-color;
             }
           }
         }
@@ -69,14 +72,14 @@
       .part__copy {
         width: 32px;
         height: 100%;
-        background-color: set-var(background-color__sub2, $theme-default, $common);
+        background-color: $contact-background-color;
         visibility: hidden;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
 
         svg {
-          fill: set-var(icon__color, $theme-default, $common);
+          fill: $contact-copy-icon-color;
           cursor: pointer;
         }
       }

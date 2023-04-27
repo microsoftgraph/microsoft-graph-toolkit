@@ -16,16 +16,35 @@
 // --person-card-details-title-color: #b3bf0a;
 // --person-card-details-item-font-size: 30px;
 // --person-card-details-item-color: #3abf0a;
+$person-card-line1-font-size: var(--person-card-line1-font-size, 20px);
+$person-card-line1-font-weight: var(--person-card-line1-font-weight, 600);
+$person-card-line1-line-height: var(--person-card-line1-line-height, 28px);
+
+$person-card-line2-font-size: var(--person-card-line2-font-size, 14px);
+$person-card-line2-font-weight: var(--person-card-line2-font-weight, 400);
+$person-card-line2-line-height: var(--person-card-line2-line-height, 20px);
+
+$person-card-line3-font-size: var(--person-card-line3-font-size, 14px);
+$person-card-line3-font-weight: var(--person-card-line3-font-weight, 400);
+$person-card-line3-line-height: var(--person-card-line3-line-height, 19px);
+
+$person-card-avatar-size: var(--person-card-avatar-size, 75px);
+$person-card-details-left-spacing: var(--person-card-details-left-spacing, 15px);
+$person-card-avatar-top-spacing: var(--person-card-avatar-top-spacing, 15px);
+$person-card-details-bottom-spacing: var(--person-card-details-bottom-spacing, 0px);
+$person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing, 83px);
 
 :host {
   box-shadow: set-var(box-shadow, $theme-default, $common);
-  background-color: set-var(card-bg, $theme-default, $person-card-theme);
   width: var(--mgt-flyout-set-width, 375px);
   font-family: $font-family;
   overflow: hidden;
   user-select: none;
   border-radius: 8px;
-  border: 1px solid set-var(background-color__sub1, $theme-default, $common);
+  background-color: $person-card-background-color;
+  --file-list-background-color: transparent;
+  --file-list-box-shadow: none;
+  --file-item-background-color: transparent;
 
   .small {
     max-height: 100vh;
@@ -45,14 +64,14 @@
       width: 32px;
 
       svg {
-        fill: set-var(nav-back-arrow-color, $theme-default, $person-card-theme);
+        fill: $person-card-icon-color;
       }
 
       &:hover {
         cursor: pointer;
 
         svg {
-          fill: set-var(nav-back-arrow-hover-color, $theme-default, $person-card-theme);
+          fill: $person-card-nav-back-arrow-hover-color;
         }
       }
     }
@@ -61,13 +80,6 @@
     position: relative;
     z-index: 100;
     .close-button {
-      --focus-stroke-width: none;
-      --control-corner-radius: 2;
-      --accent-foreground-active: none;
-      --accent-foreground-hover: none;
-      --neutral-fill-stealth-rest: transparent;
-      --neutral-fill-stealth-hover: #{set-var(background-color--hover, $theme-default, $common)};
-
       position: absolute;
       right: 10px;
       margin-top: 9px;
@@ -75,11 +87,15 @@
       border: 1px solid transparent;
 
       svg {
-        width: 9px;
-        height: 9px;
-
         path {
-          fill: set-var(icon__color__sub3, $theme-default, $common);
+          fill: $person-card-icon-color;
+        }
+      }
+      &:hover {
+        svg {
+          path {
+            fill: $person-card-close-button-hover-color;
+          }
         }
       }
     }
@@ -88,59 +104,74 @@
   .person-details-container {
     display: flex;
     flex-direction: column;
-    padding-inline-start: 23px;
-    padding-top: 23px;
-    border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
+    padding-inline-start: 22px;
+    padding-block: 36px;
+    border-bottom: 1px solid $person-card-border-color;
 
     .person-image {
-      --presence-background-color: #{set-var(presence-background-color, $theme-default, $person-theme)};
-      --presence-icon-color: #{set-var(presence-icon-color, $theme-default, $person-theme)};
-      --line1-font-size: var(--person-card-display-name-font-size, 20px);
-      --line1-line-height: var(--person-card-display-name-line-height, 28px);
-      --line1-color: #{set-var(line-1-color, $theme-default, $person-card-theme)};
-      --line2-font-size: var(--person-card-title-font-size, 14px);
-      --line2-line-height: var(--person-card-title-line-height, 20px);
-      --line2-color: #{set-var(line-2-color, $theme-default, $person-card-theme)};
-      --line3-font-size: var(--person-card-subtitle-font-size, 14px);
-      --line3-line-height: var(--person-card-subtitle-line-height, 19px);
-      --line3-color: #{set-var(line-3-color, $theme-default, $person-card-theme)};
-      --avatar-size: 75px;
-      --details-cta-spacing: 30px;
-      --user-presence-margin-offset: 5px;
+      --person-avatar-top-spacing: #{$person-card-avatar-top-spacing};
+      --person-details-left-spacing: #{$person-card-details-left-spacing};
+      --person-details-bottom-spacing: #{$person-card-details-bottom-spacing};
+      --person-background-color: #{$person-card-background-color};
+
+      --person-line1-font-size: #{$person-card-line1-font-size};
+      --person-line1-font-weight: #{$person-card-line1-font-weight};
+      --person-line1-text-line-height: #{$person-card-line1-line-height};
+      --person-line1-text-color: #{$person-card-line1-text-color};
+
+      --person-line2-font-size: #{$person-card-line2-font-size};
+      --person-line2-font-weight: #{$person-card-line2-font-weight};
+      --person-line2-text-line-height: #{$person-card-line2-line-height};
+      --person-line2-text-color: #{$person-card-line2-text-color};
+
+      --person-line3-font-size: #{$person-card-line3-font-size};
+      --person-line3-font-weight: #{$person-card-line3-font-weight};
+      --person-line3-text-line-height: #{$person-card-line3-line-height};
+      --person-line3-text-color: #{$person-card-line3-text-color};
+      --person-avatar-size-3-lines: #{$person-card-avatar-size};
+      --person-presence-wrapper-bottom: -15px;
     }
 
     .base-icons {
       display: flex;
       -webkit-align-items: center;
       align-items: center;
-      position: relative;
-      left: 91px;
-      bottom: 25px;
+      margin-inline-start: $person-card-base-icons-left-spacing;
       z-index: 1;
-      width: fit-content;
 
       .icon {
         display: flex;
         align-items: center;
-        cursor: pointer;
         font-size: 13px;
         white-space: nowrap;
 
         &:not(:last-child) {
-          margin-inline-end: 38px;
+          margin-inline-end: 28px;
         }
 
         svg {
+          .filled {
+            display: none;
+          }
+          .regular {
+            display: block;
+          }
           path {
-            fill: set-var(icon__color__sub3, $theme-default, $common);
+            fill: $person-card-icon-color;
           }
         }
 
         &:active,
         &:hover {
           svg {
+            .filled {
+              display: block;
+            }
+            .regular {
+              display: none;
+            }
             path {
-              fill: set-var(icon__color__sub3--hover, $theme-default, $common);
+              fill: $person-card-icon-hover-color;
             }
           }
         }
@@ -156,17 +187,16 @@
     .expanded-details-button {
       display: flex;
       justify-content: center;
-      align-items: center;
       height: 32px;
       svg {
         path {
-          stroke: set-var(icon__color__sub3, $theme-default, $common);
+          stroke: $person-card-icon-color;
         }
       }
 
       &:hover {
         cursor: pointer;
-        background-color: set-var(background-color--hover, $theme-default, $common);
+        background-color: $person-card-expanded-background-color-hover;
       }
     }
 
@@ -182,7 +212,7 @@
           content: '';
           width: 90%;
           transform: translateX(-50%);
-          border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
+          border-bottom: 1px solid $person-card-border-color;
           left: 50%;
           bottom: 0;
         }
@@ -195,25 +225,21 @@
 
         &__title {
           flex-grow: 1;
-          color: set-var(title__color__subtitle, $theme-default, $common);
+          color: $person-card-line1-text-color;
           font-size: 14px;
           font-weight: 600;
           line-height: 19px;
         }
 
         &__show-more {
-          color: set-var(show-more, $theme-default, $person-card-theme);
           font-size: 12px;
           font-weight: 600;
           align-self: center;
           vertical-align: top;
-          --neutral-fill-stealth-rest: transparent;
-          --neutral-fill-stealth-hover: #{set-var(background-color--active, $theme-default, $common)};
           --base-height-multiplier: 6;
 
           &:hover {
-            cursor: pointer;
-            color: set-var(show-more-hover, $theme-default, $person-card-theme);
+            background-color: $person-card-fluent-background-color-hover;
           }
         }
 
@@ -226,15 +252,24 @@
         }
       }
     }
+    .divider {
+      z-index: 100;
+      position: relative;
+      width: 375px;
+      margin: 0;
+      border-style: none;
+      border-bottom: 1px solid $person-card-border-color;
+    }
 
     .section-nav {
-      border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
-      height: 36px;
-      padding-bottom: 2px;
+      height: 35px;
 
       fluent-tabs {
         grid-template-columns: minmax(1px, 0.1fr);
-        --accent-fill-rest: #{set-var(icon__color__sub3, $theme-default, $common)};
+
+        &.horizontal::part(activeIndicator) {
+          width: 10px;
+        }
 
         fluent-tab-panel {
           max-height: 360px;
@@ -267,15 +302,10 @@
             border-radius: 11px;
           }
           &::-webkit-scrollbar-button {
-            background: set-var(card-bg, $theme-default, $person-card-theme);
             height: 1px;
           }
           &::-webkit-scrollbar-track {
-            background: set-var(card-bg, $theme-default, $person-card-theme);
             border-radius: 10px;
-          }
-          &::-webkit-scrollbar-track-piece {
-            background: set-var(card-bg, $theme-default, $person-card-theme);
           }
           &::-webkit-scrollbar-thumb {
             background: grey;
@@ -293,18 +323,21 @@
           &.section-nav__icon {
             cursor: pointer;
             box-sizing: border-box;
-            width: 48px;
+            width: 53px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
 
             svg {
-              fill: set-var(icon__color, $theme-default, $common);
+              fill: $person-card-fluent-background-color;
             }
 
             &:hover {
-              background: set-var(tab__background-color--hover, $theme-default, $common);
+              background: $person-card-fluent-background-color-hover;
               border-radius: 4px;
+              z-index: 0;
+              position: relative;
             }
           }
         }
@@ -354,16 +387,13 @@
 
     fluent-text-field {
       margin: 10px 10px 10px 16px;
-      --neutral-fill-input-rest: #{set-var(input-outlined__background-color, $theme-default, $common)};
-      --neutral-fill-input-hover: #{set-var(input-outlined__background-color--hover, $theme-default, $common)};
-      --neutral-fill-input-focus: #{set-var(input-outlined__background-color--focus, $theme-default, $common)};
+      --neutral-fill-input-rest: $person-card-background-color;
+      --neutral-fill-input-hover: $person-card-chat-input-hover-color;
+      --neutral-fill-input-focus: $person-card-chat-input-focus-color;
       width: 300px;
       margin-inline-start: 16px;
       border-radius: 4px;
-
-      &:focus-within {
-        --neutral-fill-secondary-rest: #{set-var(card-bg, $theme-default, $person-card-theme)};
-      }
+      border: 1px solid $person-card-chat-input-border-color;
     }
 
     .send-message-icon {
@@ -374,7 +404,7 @@
     svg {
       height: 17px;
       width: 16px;
-      fill: set-var(icon__color, $theme-default, $common);
+      fill: $person-card-chat-input-border-color;
 
       &:hover {
         filter: brightness(0.5);
@@ -383,6 +413,29 @@
       &:disabled {
         filter: none;
       }
+    }
+  }
+}
+
+:host .person-root.large,
+:host .person-root.threelines,
+:host mgt-person.person-root.large,
+:host mgt-person.person-root.threelines {
+  --person-avatar-size-3-lines: 75px;
+}
+
+:host fluent-button {
+  &.section__show-more.lightweight::part(control),
+  &.close-button.lightweight::part(control) {
+    background: $person-card-fluent-background-color;
+  }
+  &.icon::part(control),
+  &.nav__back::part(control) {
+    border: none;
+    padding: 0;
+    background: none;
+    :hover {
+      background: none;
     }
   }
 }
