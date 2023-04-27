@@ -188,6 +188,11 @@ const plannerAssignment = {
  * @cssprop --task-incomplete-padding - {Length} The padding of a task that is incomplete. Default is 10px.
  * @cssprop --tasks-gap - {Length} The size of the gap between two tasks in a row. Default is 20px.
  *
+ * @cssprop --tasks-background-color - {Color} the color of the background where the tasks are rendered.
+ * @cssprop --tasks-border - {Length} the border of the area the tasks are rendered. Default is none.
+ * @cssprop --tasks-border-radius - {Length} the border radius of the area where the tasks are rendered. Default is none.
+ * @cssprop --tasks-padding - {Length} the padding of the are where the tasks are rendered. Default is 12px.
+ *
  * TODO: add props for tasks. Background, border, border-radius, padding.
  *
  */

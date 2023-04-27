@@ -66,6 +66,11 @@ export const CustomCSSProperties = () => html`
         --task-complete-padding: 8px;
         --task-incomplete-padding: 12px;
         --tasks-gap: 8px;
+
+        --tasks-background-color: violet;
+        --tasks-border: 2px dashed green;
+        --tasks-border-radius: 12px;
+        --tasks-padding: 16px;
     }
   </style>
   <mgt-tasks></mgt-tasks>

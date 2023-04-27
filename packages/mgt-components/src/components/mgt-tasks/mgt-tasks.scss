@@ -66,9 +66,16 @@ $task-complete-padding: var(--task-complete-padding, 10px);
 $task-incomplete-padding: var(--task-incomplete-padding, 10px);
 $tasks-gap: var(--tasks-gap, 20px);
 
+$tasks-background-color: var(--tasks-background-color, var(--neutral-layer-2));
+$tasks-border: var(--tasks-border, 0);
+$tasks-border-radius: var(--tasks-border-radius, 0);
+$tasks-padding: var(--tasks-padding, 12px);
+
 :host {
-  background-color: var(--neutral-layer-2);
-  padding: 12px;
+  background-color: $tasks-background-color;
+  padding: $tasks-padding;
+  border: $tasks-border;
+  border-radius: $tasks-border-radius;
 
   .Header {
     display: flex;
