@@ -126,14 +126,14 @@ export class MgtDotOptions extends MgtBaseComponent {
     this.open = !this.open;
   };
 
-  private onDotKeydown(e: KeyboardEvent) {
+  private onDotKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       e.stopPropagation();
 
       this.open = !this.open;
     }
-  }
+  };
 
   private handleKeydownMenuOption(e: KeyboardEvent) {
     if (e.key === 'Enter') {

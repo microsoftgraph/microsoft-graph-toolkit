@@ -10,6 +10,8 @@
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
 $dot-options-translateX: var(--dot-options-translateX, translateX(-50px));
+$dot-btn-bg: var(--dot-options-button-background-color, var(--neutral-fill-stealth-rest));
+$dot-btn-hover-bg: var(--dot-options-button-hover-background-color, var(--neutral-fill-stealth-hover));
 
 :host {
   font-family: $font-family;
@@ -32,6 +34,16 @@ $dot-options-translateX: var(--dot-options-translateX, translateX(-50px));
       right: 0px;
       width: max-content;
       padding: 4px;
+    }
+  }
+
+  fluent-button {
+    &::part(control) {
+      background: $dot-btn-bg;
+
+      &:hover {
+        background: $dot-btn-hover-bg;
+      }
     }
   }
 }
