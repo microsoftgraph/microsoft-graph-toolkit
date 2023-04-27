@@ -127,6 +127,12 @@ $tasks-padding: var(--tasks-padding, 12px);
       align-items: flex-start;
       justify-content: space-between;
 
+      &.Updating {
+        background: var(--neutral-stroke-rest) !important;
+        pointer-events: none;
+        opacity: 0.4;
+      }
+
       &.Complete {
         border: $task-complete-border;
         border-radius: $task-complete-border-radius;

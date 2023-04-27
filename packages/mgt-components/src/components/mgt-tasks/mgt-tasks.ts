@@ -19,7 +19,7 @@ import {
   mgtHtml,
   customElement
 } from '@microsoft/mgt-element';
-import { getShortDateString } from '../../utils/Utils';
+import { debounce, getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
@@ -1162,7 +1162,6 @@ export class MgtTasks extends MgtTemplatedComponent {
       taskDetails = html`${group} ${folder} ${taskPeople} ${taskDue}`;
     }
 
-    // TODO: find out how to make the options classes colors match task state.
     const taskOptions =
       this.readOnly || this.hideOptions
         ? null
@@ -1184,6 +1183,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     // TODO: change the background colors of the task when you (un)check.
     return html`
       <div
+        id="task-${task.id}"
         class=${taskClasses}
         @click=${() => this.handleTaskClick(task)}>
         <div class="TaskDetailsContainer">
@@ -1221,12 +1221,17 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private async checkTask(e: MouseEvent, task: ITask) {
     if (!this.readOnly) {
+      const target = this.shadowRoot.querySelector(`#task-${task.id}`);
+      if (target) target.classList.add('Updating');
       if (!task.completed) {
         await this.completeTask(task);
       } else {
         await this.uncompleteTask(task);
       }
-
+      // wait a bit before removing the freeze on the task updating
+      debounce(() => {
+        if (target) target.classList.remove('Updating');
+      }, 2000)();
       e.stopPropagation();
       e.preventDefault();
     }
