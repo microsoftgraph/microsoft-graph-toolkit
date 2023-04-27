@@ -71,10 +71,6 @@ $task-new-input-background-color: var(--task-new-input-background-color, $input-
 $task-new-input-hover-background-color: var(--task-new-input-hover-background-color, $input-hover-bg);
 $task-new-input-placeholder-color: var(--task-new-input-placeholder-color, var(--input-placeholder-rest));
 
-$input-bg: padding-box linear-gradient(var(--neutral-fill-input-rest), var(--neutral-fill-input-rest)),
-  border-box var(--neutral-stroke-input-rest);
-$input-hover-bg: padding-box linear-gradient(var(--neutral-fill-input-hover), var(--neutral-fill-input-hover)),
-  border-box var(--neutral-stroke-input-hover);
 $task-new-dropdown-border: var(--task-new-dropdown-border, calc(var(--stroke-width) * 1px) solid transparent);
 $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(var(--control-corner-radius) * 1px));
 $task-new-dropdown-background-color: var(--task-new-dropdown-background-color, $input-bg);
