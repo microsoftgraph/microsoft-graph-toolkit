@@ -64,7 +64,7 @@ $task-complete-border-radius: var(--task-complete-border-radius, 4px);
 $task-incomplete-border-radius: var(--task-incomplete-border-radius, 4px);
 $task-complete-padding: var(--task-complete-padding, 10px);
 $task-incomplete-padding: var(--task-incomplete-padding, 10px);
-$tasks-gap: var(--tasks-gap, 4px);
+$tasks-gap: var(--tasks-gap, 20px);
 
 :host {
   background-color: var(--neutral-layer-2);
@@ -112,11 +112,11 @@ $tasks-gap: var(--tasks-gap, 4px);
   .Tasks {
     display: flex;
     flex-direction: column;
-    row-gap: 20px;
+    row-gap: $tasks-gap;
 
     .Task {
       display: flex;
-      column-gap: $tasks-gap;
+      column-gap: 4px;
       align-items: flex-start;
       justify-content: space-between;
 
