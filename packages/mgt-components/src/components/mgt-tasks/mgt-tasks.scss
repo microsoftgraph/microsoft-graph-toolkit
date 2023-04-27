@@ -87,6 +87,9 @@ $task-new-dropdown-option-hover-bg-color: var(
   var(--neutral-fill-stealth-hover)
 );
 
+$task-new-person-icon-color: var(--task-new-person-icon-color, var(--neutral-foreground-hint));
+$task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--neutral-foreground-hint));
+
 :host {
   background-color: $tasks-background-color;
   padding: $tasks-padding;
@@ -343,6 +346,11 @@ $task-new-dropdown-option-hover-bg-color: var(
   mgt-people {
     [slot='no-data'] {
       margin-top: 8px;
+      color: $task-new-person-icon-text-color;
+
+      svg {
+        fill: $task-new-person-icon-color;
+      }
     }
   }
 }

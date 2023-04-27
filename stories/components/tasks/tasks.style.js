@@ -88,6 +88,9 @@ export const CustomCSSProperties = () => html`
         --task-new-dropdown-option-text-color: blue;
         --task-new-dropdown-list-background-color: yellow;
         --task-new-dropdown-option-hover-background-color: yellowgreen;
+
+        --task-new-person-icon-text-color: blue;
+        --task-new-person-icon-color: blue;
       }
   </style>
   <mgt-tasks></mgt-tasks>

@@ -166,9 +166,6 @@ const plannerAssignment = {
  * @cssprop --task-new-input-background-color - {Color} the background color of the new task input.
  * @cssprop --task-new-input-hover-background-color - {Color} the background color of the new task input when you hover.
  * @cssprop --task-new-input-placeholder-color - {Color} the placeholder colder of the new task input.
- *
- *
- *
  * @cssprop --task-new-dropdown-border - {Length} the border of the dropdown for a new task. Default is fluent UI dropdown border.
  * @cssprop --task-new-dropdown-border-radius - {Length} the border radius of the dropdown for a new task. Default is fluent UI dropdown border.
  * @cssprop --task-new-dropdown-background-color - {Color} the background color of the new task dropdown.
@@ -177,6 +174,8 @@ const plannerAssignment = {
  * @cssprop --task-new-dropdown-list-background-color - {Color} the background color of the dropdown list options.
  * @cssprop --task-new-dropdown-option-text-color - {Color} the text color of the dropdown option text.
  * @cssprop --task-new-dropdown-option-hover-background-color - {Color} the background color of the dropdown option when you hover.
+ * @cssprop --task-new-person-icon-color - {Color} color of the assign person text.
+ * @cssprop --task-new-person-icon-text-color - {Color} color of the text beside the assign person icon.
  *
  *
  * @cssprop --task-complete-checkbox-background-color - {Color} A completed task checkbox background color.
