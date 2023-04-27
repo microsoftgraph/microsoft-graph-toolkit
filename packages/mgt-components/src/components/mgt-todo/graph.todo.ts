@@ -46,7 +46,7 @@ export interface TodoTask {
   status: TaskStatus;
   createdDateTime: Date;
   completedDateTime: DateTimeTimeZone;
-  lastModifiedDate: Date;
+  lastModifiedDateTime: Date;
   bodyLastModifiedDateTime: Date;
   dueDateTime: DateTimeTimeZone;
   isReminderOn: boolean;

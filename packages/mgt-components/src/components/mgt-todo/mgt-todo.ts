@@ -126,14 +126,24 @@ export class MgtTodo extends MgtTasksBase {
     if (tasks && this.taskFilter) {
       tasks = tasks.filter(task => this.taskFilter(task));
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const completedTasks = tasks.filter(task => (TaskStatus as any)[task.status] === TaskStatus.completed);
 
     const taskTemplates = repeat(
-      tasks,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      tasks.filter(task => (TaskStatus as any)[task.status] !== TaskStatus.completed),
       task => task.id,
       task => this.renderTask(task)
     );
+
+    const completedTaskTemplates = repeat(
+      completedTasks,
+      task => task.id,
+      task => this.renderCompletedTask(task)
+    );
     return html`
       ${taskTemplates}
+      ${completedTaskTemplates}
     `;
   }
 
@@ -279,8 +289,58 @@ export class MgtTodo extends MgtTasksBase {
       return this.renderTemplate('task', context, task.id);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const isCompleted = (TaskStatus as any)[task.status] === TaskStatus.completed;
+    let taskDetailsTemplate = null;
+
+    const taskDueTemplate = task.dueDateTime
+      ? html`
+        <span class="TaskCalendar">${getSvg(SvgIcon.Calendar)}</span>
+        <span class="TaskDueDate">${getDateString(new Date(task.dueDateTime.dateTime))}</span>
+      `
+      : html``;
+
+    if (this.hasTemplate('task-details')) {
+      taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
+    } else {
+      taskDetailsTemplate = html`
+      <div class="TaskDetails">
+        <div class="Title">${task.title}</div>
+        <div class="TaskDue">${taskDueTemplate}</div>
+        <fluent-button class="TaskDelete"
+          @click="${() => this.removeTask(task.id)}"
+          aria-label="${this.strings.deleteTaskLabel}">
+          ${getSvg(SvgIcon.Delete)}
+        </fluent-button>
+      </div>
+      `;
+    }
+
+    const taskClasses = classMap({
+      ReadOnly: this.readOnly,
+      Task: true
+    });
+
+    return html`
+      <fluent-checkbox id=${task.id} class=${taskClasses} ?checked=${false} @click="${() =>
+      this.handleTaskCheckClick(task)}">
+        ${taskDetailsTemplate}
+      </fluent-checkbox>
+    `;
+  };
+
+  /**
+   * Render a completed task in the list.
+   *
+   * @protected
+   * @param {TodoTask} task
+   * @returns {TemplateResult}
+   * @memberof MgtTodo
+   */
+  protected renderCompletedTask = (task: TodoTask) => {
+    const context = { task, list: this.currentList };
+
+    if (this.hasTemplate('task')) {
+      return this.renderTemplate('task', context, task.id);
+    }
 
     let taskDetailsTemplate = null;
 
@@ -308,21 +368,15 @@ export class MgtTodo extends MgtTasksBase {
     }
 
     const taskClasses = classMap({
-      Complete: isCompleted,
-      Incomplete: !isCompleted,
+      Complete: true,
       ReadOnly: this.readOnly,
-      Task: true,
-      checked: isCompleted
+      Task: true
     });
 
-    const taskCheckContent = isCompleted
-      ? html`
-          ${getSvg(SvgIcon.CheckMark)}
-        `
-      : null;
+    const taskCheckContent = html`${getSvg(SvgIcon.CheckMark)}`;
 
     return html`
-      <fluent-checkbox id=${task.id} class=${taskClasses} ?checked=${isCompleted} @click="${() =>
+      <fluent-checkbox id=${task.id} class=${taskClasses} ?checked=${true} @click="${() =>
       this.handleTaskCheckClick(task)}">
         <div slot="checked-indicator">
           ${taskCheckContent}
@@ -409,7 +463,11 @@ export class MgtTodo extends MgtTasksBase {
     this._isLoadingTasks = true;
     this.currentList = list;
 
-    this._tasks = await getTodoTasks(this._graph, list.id);
+    let tasks = await getTodoTasks(this._graph, list.id);
+    tasks = tasks.sort((a, b) => {
+      return new Date(a.lastModifiedDateTime).getTime() - new Date(b.lastModifiedDateTime).getTime();
+    });
+    this._tasks = tasks;
 
     this._isLoadingTasks = false;
     this.requestUpdate();
