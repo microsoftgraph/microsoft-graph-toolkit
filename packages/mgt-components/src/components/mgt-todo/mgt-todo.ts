@@ -320,8 +320,7 @@ export class MgtTodo extends MgtTasksBase {
     });
 
     return html`
-      <fluent-checkbox id=${task.id} class=${taskClasses} ?checked=${false} @click="${() =>
-      this.handleTaskCheckClick(task)}">
+      <fluent-checkbox id=${task.id} class=${taskClasses} @click="${() => this.handleTaskCheckClick(task)}">
         ${taskDetailsTemplate}
       </fluent-checkbox>
     `;
@@ -376,8 +375,7 @@ export class MgtTodo extends MgtTasksBase {
     const taskCheckContent = html`${getSvg(SvgIcon.CheckMark)}`;
 
     return html`
-      <fluent-checkbox id=${task.id} class=${taskClasses} ?checked=${true} @click="${() =>
-      this.handleTaskCheckClick(task)}">
+      <fluent-checkbox id=${task.id} class=${taskClasses} checked @click="${() => this.handleTaskCheckClick(task)}">
         <div slot="checked-indicator">
           ${taskCheckContent}
         </div>
