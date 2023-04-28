@@ -137,7 +137,9 @@ export class MgtTodo extends MgtTasksBase {
     );
 
     const completedTaskTemplates = repeat(
-      completedTasks,
+      completedTasks.sort((a, b) => {
+        return new Date(a.lastModifiedDateTime).getTime() - new Date(b.lastModifiedDateTime).getTime();
+      }),
       task => task.id,
       task => this.renderCompletedTask(task)
     );
@@ -442,11 +444,7 @@ export class MgtTodo extends MgtTasksBase {
     this._isLoadingTasks = true;
     this.currentList = list;
 
-    let tasks = await getTodoTasks(this._graph, list.id);
-    tasks = tasks.sort((a, b) => {
-      return new Date(b.lastModifiedDateTime).getTime() - new Date(a.lastModifiedDateTime).getTime();
-    });
-    this._tasks = tasks;
+    this._tasks = await getTodoTasks(this._graph, list.id);
 
     this._isLoadingTasks = false;
     this.requestUpdate();
