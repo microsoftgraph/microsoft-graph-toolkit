@@ -24,6 +24,8 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * @export
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --picker-background-color - {Color} Picker component background color
  */
 // @customElement('mgt-picker')
 @customElement('picker')
@@ -211,7 +213,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected renderPicker(): TemplateResult {
     return mgtHtml`
-      <fluent-combobox id="combobox" autocomplete="list" placeholder=${this.placeholder}>
+      <fluent-combobox part="picker" class="picker" id="combobox" autocomplete="list" placeholder=${this.placeholder}>
         ${this.response.map(
           item => html`
           <fluent-option value=${item.id} @click=${(e: MouseEvent) => this.handleClick(e, item)}> ${
@@ -266,6 +268,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private handleClick(e: MouseEvent, item: any) {
-    this.fireCustomEvent('selectionChanged', item);
+    this.fireCustomEvent('selectionChanged', item, true, false, true);
   }
 }
