@@ -7,7 +7,7 @@ name: Build pr
 
 on:
   pull_request:
-    branches: [main, release/**, next/**, feat/add-jest-tests]
+    branches: [main, release/**, next/**]
 
 jobs:
   build:
@@ -36,8 +36,8 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn
       - run: node scripts/setVersion.js --next
-      - run: yarn run tsc -v
       - run: yarn build
+      - run: yarn lint
       - run: yarn test
       - name: Archive test results
         uses: actions/upload-artifact@v2 # upload test results

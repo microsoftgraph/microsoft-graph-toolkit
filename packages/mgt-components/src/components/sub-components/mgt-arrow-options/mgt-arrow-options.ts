@@ -70,13 +70,13 @@ export class MgtArrowOptions extends MgtBaseComponent {
     this._clickHandler = (e: MouseEvent) => (this.open = false);
   }
 
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this._clickHandler);
   }
 
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   public disconnectedCallback() {
     window.removeEventListener('click', this._clickHandler);
     super.disconnectedCallback();
@@ -88,14 +88,14 @@ export class MgtArrowOptions extends MgtBaseComponent {
    * @param {MouseEvent} e attaches to Header to open menu
    * @memberof MgtArrowOptions
    */
-  public onHeaderClick(e: MouseEvent) {
+  public onHeaderClick = (e: MouseEvent) => {
     const keys = Object.keys(this.options);
     if (keys.length > 1) {
       e.preventDefault();
       e.stopPropagation();
       this.open = !this.open;
     }
-  }
+  };
 
   /**
    * Invoked on each update to perform rendering tasks. This method must return
@@ -104,7 +104,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
    */
   public render() {
     return html`
-      <span class="Header" @click=${e => this.onHeaderClick(e)}>
+      <span class="Header" @click=${this.onHeaderClick}>
         <span class="CurrentValue">${this.value}</span>
       </span>
       <div class=${classMap({ Menu: true, Open: this.open, Closed: !this.open })}>

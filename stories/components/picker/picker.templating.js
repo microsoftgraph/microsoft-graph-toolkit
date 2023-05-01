@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 
 export default {
   title: 'Components / mgt-picker / Templating',
-  component: 'mgt-picker',
+  component: 'picker',
   decorators: [withCodeEditor]
 };
 

@@ -5,6 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
+type ContextualTemplateElement = HTMLTemplateElement & {
+  /**
+   * The data context of the parent template
+   */
+  $parentTemplateContext?: object;
+};
+
 /**
  * Helper class for Template Instantiation
  *
@@ -29,10 +36,10 @@ export class TemplateHelper {
    * @param template the template to render
    * @param context the data context to be applied
    */
-  public static renderTemplate(root: HTMLElement, template: HTMLTemplateElement, context: object) {
+  public static renderTemplate(root: HTMLElement, template: ContextualTemplateElement, context: object) {
     // inherit context from parent template
-    if ((template as any).$parentTemplateContext) {
-      context = { ...context, $parent: (template as any).$parentTemplateContext };
+    if (template.$parentTemplateContext) {
+      context = { ...context, $parent: template.$parentTemplateContext };
     }
 
     let rendered: Node;
@@ -42,9 +49,9 @@ export class TemplateHelper {
       rendered = this.renderNode(templateContent, root, context);
     } else if (template.childNodes.length) {
       const div = document.createElement('div');
-      // tslint:disable-next-line: prefer-for-of
-      for (let i = 0; i < template.childNodes.length; i++) {
-        div.appendChild(this.simpleCloneNode(template.childNodes[i]));
+
+      for (const node of template.childNodes) {
+        div.appendChild(this.simpleCloneNode(node));
       }
       rendered = this.renderNode(div, root, context);
     }
@@ -98,7 +105,7 @@ export class TemplateHelper {
   private static _endExpression: string;
   private static _expression: RegExp;
 
-  private static escapeRegex(string) {
+  private static escapeRegex(string: string) {
     return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
   }
 
@@ -111,9 +118,8 @@ export class TemplateHelper {
 
     const clone = node.cloneNode(false);
 
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < node.childNodes.length; i++) {
-      const childClone = this.simpleCloneNode(node.childNodes[i]);
+    for (const child of node.childNodes) {
+      const childClone = this.simpleCloneNode(child);
       if (childClone) {
         clone.appendChild(childClone);
       }
@@ -123,13 +129,13 @@ export class TemplateHelper {
   }
 
   private static expandExpressionsAsString(str: string, context: object) {
-    return str.replace(this.expression, (match, p1) => {
+    return str.replace(this.expression, (match: string, p1: string) => {
       const value = this.evalInContext(p1 || this.trimExpression(match), context);
       if (value) {
         if (typeof value === 'object') {
           return JSON.stringify(value);
         } else {
-          return (value as any).toString();
+          return value.toString();
         }
       }
       return '';
@@ -141,19 +147,15 @@ export class TemplateHelper {
       node.textContent = this.expandExpressionsAsString(node.textContent, context);
       return node;
     } else if (node.nodeName === 'TEMPLATE') {
-      (node as any).$parentTemplateContext = context;
+      (node as ContextualTemplateElement).$parentTemplateContext = context;
       return node;
     }
 
-    // tslint:disable-next-line: prefer-const
-    let nodeElement = node as HTMLElement;
+    const nodeElement = node as HTMLElement;
 
     // replace attribute values
     if (nodeElement.attributes) {
-      // tslint:disable-next-line: prefer-for-of
-      for (let i = 0; i < nodeElement.attributes.length; i++) {
-        const attribute = nodeElement.attributes[i];
-
+      for (const attribute of nodeElement.attributes) {
         if (attribute.name === 'data-props') {
           const propsValue = this.trimExpression(attribute.value);
           for (const prop of propsValue.split(',')) {
@@ -165,6 +167,7 @@ export class TemplateHelper {
               if (key.startsWith('@')) {
                 // event
                 if (typeof value === 'function') {
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                   nodeElement.addEventListener(key.substring(1), e => value(e, context, root));
                 }
               } else {
@@ -180,15 +183,13 @@ export class TemplateHelper {
 
     // don't process nodes that will loop yet, but
     // keep a reference of them
-    const loopChildren = [];
+    const loopChildren: HTMLElement[] = [];
 
     // list of children to remove (ex, when data-if == false)
     const removeChildren = [];
     let previousChildWasIfAndTrue = false;
 
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < node.childNodes.length; i++) {
-      const childNode = node.childNodes[i];
+    for (const childNode of node.childNodes) {
       const childElement = childNode as HTMLElement;
       let previousChildWasIfAndTrueSet = false;
 
@@ -236,10 +237,7 @@ export class TemplateHelper {
     }
 
     // now handle nodes that should loop
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < loopChildren.length; i++) {
-      const childElement = loopChildren[i] as HTMLElement;
-
+    for (const childElement of loopChildren) {
       const loopExpression = childElement.dataset.for;
       const loopTokens = this.trimExpression(loopExpression).split(/\s(in|of)\s/i);
 
@@ -260,6 +258,7 @@ export class TemplateHelper {
               $index: j,
               ...context
             };
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             newContext[itemName] = list[j];
 
             const clone = childElement.cloneNode(true);
@@ -274,19 +273,22 @@ export class TemplateHelper {
     return node;
   }
 
-  private static evalBoolInContext(expression, context) {
+  private static evalBoolInContext(expression: string, context: object): boolean {
     context = { ...context, ...this.globalContext };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-implied-eval
     return new Function('with(this) { return !!(' + expression + ')}').call(context);
   }
 
-  private static evalInContext(expression, context) {
+  private static evalInContext(expression: string, context: object): unknown {
     context = { ...context, ...this.globalContext };
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
     const func = new Function('with(this) { return ' + expression + ';}');
-    let result;
+    let result: unknown;
     try {
       result = func.call(context);
-      // tslint:disable-next-line: no-empty
-    } catch (e) {}
+    } catch (e) {
+      /* empty */
+    }
     return result;
   }
 

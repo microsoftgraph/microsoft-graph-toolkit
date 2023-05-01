@@ -7,9 +7,13 @@
 
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
 import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { strings } from './strings';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+import { fluentTextField, fluentButton, fluentCalendar } from '@fluentui/web-components';
+import { TodoTask } from '../mgt-todo/graph.todo';
+
+registerFluentComponents(fluentTextField, fluentButton, fluentCalendar);
 
 /**
  * The foundation for creating task based components.
@@ -21,6 +25,7 @@ import { strings } from './strings';
 export abstract class MgtTasksBase extends MgtTemplatedComponent {
   /**
    * determines if tasks are un-editable
+   *
    * @type {boolean}
    */
   @property({ attribute: 'read-only', type: Boolean })
@@ -46,6 +51,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
   /**
    * if set, the component will only show tasks from the target list
+   *
    * @type {string}
    */
   @property({ attribute: 'target-id', type: String })
@@ -60,21 +66,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   @property({ attribute: 'initial-id', type: String })
   public initialId: string;
 
-  /**
-   * The name of a potential new task
-   *
-   * @readonly
-   * @protected
-   * @type {string}
-   * @memberof MgtTasksBase
-   */
-  protected get newTaskName(): string {
-    return this._newTaskName;
-  }
-
-  private _isNewTaskBeingAdded: boolean;
-  private _isNewTaskVisible: boolean;
-  private _newTaskName: string;
   private _previousMediaQuery: ComponentMediaQuery;
 
   protected get strings(): { [x: string]: string } {
@@ -86,7 +77,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
     this.clearState();
     this._previousMediaQuery = this.mediaQuery;
-    this.onResize = this.onResize.bind(this);
   }
 
   /**
@@ -103,7 +93,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
       case 'target-id':
       case 'initial-id':
         this.clearState();
-        this.requestStateUpdate();
+        void this.requestStateUpdate();
         break;
     }
   }
@@ -143,41 +133,15 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
       return this.renderLoadingTask();
     }
 
-    const headerTemplate = !this.hideHeader ? this.renderHeader() : null;
-    const newTaskTemplate = this._isNewTaskVisible ? this.renderNewTaskPanel() : null;
+    const picker = this.renderPicker();
+    const newTaskTemplate = this.renderNewTask();
     const tasksTemplate = this.isLoadingState ? this.renderLoadingTask() : this.renderTasks();
 
     return html`
-      ${headerTemplate} ${newTaskTemplate}
+      ${picker}
+      ${newTaskTemplate}
       <div class="Tasks" dir=${this.direction}>
         ${tasksTemplate}
-      </div>
-    `;
-  }
-
-  /**
-   * Render the header part of the component.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtTodo
-   */
-  protected renderHeader() {
-    const headerContentTemplate = this.renderHeaderContent();
-
-    const addClasses = classMap({
-      AddBarItem: true,
-      NewTaskButton: true,
-      hidden: this.readOnly || this._isNewTaskVisible
-    });
-
-    return html`
-      <div class="Header" dir=${this.direction}>
-        ${headerContentTemplate}
-        <button class="${addClasses}" @click="${() => this.showNewTaskPanel()}">
-          <span class="TaskIcon"></span>
-          <span>${this.strings.addTaskButtonSubtitle}</span>
-        </button>
       </div>
     `;
   }
@@ -192,122 +156,38 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   protected renderLoadingTask() {
     return html`
       <div class="Task LoadingTask">
-        <div class="TaskContent">
-          <div class="TaskCheckContainer">
-            <div class="TaskCheck"></div>
-          </div>
-          <div class="TaskDetailsContainer">
-            <div class="TaskTitle"></div>
-            <div class="TaskDetails">
-              <span class="TaskDetail">
-                <div class="TaskDetailIcon"></div>
-                <div class="TaskDetailName"></div>
-              </span>
-              <span class="TaskDetail">
-                <div class="TaskDetailIcon"></div>
-                <div class="TaskDetailName"></div>
-              </span>
-            </div>
-          </div>
+        <div class="TaskDetails">
+          <div class="Title"></div>
+          <div class="TaskDue"></div>
+          <div class="TaskDelete"></div>
         </div>
       </div>
     `;
   }
 
   /**
-   * Render the panel for creating a new task
+   * Render the panel for creating a new task.
    *
    * @protected
-   * @returns {TemplateResult}
    * @memberof MgtTasksBase
    */
-  protected renderNewTaskPanel(): TemplateResult {
-    const newTaskName = this._newTaskName;
-
-    const taskTitle = html`
-      <input
-        type="text"
-        placeholder="${this.strings.newTaskPlaceholder}"
-        .value="${newTaskName}"
-        label="new-taskName-input"
-        aria-label="new-taskName-input"
-        role="textbox"
-        @input="${(e: Event) => {
-          this._newTaskName = (e.target as HTMLInputElement).value;
-          this.requestUpdate();
-        }}"
-      />
-    `;
-
-    const taskAddClasses = classMap({
-      Disabled: !this._isNewTaskBeingAdded && (!newTaskName || !newTaskName.length),
-      TaskAddButtonContainer: true
-    });
-    const taskAddTemplate = !this._isNewTaskBeingAdded
-      ? html`
-          <div
-            tabindex='0'
-            class="TaskIcon TaskAdd"
-            @click="${() => this.addTask()}"
-            @keypress="${(e: KeyboardEvent) => {
-              if (e.key === 'Enter' || e.key === ' ') this.addTask();
-            }}"
-          >
-          <span>${this.strings.addTaskButtonSubtitle}</span>
-          </div>
-          <div
-            role='button'
-            tabindex='0'
-            class="TaskIcon TaskCancel"
-            @click="${() => this.hideNewTaskPanel()}"
-            @keypress="${(e: KeyboardEvent) => {
-              if (e.key === 'Enter' || e.key === ' ') this.hideNewTaskPanel();
-            }}">
-            <span>${this.strings.cancelNewTaskSubtitle}</span>
-          </div>
-        `
-      : null;
-
-    const newTaskDetailsTemplate = this.renderNewTaskDetails();
-
-    return html`
-      <div dir=${this.direction} class="Task NewTask Incomplete">
-        <div class="TaskContent">
-          <div class="TaskDetailsContainer">
-            <div class="TaskTitle">
-              ${taskTitle}
-            </div>
-            <div class="TaskDetails">
-              ${newTaskDetailsTemplate}
-            </div>
-          </div>
-        </div>
-        <div class="${taskAddClasses}">
-          ${taskAddTemplate}
-        </div>
-      </div>
-    `;
-  }
+  protected abstract renderNewTask(): TemplateResult;
 
   /**
-   * Render the top header part of the component.
+   * Render the generic picker.
    *
    * @protected
-   * @abstract
-   * @returns {TemplateResult}
    * @memberof MgtTasksBase
    */
-  protected abstract renderHeaderContent(): TemplateResult;
+  protected abstract renderPicker(): TemplateResult;
 
   /**
-   * Render the details part of the new task panel
+   * Render the generic picker.
    *
    * @protected
-   * @abstract
-   * @returns {TemplateResult}
    * @memberof MgtTasksBase
    */
-  protected abstract renderNewTaskDetails(): TemplateResult;
+  protected abstract renderPicker(): TemplateResult;
 
   /**
    * Render the list of todo tasks
@@ -319,65 +199,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @memberof MgtTasksBase
    */
   protected abstract renderTasks(): TemplateResult;
-
-  /**
-   * Render a bucket icon.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtTodo
-   */
-  protected renderBucketIcon() {
-    return html`
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M14 2H2V4H3H5H6H10H11H13H14V2ZM10 5H6V6H10V5ZM5 5H3V14H13V5H11V6C11 6.55228 10.5523 7 10 7H6C5.44772 7 5 6.55228 5 6V5ZM1 5H2V14V15H3H13H14V14V5H15V4V2V1H14H2H1V2V4V5Z"
-          fill="#3C3C3C"
-        />
-      </svg>
-    `;
-  }
-
-  /**
-   * Render a calendar icon.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtTodo
-   */
-  protected renderCalendarIcon() {
-    return html`
-        <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 11C5.55228 11 6 10.5523 6 10C6 9.44771 5.55228 9 5 9C4.44772 9 4 9.44771 4 10C4 10.5523 4.44772 11 5 11ZM6 13C6 13.5523 5.55228 14 5 14C4.44772 14 4 13.5523 4 13C4 12.4477 4.44772 12 5 12C5.55228 12 6 12.4477 6 13ZM8 11C8.55229 11 9 10.5523 9 10C9 9.44771 8.55229 9 8 9C7.44771 9 7 9.44771 7 10C7 10.5523 7.44771 11 8 11ZM9 13C9 13.5523 8.55229 14 8 14C7.44771 14 7 13.5523 7 13C7 12.4477 7.44771 12 8 12C8.55229 12 9 12.4477 9 13ZM11 11C11.5523 11 12 10.5523 12 10C12 9.44771 11.5523 9 11 9C10.4477 9 10 9.44771 10 10C10 10.5523 10.4477 11 11 11ZM15 5.5C15 4.11929 13.8807 3 12.5 3H3.5C2.11929 3 1 4.11929 1 5.5V14.5C1 15.8807 2.11929 17 3.5 17H12.5C13.8807 17 15 15.8807 15 14.5V5.5ZM2 7H14V14.5C14 15.3284 13.3284 16 12.5 16H3.5C2.67157 16 2 15.3284 2 14.5V7ZM3.5 4H12.5C13.3284 4 14 4.67157 14 5.5V6H2V5.5C2 4.67157 2.67157 4 3.5 4Z" fill="#717171"/>
-        </svg>
-      `;
-  }
-
-  /**
-   * Create a new todo task and add it to the list
-   *
-   * @protected
-   * @returns
-   * @memberof MgtTasksBase
-   */
-  protected async addTask() {
-    if (this._isNewTaskBeingAdded || !this.newTaskName) {
-      return;
-    }
-
-    this._isNewTaskBeingAdded = true;
-    this.requestUpdate();
-
-    try {
-      await this.createNewTask();
-    } finally {
-      this._isNewTaskBeingAdded = false;
-      this._isNewTaskVisible = false;
-      this.requestUpdate();
-    }
-  }
 
   /**
    * Make a service call to create the new task object.
@@ -394,9 +215,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtTasksBase
    */
-  protected clearNewTaskData(): void {
-    this._newTaskName = '';
-  }
+  protected abstract clearNewTaskData(): void;
 
   /**
    * Clear the component state.
@@ -405,8 +224,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @memberof MgtTasksBase
    */
   protected clearState(): void {
-    this.clearNewTaskData();
-    this._isNewTaskVisible = false;
     this.requestUpdate();
   }
 
@@ -418,9 +235,9 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @param {TodoTask} task
    * @memberof MgtTasksBase
    */
-  protected handleTaskClick(e: Event, task: any) {
+  protected handleTaskClick = (task: TodoTask): void => {
     this.fireCustomEvent('taskClick', { task });
-  }
+  };
 
   /**
    * Convert a date to a properly formatted string
@@ -430,7 +247,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtTasksBase
    */
-  protected dateToInputValue(date: Date) {
+  protected dateToInputValue(date: Date): string {
     if (date) {
       return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0];
     }
@@ -438,21 +255,10 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     return null;
   }
 
-  private showNewTaskPanel(): void {
-    this._isNewTaskVisible = true;
-    this.requestUpdate();
-  }
-
-  private hideNewTaskPanel(): void {
-    this._isNewTaskVisible = false;
-    this.clearNewTaskData();
-    this.requestUpdate();
-  }
-
-  private onResize() {
+  private onResize = () => {
     if (this.mediaQuery !== this._previousMediaQuery) {
       this._previousMediaQuery = this.mediaQuery;
       this.requestUpdate();
     }
-  }
+  };
 }

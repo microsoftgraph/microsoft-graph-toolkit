@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph, BetaGraph, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
+import { IGraph, BetaGraph, CacheService, CacheStore } from '@microsoft/mgt-element';
 import { Team } from '@microsoft/microsoft-graph-types';
 import {
   getPhotoForResource,
@@ -14,6 +14,7 @@ import {
   getIsPhotosCacheEnabled
 } from '../../graph/graph.photos';
 import { schemas } from '../../graph/cacheStores';
+import { CollectionResponse } from '@microsoft/mgt-element';
 
 /**
  * async promise, returns all Teams associated with the user logged in
@@ -21,17 +22,28 @@ import { schemas } from '../../graph/cacheStores';
  * @returns {Promise<Team[]>}
  * @memberof Graph
  */
-export async function getAllMyTeams(graph: IGraph): Promise<Team[]> {
-  const teams = await graph.api('/me/joinedTeams').select(['displayName', 'id', 'isArchived']).get();
-  return teams ? teams.value : null;
-}
+export const getAllMyTeams = async (graph: IGraph): Promise<Team[]> => {
+  const teams = (await graph
+    .api('/me/joinedTeams')
+    .select(['displayName', 'id', 'isArchived'])
+    .get()) as CollectionResponse<Team>;
+
+  return teams?.value;
+};
 
 /** An object collection of cached photos. */
 type CachePhotos = {
   [key: string]: CachePhoto;
 };
 
-export async function getTeamsPhotosforPhotoIds(graph: BetaGraph, teamIds: string[]): Promise<CachePhotos> {
+/**
+ * Load the photos for a give set of teamIds
+ *
+ * @param graph {BetaGraph}
+ * @param teamIds {string[]}
+ * @returns {Promise<CachePhotos>}
+ */
+export const getTeamsPhotosforPhotoIds = async (graph: BetaGraph, teamIds: string[]): Promise<CachePhotos> => {
   let cache: CacheStore<CachePhoto>;
   let photos: CachePhotos = {};
 
@@ -43,25 +55,29 @@ export async function getTeamsPhotosforPhotoIds(graph: BetaGraph, teamIds: strin
         if (photoDetail && getPhotoInvalidationTime() > Date.now() - photoDetail.timeCached) {
           photos[id] = photoDetail;
         }
-      } catch (_) {}
+      } catch (_) {
+        // no-op
+      }
     }
     if (Object.keys(photos).length) {
       return photos;
     }
   }
 
-  let scopes = ['team.readbasic.all'];
+  const scopes = ['team.readbasic.all'];
   photos = {};
 
   for (const id of teamIds) {
     try {
       const photoDetail = await getPhotoForResource(graph, `/teams/${id}`, scopes);
       if (getIsPhotosCacheEnabled() && photoDetail) {
-        cache.putValue(id, photoDetail);
+        await cache.putValue(id, photoDetail);
       }
       photos[id] = photoDetail;
-    } catch (_) {}
+    } catch (_) {
+      // no-op
+    }
   }
 
   return photos;
-}
+};

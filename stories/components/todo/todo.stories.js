@@ -6,12 +6,19 @@
  */
 
 import { html } from 'lit';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Components / mgt-todo',
   component: 'todo',
-  decorators: [withCodeEditor]
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: { code: '<mgt-todo></mgt-todo>' }
+    }
+  }
 };
 
 export const tasks = () => html`

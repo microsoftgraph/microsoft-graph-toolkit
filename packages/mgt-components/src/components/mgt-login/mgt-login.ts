@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit';
+import { CSSResult, html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import {
@@ -35,16 +35,16 @@ import { registerFluentComponents } from '../../utils/FluentComponents';
 registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluentCard);
 
 /**
- *  loginViewType describes the enum strings that can be passed in to determine
- *  size of the mgt-login control.
+ * loginViewType describes the enum strings that can be passed in to determine
+ * size of the mgt-login control.
  */
 export type LoginViewType = 'avatar' | 'compact' | 'full';
 
-// tslint:disable-next-line: completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 type PersonViewConfig = {
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   view: ViewType;
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   avatarSize: AvatarSize;
 };
 
@@ -66,20 +66,22 @@ type PersonViewConfig = {
  * @template flyout-commands (dataContext: {handleSignOut})
  * @template flyout-person-details (dataContext: {personDetails, personImage})
  *
- * @cssprop --font-size - {Length} Login font size
- * @cssprop --font-weight - {Length} Login font weight
- * @cssprop --margin - {String} Margin size
- * @cssprop --button-color - {Color} Login button font color
- * @cssprop --button-color--hover - {Color} Login button font hover color
- * @cssprop --button-background-color--hover - {Color} Login background hover color
- * @cssprop --popup-background-color - {Color} Popup background color
- * @cssprop --popup-color - {Color} Popup font color
- * @cssprop --popup-command-font-size - {Length} Popup command font size
- * @cssprop --popup-command-margin - {String} margins for the logout command in the popup
- * @cssprop --popup-padding - {String} padding applied inside the popup
- * @cssprop --profile-spacing - {String} margin applied to the active account inside the popup
- * @cssprop --profile-spacing-full - {String} margin applied to the active account inside the popup when login-view is full or more that one account is signed in.
- * @cssprop --add-account-button-color - {Color} Color for the text and icon of the add account button
+ * @cssprop --login-signed-in-background - {String} the background properties of the component when signed in.
+ * @cssprop --login-signed-in-hover-background - {String} the background properties of the component when signed in.
+ * @cssprop --login-signed-out-button-background - {String} the background properties of the component when signed out.
+ * @cssprop --login-signed-out-button-hover-background - {String} the background properties of the component when signed out.
+ * @cssprop --login-signed-out-button-text-color - {Color} the background color of the component when signed out.
+ * @cssprop --login-button-padding - {Length} the padding of the button. Default is 0px.
+ * @cssprop --login-popup-background-color - {Color} the background color of the popup.
+ * @cssprop --login-popup-text-color - {Color} the color of the text in the popup.
+ * @cssprop --login-popup-command-button-background-color - {Color} the color of the background to the popup command button.
+ * @cssprop --login-popup-padding - {Length} the padding applied to the popup card. Default is 16px.
+ * @cssprop --login-add-account-button-text-color - {Color} the color for the text and icon of the add account button.
+ * @cssprop --login-add-account-button-background-color - {Color} the color for the background and icon of the add account button.
+ * @cssprop --login-add-account-button-hover-background-color - {Color} the color for the background and icon of the add account button on hover.
+ * @cssprop --login-command-button-text-color - {Color} the color for the text of the command button.
+ * @cssprop --login-command-button-background-color - {Color} the color for the background of the command button.
+ * @cssprop --login-command-button-hover-background-color - {Color} the color for the background of the command button on hovering.
  */
 @customElement('login')
 export class MgtLogin extends MgtTemplatedComponent {
@@ -87,7 +89,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
     return styles;
   }
   /**
@@ -97,12 +99,13 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtLogin
    */
-  protected get strings() {
+  protected get strings(): Record<string, string> {
     return strings;
   }
 
   /**
-   * allows developer to use specific user details for login
+   * Allows developer to use specific user details for login.
+   *
    * @type {IDynamicPerson}
    */
   @property({
@@ -112,8 +115,9 @@ export class MgtLogin extends MgtTemplatedComponent {
   public userDetails: IDynamicPerson;
 
   /**
-   * determines if presence is shown for logged in user
+   * Determines if presence is shown for logged in user
    * defaults to false
+   *
    * @type {boolean}
    */
   @property({
@@ -123,8 +127,9 @@ export class MgtLogin extends MgtTemplatedComponent {
   public showPresence = false;
 
   /**
-   * determines the view style to apply to the logged in user
+   * Determines the view style to apply to the logged in user
    * options are 'full', 'compact', 'avatar', defaults to 'full'
+   *
    * @type {LoginViewType}
    */
   @property({
@@ -156,11 +161,20 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   /**
-   * determines if login menu popup should be showing
+   * Determines if login menu popup should be showing.
+   *
+   * @private
    * @type {boolean}
    */
   @property({ attribute: false }) private _isFlyoutOpen: boolean;
 
+  /**
+   * The image blob string
+   *
+   * @private
+   * @type {string}
+   * @memberof MgtLogin
+   */
   private _image: string;
 
   /**
@@ -170,7 +184,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtLogin
    */
-  private _userDetailsKey: string = '-userDetails';
+  private _userDetailsKey = '-userDetails';
 
   constructor() {
     super();
@@ -215,7 +229,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @returns {Promise<void>}
    * @memberof MgtLogin
    */
-  public async logout(): Promise<void> {
+  public logout = async (): Promise<void> => {
     if (!this.fireCustomEvent('logoutInitiated')) {
       return;
     }
@@ -233,33 +247,29 @@ export class MgtLogin extends MgtTemplatedComponent {
       this.hideFlyout();
       this.fireCustomEvent('logoutCompleted');
     }
-  }
+  };
 
   /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
+   *
+   * @protected
+   * @returns {TemplateResult}
    */
-  protected render() {
-    const classes = {
-      root: true,
-      'vertical-layout': this.usesVerticalPersonCard
-    };
+  protected render(): TemplateResult {
     return html`
-       <div class=${classMap(classes)} dir=${this.direction}>
-         <div>
-           ${this.renderButton()}
-         </div>
-         ${this.renderFlyout()}
-       </div>
-     `;
+      <div class="login-root">
+        ${this.renderButton()}
+        ${this.renderFlyout()}
+      </div>
+    `;
   }
 
   /**
    * Load state into the component.
    *
    * @protected
-   * @returns
    * @memberof MgtLogin
    */
   protected async loadState() {
@@ -285,51 +295,42 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
-  private buildAriaLabel(isSignedIn: boolean, defaultLabel: string) {
+  private buildAriaLabel(isSignedIn: boolean, defaultLabel: string): string {
     if (!isSignedIn) return defaultLabel;
 
     return (defaultLabel = this.userDetails ? this.userDetails.displayName : this.strings.signInLinkSubtitle);
   }
 
   /**
-   * Render the button.
+   * Render the sign in or sign out button.
    *
    * @protected
    * @memberof MgtLogin
+   * @returns {TemplateResult}
    */
-  protected renderButton() {
+  protected renderButton(): TemplateResult {
     const isSignedIn = Providers.globalProvider?.state === ProviderState.SignedIn;
     const ariaLabel = this.buildAriaLabel(isSignedIn, this.strings.signInLinkSubtitle);
+    const loginClasses = classMap({
+      'signed-in': isSignedIn && Boolean(this.userDetails),
+      'signed-out': !isSignedIn,
+      small: this.loginView === 'avatar'
+    });
+    const appearance = isSignedIn ? 'stealth' : 'neutral';
+    const buttonContentTemplate =
+      isSignedIn && this.userDetails
+        ? this.renderSignedInButtonContent(this.userDetails, this._image)
+        : this.renderSignedOutButtonContent();
 
-    const classes = {
-      'login-button': true,
-      'signed-in': isSignedIn,
-      small: this.loginView === 'avatar',
-      'full-size': this.loginView === 'full',
-      'no-click': this._isFlyoutOpen
-    };
-    // uses a regular button for the signed in state to ease styling
-    return isSignedIn && this.userDetails
-      ? html`
-        <button
-          aria-label=${ariaLabel}
-          @click=${this.onClick}
-          class=${classMap(classes)}
-        >
-          ${this.renderSignedInButtonContent(this.userDetails, this._image)}
-        </button>
-      `
-      : html`
-        <fluent-button
-          appearance="neutral"
-          aria-label=${ariaLabel}
-          ?disabled=${this.isLoadingState}
-          @click=${this.onClick}
-          class=${classMap(classes)}
-        >
-          ${this.renderSignedOutButtonContent()}
-        </fluent-button>
-      `;
+    return html`
+      <fluent-button
+        appearance=${appearance}
+        aria-label=${ariaLabel}
+        ?disabled=${this.isLoadingState}
+        @click=${this.onClick}
+        class=${loginClasses}>
+          ${buttonContentTemplate}
+      </fluent-button>`;
   }
 
   private flyoutOpened = () => {
@@ -344,43 +345,41 @@ export class MgtLogin extends MgtTemplatedComponent {
    *
    * @protected
    * @memberof MgtLogin
+   * @returns {TemplateResult}
    */
-  protected renderFlyout() {
+  protected renderFlyout(): TemplateResult {
     return mgtHtml`
       <mgt-flyout
         class="flyout"
         light-dismiss
         @opened=${this.flyoutOpened}
-        @closed=${this.flyoutClosed}
-      >
+        @closed=${this.flyoutClosed}>
         <div slot="flyout">
-          <!-- Setting the card fill ensures the correct colors on hover states -->
-          <fluent-card card-fill-color="#fbfbfb">
+          <fluent-card class="flyout-card">
             ${this.renderFlyoutContent()}
           </fluent-card>
         </div>
-      </mgt-flyout>
-      `;
+      </mgt-flyout>`;
   }
 
   /**
    * Render the flyout menu content.
    *
    * @protected
-   * @returns
+   * @returns {TemplateResult}
    * @memberof MgtLogin
    */
-  protected renderFlyoutContent() {
+  protected renderFlyoutContent(): TemplateResult {
     if (!this.userDetails) {
       return;
     }
     return html`
        <div class="popup">
          <div class="popup-content">
-           <div class="popup-commands">
+           <div class="commands">
              ${this.renderFlyoutCommands()}
            </div>
-           <div class="inside-content">
+           <div class="content">
              <div class="main-profile">
                ${this.renderFlyoutPersonDetails(this.userDetails, this._image)}
              </div>
@@ -407,10 +406,10 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Render the flyout person details.
    *
    * @protected
-   * @returns
+   * @returns {TemplateResult}
    * @memberof MgtLogin
    */
-  protected renderFlyoutPersonDetails(personDetails: IDynamicPerson, personImage: string) {
+  protected renderFlyoutPersonDetails(personDetails: IDynamicPerson, personImage: string): TemplateResult {
     const template = this.renderTemplate('flyout-person-details', { personDetails, personImage });
     return (
       template ||
@@ -421,9 +420,8 @@ export class MgtLogin extends MgtTemplatedComponent {
           .view=${ViewType.twolines}
           .line2Property=${'email'}
           ?vertical-layout=${this.usesVerticalPersonCard}
-          class="person"
-        />
-        `
+          class="person">
+        </mgt-person>`
     );
   }
 
@@ -431,27 +429,22 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Render the flyout commands.
    *
    * @protected
-   * @returns
+   * @returns {TemplateResult}
    * @memberof MgtLogin
    */
-  protected renderFlyoutCommands() {
+  protected renderFlyoutCommands(): TemplateResult {
     const template = this.renderTemplate('flyout-commands', { handleSignOut: () => this.logout() });
     return (
       template ||
       html`
-        <ul>
-          <li>
-            <fluent-button
-              appearance="lightweight"
-              class="popup-command"
-              @click=${this.logout}
-              aria-label=${this.strings.signOutLinkSubtitle}
-            >
-              ${this.strings.signOutLinkSubtitle}
-            </fluent-button>
-          </li>
-        </ul>
-      `
+        <fluent-button
+          appearance="stealth"
+          size="medium"
+          class="flyout-command"
+          @click=${this.logout}
+          aria-label=${this.strings.signOutLinkSubtitle}>
+            ${this.strings.signOutLinkSubtitle}
+        </fluent-button>`
     );
   }
 
@@ -459,10 +452,10 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Render the button content.
    *
    * @protected
-   * @returns
+   * @returns {TemplateResult}
    * @memberof MgtLogin
    */
-  protected renderButtonContent() {
+  protected renderButtonContent(): TemplateResult {
     if (this.userDetails) {
       return this.renderSignedInButtonContent(this.userDetails, this._image);
     } else {
@@ -471,7 +464,7 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   /**
-   * Renders multi account content to add additional users
+   * Renders the button to allow adding accounts.
    *
    * @protected
    * @returns
@@ -480,20 +473,15 @@ export class MgtLogin extends MgtTemplatedComponent {
   protected renderAddAccountContent() {
     if (Providers.globalProvider.isMultiAccountSupportedAndEnabled) {
       return html`
-          <div class="add-account">
-             <fluent-button
-               appearance="lightweight"
-               class="add-account-button"
-               aria-label="Sign in with different account"
-               @click=${() => {
-                 this.login();
-               }}
-             >
-               <i class="account-switch-icon">${getSvg(SvgIcon.SelectAccount, '#000000')}</i>
-               Sign in with a different account
-             </fluent-button>
-           </div>
-       `;
+        <div class="add-account">
+          <fluent-button
+            appearance="stealth"
+            aria-label="${this.strings.signInWithADifferentAccount}"
+            @click=${() => void this.login()}>
+            <span slot="start"><i>${getSvg(SvgIcon.SelectAccount, 'currentColor')}</i></span>
+            ${this.strings.signInWithADifferentAccount}
+          </fluent-button>
+        </div>`;
     }
   }
 
@@ -511,7 +499,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       case 'full':
       default:
         displayConfig.view = ViewType.twolines;
-        displayConfig.avatarSize = 'large';
+        displayConfig.avatarSize = 'auto';
         break;
     }
     return displayConfig;
@@ -521,10 +509,10 @@ export class MgtLogin extends MgtTemplatedComponent {
    * Render the button content when the user is signed in.
    *
    * @protected
-   * @returns
+   * @returns {TemplateResult}
    * @memberof MgtLogin
    */
-  protected renderSignedInButtonContent(personDetails: IDynamicPerson, personImage: string) {
+  protected renderSignedInButtonContent(personDetails: IDynamicPerson, personImage: string): TemplateResult {
     const template = this.renderTemplate('signed-in-button-content', { personDetails, personImage });
     const displayConfig = this.parsePersonDisplayConfiguration();
     return (
@@ -537,36 +525,34 @@ export class MgtLogin extends MgtTemplatedComponent {
           .showPresence=${this.showPresence}
           .avatarSize=${displayConfig.avatarSize}
           line2-property="email"
-          class="person"
-        />
-       `
+          class="signed-in-person"
+        ></mgt-person`
     );
   }
 
   /**
-   * POC for multi accounts - temporary
+   * Renders multiple accounts that can be used to sign in.
    *
-   * @return {*}
+   * @return {TemplateResult}
    * @memberof MgtLogin
    */
-  renderAccounts() {
+  renderAccounts(): TemplateResult {
     if (
       Providers.globalProvider.state === ProviderState.SignedIn &&
       Providers.globalProvider.isMultiAccountSupportedAndEnabled
     ) {
       const provider = Providers.globalProvider;
-      const list = provider.getAllAccounts();
+      const accounts = provider.getAllAccounts();
 
-      if (list && list.length > 1) {
+      if (accounts?.length > 1) {
         return html`
          <div id="accounts">
-           <fluent-design-system-provider>
-             <fluent-listbox class="list-box" name="Account list">
-              ${list.map(account => {
+             <fluent-listbox class="accounts" name="Account list">
+              ${accounts.map(account => {
                 if (account.id !== provider.getActiveAccount().id) {
                   const details = localStorage.getItem(account.id + this._userDetailsKey);
                   return mgtHtml`
-                    <fluent-option class="list-box-option" value="${account.name}" role="option">
+                    <fluent-option class="account-option" value="${account.name}" role="option">
                       <mgt-person
                         @click=${() => this.setActiveAccount(account)}
                         @keyup=${(e: KeyboardEvent) => {
@@ -577,14 +563,11 @@ export class MgtLogin extends MgtTemplatedComponent {
                         .personDetails=${details ? JSON.parse(details) : null}
                         .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
                         .view=${PersonViewType.twolines}
-                        class="person"
-                      />
-                    </fluent-option>
-                  `;
+                        class="account"/>
+                    </fluent-option>`;
                 }
               })}
              </fluent-listbox>
-           </fluent-design-system-provider>
          </div>
        `;
       }
@@ -594,7 +577,7 @@ export class MgtLogin extends MgtTemplatedComponent {
   /**
    * Set one of the non-active accounts as the active account
    *
-   * @param {*} account
+   * @param {IProviderAccount} account
    * @memberof MgtLogin
    */
   private setActiveAccount(account: IProviderAccount) {
@@ -619,13 +602,12 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtLogin
    */
-  protected renderSignedOutButtonContent() {
+  protected renderSignedOutButtonContent(): TemplateResult {
     const template = this.renderTemplate('signed-out-button-content', null);
     return (
       template ||
       html`
-        <span>${this.strings.signInLinkSubtitle}</span>
-      `
+        <span>${this.strings.signInLinkSubtitle}</span>`
     );
   }
 
@@ -655,13 +637,19 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
-  private onClick() {
+  /**
+   * Handles the click on the button in the flyout.
+   *
+   * @private
+   * @memberof MgtLogin
+   */
+  private onClick = (): void => {
     if (this.userDetails && this._isFlyoutOpen) {
       this.hideFlyout();
     } else if (this.userDetails) {
       this.showFlyout();
     } else {
-      this.login();
+      void this.login();
     }
-  }
+  };
 }

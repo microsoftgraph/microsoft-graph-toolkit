@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { openDB } from 'idb';
 import { Providers } from '../providers/Providers';
 import { ProviderState } from '../providers/IProvider';
+import { CacheStore } from './CacheStore';
 
 /**
  * Localstorage key for storing names of cache databases
@@ -15,7 +15,7 @@ import { ProviderState } from '../providers/IProvider';
  * @type {string}
  *
  */
-const dbListKey: string = 'mgt-db-list';
+export const dbListKey = 'mgt-db-list';
 
 /**
  * Holds the cache options for cache store
@@ -128,10 +128,9 @@ export interface CacheOptions {
  * @export
  * @class CacheService
  */
-// tslint:disable-next-line: max-classes-per-file
 export class CacheService {
   /**
-   *  Looks for existing cache, otherwise creates a new one
+   * Looks for existing cache, otherwise creates a new one
    *
    * @static
    * @template T
@@ -161,24 +160,26 @@ export class CacheService {
    * @memberof CacheService
    */
   public static clearCacheById(id: string) {
-    const oldDbArray: Array<string> = JSON.parse(localStorage.getItem(dbListKey));
+    const oldDbArray: string[] = JSON.parse(localStorage.getItem(dbListKey)) as string[];
     if (oldDbArray) {
-      let newDbArray: Array<string> = [];
-      oldDbArray.forEach(async x => {
+      const newDbArray: string[] = [];
+      oldDbArray.forEach(x => {
         if (x.includes(id)) {
           indexedDB.deleteDatabase(x);
         } else {
           newDbArray.push(x);
         }
       });
-      newDbArray.length > 0
-        ? localStorage.setItem(dbListKey, JSON.stringify(newDbArray))
-        : localStorage.removeItem(dbListKey);
+      if (newDbArray.length > 0) {
+        localStorage.setItem(dbListKey, JSON.stringify(newDbArray));
+      } else {
+        localStorage.removeItem(dbListKey);
+      }
     }
   }
 
   private static cacheStore: Map<string, CacheStore<CacheItem>> = new Map();
-  private static isInitialized: boolean = false;
+  private static isInitialized = false;
 
   private static cacheConfig: CacheConfig = {
     defaultInvalidationPeriod: 3600000,
@@ -243,6 +244,7 @@ export class CacheService {
       previousState = Providers.globalProvider.state;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     Providers.onProviderUpdated(async () => {
       if (previousState === ProviderState.SignedIn && Providers.globalProvider.state === ProviderState.SignedOut) {
         const id = await Providers.getCacheId();
@@ -300,110 +302,4 @@ export interface CacheItem {
    * @memberof CacheItem
    */
   timeCached?: number;
-}
-
-/**
- * Represents a store in the cache
- *
- * @class CacheStore
- * @template T
- */
-// tslint:disable-next-line: max-classes-per-file
-export class CacheStore<T extends CacheItem> {
-  private schema: CacheSchema;
-  private store: string;
-
-  public constructor(schema: CacheSchema, store: string) {
-    if (!(store in schema.stores)) {
-      throw Error('"store" must be defined in the "schema"');
-    }
-
-    this.schema = schema;
-    this.store = store;
-  }
-
-  /**
-   * gets value from cache for the given key
-   *
-   * @param {string} key
-   * @returns {Promise<T>}
-   * @memberof Cache
-   */
-  public async getValue(key: string): Promise<T> {
-    if (!window.indexedDB) {
-      return null;
-    }
-    try {
-      const db = await this.getDb();
-      return db.get(this.store, key);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  /**
-   * inserts value into cache for the given key
-   *
-   * @param {string} key
-   * @param {T} item
-   * @returns
-   * @memberof Cache
-   */
-  public async putValue(key: string, item: T) {
-    if (!window.indexedDB) {
-      return;
-    }
-    try {
-      await (await this.getDb()).put(this.store, { ...item, timeCached: Date.now() }, key);
-    } catch (e) {
-      return;
-    }
-  }
-
-  /**
-   * Clears the store of all stored values
-   *
-   * @returns
-   * @memberof Cache
-   */
-  public async clearStore() {
-    if (!window.indexedDB) {
-      return;
-    }
-    try {
-      (await this.getDb()).clear(this.store);
-    } catch (e) {
-      return;
-    }
-  }
-
-  /**
-   * Returns the name of the parent DB that the cache store belongs to
-   */
-  public async getDBName() {
-    const id = await Providers.getCacheId();
-    if (id) {
-      return `mgt-${this.schema.name}` + `-${id}`;
-    }
-  }
-
-  private async getDb() {
-    const dbName = await this.getDBName();
-    if (dbName) {
-      return openDB(dbName, this.schema.version, {
-        upgrade: (db, oldVersion, newVersion, transaction) => {
-          let dbArray: Array<string> = JSON.parse(localStorage.getItem(dbListKey)) || [];
-          if (!dbArray.includes(dbName)) {
-            dbArray.push(dbName);
-          }
-          localStorage.setItem(dbListKey, JSON.stringify(dbArray));
-          for (const storeName in this.schema.stores) {
-            if (this.schema.stores.hasOwnProperty(storeName)) {
-              db.objectStoreNames.contains(storeName) || db.createObjectStore(storeName);
-            }
-          }
-        }
-      });
-    }
-  }
 }

@@ -21,27 +21,59 @@ export const darkTheme = () => html`
 export const customCSSProperties = () => html`
     <style>
       mgt-file-list {
-        --file-upload-border: 4px dotted #ffbdc3;
-        --file-upload-background-color: rgba(255, 0, 0, 0.1);
-        --file-upload-button-float:left;
-        --file-upload-button-color:#323130;
-        --file-upload-button-background-color:#fef8dd;
-        --file-upload-dialog-content-background-color: #ffe7c7;
-        --file-upload-dialog-primarybutton-background-color: #ffe7c7;
-        --file-upload-dialog-primarybutton-color: #323130;
+        /** mgt-file-upload custom styling */
+        --file-upload-background-color-drag: rgb(255, 0, 0, 0.5);
+        --file-upload-border-drag: 2px groove black;
+        --file-upload-button-background-color: orange;
+        --file-upload-button-background-color-hover: green;
+        --file-upload-button-text-color: whitesmoke;
+        --file-upload-dialog-background-color: azure;
+        --file-upload-dialog-text-color: yellow;
+        --file-upload-dialog-replace-button-background-color: white;
+        --file-upload-dialog-replace-button-background-color-hover: gray;
+        --file-upload-dialog-replace-button-text-color: black;
+        --file-upload-dialog-keep-both-button-background-color: black;
+        --file-upload-dialog-keep-both-button-background-color-hover: gray;
+        --file-upload-dialog-keep-both-button-text-color: white;
+        --file-upload-button-border: 2px dotted yellow;
+        --file-upload-dialog-replace-button-border: 2px dotted;
+        --file-upload-dialog-keep-both-button-border: 2px dashed;
+        --file-upload-dialog-border: 2px solid blue;
+        --file-upload-dialog-width: 300px;
+        --file-upload-dialog-height: 100px;
+        --file-upload-dialog-padding: 36px;
+
+        /** mgt-file custom styling */
+        --file-type-icon-height:30px;
+        --file-border: 4px dotted #ffbdc3;
+        --file-border-radius: 8px;
+        --file-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        --file-background-color: #e0f8db;
+        --file-background-color-focus: yellow;
+        --file-background-color-hover: green;
+        --file-padding: 8px;
+        --file-padding-inline-start: 12px;
+        --file-margin: 3px 4px;
+        --file-line1-font-size: 15px;
+        --file-line1-font-weight: 500;
+        --file-line1-color: gray;
+        --file-line1-text-transform: capitalize;
+        --file-line2-font-size:14px;
+        --file-line2-font-weight:300;
+        --file-line2-color: #e50000;
+        --file-line2-text-transform: lowercase;
+        --file-line3-font-size: 13px;
+        --file-line3-font-weight: 500;
+        --file-line3-color: purple;
+        --file-line3-text-transform: capitalize;
+
+        /** mgt-file-list CSS tokens */
         --file-list-background-color: #e0f8db;
-        --file-item-background-color--hover: #caf1de;
-        --file-item-background-color--active: #acddde;
-        --file-list-border: 4px dotted #ffbdc3;
         --file-list-box-shadow: none;
+        --file-list-border: 4px dotted #ffbdc3;
+        --file-list-border-radius: 10px;
         --file-list-padding: 0;
         --file-list-margin: 0;
-        --file-item-border-radius: 12px;
-        --file-item-margin: 2px 6px;
-        --file-item-border-top: 4px dotted #ffbdc3;
-        --file-item-border-left: 4px dotted #ffbdc3;
-        --file-item-border-right: 4px dotted #ffbdc3;
-        --file-item-border-bottom: 4px dotted #ffbdc3;
         --show-more-button-background-color: #fef8dd;
         --show-more-button-background-color--hover: #ffe7c7;
         --show-more-button-font-size: 14px;

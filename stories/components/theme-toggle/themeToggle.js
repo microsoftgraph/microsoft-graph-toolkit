@@ -57,6 +57,26 @@ body {
   </style>
 `;
 
+export const themingWithoutToggle = () => html`
+  <mgt-login id="login-one"></mgt-login>
+  <mgt-login id="login-two"></mgt-login>
+  <mgt-login id="login-three"></mgt-login>
+
+  <!-- The login components are in the default light theme on a light
+  background. We are setting the component with id "login-two" to the dark
+  theme colors using JavaScript. -->
+
+  <script>
+    import { applyTheme } from '@microsoft/mgt';
+    const loginTwo = document.querySelector("#login-two");
+
+    if(loginTwo){
+      // apply the dark theme on the second login component only.
+      applyTheme('dark', loginTwo)
+    }
+  </script>
+`;
+
 export const localization = () => html`
 <mgt-theme-toggle></mgt-theme-toggle>
   <style>

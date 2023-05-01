@@ -7,7 +7,7 @@
 
 export const strings = {
   inputPlaceholderText: 'Start typing a name',
-  noResultsFound: `We didn't find any matches.`,
+  noResultsFound: "We didn't find any matches.",
   loadingMessage: 'Loading...',
   suggestedContact: 'suggested contact',
   suggestedContacts: 'suggested contacts',
