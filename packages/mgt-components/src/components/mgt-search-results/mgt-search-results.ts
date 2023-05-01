@@ -763,7 +763,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
               title="${strings.page} ${page}"
               appearance="stealth" 
               class="${page === this.currentPage ? 'search-results-page-active' : 'search-results-page'}" 
-              @click="${this.onPageClick(page)}">
+              @click="${() => this.onPageClick(page)}">
                 ${page}
             </fluent-button>`
       )}`;
@@ -782,7 +782,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           : html`
               <fluent-button 
                 title="${strings.page} 1"
-                appearance="stealth" class="search-results-page" @click="${this.onFirstPageClick()}">1</fluent-button>
+                appearance="stealth" class="search-results-page" @click="${() =>
+                  this.onFirstPageClick()}">1</fluent-button>
           ${
             this.currentPage - Math.floor(this.pagingMax / 2) > 0
               ? html`
