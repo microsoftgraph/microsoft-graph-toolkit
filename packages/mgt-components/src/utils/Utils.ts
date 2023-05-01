@@ -254,7 +254,7 @@ export const formatBytes = (bytes: number, decimals = 2) => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ' ' ${sizes[i]}`;
 };
 
 /**
@@ -263,7 +263,7 @@ export const formatBytes = (bytes: number, decimals = 2) => {
  * @param summary
  * @returns string
  */
-export function sanitizeSummary(summary: string): string {
+export const sanitizeSummary = (summary: string) => {
   if (summary) {
     summary = summary?.replace(/<ddd\/>/gi, '...');
     summary = summary?.replace(/<c0>/gi, '<b>');
@@ -271,45 +271,49 @@ export function sanitizeSummary(summary: string): string {
   }
 
   return summary;
-}
+};
 
 /**
  * Trims the file extension from a file name
+ *
  * @param fileName
  * @returns
  */
-export function trimFileExtension(fileName: string): string {
+export const trimFileExtension = (fileName: string) => {
   return fileName?.replace(/\.[^/.]+$/, '');
-}
+};
 
 /**
  * Get the name of a piece of content from the url
+ *
  * @param webUrl
  * @returns
  */
-export function getNameFromUrl(webUrl: string): string {
+export const getNameFromUrl = (webUrl: string) => {
   const url = new URL(webUrl);
-  let name = url.pathname.split('/').pop();
+  const name = url.pathname.split('/').pop();
   return name.replace(/-/g, ' ');
-}
+};
 
 /**
  * Defines the expiration time
+ *
  * @param currentInvalidationPeriod
  * @returns number
  */
-export function getResponseInvalidationTime(currentInvalidationPeriod: number): number {
+export const getResponseInvalidationTime = (currentInvalidationPeriod: number) => {
   return (
     currentInvalidationPeriod ||
     CacheService.config.response.invalidationPeriod ||
     CacheService.config.defaultInvalidationPeriod
   );
-}
+};
 
 /**
  * Whether the response store is enabled
+ *
  * @returns boolean
  */
-export function getIsResponseCacheEnabled(): boolean {
+export const getIsResponseCacheEnabled = () => {
   return CacheService.config.response.isEnabled && CacheService.config.isEnabled;
-}
+};

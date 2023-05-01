@@ -8,7 +8,6 @@
 import { html, HTMLTemplateResult, nothing, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import {
-  CacheItem,
   CacheService,
   CacheStore,
   equals,
@@ -37,7 +36,6 @@ import {
   SearchHitsContainer,
   SearchRequest,
   SearchResponse,
-  SearchResult,
   Site
 } from '@microsoft/microsoft-graph-types';
 import { SearchRequest as BetaSearchRequest } from '@microsoft/microsoft-graph-types-beta';
@@ -64,6 +62,21 @@ interface Thumbnail {
    * The url of the Thumbnail
    */
   url?: string;
+}
+
+/**
+ * Object representing a Binary Thumbnail
+ */
+interface BinaryThumbnail {
+  /**
+   * The url of the Thumbnail
+   */
+  url?: string;
+
+  /**
+   * The web Url of the Thumbnail
+   */
+  thumbnailWebUrl?: string;
 }
 
 /**
@@ -102,8 +115,8 @@ type SearchResource = Partial<
 /**
  * Object representing a full Search Response
  */
-type FullSearchResponse = {
-  value: SearchResponse[];
+type SearchResponseCollection = {
+  value?: SearchResponse[];
 };
 
 /**
@@ -124,7 +137,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Default page size is 10
    */
-  private _size: number = 10;
+  private _size = 10;
 
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -161,7 +174,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       this._queryString = value;
       this._currentPage = 1;
       this.setLoadingState(true);
-      this.requestStateUpdate(true);
+      void this.requestStateUpdate(true);
     }
   }
 
@@ -233,7 +246,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     reflect: true,
     type: String
   })
-  public version: string = 'v1.0';
+  public version = 'v1.0';
 
   /**
    * Specifies the offset for the search results.
@@ -262,8 +275,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     return this._size;
   }
   public set size(value) {
-    if (value > this.MAX_PAGE_SIZE) {
-      this._size = this.MAX_PAGE_SIZE;
+    if (value > this.maxPageSize) {
+      this._size = this.maxPageSize;
     } else {
       this._size = value;
     }
@@ -281,7 +294,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     reflect: true,
     type: Number
   })
-  public pagingMax: number = 7;
+  public pagingMax = 7;
 
   /**
    * Sets whether the result thumbnail should be fetched
@@ -323,7 +336,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     reflect: true,
     type: Boolean
   })
-  public enableTopResults: boolean = false;
+  public enableTopResults = false;
 
   /**
    * Enables cache on the response from the specified resource
@@ -337,7 +350,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     reflect: true,
     type: Boolean
   })
-  public cacheEnabled: boolean = false;
+  public cacheEnabled = false;
 
   /**
    * Invalidation period of the cache for the responses in milliseconds
@@ -350,7 +363,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     reflect: true,
     type: Number
   })
-  public cacheInvalidationPeriod: number = 30000;
+  public cacheInvalidationPeriod = 30000;
 
   /**
    * Gets or sets the response of the request
@@ -358,12 +371,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @type any
    * @memberof MgtSearchResults
    */
-  @state() private response: any;
+  @state() private response: SearchResponseCollection;
 
-  private isRefreshing: boolean = false;
-  private readonly SEARCH_ENDPOINT: string = '/search/query';
-  private readonly MAX_PAGE_SIZE: number = 1000;
-  private readonly DEFAULT_FIELDS: string[] = [
+  private isRefreshing = false;
+  private readonly searchEndpoinr: string = '/search/query';
+  private readonly maxPageSize: number = 1000;
+  private readonly defaultFields: string[] = [
     'webUrl',
     'lastModifiedBy',
     'lastModifiedDateTime',
@@ -371,7 +384,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     'displayName',
     'name'
   ];
-  private _currentPage: number = 1;
+  private _currentPage = 1;
   @state()
   public get currentPage(): number {
     return this._currentPage;
@@ -379,7 +392,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   public set currentPage(value: number) {
     if (this._currentPage !== value) {
       this._currentPage = value;
-      this.requestStateUpdate(true);
+      void this.requestStateUpdate(true);
     }
   }
 
@@ -393,7 +406,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    */
   public attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     super.attributeChangedCallback(name, oldValue, newValue);
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -409,7 +422,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     if (hardRefresh) {
       this.clearState();
     }
-    this.requestStateUpdate(hardRefresh);
+    void this.requestStateUpdate(hardRefresh);
   }
 
   /**
@@ -484,42 +497,42 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
         let cache: CacheStore<CacheResponse>;
         const key = JSON.stringify({
-          endpoint: `${this.version}${this.SEARCH_ENDPOINT}`,
-          requestOptions: requestOptions
+          endpoint: `${this.version}${this.searchEndpoinr}`,
+          requestOptions
         });
-        let response: FullSearchResponse = null;
+        let response: SearchResponseCollection = null;
 
         if (this.shouldRetrieveCache()) {
           cache = CacheService.getCache<CacheResponse>(schemas.search, schemas.search.stores.responses);
           const result: CacheResponse = getIsResponseCacheEnabled() ? await cache.getValue(key) : null;
           if (result && getResponseInvalidationTime(this.cacheInvalidationPeriod) > Date.now() - result.timeCached) {
-            response = JSON.parse(result.response);
+            response = JSON.parse(result.response) as SearchResponseCollection;
           }
         }
 
         if (!response) {
           const graph = provider.graph.forComponent(this);
-          let request = graph.api(this.SEARCH_ENDPOINT).version(this.version);
+          let request = graph.api(this.searchEndpoinr).version(this.version);
 
           if (this.scopes && this.scopes.length) {
             request = request.middlewareOptions(prepScopes(...this.scopes));
           }
 
-          response = await request.post({ requests: [requestOptions] });
+          response = (await request.post({ requests: [requestOptions] })) as SearchResponseCollection;
 
           if (this.fetchThumbnail) {
-            const thumbnailBatch = graph.createBatch();
-            const thumbnailBatchBeta = BetaGraph.fromGraph(graph).createBatch();
+            const thumbnailBatch = graph.createBatch<BinaryThumbnail>();
+            const thumbnailBatchBeta = BetaGraph.fromGraph(graph).createBatch<BinaryThumbnail>();
 
             for (let i = 0; i < response.value[0].hitsContainers[0].hits.length; i++) {
               const element = response.value[0].hitsContainers[0].hits[i];
               const resource = element.resource as SearchResource;
               if (
                 (resource.size > 0 || resource.webUrl?.endsWith('.aspx')) &&
-                (resource['@odata.type'] == '#microsoft.graph.driveItem' ||
-                  resource['@odata.type'] == '#microsoft.graph.listItem')
+                (resource['@odata.type'] === '#microsoft.graph.driveItem' ||
+                  resource['@odata.type'] === '#microsoft.graph.listItem')
               ) {
-                if (resource['@odata.type'] == '#microsoft.graph.listItem') {
+                if (resource['@odata.type'] === '#microsoft.graph.listItem') {
                   thumbnailBatchBeta.get(
                     i.toString(),
                     `/sites/${resource.parentReference.siteId}/pages/${resource.id}`
@@ -535,14 +548,15 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
             /**
              * Based on the batch response, augment the search result resource with the thumbnail url
+             *
              * @param thumbnailResponse
              */
-            const augmentResponse = (thumbnailResponse: Map<string, BatchResponse>) => {
+            const augmentResponse = (thumbnailResponse: Map<string, BatchResponse<BinaryThumbnail>>) => {
               if (thumbnailResponse && thumbnailResponse.size > 0) {
-                for (const [key, value] of thumbnailResponse) {
-                  let result: SearchHit = response.value[0].hitsContainers[0].hits[key];
+                for (const [k, value] of thumbnailResponse) {
+                  const result: SearchHit = response.value[0].hitsContainers[0].hits[k] as SearchHit;
                   const thumbnail: Thumbnail =
-                    result.resource['@odata.type'] == '#microsoft.graph.listItem'
+                    result.resource['@odata.type'] === '#microsoft.graph.listItem'
                       ? { url: value.content.thumbnailWebUrl }
                       : { url: value.content.url };
                   (result.resource as SearchResource).thumbnail = thumbnail;
@@ -567,8 +581,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         if (!equals(this.response, response)) {
           this.response = response;
         }
-      } catch (e) {
-        this.error = e;
+      } catch (e: unknown) {
+        this.error = e as Error;
       }
 
       if (this.response) {
@@ -593,7 +607,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       this.renderTemplate('loading', null) ||
       // creates an array of n items where n is the current max number of results, this builds a shimmer for that many results
       html`
-        ${[...Array(this.size)].map(() => {
+        ${[...Array<number>(this.size)].map(() => {
           return html`
             <div class="search-result">
               <div class="search-result-grid">
@@ -670,6 +684,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders the footer with pages if required
+   *
    * @param hitsContainer Search results
    */
   private renderFooter(hitsContainer: SearchHitsContainer) {
@@ -689,6 +704,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Validates if paging is required based on the provided results
+   *
    * @param hitsContainer
    */
   private pagingRequired(hitsContainer: SearchHitsContainer) {
@@ -697,6 +713,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Gets a list of active pages to render for paging purposes
+   *
    * @param totalResults Total number of results of the search query
    */
   private getActivePages(totalResults: number) {
@@ -710,10 +727,10 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       }
     };
 
-    let pages = [];
+    const pages: number[] = [];
     const firstPage = getFirstPage();
 
-    if (firstPage + 1 > this.pagingMax - this.currentPage || this.pagingMax == this.currentPage) {
+    if (firstPage + 1 > this.pagingMax - this.currentPage || this.pagingMax === this.currentPage) {
       for (
         let i = firstPage + 1;
         i < Math.ceil(totalResults / this.size) &&
@@ -721,11 +738,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         pages.length < this.pagingMax - 2;
         ++i
       ) {
-        pages.push({ number: i + 1 });
+        pages.push(i + 1);
       }
     } else {
       for (let i = firstPage; i < this.pagingMax; ++i) {
-        pages.push({ number: i + 1 });
+        pages.push(i + 1);
       }
     }
 
@@ -734,36 +751,38 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders all sequential pages buttons
+   *
    * @param pages
    */
-  private renderAllPages(pages: any[]) {
+  private renderAllPages(pages: number[]) {
     return html`
       ${pages.map(
         page =>
           html`
             <fluent-button 
-              title="${strings.page} ${page.number}"
+              title="${strings.page} ${page}"
               appearance="stealth" 
-              class="${page.number === this.currentPage ? 'search-results-page-active' : 'search-results-page'}" 
-              @click="${() => this.onPageClick(page.number)}">
-                ${page.number}
+              class="${page === this.currentPage ? 'search-results-page-active' : 'search-results-page'}" 
+              @click="${this.onPageClick(page)}">
+                ${page}
             </fluent-button>`
       )}`;
   }
 
   /**
    * Renders the "First page" button
+   *
    * @param pages
    */
-  private renderFirstPage(pages: any[]) {
+  private renderFirstPage(pages: number[]) {
     return html`
       ${
-        pages.some(page => page.number === 1)
+        pages.some(page => page === 1)
           ? nothing
           : html`
               <fluent-button 
                 title="${strings.page} 1"
-                appearance="stealth" class="search-results-page" @click="${this.onFirstPageClick}">1</fluent-button>
+                appearance="stealth" class="search-results-page" @click="${this.onFirstPageClick()}">1</fluent-button>
           ${
             this.currentPage - Math.floor(this.pagingMax / 2) > 0
               ? html`
@@ -798,7 +817,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             appearance="stealth" 
             class="search-results-page" 
             title="${strings.back}" 
-            @click="${this.onPageBackClick}">
+            @click="${() => this.onPageBackClick()}">
               ${getSvg(SvgIcon.ChevronLeft)}
             </fluent-button>`
       : nothing;
@@ -815,7 +834,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             class="search-results-page" 
             title="${strings.next}" 
             aria-label="${strings.next}" 
-            @click="${this.onPageNextClick}">
+            @click="${() => this.onPageNextClick()}">
               ${getSvg(SvgIcon.ChevronRight)}
             </fluent-button>`
       : nothing;
@@ -823,6 +842,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Triggers a specific page click
+   *
    * @param pageNumber
    */
   private onPageClick(pageNumber: number) {
@@ -832,6 +852,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Triggers a first page click
+   *
    */
   private onFirstPageClick() {
     this.currentPage = 1;
@@ -840,18 +861,16 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Triggers a previous page click
-   * @param page
    */
-  private onPageBackClick(page: any) {
+  private onPageBackClick() {
     this.currentPage--;
     this.scrollToFirstResult();
   }
 
   /**
    * Triggers a next page click
-   * @param page
    */
-  private onPageNextClick(page: any) {
+  private onPageNextClick() {
     this.currentPage++;
     this.scrollToFirstResult();
   }
@@ -867,7 +886,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * Scroll to the top of the search results
    */
   private scrollToFirstResult() {
-    const target = this.renderRoot.querySelector('.search-results') as HTMLElement;
+    const target = this.renderRoot.querySelector('.search-results');
     target.scrollIntoView({
       block: 'start',
       behavior: 'smooth'
@@ -876,6 +895,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Gets the resource type (entity) of a search result
+   *
    * @param resource
    */
   private getResourceType(resource: SearchResource) {
@@ -884,10 +904,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders a driveItem entity
+   *
    * @param result
    */
   private renderDriveItem(result: SearchHit) {
-    let resource = result.resource as SearchResource;
+    const resource = result.resource as SearchResource;
     return mgtHtml`
       <div class="search-result-grid">
         <div class="search-result-icon">
@@ -931,11 +952,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders a site entity
+   *
    * @param result
    * @returns
    */
   private renderSite(result: SearchHit): HTMLTemplateResult {
-    let resource = result.resource as SearchResource;
+    const resource = result.resource as SearchResource;
     return html`
       <div class="search-result-grid">
         <div class="search-result-icon">
@@ -959,11 +981,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders a list entity
+   *
    * @param result
    * @returns
    */
   private renderList(result: SearchHit): HTMLTemplateResult {
-    let resource: any = result.resource as SearchResource;
+    const resource = result.resource as SearchResource;
     return mgtHtml`
       <div class="search-result-grid">
         <div class="search-result-icon">
@@ -987,11 +1010,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders a listItem entity
+   *
    * @param result
    * @returns
    */
   private renderListItem(result: SearchHit): HTMLTemplateResult {
-    let resource = result.resource as SearchResource;
+    const resource = result.resource as SearchResource;
     return mgtHtml`
       <div class="search-result-grid">
         <div class="search-result-icon">
@@ -1034,11 +1058,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders a person entity
+   *
    * @param result
    * @returns
    */
   private renderPerson(result: SearchHit): HTMLTemplateResult {
-    let resource = result.resource as SearchResource;
+    const resource = result.resource as SearchResource;
     return mgtHtml`
       <div class="search-result">
         <mgt-person 
@@ -1054,6 +1079,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders a bookmark entity
+   *
    * @param result
    */
   private renderBookmark(result: SearchHit) {
@@ -1062,6 +1088,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders an acronym entity
+   *
    * @param result
    */
   private renderAcronym(result: SearchHit) {
@@ -1070,6 +1097,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders a qna entity
+   *
    * @param result
    */
   private renderQnA(result: SearchHit) {
@@ -1078,10 +1106,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders an answer entity
+   *
    * @param result
    */
   private renderAnswer(result: SearchHit, icon: SvgIcon) {
-    let resource = result.resource as SearchResource;
+    const resource = result.resource as SearchResource;
     return html`
       <div class="search-result-grid search-result-answer">
         <div class="search-result-icon">
@@ -1100,10 +1129,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Renders any entity
+   *
    * @param result
    */
   private renderDefault(result: SearchHit) {
-    let resource = result.resource as SearchResource;
+    const resource = result.resource as SearchResource;
     const resourceUrl = this.getResourceUrl(resource);
     return html`
       <div class="search-result-grid">
@@ -1131,14 +1161,16 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Gets default resource URLs
+   *
    * @param resource
    */
   private getResourceUrl(resource: SearchResource) {
-    return resource.webUrl || /*resource.url ||*/ resource.webLink || null;
+    return resource.webUrl || /* resource.url ||*/ resource.webLink || null;
   }
 
   /**
    * Gets default resource Names
+   *
    * @param resource
    */
   private getResourceName(resource: SearchResource) {
@@ -1147,6 +1179,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Gets default result summary
+   *
    * @param resource
    */
   private getResultSummary(result: SearchHit) {
@@ -1155,6 +1188,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Gets default resource icon
+   *
    * @param resource
    */
   private getResourceIcon(resource: SearchResource) {
@@ -1174,6 +1208,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Validates if cache should be retrieved
+   *
    * @returns
    */
   private shouldRetrieveCache(): boolean {
@@ -1182,6 +1217,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Validates if cache should be updated
+   *
    * @returns
    */
   private shouldUpdateCache(): boolean {
@@ -1190,10 +1226,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Builds the appropriate RequestOption for the search query
+   *
    * @returns
    */
   private getRequestOptions(): SearchRequest | BetaSearchRequest {
-    var requestOptions: SearchRequest = {
+    const requestOptions: SearchRequest = {
       entityTypes: this.entityTypes as EntityType[],
       query: {
         queryString: this.queryString
@@ -1217,11 +1254,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Gets the fields and default fields for default render methods
+   *
    * @returns
    */
   private getFields(): string[] {
     if (this.fields) {
-      return this.DEFAULT_FIELDS.concat(this.fields);
+      return this.defaultFields.concat(this.fields);
     }
 
     return undefined;

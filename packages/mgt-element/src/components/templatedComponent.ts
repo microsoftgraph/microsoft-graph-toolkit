@@ -61,6 +61,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   /**
    *
    * Gets or sets the error (if any) of the request
+   *
    * @type object
    * @memberof MgtSearchResults
    */
@@ -193,11 +194,12 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
 
   /**
    * Renders an error
+   *
    * @returns
    */
   protected renderError(): TemplateResult {
-    if (this.hasTemplate(`error`)) {
-      return this.renderTemplate(`error`, this.error);
+    if (this.hasTemplate('error')) {
+      return this.renderTemplate('error', this.error);
     }
 
     return html`

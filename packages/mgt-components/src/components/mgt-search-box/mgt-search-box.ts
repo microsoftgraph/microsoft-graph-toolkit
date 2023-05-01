@@ -8,7 +8,7 @@
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement, MgtBaseComponent } from '@microsoft/mgt-element';
-import { fluentSearch } from '@fluentui/web-components/dist/esm/search';
+import { fluentSearch } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { strings } from './strings';
 import { styles } from './mgt-search-box-css';
@@ -87,8 +87,8 @@ class MgtSearchBox extends MgtBaseComponent {
     reflect: true
   })
   public debounceDelay: number;
-  private _searchTerm: string = '';
-  private debouncedSearchTermChanged;
+  private _searchTerm = '';
+  private debouncedSearchTermChanged: () => void;
 
   constructor() {
     super();

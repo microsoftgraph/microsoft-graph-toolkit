@@ -7,6 +7,7 @@
 
 import { customElement as litElement } from 'lit/decorators.js';
 import { customElementHelper } from '../components/customElementHelper';
+import { MgtBaseComponent } from '../components/baseComponent';
 
 /**
  * This is a wrapper decorator for `customElement` from `lit`
@@ -19,7 +20,8 @@ export const customElement = (tagName: string): ((classOrDescriptor: unknown) =>
   const mgtTagName = `${customElementHelper.prefix}-${tagName}`;
   const mgtElement = customElements.get(mgtTagName);
   const unknownVersion = ' Unknown likely <3.0.0';
-  const version = element => (element as any).packageVersion || unknownVersion;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+  const version = (element: CustomElementConstructor): string => (element as any).packageVersion || unknownVersion;
   if (mgtElement) {
     return (classOrDescriptor: CustomElementConstructor) => {
       // eslint-disable-next-line no-console
