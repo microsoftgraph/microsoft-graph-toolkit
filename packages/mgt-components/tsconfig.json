@@ -4,7 +4,8 @@
     "outDir": "dist/es6",
     "sourceRoot": "src",
     "rootDir": "src",
-    "composite": true
+    "composite": true,
+    "lib": ["dom", "es5", "DOM.Iterable"]
   },
   "references": [{ "path": "../mgt-element" }],
   "include": ["src"],

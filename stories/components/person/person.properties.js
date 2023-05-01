@@ -364,4 +364,26 @@ export const moreExamples = () => html`
       line2-property="officeLocation"
     ></mgt-person>
   </div>
+
+
+  <div>
+    <div>Lists of people</div>
+    <ul role="menu">
+      <li role="menuitem" data-is-focusable="true" class="ui-list__item" tabindex="0">
+        <mgt-person
+          person-query="me"
+          view="twoLines"
+          line2-property="jobTitle"
+        ></mgt-person>
+      </li>
+      <li role="menuitem" data-is-focusable="true" class="ui-list__item" tabindex="-1">
+        <mgt-person
+          user-id="2804bc07-1e1f-4938-9085-ce6d756a32d2"
+          view="twoLines"
+          line2-property="jobTitle"
+        ></mgt-person>
+      </li>
+    </ul>
+  </div>
+
 `;

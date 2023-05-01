@@ -572,7 +572,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private defaultPeople: IDynamicPerson[];
 
   // tracking of user arrow key input for selection
-  private _arrowSelectionCount: number = -1;
+  @state() private _arrowSelectionCount = -1;
+
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
@@ -852,13 +853,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected renderFlyout(anchor: TemplateResult): TemplateResult {
     return html`
-       <mgt-flyout light-dismiss class="flyout">
-         ${anchor}
-         <div slot="flyout" class="flyout-root" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}>
-           ${this.renderFlyoutContent()}
-         </div>
-       </mgt-flyout>
-     `;
+      <mgt-flyout light-dismiss class="flyout">
+        ${anchor}
+        <div
+          slot="flyout"
+          class="flyout-root"
+          @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}
+          @keydown=${(e: KeyboardEvent) => this.onUserKeyDown(e)}
+        >
+          ${this.renderFlyoutContent()}
+        </div>
+      </mgt-flyout>
+    `;
   }
 
   /**
@@ -937,7 +943,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected renderSearchResults(people: IDynamicPerson[]) {
     const filteredPeople = people.filter(person => person.id);
-
     return html`
       <ul
         id="suggestions-list"
@@ -950,14 +955,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            filteredPeople,
            person => person.id,
            person => {
+             const lineTwo = person.jobTitle || (person as User).mail;
+             const ariaLabel = `${this.strings.suggestedContact} ${person.displayName} ${lineTwo ?? ''}`;
              return html`
                <li
                 id="${person.id}"
-                aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
+                aria-label="${ariaLabel}"
                 class="list-person"
                 role="option"
                 @click="${e => this.handleSuggestionClick(person)}">
-                 ${this.renderPersonResult(person)}
+                  ${this.renderPersonResult(person)}
                </li>
              `;
            }
@@ -1309,6 +1316,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (this.input) {
       this.input.setAttribute('aria-expanded', 'true');
     }
+    this._arrowSelectionCount = -1;
   }
 
   /**
@@ -1387,13 +1395,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private gainedFocus() {
     this.clearHighlighted();
     this._isFocused = true;
-    this.loadState();
+    void this.loadState();
+    this.showFlyout();
   }
 
   // handle input blur
   private lostFocus() {
     this._isFocused = false;
-    this._arrowSelectionCount = -1;
     if (this.input) {
       this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
@@ -1402,9 +1410,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const peopleList = this.renderRoot.querySelector('.people-list');
 
     if (peopleList) {
-      for (let i = 0; i < peopleList.children.length; i++) {
-        peopleList.children[i].classList.remove('focused');
-        peopleList.children[i].setAttribute('aria-selected', 'false');
+      for (const el of peopleList.children) {
+        el.classList.remove('focused');
+        el.setAttribute('aria-selected', 'false');
       }
     }
 
@@ -1626,9 +1634,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       this.handleArrowSelection(event);
-      if (input.value.length > 0) {
-        event.preventDefault();
-      }
+      // prevent page from scrolling
+      event.preventDefault();
     }
 
     if (event.code === 'Enter') {
@@ -1862,17 +1869,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if (this._arrowSelectionCount === -1) {
             this._arrowSelectionCount = 0;
           } else {
-            this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
+            this._arrowSelectionCount =
+              (this._arrowSelectionCount + 1 + peopleList.children.length) % peopleList.children.length;
           }
         }
       }
 
       // reset background color
       // reset aria-selected to false
-      // tslint:disable-next-line: prefer-for-of
-      for (let i = 0; i < peopleList.children.length; i++) {
-        peopleList.children[i].classList.remove('focused');
-        peopleList.children[i].setAttribute('aria-selected', 'false');
+      for (const person of peopleList?.children) {
+        const p = person as HTMLElement;
+        p.setAttribute('aria-selected', 'false');
+        p.removeAttribute('tabindex');
+        p.blur();
       }
 
       // set selected background
@@ -1880,10 +1889,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       const focusedItem = peopleList.children[this._arrowSelectionCount] as HTMLElement;
 
       if (focusedItem) {
-        focusedItem.classList.add('focused');
+        focusedItem.setAttribute('tabindex', '0');
+        focusedItem.focus();
         focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         focusedItem.setAttribute('aria-selected', 'true');
-        this.input.setAttribute('aria-activedescendant', peopleList.children[this._arrowSelectionCount].id);
+        this.input.setAttribute('aria-activedescendant', focusedItem.id);
       }
     }
   }

@@ -126,7 +126,9 @@ mgt-people-picker .root {
               color: $dropdown-item__text__color--hover;
             }
           }
-          &.focused {
+
+          &:focus,
+          &:focus-within {
             background-color: $dropdown-item__background-color--hover;
             .people-person-text-area {
               color: $dropdown-item__text__color--hover;
