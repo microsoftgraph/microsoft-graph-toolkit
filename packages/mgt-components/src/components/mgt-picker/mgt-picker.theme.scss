@@ -4,9 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-export const strings = {
-  cancelNewTaskSubtitle: 'Cancel',
-  newTaskPlaceholder: 'Add a task',
-  addTaskButtonSubtitle: 'Add',
-  removeTaskSubtitle: 'Delete Task'
-};
+
+@import '../../styles/shared-sass-variables.scss';
+
+$picker-background-color: var(--picker-background-color, transparent);

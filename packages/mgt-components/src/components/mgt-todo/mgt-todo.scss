@@ -6,12 +6,210 @@
  */
 
 @import '../mgt-tasks-base/mgt-tasks-base.scss';
+@import '../mgt-tasks-base/mgt-tasks-base.theme.scss';
 
 :host {
   @extend :host;
   border-radius: 8px;
-  .Task {
+  width: 100%;
+
+  .Task,
+  &.LoadingTask {
     @extend .Task;
-    border: none;
+    margin-block: 1px;
+    box-shadow: $task-box-shadow;
+    width: 100%;
+    background-color: $task-background-color;
+    border: 1px solid $task-border;
+    &.NewTask {
+      margin: 14px 0 1px 0;
+      box-shadow: $task-box-shadow;
+    }
+    &.Complete {
+      text-decoration: line-through;
+      border: 1px solid $task-border-completed;
+      background: $task-background-color--completed;
+    }
+
+    &:hover {
+      background-color: $task-background-color-hover;
+      border-radius: 8px;
+    }
+
+    .TaskDetails {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 2px;
+      line-height: 24px;
+
+      border-radius: 4px;
+      .Task {
+        > div {
+          display: flex;
+          align-items: center;
+          width: 200px;
+        }
+      }
+      .Title {
+        flex-grow: 1;
+      }
+      .TaskDelete {
+        display: flex;
+      }
+      .TaskDue {
+        min-width: 120px;
+        margin-inline-end: 12px;
+        height: 32px;
+        text-decoration: inherit;
+        display: flex;
+
+        .TaskCalendar {
+          display: flex;
+          margin-top: 5px;
+          margin-inline-end: 10px;
+
+          svg {
+            fill: $task-color;
+          }
+        }
+        .TaskDueDate {
+          display: flex;
+          margin-top: 5px;
+        }
+      }
+    }
+  }
+
+  fluent-text-field.NewTask {
+    width: 100%;
+    height: 34px;
+
+    div.start {
+      .addIcon {
+        display: flex;
+        margin-inline: 10px;
+      }
+    }
+
+    div:nth-child(2) {
+      display: flex;
+      align-items: center;
+      .calendar {
+        display: flex;
+        align-items: center;
+
+        svg {
+          fill: $task-color;
+        }
+
+        .date {
+          margin-inline-start: 10px;
+          color: $task-color;
+          width: auto;
+          cursor: pointer;
+          &::after {
+            border-bottom: none;
+          }
+        }
+
+        input {
+          flex: 1;
+          border: none;
+          border-bottom: 1px solid $task-color;
+          outline: none;
+          border-radius: 0;
+        }
+
+        input:hover {
+          border-bottom: 1px solid $task-date-input-hover-color;
+        }
+
+        input:active {
+          border-bottom: 1px solid $task-date-input-active-color;
+        }
+
+        input:focus {
+          border-bottom: 1px solid $task-date-input-active-color;
+        }
+      }
+    }
+  }
+}
+
+:host {
+  fluent-text-field {
+    &::part(start),
+    &::part(end) {
+      margin-inline: unset;
+    }
+
+    &::part(control) {
+      padding: 0;
+      cursor: pointer;
+    }
+    &::part(root) {
+      background: none;
+    }
+  }
+}
+
+:host {
+  fluent-button {
+    &.TaskDelete.neutral,
+    &.task-add-icon.neutral,
+    &.task-cancel-icon.neutral {
+      fill: $task-color;
+
+      &::part(control) {
+        border: none;
+        background: inherit;
+
+        svg {
+          fill: $task-color;
+        }
+      }
+    }
+  }
+
+  fluent-checkbox {
+    &.Task {
+      &.Complete {
+        div > svg {
+          .filled {
+            display: block;
+          }
+          .regular {
+            display: none;
+          }
+          path {
+            fill: $task-radio-background-color;
+          }
+        }
+      }
+
+      div > svg {
+        .filled {
+          display: none;
+        }
+        .regular {
+          display: block;
+        }
+
+        path {
+          fill: $task-background-color;
+        }
+      }
+    }
+    &::part(control) {
+      margin-inline-start: 10px;
+      background: none;
+      border-radius: 50%;
+    }
+    &::part(label) {
+      margin-inline-end: unset;
+      width: 100%;
+    }
   }
 }

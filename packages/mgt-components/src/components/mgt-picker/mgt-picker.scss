@@ -4,9 +4,22 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-export const strings = {
-  cancelNewTaskSubtitle: 'Cancel',
-  newTaskPlaceholder: 'Add a task',
-  addTaskButtonSubtitle: 'Add',
-  removeTaskSubtitle: 'Delete Task'
-};
+
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+@import './mgt-picker.theme.scss';
+
+:host {
+  font-family: $font-family;
+}
+
+:host .picker,
+mgt-picker .picker {
+  background-color: $picker-background-color;
+}
+
+[dir='rtl'] {
+  .picker {
+    direction: rtl;
+  }
+}

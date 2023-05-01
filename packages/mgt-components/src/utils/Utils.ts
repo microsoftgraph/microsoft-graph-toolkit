@@ -50,6 +50,21 @@ export const getRelativeDisplayDate = (date: Date): string => {
 };
 
 /**
+ * returns day, month and year
+ *
+ * @export
+ * @param {Date} date
+ * @returns
+ */
+export const getDateString = (date: Date) => {
+  const month = date.getMonth();
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${day} / ${month} / ${year}`;
+};
+
+/**
  * returns month and day
  *
  * @export
