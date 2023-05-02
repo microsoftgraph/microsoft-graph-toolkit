@@ -1116,9 +1116,6 @@ export class MgtTasks extends MgtTemplatedComponent {
       } else {
         picker.selectedPeople = mgtPeople.people;
         flyout.open();
-        window.requestAnimationFrame(() => {
-          picker.focus();
-        });
       }
     }
   }
