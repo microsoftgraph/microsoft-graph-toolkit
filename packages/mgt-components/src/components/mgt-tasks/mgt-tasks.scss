@@ -117,6 +117,7 @@ $task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--n
   padding: $tasks-padding;
   border: $tasks-border;
   border-radius: $tasks-border-radius;
+  --skeleton-fill: var(--neutral-foreground-active);
 
   .Header {
     display: flex;
@@ -212,6 +213,22 @@ $task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--n
             width: 100%;
             row-gap: 12px;
 
+            &.Shimmer {
+              display: flex;
+              flex-direction: inherit;
+              gap: 10px;
+
+              .Checkbox {
+                height: 10px;
+                width: 10px;
+              }
+
+              .Title {
+                height: 10px;
+                width: 100%;
+              }
+            }
+
             .TaskContent {
               display: grid;
               grid-auto-flow: column;
@@ -220,6 +237,10 @@ $task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--n
           }
 
           .TaskOptions {
+            .Options {
+              height: 10px;
+              width: 20px;
+            }
             &.NewTaskActionButtons {
               display: flex;
               flex-direction: column;
@@ -231,7 +252,8 @@ $task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--n
         .Bottom {
           display: grid;
           grid-auto-flow: column;
-          grid-auto-columns: 25%;
+          grid-auto-columns: 1fr;
+          grid-column-gap: 6px;
 
           .TaskGroup,
           .TaskBucket,
@@ -245,6 +267,13 @@ $task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--n
               place-content: center;
               width: $task-icons-width;
               height: $task-icons-height;
+
+              .Shimmer {
+                &.Icon {
+                  width: 20px;
+                  height: 20px;
+                }
+              }
 
               svg {
                 width: $task-icons-width;
@@ -260,6 +289,14 @@ $task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--n
               font-size: $task-icons-text-size;
               font-weight: $task-icons-text-weight;
               white-space: normal;
+              width: 100%;
+
+              .Shimmer {
+                &.Text {
+                  width: 100%;
+                  height: 10px;
+                }
+              }
             }
           }
         }
@@ -268,6 +305,23 @@ $task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--n
           display: flex;
           flex-direction: column;
           row-gap: 8px;
+
+          &.Shimmer {
+            flex-direction: row;
+            place-items: center;
+
+            .Shimmer {
+              &.Icon {
+                width: 20px;
+                height: 20px;
+              }
+
+              &.Text {
+                width: 100%;
+                height: 10px;
+              }
+            }
+          }
 
           .TaskTitle {
             color: var(--foreground-on-neutral-rest);
