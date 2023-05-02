@@ -18,7 +18,8 @@ import {
   customElement,
   mgtHtml,
   BetaGraph,
-  BatchResponse
+  BatchResponse,
+  CollectionResponse
 } from '@microsoft/mgt-element';
 
 import { schemas } from '../../graph/cacheStores';
@@ -115,9 +116,7 @@ type SearchResource = Partial<
 /**
  * Object representing a full Search Response
  */
-type SearchResponseCollection = {
-  value?: SearchResponse[];
-};
+type SearchResponseCollection = CollectionResponse<SearchResponse>;
 
 /**
  * Custom element for making Microsoft Graph get queries
@@ -374,7 +373,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   @state() private response: SearchResponseCollection;
 
   private isRefreshing = false;
-  private readonly searchEndpoinr: string = '/search/query';
+  private readonly searchEndpoint: string = '/search/query';
   private readonly maxPageSize: number = 1000;
   private readonly defaultFields: string[] = [
     'webUrl',
@@ -497,7 +496,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
         let cache: CacheStore<CacheResponse>;
         const key = JSON.stringify({
-          endpoint: `${this.version}${this.searchEndpoinr}`,
+          endpoint: `${this.version}${this.searchEndpoint}`,
           requestOptions
         });
         let response: SearchResponseCollection = null;
@@ -512,7 +511,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
         if (!response) {
           const graph = provider.graph.forComponent(this);
-          let request = graph.api(this.searchEndpoinr).version(this.version);
+          let request = graph.api(this.searchEndpoint).version(this.version);
 
           if (this.scopes && this.scopes.length) {
             request = request.middlewareOptions(prepScopes(...this.scopes));
@@ -781,12 +780,13 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           ? nothing
           : html`
               <fluent-button 
-                title="${strings.page} 1"
-                appearance="stealth" class="search-results-page" @click="${() =>
-                  this.onFirstPageClick()}">1</fluent-button>
-          ${
-            this.currentPage - Math.floor(this.pagingMax / 2) > 0
-              ? html`
+                 title="${strings.page} 1"
+                 appearance="stealth"
+                 class="search-results-page"
+                 @click="${this.onFirstPageClick}">
+                 1
+               </fluent-button>`
+          ? html`
               <fluent-button 
                 id="page-back-dot" 
                 appearance="stealth" 
@@ -796,8 +796,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
               >
                 ...
               </fluent-button>`
-              : nothing
-          }`
+          : nothing
       }`;
   }
 
@@ -818,7 +817,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             appearance="stealth" 
             class="search-results-page" 
             title="${strings.back}" 
-            @click="${() => this.onPageBackClick()}">
+            @click="${this.onPageBackClick}">
               ${getSvg(SvgIcon.ChevronLeft)}
             </fluent-button>`
       : nothing;
@@ -835,7 +834,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             class="search-results-page" 
             title="${strings.next}" 
             aria-label="${strings.next}" 
-            @click="${() => this.onPageNextClick()}">
+            @click="${this.onPageNextClick}">
               ${getSvg(SvgIcon.ChevronRight)}
             </fluent-button>`
       : nothing;
@@ -855,26 +854,26 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * Triggers a first page click
    *
    */
-  private onFirstPageClick() {
+  private onFirstPageClick = () => {
     this.currentPage = 1;
     this.scrollToFirstResult();
-  }
+  };
 
   /**
    * Triggers a previous page click
    */
-  private onPageBackClick() {
+  private onPageBackClick = () => {
     this.currentPage--;
     this.scrollToFirstResult();
-  }
+  };
 
   /**
    * Triggers a next page click
    */
-  private onPageNextClick() {
+  private onPageNextClick = () => {
     this.currentPage++;
     this.scrollToFirstResult();
-  }
+  };
 
   /**
    * Validates if the current page is the last page of the collection
