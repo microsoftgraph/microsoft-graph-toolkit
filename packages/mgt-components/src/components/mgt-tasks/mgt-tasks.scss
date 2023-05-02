@@ -8,16 +8,6 @@
 @import '../../styles/shared-styles.scss';
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
-/**
- * -------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
- * See License in the project root for license information.
- * -------------------------------------------------------------------------------------------
- */
-
-@import '../../styles/shared-styles.scss';
-@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-
 $tasks-header-padding: var(--tasks-header-padding, 0 0 14px 0);
 $tasks-header-margin: var(--tasks-header-margin, none);
 $tasks-header-text-font-size: var(--tasks-header-font-size, 16px);
@@ -64,11 +54,43 @@ $task-complete-border-radius: var(--task-complete-border-radius, 4px);
 $task-incomplete-border-radius: var(--task-incomplete-border-radius, 4px);
 $task-complete-padding: var(--task-complete-padding, 10px);
 $task-incomplete-padding: var(--task-incomplete-padding, 10px);
-$tasks-gap: var(--tasks-gap, 4px);
+$tasks-gap: var(--tasks-gap, 20px);
+
+$tasks-background-color: var(--tasks-background-color, var(--neutral-layer-2));
+$tasks-border: var(--tasks-border, 0);
+$tasks-border-radius: var(--tasks-border-radius, 0);
+$tasks-padding: var(--tasks-padding, 12px);
+
+$input-bg: padding-box linear-gradient(var(--neutral-fill-input-rest), var(--neutral-fill-input-rest)),
+  border-box var(--neutral-stroke-input-rest);
+$input-hover-bg: padding-box linear-gradient(var(--neutral-fill-input-hover), var(--neutral-fill-input-hover)),
+  border-box var(--neutral-stroke-input-hover);
+$task-new-input-border: var(--task-new-input-border, calc(var(--stroke-width) * 1px) solid transparent);
+$task-new-input-border-radius: var(--task-new-input-border-radius, calc(var(--control-corner-radius) * 1px));
+$task-new-input-background-color: var(--task-new-input-background-color, $input-bg);
+$task-new-input-hover-background-color: var(--task-new-input-hover-background-color, $input-hover-bg);
+$task-new-input-placeholder-color: var(--task-new-input-placeholder-color, var(--input-placeholder-rest));
+
+$task-new-dropdown-border: var(--task-new-dropdown-border, calc(var(--stroke-width) * 1px) solid transparent);
+$task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(var(--control-corner-radius) * 1px));
+$task-new-dropdown-background-color: var(--task-new-dropdown-background-color, $input-bg);
+$task-new-dropdown-hover-background-color: var(--task-new-dropdown-hover-background-color, $input-hover-bg);
+$task-new-dropdown-placeholder-color: var(--task-new-dropdown-placeholder-color, var(--input-placeholder-rest));
+$task-new-dropdown-list-background-color: var(--task-new-dropdown-list-background-color, var(--fill-color));
+$task-new-dropdown-option-text-color: var(--task-new-dropdown-option-text-color, var(--neutral-foreground-rest));
+$task-new-dropdown-option-hover-bg-color: var(
+  --task-new-dropdown-option-hover-background-color,
+  var(--neutral-fill-stealth-hover)
+);
+
+$task-new-person-icon-color: var(--task-new-person-icon-color, var(--neutral-foreground-hint));
+$task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--neutral-foreground-hint));
 
 :host {
-  background-color: var(--neutral-layer-2);
-  padding: 12px;
+  background-color: $tasks-background-color;
+  padding: $tasks-padding;
+  border: $tasks-border;
+  border-radius: $tasks-border-radius;
 
   .Header {
     display: flex;
@@ -112,19 +134,26 @@ $tasks-gap: var(--tasks-gap, 4px);
   .Tasks {
     display: flex;
     flex-direction: column;
-    row-gap: 20px;
+    row-gap: $tasks-gap;
 
     .Task {
       display: flex;
-      column-gap: $tasks-gap;
+      column-gap: 4px;
       align-items: flex-start;
       justify-content: space-between;
+
+      &.Updating {
+        background: var(--neutral-stroke-rest) !important;
+        pointer-events: none;
+        opacity: 0.4;
+      }
 
       &.Complete {
         border: $task-complete-border;
         border-radius: $task-complete-border-radius;
         background: $task-complete-bg-color;
         padding: $task-complete-padding;
+        --dot-options-button-background-color: $task-complete-bg-color;
       }
 
       &.Incomplete {
@@ -132,6 +161,7 @@ $tasks-gap: var(--tasks-gap, 4px);
         border-radius: $task-complete-border-radius;
         background: $task-incomplete-bg-color;
         padding: $task-incomplete-padding;
+        --dot-options-button-background-color: $task-incomplete-bg-color;
       }
 
       .TaskDetailsContainer {
@@ -225,6 +255,36 @@ $tasks-gap: var(--tasks-gap, 4px);
     }
   }
 
+  fluent-option {
+    background: $task-new-dropdown-list-background-color;
+    &:hover {
+      background: $task-new-dropdown-option-hover-bg-color;
+    }
+    &::part(content) {
+      color: $task-new-dropdown-option-text-color;
+    }
+  }
+
+  fluent-select {
+    &::part(listbox) {
+      background: $task-new-dropdown-list-background-color;
+    }
+
+    &::part(control) {
+      border: $task-new-dropdown-border;
+      border-radius: $task-new-dropdown-border-radius;
+      background: $task-new-dropdown-background-color;
+
+      &:hover {
+        background: $task-new-dropdown-hover-background-color;
+      }
+
+      &::placeholder {
+        color: $task-new-dropdown-placeholder-color;
+      }
+    }
+  }
+
   fluent-checkbox {
     padding-top: 1px;
 
@@ -262,12 +322,31 @@ $tasks-gap: var(--tasks-gap, 4px);
   fluent-text-field {
     &.NewTask {
       width: 100%;
+
+      &::part(root) {
+        border: $task-new-input-border;
+        border-radius: $task-new-input-border-radius;
+        background: $task-new-input-background-color;
+
+        &:hover {
+          background: $task-new-input-hover-background-color;
+        }
+
+        &::placeholder {
+          color: $task-new-input-placeholder-color;
+        }
+      }
     }
   }
 
   mgt-people {
     [slot='no-data'] {
       margin-top: 8px;
+      color: $task-new-person-icon-text-color;
+
+      svg {
+        fill: $task-new-person-icon-color;
+      }
     }
   }
 }

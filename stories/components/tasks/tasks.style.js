@@ -66,7 +66,32 @@ export const CustomCSSProperties = () => html`
         --task-complete-padding: 8px;
         --task-incomplete-padding: 12px;
         --tasks-gap: 8px;
-    }
+
+        --tasks-background-color: violet;
+        --tasks-border: 2px dashed green;
+        --tasks-border-radius: 12px;
+        --tasks-padding: 16px;
+
+        /** affects the date picker and the text-input field **/
+        --task-new-input-border: 2px solid green;
+        --task-new-input-border-radius: 8px;
+        --task-new-input-background-color: yellow;
+        --task-new-input-hover-background-color: yellowgreen;
+        --task-new-input-placeholder-color: black;
+
+        /** affects the date picker and the text-input field **/
+        --task-new-dropdown-border: 2px solid green;
+        --task-new-dropdown-border-radius: 8px;
+        --task-new-dropdown-background-color: yellow;
+        --task-new-dropdown-hover-background-color: yellowgreen;
+        --task-new-dropdown-placeholder-color: red;
+        --task-new-dropdown-option-text-color: blue;
+        --task-new-dropdown-list-background-color: yellow;
+        --task-new-dropdown-option-hover-background-color: yellowgreen;
+
+        --task-new-person-icon-text-color: blue;
+        --task-new-person-icon-color: blue;
+      }
   </style>
   <mgt-tasks></mgt-tasks>
 `;

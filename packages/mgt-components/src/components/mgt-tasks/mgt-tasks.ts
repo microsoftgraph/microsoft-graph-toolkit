@@ -19,7 +19,7 @@ import {
   mgtHtml,
   customElement
 } from '@microsoft/mgt-element';
-import { getShortDateString } from '../../utils/Utils';
+import { debounce, getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
@@ -161,6 +161,23 @@ const plannerAssignment = {
  * @cssprop --tasks-new-button-background-active - {Color} Tasks new button active background.
  * TODO: Add other tokens for the addition of a task section.
  *
+ * @cssprop --task-new-input-border - {Length} the border of the input for a new task. Default is fluent UI input border.
+ * @cssprop --task-new-input-border-radius - {Length} the border radius of the input for a new task. Default is fluent UI input border.
+ * @cssprop --task-new-input-background-color - {Color} the background color of the new task input.
+ * @cssprop --task-new-input-hover-background-color - {Color} the background color of the new task input when you hover.
+ * @cssprop --task-new-input-placeholder-color - {Color} the placeholder colder of the new task input.
+ * @cssprop --task-new-dropdown-border - {Length} the border of the dropdown for a new task. Default is fluent UI dropdown border.
+ * @cssprop --task-new-dropdown-border-radius - {Length} the border radius of the dropdown for a new task. Default is fluent UI dropdown border.
+ * @cssprop --task-new-dropdown-background-color - {Color} the background color of the new task dropdown.
+ * @cssprop --task-new-dropdown-hover-background-color - {Color} the background color of the new task dropdown when you hover.
+ * @cssprop --task-new-dropdown-placeholder-color - {Color} the placeholder colder of the new task dropdown.
+ * @cssprop --task-new-dropdown-list-background-color - {Color} the background color of the dropdown list options.
+ * @cssprop --task-new-dropdown-option-text-color - {Color} the text color of the dropdown option text.
+ * @cssprop --task-new-dropdown-option-hover-background-color - {Color} the background color of the dropdown option when you hover.
+ * @cssprop --task-new-person-icon-color - {Color} color of the assign person text.
+ * @cssprop --task-new-person-icon-text-color - {Color} color of the text beside the assign person icon.
+ *
+ *
  * @cssprop --task-complete-checkbox-background-color - {Color} A completed task checkbox background color.
  * @cssprop --task-complete-checkbox-text-color - {Color} A completed task checkbox check color.
  * @cssprop --task-incomplete-checkbox-background-color - {Color} A incompleted task checkbox background color.
@@ -186,10 +203,12 @@ const plannerAssignment = {
  * @cssprop --task-incomplete-border-radius - {Length} The border radius of a task that is incomplete. Default is 4px.
  * @cssprop --task-complete-padding - {Length} The padding of a task that is complete. Default is 10px.
  * @cssprop --task-incomplete-padding - {Length} The padding of a task that is incomplete. Default is 10px.
- * @cssprop --task-gap - {Length} The size of the gap between two tasks. Default is 4px.
+ * @cssprop --tasks-gap - {Length} The size of the gap between two tasks in a row. Default is 20px.
  *
- * TODO: add props for tasks. Background, border, border-radius, padding.
- *
+ * @cssprop --tasks-background-color - {Color} the color of the background where the tasks are rendered.
+ * @cssprop --tasks-border - {Length} the border of the area the tasks are rendered. Default is none.
+ * @cssprop --tasks-border-radius - {Length} the border radius of the area where the tasks are rendered. Default is none.
+ * @cssprop --tasks-padding - {Length} the padding of the are where the tasks are rendered. Default is 12px.
  */
 
 @customElement('tasks')
@@ -1160,7 +1179,6 @@ export class MgtTasks extends MgtTemplatedComponent {
       taskDetails = html`${group} ${folder} ${taskPeople} ${taskDue}`;
     }
 
-    // TODO: find out how to make the options classes colors match task state.
     const taskOptions =
       this.readOnly || this.hideOptions
         ? null
@@ -1182,6 +1200,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     // TODO: change the background colors of the task when you (un)check.
     return html`
       <div
+        id="task-${task.id}"
         class=${taskClasses}
         @click=${() => this.handleTaskClick(task)}>
         <div class="TaskDetailsContainer">
@@ -1219,12 +1238,17 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private async checkTask(e: MouseEvent, task: ITask) {
     if (!this.readOnly) {
+      const target = this.shadowRoot.querySelector(`#task-${task.id}`);
+      if (target) target.classList.add('Updating');
       if (!task.completed) {
         await this.completeTask(task);
       } else {
         await this.uncompleteTask(task);
       }
-
+      // wait a bit before removing the freeze on the task updating
+      debounce(() => {
+        if (target) target.classList.remove('Updating');
+      }, 2000)();
       e.stopPropagation();
       e.preventDefault();
     }
