@@ -26,20 +26,31 @@ $tasks-new-button-background: var(--tasks-new-button-background, $tasks-new-butt
 $tasks-new-button-background-hover: var(--tasks-new-button-background-hover, var(--accent-fill-hover));
 $tasks-new-button-background-active: var(--tasks-new-button-background-active, var(--accent-fill-active));
 
-$task-add-new-button-bg: padding-box linear-gradient(var(--neutral-fill-active), var(--neutral-fill-active)),
+$neutral-btn-bg: padding-box linear-gradient(var(--neutral-fill-active), var(--neutral-fill-active)),
   border-box var(--neutral-stroke-control-active);
-$task-add-new-hover-button-bg: padding-box linear-gradient(var(--neutral-fill-hover), var(--neutral-fill-hover)),
+$neutral-btn-hover-bg: padding-box linear-gradient(var(--neutral-fill-hover), var(--neutral-fill-hover)),
   border-box var(--neutral-stroke-control-hover);
-$task-add-new-active-button-bg: padding-box linear-gradient(var(--neutral-fill-active), var(--neutral-fill-active)),
+$neutral-btn-active-bg: padding-box linear-gradient(var(--neutral-fill-active), var(--neutral-fill-active)),
   border-box var(--neutral-stroke-control-active);
+$neutral-btn-border: calc(var(--stroke-width) * 1px) solid transparent;
+
 $task-add-new-button-width: var(--task-add-new-button-width, none);
 $task-add-new-button-height: var(--task-add-new-button-height, none);
 $task-add-new-button-text-color: var(--task-add-new-button-text-color, var(--neutral-foreground-rest));
 $task-add-new-button-text-font-weight: var(--task-add-new-button-text-font-weight, initial);
-$task-add-new-button-border: var(--task-add-new-button-border, calc(var(--stroke-width) * 1px) solid transparent);
-$task-add-new-button-background: var(--task-add-new-button-background, $task-add-new-button-bg);
-$task-add-new-button-background-hover: var(--task-add-new-button-background-hover, $task-add-new-hover-button-bg);
-$task-add-new-button-background-active: var(--task-add-new-button-background-active, $task-add-new-active-button-bg);
+$task-add-new-button-border: var(--task-add-new-button-border, $neutral-btn-border);
+$task-add-new-button-background: var(--task-add-new-button-background, $neutral-btn-bg);
+$task-add-new-button-background-hover: var(--task-add-new-button-background-hover, $neutral-btn-hover-bg);
+$task-add-new-button-background-active: var(--task-add-new-button-background-active, $neutral-btn-active-bg);
+
+$task-cancel-new-button-width: var(--task-cancel-new-button-width, none);
+$task-cancel-new-button-height: var(--task-cancel-new-button-height, none);
+$task-cancel-new-button-text-color: var(--task-cancel-new-button-text-color, var(--neutral-foreground-rest));
+$task-cancel-new-button-text-font-weight: var(--task-cancel-new-button-text-font-weight, initial);
+$task-cancel-new-button-border: var(--task-cancel-new-button-border, $neutral-btn-border);
+$task-cancel-new-button-background: var(--task-cancel-new-button-background, $neutral-btn-bg);
+$task-cancel-new-button-background-hover: var(--task-cancel-new-button-background-hover, $neutral-btn-hover-bg);
+$task-cancel-new-button-background-active: var(--task-cancel-new-button-background-active, $neutral-btn-active-bg);
 
 $task-title-text-font-size: var(--task-title-text-font-size, medium);
 $task-title-text-font-weight: var(--task-title-text-font-weight, 600);
@@ -286,6 +297,25 @@ $task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--n
 
         &:active {
           background: $task-add-new-button-background-active;
+        }
+      }
+    }
+
+    &.CancelTask {
+      &::part(control) {
+        font-weight: $task-cancel-new-button-text-font-weight;
+        color: $task-cancel-new-button-text-color;
+        width: $task-cancel-new-button-width;
+        height: $task-cancel-new-button-height;
+        background: $task-cancel-new-button-background;
+        border: $task-cancel-new-button-border;
+
+        &:hover {
+          background: $task-cancel-new-button-background-hover;
+        }
+
+        &:active {
+          background: $task-cancel-new-button-background-active;
         }
       }
     }
