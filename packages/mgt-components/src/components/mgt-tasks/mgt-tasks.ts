@@ -32,11 +32,11 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { strings } from './strings';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 
-import { fluentSelect, fluentTextField, fluentDivider } from '@fluentui/web-components';
+import { fluentSelect, fluentTextField, fluentDivider, fluentSkeleton } from '@fluentui/web-components';
 
 import { registerFluentComponents } from '../../utils/FluentComponents';
 
-registerFluentComponents(fluentSelect, fluentTextField, fluentDivider);
+registerFluentComponents(fluentSelect, fluentTextField, fluentDivider, fluentSkeleton);
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -1215,7 +1215,6 @@ export class MgtTasks extends MgtTemplatedComponent {
       ReadOnly: this.readOnly
     });
 
-    // TODO: change the background colors of the task when you (un)check.
     return html`
       <div
         id="task-${task.id}"
@@ -1353,25 +1352,46 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private renderLoadingTask() {
-    // TODO: use fluent UI with shimmer
     return html`
-      <div class="Task LoadingTask">
-        <div class="TaskContent">
-          <div class="TaskCheckContainer">
-            <div class="TaskCheck"></div>
-          </div>
+      <div class="Tasks">
+        <div class="Task">
           <div class="TaskDetailsContainer">
-            <div class="TaskTitle"></div>
-            <div class="TaskDetails">
-              <span class="TaskDetail">
-                <div class="TaskDetailIcon"></div>
-                <div class="TaskDetailName"></div>
-              </span>
-              <span class="TaskDetail">
-                <div class="TaskDetailIcon"></div>
-                <div class="TaskDetailName"></div>
-              </span>
+            <div class="Top">
+              <div class="CheckAndTitle Shimmer">
+                <fluent-skeleton shimmer class="Checkbox" shape="circle"></fluent-skeleton>
+                <fluent-skeleton shimmer class="Title" shape="rect"></fluent-skeleton>
+              </div>
+              <div class="TaskOptions">
+                <fluent-skeleton shimmer class="Options" shape="rect"></fluent-skeleton>
+              </div>
             </div>
+            <div class="Bottom">
+              <div class="TaskGroup">
+                <div class="TaskIcon">
+                  <fluent-skeleton shimmer class="Shimmer Icon" shape="rect"></fluent-skeleton>
+                </div>
+                <div class="TaskIconText">
+                  <fluent-skeleton shimmer class="Shimmer Text" shape="rect"></fluent-skeleton>
+                </div>
+              </div>
+              <div class="TaskBucket">
+                <div class="TaskIcon">
+                  <fluent-skeleton shimmer class="Shimmer Icon" shape="rect"></fluent-skeleton>
+                </div>
+                <div class="TaskIconText">
+                  <fluent-skeleton shimmer class="Shimmer Text" shape="rect"></fluent-skeleton>
+                </div>
+              </div>
+              <div class="TaskDetails Shimmer">
+                <fluent-skeleton shimmer class="Shimmer Icon" shape="circle"></fluent-skeleton>
+                <fluent-skeleton shimmer class="Shimmer Text" shape="rect"></fluent-skeleton>
+              </div>
+              <div class="TaskDue">
+                <div class="TaskIconText">
+                  <fluent-skeleton shimmer class="Shimmer Text" shape="rect"></fluent-skeleton>
+                </div>
+              </div>
+              </div>
           </div>
         </div>
       </div>
