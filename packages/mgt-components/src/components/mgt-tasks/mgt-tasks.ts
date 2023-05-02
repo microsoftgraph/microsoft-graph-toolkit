@@ -126,10 +126,9 @@ const TASK_RES = {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 const plannerAssignment = {
-  '@odata.type': 'microsoft.graph.plannerAssignment',
-  orderHint: 'string !'
+  '@odata.type': '#microsoft.graph.plannerAssignment',
+  orderHint: ' !'
 };
 
 /**
@@ -719,7 +718,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       return;
     }
     this._loadingTasks = [...this._loadingTasks, task.id];
-    await ts.setTaskComplete(task.id, task.eTag);
+    await ts.setTaskComplete(task);
     this.fireCustomEvent('taskChanged', task);
 
     await this.requestStateUpdate();
@@ -733,7 +732,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     this._loadingTasks = [...this._loadingTasks, task.id];
-    await ts.setTaskIncomplete(task.id, task.eTag);
+    await ts.setTaskIncomplete(task);
     this.fireCustomEvent('taskChanged', task);
 
     await this.requestStateUpdate();
@@ -747,82 +746,68 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     this._hiddenTasks = [...this._hiddenTasks, task.id];
-    await ts.removeTask(task.id, task.eTag);
+    await ts.removeTask(task);
     this.fireCustomEvent('taskRemoved', task);
 
     await this.requestStateUpdate();
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
-  private async assignPeople(task: ITask, people: (User | Person | Contact)[]) {
+  private async assignPeople(task: ITask, people: (User | Person | Contact)[] = []) {
     const ts = this.getTaskSource();
     if (!ts) {
       return;
     }
 
     // create previously selected people Object
-    let savedSelectedPeople = [];
+    let currentTaskAssigneesIds: string[] = [];
     if (task) {
       if (task.assignments) {
-        savedSelectedPeople = Object.keys(task.assignments).sort();
+        currentTaskAssigneesIds = Object.keys(task.assignments).sort();
       }
     }
 
-    const newPeopleIds = people.map(person => {
+    const newTaskAssigneesIds: string[] = people.map(person => {
       return person.id;
     });
 
     // new people from people picker
     const isEqual =
-      newPeopleIds.length === savedSelectedPeople.length &&
-      newPeopleIds.sort().every((value, index) => {
-        return value === savedSelectedPeople[index];
+      newTaskAssigneesIds.length === currentTaskAssigneesIds.length &&
+      newTaskAssigneesIds.sort().every((value, index) => {
+        return value === currentTaskAssigneesIds[index];
       });
 
     if (isEqual) {
       return;
     }
 
-    const peopleObj = {};
+    const peopleObj: Record<string, PlannerAssignments> = {};
 
-    if (people.length === 0) {
-      for (const p of savedSelectedPeople) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    // Removes an assignee to a task by setting the value to null
+    for (const p of currentTaskAssigneesIds) {
+      if (newTaskAssigneesIds.includes(p)) {
+        peopleObj[p] = plannerAssignment;
+      } else {
         peopleObj[p] = null;
       }
     }
 
-    if (people) {
-      // eslint-disable-next-line @typescript-eslint/prefer-for-of
-      for (let i = 0; i < savedSelectedPeople.length; i++) {
-        // eslint-disable-next-line @typescript-eslint/prefer-for-of
-        for (let j = 0; j < people.length; j++) {
-          if (savedSelectedPeople[i] !== people[j].id) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            peopleObj[savedSelectedPeople[i]] = null;
-            break;
-          } else {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            peopleObj[savedSelectedPeople[i]] = plannerAssignment;
-          }
-        }
+    // Adds a person to the task by assigning them a temporary planner value
+    newTaskAssigneesIds.forEach(assigneeId => {
+      if (!currentTaskAssigneesIds.includes(assigneeId)) {
+        peopleObj[assigneeId] = plannerAssignment;
       }
-
-      // eslint-disable-next-line @typescript-eslint/prefer-for-of
-      for (let i = 0; i < people.length; i++) {
-        peopleObj[people[i].id] = plannerAssignment;
-      }
-    }
+    });
 
     if (task) {
-      this._loadingTasks = [...this._loadingTasks, task.id];
-      await ts.assignPeopleToTask(task.id, peopleObj, task.eTag);
+      await ts.assignPeopleToTask(task, peopleObj);
       await this.requestStateUpdate();
       this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
     }
   }
 
-  private onAddTaskClick = (e: UIEvent) => {
+  private onAddTaskClick = () => {
     const picker = this.getPeoplePicker(null);
 
     const peopleObj: Record<string, unknown> = {};
@@ -846,7 +831,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private onAddTaskKeyDown(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ') {
-      this.onAddTaskClick(e);
+      this.onAddTaskClick();
     }
   }
 
