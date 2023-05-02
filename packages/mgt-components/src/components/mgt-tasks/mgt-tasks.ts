@@ -1335,10 +1335,8 @@ export class MgtTasks extends MgtTemplatedComponent {
         light-dismiss
         class=${classMap(taskAssigneeClasses)}
         @closed=${() => this.updateAssignedPeople(task)}>
-          ${assignedPeopleTemplate}
-          <div slot="flyout" class="Picker">
-            ${picker}
-          </div>
+          <div slot="anchor">${assignedPeopleTemplate}</div>
+          <div slot="flyout" class="Picker">${picker}</div>
       </mgt-flyout>
     `;
   }
