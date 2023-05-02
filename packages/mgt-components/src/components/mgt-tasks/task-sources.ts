@@ -230,22 +230,20 @@ export interface ITaskSource {
   /**
    * Promise that completes a single task
    *
-   * @param {string} id
-   * @param {string} eTag
+   * @param {ITask} task
    * @returns {Promise<any>}
    * @memberof ITaskSource
    */
-  setTaskComplete(id: string, eTag: string): Promise<void>;
+  setTaskComplete(task: ITask): Promise<void>;
 
   /**
    * Promise that sets a task to incomplete
    *
-   * @param {string} id
-   * @param {string} eTag
+   * @param {ITask} task
    * @returns {Promise<any>}
    * @memberof ITaskSource
    */
-  setTaskIncomplete(id: string, eTag: string): Promise<any>;
+  setTaskIncomplete(task: ITask): Promise<any>;
 
   /**
    * Promise to add a new task
@@ -259,23 +257,21 @@ export interface ITaskSource {
   /**
    * assign id's to task
    *
-   * @param {string} id
-   * @param {*} people
-   * @param {string} eTag
+   * @param {ITask} task
+   * @param {PlannerAssignments} people
    * @returns {Promise<any>}
    * @memberof ITaskSource
    */
-  assignPeopleToTask(id: string, people: any, eTag: string): Promise<void>;
+  assignPeopleToTask(task: ITask, people: PlannerAssignments): Promise<void>;
 
   /**
    * Promise to delete a task by id
    *
-   * @param {string} id
-   * @param {string} eTag
+   * @param {ITask} task
    * @returns {Promise<any>}
    * @memberof ITaskSource
    */
-  removeTask(id: string, eTag: string): Promise<any>;
+  removeTask(task: ITask): Promise<any>;
 
   /**
    * assigns task to the current signed in user
@@ -404,25 +400,23 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
   /**
    * set task in planner to complete state by id
    *
-   * @param {string} id
-   * @param {string} eTag
+   * @param {ITask} task
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async setTaskComplete(id: string, eTag: string): Promise<void> {
-    return await setPlannerTaskComplete(this.graph, id, eTag);
+  public async setTaskComplete(task: ITask): Promise<void> {
+    return await setPlannerTaskComplete(this.graph, task);
   }
 
   /**
    * set task in planner to incomplete state by id
    *
-   * @param {string} id
-   * @param {string} eTag
+   * @param {ITask} task
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async setTaskIncomplete(id: string, eTag: string): Promise<void> {
-    return setPlannerTaskIncomplete(this.graph, id, eTag);
+  public async setTaskIncomplete(task: ITask): Promise<void> {
+    return setPlannerTaskIncomplete(this.graph, task);
   }
 
   /**
@@ -445,26 +439,24 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
   /**
    * Assigns people to task
    *
-   * @param {string} id
-   * @param {string} eTag
-   * @param {*} people
+   * @param {ITask} task
+   * @param {PlannerAssignments} people
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async assignPeopleToTask(id: string, eTag: string, people: PlannerAssignments): Promise<void> {
-    return assignPeopleToPlannerTask(this.graph, id, people, eTag);
+  public async assignPeopleToTask(task: ITask, people: PlannerAssignments): Promise<void> {
+    return assignPeopleToPlannerTask(this.graph, task, people);
   }
 
   /**
    * remove task from bucket
    *
-   * @param {string} id
-   * @param {string} eTag
+   * @param {ITask} task
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async removeTask(id: string, eTag: string): Promise<void> {
-    return await removePlannerTask(this.graph, id, eTag);
+  public async removeTask(task: ITask): Promise<void> {
+    return await removePlannerTask(this.graph, task);
   }
 
   /**
@@ -569,7 +561,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   }
 
   /**
-   * set task in planner to complete state by id
+   * set task in todo to complete state by id
    *
    * @param {string} id
    * @param {string} eTag
@@ -581,16 +573,15 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   }
 
   /**
-   * Assigns people to task
+   * Assigns people to task in a planner
    *
-   * @param {string} id
-   * @param {string} eTag
-   * @param {*} people
+   * @param {ITask} task
+   * @param {PlannerAssignments} people
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async assignPeopleToTask(id: string, eTag: string, people: PlannerAssignments): Promise<any> {
-    return await assignPeopleToPlannerTask(this.graph, id, people, eTag);
+  public async assignPeopleToTask(task: ITask, people: PlannerAssignments): Promise<any> {
+    return await assignPeopleToPlannerTask(this.graph, task, people);
   }
   /**
    * set task in planner to incomplete state by id
@@ -624,7 +615,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
     return await addTodoTask(this.graph, task);
   }
   /**
-   * remove task from planner by id
+   * remove task from todo by id
    *
    * @param {string} id
    * @param {string} eTag
@@ -644,7 +635,8 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof TodoTaskSource
    */
   public isAssignedToMe(task: ITask, myId: string): boolean {
-    return true;
+    const keys = Object.keys(task.assignments);
+    return keys.includes(myId);
   }
 
   /**
