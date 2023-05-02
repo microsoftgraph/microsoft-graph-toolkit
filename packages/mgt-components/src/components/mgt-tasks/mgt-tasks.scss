@@ -7,73 +7,36 @@
 
 @import '../../styles/shared-styles.scss';
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import './mgt-tasks.theme.scss';
 
 $tasks-header-padding: var(--tasks-header-padding, 0 0 14px 0);
 $tasks-header-margin: var(--tasks-header-margin, none);
 $tasks-header-text-font-size: var(--tasks-header-font-size, 16px);
 $tasks-header-text-font-weight: var(--tasks-header-font-weight, 600);
-$tasks-header-text-color: var(--tasks-header-text-color, var(--neutral-foreground-hint));
-$tasks-header-text-hover-color: var(--tasks-header-text-hover-color, var(--neutral-foreground-hover));
 
-$tasks-new-button-bg: padding-box linear-gradient(var(--accent-fill-rest), var(--accent-fill-rest)),
-  border-box var(--accent-stroke-control-rest);
 $tasks-new-button-width: var(--tasks-new-button-width, none);
 $tasks-new-button-height: var(--tasks-new-button-height, none);
-$tasks-new-button-text-color: var(--tasks-new-button-text-color, var(--foreground-on-accent-rest));
 $tasks-new-button-text-font-weight: var(--tasks-new-button-text-font-weight, 700);
 $tasks-new-button-border: var(--tasks-new-button-border, none);
-$tasks-new-button-background: var(--tasks-new-button-background, $tasks-new-button-bg);
-$tasks-new-button-background-hover: var(--tasks-new-button-background-hover, var(--accent-fill-hover));
-$tasks-new-button-background-active: var(--tasks-new-button-background-active, var(--accent-fill-active));
-
-$neutral-btn-bg: padding-box linear-gradient(var(--neutral-fill-active), var(--neutral-fill-active)),
-  border-box var(--neutral-stroke-control-active);
-$neutral-btn-hover-bg: padding-box linear-gradient(var(--neutral-fill-hover), var(--neutral-fill-hover)),
-  border-box var(--neutral-stroke-control-hover);
-$neutral-btn-active-bg: padding-box linear-gradient(var(--neutral-fill-active), var(--neutral-fill-active)),
-  border-box var(--neutral-stroke-control-active);
 $neutral-btn-border: calc(var(--stroke-width) * 1px) solid transparent;
 
 $task-add-new-button-width: var(--task-add-new-button-width, none);
 $task-add-new-button-height: var(--task-add-new-button-height, none);
-$task-add-new-button-text-color: var(--task-add-new-button-text-color, var(--neutral-foreground-rest));
 $task-add-new-button-text-font-weight: var(--task-add-new-button-text-font-weight, initial);
 $task-add-new-button-border: var(--task-add-new-button-border, $neutral-btn-border);
-$task-add-new-button-background: var(--task-add-new-button-background, $neutral-btn-bg);
-$task-add-new-button-background-hover: var(--task-add-new-button-background-hover, $neutral-btn-hover-bg);
-$task-add-new-button-background-active: var(--task-add-new-button-background-active, $neutral-btn-active-bg);
 
 $task-cancel-new-button-width: var(--task-cancel-new-button-width, none);
 $task-cancel-new-button-height: var(--task-cancel-new-button-height, none);
-$task-cancel-new-button-text-color: var(--task-cancel-new-button-text-color, var(--neutral-foreground-rest));
 $task-cancel-new-button-text-font-weight: var(--task-cancel-new-button-text-font-weight, initial);
 $task-cancel-new-button-border: var(--task-cancel-new-button-border, $neutral-btn-border);
-$task-cancel-new-button-background: var(--task-cancel-new-button-background, $neutral-btn-bg);
-$task-cancel-new-button-background-hover: var(--task-cancel-new-button-background-hover, $neutral-btn-hover-bg);
-$task-cancel-new-button-background-active: var(--task-cancel-new-button-background-active, $neutral-btn-active-bg);
 
 $task-title-text-font-size: var(--task-title-text-font-size, medium);
 $task-title-text-font-weight: var(--task-title-text-font-weight, 600);
-$task-complete-title-text-color: var(--task-complete-title-text-color, var(--neutral-foreground-hint));
-$task-incomplete-title-text-color: var(--task-incomplete-title-text-color, var(var(--neutral-foreground-rest)));
-
 $task-icons-width: var(--task-icons-width, 20px);
 $task-icons-height: var(--task-icons-height, 20px);
-$task-icons-bg-color: var(--task-icons-background-color, var(--neutral-foreground-hint));
-$task-icons-text-color: var(--task-icons-text-font-color, var(--neutral-foreground-hint));
 $task-icons-text-size: var(--task-icons-text-font-size, 12px);
 $task-icons-text-weight: var(--task-icons-text-font-weight, 600);
 
-$task-complete-checkbox-bg: var(--task-complete-checkbox-background-color, var(--accent-fill-rest));
-$task-complete-checkbox-check-bg: var(--task-complete-checkbox-text-color, currentColor);
-$task-incomplete-checkbox-bg: var(--task-incomplete-checkbox-background-color, var(--neutral-fill-input-alt-rest));
-$task-incomplete-checkbox-hover-bg: var(
-  --task-incomplete-checkbox-background-hover-color,
-  var(--neutral-fill-input-alt-hover)
-);
-
-$task-complete-bg-color: var(--task-complete-background-color, transparent);
-$task-incomplete-bg-color: var(--task-incomplete-background-color, var(--neutral-layer-1));
 $task-complete-border: var(--task-complete-border, 2px dotted var(--neutral-foreground-active));
 $task-incomplete-border: var(--task-incomplete-border, 1px solid var(--neutral-foreground-active));
 $task-complete-border-radius: var(--task-complete-border-radius, 4px);
@@ -82,35 +45,15 @@ $task-complete-padding: var(--task-complete-padding, 10px);
 $task-incomplete-padding: var(--task-incomplete-padding, 10px);
 $tasks-gap: var(--tasks-gap, 20px);
 
-$tasks-background-color: var(--tasks-background-color, var(--neutral-layer-2));
 $tasks-border: var(--tasks-border, 0);
 $tasks-border-radius: var(--tasks-border-radius, 0);
 $tasks-padding: var(--tasks-padding, 12px);
 
-$input-bg: padding-box linear-gradient(var(--neutral-fill-input-rest), var(--neutral-fill-input-rest)),
-  border-box var(--neutral-stroke-input-rest);
-$input-hover-bg: padding-box linear-gradient(var(--neutral-fill-input-hover), var(--neutral-fill-input-hover)),
-  border-box var(--neutral-stroke-input-hover);
 $task-new-input-border: var(--task-new-input-border, calc(var(--stroke-width) * 1px) solid transparent);
 $task-new-input-border-radius: var(--task-new-input-border-radius, calc(var(--control-corner-radius) * 1px));
-$task-new-input-background-color: var(--task-new-input-background-color, $input-bg);
-$task-new-input-hover-background-color: var(--task-new-input-hover-background-color, $input-hover-bg);
-$task-new-input-placeholder-color: var(--task-new-input-placeholder-color, var(--input-placeholder-rest));
 
 $task-new-dropdown-border: var(--task-new-dropdown-border, calc(var(--stroke-width) * 1px) solid transparent);
 $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(var(--control-corner-radius) * 1px));
-$task-new-dropdown-background-color: var(--task-new-dropdown-background-color, $input-bg);
-$task-new-dropdown-hover-background-color: var(--task-new-dropdown-hover-background-color, $input-hover-bg);
-$task-new-dropdown-placeholder-color: var(--task-new-dropdown-placeholder-color, var(--input-placeholder-rest));
-$task-new-dropdown-list-background-color: var(--task-new-dropdown-list-background-color, var(--fill-color));
-$task-new-dropdown-option-text-color: var(--task-new-dropdown-option-text-color, var(--neutral-foreground-rest));
-$task-new-dropdown-option-hover-bg-color: var(
-  --task-new-dropdown-option-hover-background-color,
-  var(--neutral-fill-stealth-hover)
-);
-
-$task-new-person-icon-color: var(--task-new-person-icon-color, var(--neutral-foreground-hint));
-$task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--neutral-foreground-hint));
 
 :host {
   background-color: $tasks-background-color;
