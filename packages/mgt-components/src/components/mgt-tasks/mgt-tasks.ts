@@ -845,8 +845,8 @@ export class MgtTasks extends MgtTemplatedComponent {
   };
 
   private onAddTaskKeyDown(e: KeyboardEvent) {
-    if (e.key === 'Enter') {
-      this.onAddTaskClick;
+    if (e.key === 'Enter' || e.key === ' ') {
+      this.onAddTaskClick(e);
     }
   }
 
