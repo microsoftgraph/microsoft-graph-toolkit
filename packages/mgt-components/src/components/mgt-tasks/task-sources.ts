@@ -563,13 +563,12 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   /**
    * set task in todo to complete state by id
    *
-   * @param {string} id
-   * @param {string} eTag
+   * @param {ITask} task
    * @returns {Promise<any>}
    * @memberof TodoTaskSource
    */
-  public async setTaskComplete(id: string, eTag: string): Promise<any> {
-    return await setTodoTaskComplete(this.graph, id, eTag);
+  public async setTaskComplete(task: ITask): Promise<any> {
+    return await setTodoTaskComplete(this.graph, task.id, task.eTag);
   }
 
   /**
@@ -586,13 +585,12 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   /**
    * set task in planner to incomplete state by id
    *
-   * @param {string} id
-   * @param {string} eTag
+   * @param {ITask} task
    * @returns {Promise<any>}
    * @memberof TodoTaskSource
    */
-  public async setTaskIncomplete(id: string, eTag: string): Promise<any> {
-    return await setTodoTaskIncomplete(this.graph, id, eTag);
+  public async setTaskIncomplete(task: ITask): Promise<any> {
+    return await setTodoTaskIncomplete(this.graph, task.id, task.eTag);
   }
   /**
    * add new task to planner
@@ -617,13 +615,12 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   /**
    * remove task from todo by id
    *
-   * @param {string} id
-   * @param {string} eTag
+   * @param {ITask} task
    * @returns {Promise<any>}
    * @memberof TodoTaskSource
    */
-  public async removeTask(id: string, eTag: string): Promise<void> {
-    return await removeTodoTask(this.graph, id, eTag);
+  public async removeTask(task: ITask): Promise<void> {
+    return await removeTodoTask(this.graph, task.id, task.eTag);
   }
 
   /**
