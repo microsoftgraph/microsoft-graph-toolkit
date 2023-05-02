@@ -24,7 +24,7 @@ import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 import { getMe } from '../../graph/graph.user';
-import { MgtPeople } from '../mgt-people/mgt-people';
+import { MgtPeople, PersonCardInteraction } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
@@ -1312,6 +1312,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       <mgt-people
         class="people people-${taskId}"
         .userIds=${assignedPeople}
+        person-card=${PersonCardInteraction.none}
         @click=${(e: MouseEvent) => this.handlePeopleClick(e, task)}
         @keydown=${(e: KeyboardEvent) => this.handlePeopleKeydown(e, task)}>
           <template data-type="no-data">
