@@ -159,7 +159,18 @@ const plannerAssignment = {
  * @cssprop --tasks-new-button-border - {Length} Tasks new button border. Default is none.
  * @cssprop --tasks-new-button-background-hover - {Color} Tasks new button hover background.
  * @cssprop --tasks-new-button-background-active - {Color} Tasks new button active background.
+ *
+ * @cssprop --task-add-new-button-width - {Length} Add a new task button width. Default is none.
+ * @cssprop --task-add-new-button-height - {Length} Add a new task button height. Default is none
+ * @cssprop --task-add-new-button-text-color - {Color} Add a new task button text color.
+ * @cssprop --task-add-new-button-text-font-weight - {Length} Add a new task button text font weight. Default is 700.
+ * @cssprop --task-add-new-button-background - {Length} Add a new task button background.
+ * @cssprop --task-add-new-button-border - {Length} Add a new task button border. Default is none.
+ * @cssprop --task-add-new-button-background-hover - {Color} Add a new task button hover background.
+ * @cssprop --task-add-new-button-background-active - {Color} Add a new task button active background.
  * TODO: Add other tokens for the addition of a task section.
+ *
+ *
  *
  * @cssprop --task-new-input-border - {Length} the border of the input for a new task. Default is fluent UI input border.
  * @cssprop --task-new-input-border-radius - {Length} the border radius of the input for a new task. Default is fluent UI input border.
@@ -1051,12 +1062,14 @@ export class MgtTasks extends MgtTemplatedComponent {
       ? html`<div class="TaskAddButtonContainer"></div>`
       : html`
           <fluent-button
+            class="AddTask"
             @click=${this.onAddTaskClick}
             @keydown=${this.onAddTaskKeyDown}
             appearance="neutral">
               ${this.strings.addTaskButtonSubtitle}
           </fluent-button>
           <fluent-button
+            class="CancelTask"
             @click=${() => (this.isNewTaskVisible = false)}
             @keydown=${this.newTaskVisible}
             appearance="neutral">
