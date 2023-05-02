@@ -193,13 +193,21 @@ export abstract class MgtBaseComponent extends LitElement {
    * @param {*} [detail]
    * @param {boolean} [bubbles=false]
    * @param {boolean} [cancelable=false]
+   * @param {boolean} [composed=false]
    * @return {*}  {boolean}
    * @memberof MgtBaseComponent
    */
-  protected fireCustomEvent(eventName: string, detail?: any, bubbles = false, cancelable = false): boolean {
+  protected fireCustomEvent(
+    eventName: string,
+    detail?: any,
+    bubbles = false,
+    cancelable = false,
+    composed = false
+  ): boolean {
     const event = new CustomEvent(eventName, {
       bubbles,
       cancelable,
+      composed,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       detail
     });

@@ -22,8 +22,6 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
   font-family: $font-family;
   display: flex;
   flex-direction: column;
-  background-color: set-var(background-color__sub1, $theme-default, $common);
-  padding: var(--tasks-padding, 12px);
   color: $color;
 
   input[type='date']::-webkit-inner-spin-button,
@@ -153,9 +151,9 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
   .Task {
     position: relative;
-    margin: var(--task-margin, 0 0 18px 0);
+    margin: var(--task-margin, 0 0 0 0);
     padding: var(--task-padding, 0 0 0 0);
-    background-color: $background-color;
+    background-color: $task-background-color;
     border: set-var(border, $theme-default, $tasks);
     border-radius: 8px;
 
@@ -464,7 +462,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     }
 
     &.Complete {
-      background: $background-color--completed;
+      background: $task-background-color--completed;
       border: set-var(border--completed, $theme-default, $tasks);
 
       .TaskContent .TaskDetailsContainer .TaskTitle {
@@ -638,43 +636,6 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
           background: var(--task-new-add-button-disabled-background, #ffffff);
           cursor: default;
         }
-      }
-    }
-
-    &.LoadingTask {
-      .TaskCheckContainer {
-        cursor: default;
-      }
-      .TaskDetails {
-        display: flex;
-      }
-      .TaskCheck {
-        background: #f2f2f2;
-        border-color: #f2f2f2;
-        cursor: default;
-      }
-      .TaskDetailIcon {
-        width: 16px;
-        height: 16px;
-        margin: 5px;
-        background: #f2f2f2;
-      }
-      .TaskTitle {
-        background: #f2f2f2;
-        max-width: 400px;
-        height: 20px;
-        margin-right: 20px !important;
-      }
-      .TaskDetail {
-        margin-right: 12px;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
-      .TaskDetailName {
-        width: 81px;
-        height: 10px;
-        background: #f2f2f2;
       }
     }
   }
