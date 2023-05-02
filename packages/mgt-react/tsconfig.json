@@ -8,5 +8,5 @@
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"],
-  "references": [{ "path": "../mgt-element" }, { "path": "../mgt" }]
+  "references": [{ "path": "../mgt-element" }, { "path": "../mgt-components" }]
 }
