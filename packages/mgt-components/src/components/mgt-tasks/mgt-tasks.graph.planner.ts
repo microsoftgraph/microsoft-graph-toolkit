@@ -8,10 +8,12 @@
 import { IGraph, prepScopes } from '@microsoft/mgt-element';
 import { PlannerAssignments, PlannerBucket, PlannerPlan, PlannerTask } from '@microsoft/microsoft-graph-types';
 import { CollectionResponse } from '@microsoft/mgt-element';
+import { ITask } from './task-sources';
 
 /**
  * async promise, allows developer to create new Planner task
  *
+ * @param {IGraph} graph
  * @param {(PlannerTask)} newTask
  * @returns {Promise<any>}
  * @memberof Graph
@@ -27,41 +29,34 @@ export const addPlannerTask = async (graph: IGraph, newTask: PlannerTask): Promi
 /**
  * async promise, allows developer to assign people to task
  *
- * @param {string} taskId
- * @param {*} people
- * @param {string} eTag
+ * @param {IGraph} graph
+ * @param {ITask} task
+ * @param {PlannerAssignments} people
  * @returns {Promise<any>}
  * @memberof Graph
  */
 export const assignPeopleToPlannerTask = async (
   graph: IGraph,
-  taskId: string,
-  people: PlannerAssignments,
-  eTag: string
+  task: ITask,
+  people: PlannerAssignments
 ): Promise<void> => {
-  await setPlannerTaskDetails(
-    graph,
-    taskId,
-    {
-      assignments: people
-    },
-    eTag
-  );
+  const details: PlannerTask = { assignments: people, appliedCategories: { category4: true } };
+  await setPlannerTaskDetails(graph, task, details);
 };
 
 /**
  * async promise, allows developer to remove Planner task associated with taskId
  *
- * @param {string} taskId
- * @param {string} eTag
+ * @param {IGraph} graph
+ * @param {ITask} task the task being removed.
  * @returns {Promise<any>}
  * @memberof Graph
  */
-export const removePlannerTask = async (graph: IGraph, taskId: string, eTag: string): Promise<void> => {
+export const removePlannerTask = async (graph: IGraph, task: ITask): Promise<void> => {
   await graph
-    .api(`/planner/tasks/${taskId}`)
+    .api(`/planner/tasks/${task.id}`)
     .header('Cache-Control', 'no-store')
-    .header('If-Match', eTag)
+    .header('If-Match', task.eTag)
     .middlewareOptions(prepScopes('Group.ReadWrite.All'))
     .delete();
 };
@@ -69,68 +64,56 @@ export const removePlannerTask = async (graph: IGraph, taskId: string, eTag: str
 /**
  * async promise, allows developer to set a task to complete, associated with taskId
  *
- * @param {string} taskId
- * @param {string} eTag
+ * @param {IGraph} graph
+ * @param {ITask} task
  * @returns {Promise<any>}
  * @memberof Graph
  */
-export const setPlannerTaskComplete = async (graph: IGraph, taskId: string, eTag: string): Promise<void> => {
-  await setPlannerTaskDetails(
-    graph,
-    taskId,
-    {
-      percentComplete: 100
-    },
-    eTag
-  );
+export const setPlannerTaskComplete = async (graph: IGraph, task: ITask): Promise<void> => {
+  await setPlannerTaskDetails(graph, task, { percentComplete: 100 });
 };
 
 /**
  * async promise, allows developer to set a task to incomplete, associated with taskId
  *
- * @param {string} taskId
- * @param {string} eTag
+ * @param {IGraph} graph
+ * @param {ITask} task
  * @returns {Promise<any>}
  * @memberof Graph
  */
-export const setPlannerTaskIncomplete = async (graph: IGraph, taskId: string, eTag: string): Promise<void> => {
-  await setPlannerTaskDetails(
-    graph,
-    taskId,
-    {
-      percentComplete: 0
-    },
-    eTag
-  );
+export const setPlannerTaskIncomplete = async (graph: IGraph, task: ITask): Promise<void> => {
+  await setPlannerTaskDetails(graph, task, { percentComplete: 0 });
 };
 
 /**
  * async promise, allows developer to set details of planner task associated with a taskId
  *
- * @param {string} taskId
- * @param {(PlannerTask)} details
- * @param {string} eTag
+ * @param {IGraph} graph
+ * @param {ITask} task
+ * @param {PlannerTask} details
  * @returns {Promise<any>}
  * @memberof Graph
  */
-export const setPlannerTaskDetails = async (
-  graph: IGraph,
-  taskId: string,
-  details: PlannerTask,
-  eTag: string
-): Promise<any> => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return await graph
-    .api(`/planner/tasks/${taskId}`)
-    .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Group.ReadWrite.All'))
-    .header('If-Match', eTag)
-    .patch(JSON.stringify(details));
+export const setPlannerTaskDetails = async (graph: IGraph, task: ITask, details: PlannerTask): Promise<PlannerTask> => {
+  let response: PlannerTask;
+  try {
+    response = (await graph
+      .api(`/planner/tasks/${task.id}`)
+      .header('Cache-Control', 'no-store')
+      .middlewareOptions(prepScopes('Group.ReadWrite.All'))
+      .header('Prefer', 'return=representation')
+      .header('If-Match', task.eTag)
+      .update(details)) as PlannerTask;
+  } catch (_) {
+    /* empty */
+  }
+  return Promise.resolve(response);
 };
 
 /**
  * async promise, returns all planner plans associated with the group id
  *
+ * @param {IGraph} graph
  * @param {string} groupId
  * @returns {(Promise<PlannerPlan[]>)}
  * @memberof Graph
@@ -150,6 +133,7 @@ export const getPlansForGroup = async (graph: IGraph, groupId: string): Promise<
 /**
  * async promise, returns a single plan from the Graph associated with the planId
  *
+ * @param {IGraph} graph
  * @param {string} planId
  * @returns {(Promise<PlannerPlan>)}
  * @memberof Graph
@@ -164,6 +148,7 @@ export const getSinglePlannerPlan = async (graph: IGraph, planId: string): Promi
 /**
  * async promise, returns bucket (for tasks) associated with a planId
  *
+ * @param {IGraph} graph
  * @param {string} planId
  * @returns {(Promise<PlannerBucket[]>)}
  * @memberof Graph
@@ -181,6 +166,7 @@ export const getBucketsForPlannerPlan = async (graph: IGraph, planId: string): P
 /**
  * async promise, returns all planner plans associated with the user logged in
  *
+ * @param {IGraph} graph
  * @returns {(Promise<PlannerPlan[]>)}
  * @memberof Graph
  */
@@ -197,6 +183,7 @@ export const getAllMyPlannerPlans = async (graph: IGraph): Promise<PlannerPlan[]
 /**
  * async promise, returns all tasks from planner associated with a bucketId
  *
+ * @param {IGraph} graph
  * @param {string} bucketId
  * @returns {(Promise<PlannerTask[][]>)}
  * @memberof Graph
