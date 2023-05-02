@@ -26,6 +26,21 @@ $tasks-new-button-background: var(--tasks-new-button-background, $tasks-new-butt
 $tasks-new-button-background-hover: var(--tasks-new-button-background-hover, var(--accent-fill-hover));
 $tasks-new-button-background-active: var(--tasks-new-button-background-active, var(--accent-fill-active));
 
+$task-add-new-button-bg: padding-box linear-gradient(var(--neutral-fill-active), var(--neutral-fill-active)),
+  border-box var(--neutral-stroke-control-active);
+$task-add-new-hover-button-bg: padding-box linear-gradient(var(--neutral-fill-hover), var(--neutral-fill-hover)),
+  border-box var(--neutral-stroke-control-hover);
+$task-add-new-active-button-bg: padding-box linear-gradient(var(--neutral-fill-active), var(--neutral-fill-active)),
+  border-box var(--neutral-stroke-control-active);
+$task-add-new-button-width: var(--task-add-new-button-width, none);
+$task-add-new-button-height: var(--task-add-new-button-height, none);
+$task-add-new-button-text-color: var(--task-add-new-button-text-color, var(--neutral-foreground-rest));
+$task-add-new-button-text-font-weight: var(--task-add-new-button-text-font-weight, initial);
+$task-add-new-button-border: var(--task-add-new-button-border, calc(var(--stroke-width) * 1px) solid transparent);
+$task-add-new-button-background: var(--task-add-new-button-background, $task-add-new-button-bg);
+$task-add-new-button-background-hover: var(--task-add-new-button-background-hover, $task-add-new-hover-button-bg);
+$task-add-new-button-background-active: var(--task-add-new-button-background-active, $task-add-new-active-button-bg);
+
 $task-title-text-font-size: var(--task-title-text-font-size, medium);
 $task-title-text-font-weight: var(--task-title-text-font-weight, 600);
 $task-complete-title-text-color: var(--task-complete-title-text-color, var(--neutral-foreground-hint));
@@ -250,6 +265,27 @@ $task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--n
           .TaskBody {
             display: flex;
           }
+        }
+      }
+    }
+  }
+
+  fluent-button {
+    &.AddTask {
+      &::part(control) {
+        font-weight: $task-add-new-button-text-font-weight;
+        color: $task-add-new-button-text-color;
+        width: $task-add-new-button-width;
+        height: $task-add-new-button-height;
+        background: $task-add-new-button-background;
+        border: $task-add-new-button-border;
+
+        &:hover {
+          background: $task-add-new-button-background-hover;
+        }
+
+        &:active {
+          background: $task-add-new-button-background-active;
         }
       }
     }
