@@ -40,6 +40,15 @@ export const CustomCSSProperties = () => html`
         --tasks-new-button-background-hover: gray;
         --tasks-new-button-background-active: red;
 
+        --task-add-new-button-width: 60px;
+        --task-add-new-button-height: 35px;
+        --task-add-new-button-text-color: orange;
+        --task-add-new-button-text-font-weight: 400;
+        --task-add-new-button-background: black;
+        --task-add-new-button-border: 2px dotted white;
+        --task-add-new-button-background-hover: gray;
+        --task-add-new-button-background-active: red;
+
         --task-complete-checkbox-background-color: red;
         --task-complete-checkbox-text-color: yellow;
         --task-incomplete-checkbox-background-color: orange;
