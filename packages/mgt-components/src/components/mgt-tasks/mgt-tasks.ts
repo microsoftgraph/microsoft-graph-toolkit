@@ -522,6 +522,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
+    return this.renderLoadingTask();
     let tasks = this._tasks
       .filter(task => this.isTaskInSelectedGroupFilter(task))
       .filter(task => this.isTaskInSelectedFolderFilter(task))
