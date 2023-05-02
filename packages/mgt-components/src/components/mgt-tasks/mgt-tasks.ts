@@ -1334,8 +1334,16 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private renderLoadingTask() {
     return html`
+      <div class="Header">
+        <div class="Title">
+          <fluent-skeleton shimmer class="Shimmer" shape="rect"></fluent-skeleton>
+        </div>
+        <div class="NewTaskButton">
+          <fluent-skeleton shimmer class="Shimmer" shape="rect"></fluent-skeleton>
+        </div>
+      </div>
       <div class="Tasks">
-        <div class="Task">
+        <div class="Task Complete">
           <div class="TaskDetailsContainer">
             <div class="Top">
               <div class="CheckAndTitle Shimmer">

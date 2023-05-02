@@ -78,10 +78,20 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
 
     .Title {
       justify-content: left;
+
+      .Shimmer {
+        width: 80px;
+        height: 20px;
+      }
     }
 
     .NewTaskButton {
       justify-content: right;
+
+      .Shimmer {
+        width: 40px;
+        height: 24px;
+      }
 
       &::part(control) {
         font-weight: $tasks-new-button-text-font-weight;
