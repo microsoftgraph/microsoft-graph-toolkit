@@ -49,6 +49,15 @@ export const CustomCSSProperties = () => html`
         --task-add-new-button-background-hover: gray;
         --task-add-new-button-background-active: red;
 
+        --task-cancel-new-button-width: 60px;
+        --task-cancel-new-button-height: 35px;
+        --task-cancel-new-button-text-color: yellow;
+        --task-cancel-new-button-text-font-weight: 400;
+        --task-cancel-new-button-background: red;
+        --task-cancel-new-button-border: 2px dashed white;
+        --task-cancel-new-button-background-hover: brown;
+        --task-cancel-new-button-background-active: red;
+
         --task-complete-checkbox-background-color: red;
         --task-complete-checkbox-text-color: yellow;
         --task-incomplete-checkbox-background-color: orange;
