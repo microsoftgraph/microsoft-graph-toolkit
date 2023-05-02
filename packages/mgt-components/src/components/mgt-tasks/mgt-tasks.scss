@@ -309,11 +309,12 @@ $task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--n
           &.Shimmer {
             flex-direction: row;
             place-items: center;
+            column-gap: 6px;
 
             .Shimmer {
               &.Icon {
-                width: 20px;
-                height: 20px;
+                width: 24px;
+                height: 24px;
               }
 
               &.Text {

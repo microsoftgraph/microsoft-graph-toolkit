@@ -1380,7 +1380,8 @@ export class MgtTasks extends MgtTemplatedComponent {
               </div>
               <div class="TaskDetails Shimmer">
                 <fluent-skeleton shimmer class="Shimmer Icon" shape="circle"></fluent-skeleton>
-                <fluent-skeleton shimmer class="Shimmer Text" shape="rect"></fluent-skeleton>
+                <fluent-skeleton shimmer class="Shimmer Icon" shape="circle"></fluent-skeleton>
+                <fluent-skeleton shimmer class="Shimmer Icon" shape="circle"></fluent-skeleton>
               </div>
               <div class="TaskDue">
                 <div class="TaskIconText">
