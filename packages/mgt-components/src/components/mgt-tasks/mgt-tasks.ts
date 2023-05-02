@@ -820,32 +820,32 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   };
 
-  private addNewTaskButtonClick(e: MouseEvent) {
+  private addNewTaskButtonClick = () => {
     this.isNewTaskVisible = !this.isNewTaskVisible;
-  }
+  };
 
-  private handleNewTaskDateChange(e: Event) {
+  private handleNewTaskDateChange = (e: Event) => {
     const value = (e.target as HTMLInputElement).value;
     if (value) {
       this._newTaskDueDate = new Date(value + 'T17:00');
     } else {
       this._newTaskDueDate = null;
     }
-  }
+  };
 
-  private handleSelectedPlan(e: Event) {
+  private handleSelectedPlan = (e: Event) => {
     this._newTaskGroupId = (e.target as HTMLInputElement).value;
     if (this.dataSource === TasksSource.planner) {
       const task = this._groups.filter(iTask => iTask.id === this._newTaskGroupId);
       this._newTaskContainerId = task.pop()?.containerId ?? this._newTaskContainerId;
     }
-  }
+  };
 
-  private newTaskVisible(e: KeyboardEvent) {
+  private newTaskVisible = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
       this.isNewTaskVisible = false;
     }
-  }
+  };
 
   private renderPlanOptions() {
     const p = Providers.globalProvider;
@@ -1321,9 +1321,9 @@ export class MgtTasks extends MgtTemplatedComponent {
     taskAssigneeClasses[`flyout-${taskId}`] = true;
 
     if (!this.newTaskVisible) {
-      const planId = task?._raw?.planId;
+      const planId: string = task._raw.planId;
       if (planId) {
-        const group = this._groups.filter(group => group.id === planId);
+        const group = this._groups.filter(grp => grp.id === planId);
         assignedGroupId = group.pop()?.containerId;
       }
     }
