@@ -150,7 +150,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   private isRefreshing: boolean;
 
   @state() private response: Entity[];
-  @state() private error: object;
 
   constructor() {
     super();

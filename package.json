@@ -6,6 +6,7 @@
     "packages": [
       "packages/*",
       "packages/providers/*",
+      "samples/react-admin-app",
       "samples/react-app",
       "samples/angular-app",
       "samples/vue-app",
@@ -22,6 +23,7 @@
     ]
   },
   "scripts": {
+    "init": "yarn && yarn build",
     "analyze": "custom-elements-manifest analyze --litelement --globs \"./packages/*/src/**/*.ts\"",
     "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
     "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope @microsoft/*",
@@ -50,6 +52,9 @@
     "watch": "lerna run --parallel --stream --scope @microsoft/* build:watch ",
     "watch:serve": "npm-run-all --parallel watch serve",
     "watch:serve:https": "npm-run-all -parallel watch serve:https",
+    "watch:components": "lerna run --parallel build:watch --scope @microsoft/mgt-components --include-dependents",
+    "watch:react-admin-app": "lerna run start --scope react-admin-app",
+    "watch:react": "npm-run-all --parallel watch:components watch:react-admin-app",
     "prettier:base": "prettier --parser typescript",
     "prettier:check": "npm run prettier:base -- --check \"packages/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"packages/**/*.{ts,tsx}\"",
