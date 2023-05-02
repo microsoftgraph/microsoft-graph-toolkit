@@ -522,6 +522,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
+    return this.renderLoadingTask();
     let tasks = this._tasks
       .filter(task => this.isTaskInSelectedGroupFilter(task))
       .filter(task => this.isTaskInSelectedFolderFilter(task))
@@ -1334,6 +1335,14 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private renderLoadingTask() {
     return html`
+      <div class="Header">
+        <div class="Title">
+          <fluent-skeleton shimmer class="Shimmer" shape="rect"></fluent-skeleton>
+        </div>
+        <div class="NewTaskButton">
+          <fluent-skeleton shimmer class="Shimmer" shape="rect"></fluent-skeleton>
+        </div>
+      </div>
       <div class="Tasks">
         <div class="Task">
           <div class="TaskDetailsContainer">
