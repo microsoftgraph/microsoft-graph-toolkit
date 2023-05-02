@@ -31,7 +31,7 @@
       background: $task-background-color--completed;
     }
 
-    :hover {
+    &:hover {
       background-color: $task-background-color-hover;
       border-radius: 8px;
     }
@@ -211,9 +211,5 @@
       margin-inline-end: unset;
       width: 100%;
     }
-  }
-
-  :hover {
-    background-color: $task-background-color-hover;
   }
 }
