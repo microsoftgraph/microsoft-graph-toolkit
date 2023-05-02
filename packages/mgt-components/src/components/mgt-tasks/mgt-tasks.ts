@@ -829,23 +829,23 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   };
 
-  private onAddTaskKeyDown(e: KeyboardEvent) {
+  private onAddTaskKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       this.onAddTaskClick();
     }
-  }
+  };
 
-  private newTaskButtonKeydown(e: KeyboardEvent) {
+  private newTaskButtonKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       this.isNewTaskVisible = !this.isNewTaskVisible;
     }
-  }
+  };
 
-  private newTaskVisible(e: KeyboardEvent) {
+  private newTaskVisible = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       this.isNewTaskVisible = false;
     }
-  }
+  };
 
   private renderPlanOptions(): TemplateResult {
     const p = Providers.globalProvider;
@@ -989,8 +989,8 @@ export class MgtTasks extends MgtTemplatedComponent {
     const groupOptions = html`
       ${repeat(
         this._groups,
-        group => group.id,
-        group => html`<fluent-option value="${group.id}">${group.title}</fluent-option>`
+        grp => grp.id,
+        grp => html`<fluent-option value="${grp.id}">${grp.title}</fluent-option>`
       )}`;
 
     const group =
