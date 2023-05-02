@@ -168,10 +168,16 @@ const plannerAssignment = {
  * @cssprop --task-add-new-button-border - {Length} Add a new task button border. Default is none.
  * @cssprop --task-add-new-button-background-hover - {Color} Add a new task button hover background.
  * @cssprop --task-add-new-button-background-active - {Color} Add a new task button active background.
- * TODO: Add other tokens for the addition of a task section.
  *
- *
- *
+ * @cssprop --task-cancel-new-button-width - {Length} Cancel adding a new task button width. Default is none.
+ * @cssprop --task-cancel-new-button-height - {Length} Cancel adding a new task button height. Default is none
+ * @cssprop --task-cancel-new-button-text-color - {Color} Cancel adding a new task button text color.
+ * @cssprop --task-cancel-new-button-text-font-weight - {Length} Cancel adding a new task button text font weight. Default is 700.
+ * @cssprop --task-cancel-new-button-background - {Length} Cancel adding a new task button background.
+ * @cssprop --task-cancel-new-button-border - {Length} Cancel adding a new task button border. Default is none.
+ * @cssprop --task-cancel-new-button-background-hover - {Color} Cancel adding a new task button hover background.
+ * @cssprop --task-cancel-new-button-background-active - {Color} Cancel adding a new task button active background.
+ 
  * @cssprop --task-new-input-border - {Length} the border of the input for a new task. Default is fluent UI input border.
  * @cssprop --task-new-input-border-radius - {Length} the border radius of the input for a new task. Default is fluent UI input border.
  * @cssprop --task-new-input-background-color - {Color} the background color of the new task input.
@@ -187,7 +193,6 @@ const plannerAssignment = {
  * @cssprop --task-new-dropdown-option-hover-background-color - {Color} the background color of the dropdown option when you hover.
  * @cssprop --task-new-person-icon-color - {Color} color of the assign person text.
  * @cssprop --task-new-person-icon-text-color - {Color} color of the text beside the assign person icon.
- *
  *
  * @cssprop --task-complete-checkbox-background-color - {Color} A completed task checkbox background color.
  * @cssprop --task-complete-checkbox-text-color - {Color} A completed task checkbox check color.
