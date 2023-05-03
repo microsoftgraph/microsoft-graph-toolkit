@@ -127,11 +127,11 @@ export class MgtTodo extends MgtTasksBase {
       tasks = tasks.filter(task => this.taskFilter(task));
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const completedTasks = tasks.filter(task => (TaskStatus as any)[task.status] === TaskStatus.completed);
+    const completedTasks = tasks.filter(task => task.status === 'completed');
 
     const taskTemplates = repeat(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      tasks.filter(task => (TaskStatus as any)[task.status] !== TaskStatus.completed),
+      tasks.filter(task => task.status !== 'completed'),
       task => task.id,
       task => this.renderTask(task)
     );
@@ -482,10 +482,10 @@ export class MgtTodo extends MgtTasksBase {
     this.handleTaskClick(task);
     if (!this.readOnly) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if ((TaskStatus as any)[task.status] === TaskStatus.completed) {
-        void this.updateTaskStatus(task, TaskStatus.notStarted);
+      if (task.status === 'completed') {
+        void this.updateTaskStatus(task, 'notStarted');
       } else {
-        void this.updateTaskStatus(task, TaskStatus.completed);
+        void this.updateTaskStatus(task, 'completed');
       }
     }
   }

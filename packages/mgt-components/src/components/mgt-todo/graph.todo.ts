@@ -17,13 +17,7 @@ export interface LinkedResource {
   externalId: string;
 }
 
-export enum TaskStatus {
-  notStarted,
-  inProgress,
-  completed,
-  deferred,
-  waitingOnOthers
-}
+export type TaskStatus = 'notStarted' | 'inProgress' | 'completed' | 'deferred' | 'waitingOnOthers';
 
 export enum TaskImportance {
   low,
