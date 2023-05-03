@@ -263,6 +263,7 @@ export const getUsersForUserIds = async (
       }
       return Promise.all(Object.values(peopleDict));
     }
+    return Promise.all(Object.values(peopleDict));
   } catch (_) {
     // fallback to making the request one by one
     try {

@@ -5,32 +5,33 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
-import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
-import { html, PropertyValueMap } from 'lit';
-import { property } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
-import { repeat } from 'lit/directives/repeat.js';
 import {
   ComponentMediaQuery,
-  Providers,
-  ProviderState,
   MgtTemplatedComponent,
-  mgtHtml,
-  customElement
+  ProviderState,
+  Providers,
+  customElement,
+  mgtHtml
 } from '@microsoft/mgt-element';
+import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
+import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
+import { PropertyValueMap, TemplateResult, html } from 'lit';
+import { property, state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { repeat } from 'lit/directives/repeat.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { getMe } from '../../graph/graph.user';
 import { getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
-import { PersonCardInteraction } from './../PersonCardInteraction';
-import { styles } from './mgt-tasks-css';
-import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
-import { getMe } from '../../graph/graph.user';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+import { PersonCardInteraction } from './../PersonCardInteraction';
+import { styles } from './mgt-tasks-css';
 import { strings } from './strings';
+import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -245,6 +246,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       this._newTaskDueDate = null;
       this._newTaskName = '';
       this._newTaskGroupId = '';
+      this._newTaskContainerId = '';
     }
   }
 
@@ -364,6 +366,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property() private _newTaskDueDate: Date;
   @property() private _newTaskGroupId: string;
   @property() private _newTaskFolderId: string;
+  @property() private _newTaskContainerId: string;
   @property() private _groups: ITaskGroup[];
   @property() private _folders: ITaskFolder[];
   @property() private _tasks: ITask[];
@@ -376,7 +379,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property() private _currentGroup: string;
   @property() private _currentFolder: string;
 
-  private _me: User = null;
+  @state() private _me: User = null;
   private previousMediaQuery: ComponentMediaQuery;
 
   constructor() {
@@ -482,19 +485,9 @@ export class MgtTasks extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    let tasks = this._tasks
-      .filter(task => this.isTaskInSelectedGroupFilter(task))
-      .filter(task => this.isTaskInSelectedFolderFilter(task))
-      .filter(task => !this._hiddenTasks.includes(task.id));
-
-    if (this.taskFilter) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      tasks = tasks.filter(task => this.taskFilter(task._raw));
-    }
-
     const loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
-    let header;
+    let header: TemplateResult;
 
     if (!this.hideHeader) {
       header = html`
@@ -509,7 +502,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       <div class="Tasks" dir=${this.direction}>
         ${this._isNewTaskVisible ? this.renderNewTask() : null} ${loadingTask}
         ${repeat(
-          tasks,
+          this._tasks,
           task => task.id,
           task => this.renderTask(task)
         )}
@@ -535,10 +528,9 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     this._inTaskLoad = true;
-    let meTask: Promise<User>;
     if (!this._me) {
       const graph = provider.graph.forComponent(this);
-      meTask = getMe(graph);
+      this._me = await getMe(graph);
     }
 
     if (this.groupId && this.dataSource === TasksSource.planner) {
@@ -553,8 +545,13 @@ export class MgtTasks extends MgtTemplatedComponent {
       await this._loadAllTasks(ts);
     }
 
-    if (typeof meTask !== 'undefined') {
-      this._me = await meTask;
+    this._tasks = this._tasks
+      .filter(task => this.isTaskInSelectedGroupFilter(task))
+      .filter(task => this.isTaskInSelectedFolderFilter(task))
+      .filter(task => !this._hiddenTasks.includes(task.id));
+
+    if (this.taskFilter) {
+      this._tasks = this._tasks.filter(task => this.taskFilter(task._raw));
     }
 
     this._inTaskLoad = false;
@@ -817,6 +814,27 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   };
 
+  private addNewTaskButtonClick = () => {
+    this.isNewTaskVisible = !this.isNewTaskVisible;
+  };
+
+  private handleNewTaskDateChange = (e: Event) => {
+    const value = (e.target as HTMLInputElement).value;
+    if (value) {
+      this._newTaskDueDate = new Date(value + 'T17:00');
+    } else {
+      this._newTaskDueDate = null;
+    }
+  };
+
+  private handleSelectedPlan = (e: Event) => {
+    this._newTaskGroupId = (e.target as HTMLInputElement).value;
+    if (this.dataSource === TasksSource.planner) {
+      const task = this._groups.filter(iTask => iTask.id === this._newTaskGroupId);
+      this._newTaskContainerId = task.pop()?.containerId ?? this._newTaskContainerId;
+    }
+  };
+
   private newTaskVisible = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
       this.isNewTaskVisible = false;
@@ -843,9 +861,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             <div
               tabindex="0"
               class="AddBarItem NewTaskButton"
-              @click="${() => {
-                this.isNewTaskVisible = !this.isNewTaskVisible;
-              }}"
+              @click="${this.addNewTaskButtonClick}"
               @keydown="${this.newTaskButtonKeydown}"
             >
               <span class="TaskIcon"></span>
@@ -963,6 +979,9 @@ export class MgtTasks extends MgtTemplatedComponent {
     const groups = this._groups;
     if (groups.length > 0 && !this._newTaskGroupId) {
       this._newTaskGroupId = groups[0].id;
+      if (this.dataSource === TasksSource.planner) {
+        this._newTaskContainerId = groups[0].containerId;
+      }
     }
     const group =
       this.dataSource === TasksSource.todo
@@ -979,9 +998,7 @@ export class MgtTasks extends MgtTemplatedComponent {
               ${this.renderPlannerIcon()}
               <select aria-label="new task group"
                 .value="${this._newTaskGroupId}"
-                @change="${(e: Event) => {
-                  this._newTaskGroupId = (e.target as HTMLInputElement).value;
-                }}"
+                @change="${this.handleSelectedPlan}"
               >
                 ${this._groups.map(
                   plan => html`
@@ -1034,14 +1051,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           aria-label="new-taskDate-input"
           role="textbox"
           .value="${this.dateToInputValue(this._newTaskDueDate)}"
-          @change="${(e: Event) => {
-            const value = (e.target as HTMLInputElement).value;
-            if (value) {
-              this._newTaskDueDate = new Date(value + 'T17:00');
-            } else {
-              this._newTaskDueDate = null;
-            }
-          }}"
+          @change="${this.handleNewTaskDateChange}"
         />
       </span>
     `;
@@ -1281,6 +1291,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private renderAssignedPeople(task: ITask) {
     let assignedPeopleHTML = null;
+    let assignedGroupId: string;
 
     const taskAssigneeClasses = {
       NewTaskAssignee: task === null,
@@ -1303,7 +1314,18 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskId = task ? task.id : 'newTask';
     taskAssigneeClasses[`flyout-${taskId}`] = true;
 
-    assignedPeopleHTML = mgtHtml`
+    if (!this.newTaskVisible) {
+      const raw: PlannerTask = task?._raw as PlannerTask;
+      const planId = raw?.planId;
+      if (planId) {
+        const group = this._groups.filter(grp => grp.id === planId);
+        assignedGroupId = group.pop()?.containerId;
+      }
+    }
+
+    const planGroupId = this.isNewTaskVisible ? this._newTaskContainerId : assignedGroupId;
+
+    assignedPeopleHTML = html`
       <mgt-people
         class="people people-${taskId}"
         .userIds="${assignedPeople}"
@@ -1324,7 +1346,9 @@ export class MgtTasks extends MgtTemplatedComponent {
     const picker = mgtHtml`
       <mgt-people-picker
         class="people-picker picker-${taskId}"
+        .groupId=${ifDefined(planGroupId)}
         @click=${(e: MouseEvent) => e.stopPropagation()}
+        .groupId=${ifDefined(planGroupId)}
         @keydown=${(e: KeyboardEvent) => {
           if (e.code === 'Enter') {
             e.stopPropagation();
