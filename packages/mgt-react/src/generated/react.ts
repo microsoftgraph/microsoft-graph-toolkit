@@ -45,6 +45,7 @@ export type FileProps = {
 export type FileListProps = {
 	fileListQuery?: string;
 	displayName?: string;
+	cardTitle?: string;
 	fileQueries?: string[];
 	files?: MicrosoftGraph.DriveItem[];
 	siteId?: string;

@@ -19,10 +19,11 @@ export const customElement = (tagName: string): ((classOrDescriptor: unknown) =>
   const mgtTagName = `${customElementHelper.prefix}-${tagName}`;
   const mgtElement = customElements.get(mgtTagName);
   const unknownVersion = ' Unknown likely <3.0.0';
-  const version = element => (element as any).version || unknownVersion;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const version = (element): string => (element.version as string) || unknownVersion;
   if (mgtElement) {
     return (classOrDescriptor: CustomElementConstructor) => {
-      // tslint:disable-next-line: no-console
+      // eslint-disable-next-line no-console
       console.error(
         `Tag name ${mgtTagName} is already defined using class ${mgtElement.name} version ${version(mgtElement)}\n`,
         `Currently registering class ${classOrDescriptor.name} with version ${version(classOrDescriptor)}\n`,

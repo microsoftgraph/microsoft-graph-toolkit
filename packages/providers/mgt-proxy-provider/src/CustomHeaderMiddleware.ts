@@ -15,9 +15,8 @@ import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/src/m
  * @class CustomHeaderMiddleware
  * @implements {Middleware}
  */
-// tslint:disable-next-line: max-classes-per-file
 export class CustomHeaderMiddleware implements Middleware {
-  private nextMiddleware: Middleware;
+  private _nextMiddleware: Middleware;
   private _getCustomHeaders: () => Promise<object>;
 
   constructor(getCustomHeaders: () => Promise<object>) {
@@ -36,11 +35,11 @@ export class CustomHeaderMiddleware implements Middleware {
       const headers = await this._getCustomHeaders();
       for (const key in headers) {
         if (headers.hasOwnProperty(key)) {
-          setRequestHeader(context.request, context.options, key, headers[key]);
+          setRequestHeader(context.request, context.options, key, headers[key] as string);
         }
       }
     }
-    return await this.nextMiddleware.execute(context);
+    return await this._nextMiddleware.execute(context);
   }
 
   /**
@@ -50,6 +49,6 @@ export class CustomHeaderMiddleware implements Middleware {
    * @memberof SdkVersionMiddleware
    */
   public setNext(next: Middleware): void {
-    this.nextMiddleware = next;
+    this._nextMiddleware = next;
   }
 }

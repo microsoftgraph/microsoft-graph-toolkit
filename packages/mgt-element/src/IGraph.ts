@@ -64,7 +64,7 @@ export interface IGraph {
    * @returns {Batch}
    * @memberof IGraph
    */
-  createBatch(): IBatch;
+  createBatch<T = any>(): IBatch<T>;
 }
 
 /**

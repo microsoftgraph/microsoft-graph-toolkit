@@ -74,9 +74,9 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private _eventEmitter: ThreadEventEmitter;
   private _subscribers: ((state: GraphChatClient) => void)[] = [];
   private _messagesPerCall = 5;
-  private _nextLink: string = '';
+  private _nextLink = '';
   private _chat?: Chat = undefined;
-  private _userDisplayName: string = '';
+  private _userDisplayName = '';
 
   constructor() {
     this.updateUserInfo();
@@ -181,7 +181,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this.userId = Providers.globalProvider.getActiveAccount?.().id.split('.')[0] || '';
   }
 
-  private _userId: string = '';
+  private _userId = '';
   private set userId(userId: string) {
     if (this._userId === userId) {
       return;
@@ -192,7 +192,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     });
   }
 
-  private _chatId: string = '';
+  private _chatId = '';
 
   public set chatId(value: string) {
     // take no action if the chatId is the same
@@ -285,7 +285,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         messageId: pendingId,
         contentType: 'text',
         messageType: 'chat',
-        content: content,
+        content,
         senderDisplayName: this._userDisplayName,
         createdOn: new Date(),
         senderId: this._userId,
@@ -349,7 +349,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
           }
         });
       } catch (e) {
-        //TODO: How do we handle failed deletes?
+        // TODO: How do we handle failed deletes?
       }
     }
   };

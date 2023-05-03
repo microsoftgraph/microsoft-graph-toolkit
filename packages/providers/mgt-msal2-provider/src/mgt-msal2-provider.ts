@@ -38,7 +38,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     attribute: 'login-hint',
     type: String
   })
-  public loginHint;
+  public loginHint: string;
 
   /**
    * domain hint string
@@ -49,7 +49,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     attribute: 'domain-hint',
     type: String
   })
-  public domainHint;
+  public domainHint: string;
 
   /**
    * The login type that should be used: popup or redirect
@@ -60,14 +60,15 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     attribute: 'login-type',
     type: String
   })
-  public loginType;
+  public loginType: string;
 
   /**
    * The authority to use.
    *
    * @memberof MgtMsal2Provider
    */
-  @property() public authority;
+  @property()
+  public authority: string;
 
   /**
    * Comma separated list of scopes
@@ -78,7 +79,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     attribute: 'scopes',
     type: String
   })
-  public scopes;
+  public scopes: string;
 
   /**
    * The redirect uri to use
@@ -89,7 +90,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     attribute: 'redirect-uri',
     type: String
   })
-  public redirectUri;
+  public redirectUri: string;
 
   /**
    * Type of prompt for login
@@ -149,7 +150,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
       if (this.loginType && this.loginType.length > 1) {
         let loginType: string = this.loginType.toLowerCase();
         loginType = loginType[0].toUpperCase() + loginType.slice(1);
-        const loginTypeEnum = LoginType[loginType];
+        const loginTypeEnum = LoginType[loginType] as LoginType;
         config.loginType = loginTypeEnum;
       }
 
@@ -178,7 +179,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
 
       if (this.prompt) {
         const prompt: string = this.prompt.toUpperCase();
-        const promptEnum = PromptType[prompt];
+        const promptEnum = PromptType[prompt] as PromptType;
         config.prompt = promptEnum;
       }
 

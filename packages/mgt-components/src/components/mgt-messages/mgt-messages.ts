@@ -56,6 +56,17 @@ export class MgtMessages extends BasePersonCardSection {
   }
 
   /**
+   * The title for display when rendered as a full card.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtOrganization
+   */
+  public get cardTitle(): string {
+    return this.strings.emailsSectionTitle;
+  }
+
+  /**
    * Reset any state in the section
    *
    * @protected
@@ -127,7 +138,6 @@ export class MgtMessages extends BasePersonCardSection {
 
     return html`
        <div class="root">
-         <div class="title" tabindex="0">${this.strings.emailsSectionTitle}</div>
          ${contentTemplate}
        </div>
      `;
