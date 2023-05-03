@@ -1757,7 +1757,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if (this._arrowSelectionCount === -1) {
             this._arrowSelectionCount = 0;
           } else {
-            this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
+            this._arrowSelectionCount =
+              (this._arrowSelectionCount + 1 + peopleList.children.length) % peopleList.children.length;
           }
         }
       }

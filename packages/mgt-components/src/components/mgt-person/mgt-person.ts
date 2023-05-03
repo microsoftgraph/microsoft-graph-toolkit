@@ -7,7 +7,7 @@
 
 import { MgtTemplatedComponent, ProviderState, Providers, customElement, mgtHtml } from '@microsoft/mgt-element';
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
-import { TemplateResult, html } from 'lit';
+import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -585,7 +585,8 @@ export class MgtPerson extends MgtTemplatedComponent {
       const imageWithPresenceTemplate: TemplateResult = this.renderAvatar(person, image, presence);
 
       personTemplate = html`
-          ${imageWithPresenceTemplate} ${detailsTemplate}
+        ${imageWithPresenceTemplate}
+        ${detailsTemplate}
       `;
     }
 

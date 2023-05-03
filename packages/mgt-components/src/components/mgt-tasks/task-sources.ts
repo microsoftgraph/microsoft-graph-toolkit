@@ -7,8 +7,8 @@
  */
 
 import { IGraph, BetaGraph } from '@microsoft/mgt-element';
-import { Planner, PlannerAssignments, PlannerTask } from '@microsoft/microsoft-graph-types';
-import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
+import { PlannerAssignments } from '@microsoft/microsoft-graph-types';
+import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup, PlannerTask } from '@microsoft/microsoft-graph-types-beta';
 import {
   addPlannerTask,
   assignPeopleToPlannerTask,
@@ -98,10 +98,10 @@ export interface ITask {
   /**
    * raw
    *
-   * @type {*}
+   * @type {PlannerTask | OutlookTask}
    * @memberof ITask
    */
-  _raw?: PlannerTask;
+  _raw?: PlannerTask | OutlookTask;
 }
 /**
  * container for tasks

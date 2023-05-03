@@ -485,16 +485,6 @@ export class MgtTasks extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    let tasks = this._tasks
-      .filter(task => this.isTaskInSelectedGroupFilter(task))
-      .filter(task => this.isTaskInSelectedFolderFilter(task))
-      .filter(task => !this._hiddenTasks.includes(task.id));
-
-    if (this.taskFilter) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      tasks = tasks.filter(task => this.taskFilter(task._raw));
-    }
-
     const loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
     let header: TemplateResult;
@@ -538,7 +528,6 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     this._inTaskLoad = true;
-    let meTask: Promise<User>;
     if (!this._me) {
       const graph = provider.graph.forComponent(this);
       this._me = await getMe(graph);
@@ -556,8 +545,13 @@ export class MgtTasks extends MgtTemplatedComponent {
       await this._loadAllTasks(ts);
     }
 
-    if (typeof meTask !== 'undefined') {
-      this._me = await meTask;
+    this._tasks = this._tasks
+      .filter(task => this.isTaskInSelectedGroupFilter(task))
+      .filter(task => this.isTaskInSelectedFolderFilter(task))
+      .filter(task => !this._hiddenTasks.includes(task.id));
+
+    if (this.taskFilter) {
+      this._tasks = this._tasks.filter(task => this.taskFilter(task._raw));
     }
 
     this._inTaskLoad = false;
@@ -1321,7 +1315,8 @@ export class MgtTasks extends MgtTemplatedComponent {
     taskAssigneeClasses[`flyout-${taskId}`] = true;
 
     if (!this.newTaskVisible) {
-      const planId: string = task._raw.planId;
+      const raw: PlannerTask = task?._raw as PlannerTask;
+      const planId = raw?.planId;
       if (planId) {
         const group = this._groups.filter(grp => grp.id === planId);
         assignedGroupId = group.pop()?.containerId;
@@ -1353,6 +1348,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         class="people-picker picker-${taskId}"
         .groupId=${ifDefined(planGroupId)}
         @click=${(e: MouseEvent) => e.stopPropagation()}
+        .groupId=${ifDefined(planGroupId)}
         @keydown=${(e: KeyboardEvent) => {
           if (e.code === 'Enter') {
             e.stopPropagation();
