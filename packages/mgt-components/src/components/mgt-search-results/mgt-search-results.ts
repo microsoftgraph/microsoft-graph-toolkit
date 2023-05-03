@@ -591,7 +591,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       this.response = null;
     }
     this.isRefreshing = false;
-    this.fireCustomEvent('dataChange', { response: this.response, error: this.error });
+    this.fireCustomEvent('dataChange', { response: this.response, error: this.error as Error });
   }
 
   /**
@@ -635,9 +635,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
                       <fluent-skeleton class="search-result-thumbnail__shimmer" shape="rect" shimmer></fluent-skeleton>
                     </div>
                   `
-                }  
-              </div>          
-              <fluent-divider></fluent-divider>            
+                }
+              </div>
+              <fluent-divider></fluent-divider>
             </div>
           `;
         })}
@@ -694,7 +694,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         <div class="search-results-pages">
           ${this.renderPreviousPage()}
           ${this.renderFirstPage(pages)}
-          ${this.renderAllPages(pages)}                
+          ${this.renderAllPages(pages)}
           ${this.renderNextPage()}
         </div>
       `;
@@ -758,10 +758,10 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       ${pages.map(
         page =>
           html`
-            <fluent-button 
+            <fluent-button
               title="${strings.page} ${page}"
-              appearance="stealth" 
-              class="${page === this.currentPage ? 'search-results-page-active' : 'search-results-page'}" 
+              appearance="stealth"
+              class="${page === this.currentPage ? 'search-results-page-active' : 'search-results-page'}"
               @click="${() => this.onPageClick(page)}">
                 ${page}
             </fluent-button>`
@@ -779,7 +779,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         pages.some(page => page === 1)
           ? nothing
           : html`
-              <fluent-button 
+              <fluent-button
                  title="${strings.page} 1"
                  appearance="stealth"
                  class="search-results-page"
@@ -787,11 +787,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
                  1
                </fluent-button>`
           ? html`
-              <fluent-button 
-                id="page-back-dot" 
-                appearance="stealth" 
-                class="search-results-page" 
-                title="${this.getDotButtonTitle()}" 
+              <fluent-button
+                id="page-back-dot"
+                appearance="stealth"
+                class="search-results-page"
+                title="${this.getDotButtonTitle()}"
                 @click="${() => this.onPageClick(this.currentPage - Math.ceil(this.pagingMax / 2))}"
               >
                 ...
@@ -813,10 +813,10 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   private renderPreviousPage() {
     return this.currentPage > 1
       ? html`
-          <fluent-button 
-            appearance="stealth" 
-            class="search-results-page" 
-            title="${strings.back}" 
+          <fluent-button
+            appearance="stealth"
+            class="search-results-page"
+            title="${strings.back}"
             @click="${this.onPageBackClick}">
               ${getSvg(SvgIcon.ChevronLeft)}
             </fluent-button>`
@@ -829,11 +829,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   private renderNextPage() {
     return !this.isLastPage()
       ? html`
-          <fluent-button 
-            appearance="stealth" 
-            class="search-results-page" 
-            title="${strings.next}" 
-            aria-label="${strings.next}" 
+          <fluent-button
+            appearance="stealth"
+            class="search-results-page"
+            title="${strings.next}"
+            aria-label="${strings.next}"
             @click="${this.onPageNextClick}">
               ${getSvg(SvgIcon.ChevronRight)}
             </fluent-button>`
@@ -912,9 +912,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     return mgtHtml`
       <div class="search-result-grid">
         <div class="search-result-icon">
-          <mgt-file 
-            .fileDetails="${result.resource}" 
-            view="image" 
+          <mgt-file
+            .fileDetails="${result.resource}"
+            view="image"
             class="file-icon">
           </mgt-file>
         </div>
@@ -924,8 +924,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           </div>
           <div class="search-result-info">
             <div class="search-result-author">
-              <mgt-person 
-                person-query=${resource.lastModifiedBy.user.email} 
+              <mgt-person
+                person-query=${resource.lastModifiedBy.user.email}
                 view="oneLine"
                 person-card="hover"
                 show-presence="true">
@@ -936,7 +936,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             </div>
           </div>
           <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-        </div>  
+        </div>
         ${
           resource.thumbnail?.url &&
           html`
@@ -944,8 +944,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             <a href="${resource.webUrl}" target="_blank"><img alt="${resource.name}" src="${resource.thumbnail?.url}" /></a>
           </div>`
         }
-        
-      </div>          
+
+      </div>
       <fluent-divider></fluent-divider>
     `;
   }
@@ -973,8 +973,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             </div>
           </div>
           <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-        </div>  
-      </div>          
+        </div>
+      </div>
       <fluent-divider></fluent-divider>
     `;
   }
@@ -990,8 +990,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     return mgtHtml`
       <div class="search-result-grid">
         <div class="search-result-icon">
-          <mgt-file 
-            .fileDetails="${result.resource}" 
+          <mgt-file
+            .fileDetails="${result.resource}"
             view="image">
           </mgt-file>
         </div>
@@ -1002,8 +1002,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             </a>
           </div>
           <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-        </div>  
-      </div>          
+        </div>
+      </div>
       <fluent-divider></fluent-divider>
     `;
   }
@@ -1029,8 +1029,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           </div>
           <div class="search-result-info">
             <div class="search-result-author">
-              <mgt-person 
-                person-query=${resource.lastModifiedBy.user.email} 
+              <mgt-person
+                person-query=${resource.lastModifiedBy.user.email}
                 view="oneLine"
                 person-card="hover"
                 show-presence="true">
@@ -1041,17 +1041,17 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             </div>
           </div>
           <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-        </div>        
+        </div>
         ${
           resource.thumbnail?.url &&
-          html`       
+          html`
           <div class="search-result-thumbnail">
             <a href="${resource.webUrl}" target="_blank"><img alt="${trimFileExtension(
             resource.name || getNameFromUrl(resource.webUrl)
           )}" src="${resource.thumbnail?.url || nothing}" /></a>
           </div>`
         }
-      </div>          
+      </div>
       <fluent-divider></fluent-divider>
     `;
   }
@@ -1066,13 +1066,13 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     const resource = result.resource as SearchResource;
     return mgtHtml`
       <div class="search-result">
-        <mgt-person 
-          view="fourLines" 
-          person-query=${resource.userPrincipalName} 
+        <mgt-person
+          view="fourLines"
+          person-query=${resource.userPrincipalName}
           person-card="hover"
           show-presence="true">
-        </mgt-person> 
-      </div>          
+        </mgt-person>
+      </div>
       <fluent-divider></fluent-divider>
     `;
   }
@@ -1121,8 +1121,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             <a href="${this.getResourceUrl(resource)}?Web=1" target="_blank">${resource.displayName}</a>
           </div>
           <div class="search-result-summary">${resource.description}</div>
-        </div>  
-      </div>          
+        </div>
+      </div>
       <fluent-divider></fluent-divider>
     `;
   }
@@ -1150,11 +1150,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
                 : html`
                   ${this.getResourceName(resource)}
                 `
-            }            
+            }
           </div>
           <div class="search-result-summary" .innerHTML="${this.getResultSummary(result)}"></div>
-        </div>  
-      </div>          
+        </div>
+      </div>
       <fluent-divider></fluent-divider>
     `;
   }
@@ -1246,7 +1246,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     }
 
     if (this.version === 'beta') {
-      (requestOptions as BetaSearchRequest).query.queryTemplate = this.queryTemplate ? this.queryTemplate : undefined;
+      requestOptions.query.queryString = this.queryTemplate ? this.queryTemplate : undefined;
     }
 
     return requestOptions;

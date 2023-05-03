@@ -195,7 +195,8 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (this.isLoadingState && !this.response) {
       return this.renderTemplate('loading', null);
     } else if (this.hasTemplate('error')) {
-      return this.renderTemplate('error', this.error ? this.error : null, 'error');
+      const error = this.error ? (this.error as Error) : null;
+      return this.renderTemplate('error', { error }, 'error');
     } else if (this.hasTemplate('no-data')) {
       return this.renderTemplate('no-data', null);
     }
