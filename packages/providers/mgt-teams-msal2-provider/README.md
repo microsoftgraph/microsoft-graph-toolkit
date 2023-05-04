@@ -6,7 +6,7 @@ The `@microsoft/mgt-teams-msal2-provider` package exposes the `TeamsMsal2Provide
 
 [See the full documentation of the TeamsMsal2Provider](https://learn.microsoft.com/graph/toolkit/providers/teams-msal2)
 
-The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
+The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph.
 
 ## Usage
 
@@ -51,15 +51,16 @@ The TeamsMsal2Provider requires the usage of the Microsoft Teams SDK which is no
 3. Alternatively, initialize the provider in html (only `client-id` and `auth-popup-url` is required):
 
     ```html
-    <script type="module" src="../node_modules/@microsoft/mgt-teams-provider/dist/es6/index.js" />
+    <script type="module" src="../node_modules/@microsoft/mgt-teamsfx-provider/dist/es6/index.js" />
 
-    <mgt-teams-msal2-provider client-id="<YOUR_CLIENT_ID>"
-                        auth-popup-url="/AUTH-PATH"
-                        scopes="user.read,people.read..." 
-                        authority=""
-                        sso-url="/api/token" 
-                        http-method="POST">
-                        ></mgt-teams-provider>
+    <mgt-teamsfx-provider
+        client-id="<YOUR_CLIENT_ID>"
+        auth-popup-url="/AUTH-PATH"
+        scopes="user.read,people.read..."
+        authority=""
+        sso-url="/api/token"
+        http-method="POST">
+    ></mgt-teamsfx-provider>
     ```
 
 See [provider usage documentation](https://learn.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
