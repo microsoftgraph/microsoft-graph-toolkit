@@ -28,14 +28,12 @@
     "src"
   ],
   "scripts": {
-    "build": "npm run clean && npm run build:compile",
-    "build:compile": "npm run compile",
-    "build:watch": "npm run compile:watch",
-    "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
-    "compile": "tsc -b",
-    "compile:watch": "tsc -w",
-    "lint": "eslint -c ../../../.eslintrc.js 'src/**/*.ts'",
-    "postpack": "cpx *.tgz ../../../artifacts"
+    "build": "echo 'This package is deprecated. Use @microsoft/mgt-msal2-provider'",
+    "clean": "echo 'This package is deprecated. Use @microsoft/mgt-msal2-provider'",
+    "compile": "echo 'This package is deprecated. Use @microsoft/mgt-msal2-provider'",
+    "compile:watch": "echo 'This package is deprecated. Use @microsoft/mgt-msal2-provider'",
+    "lint": "echo 'This package is deprecated. Use @microsoft/mgt-msal2-provider'",
+    "postpack": "echo 'This package is deprecated. Use @microsoft/mgt-msal2-provider'"
   },
   "dependencies": {
     "@microsoft/mgt-element": "*",
