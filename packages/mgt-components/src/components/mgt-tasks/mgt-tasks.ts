@@ -98,11 +98,9 @@ export interface TasksStringResource {
 /*
  * Filter function
  */
-// eslint-disable-next-line @typescript-eslint/tslint/config
 export type TaskFilter = (task: PlannerTask | OutlookTask) => boolean;
 
 // Strings and Resources for different task contexts
-// eslint-disable-next-line @typescript-eslint/tslint/config
 const TASK_RES = {
   todo: {
     BASE_SELF_ASSIGNED: 'All Tasks',
@@ -120,7 +118,6 @@ const TASK_RES = {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 const plannerAssignment = {
   '@odata.type': 'microsoft.graph.plannerAssignment',
   orderHint: 'string !'

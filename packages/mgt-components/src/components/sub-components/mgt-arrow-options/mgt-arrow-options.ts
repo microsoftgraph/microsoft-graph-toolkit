@@ -70,13 +70,11 @@ export class MgtArrowOptions extends MgtBaseComponent {
     this._clickHandler = (e: MouseEvent) => (this.open = false);
   }
 
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this._clickHandler);
   }
 
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   public disconnectedCallback() {
     window.removeEventListener('click', this._clickHandler);
     super.disconnectedCallback();

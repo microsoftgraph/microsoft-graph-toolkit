@@ -59,7 +59,6 @@ const isFileSystemFileEntry = (entry: FileEntry): entry is FileSystemFileEntry =
   return entry.isFile;
 };
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 interface FutureDataTransferItem extends DataTransferItem {
   /**
    * Possible future implementation of webkitGetAsEntry
@@ -226,9 +225,7 @@ export interface MgtFileUploadConfig {
   excludedFileExtensions?: string[];
 }
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 interface FileWithPath extends File {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   fullPath: string;
 }
 

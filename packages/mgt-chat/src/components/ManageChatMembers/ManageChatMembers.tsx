@@ -51,9 +51,12 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
     setIsPopoverOpen
   ]);
 
-  const leaveChat = useCallback(async () => {
+  const leaveChat = useCallback(() => {
     const me = members.find(member => member.userId === currentUserId);
-    me?.id && (await removeChatMember(me.id));
+    if (me?.id) {
+      void removeChatMember(me.id).then(closeCallout);
+      return;
+    }
     closeCallout();
   }, [removeChatMember, members, currentUserId, closeCallout]);
 

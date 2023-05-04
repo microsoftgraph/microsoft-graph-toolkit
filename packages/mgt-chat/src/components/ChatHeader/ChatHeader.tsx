@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { AadUserConversationMember, Chat } from '@microsoft/microsoft-graph-types';
 import { styles } from './chat-header.styles';
-import { IconBase, IconButton, IIconProps } from '@fluentui/react';
+import { IconButton, IIconProps } from '@fluentui/react';
 import { Person, PersonCardInteraction, ViewType } from '@microsoft/mgt-react';
 import { buttonIconStyle, buttonIconStyles, iconOnlyButtonStyle } from '../styles/common.styles';
 
@@ -10,7 +10,7 @@ interface ChatHeaderProps {
   currentUserId?: string;
 }
 
-const reduceToFirstNamesList = (participants: AadUserConversationMember[] = [], userId: string = '') => {
+const reduceToFirstNamesList = (participants: AadUserConversationMember[] = [], userId = '') => {
   return participants
     .filter(p => p.userId !== userId)
     .map(p => {
@@ -57,7 +57,7 @@ const OneToOneChatHeader = ({ chat, currentUserId }: ChatHeaderProps) => {
   ) : null;
 };
 
-const getOtherParticipantUserId = (chat?: Chat, currentUserId: string = '') =>
+const getOtherParticipantUserId = (chat?: Chat, currentUserId = '') =>
   (chat?.members as AadUserConversationMember[])?.find(m => m.userId !== currentUserId)?.userId;
 
 /**

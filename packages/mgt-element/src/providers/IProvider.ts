@@ -326,12 +326,8 @@ export enum ProviderState {
  * @export
  */
 export type IProviderAccount = {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   id: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   mail?: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   name?: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   tenantId?: string;
 };

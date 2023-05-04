@@ -17,11 +17,8 @@ import {
 import { LoginType, ProviderState } from '@microsoft/mgt-element';
 import { MsalProvider, LoginError } from '@microsoft/mgt-msal-provider';
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 declare global {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/tslint/config
     nativeInterface: any;
   }
 }

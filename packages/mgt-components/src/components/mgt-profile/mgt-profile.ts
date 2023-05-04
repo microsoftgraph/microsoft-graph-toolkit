@@ -493,7 +493,6 @@ export class MgtProfile extends BasePersonCardSection {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   private getDisplayDateRange(event: EducationalActivity): string {
     const start = new Date(event.startMonthYear).getFullYear();
     if (start === 0) {

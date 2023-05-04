@@ -142,7 +142,6 @@ export const getTodoTaskList = async (graph: IGraph, listId: string): Promise<To
 export const createTodoTask = async (
   graph: IGraph,
   listId: string,
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   taskData: { title: string; dueDateTime?: { dateTime: string; timeZone: string } }
 ): Promise<TodoTask> =>
   (await graph
@@ -159,7 +158,6 @@ export const createTodoTask = async (
  * @param {{ displayName: string }} list
  * @returns {Promise<TodoTaskList>}
  */
-// eslint-disable-next-line @typescript-eslint/tslint/config
 export const createTodoTaskList = async (graph: IGraph, listData: { displayName: string }): Promise<TodoTaskList> =>
   (await graph
     .api('/me/todo/lists')

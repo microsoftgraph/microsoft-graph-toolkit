@@ -35,7 +35,6 @@ declare interface AadTokenProvider {
  * @interface WebPartContext
  */
 declare interface WebPartContext {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   aadTokenProviderFactory: { getTokenProvider(): Promise<AadTokenProvider> };
 }
 

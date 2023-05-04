@@ -26,25 +26,26 @@ const RemovePerson = bundleIcon(Dismiss24Regular, () => null);
 const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParentPopover }: ListChatMembersProps) => {
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
   const [removeUser, setRemoveUser] = useState<AadUserConversationMember | undefined>(undefined);
-  const openRemoveDialog = useCallback(
-    (user: AadUserConversationMember) => {
-      if (!user) return;
-      setRemoveUser(user);
-      setRemoveDialogOpen(true);
-    },
-    [setRemoveDialogOpen, setRemoveUser]
-  );
+  const openRemoveDialog = useCallback((user: AadUserConversationMember) => {
+    if (!user) return;
+    setRemoveUser(user);
+    setRemoveDialogOpen(true);
+  }, []);
 
   const closeDialog = useCallback(() => {
     setRemoveUser(undefined);
     setRemoveDialogOpen(false);
     closeParentPopover();
-  }, [closeParentPopover, setRemoveUser, setRemoveDialogOpen]);
+  }, [closeParentPopover]);
 
-  const removeMember = useCallback(async () => {
-    removeUser?.id && (await removeChatMember(removeUser.id));
-    closeDialog();
-  }, [closeDialog, removeChatMember, removeUser]);
+  const removeMember = useCallback(() => {
+    if (!removeUser?.id) {
+      closeDialog();
+      return;
+    }
+
+    void removeChatMember(removeUser.id).then(closeDialog);
+  }, [removeUser, removeChatMember, closeDialog]);
   return (
     <>
       <Dialog open={removeDialogOpen} onOpenChange={(_, data) => setRemoveDialogOpen(data.open)}>
@@ -81,7 +82,7 @@ const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParent
                   <Person
                     className={styles.fullWidth}
                     tabIndex={-1}
-                    userId={member.userId!}
+                    userId={member.userId}
                     view={PersonViewType.oneline}
                     showPresence
                   />

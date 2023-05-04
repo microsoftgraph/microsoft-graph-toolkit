@@ -24,7 +24,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
     return () => {
       chatClient.offStateChange(setChatState);
     };
-  }, [setChatState]);
+  }, [chatClient]);
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={teamsLightTheme}>
@@ -65,7 +65,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 />
               </div>
               <div className={chatStyles.chatInput}>
-                <SendBox autoFocus="sendBoxTextField" onSendMessage={chatState.onSendMessage} />
+                <SendBox onSendMessage={chatState.onSendMessage} />
               </div>
               <ErrorBar activeErrorMessages={chatState.activeErrorMessages} />
             </>

@@ -25,7 +25,7 @@ const AddChatMembers = ({ addChatMembers, closeDialog }: AddChatMembersProps) =>
   const [historyOption, setHistoryOption] = useState<string | undefined>('none');
   const onHistoryOptionChange = React.useCallback(
     (_, option: IChoiceGroupOption | undefined) => {
-      option && setHistoryOption(option.key);
+      if (option) setHistoryOption(option.key);
     },
     [setHistoryOption]
   );
@@ -38,18 +38,18 @@ const AddChatMembers = ({ addChatMembers, closeDialog }: AddChatMembersProps) =>
     [setSelectedPeople]
   );
 
-  const addToChat = useCallback(async () => {
-    let history: Date | undefined = undefined;
+  const addToChat = useCallback(() => {
+    let history: Date | undefined;
     if (historyOption === 'days') {
       history = new Date(new Date().getTime() - daysOfHistory * 24 * 60 * 60 * 1000);
     } else if (historyOption === 'all') {
       history = new Date('0001-01-01T00:00:00Z');
     }
-    await addChatMembers(
+    void addChatMembers(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       selectedPeople.map(p => p.id!),
       history
-    );
-    closeDialog();
+    ).then(closeDialog);
   }, [selectedPeople, historyOption, daysOfHistory, addChatMembers, closeDialog]);
 
   const chatHistoryOptions: IChoiceGroupOption[] = [
@@ -62,9 +62,9 @@ const AddChatMembers = ({ addChatMembers, closeDialog }: AddChatMembersProps) =>
       text: 'Include history from the past number of days: ',
 
       onRenderField: (props, render) => {
-        return (
+        return render ? (
           <div className={styles.option}>
-            {render!(props)}
+            {render(props)}
             <Input
               type="number"
               value={daysOfHistory.toString()}
@@ -73,7 +73,7 @@ const AddChatMembers = ({ addChatMembers, closeDialog }: AddChatMembersProps) =>
               className={styles.historyInput}
             />
           </div>
-        );
+        ) : null;
       }
     },
     { key: 'all', text: 'Include all chat history' }

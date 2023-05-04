@@ -18,7 +18,6 @@ import { TokenCredential } from '@azure/core-auth';
  * Interface represents TeamsUserCredential in TeamsFx library
  */
 export interface TeamsFxUserCredential extends TokenCredential {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   login(scopes: string | string[], resources?: string[]): Promise<void>;
 }
 
