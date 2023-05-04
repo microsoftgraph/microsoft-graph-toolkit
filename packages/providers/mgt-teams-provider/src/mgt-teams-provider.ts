@@ -13,12 +13,12 @@ import { TeamsConfig, TeamsProvider } from './TeamsProvider';
 /**
  * Authentication Library Provider for Microsoft Teams accounts
  *
+ * @deprecated in favour of mgt-teams-msal2-provider.
  * @export
  * @class MgtTeamsProvider
  * @extends {MgtBaseProvider}
  */
 @customElement('teams-provider')
-// @customElement('mgt-teams-provider')
 export class MgtTeamsProvider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user

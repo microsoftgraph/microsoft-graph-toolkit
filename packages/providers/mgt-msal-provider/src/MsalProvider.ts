@@ -126,6 +126,7 @@ export type LoginError = {
 /**
  * Msal Provider using MSAL.js to aquire tokens for authentication
  *
+ * @deprecated in favour of Msal2Provider.
  * @export
  * @class MsalProvider
  * @extends {IProvider}

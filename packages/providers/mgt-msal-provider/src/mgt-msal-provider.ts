@@ -10,12 +10,12 @@ import { MsalConfig, MsalProvider } from './MsalProvider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
  *
+ * @deprecated in favour of mgt-msal2-provider.
  * @export
  * @class MgtMsalProvider
  * @extends {MgtBaseProvider}
  */
 @customElement('msal-provider')
-// @customElement('mgt-msal-provider')
 export class MgtMsalProvider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user
