@@ -154,11 +154,12 @@ export const deleteChatMessage = async (graph: IGraph, chatId: string, messageId
     .post({});
 };
 
-export const removeChatMember = async (graph: IGraph, chatId: string, membershipId: string): Promise<void> =>
-  graph
+export const removeChatMember = async (graph: IGraph, chatId: string, membershipId: string): Promise<void> => {
+  await graph
     .api(`/chats/${chatId}/members/${membershipId}`)
     .middlewareOptions(prepScopes(...chatOperationScopes.deleteChatMessage))
     .delete();
+};
 
 export const addChatMembers = async (
   graph: IGraph,

@@ -114,12 +114,12 @@ export class GraphNotificationClient {
     console.log('received notification message', notification);
     const emitter: ThreadEventEmitter | undefined = this.subscriptionEmitter[notification.subscriptionId];
     if (!notification.encryptedContent) throw new Error('Message did not contain encrypted content');
-    if (notification.resource.indexOf('/messages') != -1) {
-      this.processMessageNotification(notification, emitter);
-    } else if (notification.resource.indexOf('/members') != -1) {
-      this.processMembershipNotification(notification, emitter);
+    if (notification.resource.indexOf('/messages') !== -1) {
+      await this.processMessageNotification(notification, emitter);
+    } else if (notification.resource.indexOf('/members') !== -1) {
+      await this.processMembershipNotification(notification, emitter);
     } else {
-      this.processChatPropertiesNotification(notification, emitter);
+      await this.processChatPropertiesNotification(notification, emitter);
     }
   };
 

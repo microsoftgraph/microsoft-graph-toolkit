@@ -98,6 +98,8 @@ type MessageEventType =
   | '#microsoft.graph.membersAddedEventMessageDetail'
   | '#microsoft.graph.membersDeletedEventMessageDetail';
 
+const isString = (value: any): value is string => typeof value === 'string';
+
 class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private _notificationClient: GraphNotificationClient;
   private _eventEmitter: ThreadEventEmitter;
@@ -298,7 +300,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       case 'unknownFutureValue':
         return this.buildSystemContentMessage(message);
       default:
-        throw new Error(`Unknown message type ${message.messageType}`);
+        throw new Error(`Unknown message type ${message.messageType?.toString() || 'undefined'}`);
     }
   }
 
@@ -315,30 +317,37 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
 
   private async buildSystemContentMessage(message: ChatMessage): Promise<SystemMessage> {
     const eventDetail = message.eventDetail as MembersDeletedEventMessageDetail & ODataType;
+    let messageContent = '';
     const awaits: Promise<IDynamicPerson>[] = [];
     const initiatorId = eventDetail.initiator?.user?.id;
     // we're using getUserWithPhoto here because we want to tap into the caching that mgt-person uses to cut down on graph calls
-    initiatorId && awaits.push(getUserWithPhoto(this.graph, initiatorId));
-    for (const m of eventDetail.members ?? []) {
-      awaits.push(getUserWithPhoto(this.graph, m.id!));
-    }
-    const people = await Promise.all(awaits);
-    let messageContent = '';
-    switch (eventDetail['@odata.type']) {
-      case '#microsoft.graph.membersAddedEventMessageDetail':
-        messageContent = `${this.getUserName(initiatorId!, people)} added ${eventDetail.members
-          ?.map(m => this.getUserName(m.id!, people))
-          .join(', ')}`;
-        break;
-      case '#microsoft.graph.membersDeletedEventMessageDetail':
-        messageContent = `${this.getUserName(initiatorId!, people)} removed ${eventDetail.members
-          ?.map(m => this.getUserName(m.id!, people))
-          .join(', ')}`;
-        break;
-      default:
-        messageContent = `Unknown system message type ${eventDetail['@odata.type']}
+    if (initiatorId) {
+      awaits.push(getUserWithPhoto(this.graph, initiatorId));
+      const userIds: string[] = [];
+      eventDetail.members?.reduce((acc, m) => {
+        if (typeof m.id === 'string') {
+          acc.push(m.id);
+        }
+        return acc;
+      }, userIds);
+      for (const id of userIds ?? []) {
+        awaits.push(getUserWithPhoto(this.graph, id));
+      }
+      const people = await Promise.all(awaits);
+      const userNames = userIds?.map(m => this.getUserName(m, people)).join(', ');
+      switch (eventDetail['@odata.type']) {
+        case '#microsoft.graph.membersAddedEventMessageDetail':
+          messageContent = `${this.getUserName(initiatorId, people)} added ${userNames}`;
+          break;
+        case '#microsoft.graph.membersDeletedEventMessageDetail':
+          messageContent = `${this.getUserName(initiatorId, people)} removed ${userNames}`;
+          break;
+        default:
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          messageContent = `Unknown system message type ${eventDetail['@odata.type']}
 
 detail: ${JSON.stringify(eventDetail)}`;
+      }
     }
 
     const result: ContentSystemMessage = {
@@ -554,7 +563,7 @@ detail: ${JSON.stringify(eventDetail)}`;
     }
   };
 
-  private onChatPropertiesUpdated = async (chat: Chat): Promise<void> => {
+  private onChatPropertiesUpdated = (chat: Chat): void => {
     this._chat = chat;
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.chat = chat;
@@ -570,7 +579,7 @@ detail: ${JSON.stringify(eventDetail)}`;
   };
 
   private onParticipantRemoved = (added: AadUserConversationMember): void => {
-    added.id && this.removeParticipantFromState(added.id);
+    if (added.id) this.removeParticipantFromState(added.id);
   };
 
   private removeParticipantFromState(membershipId: string): void {
@@ -605,9 +614,9 @@ detail: ${JSON.stringify(eventDetail)}`;
    * Register event listeners for chat events to be triggered from the notification service
    */
   private registerEventListeners() {
-    this._eventEmitter.on('chatMessageReceived', this.onMessageReceived);
+    this._eventEmitter.on('chatMessageReceived', (message: ChatMessage) => void this.onMessageReceived(message));
     this._eventEmitter.on('chatMessageDeleted', this.onMessageDeleted);
-    this._eventEmitter.on('chatMessageEdited', this.onMessageEdited);
+    this._eventEmitter.on('chatMessageEdited', (message: ChatMessage) => void this.onMessageEdited(message));
     this._eventEmitter.on('chatMessageNotificationsSubscribed', this.onChatNotificationsSubscribed);
     this._eventEmitter.on('chatThreadPropertiesUpdated', this.onChatPropertiesUpdated);
     // TODO: add define how to handle chat deletion
