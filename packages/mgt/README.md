@@ -56,7 +56,7 @@ You can then start using the components in your html page. Here is a full workin
 ```html
 <script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 
-<mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
+<mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 
 <mgt-login></mgt-login>
 <mgt-agenda></mgt-agenda>
@@ -77,7 +77,7 @@ Now you can reference all components and providers at the page you are using:
 ```html
 <script type="module" src="node_modules/@microsoft/mgt/dist/es6/index.js"></script>
 
-<mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
+<mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 
 <mgt-login></mgt-login>
 <mgt-agenda></mgt-agenda>

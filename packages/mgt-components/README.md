@@ -33,7 +33,7 @@ The components can be used on their own, but they are at their best when they ar
 1. Install the packages
 
     ```bash
-    npm install @microsoft/mgt-element @microsoft/mgt-components @microsoft/mgt-msal-provider
+    npm install @microsoft/mgt-element @microsoft/mgt-components @microsoft/mgt-msal2-provider
     ```
 
 1. Use components in your code
