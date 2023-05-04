@@ -107,7 +107,7 @@ export const setPlannerTaskDetails = async (graph: IGraph, task: ITask, details:
   } catch (_) {
     /* empty */
   }
-  return Promise.resolve(response);
+  return response;
 };
 
 /**
