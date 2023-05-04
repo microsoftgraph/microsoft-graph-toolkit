@@ -7,6 +7,7 @@
 
 import { IGraph, prepScopes } from '@microsoft/mgt-element';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
+import { CollectionResponse } from '@microsoft/mgt-element';
 
 /**
  * async promise, allows developer to add new to-do task
@@ -15,23 +16,23 @@ import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/mic
  * @returns {Promise<OutlookTask>}
  * @memberof BetaGraph
  */
-export async function addTodoTask(graph: IGraph, newTask: any): Promise<OutlookTask> {
+export const addTodoTask = async (graph: IGraph, newTask: OutlookTask): Promise<OutlookTask> => {
   const { parentFolderId = null } = newTask;
 
   if (parentFolderId) {
-    return await graph
+    return (await graph
       .api(`/me/outlook/taskFolders/${parentFolderId}/tasks`)
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
-      .post(newTask);
+      .post(newTask)) as OutlookTask;
   } else {
-    return await graph
+    return (await graph
       .api('/me/outlook/tasks')
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
-      .post(newTask);
+      .post(newTask)) as OutlookTask;
   }
-}
+};
 
 /**
  * async promise, returns all Outlook taskGroups associated with the logged in user
@@ -39,15 +40,15 @@ export async function addTodoTask(graph: IGraph, newTask: any): Promise<OutlookT
  * @returns {Promise<OutlookTaskGroup[]>}
  * @memberof BetaGraph
  */
-export async function getAllMyTodoGroups(graph: IGraph): Promise<OutlookTaskGroup[]> {
-  const groups = await graph
+export const getAllMyTodoGroups = async (graph: IGraph): Promise<OutlookTaskGroup[]> => {
+  const groups = (await graph
     .api('/me/outlook/taskGroups')
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.Read'))
-    .get();
+    .get()) as CollectionResponse<OutlookTaskGroup>;
 
-  return groups && groups.value;
-}
+  return groups?.value;
+};
 
 /**
  * async promise, returns all Outlook tasks associated with a taskFolder with folderId
@@ -56,15 +57,15 @@ export async function getAllMyTodoGroups(graph: IGraph): Promise<OutlookTaskGrou
  * @returns {Promise<OutlookTask[]>}
  * @memberof BetaGraph
  */
-export async function getAllTodoTasksForFolder(graph: IGraph, folderId: string): Promise<OutlookTask[]> {
-  const tasks = await graph
+export const getAllTodoTasksForFolder = async (graph: IGraph, folderId: string): Promise<OutlookTask[]> => {
+  const tasks = (await graph
     .api(`/me/outlook/taskFolders/${folderId}/tasks`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.Read'))
-    .get();
+    .get()) as CollectionResponse<OutlookTask>;
 
-  return tasks && tasks.value;
-}
+  return tasks?.value;
+};
 
 /**
  * async promise, returns all Outlook taskFolders associated with groupId
@@ -73,15 +74,15 @@ export async function getAllTodoTasksForFolder(graph: IGraph, folderId: string):
  * @returns {Promise<OutlookTaskFolder[]>}
  * @memberof BetaGraph
  */
-export async function getFoldersForTodoGroup(graph: IGraph, groupId: string): Promise<OutlookTaskFolder[]> {
-  const folders = await graph
+export const getFoldersForTodoGroup = async (graph: IGraph, groupId: string): Promise<OutlookTaskFolder[]> => {
+  const folders = (await graph
     .api(`/me/outlook/taskGroups/${groupId}/taskFolders`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.Read'))
-    .get();
+    .get()) as CollectionResponse<OutlookTaskFolder>;
 
-  return folders && folders.value;
-}
+  return folders?.value;
+};
 
 /**
  * async promise, returns to-do tasks from Outlook groups associated with a groupId
@@ -90,15 +91,12 @@ export async function getFoldersForTodoGroup(graph: IGraph, groupId: string): Pr
  * @returns {Promise<OutlookTaskGroup>}
  * @memberof BetaGraph
  */
-export async function getSingleTodoGroup(graph: IGraph, groupId: string): Promise<OutlookTaskGroup> {
-  const group = await graph
+export const getSingleTodoGroup = async (graph: IGraph, groupId: string): Promise<OutlookTaskGroup> =>
+  (await graph
     .api(`/me/outlook/taskGroups/${groupId}`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.Read'))
-    .get();
-
-  return group;
-}
+    .get()) as OutlookTaskGroup;
 
 /**
  * async promise, allows developer to remove task based on taskId
@@ -108,14 +106,14 @@ export async function getSingleTodoGroup(graph: IGraph, groupId: string): Promis
  * @returns {Promise<any>}
  * @memberof BetaGraph
  */
-export async function removeTodoTask(graph: IGraph, taskId: string, eTag: string): Promise<any> {
-  return await graph
+export const removeTodoTask = async (graph: IGraph, taskId: string, eTag: string): Promise<void> => {
+  await graph
     .api(`/me/outlook/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
     .header('If-Match', eTag)
     .middlewareOptions(prepScopes('Tasks.ReadWrite'))
     .delete();
-}
+};
 
 /**
  * async promise, allows developer to set to-do task to completed state
@@ -125,7 +123,7 @@ export async function removeTodoTask(graph: IGraph, taskId: string, eTag: string
  * @returns {Promise<OutlookTask>}
  * @memberof BetaGraph
  */
-export async function setTodoTaskComplete(graph: IGraph, taskId: string, eTag: string): Promise<OutlookTask> {
+export const setTodoTaskComplete = async (graph: IGraph, taskId: string, eTag: string): Promise<OutlookTask> => {
   return await setTodoTaskDetails(
     graph,
     taskId,
@@ -135,7 +133,7 @@ export async function setTodoTaskComplete(graph: IGraph, taskId: string, eTag: s
     },
     eTag
   );
-}
+};
 
 /**
  * async promise, allows developer to set to-do task to incomplete state
@@ -145,7 +143,7 @@ export async function setTodoTaskComplete(graph: IGraph, taskId: string, eTag: s
  * @returns {Promise<OutlookTask>}
  * @memberof BetaGraph
  */
-export async function setTodoTaskIncomplete(graph: IGraph, taskId: string, eTag: string): Promise<OutlookTask> {
+export const setTodoTaskIncomplete = async (graph: IGraph, taskId: string, eTag: string): Promise<OutlookTask> => {
   return await setTodoTaskDetails(
     graph,
     taskId,
@@ -155,7 +153,7 @@ export async function setTodoTaskIncomplete(graph: IGraph, taskId: string, eTag:
     },
     eTag
   );
-}
+};
 
 /**
  * async promise, allows developer to redefine to-do Task details associated with a taskId
@@ -166,11 +164,15 @@ export async function setTodoTaskIncomplete(graph: IGraph, taskId: string, eTag:
  * @returns {Promise<OutlookTask>}
  * @memberof BetaGraph
  */
-export async function setTodoTaskDetails(graph: IGraph, taskId: string, task: any, eTag: string): Promise<OutlookTask> {
-  return await graph
+export const setTodoTaskDetails = async (
+  graph: IGraph,
+  taskId: string,
+  task: any,
+  eTag: string
+): Promise<OutlookTask> =>
+  (await graph
     .api(`/me/outlook/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
     .header('If-Match', eTag)
     .middlewareOptions(prepScopes('Tasks.ReadWrite'))
-    .patch(task);
-}
+    .patch(task)) as OutlookTask;

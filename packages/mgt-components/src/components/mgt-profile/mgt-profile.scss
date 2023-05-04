@@ -13,6 +13,7 @@
 :host {
   position: relative;
   user-select: none;
+  background-color: $profile-background-color;
 
   .root {
     padding: 20px 0;
@@ -24,7 +25,7 @@
     .title {
       font-size: 14px;
       font-weight: 600;
-      color: set-var(title__color__subtitle, $theme-default, $common);
+      color: $profile-title-color;
       margin: 0 20px 12px 20px;
     }
 
@@ -38,7 +39,7 @@
 
       .section__title {
         font-size: 14px;
-        color: set-var(title__color__sub2, $theme-default, $common);
+        color: $profile-section-title-color;
       }
 
       .section__content {
@@ -61,13 +62,13 @@
         overflow: hidden;
         font-size: 14px;
         align-items: center;
-        background: set-var(background-color__sub2, $theme-default, $common);
+        background: $profile-token-item-background-color;
         border-radius: 2px;
         max-height: 28px;
         padding: 4px 8px;
         margin-right: 10px;
         margin-top: 10px;
-        color: set-var(color__sub1, $theme-default, $common);
+        color: $profile-token-item-color;
 
         &:last-child {
           margin-right: initial;
@@ -77,15 +78,11 @@
           display: none;
         }
 
-        &:hover {
-          color: set-var(color__sub1, $theme-default, $common);
-        }
-
         &.token-list__item--show-overflow {
           cursor: pointer;
           user-select: unset;
           background: none;
-          color: set-var(token-overflow-color, $theme-default, $profile-section-theme);
+          color: $profile-token-overflow-color;
         }
       }
     }
@@ -106,18 +103,18 @@
       .data-list__item__content {
         font-size: 12px;
         line-height: 16px;
-        color: set-var(color__sub2, $theme-default, $common);
+        color: $profile-section-title-color;
         margin-top: 4px;
       }
 
       .data-list__item__title {
         font-size: 14px;
         line-height: 16px;
-        color: set-var(title__color__subtitle, $theme-default, $common);
+        color: $profile-title-color;
       }
 
       .data-list__item__date-range {
-        color: set-var(title__color__subtitle, $theme-default, $common);
+        color: $profile-section-title-color;
         font-size: 10px;
         line-height: 12px;
       }
@@ -134,7 +131,7 @@
 
       .work-position__location {
         font-size: 10px;
-        color: set-var(color__sub2, $theme-default, $common);
+        color: $profile-section-title-color;
         line-height: 16px;
       }
     }
@@ -143,7 +140,7 @@
       .educational-activity__degree {
         font-size: 12px;
         line-height: 14px;
-        color: set-var(color__sub3, $theme-default, $common);
+        color: $profile-section-title-color;
       }
     }
 
@@ -158,7 +155,7 @@
 
       .birthday__date {
         font-size: 12px;
-        color: set-var(color__sub1, $theme-default, $common);
+        color: $profile-title-color;
       }
     }
   }

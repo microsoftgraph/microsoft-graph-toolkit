@@ -111,6 +111,17 @@ export interface MsalConfig extends MsalConfigBase {
    */
   redirectUri?: string;
 }
+/**
+ * Holder type for login error handling
+ */
+export type LoginError = {
+  /**
+   * Error message
+   *
+   * @type {string}
+   */
+  errorCode?: string;
+};
 
 /**
  * Msal Provider using MSAL.js to aquire tokens for authentication
@@ -202,13 +213,13 @@ export class MsalProvider extends IProvider {
    * @memberof MsalProvider
    */
   public async login(authenticationParameters?: AuthenticationParameters): Promise<void> {
-    let loginRequest: AuthenticationParameters = authenticationParameters || {
+    const loginRequest: AuthenticationParameters = authenticationParameters || {
       loginHint: this._loginHint,
       scopes: this.scopes
     };
 
-    this._prompt ? (loginRequest.prompt = this._prompt) : '';
-    this._domainHint ? (loginRequest.extraQueryParameters = { domain_hint: this._domainHint }) : '';
+    if (this._prompt) loginRequest.prompt = this._prompt;
+    if (this._domainHint) loginRequest.extraQueryParameters = { domain_hint: this._domainHint };
 
     if (this._loginType === LoginType.Popup) {
       const response = await this._userAgentApplication.loginPopup(loginRequest);
@@ -224,9 +235,11 @@ export class MsalProvider extends IProvider {
    * @returns {Promise<void>}
    * @memberof MsalProvider
    */
-  public async logout(): Promise<void> {
-    this._userAgentApplication.logout();
+  public logout(): Promise<void> {
     this.setState(ProviderState.SignedOut);
+    this._userAgentApplication.logout();
+    // there's nothing to await here but we need to return a promise due to inheritance
+    return Promise.resolve();
   }
 
   /**
@@ -242,12 +255,12 @@ export class MsalProvider extends IProvider {
       loginHint: this._loginHint,
       scopes
     };
-    this._domainHint ? (accessTokenRequest.extraQueryParameters = { domain_hint: this._domainHint }) : '';
+    if (this._domainHint) accessTokenRequest.extraQueryParameters = { domain_hint: this._domainHint };
     try {
       const response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
       return response.accessToken;
     } catch (e) {
-      if (this.requiresInteraction(e)) {
+      if (this.requiresInteraction(e as LoginError)) {
         if (this._loginType === LoginType.Redirect) {
           // check if the user denied the scope before
           if (!this.areScopesDenied(scopes)) {
@@ -260,8 +273,8 @@ export class MsalProvider extends IProvider {
           try {
             const response = await this._userAgentApplication.acquireTokenPopup(accessTokenRequest);
             return response.accessToken;
-          } catch (e) {
-            throw e;
+          } catch (popUpErr) {
+            throw popUpErr;
           }
         }
       } else {
@@ -270,6 +283,8 @@ export class MsalProvider extends IProvider {
         throw e;
       }
     }
+    // TODO: can we throw something more meaningful here?
+    // eslint-disable-next-line no-throw-literal
     throw null;
   }
 
@@ -291,15 +306,15 @@ export class MsalProvider extends IProvider {
    * @returns
    * @memberof MsalProvider
    */
-  protected requiresInteraction(error) {
-    if (!error || !error.errorCode) {
-      return false;
-    }
-    return (
-      error.errorCode.indexOf('consent_required') !== -1 ||
-      error.errorCode.indexOf('interaction_required') !== -1 ||
-      error.errorCode.indexOf('login_required') !== -1
-    );
+  // eslint-disable-next-line @typescript-eslint/tslint/config
+  protected requiresInteraction(error: LoginError) {
+    if (typeof error?.errorCode === 'string')
+      return (
+        error.errorCode.indexOf('consent_required') !== -1 ||
+        error.errorCode.indexOf('interaction_required') !== -1 ||
+        error.errorCode.indexOf('login_required') !== -1
+      );
+    return false;
   }
 
   /**
@@ -324,7 +339,7 @@ export class MsalProvider extends IProvider {
    */
   protected getRequestedScopes() {
     const scopesStr = sessionStorage.getItem(this.sessionStorageRequestedScopesKey);
-    return scopesStr ? JSON.parse(scopesStr) : null;
+    return scopesStr ? (JSON.parse(scopesStr) as string[]) : null;
   }
   /**
    * clears requested scopes from sessionStorage
@@ -369,7 +384,7 @@ export class MsalProvider extends IProvider {
    */
   protected getDeniedScopes() {
     const scopesStr = sessionStorage.getItem(this.sessionStorageDeniedScopesKey);
-    return scopesStr ? JSON.parse(scopesStr) : null;
+    return scopesStr ? (JSON.parse(scopesStr) as string[]) : null;
   }
 
   /**
@@ -453,7 +468,7 @@ export class MsalProvider extends IProvider {
 
     this.graph = createFromProvider(this);
 
-    this.trySilentSignIn();
+    void this.trySilentSignIn();
   }
 
   private tokenReceivedCallback(response: AuthResponse) {
@@ -464,7 +479,8 @@ export class MsalProvider extends IProvider {
     this.clearRequestedScopes();
   }
 
-  private errorReceivedCallback(authError: AuthError, accountState: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private errorReceivedCallback(_authError: AuthError, _accountState: string) {
     const requestedScopes = this.getRequestedScopes();
     if (requestedScopes) {
       this.addDeniedScopes(requestedScopes);

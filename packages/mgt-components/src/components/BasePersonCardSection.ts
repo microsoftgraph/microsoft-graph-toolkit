@@ -15,13 +15,25 @@ import { MgtPersonCard } from './mgt-person-card/mgt-person-card';
 import './sub-components/mgt-spinner/mgt-spinner';
 
 /**
+ * Defines the interface for a person card section.
+ * This allows us to avoid forced inheritance and allow for more flexibility in the future.
+ */
+export interface CardSection {
+  readonly cardTitle: string;
+  tagName: string;
+  asCompactView(): CardSection;
+  asFullView(): CardSection;
+  renderIcon(): TemplateResult;
+}
+
+/**
  * A base class for building person card subsections.
  *
  * @export
  * @class BasePersonCardSection
  * @extends {MgtTemplatedComponent}
  */
-export abstract class BasePersonCardSection extends MgtTemplatedComponent {
+export abstract class BasePersonCardSection extends MgtTemplatedComponent implements CardSection {
   /**
    * Set the person details to render
    *
@@ -41,7 +53,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
     }
 
     this._personDetails = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -52,6 +64,15 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    * @memberof BasePersonCardSection
    */
   public abstract get displayName(): string;
+
+  /**
+   * The title for using when rendering the full card.
+   *
+   * @readonly
+   * @abstract
+   * @memberof BasePersonCardSection
+   */
+  public abstract get cardTitle(): string;
 
   /**
    * Determines the appropriate view state: full or compact
@@ -114,7 +135,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    * @abstract
    * @memberof BasePersonCardSection
    */
-  public clearState(): void {
+  protected clearState(): void {
     this._isCompact = false;
     this._personDetails = null;
   }
@@ -184,12 +205,13 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    */
   protected navigateCard(person: IDynamicPerson): void {
     // Search for card parent and update it's personDetails object
-    let parent: any = this.parentNode;
+    let parent: ParentNode = this.parentNode;
     while (parent) {
       parent = parent.parentNode;
 
-      if (parent && parent.host && parent.host.tagName === 'MGT-PERSON-CARD') {
-        parent = parent.host;
+      const shadowRoot = parent as ShadowRoot;
+      if (shadowRoot?.host?.tagName === 'MGT-PERSON-CARD') {
+        parent = shadowRoot.host;
         break;
       }
     }

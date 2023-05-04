@@ -133,7 +133,7 @@ export const updateChatMessage = async (
   // debugger;
   // if (fail) throw new Error('fail');
 
-  return graph
+  await graph
     .api(`/chats/${chatId}/messages/${messageId}`)
     .middlewareOptions(prepScopes(...chatOperationScopes.updateChatMessage))
     .patch({ body: { content } });
@@ -147,11 +147,12 @@ export const updateChatMessage = async (
  * @param messageId the id of the message to delete
  * @returns {Promise<void>}
  */
-export const deleteChatMessage = async (graph: IGraph, chatId: string, messageId: string): Promise<void> =>
-  graph
+export const deleteChatMessage = async (graph: IGraph, chatId: string, messageId: string): Promise<void> => {
+  await graph
     .api(`/me/chats/${chatId}/messages/${messageId}/softDelete`)
     .middlewareOptions(prepScopes(...chatOperationScopes.deleteChatMessage))
     .post({});
+};
 
 export const removeChatMember = async (graph: IGraph, chatId: string, membershipId: string): Promise<void> =>
   graph
@@ -173,7 +174,7 @@ export const addChatMembers = async (
         roles: ['owner']
       };
       if (visibleHistoryStartDateTime) {
-        addRequestBody['visibleHistoryStartDateTime'] = visibleHistoryStartDateTime.toISOString();
+        addRequestBody.visibleHistoryStartDateTime = visibleHistoryStartDateTime.toISOString();
       }
       return {
         id: index,

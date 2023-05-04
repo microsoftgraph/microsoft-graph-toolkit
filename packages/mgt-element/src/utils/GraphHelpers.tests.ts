@@ -57,18 +57,18 @@ describe('GraphHelpers - validateBaseUrl', () => {
     'https://dod-graph.microsoft.us',
     'https://graph.microsoft.de',
     'https://microsoftgraph.chinacloudapi.cn'
-  ])('should return %p as a valid base url', graphUrl => {
+  ])('should return %p as a valid base url', (graphUrl: string) => {
     expect(validateBaseURL(graphUrl)).toBe(graphUrl);
   });
   it.each(['https://graph.microsoft.net', 'https://random.us', 'https://nope.cn'])(
     'should return undefined for %p as an invalid base url',
-    graphUrl => {
+    (graphUrl: string) => {
       expect(validateBaseURL(graphUrl)).toBeUndefined();
     }
   );
   it.each(['not a url', 'graph.microsoft.com'])(
     'should return undefined for when supplied a %p which is not a well formed url',
-    input => {
+    (input: string) => {
       expect(validateBaseURL(input)).toBeUndefined();
     }
   );

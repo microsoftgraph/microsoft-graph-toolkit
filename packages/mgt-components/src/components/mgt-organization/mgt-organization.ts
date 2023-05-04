@@ -10,7 +10,7 @@ import { html, TemplateResult } from 'lit';
 
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
-import { MgtPersonCardState } from '../mgt-person-card/mgt-person-card.types';
+import { MgtPersonCardState, UserWithManager } from '../mgt-person-card/mgt-person-card.types';
 import { styles } from './mgt-organization-css';
 import { strings } from './strings';
 import { ViewType } from '../../graph/types';
@@ -84,6 +84,17 @@ export class MgtOrganization extends BasePersonCardSection {
   }
 
   /**
+   * The title for display when rendered as a full card.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtOrganization
+   */
+  public get cardTitle(): string {
+    return this.strings.organizationSectionTitle;
+  }
+
+  /**
    * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
@@ -154,7 +165,6 @@ export class MgtOrganization extends BasePersonCardSection {
 
     return html`
        <div class="root" dir=${this.direction}>
-         <div class="title" tabindex="0">${this.strings.organizationSectionTitle}</div>
          ${contentTemplate}
        </div>
      `;
@@ -170,22 +180,26 @@ export class MgtOrganization extends BasePersonCardSection {
    */
   protected renderManager(person: User): TemplateResult {
     return mgtHtml`
-       <div class="org-member" @keydown=${(e: KeyboardEvent) => {
-         e.code === 'Enter' ? this.navigateCard(person) : '';
-       }} @click=${() => this.navigateCard(person)}>
-         <div class="org-member__person">
-           <mgt-person
-             .personDetails=${person}
-             .fetchImage=${true}
-             .view=${ViewType.twolines}
-             .showPresence=${true}
-           ></mgt-person>
-         </div>
-         <div tabindex="0" class="org-member__more">
-           ${getSvg(SvgIcon.ExpandRight)}
-         </div>
-       </div>
-       <div class="org-member__separator"></div>
+      <div
+        class="org-member"
+        @keydown=${(e: KeyboardEvent) => {
+          if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
+        }}
+        @click=${() => this.navigateCard(person)}
+      >
+        <div class="org-member__person">
+          <mgt-person
+            .personDetails=${person}
+            .fetchImage=${true}
+            .view=${ViewType.twolines}
+            .showPresence=${true}
+          ></mgt-person>
+        </div>
+        <div tabindex="0" class="org-member__more">
+          ${getSvg(SvgIcon.ExpandRight)}
+        </div>
+      </div>
+      <div class="org-member__separator"></div>
      `;
   }
 
@@ -202,7 +216,7 @@ export class MgtOrganization extends BasePersonCardSection {
       return null;
     }
 
-    const managers = [];
+    const managers: UserWithManager[] = [];
     let currentManager = person;
     while (currentManager.manager) {
       managers.push(currentManager.manager);
@@ -231,29 +245,33 @@ export class MgtOrganization extends BasePersonCardSection {
     }
 
     return html`
-       <div class="org-member__separator"></div>
-       <div>
-         ${directReports.map(
-           person => mgtHtml`
-             <div class="org-member org-member--direct-report" @keydown=${(e: KeyboardEvent) => {
-               e.code === 'Enter' ? this.navigateCard(person) : '';
-             }} @click=${() => this.navigateCard(person)}>
-               <div class="org-member__person">
-                 <mgt-person
-                   .personDetails=${person}
-                   .fetchImage=${true}
-                   .showPresence=${true}
-                   .view=${ViewType.twolines}
-                 ></mgt-person>
-               </div>
-               <div tabindex="0" class="org-member__more">
-                 ${getSvg(SvgIcon.ExpandRight)}
-               </div>
-             </div>
-             <div class="org-member__separator"></div>
-           `
-         )}
-       </div>
+      <div class="org-member__separator"></div>
+      <div>
+        ${directReports.map(
+          person => mgtHtml`
+            <div
+              class="org-member org-member--direct-report"
+              @keydown=${(e: KeyboardEvent) => {
+                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
+              }}
+              @click=${() => this.navigateCard(person)}
+            >
+              <div class="org-member__person">
+                <mgt-person
+                  .personDetails=${person}
+                  .fetchImage=${true}
+                  .showPresence=${true}
+                  .view=${ViewType.twolines}
+                ></mgt-person>
+              </div>
+              <div tabindex="0" class="org-member__more">
+                ${getSvg(SvgIcon.ExpandRight)}
+              </div>
+            </div>
+            <div class="org-member__separator"></div>
+          `
+        )}
+      </div>
      `;
   }
 
@@ -269,27 +287,27 @@ export class MgtOrganization extends BasePersonCardSection {
     const { directReports } = this._state;
 
     return html`
-       <div class="direct-report__compact">
-         ${directReports.slice(0, 6).map(
-           person => mgtHtml`
-             <div
-               class="direct-report"
-               @keydown=${(e: KeyboardEvent) => {
-                 e.code === 'Enter' ? this.navigateCard(person) : '';
-               }}
-               @click=${() => this.navigateCard(person)}
-             >
-               <mgt-person
-                 .personDetails=${person}
-                 .fetchImage=${true}
-                 .showPresence=${true}
-                 .view=${ViewType.twolines}
-               ></mgt-person>
-             </div>
-           `
-         )}
-       </div>
-     `;
+      <div class="direct-report__compact">
+        ${directReports.slice(0, 6).map(
+          person => mgtHtml`
+            <div
+              class="direct-report"
+              @keydown=${(e: KeyboardEvent) => {
+                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
+              }}
+              @click=${() => this.navigateCard(person)}
+            >
+              <mgt-person
+                .personDetails=${person}
+                .fetchImage=${true}
+                .showPresence=${true}
+                .view=${ViewType.twolines}
+              ></mgt-person>
+            </div>
+          `
+        )}
+      </div>
+    `;
   }
 
   /**
@@ -325,19 +343,23 @@ export class MgtOrganization extends BasePersonCardSection {
    */
   protected renderCoworker(person: User): TemplateResult {
     return mgtHtml`
-       <div class="coworker" @keydown=${(e: KeyboardEvent) => {
-         e.code === 'Enter' ? this.navigateCard(person) : '';
-       }} @click=${() => this.navigateCard(person)}>
-         <div class="coworker__person">
-           <mgt-person
-             .personDetails=${person}
-             .fetchImage=${true}
-             .showPresence=${true}
-             .view=${ViewType.twolines}
-           ></mgt-person>
-         </div>
-       </div>
-     `;
+      <div
+        class="coworker"
+        @keydown=${(e: KeyboardEvent) => {
+          if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
+        }}
+        @click=${() => this.navigateCard(person)}
+      >
+        <div class="coworker__person">
+          <mgt-person
+            .personDetails=${person}
+            .fetchImage=${true}
+            .showPresence=${true}
+            .view=${ViewType.twolines}
+          ></mgt-person>
+        </div>
+      </div>
+    `;
   }
 
   /**

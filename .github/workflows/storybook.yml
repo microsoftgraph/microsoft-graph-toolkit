@@ -26,7 +26,7 @@ jobs:
 
       - name: Build 🛠
         run: |
-          npm install -g yarn lerna
+          npm install -g yarn lerna@6.4.1
           yarn
           yarn build
           yarn storybook:build

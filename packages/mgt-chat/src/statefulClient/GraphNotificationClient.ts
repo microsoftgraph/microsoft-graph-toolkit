@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Providers } from '@microsoft/mgt-element';
 import * as signalR from '@microsoft/signalr';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
@@ -6,8 +7,8 @@ import { ChatMessage, Chat, ConversationMember, AadUserConversationMember } from
 const appSettings = {
   functionHost: 'https://mgtgnbfunc.azurewebsites.net', // TODO: improve how this is loaded
   defaultSubscriptionLifetimeInMinutes: 5,
-  renewalThreshold: 45, //The number of seconds before subscription expires it will be renewed
-  timerInterval: 10, //The number of seconds the timer will check on expiration
+  renewalThreshold: 45, // The number of seconds before subscription expires it will be renewed
+  timerInterval: 10, // The number of seconds the timer will check on expiration
   appId: 'de25c6a1-c9e7-4681-9288-eba1b93446fb'
 };
 
@@ -59,7 +60,8 @@ type SubscriptionRecord = {
   Resource: string;
 };
 
-const loadCachedSubscriptions = (): Subscription[] => JSON.parse(sessionStorage.getItem('graph-subscriptions') || '[]');
+const loadCachedSubscriptions = (): Subscription[] =>
+  JSON.parse(sessionStorage.getItem('graph-subscriptions') || '[]') as Subscription[];
 
 export class GraphNotificationClient {
   private connection?: signalR.HubConnection = undefined;
@@ -82,14 +84,14 @@ export class GraphNotificationClient {
     console.log('subscription renewalIgnored for subscription ' + subscriptionRecord.SubscriptionId);
   };
 
-  private onRenewalFailed = (subscriptionId: string) => {
+  private onRenewalFailed = async (subscriptionId: string) => {
     console.log(`Renewal of subscription ${subscriptionId} failed.`);
-    //Something failed to renew the subscription. Create a new one.
-    this.recreateSubscription(subscriptionId);
+    // Something failed to renew the subscription. Create a new one.
+    await this.recreateSubscription(subscriptionId);
   };
 
   private onSubscribeFailed = (subscriptionDefinition: SubscriptionDefinition) => {
-    //Something failed when creation the subscription.
+    // Something failed when creation the subscription.
     console.log(`Creation of subscription for resource ${subscriptionDefinition.resource} failed.`);
   };
 
@@ -104,8 +106,8 @@ export class GraphNotificationClient {
   }
 
   private onReconnect = (connectionId: string | undefined) => {
-    console.log(`Reconnected. ConnectionId: ${connectionId}`);
-    this.renewChatSubscriptions();
+    console.log(`Reconnected. ConnectionId: ${connectionId || 'undefined'}`);
+    void this.renewChatSubscriptions();
   };
 
   private receiveNotificationMessage = async (notification: Notification) => {
@@ -166,7 +168,7 @@ export class GraphNotificationClient {
     }
   }
 
-  private onSubscribed = async (subscriptionRecord: SubscriptionRecord) => {
+  private onSubscribed = (subscriptionRecord: SubscriptionRecord) => {
     console.log(`Subscription created. SubscriptionId: ${subscriptionRecord.SubscriptionId}`);
     this.cacheSubscription(subscriptionRecord);
     this.subscriptionEmitter[subscriptionRecord.SubscriptionId]?.chatMessageNotificationsSubscribed(
@@ -174,7 +176,7 @@ export class GraphNotificationClient {
     );
   };
 
-  private onRenewed = async (subscriptionRecord: SubscriptionRecord) => {
+  private onRenewed = (subscriptionRecord: SubscriptionRecord) => {
     console.log(`Subscription renewed. SubscriptionId: ${subscriptionRecord.SubscriptionId}`);
     this.cacheSubscription(subscriptionRecord);
   };
@@ -202,7 +204,7 @@ export class GraphNotificationClient {
 
     sessionStorage.setItem('graph-subscriptions', JSON.stringify(tempSubscriptions));
 
-    //only start timer once. -1 for renewaltimer is semaphore it has stopped.
+    // only start timer once. -1 for renewaltimer is semaphore it has stopped.
     if (this.renewalInterval === -1) this.startRenewalTimer();
   };
 
@@ -232,7 +234,7 @@ export class GraphNotificationClient {
 
     const subscriptionDefinition: SubscriptionDefinition = {
       resource: resourcePath,
-      expirationTime: expirationTime,
+      expirationTime,
       changeTypes,
       resourceData: true,
       signalRConnectionId: this.connection.connectionId
@@ -263,7 +265,7 @@ export class GraphNotificationClient {
     for (const subscription of subscriptions) {
       const expirationTime = new Date(subscription.expirationTime);
       const now = new Date();
-      var diff = Math.round((expirationTime.getTime() - now.getTime()) / 1000);
+      const diff = Math.round((expirationTime.getTime() - now.getTime()) / 1000);
 
       if (diff <= appSettings.renewalThreshold) {
         this.renewalCount++;
@@ -271,7 +273,7 @@ export class GraphNotificationClient {
         // stop interval to prevent new invokes until refresh is ready.
         clearInterval(this.renewalInterval);
         this.renewalInterval = -1;
-        this.renewChatSubscriptions();
+        void this.renewChatSubscriptions();
         // There is one subscription that need expiration, all subscriptions will be renewed
         break;
       }
@@ -285,7 +287,9 @@ export class GraphNotificationClient {
     clearInterval(this.renewalInterval);
     const token = await this.getToken();
 
-    let expirationTime = new Date(new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000);
+    const expirationTime = new Date(
+      new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
+    );
 
     const subscriptionCache = loadCachedSubscriptions();
     const awaits: Promise<void>[] = [];
@@ -296,18 +300,18 @@ export class GraphNotificationClient {
     await Promise.all(awaits);
   };
 
-  private recreateSubscription = (subscriptionId: string) => {
+  private recreateSubscription = async (subscriptionId: string): Promise<void> => {
     console.log('Remove Subscription from session storage.');
     const subscriptionCache = loadCachedSubscriptions();
     if (subscriptionCache?.length > 0) {
-      const subscriptions = subscriptionCache.filter(subscription => subscription.subscriptionId !== subscriptionId);
+      const subscriptions = subscriptionCache.filter(s => s.subscriptionId !== subscriptionId);
 
       sessionStorage.setItem('graph-subscriptions', JSON.stringify(subscriptions));
 
       const subscription = subscriptionCache.find(s => s.subscriptionId === subscriptionId);
       const eventEmitter = this.subscriptionEmitter[subscriptionId];
       if (subscription && eventEmitter) {
-        this.subscribeToResource(subscription.resource, eventEmitter);
+        await this.subscribeToResource(subscription.resource, eventEmitter);
       }
     }
   };
@@ -328,7 +332,7 @@ export class GraphNotificationClient {
     if (!response.ok) {
       throw new Error(response.statusText);
     }
-    return await response.json();
+    return (await response.json()) as T;
   };
 
   public async createSignalConnection() {

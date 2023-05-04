@@ -6,16 +6,22 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
-import { AuthenticationParameters, Configuration, UserAgentApplication } from 'msal';
-import { GraphEndpoint, MICROSOFT_GRAPH_DEFAULT_ENDPOINT, TeamsHelper } from '@microsoft/mgt-element';
+import { AuthenticationParameters, Configuration } from 'msal';
+import {
+  GraphEndpoint,
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT,
+  TeamsLib,
+  TeamsHelper,
+  loginContext
+} from '@microsoft/mgt-element';
 import { LoginType, ProviderState } from '@microsoft/mgt-element';
-import { MsalProvider } from '@microsoft/mgt-msal-provider';
+import { MsalProvider, LoginError } from '@microsoft/mgt-msal-provider';
 
-// tslint:disable-next-line: completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 declare global {
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   interface Window {
-    // tslint:disable-next-line: completed-docs
+    // eslint-disable-next-line @typescript-eslint/tslint/config
     nativeInterface: any;
   }
 }
@@ -132,9 +138,11 @@ export class TeamsProvider extends MsalProvider {
    * @memberof TeamsProvider
    */
   public static get microsoftTeamsLib(): any {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return TeamsHelper.microsoftTeamsLib;
   }
   public static set microsoftTeamsLib(value: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     TeamsHelper.microsoftTeamsLib = value;
   }
 
@@ -157,13 +165,15 @@ export class TeamsProvider extends MsalProvider {
    */
   public static async handleAuth(baseURL: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     // we are in popup world now - authenticate and handle it
-    const teams = TeamsHelper.microsoftTeamsLib;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const teams: TeamsLib = TeamsHelper.microsoftTeamsLib;
     if (!teams) {
-      // tslint:disable-next-line: no-console
+      // eslint-disable-next-line no-console
       console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     teams.initialize();
 
     // if we were signing out before, then we are done
@@ -178,7 +188,7 @@ export class TeamsProvider extends MsalProvider {
     let authParams: AuthParams;
 
     if (paramsString) {
-      authParams = JSON.parse(paramsString);
+      authParams = JSON.parse(paramsString) as AuthParams;
     } else {
       authParams = {};
     }
@@ -195,7 +205,8 @@ export class TeamsProvider extends MsalProvider {
     options.system = options.system || {};
     options.system.loadFrameTimeout = 10000;
 
-    const provider = new MsalProvider({
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const provider: MsalProvider = new MsalProvider({
       clientId: authParams.clientId,
       options,
       scopes,
@@ -219,7 +230,7 @@ export class TeamsProvider extends MsalProvider {
         // make sure we are calling login only once
         if (!sessionStorage.getItem(this._sessionStorageLoginInProgress)) {
           sessionStorage.setItem(this._sessionStorageLoginInProgress, 'true');
-          provider.login({
+          void provider.login({
             loginHint: authParams.loginHint,
             scopes: scopes || provider.scopes
           });
@@ -235,24 +246,29 @@ export class TeamsProvider extends MsalProvider {
           const accessToken = await provider.getAccessTokenForScopes(...provider.scopes);
           teams.authentication.notifySuccess(accessToken);
         } catch (e) {
-          teams.authentication.notifyFailure(e);
+          teams.authentication.notifyFailure(e as string);
         }
       }
     };
 
-    provider.onStateChanged(handleProviderState);
-    handleProviderState();
+    const syncHandleProviderState = () => {
+      void handleProviderState();
+    };
+
+    provider.onStateChanged(syncHandleProviderState);
+    await handleProviderState();
   }
 
   private static _localStorageParametersKey = 'msg-teamsprovider-auth-parameters';
   private static _sessionStorageLoginInProgress = 'msg-teamsprovider-login-in-progress';
   private static _sessionStorageLogoutInProgress = 'msg-teamsprovider-logout-in-progress';
 
-  private teamsContext;
+  private teamsContext: loginContext;
   private _authPopupUrl: string;
   private _msalOptions: Configuration;
 
   constructor(config: TeamsConfig) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super({
       clientId: config.clientId,
       loginType: LoginType.Redirect,
@@ -264,7 +280,7 @@ export class TeamsProvider extends MsalProvider {
     this._msalOptions = config.msalOptions;
     this._authPopupUrl = config.authPopupUrl;
 
-    const teams = TeamsHelper.microsoftTeamsLib;
+    const teams: TeamsLib = TeamsHelper.microsoftTeamsLib;
     teams.initialize();
   }
 
@@ -279,7 +295,7 @@ export class TeamsProvider extends MsalProvider {
     const teams = TeamsHelper.microsoftTeamsLib;
 
     return new Promise((resolve, reject) => {
-      teams.getContext(context => {
+      void teams.getContext(context => {
         this.teamsContext = context;
 
         const authParams: AuthParams = {
@@ -294,12 +310,14 @@ export class TeamsProvider extends MsalProvider {
         const url = new URL(this._authPopupUrl, new URL(window.location.href));
 
         teams.authentication.authenticate({
-          failureCallback: reason => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          failureCallback: _reason => {
             this.setState(ProviderState.SignedOut);
             reject();
           },
-          successCallback: result => {
-            this.trySilentSignIn();
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          successCallback: _result => {
+            void this.trySilentSignIn();
             resolve();
           },
           url: url.href
@@ -315,22 +333,24 @@ export class TeamsProvider extends MsalProvider {
    * @memberof MsalProvider
    */
   public async logout(): Promise<void> {
-    const teams = TeamsHelper.microsoftTeamsLib;
+    const teams: TeamsLib = TeamsHelper.microsoftTeamsLib;
 
     return new Promise((resolve, reject) => {
-      teams.getContext(context => {
+      void teams.getContext(context => {
         this.teamsContext = context;
 
         const url = new URL(this._authPopupUrl, new URL(window.location.href));
         url.searchParams.append('signout', 'true');
 
         teams.authentication.authenticate({
-          failureCallback: reason => {
-            this.trySilentSignIn();
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          failureCallback: _reason => {
+            void this.trySilentSignIn();
             reject();
           },
-          successCallback: result => {
-            this.trySilentSignIn();
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          successCallback: _result => {
+            void this.trySilentSignIn();
             resolve();
           },
           url: url.href
@@ -353,7 +373,7 @@ export class TeamsProvider extends MsalProvider {
       this.teamsContext = await teams.getContext();
     }
 
-    const scopes = options ? options.scopes || this.scopes : this.scopes;
+    const scopes = options?.scopes ? options.scopes : this.scopes;
     const accessTokenRequest: AuthenticationParameters = {
       scopes
     };
@@ -366,7 +386,7 @@ export class TeamsProvider extends MsalProvider {
       const response = await this.userAgentApplication.acquireTokenSilent(accessTokenRequest);
       return response.accessToken;
     } catch (e) {
-      if (this.requiresInteraction(e)) {
+      if ((e as LoginError).errorCode && this.requiresInteraction(e as LoginError)) {
         // nothing we can do now until we can do incremental consent
         return null;
       } else {

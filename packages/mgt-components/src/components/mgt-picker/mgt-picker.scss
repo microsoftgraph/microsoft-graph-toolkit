@@ -5,7 +5,21 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export const strings = {
-  filesSectionTitle: 'Files',
-  sharedTextSubtitle: 'Shared'
-};
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+@import './mgt-picker.theme.scss';
+
+:host {
+  font-family: $font-family;
+}
+
+:host .picker,
+mgt-picker .picker {
+  background-color: $picker-background-color;
+}
+
+[dir='rtl'] {
+  .picker {
+    direction: rtl;
+  }
+}
