@@ -54,6 +54,9 @@
       }
       .Title {
         flex-grow: 1;
+        .end {
+          display: flex;
+        }
       }
       .TaskDelete {
         display: flex;

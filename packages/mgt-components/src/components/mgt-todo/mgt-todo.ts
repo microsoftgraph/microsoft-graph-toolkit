@@ -234,7 +234,7 @@ export class MgtTodo extends MgtTasksBase {
         aria-label="${this.strings.newTaskLabel}"
         .value=${this._newTaskName}
         placeholder="${this.strings.newTaskPlaceholder}"
-        @keydown="${this.handleKeyDown}"
+        @keydown="${this.handleNewTaskKeyDown}"
         @input="${this.handleInput}">
         <div slot="start" class="start">${addIcon}</div>
         ${
@@ -292,21 +292,51 @@ export class MgtTodo extends MgtTasksBase {
     }
 
     let taskDetailsTemplate = null;
+    this._newTaskName = task.title;
 
-    const taskDueTemplate = task.dueDateTime
-      ? html`
+    const taskDueTemplate =
+      task.status !== 'completed'
+        ? html`
+          <fluent-text-field
+            type="date"
+            id="${task.id}-taskDate-input"
+            class="TaskDueDate"
+            aria-label="${this.strings.newTaskDateInputLabel}"
+            .value="${getDateString(new Date(task.dueDateTime?.dateTime))}"
+            @change="${this.handleDateChange}">
+          </fluent-text-field>
+        `
+        : task.dueDateTime
+        ? html`
         <span class="TaskCalendar">${getSvg(SvgIcon.Calendar)}</span>
-        <span class="TaskDueDate">${getDateString(new Date(task.dueDateTime.dateTime))}</span>
-      `
-      : html``;
+        <span class="TaskDueDate">${getDateString(new Date(task.dueDateTime?.dateTime))}</span>`
+        : html``;
+
+    const taskDetails =
+      task.status !== 'completed'
+        ? html`
+      <fluent-text-field
+        appearance="outline"
+        class="Title"
+        id="${task.id}-input"
+        aria-label="${task.title}"
+        .value=${this._newTaskName}
+        @keydown="${(e: KeyboardEvent) => this.handleTaskUpdate(e, task)}"
+        @input="${(e: KeyboardEvent) => this.handleTitleChange(e, task)}">
+        <div slot="end" class="end">
+          <span class="TaskCalendar">${getSvg(SvgIcon.Calendar)}</span>
+          ${taskDueTemplate}
+        </div>
+      </fluent-text-field>
+    `
+        : html``;
 
     if (this.hasTemplate('task-details')) {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
     } else {
       taskDetailsTemplate = html`
       <div class="TaskDetails">
-        <div class="Title">${task.title}</div>
-        <div class="TaskDue">${taskDueTemplate}</div>
+        ${taskDetails}
         <fluent-button class="TaskDelete"
           @click="${() => this.removeTask(task.id)}"
           aria-label="${this.strings.deleteTaskLabel}">
@@ -334,7 +364,9 @@ export class MgtTodo extends MgtTasksBase {
     });
 
     return html`
-      <fluent-checkbox id=${task.id} class=${taskClasses} @click="${() => this.handleTaskCheckClick(task)}">
+      <fluent-checkbox id=${task.id} class=${taskClasses}>
+        <div slot="checked-indicator" @click="${() => this.handleTaskCheckClick(task)}">
+        </div>
         ${this.renderTaskDetails(task)}
       </fluent-checkbox>
     `;
@@ -358,8 +390,8 @@ export class MgtTodo extends MgtTasksBase {
     const taskCheckContent = html`${getSvg(SvgIcon.CheckMark)}`;
 
     return html`
-      <fluent-checkbox id=${task.id} class=${taskClasses} checked @click="${() => this.handleTaskCheckClick(task)}">
-        <div slot="checked-indicator">
+      <fluent-checkbox id=${task.id} class=${taskClasses} checked>
+        <div slot="checked-indicator" @click="${() => this.handleTaskCheckClick(task)}">
           ${taskCheckContent}
         </div>
         ${this.renderTaskDetails(task)}
@@ -450,12 +482,26 @@ export class MgtTodo extends MgtTasksBase {
     this.requestUpdate();
   };
 
-  private updateTaskStatus = async (task: TodoTask, taskStatus: TaskStatus): Promise<void> => {
+  private updateTask = async (task: TodoTask, taskStatus?: TaskStatus): Promise<void> => {
     this._loadingTasks = [...this._loadingTasks, task.id];
     this.requestUpdate();
 
     // Change the task status
-    task.status = taskStatus;
+    if (taskStatus) {
+      task.status = taskStatus;
+    }
+
+    if (this._newTaskName) {
+      task.title = this._newTaskName;
+    }
+
+    if (this._newTaskDueDate) {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      task['dueDateTime'] = {
+        dateTime: new Date(this._newTaskDueDate).toLocaleDateString(),
+        timeZone: 'UTC'
+      };
+    }
 
     // Send update request
     const listId = this.currentList.id;
@@ -483,22 +529,34 @@ export class MgtTodo extends MgtTasksBase {
     if (!this.readOnly) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (task.status === 'completed') {
-        void this.updateTaskStatus(task, 'notStarted');
+        void this.updateTask(task, 'notStarted');
       } else {
-        void this.updateTaskStatus(task, 'completed');
+        void this.updateTask(task, 'completed');
       }
     }
   }
 
-  private handleInput = (e: MouseEvent) => {
+  private handleInput = (e: KeyboardEvent) => {
     if ((e.target as HTMLInputElement).id === 'new-taskName-input') {
       this._newTaskName = (e.target as HTMLInputElement).value;
     }
   };
 
-  private handleKeyDown = async (e: KeyboardEvent) => {
+  private handleTitleChange = (e: KeyboardEvent, task: TodoTask) => {
+    if ((e.target as HTMLInputElement).id === `${task.id}-input`) {
+      this._newTaskName = (e.target as HTMLInputElement).value;
+    }
+  };
+
+  private handleNewTaskKeyDown = async (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       await this.addTask();
+    }
+  };
+
+  private handleTaskUpdate = async (e: KeyboardEvent, task: TodoTask) => {
+    if (e.key === 'Enter') {
+      await this.updateTask(task);
     }
   };
 
