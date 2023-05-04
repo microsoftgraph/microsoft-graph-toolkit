@@ -126,14 +126,26 @@ export class MgtTodo extends MgtTasksBase {
     if (tasks && this.taskFilter) {
       tasks = tasks.filter(task => this.taskFilter(task));
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const completedTasks = tasks.filter(task => task.status === 'completed');
 
     const taskTemplates = repeat(
-      tasks,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      tasks.filter(task => task.status !== 'completed'),
       task => task.id,
       task => this.renderTask(task)
     );
+
+    const completedTaskTemplates = repeat(
+      completedTasks.sort((a, b) => {
+        return new Date(a.lastModifiedDateTime).getTime() - new Date(b.lastModifiedDateTime).getTime();
+      }),
+      task => task.id,
+      task => this.renderCompletedTask(task)
+    );
     return html`
       ${taskTemplates}
+      ${completedTaskTemplates}
     `;
   }
 
@@ -265,22 +277,19 @@ export class MgtTodo extends MgtTasksBase {
   };
 
   /**
-   * Render a task in the list.
+   * Render task details.
    *
    * @protected
    * @param {TodoTask} task
    * @returns {TemplateResult}
    * @memberof MgtTodo
    */
-  protected renderTask = (task: TodoTask) => {
+  protected renderTaskDetails = (task: TodoTask) => {
     const context = { task, list: this.currentList };
 
     if (this.hasTemplate('task')) {
       return this.renderTemplate('task', context, task.id);
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const isCompleted = (TaskStatus as any)[task.status] === TaskStatus.completed;
 
     let taskDetailsTemplate = null;
 
@@ -307,27 +316,53 @@ export class MgtTodo extends MgtTasksBase {
       `;
     }
 
+    return html`${taskDetailsTemplate}`;
+  };
+
+  /**
+   * Render a task in the list.
+   *
+   * @protected
+   * @param {TodoTask} task
+   * @returns {TemplateResult}
+   * @memberof MgtTodo
+   */
+  protected renderTask = (task: TodoTask) => {
     const taskClasses = classMap({
-      Complete: isCompleted,
-      Incomplete: !isCompleted,
       ReadOnly: this.readOnly,
-      Task: true,
-      checked: isCompleted
+      Task: true
     });
 
-    const taskCheckContent = isCompleted
-      ? html`
-          ${getSvg(SvgIcon.CheckMark)}
-        `
-      : null;
+    return html`
+      <fluent-checkbox id=${task.id} class=${taskClasses} @click="${() => this.handleTaskCheckClick(task)}">
+        ${this.renderTaskDetails(task)}
+      </fluent-checkbox>
+    `;
+  };
+
+  /**
+   * Render a completed task in the list.
+   *
+   * @protected
+   * @param {TodoTask} task
+   * @returns {TemplateResult}
+   * @memberof MgtTodo
+   */
+  protected renderCompletedTask = (task: TodoTask) => {
+    const taskClasses = classMap({
+      Complete: true,
+      ReadOnly: this.readOnly,
+      Task: true
+    });
+
+    const taskCheckContent = html`${getSvg(SvgIcon.CheckMark)}`;
 
     return html`
-      <fluent-checkbox id=${task.id} class=${taskClasses} ?checked=${isCompleted} @click="${() =>
-      this.handleTaskCheckClick(task)}">
+      <fluent-checkbox id=${task.id} class=${taskClasses} checked @click="${() => this.handleTaskCheckClick(task)}">
         <div slot="checked-indicator">
           ${taskCheckContent}
         </div>
-        ${taskDetailsTemplate}
+        ${this.renderTaskDetails(task)}
       </fluent-checkbox>
     `;
   };
@@ -447,10 +482,10 @@ export class MgtTodo extends MgtTasksBase {
     this.handleTaskClick(task);
     if (!this.readOnly) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if ((TaskStatus as any)[task.status] === TaskStatus.completed) {
-        void this.updateTaskStatus(task, TaskStatus.notStarted);
+      if (task.status === 'completed') {
+        void this.updateTaskStatus(task, 'notStarted');
       } else {
-        void this.updateTaskStatus(task, TaskStatus.completed);
+        void this.updateTaskStatus(task, 'completed');
       }
     }
   }

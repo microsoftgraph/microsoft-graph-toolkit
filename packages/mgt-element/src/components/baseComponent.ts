@@ -299,14 +299,14 @@ export abstract class MgtBaseComponent extends LitElement {
     }
   }
 
-  protected setLoadingState(value: boolean) {
+  protected setLoadingState = (value: boolean) => {
     if (this._isLoadingState === value) {
       return;
     }
 
     this._isLoadingState = value;
     this.requestUpdate('isLoadingState');
-  }
+  };
 
   private handleProviderUpdates = () => {
     void this.requestStateUpdate();

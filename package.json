@@ -40,7 +40,7 @@
     "bootstrap": "lerna bootstrap --useWorkspaces",
     "clean": "lerna run --parallel --stream --scope @microsoft/* clean",
     "link": "lerna link --force-local",
-    "lint": "eslint -c .eslintrc.js  'packages/*/src/**/*.ts'",
+    "lint": "eslint -c .eslintrc.js --quiet 'packages/*/src/**/*.ts'",
     "pack": "shx rm -rf artifacts/*.tgz && lerna exec --stream --scope @microsoft/* -- npm pack",
     "prepare": "lerna bootstrap --force-local",
     "sass": "lerna run sass --scope @microsoft/*",

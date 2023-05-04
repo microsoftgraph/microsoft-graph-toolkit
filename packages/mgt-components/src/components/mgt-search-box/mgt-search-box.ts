@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, TemplateResult } from 'lit';
+import { CSSResult, html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement, MgtBaseComponent } from '@microsoft/mgt-element';
 import { fluentSearch } from '@fluentui/web-components';

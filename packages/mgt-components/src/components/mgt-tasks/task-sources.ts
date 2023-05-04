@@ -8,7 +8,7 @@
 
 import { IGraph, BetaGraph } from '@microsoft/mgt-element';
 import { PlannerAssignments } from '@microsoft/microsoft-graph-types';
-import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
+import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup, PlannerTask } from '@microsoft/microsoft-graph-types-beta';
 import {
   addPlannerTask,
   assignPeopleToPlannerTask,
@@ -98,10 +98,10 @@ export interface ITask {
   /**
    * raw
    *
-   * @type {*}
+   * @type {PlannerTask | OutlookTask}
    * @memberof ITask
    */
-  _raw?: any;
+  _raw?: PlannerTask | OutlookTask;
 }
 /**
  * container for tasks
@@ -175,6 +175,14 @@ export interface ITaskGroup {
    * @memberof ITaskGroup
    */
   _raw?: any;
+
+  /**
+   * Plan Container ID. Same as the group ID of the group in the plan.
+   *
+   * @type {string}
+   * @memberof ITaskGroup
+   */
+  containerId?: string;
 }
 /**
  * A common interface for both planner and todo tasks
@@ -320,8 +328,9 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    */
   public async getTaskGroups(): Promise<ITaskGroup[]> {
     const plans = await getAllMyPlannerPlans(this.graph);
-
-    return plans.map(plan => ({ id: plan.id, title: plan.title } as ITaskGroup));
+    return plans.map(
+      plan => ({ id: plan.id, title: plan.title, containerId: plan?.container?.containerId } as ITaskGroup)
+    );
   }
 
   /**
