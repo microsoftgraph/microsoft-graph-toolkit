@@ -1,13 +1,9 @@
 <html>
   <head>
     <script src="https://unpkg.com/@microsoft/teams-js@2/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
-    <!-- <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script>
-    <script>
-      mgt.TeamsProvider.handleAuth();
-    </script> -->
     <script type="module">
-      import { TeamsMsal2Provider } from './packages/providers/mgt-teams-msal2-provider/dist/es6/TeamsMsal2Provider.js';
-      TeamsMsal2Provider.handleAuth();
+      import { TeamsFxProvider } from './packages/providers/mgt-teamsfx-provider/dist/es6/TeamsFxProvider.js';
+      // TODO: show how to use TeamsFx in auth.
     </script>
   </head>
   <body>
