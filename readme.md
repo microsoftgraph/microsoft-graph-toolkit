@@ -31,8 +31,6 @@
 | [`@microsoft/mgt-react`](https://www.npmjs.com/package/@microsoft/mgt-react)                               | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/latest.svg">                | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/next.svg">                |
 | [`@microsoft/mgt-msal-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal-provider)               | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/latest.svg">        | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/next.svg">        |
 | [`@microsoft/mgt-msal2-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal2-provider)             | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/latest.svg">       | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/next.svg">       |
-| [`@microsoft/mgt-teams-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-provider)             | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/latest.svg">       | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/next.svg">       |
-| [`@microsoft/mgt-teams-msal2-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-msal2-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-msal2-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-msal2-provider/next.svg"> |
 | [`@microsoft/mgt-teamsfx-provider`](https://www.npmjs.com/package/@microsoft/mgt-teamsfx-provider)         | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teamsfx-provider/latest.svg">     | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teamsfx-provider/next.svg">     |
 | [`@microsoft/mgt-sharepoint-provider`](https://www.npmjs.com/package/@microsoft/mgt-sharepoint-provider)   | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/latest.svg">  | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/next.svg">  |
 | [`@microsoft/mgt-proxy-provider`](https://www.npmjs.com/package/@microsoft/mgt-proxy-provider)             | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/latest.svg">       | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/next.svg">       |
@@ -76,11 +74,8 @@ All web components are also available as React component - see [@microsoft/mgt-r
 
 [Providers](https://learn.microsoft.com/graph/toolkit/providers/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
 
-* [MsalProvider](https://learn.microsoft.com/graph/toolkit/providers/msal)
 * [Msal2Provider](https://learn.microsoft.com/graph/toolkit/providers/msal2)
 * [SharePointProvider](https://learn.microsoft.com/graph/toolkit/providers/sharepoint)
-* [TeamsProvider](https://learn.microsoft.com/graph/toolkit/providers/teams)
-* [TeamsMsal2Provider](https://learn.microsoft.com/graph/toolkit/providers/teams-msal2)
 * [TeamsFxProvider](https://learn.microsoft.com/graph/toolkit/providers/teamsfx)
 * [ProxyProvider](https://learn.microsoft.com/graph/toolkit/providers/proxy)
 * [SimpleProvider](https://learn.microsoft.com/graph/toolkit/providers/custom)
