@@ -14,7 +14,7 @@ Key personas:
 - Developer: the developer using the Toolkit components in the development of an application
 - End User/User: The user interacting with the components via the application built by the developer
 
-### Scenario 1: The developer uses the login component with a provider that does not support multiple account sign in (ex: MSAL 1.0, Teams, etc.) 
+### Scenario 1: The developer uses the login component with a provider that does not support multiple account sign in (ex: MSAL 1.0, Teams, etc.)
 | User Action | Expected User Experience |
 |-------------| -------------------------|
 | The end user visits the application for the first time | <img src="./images/mgt-login-button.png"/><br> The end user is presented with a sign in button |
@@ -26,7 +26,7 @@ Key personas:
 ### Scenario 2: The developer uses the login component with a provider that supports multiple account sign in (ex: MSAL 2.0)
 | User Action | Expected User Experience |
 | ------------| ------------------------ |
-| The end user visits the application for the first time | <img src="./images/mgt-login-button.png"/><br> The end user is presented with a sign in button 
+| The end user visits the application for the first time | <img src="./images/mgt-login-button.png"/><br> The end user is presented with a sign in button
 | The user clicks the sign in button and successfully completes the authentication flow with *Account 1* | <img src="./images/mgt-login-signed-in.png"/><br> The end user is redirected to the application. The login component displays the now signed-in user's avatar and display name (or other properties configured by the developer). All other Toolkit components on the page are re-rendered with the signed-in user's data. |
 | The user clicks the login component in the signed-in state | <img src="./images/mgt-login-signed-in-multi.png"/><br> A flyout is rendered with additional profile data for the signed in account (default is avatar, displayName, and mail), a button to sign out, and a button to add another account |
 | The user clicks the button to add another account and successfully completes the authentication flow with Account 2 | <img src="./images/mgt-login-signed-in.png"/><br> The user is redirected to the application. The login component displays the avatar and display name for *Account 2*, which becomes the **active account**. All other Toolkit components are refreshed to render the data context of *Account 2*.
@@ -39,7 +39,7 @@ Key personas:
 
 | Feature | Priority | Notes |
 | ------- | -------- | ----- |
-| **v1** | | | 
+| **v1** | | |
 | Render the appropriate version of the login component depending on which authentication provider is used | P0 | |
 | Render a sign in button when no users are signed in | P0 | |
 | Initiate the Identity platform authentication process when the sign in button or add another account is clicked | P0 | |
@@ -60,7 +60,7 @@ Key personas:
 ### Example 1: Login component is used with MSAL 1.0 Provider
 
 ```
-<mgt-msal-provider client-id="123"></mgt-msal-provider>
+<mgt-msal2-provider client-id="123"></mgt-msal2-provider>
 <mgt-login></mgt-login>
 ```
 
@@ -69,7 +69,7 @@ Single account view of Login component is rendered.
 ### Example 2: Login component is used with MSAL 2.0 Provider
 
 ```
-<mgt-msal-2-provider client-id="123"></mgt--msal-2-provider>
+<mgt-msal2-provider client-id="123"></mgt-msal2-provider>
 <mgt-login></mgt-login>
 ```
 
@@ -108,7 +108,7 @@ The following events are available on the initial version of the login component
 
 | Event | Description |
 | ----- | ----------- |
-| ~~loginInitiated~~ | ~~The user clicked the sign in button to start the login process - cancelable~~ | 
+| ~~loginInitiated~~ | ~~The user clicked the sign in button to start the login process - cancelable~~ |
 | ~~loginCompleted~~ | ~~The login process was successful and the user is unable to sign in~~ |
 | ~~loginFailed~~ | ~~The user canceled the login process or was unable to sign in~~ |
 | ~~logOutInitiated~~ | ~~The user started to logout - cancelable~~ |
@@ -119,7 +119,7 @@ The following events are available on the initial version of the login component
 | Data type | Data context | Description |
 | --------- | ------------ | ----------- |
 | signed-in-button-content | `personDetails`: person object, `personImage`: person image string | The template used to render the content in the button when the user is signed in |
-| signed-out-button-content | null | The template used to render the content in the button when the user is not signed in | 
+| signed-out-button-content | null | The template used to render the content in the button when the user is not signed in |
 | flyout-commands | `handleSignOut`: sign out function | The template used to render the sign out command in the flyout |
 | add-account-button | `handleAddAccount`: add account function | The template used to render the add another account command in the flyout |
 | flyout-person-details | `personDetails`: person object, `personImage`: person image string | The template used to render the person details of the active account in the flyout |
