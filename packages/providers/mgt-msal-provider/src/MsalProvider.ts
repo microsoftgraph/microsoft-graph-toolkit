@@ -111,6 +111,7 @@ export interface MsalConfig extends MsalConfigBase {
 /**
  * Msal Provider using MSAL.js to aquire tokens for authentication
  *
+ * @deprecated in favor of Msal2Provider.
  * @export
  * @class MsalProvider
  * @extends {IProvider}
