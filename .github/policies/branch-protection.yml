@@ -25,7 +25,7 @@ configuration:
     requiredStatusChecks:
     - GitOps/AdvancedSecurity
     - license/cla
-    - 'Build pr / build (16.x)'
+    - 'Build pr / build (16.x) (pull_request)'
     
     # TODO: all commits should be signed. We need to get everyone signing their commits.
     requiresCommitSignatures: false
