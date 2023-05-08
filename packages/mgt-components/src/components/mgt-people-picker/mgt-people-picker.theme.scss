@@ -5,23 +5,20 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-sass-variables';
 
 $input-background: padding-box linear-gradient(
   var(--people-picker-input-background, var(--neutral-fill-input-rest)),
   var(--people-picker-input-background, var(--neutral-fill-input-rest))),
   border-box var(--people-picker-input-border-color, var(--neutral-stroke-input-rest));
-
 $input-hover-background: padding-box linear-gradient(
   var(--people-picker-input-hover-background, var(--neutral-fill-input-hover)),
   var(--people-picker-input-hover-background, var(--neutral-fill-input-hover))),
   border-box var(--people-picker-input-hover-border-color, var(--neutral-stroke-input-hover));
-
 $input-focus-background: padding-box linear-gradient(
   var(--people-picker-input-focus-background, var(--neutral-fill-input-focus)),
   var(--people-picker-input-focus-background, var(--neutral-fill-input-focus))),
   border-box var(--people-picker-input-focus-border-color, var(--neutral-stroke-input-focus));
-
 $placeholder-text-color: var(--people-picker-input-placeholder-text-color, var(--input-placeholder-rest));
 $placeholder-hover-text-color: var(--people-picker-input-placeholder-hover-text-color, var(--input-placeholder-hover));
 $placeholder-focus-text-color: var(--people-picker-input-placeholder-focus-text-color, var(--input-placeholder-filled));
