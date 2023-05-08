@@ -34,7 +34,6 @@ export class SdkVersionMiddleware implements Middleware {
     this._providerName = providerName;
   }
 
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   public async execute(context: Context): Promise<void> {
     try {
       if (typeof context.request === 'string') {

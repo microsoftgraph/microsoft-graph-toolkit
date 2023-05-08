@@ -7,4 +7,5 @@
 
 export * from './components/components';
 export * from './graph/types';
+export * from './graph/graph.userWithPhoto';
 export * from './styles/theme-manager';

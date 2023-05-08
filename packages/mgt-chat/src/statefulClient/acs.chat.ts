@@ -1,12 +1,13 @@
 import {
   ChatMessage as GraphChatMessage,
-  AadUserConversationMember as GraphChatParticipant
+  AadUserConversationMember as GraphChatParticipant,
+  MembersAddedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
 
-import { ChatParticipant as ACSChatParticipant } from '@azure/communication-chat';
-import { ChatMessage as ACSChatMessage } from '@azure/communication-react';
+import { ChatParticipant as AcsChatParticipant } from '@azure/communication-chat';
+import { ChatMessage as ACSChatMessage, CommunicationParticipant, SystemMessage } from '@azure/communication-react';
 
-export const graphParticipantToACSParticipant = (graphParticipant: GraphChatParticipant): ACSChatParticipant => {
+export const graphParticipantToAcsParticipant = (graphParticipant: GraphChatParticipant): AcsChatParticipant => {
   if (!graphParticipant.userId) {
     throw new Error('Cannot convert graph participant to ACS participant. No ID found on graph participant');
   }
@@ -19,7 +20,7 @@ export const graphParticipantToACSParticipant = (graphParticipant: GraphChatPart
   };
 };
 
-export const graphChatMessageToACSChatMessage = (
+export const graphChatMessageToAcsChatMessage = (
   graphMessage: GraphChatMessage,
   currentUser: string
 ): ACSChatMessage => {

@@ -59,7 +59,6 @@ export { PersonType, UserType } from '../../graph/graph.people';
  * @interface IFocusable
  */
 interface IFocusable {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   isFocused: boolean;
 }
 

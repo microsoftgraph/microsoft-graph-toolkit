@@ -1,10 +1,17 @@
 import {
   MessageThreadProps,
   SendBoxProps,
-  ChatMessage as ACSChatMessage,
-  ErrorBarProps
+  ChatMessage as AcsChatMessage,
+  ErrorBarProps,
+  SystemMessage,
+  ContentSystemMessage
 } from '@azure/communication-react';
-import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import {
+  AadUserConversationMember,
+  Chat,
+  ChatMessage,
+  MembersDeletedEventMessageDetail
+} from '@microsoft/microsoft-graph-types';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
 import { produce } from 'immer';
 import { v4 as uuid } from 'uuid';
@@ -15,11 +22,19 @@ import {
   loadMoreChatMessages,
   MessageCollection,
   sendChatMessage,
-  updateChatMessage
+  updateChatMessage,
+  removeChatMember,
+  addChatMembers
 } from './graph.chat';
-import { graphChatMessageToACSChatMessage } from './acs.chat';
+import { getUserWithPhoto } from '@microsoft/mgt-components';
+import { graphChatMessageToAcsChatMessage } from './acs.chat';
 import { GraphNotificationClient } from './GraphNotificationClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
+import { IDynamicPerson } from '@microsoft/mgt-react';
+
+type ODataType = {
+  '@odata.type': MessageEventType;
+};
 
 type GraphChatClient = Pick<
   MessageThreadProps,
@@ -34,8 +49,18 @@ type GraphChatClient = Pick<
 > &
   Pick<SendBoxProps, 'onSendMessage'> &
   Pick<ErrorBarProps, 'activeErrorMessages'> & {
-    status: 'initial' | 'subscribing to notifications' | 'loading messages' | 'ready' | 'error';
+    status:
+      | 'initial'
+      | 'creating server connections'
+      | 'subscribing to notifications'
+      | 'loading messages'
+      | 'ready'
+      | 'error';
     chat?: Chat;
+  } & {
+    participants: AadUserConversationMember[];
+    onAddChatMembers: (userIds: string[], history?: Date) => Promise<void>;
+    onRemoveChatMember: (membershipId: string) => Promise<void>;
   };
 
 type StatefulClient<T> = {
@@ -68,6 +93,12 @@ type CreatedOn = {
  * @param {CreatedOn} b
  */
 const MessageCreatedComparator = (a: CreatedOn, b: CreatedOn) => a.createdOn.getTime() - b.createdOn.getTime();
+
+type MessageEventType =
+  | '#microsoft.graph.membersAddedEventMessageDetail'
+  | '#microsoft.graph.membersDeletedEventMessageDetail';
+
+const isString = (value: any): value is string => typeof value === 'string';
 
 class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private _notificationClient: GraphNotificationClient;
@@ -210,13 +241,24 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
    * @memberof StatefulGraphChatClient
    */
   private async updateFollowedChat() {
+    // reset state to initial
+    this.notifyStateChange((draft: GraphChatClient) => {
+      draft.status = 'initial';
+      draft.messages = [];
+      draft.chat = undefined;
+      draft.participants = [];
+    });
     // Subscribe to notifications for messages
     this.notifyStateChange((draft: GraphChatClient) => {
-      draft.status = 'subscribing to notifications';
+      draft.status = 'creating server connections';
     });
     // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
     // this client will then load the chat and messages when that event listener is called
-    await this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, this._eventEmitter);
+    await this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, this._eventEmitter, () =>
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'subscribing to notifications';
+      })
+    );
   }
 
   private async loadChatData() {
@@ -226,19 +268,102 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this._chat = await loadChat(this.graph, this._chatId);
     const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
     this._nextLink = messages.nextLink;
-    // Allow messages to be loaded via the loadMoreMessages callback
-    this.notifyStateChange((draft: GraphChatClient) => {
-      draft.participantCount = this._chat?.members?.length || 0;
-      draft.messages = messages.value
+
+    const initialMessages = await Promise.all(
+      messages.value
         // trying to filter out system messages on the graph request causes a 400
         // delted messages are returned as messages with no content, which we can't filter on the graph request
         // so we filter them out here
-        .filter(m => m.messageType === 'message' && m.body?.content)
-        .map(m => graphChatMessageToACSChatMessage(m, this._userId));
+        .filter(m => m.body?.content)
+        .map(m => this.convertChatMessage(m))
+    );
+    // Allow messages to be loaded via the loadMoreMessages callback
+    this.notifyStateChange((draft: GraphChatClient) => {
+      draft.participants = this._chat?.members || [];
+      draft.participantCount = draft.participants.length;
+      draft.messages = initialMessages;
       draft.onLoadPreviousChatMessages = this._nextLink ? this.loadMoreMessages : undefined;
       draft.status = this._nextLink ? 'loading messages' : 'ready';
       draft.chat = this._chat;
     });
+    // if for some reason the first page only has un-renderable messages, load more
+    if (this._nextLink && initialMessages.length < 1) {
+      // load more messages
+      await this.loadMoreMessages();
+    }
+  }
+
+  private convertChatMessage(message: ChatMessage): Promise<AcsChatMessage | SystemMessage> {
+    switch (message.messageType) {
+      case 'message':
+        return Promise.resolve(graphChatMessageToAcsChatMessage(message, this._userId));
+      case 'unknownFutureValue':
+        return this.buildSystemContentMessage(message);
+      default:
+        throw new Error(`Unknown message type ${message.messageType?.toString() || 'undefined'}`);
+    }
+  }
+
+  private resolveIcon = (eventType: MessageEventType): string => {
+    switch (eventType) {
+      case '#microsoft.graph.membersAddedEventMessageDetail':
+        return 'add-friend';
+      case '#microsoft.graph.membersDeletedEventMessageDetail':
+        return 'left-chat';
+      default:
+        return 'Unknown';
+    }
+  };
+
+  private async buildSystemContentMessage(message: ChatMessage): Promise<SystemMessage> {
+    const eventDetail = message.eventDetail as MembersDeletedEventMessageDetail & ODataType;
+    let messageContent = '';
+    const awaits: Promise<IDynamicPerson>[] = [];
+    const initiatorId = eventDetail.initiator?.user?.id;
+    // we're using getUserWithPhoto here because we want to tap into the caching that mgt-person uses to cut down on graph calls
+    if (initiatorId) {
+      awaits.push(getUserWithPhoto(this.graph, initiatorId));
+      const userIds: string[] = [];
+      eventDetail.members?.reduce((acc, m) => {
+        if (typeof m.id === 'string') {
+          acc.push(m.id);
+        }
+        return acc;
+      }, userIds);
+      for (const id of userIds ?? []) {
+        awaits.push(getUserWithPhoto(this.graph, id));
+      }
+      const people = await Promise.all(awaits);
+      const userNames = userIds?.map(m => this.getUserName(m, people)).join(', ');
+      switch (eventDetail['@odata.type']) {
+        case '#microsoft.graph.membersAddedEventMessageDetail':
+          messageContent = `${this.getUserName(initiatorId, people)} added ${userNames}`;
+          break;
+        case '#microsoft.graph.membersDeletedEventMessageDetail':
+          messageContent = `${this.getUserName(initiatorId, people)} removed ${userNames}`;
+          break;
+        default:
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          messageContent = `Unknown system message type ${eventDetail['@odata.type']}
+
+detail: ${JSON.stringify(eventDetail)}`;
+      }
+    }
+
+    const result: ContentSystemMessage = {
+      createdOn: message.createdDateTime ? new Date(message.createdDateTime) : new Date(),
+      messageId: message.id!,
+      systemMessageType: 'content',
+      messageType: 'system',
+      iconName: this.resolveIcon(eventDetail['@odata.type']),
+      content: messageContent
+    };
+
+    return result;
+  }
+
+  private getUserName(userId: string, people: IDynamicPerson[]) {
+    return people.find(p => p.id === userId)?.displayName || 'unknown user';
   }
 
   /**
@@ -252,15 +377,18 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     }
     const result: MessageCollection = await loadMoreChatMessages(this.graph, this._nextLink);
 
-    this._nextLink = result.nextLink;
-    this.notifyStateChange((draft: GraphChatClient) => {
-      const nextMessages = result.value
+    const messages = await Promise.all(
+      result.value
         // trying to filter out system messages on the graph request causes a 400
         // delted messages are returned as messages with no content, which we can't filter on the graph request
         // so we filter them out here
-        .filter(m => m.messageType === 'message' && m.body?.content)
-        .map(m => graphChatMessageToACSChatMessage(m, this._userId));
-      draft.messages = nextMessages.concat(draft.messages as ACSChatMessage[]).sort(MessageCreatedComparator);
+        .filter(m => m.body?.content)
+        .map(m => this.convertChatMessage(m))
+    );
+    this._nextLink = result.nextLink;
+    this.notifyStateChange((draft: GraphChatClient) => {
+      const nextMessages = messages;
+      draft.messages = nextMessages.concat(draft.messages as AcsChatMessage[]).sort(MessageCreatedComparator);
       draft.onLoadPreviousChatMessages = this._nextLink ? this.loadMoreMessages : undefined;
     });
     // return true when there are no more messages to load
@@ -280,7 +408,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
 
     // add a pending message to the state.
     this.notifyStateChange((draft: GraphChatClient) => {
-      const pendingMessage: ACSChatMessage = {
+      const pendingMessage: AcsChatMessage = {
         clientMessageId: pendingId,
         messageId: pendingId,
         contentType: 'text',
@@ -300,12 +428,12 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       // emit new state
       this.notifyStateChange((draft: GraphChatClient) => {
         const draftIndex = draft.messages.findIndex(m => m.messageId === pendingId);
-        draft.messages.splice(draftIndex, 1, graphChatMessageToACSChatMessage(chat, this._userId));
+        draft.messages.splice(draftIndex, 1, graphChatMessageToAcsChatMessage(chat, this._userId));
       });
     } catch (e) {
       this.notifyStateChange((draft: GraphChatClient) => {
         const draftMessage = draft.messages.find(m => m.messageId === pendingId);
-        (draftMessage as ACSChatMessage).status = 'failed';
+        (draftMessage as AcsChatMessage).status = 'failed';
       });
       throw new Error('Failed to send message');
     }
@@ -314,7 +442,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   /*
    * Helper method to set the content of a message to show deletion
    */
-  private setDeletedContent = (message: ACSChatMessage) => {
+  private setDeletedContent = (message: AcsChatMessage) => {
     message.content = '<em>This message has been deleted.</em>';
     message.contentType = 'html';
   };
@@ -327,11 +455,11 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
    */
   public deleteMessage = async (messageId: string): Promise<void> => {
     if (!messageId) return;
-    const message = this._state.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+    const message = this._state.messages.find(m => m.messageId === messageId) as AcsChatMessage;
     // only messages not persisted to graph should have a clientMessageId
     const uncommitted = this._state.messages.find(
-      m => (m as ACSChatMessage).clientMessageId === messageId
-    ) as ACSChatMessage;
+      m => (m as AcsChatMessage).clientMessageId === messageId
+    ) as AcsChatMessage;
     if (message?.mine) {
       try {
         // uncommitted messages are not persisted to the graph, so don't call graph when deleting them
@@ -339,7 +467,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
           await deleteChatMessage(this.graph, this._chatId, messageId);
         }
         this.notifyStateChange((draft: GraphChatClient) => {
-          const draftMessage = draft.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+          const draftMessage = draft.messages.find(m => m.messageId === messageId) as AcsChatMessage;
           if (draftMessage.clientMessageId) {
             // just remove messages that were not saved to the graph
             draft.messages.splice(draft.messages.indexOf(draftMessage), 1);
@@ -363,10 +491,10 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
    */
   public updateMessage = async (messageId: string, content: string) => {
     if (!messageId || !content) return;
-    const message = this._state.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+    const message = this._state.messages.find(m => m.messageId === messageId) as AcsChatMessage;
     if (message?.mine && message.content) {
       this.notifyStateChange((draft: GraphChatClient) => {
-        const updating = draft.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+        const updating = draft.messages.find(m => m.messageId === messageId) as AcsChatMessage;
         if (updating) {
           updating.content = content;
           updating.status = 'sending';
@@ -375,12 +503,12 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       try {
         await updateChatMessage(this.graph, this._chatId, messageId, content);
         this.notifyStateChange((draft: GraphChatClient) => {
-          const updated = draft.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+          const updated = draft.messages.find(m => m.messageId === messageId) as AcsChatMessage;
           updated.status = 'delivered';
         });
       } catch (e) {
         this.notifyStateChange((draft: GraphChatClient) => {
-          const updating = draft.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+          const updating = draft.messages.find(m => m.messageId === messageId) as AcsChatMessage;
           updating.status = 'failed';
         });
         throw new Error('Failed to update message');
@@ -391,16 +519,17 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   /*
    * Event handler to be called when a new message is received by the notification service
    */
-  private onMessageReceived = (message: ACSChatMessage) => {
+  private onMessageReceived = async (message: ChatMessage) => {
+    const acsMessage = await this.convertChatMessage(message);
     this.notifyStateChange((draft: GraphChatClient) => {
-      const index = draft.messages.findIndex(m => m.messageId === message.messageId);
+      const index = draft.messages.findIndex(m => m.messageId === acsMessage.messageId);
       // this message is not already in thread so just add it
       if (index === -1) {
         // sort to ensure that messages are in the correct order should we get messages out of order
-        draft.messages = draft.messages.concat(message).sort(MessageCreatedComparator);
+        draft.messages = draft.messages.concat(acsMessage).sort(MessageCreatedComparator);
       } else {
         // replace the existing version of the message with the new one
-        draft.messages.splice(index, 1, message);
+        draft.messages.splice(index, 1, acsMessage);
       }
     });
   };
@@ -408,9 +537,9 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   /*
    * Event handler to be called when a message deletion is received by the notification service
    */
-  private onMessageDeleted = (message: ACSChatMessage) => {
+  private onMessageDeleted = (message: ChatMessage) => {
     this.notifyStateChange((draft: GraphChatClient) => {
-      const draftMessage = draft.messages.find(m => m.messageId === message.messageId) as ACSChatMessage;
+      const draftMessage = draft.messages.find(m => m.messageId === message.id) as AcsChatMessage;
       if (draftMessage) this.setDeletedContent(draftMessage);
     });
   };
@@ -418,10 +547,11 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   /*
    * Event handler to be called when a message edit is received by the notification service
    */
-  private onMessageEdited = (message: ACSChatMessage) => {
+  private onMessageEdited = async (message: ChatMessage) => {
+    const acsMessage = await this.convertChatMessage(message);
     this.notifyStateChange((draft: GraphChatClient) => {
-      const index = draft.messages.findIndex(m => m.messageId === message.messageId);
-      draft.messages.splice(index, 1, message);
+      const index = draft.messages.findIndex(m => m.messageId === acsMessage.messageId);
+      draft.messages.splice(index, 1, acsMessage);
     });
   };
 
@@ -433,14 +563,66 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     }
   };
 
+  private onChatPropertiesUpdated = (chat: Chat): void => {
+    this._chat = chat;
+    this.notifyStateChange((draft: GraphChatClient) => {
+      draft.chat = chat;
+    });
+  };
+
+  private onParticipantAdded = (added: AadUserConversationMember): void => {
+    this.notifyStateChange((draft: GraphChatClient) => {
+      if (!draft.participants.find(p => p.id === added.id)) {
+        draft.participants.push(added);
+      }
+    });
+  };
+
+  private onParticipantRemoved = (added: AadUserConversationMember): void => {
+    if (added.id) this.removeParticipantFromState(added.id);
+  };
+
+  private removeParticipantFromState(membershipId: string): void {
+    this.notifyStateChange((draft: GraphChatClient) => {
+      const index = draft.participants.findIndex(p => p.id === membershipId);
+      if (index !== -1) {
+        draft.participants.splice(index, 1);
+      }
+    });
+  }
+
+  private addChatMembers = async (userIds: string[], history?: Date): Promise<void> => {
+    await addChatMembers(this.graph, this._chatId, userIds, history);
+  };
+
+  /**
+   * Removes the given member from the chat
+   *
+   * @param membershpId {string} id of the user for the chat,
+   * this is the id of the chat member resource in the graph, i.e. member.id, and NOT the user's id
+   * @returns {Promise<void>}
+   */
+  private removeChatMember = async (membershpId: string): Promise<void> => {
+    if (!membershpId) return;
+    const isPresent = this._chat?.members?.findIndex(m => m.id === membershpId) ?? -1;
+    if (isPresent === -1) return;
+    await removeChatMember(this.graph, this._chatId, membershpId);
+    this.removeParticipantFromState(membershpId);
+  };
+
   /**
    * Register event listeners for chat events to be triggered from the notification service
    */
   private registerEventListeners() {
-    this._eventEmitter.on('chatMessageReceived', this.onMessageReceived);
+    this._eventEmitter.on('chatMessageReceived', (message: ChatMessage) => void this.onMessageReceived(message));
     this._eventEmitter.on('chatMessageDeleted', this.onMessageDeleted);
-    this._eventEmitter.on('chatMessageEdited', this.onMessageEdited);
+    this._eventEmitter.on('chatMessageEdited', (message: ChatMessage) => void this.onMessageEdited(message));
     this._eventEmitter.on('chatMessageNotificationsSubscribed', this.onChatNotificationsSubscribed);
+    this._eventEmitter.on('chatThreadPropertiesUpdated', this.onChatPropertiesUpdated);
+    // TODO: add define how to handle chat deletion
+    // this._eventEmitter.on('chatThreadDeleted', this.onChatDeleted);
+    this._eventEmitter.on('participantAdded', this.onParticipantAdded);
+    this._eventEmitter.on('participantRemoved', this.onParticipantRemoved);
   }
 
   /**
@@ -455,6 +637,24 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     return Providers.globalProvider.graph.forComponent('mgt-chat');
   }
 
+  private _initialState: GraphChatClient = {
+    status: 'initial',
+    userId: '',
+    messages: [],
+    participants: [],
+    get participantCount() {
+      return this.participants?.length || 0;
+    },
+    disableEditing: false,
+    numberOfChatMessagesToReload: this._messagesPerCall,
+    onDeleteMessage: this.deleteMessage,
+    onSendMessage: this.sendMessage,
+    onUpdateMessage: this.updateMessage,
+    onAddChatMembers: this.addChatMembers,
+    onRemoveChatMember: this.removeChatMember,
+    activeErrorMessages: [],
+    chat: this._chat
+  };
   /**
    * State of the chat client with initial values set
    *
@@ -462,19 +662,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
    * @type {GraphChatClient}
    * @memberof StatefulGraphChatClient
    */
-  private _state: GraphChatClient = {
-    status: 'initial',
-    userId: '',
-    messages: [],
-    participantCount: 0,
-    disableEditing: false,
-    numberOfChatMessagesToReload: this._messagesPerCall,
-    onDeleteMessage: this.deleteMessage,
-    onSendMessage: this.sendMessage,
-    onUpdateMessage: this.updateMessage,
-    activeErrorMessages: [],
-    chat: this._chat
-  };
+  private _state: GraphChatClient = { ...this._initialState };
 }
 
 export { StatefulGraphChatClient };

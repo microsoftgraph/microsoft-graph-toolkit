@@ -17,7 +17,12 @@ module.exports = {
     es6: true,
     node: true
   },
-  extends: ['plugin:@typescript-eslint/recommended', 'plugin:@typescript-eslint/recommended-requiring-type-checking'],
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:jsx-a11y/recommended',
+    'plugin:react-hooks/recommended'
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: [
@@ -46,7 +51,8 @@ module.exports = {
     'eslint-plugin-prefer-arrow',
     'eslint-plugin-react',
     '@typescript-eslint',
-    '@typescript-eslint/tslint'
+    'jsx-a11y',
+    'react-hooks'
   ],
   root: true,
   ignorePatterns: ['**/**-css.ts', '.eslintrc.js'],
@@ -240,32 +246,6 @@ module.exports = {
       }
     ],
     'use-isnan': 'error',
-    'valid-typeof': 'off',
-    '@typescript-eslint/tslint/config': [
-      'warn',
-      {
-        rules: {
-          'completed-docs': [
-            true,
-            {
-              methods: {
-                privacies: ['public', 'protected']
-              },
-              properties: {
-                privacies: ['public', 'protected']
-              },
-              classes: true,
-              enums: true,
-              'enum-members': true,
-              functions: true,
-              interfaces: true,
-              namespaces: true,
-              types: true,
-              variables: true
-            }
-          ]
-        }
-      }
-    ]
+    'valid-typeof': 'off'
   }
 };

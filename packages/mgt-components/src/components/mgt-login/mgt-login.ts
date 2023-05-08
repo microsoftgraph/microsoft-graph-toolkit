@@ -40,11 +40,8 @@ registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluent
  */
 export type LoginViewType = 'avatar' | 'compact' | 'full';
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 type PersonViewConfig = {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   view: ViewType;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   avatarSize: AvatarSize;
 };
 

@@ -46,17 +46,12 @@ import { BasePersonCardSection, CardSection } from '../BasePersonCardSection';
 
 registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 interface MgtPersonCardStateHistory {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   state: MgtPersonCardState;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   personDetails: IDynamicPerson;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   personImage: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
 
 /**

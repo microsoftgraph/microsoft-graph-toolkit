@@ -16,7 +16,6 @@ import { MockGraph } from './MockGraph';
  * @extends {IProvider}
  */
 export class MockProvider extends IProvider {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   public provider: any;
 
   private _mockGraphPromise: Promise<MockGraph>;

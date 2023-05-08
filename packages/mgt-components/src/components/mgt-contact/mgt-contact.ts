@@ -22,15 +22,10 @@ import { strings } from './strings';
  * @interface IContactPart
  */
 interface IContactPart {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   icon: TemplateResult;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   title: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   value?: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   onClick?: (e: Event) => void;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   showCompact: boolean;
 }
 
