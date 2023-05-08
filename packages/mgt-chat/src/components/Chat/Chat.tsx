@@ -27,7 +27,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
   }, [chatClient]);
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
-      <FluentProvider theme={teamsLightTheme}>
+      <FluentProvider theme={teamsLightTheme} className={chatStyles.fullHeight}>
         <div className={chatStyles.chat}>
           {chatState.userId && chatState.messages.length > 0 ? (
             <>
