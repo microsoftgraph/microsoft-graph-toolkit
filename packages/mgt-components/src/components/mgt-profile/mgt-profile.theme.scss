@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-sass-variables';
 
 $profile-background-color: var(--profile-background-color, --neutral-layer-1);
 $profile-title-color: var(--profile-title-color, var(--neutral-foreground-rest));
