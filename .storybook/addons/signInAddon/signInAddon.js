@@ -1,7 +1,7 @@
 import addons, { makeDecorator } from '@storybook/addons';
 import { Providers } from '../../../packages/mgt-element/dist/es6/providers/Providers';
 import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/IProvider';
-import { MsalProvider } from '../../../packages/providers/mgt-msal-provider/dist/es6/MsalProvider';
+import { Msal2Provider } from '../../../packages/providers/mgt-msal2-provider/dist/es6/Msal2Provider';
 import { MockProvider } from '../../../packages/mgt-element/dist/es6/mock/MockProvider';
 import { CLIENTID, SETPROVIDER_EVENT, GETPROVIDER_EVENT } from '../../env';
 
@@ -22,7 +22,7 @@ export const withSignIn = makeDecorator({
       if (_allow_signin) {
         const currentProvider = Providers.globalProvider;
         if (params.state === ProviderState.SignedIn && (!currentProvider || currentProvider === mockProvider)) {
-          Providers.globalProvider = new MsalProvider({
+          Providers.globalProvider = new Msal2Provider({
             clientId: CLIENTID
           });
         } else if (params.state !== ProviderState.SignedIn && currentProvider !== mockProvider) {

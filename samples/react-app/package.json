@@ -5,7 +5,7 @@
   "dependencies": {
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-react": "*",
-    "@microsoft/mgt-msal-provider": "*",
+    "@microsoft/mgt-msal2-provider": "*",
     "@webcomponents/webcomponentsjs": "2.2.10",
     "react": "^17.0.1",
     "react-app-polyfill": "1.0.1",
