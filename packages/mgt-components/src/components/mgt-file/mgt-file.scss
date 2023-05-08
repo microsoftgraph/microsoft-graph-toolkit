@@ -6,26 +6,23 @@
  */
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../../styles/shared-styles.scss';
-@import '../../styles/shared-sass-variables.scss';
-@import './mgt-file.theme.scss';
+@import '../../styles/shared-styles';
+@import '../../styles/shared-sass-variables';
+@import './mgt-file.theme';
 
 $file-type-icon-height: var(--file-type-icon-height, 28px);
 $file-border: var(--file-border, 1px solid transparent);
 $file-border-radius: var(--file-border-radius, 4px);
 $file-box-shadow: var(--file-box-shadow, none);
 $file-padding-inline-start: var(--file-padding-inline-start, 14px);
-$file-padding: var(--file-padding, 0px);
-$file-margin: var(--file-margin, 0px);
-
+$file-padding: var(--file-padding, 0);
+$file-margin: var(--file-margin, 0);
 $line1-font-size: var(--file-line1-font-size, var(--last-modified-font-size, #{$ms-font-size-12}));
 $line1-font-weight: var(--file-line1-font-weight, $font-weight);
 $line1-text-transform: var(--file-line1-text-transform, initial);
-
 $line2-font-size: var(--file-line2-font-size, var(--last-modified-font-size, #{$ms-font-size-12}));
 $line2-font-weight: var(--file-line2-font-weight, $font-weight);
 $line2-text-transform: var(--file-line2-text-transform, initial);
-
 $line3-font-size: var(--file-line3-font-size, var(--size-font-size, #{$ms-font-size-12}));
 $line3-font-weight: var(--file-line3-font-weight, $font-weight);
 $line3-text-transform: var(--file-line3-text-transform, initial);
@@ -79,11 +76,11 @@ mgt-file .item {
       font-weight: $line1-font-weight;
       text-transform: $line1-text-transform;
       line-height: 20px;
-      color: $line1__color;
+      color: $line1-color;
     }
 
     .line2 {
-      color: $line2__color;
+      color: $line2-color;
       font-size: $line2-font-size;
       font-weight: $line2-font-weight;
       text-transform: $line2-text-transform;
@@ -91,7 +88,7 @@ mgt-file .item {
     }
 
     .line3 {
-      color: $line3__color;
+      color: $line3-color;
       font-size: $line3-font-size;
       font-weight: $line3-font-weight;
       text-transform: $line3-text-transform;
@@ -103,6 +100,7 @@ mgt-file .item {
 [dir='rtl'] {
   .item {
     direction: rtl;
+
     &__details {
       direction: rtl;
     }
