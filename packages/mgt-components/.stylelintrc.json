@@ -4,6 +4,11 @@
     "stylelint-config-prettier-scss"
   ],
   "rules": {
-    "no-descending-specificity": null
+    "no-descending-specificity": null,
+    "selector-class-pattern":[
+    "^([a-z][a-z0-9]*)((-|_){0,2}[a-z0-9]+)*$",
+    {
+      "message":"Expected class selector \"%s\" to be kebab-case"
+    }]
   }
 }
