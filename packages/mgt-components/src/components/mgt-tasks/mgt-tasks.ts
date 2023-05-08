@@ -1257,10 +1257,6 @@ export class MgtTasks extends MgtTemplatedComponent {
       } else {
         await this.uncompleteTask(task);
       }
-      // wait a bit before removing the freeze on the task updating
-      debounce(() => {
-        if (target) target.classList.remove('Updating');
-      }, 2000)();
       e.stopPropagation();
       e.preventDefault();
     }
@@ -1336,7 +1332,6 @@ export class MgtTasks extends MgtTemplatedComponent {
       <mgt-people-picker
         class="people-picker picker-${taskId}"
         .groupId=${ifDefined(planGroupId)}
-        @click=${(e: MouseEvent) => e.stopPropagation()}
         @keydown=${this.handlePeoplePickerKeydown}>
         .groupId=${ifDefined(planGroupId)}
         ></mgt-people-picker>`;
