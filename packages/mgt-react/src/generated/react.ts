@@ -236,6 +236,10 @@ export type SearchResultsProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type SpinnerProps = {
+	mediaQuery?: ComponentMediaQuery;
+}
+
 export type TasksProps = {
 	res?: TasksStringResource;
 	isNewTaskVisible?: boolean;
@@ -307,6 +311,8 @@ export const Picker = wrapMgt<PickerProps>('picker');
 export const SearchBox = wrapMgt<SearchBoxProps>('search-box');
 
 export const SearchResults = wrapMgt<SearchResultsProps>('search-results');
+
+export const Spinner = wrapMgt<SpinnerProps>('spinner');
 
 export const Tasks = wrapMgt<TasksProps>('tasks');
 

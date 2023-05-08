@@ -1,39 +1,20 @@
-// eslint-disable-next-line @typescript-eslint/tslint/config
 export interface loginContext {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   loginHint: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 export interface TeamsLib {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   initialize(): void;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   executeDeepLink(deeplink: string, onComplete?: (status: boolean, reason?: string) => void): void;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   authentication: {
-    // eslint-disable-next-line @typescript-eslint/tslint/config
     authenticate(authConfig: {
-      // eslint-disable-next-line @typescript-eslint/tslint/config
       failureCallback: (reason) => void;
-      // eslint-disable-next-line @typescript-eslint/tslint/config
       successCallback: (result) => void;
-      // eslint-disable-next-line @typescript-eslint/tslint/config
       url: string;
     }): void;
-    // eslint-disable-next-line @typescript-eslint/tslint/config
-    getAuthToken(authCallback: {
-      // eslint-disable-next-line @typescript-eslint/tslint/config
-      failureCallback: (reason) => void;
-      // eslint-disable-next-line @typescript-eslint/tslint/config
-      successCallback: (result) => void;
-    }): void;
-    // eslint-disable-next-line @typescript-eslint/tslint/config
+    getAuthToken(authCallback: { failureCallback: (reason) => void; successCallback: (result) => void }): void;
     notifySuccess(message?: string): void;
-    // eslint-disable-next-line @typescript-eslint/tslint/config
     notifyFailure(message: string): void;
   };
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   getContext(callback?: (context: loginContext) => void): Promise<loginContext>;
 }
 
@@ -46,9 +27,7 @@ export interface TeamsLib {
 
 type TeamsWindow = Window &
   typeof globalThis & {
-    // eslint-disable-next-line @typescript-eslint/tslint/config
     microsoftTeams: TeamsLib;
-    // eslint-disable-next-line @typescript-eslint/tslint/config
     nativeInterface: unknown;
   };
 

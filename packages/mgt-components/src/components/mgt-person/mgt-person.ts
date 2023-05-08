@@ -870,7 +870,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       return html``;
     }
 
-    // eslint-disable-next-line @typescript-eslint/tslint/config
     const person: IDynamicPerson & { presenceActivity?: string; presenceAvailability?: string } = personProps;
     if (presence) {
       person.presenceActivity = presence?.activity;

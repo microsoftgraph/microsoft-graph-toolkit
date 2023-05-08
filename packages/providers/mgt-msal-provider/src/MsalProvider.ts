@@ -306,7 +306,6 @@ export class MsalProvider extends IProvider {
    * @returns
    * @memberof MsalProvider
    */
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   protected requiresInteraction(error: LoginError) {
     if (typeof error?.errorCode === 'string')
       return (

@@ -11,13 +11,9 @@
  * @interface IWindowSegment
  */
 export interface IWindowSegment {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   top: number;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   left: number;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   width: number;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   height: number;
 }
 

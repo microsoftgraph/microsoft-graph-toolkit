@@ -1,0 +1,51 @@
+{
+  "@odata.context": "https://graph.microsoft.com/$metadata#chats('19%3Ad346419c9afc4b4b904d28d04f66c431%40thread.v2')/messages/$entity",
+  "id": "1682627453018",
+  "replyToId": null,
+  "etag": "1682627453018",
+  "messageType": "unknownFutureValue",
+  "createdDateTime": "2023-04-27T20:30:53.018Z",
+  "lastModifiedDateTime": "2023-04-27T20:30:53.018Z",
+  "lastEditedDateTime": null,
+  "deletedDateTime": null,
+  "subject": null,
+  "summary": null,
+  "chatId": "19:d346419c9afc4b4b904d28d04f66c431@thread.v2",
+  "importance": "normal",
+  "locale": "en-us",
+  "webUrl": null,
+  "from": null,
+  "body": {
+    "contentType": "html",
+    "content": "<systemEventMessage/>"
+  },
+  "channelIdentity": null,
+  "attachments": [],
+  "mentions": [],
+  "onBehalfOf": null,
+  "policyViolation": null,
+  "reactions": [],
+  "messageHistory": [],
+  "replies": [],
+  "hostedContents": [],
+  "eventDetail": {
+    "@odata.type": "#microsoft.graph.membersAddedEventMessageDetail",
+    "visibleHistoryStartDateTime": "0001-01-01T00:00:00Z",
+    "members": [
+      {
+        "userIdentityType": "aadUser",
+        "id": "6fdb1be0-a1ca-4867-9333-9e7a4fe1d709",
+        "displayName": null
+      }
+    ],
+    "initiator": {
+      "application": null,
+      "device": null,
+      "user": {
+        "userIdentityType": "aadUser",
+        "id": "258e57a3-c3d6-4bce-b139-24cd9078dfcd",
+        "displayName": null
+      }
+    }
+  }
+}

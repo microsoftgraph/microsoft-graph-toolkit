@@ -4,6 +4,7 @@
     "packages/providers/*",
     "samples/react-admin-app",
     "samples/react-app",
+    "samples/react-chat",
     "samples/angular-app",
     "samples/vue-app",
     "samples/electron-app",

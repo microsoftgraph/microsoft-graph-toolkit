@@ -47,7 +47,7 @@ export interface IGraph {
    * @returns {IGraph}
    * @memberof IGraph
    */
-  forComponent(component: Element): IGraph;
+  forComponent(component: Element | string): IGraph;
 
   /**
    * use this method to make calls directly to the Graph.

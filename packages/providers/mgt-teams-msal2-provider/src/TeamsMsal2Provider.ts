@@ -18,20 +18,14 @@ import {
 } from '@microsoft/mgt-element';
 import { Msal2Provider, PromptType } from '@microsoft/mgt-msal2-provider';
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 declare global {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/tslint/config
     nativeInterface: any;
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 interface TeamsAuthResponse {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   error?: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   access_token?: string;
 }
 
@@ -313,7 +307,6 @@ export class TeamsMsal2Provider extends Msal2Provider {
     await handleProviderState();
   }
 
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   protected clientId: string;
 
   private static _localStorageParametersKey = 'msg-TeamsMsal2Provider-auth-parameters';

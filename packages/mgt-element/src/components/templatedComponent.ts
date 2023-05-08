@@ -35,7 +35,6 @@ export interface TemplateRenderedData {
   element: HTMLElement;
 }
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 type OrderedHtmlTemplate = HTMLTemplateElement & { templateOrder: number };
 
 /**

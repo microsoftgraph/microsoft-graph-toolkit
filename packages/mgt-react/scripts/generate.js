@@ -22,7 +22,8 @@ const tags = new Set([
   'picker',
   'theme-toggle',
   'search-box',
-  'search-results'
+  'search-results',
+  'spinner'
 ]);
 
 let output = '';
