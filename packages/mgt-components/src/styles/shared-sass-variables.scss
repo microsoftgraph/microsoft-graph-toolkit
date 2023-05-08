@@ -212,6 +212,11 @@ $themes: ('light', 'dark');
 $theme-default: 'light';
 
 $common: (
+  fluent-color: (
+    _var: --neutral-foreground-rest,
+    dark: $text__color__main--dark,
+    light: $text__color__main--light
+  ),
   color: (
     _var: --color,
     dark: $text__color__main--dark,

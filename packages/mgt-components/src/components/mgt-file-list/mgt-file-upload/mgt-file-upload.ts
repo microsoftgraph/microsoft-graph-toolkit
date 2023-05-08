@@ -5,14 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { fluentButton, fluentCheckbox, fluentDialog, fluentProgress } from '@fluentui/web-components';
-import { customElement, IGraph, MgtBaseComponent, mgtHtml } from '@microsoft/mgt-element';
-import { html, TemplateResult } from 'lit';
+import { fluentButton, fluentCheckbox, fluentDialog } from '@fluentui/web-components';
+import { arraysAreEqual, customElement, IGraph, MgtBaseComponent, mgtHtml } from '@microsoft/mgt-element';
+import { html, nothing, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { classMap } from 'lit/directives/class-map.js';
 import {
-  clearFilesCache,
   getGraphfile,
   getUploadSession,
   sendFileContent,
@@ -26,8 +24,9 @@ import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { formatBytes } from '../../../utils/Utils';
 import { styles } from './mgt-file-upload-css';
 import { strings } from './strings';
+import './mgt-file-upload-progress';
 
-registerFluentComponents(fluentProgress, fluentButton, fluentCheckbox, fluentDialog);
+registerFluentComponents(fluentButton, fluentCheckbox, fluentDialog);
 
 /**
  * Simple union type for file system entry and directory entry types
@@ -47,6 +46,10 @@ type FileEntry = (FileSystemDirectoryEntry | FileSystemFileEntry | FileSystemEnt
  */
 const isFileSystemDirectoryEntry = (entry: FileEntry): entry is FileSystemDirectoryEntry => {
   return entry.isDirectory;
+};
+
+const isDataTransferItem = (item: DataTransferItem | File): item is DataTransferItem => {
+  return (item as DataTransferItem).kind !== undefined;
 };
 
 /**
@@ -223,6 +226,15 @@ export interface MgtFileUploadConfig {
    * @type {string[]}
    */
   excludedFileExtensions?: string[];
+
+  /**
+   * The element to use as the drop target for drag and drop.
+   * Will use the parent element if not specified and available.
+   *
+   * @type {HTMLElement}
+   * @memberof MgtFileUploadConfig
+   */
+  dropTarget?: () => HTMLElement;
 }
 
 interface FileWithPath extends File {
@@ -235,6 +247,9 @@ interface FileWithPath extends File {
  * @export
  * @class MgtFileUpload
  * @extends {MgtBaseComponent}
+ *
+ * @fires - fileUploadSuccess {undefined} - Fired when a file is successfully uploaded.
+ * @fires - fileUploadChanged {MgtFileUploadItem[]} - Fired when file upload beings, changes state or is completed
  *
  * @cssprop --file-upload-background-color-drag - {Color} background color of the file list when you upload by drag and drop.
  * @cssprop --file-upload-button-background-color - {Color} background color of the file upload button.
@@ -257,7 +272,6 @@ interface FileWithPath extends File {
  * @cssprop --file-upload-dialog-height - {String} the height of the file upload dialog box. Default value is auto.
  * @cssprop --file-upload-dialog-padding - {String} the padding of the file upload dialog box. Default value is 24px;
  */
-
 @customElement('file-upload')
 export class MgtFileUpload extends MgtBaseComponent {
   /**
@@ -268,18 +282,50 @@ export class MgtFileUpload extends MgtBaseComponent {
     return styles;
   }
 
+  /**
+   * Strings to be used for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtFileUpload
+   */
   protected get strings() {
     return strings;
   }
 
+  /**
+   * Disables the upload progress reporting baked into the file upload component
+   *
+   * @memberof MgtFileUpload
+   */
+  @property({
+    attribute: 'hide-inline-progress',
+    type: Boolean
+  })
+  public hideInlineProgress = false;
+
+  private _filesToUpload: MgtFileUploadItem[] = [];
   /**
    * Allows developer to provide an array of MgtFileUploadItem to upload
    *
    * @type {MgtFileUploadItem[]}
    * @memberof MgtFileUpload
    */
-  @property({ type: Object })
-  public filesToUpload: MgtFileUploadItem[];
+  @property({ type: Object, attribute: null })
+  public get filesToUpload(): MgtFileUploadItem[] {
+    return this._filesToUpload;
+  }
+  public set filesToUpload(value: MgtFileUploadItem[]) {
+    if (!arraysAreEqual(this._filesToUpload, value)) {
+      this._filesToUpload = value;
+      this.emitFileUploadChanged();
+      void this.requestStateUpdate();
+    }
+  }
+
+  private emitFileUploadChanged() {
+    this.fireCustomEvent('fileUploadChanged', this._filesToUpload, true, true, true);
+  }
 
   /**
    * List of mgt-file-list properties used to upload files.
@@ -317,9 +363,10 @@ export class MgtFileUpload extends MgtBaseComponent {
   private _maximumFileSize = false;
   private _excludedFileType = false;
 
+  private _dropTarget: HTMLElement;
+
   constructor() {
     super();
-    this.filesToUpload = [];
   }
 
   /**
@@ -328,14 +375,6 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @returns
    */
   public render(): TemplateResult {
-    if (this.parentElement !== null) {
-      const root = this.parentElement;
-      root.addEventListener('dragenter', this.handleonDragEnter);
-      root.addEventListener('dragleave', this.handleonDragLeave);
-      root.addEventListener('dragover', this.handleonDragOver);
-      root.addEventListener('drop', this.handleonDrop);
-    }
-
     return html`
         <div id="file-upload-dialog" class="file-upload-dialog">
           <!-- Modal content -->
@@ -369,7 +408,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           </fluent-dialog>
         </div>
         <div id="file-upload-border"></div>
-        <div class="file-upload-area-button">
+        <div part="upload-button-wrapper" class="file-upload-area-button">
           <input
             id="file-upload-input"
             title="${this.strings.uploadButtonLabel}"
@@ -381,140 +420,41 @@ export class MgtFileUpload extends MgtBaseComponent {
           />
           <fluent-button
             appearance="accent"
-            class="file-upload-button"
             @click=${this.onFileUploadClick}
             label=${this.strings.uploadButtonLabel}>
               <span slot="start">${getSvg(SvgIcon.Upload)}</span>
               <span class="upload-text">${this.strings.buttonUploadFile}</span>
           </fluent-button>
         </div>
-        <div class="file-upload-Template">
-          ${this.renderFolderTemplate(this.filesToUpload)}
-        </div>
+        ${
+          // slice used here to create new array on each render to ensure that file-upload-progress re-renders as the data changes
+          !this.hideInlineProgress
+            ? mgtHtml`
+              <mgt-file-upload-progress
+                .progressItems=${this.filesToUpload.slice()}
+                @clearnotification=${this.clearUploadNotification}
+              ></mgt-file-upload-progress>`
+            : nothing
+        }
        `;
   }
 
-  /**
-   * Render Folder structure of files to upload
-   *
-   * @param fileItems
-   * @returns
-   */
-  protected renderFolderTemplate(fileItems: MgtFileUploadItem[]) {
-    const folderStructure: string[] = [];
-    if (fileItems.length > 0) {
-      const templateFileItems = fileItems.map(fileItem => {
-        if (folderStructure.indexOf(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/'))) === -1) {
-          if (fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')) !== '') {
-            folderStructure.push(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')));
-            return mgtHtml`
-            <div class='file-upload-table'>
-              <div class='file-upload-cell'>
-                <mgt-file
-                  .fileDetails=${{
-                    name: fileItem.fullPath.substring(1, fileItem.fullPath.lastIndexOf('/')),
-                    folder: 'Folder'
-                  }}
-                  .view=${ViewType.oneline}
-                  class="mgt-file-item">
-                </mgt-file>
-              </div>
-            </div>
-            ${this.renderFileTemplate(fileItem, 'file-upload-folder-tab')}`;
-          } else {
-            return html`${this.renderFileTemplate(fileItem, '')}`;
-          }
-        } else {
-          return html`${this.renderFileTemplate(fileItem, 'file-upload-folder-tab')}`;
-        }
-      });
-      return html`${templateFileItems}`;
+  private clearUploadNotification = (event: CustomEvent<MgtFileUploadItem>) => {
+    this.filesToUpload = this.filesToUpload.filter(item => item !== event.detail);
+  };
+
+  // TODO: remove these event listeners when component is disconnected
+  // TODO: only add eventlistners we don't have them already
+  public attachEventListeners() {
+    const root = this.fileUploadList.dropTarget?.() || this.parentElement;
+    if (root === this._dropTarget) return;
+    if (root) {
+      root.addEventListener('dragenter', this.handleonDragEnter);
+      root.addEventListener('dragleave', this.handleonDragLeave);
+      root.addEventListener('dragover', this.handleonDragOver);
+      root.addEventListener('drop', this.handleOnDrop);
+      this._dropTarget = root;
     }
-    return html``;
-  }
-
-  /**
-   * Render file upload area
-   *
-   * @param fileItem
-   * @returns
-   */
-  protected renderFileTemplate(fileItem: MgtFileUploadItem, folderTabStyle: string) {
-    const completed = classMap({
-      'file-upload-table': true,
-      upload: fileItem.completed
-    });
-    const folder =
-      folderTabStyle + (fileItem.fieldUploadResponse === 'lastModifiedDateTime' ? ' file-upload-dialog-success' : '');
-
-    const description = classMap({
-      description: fileItem.fieldUploadResponse === 'description'
-    });
-
-    const completedTemplate = !fileItem.completed ? this.renderFileUploadTemplate(fileItem) : html``;
-
-    return mgtHtml`
-        <div class="${completed}">
-          <div class="${folder}">
-            <div class='file-upload-cell'>
-              <div class="${description}">
-                <div class="file-upload-status">
-                  ${fileItem.iconStatus}
-                </div>
-                <mgt-file
-                  .fileDetails=${fileItem.driveItem}
-                  .view=${fileItem.view}
-                  .line2Property=${fileItem.fieldUploadResponse}
-                  part="upload"
-                  class="mgt-file-item">
-                </mgt-file>
-              </div>
-            </div>
-              ${completedTemplate}
-            </div>
-          </div>
-        </div>`;
-  }
-
-  /**
-   * Render file upload progress
-   *
-   * @param fileItem
-   * @returns
-   */
-  protected renderFileUploadTemplate(fileItem: MgtFileUploadItem) {
-    const completed = classMap({
-      'file-upload-table': true,
-      upload: fileItem.completed
-    });
-    return html`
-    <div class='file-upload-cell'>
-      <div class='file-upload-table file-upload-name'>
-        <div class='file-upload-cell'>
-          <div
-            title="${fileItem.file.name}"
-            class='file-upload-filename'>
-            ${fileItem.file.name}
-          </div>
-        </div>
-      </div>
-      <div class='file-upload-table'>
-        <div class='file-upload-cell'>
-          <div class="${completed}">
-            <fluent-progress class="file-upload-bar" value="${fileItem.percent}"></fluent-progress>
-            <div class='file-upload-cell percent-indicator'>
-              <span>${fileItem.percent}%</span>
-              <span
-                class="file-upload-cancel"
-                @click=${() => this.deleteFileUploadSession(fileItem)}>
-                ${getSvg(SvgIcon.Cancel)}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    `;
   }
 
   /**
@@ -573,7 +513,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    * @param event
    */
-  protected handleonDragOver = (event: DragEvent) => {
+  private handleonDragOver = (event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
     if (event.dataTransfer.items && event.dataTransfer.items.length > 0) {
@@ -586,10 +526,9 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    * @param event
    */
-  protected handleonDragEnter = (event: DragEvent) => {
+  private handleonDragEnter = (event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
-
     this._dragCounter++;
     if (event.dataTransfer.items && event.dataTransfer.items.length > 0) {
       event.dataTransfer.dropEffect = this._dropEffect;
@@ -603,7 +542,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    * @param event
    */
-  protected handleonDragLeave = (event: DragEvent) => {
+  private handleonDragLeave = (event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -619,7 +558,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    * @param event
    */
-  protected handleonDrop = (event: DragEvent) => {
+  private handleOnDrop = (event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
     const done = (): void => {
@@ -644,7 +583,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    * @param inputFiles
    */
-  protected async getSelectedFiles(files: File[]) {
+  private async getSelectedFiles(files: File[]) {
     let fileItems: MgtFileUploadItem[] = [];
     const fileItemsCompleted: MgtFileUploadItem[] = [];
     this._applyAll = false;
@@ -774,7 +713,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @param file
    * @returns
    */
-  protected async getFileUploadStatus(
+  private async getFileUploadStatus(
     file: File,
     fullPath: string,
     DialogStatus: string,
@@ -929,7 +868,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @param fileItem
    * @returns
    */
-  protected getGrapQuery(fullPath: string) {
+  private getGrapQuery(fullPath: string) {
     let itemPath = '';
     if (this.fileUploadList.itemPath) {
       if (this.fileUploadList.itemPath.length > 0) {
@@ -990,7 +929,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @param fileUpload
    * @returns
    */
-  protected async sendFileItemGraph(fileItem: MgtFileUploadItem) {
+  private async sendFileItemGraph(fileItem: MgtFileUploadItem) {
     const graph: IGraph = this.fileUploadList.graph;
     let graphQuery = '';
     if (fileItem.file.size < this._maxChunkSize) {
@@ -1054,7 +993,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @param fileItem
    * @returns
    */
-  protected async sendSessionUrlGraph(graph: IGraph, fileItem: MgtFileUploadItem) {
+  private async sendSessionUrlGraph(graph: IGraph, fileItem: MgtFileUploadItem) {
     while (fileItem.file.size > fileItem.minSize) {
       if (fileItem.mimeStreamString === undefined) {
         fileItem.mimeStreamString = (await this.readFileContent(fileItem.file)) as ArrayBuffer;
@@ -1063,6 +1002,8 @@ export class MgtFileUpload extends MgtBaseComponent {
       const fileSlice: Blob = new Blob([fileItem.mimeStreamString.slice(fileItem.minSize, fileItem.maxSize)]);
       fileItem.percent = Math.round((fileItem.maxSize / fileItem.file.size) * 100);
       await super.requestStateUpdate(true);
+      // emit update here as the percent of the upload for the file is changed.
+      this.emitFileUploadChanged();
 
       if (fileItem.uploadUrl !== undefined) {
         const response = await sendFileChunk(
@@ -1095,17 +1036,15 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    * @param fileUpload
    */
-  protected setUploadSuccess(fileUpload: MgtFileUploadItem) {
+  private setUploadSuccess(fileUpload: MgtFileUploadItem) {
     fileUpload.percent = 100;
-    void super.requestStateUpdate(true);
-    setTimeout(() => {
-      fileUpload.iconStatus = getSvg(SvgIcon.Success);
-      fileUpload.view = ViewType.twolines;
-      fileUpload.fieldUploadResponse = 'lastModifiedDateTime';
-      fileUpload.completed = true;
-      void super.requestStateUpdate(true);
-      void clearFilesCache();
-    }, 500);
+    fileUpload.iconStatus = getSvg(SvgIcon.Success);
+    fileUpload.view = ViewType.twolines;
+    fileUpload.fieldUploadResponse = 'lastModifiedDateTime';
+    fileUpload.completed = true;
+    this.requestUpdate();
+    this.emitFileUploadChanged();
+    this.fireCustomEvent('fileUploadSuccess', undefined, true, true, true);
   }
 
   /**
@@ -1113,15 +1052,14 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    * @param fileUpload
    */
-  protected setUploadFail(fileUpload: MgtFileUploadItem, errorMessage: string) {
-    setTimeout(() => {
-      fileUpload.iconStatus = getSvg(SvgIcon.Fail);
-      fileUpload.view = ViewType.twolines;
-      fileUpload.driveItem.description = errorMessage;
-      fileUpload.fieldUploadResponse = 'description';
-      fileUpload.completed = true;
-      void super.requestStateUpdate(true);
-    }, 500);
+  private setUploadFail(fileUpload: MgtFileUploadItem, errorMessage: string) {
+    fileUpload.iconStatus = getSvg(SvgIcon.Fail);
+    fileUpload.view = ViewType.twolines;
+    fileUpload.driveItem.description = errorMessage;
+    fileUpload.fieldUploadResponse = 'description';
+    fileUpload.completed = true;
+    this.emitFileUploadChanged();
+    super.requestUpdate();
   }
 
   /**
@@ -1130,7 +1068,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @param file
    * @returns
    */
-  protected readFileContent(file: File): Promise<string | ArrayBuffer> {
+  private readFileContent(file: File): Promise<string | ArrayBuffer> {
     return new Promise<string | ArrayBuffer>((resolve, reject) => {
       const myReader: FileReader = new FileReader();
 
@@ -1157,8 +1095,8 @@ export class MgtFileUpload extends MgtBaseComponent {
     let entry: FileSystemEntry;
     const collectFilesItems: File[] = [];
 
-    for (const uploadFileItem of filesItems as DataTransferItemList) {
-      if (uploadFileItem.kind === 'file') {
+    for (const uploadFileItem of filesItems) {
+      if (isDataTransferItem(uploadFileItem) && uploadFileItem.kind === 'file') {
         // Defensive code to validate if function exists in Browser
         // Collect all Folders into Array
         const futureUpload = uploadFileItem as FutureDataTransferItem;
@@ -1184,7 +1122,7 @@ export class MgtFileUpload extends MgtBaseComponent {
               collectFilesItems.push(file);
             }
           }
-        } else if ('function' == typeof uploadFileItem.getAsFile) {
+        } else if ('function' === typeof uploadFileItem.getAsFile) {
           const file = uploadFileItem.getAsFile();
           if (file) {
             this.writeFilePath(file, '');
@@ -1193,7 +1131,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         }
         continue;
       } else {
-        const fileItem = uploadFileItem.getAsFile();
+        const fileItem = isDataTransferItem(uploadFileItem) ? uploadFileItem.getAsFile() : uploadFileItem;
         if (fileItem) {
           this.writeFilePath(fileItem, '');
           collectFilesItems.push(fileItem);
@@ -1214,13 +1152,10 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @param folders
    * @returns
    */
-  protected getFolderFiles(folders: FileSystemDirectoryEntry[]) {
+  private getFolderFiles(folders: FileSystemDirectoryEntry[]) {
     return new Promise<File[]>(resolve => {
       let reading = 0;
       const contents: File[] = [];
-      folders.forEach(entry => {
-        readEntry(entry, '');
-      });
 
       const readEntry = (entry: FileEntry, path: string) => {
         if (isFileSystemDirectoryEntry(entry)) {
@@ -1254,6 +1189,10 @@ export class MgtFileUpload extends MgtBaseComponent {
           }
         });
       };
+
+      folders.forEach(entry => {
+        readEntry(entry, '');
+      });
     });
   }
   private writeFilePath(file: File | FileSystemEntry, path: string) {

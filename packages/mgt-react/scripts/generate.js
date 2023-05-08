@@ -19,6 +19,8 @@ const tags = new Set([
   'todo',
   'file',
   'file-list',
+  'file-grid',
+  'file-list-composite',
   'picker',
   'theme-toggle',
   'search-box',
@@ -56,6 +58,16 @@ const addTypeToImports = type => {
   }
   // make sure to remove any generic type decorations before trying to split for union types
   type = removeGenericTypeDecoration(type);
+
+  // need to handle Generic like Command<T>
+  if (type.indexOf('<') > 0 && type.indexOf('>') === type.length - 1) {
+    const genericType = type.substring(0, type.indexOf('<'));
+    const genericTypeArgs = type.substring(type.indexOf('<') + 1, type.length - 2);
+    addTypeToImports(genericType);
+    addTypeToImports(genericTypeArgs);
+    return;
+  }
+
   for (let t of type.split('|')) {
     t = removeGenericTypeDecoration(t.trim());
     if (t.startsWith('MicrosoftGraph.') || t.startsWith('MicrosoftGraphBeta.')) {

@@ -8,6 +8,11 @@
 import { EventDispatcher, EventHandler } from './EventDispatcher';
 
 /**
+ * Valid values for the direction attribute
+ */
+export type Direction = 'ltr' | 'rtl' | 'auto';
+
+/**
  * Helper class for Localization
  *
  *

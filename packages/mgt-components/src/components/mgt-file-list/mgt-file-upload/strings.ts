@@ -7,7 +7,8 @@
 
 export const strings = {
   failUploadFile: 'File upload fail.',
-  cancelUploadFile: 'File cancel.',
+  cancelUploadFile: 'File upload canceled.',
+  clearNotification: 'Clear notification for',
   buttonUploadFile: 'Upload Files',
   maximumFilesTitle: 'Maximum files',
   maximumFiles:

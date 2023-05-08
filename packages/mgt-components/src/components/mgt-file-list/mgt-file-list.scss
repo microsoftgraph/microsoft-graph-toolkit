@@ -31,6 +31,56 @@ $progress-ring-size: var(--progress-ring-size, 24px);
 :host {
   font-family: $font-family;
   font-size: $font-size;
+  color: $color;
+}
+
+:host {
+  &::part(data-row) {
+    align-items: center;
+    &:hover {
+      background-color: var(--neutral-layer-2);
+
+      .mgt-file-item {
+        --file-background-color: var(--neutral-layer-2);
+      }
+    }
+  }
+  &::part(file-item) {
+    width: fit-content;
+  }
+  .selected-row {
+    background-color: var(--file-background-color-active, var(--neutral-layer-3));
+    .mgt-file-item {
+      --file-background-color: var(--file-background-color-active, var(--neutral-layer-3));
+    }
+  }
+  .file-selector {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    border-color: var(--neutral-fill-strong-rest);
+    background-color: var(--neutral-fill-rest);
+    svg {
+      fill: var(--neutral-fill-rest);
+    }
+    &:hover {
+      svg {
+        fill: var(--neutral-fill-strong-hover);
+      }
+    }
+
+    &.selected {
+      border-color: var(--neutral-fill-rest);
+      svg {
+        fill: var(--accent-fill-rest);
+      }
+      :hover {
+        svg {
+          fill: var(--neutral-fill-rest);
+        }
+      }
+    }
+  }
 
   .title {
     font-size: 14px;
@@ -108,5 +158,8 @@ $progress-ring-size: var(--progress-ring-size, 24px);
     &-text {
       font-size: $show-more-button-font-size;
     }
+  }
+  .interactive-breadcrumb {
+    cursor: pointer;
   }
 }

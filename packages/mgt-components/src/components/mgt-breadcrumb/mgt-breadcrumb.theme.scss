@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export const strings = {
-  modifiedSubtitle: 'Modified',
-  sizeSubtitle: 'Size',
-  filesSectionTitle: 'Files'
-};
+@import '../../styles/shared-sass-variables.scss';
+
+$breadcrumb: ();
+
+@include create-themes($breadcrumb);

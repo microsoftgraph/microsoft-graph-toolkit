@@ -9,7 +9,7 @@ import { LitElement, PropertyValueMap, PropertyValues } from 'lit';
 import { state } from 'lit/decorators.js';
 import { ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
-import { LocalizationHelper } from '../utils/LocalizationHelper';
+import { Direction, LocalizationHelper } from '../utils/LocalizationHelper';
 import { PACKAGE_VERSION } from '../utils/version';
 
 /**
@@ -61,7 +61,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * @protected
    * @memberof MgtBaseComponent
    */
-  @state() protected direction: 'ltr' | 'rtl' | 'auto' = 'ltr';
+  @state() protected direction: Direction = 'ltr';
 
   /**
    * Gets the ComponentMediaQuery of the component
@@ -179,7 +179,10 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   /**
-   * Used to clear state in inherited components
+   * Do nothing implementation of clearState method.
+   *
+   * @protected
+   * @memberof MgtBaseComponent
    */
   protected clearState(): void {
     // no-op
@@ -209,7 +212,8 @@ export abstract class MgtBaseComponent extends LitElement {
       cancelable,
       composed,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      detail
+      detail,
+      composed
     });
     return this.dispatchEvent(event);
   }

@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 // import the mock for media match first to ensure it's hoisted and available for our dependencies
-import './mock-media-match';
+import '../../__mocks__/mock-media-match';
 import { screen } from 'testing-library__dom';
 import { fixture } from '@open-wc/testing-helpers';
 import './mgt-theme-toggle';

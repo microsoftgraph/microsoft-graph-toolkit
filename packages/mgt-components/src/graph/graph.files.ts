@@ -14,7 +14,14 @@ import {
   IGraph,
   prepScopes
 } from '@microsoft/mgt-element';
-import { DriveItem, SharedInsight, Trending, UploadSession, UsedInsight } from '@microsoft/microsoft-graph-types';
+import {
+  DriveItem,
+  Permission,
+  SharedInsight,
+  Trending,
+  UploadSession,
+  UsedInsight
+} from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
 import { GraphRequest, ResponseType } from '@microsoft/microsoft-graph-client';
 import { blobToBase64 } from '../utils/Utils';
@@ -812,6 +819,74 @@ export const sendFileContent = async (graph: IGraph, resource: string, file: Fil
     return response || null;
   } catch (e) {
     return null;
+  }
+};
+
+/**
+ * share a drive item
+ */
+export const shareDriveItem = async (
+  graph: IGraph,
+  item: DriveItem,
+  permType: 'view' | 'edit'
+): Promise<Permission> => {
+  try {
+    // build the resource from the driveItem
+    const resource = `/drives/${item.parentReference.driveId}/items/${item.id}/createLink`;
+    const scopes = 'files.readwrite';
+    const permission = {
+      type: permType,
+      scope: 'organization'
+    };
+    let response: Permission;
+    try {
+      response = (await graph.client
+        .api(resource)
+        .middlewareOptions(prepScopes(scopes))
+        .post(permission)) as Permission;
+    } catch {
+      // no-op
+    }
+
+    return response || null;
+  } catch (e) {
+    return null;
+  }
+};
+
+/**
+ * rename a drive item
+ */
+export const renameDriveItem = async (graph: IGraph, item: DriveItem, newName: string): Promise<void> => {
+  try {
+    // build the resource from the driveItem
+    const resource = `/drives/${item.parentReference.driveId}/items/${item.id}`;
+    const scopes = 'files.readwrite';
+    await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).patch({ name: newName });
+  } catch {
+    // no-op
+  }
+};
+
+export const addFolder = async (graph: IGraph, driveId: string, itemId: string, name: string) => {
+  const data = {
+    name,
+    folder: {},
+    '@microsoft.graph.conflictBehavior': 'rename'
+  };
+  await graph.api(`/drives/${driveId}/items/${itemId}/children`).post(data);
+};
+
+/**
+ * delete a drive item
+ */
+export const deleteDriveItem = async (graph: IGraph, item: DriveItem): Promise<void> => {
+  try {
+    // build the resource from the driveItem
+    const resource = `/drives/${item.parentReference.driveId}/items/${item.id}`;
+    await deleteSessionFile(graph, resource);
+  } catch {
+    // no-op
   }
 };
 

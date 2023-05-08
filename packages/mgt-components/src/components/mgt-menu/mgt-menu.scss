@@ -1,0 +1,22 @@
+:host {
+  &::part(flyout) {
+    position: absolute;
+    z-index: 2;
+  }
+  &::part(control) {
+    background: transparent;
+    &:active {
+      background: var(--neutral-fill-stealth-active);
+    }
+    &:hover {
+      background: var(--neutral-fill-stealth-hover);
+    }
+  }
+  &::part(menu-button) {
+    &:hover {
+      svg {
+        fill: var(--accent-fill-hover);
+      }
+    }
+  }
+}

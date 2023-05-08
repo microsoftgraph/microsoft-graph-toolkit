@@ -7,6 +7,8 @@
 
 export const strings = {
   showMoreSubtitle: 'Show more items',
+  item: 'item',
+  items: 'items',
   filesSectionTitle: 'Files',
   sharedTextSubtitle: 'Shared'
 };
