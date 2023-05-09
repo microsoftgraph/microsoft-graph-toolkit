@@ -6,7 +6,16 @@
  */
 
 import { CacheSchema } from '@microsoft/mgt-element';
-export type CacheNames = 'presence' | 'users' | 'photos' | 'people' | 'groups' | 'files' | 'get' | 'fileLists';
+export type CacheNames =
+  | 'presence'
+  | 'users'
+  | 'photos'
+  | 'people'
+  | 'groups'
+  | 'files'
+  | 'get'
+  | 'fileLists'
+  | 'search';
 /**
  * All schemas and stores for caching component calls
  */
