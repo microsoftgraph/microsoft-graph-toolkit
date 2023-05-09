@@ -24,12 +24,12 @@ $tasks: (
   border: (
     _var: --task-border,
     light: 1px solid $background-color-sub3--light,
-    dark: 1px solid $background-color__sub3--dark
+    dark: 1px solid $background-color-sub3--dark
   ),
   border--completed: (
     _var: --task-complete-border,
     light: 2px dotted $background-color-sub3--light,
-    dark: 2px dotted $background-color__sub3--dark
+    dark: 2px dotted $background-color-sub3--dark
   ),
   button__background-color--disabled: (
     _var: --task-new-add-button-disabled-background,
@@ -38,8 +38,8 @@ $tasks: (
   ),
   icon__color: (
     _var: --task-icon-color,
-    light: $text-color__main--light,
-    dark: $text-color__main--dark
+    light: $text-color-main--light,
+    dark: $text-color-main--dark
   )
 );
 
