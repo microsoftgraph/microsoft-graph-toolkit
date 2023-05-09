@@ -25,7 +25,7 @@ configuration:
     requiredStatusChecks:
     - GitOps/AdvancedSecurity
     - license/cla
-    - build (16.x)
+    - check-build-matrix
     
     # TODO: all commits should be signed. We need to get everyone signing their commits.
     requiresCommitSignatures: false
