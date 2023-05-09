@@ -5,26 +5,30 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../mgt-tasks-base/mgt-tasks-base.scss';
-@import '../mgt-tasks-base/mgt-tasks-base.theme.scss';
+@import '../mgt-tasks-base/mgt-tasks-base';
+@import '../mgt-tasks-base/mgt-tasks-base.theme';
 
 :host {
   @extend :host;
+
   border-radius: 8px;
   width: 100%;
 
   .Task,
   &.LoadingTask {
     @extend .Task;
+
     margin-block: 1px;
     box-shadow: $task-box-shadow;
     width: 100%;
     background-color: $task-background-color;
     border: 1px solid $task-border;
+
     &.NewTask {
-      margin: 14px 0 1px 0;
+      margin: 14px 0 1px;
       box-shadow: $task-box-shadow;
     }
+
     &.Complete {
       text-decoration: line-through;
       border: 1px solid $task-border-completed;
@@ -43,8 +47,8 @@
       align-items: center;
       padding: 2px;
       line-height: 24px;
-
       border-radius: 4px;
+
       .Task {
         > div {
           display: flex;
@@ -52,12 +56,15 @@
           width: 200px;
         }
       }
+
       .Title {
         flex-grow: 1;
       }
+
       .TaskDelete {
         display: flex;
       }
+
       .TaskDue {
         min-width: 120px;
         margin-inline-end: 12px;
@@ -74,6 +81,7 @@
             fill: $task-color;
           }
         }
+
         .TaskDueDate {
           display: flex;
           margin-top: 5px;
@@ -96,6 +104,7 @@
     div:nth-child(2) {
       display: flex;
       align-items: center;
+
       .calendar {
         display: flex;
         align-items: center;
@@ -109,6 +118,7 @@
           color: $task-color;
           width: auto;
           cursor: pointer;
+
           &::after {
             border-bottom: none;
           }
@@ -149,6 +159,7 @@
       padding: 0;
       cursor: pointer;
     }
+
     &::part(root) {
       background: none;
     }
@@ -180,9 +191,11 @@
           .filled {
             display: block;
           }
+
           .regular {
             display: none;
           }
+
           path {
             fill: $task-radio-background-color;
           }
@@ -193,6 +206,7 @@
         .filled {
           display: none;
         }
+
         .regular {
           display: block;
         }
@@ -202,11 +216,13 @@
         }
       }
     }
+
     &::part(control) {
       margin-inline-start: 10px;
       background: none;
       border-radius: 50%;
     }
+
     &::part(label) {
       margin-inline-end: unset;
       width: 100%;

@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-sass-variables';
 
 $title-color: var(--task-title-color, set-var(title__color__subtitle, $theme-default, $common));
 $button__color--cancel: var(--task-new-cancel-button-color, set-var(color__sub1, $theme-default, $common));
@@ -20,7 +20,6 @@ $task-box-shadow: #{var(--task-box-shadow, var(--elevation-shadow-card-active))}
 $task-border: #{var(--task-border, var(--neutral-stroke-input-active))};
 $task-border-completed: #{var(--task-border-completed, var(--neutral-stroke-input-active))};
 $task-radio-background-color: #{var(--task-radio-background-color, var(--accent-fill-rest))};
-
 $tasks: (
   border: (
     _var: --task-border,

@@ -133,7 +133,6 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
     .base-icons {
       display: flex;
       align-items: center;
-      align-items: center;
       margin-inline-start: $person-card-base-icons-left-spacing;
       z-index: 1;
 
@@ -471,9 +470,6 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 
   .nav__back {
     width: 20px !important;
-    transform: scaleX(-1);
-    transform: scaleX(-1);
-    transform: scaleX(-1);
     transform: scaleX(-1);
     filter: fliph;
     filter: 'FlipH';
