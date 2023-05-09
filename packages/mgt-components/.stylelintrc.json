@@ -15,6 +15,12 @@
       {
         "message": "Expected the variable to be kebab-case"
       }
+    ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["first"]
+      }
     ]
   }
 }

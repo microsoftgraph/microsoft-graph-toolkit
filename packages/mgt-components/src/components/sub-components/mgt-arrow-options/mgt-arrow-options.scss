@@ -5,89 +5,74 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../../styles/shared-styles.scss';
-@import '../../../styles/shared-sass-variables.scss';
+@import '../../../styles/shared-styles';
+@import '../../../styles/shared-sass-variables';
 
 $arrow-options-left: var(--arrow-options-left, 0);
 
-:host,
-mgt-arrow-options {
+:host {
   position: relative;
   font-family: $font-family;
-}
 
-:host .ArrowIcon,
-mgt-arrow-options .ArrowIcon {
-  font-family: 'FabricMDL2Icons';
-  margin: 0 0 0 20px;
-  user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
+  .arrow-icon {
+    font-family: $font-icon;
+    margin: 0 0 0 20px;
+    user-select: none;
 
-:host .Header,
-mgt-arrow-options .Header {
-  cursor: pointer;
-}
+  }
 
-:host .Header:hover,
-mgt-arrow-options .Header:hover {
-  color: var(--theme-primary-color);
-}
+  .header {
+    cursor: pointer;
 
-:host .Menu,
-mgt-arrow-options .Menu {
-  position: absolute;
-  left: var(--arrow-options-left, 0);
-  box-shadow: set-var(box-shadow__color, $theme-default, $common) 0px 0px 40px 5px;
-  background: set-var(background-color, $theme-default, $common);
-  z-index: 1;
-  display: none;
-  color: set-var(color, $theme-default, $common);
-  white-space: nowrap;
-}
+    &:hover {
+      color: var(--theme-primary-color);
+    }
+  }
 
-:host .Menu.Open,
-mgt-arrow-options .Menu.Open {
-  display: block;
-}
+  .menu {
+    position: absolute;
+    left: var(--arrow-options-left, 0);
+    box-shadow: set-var(box-shadow__color, $theme-default, $common) 0 0 40px 5px;
+    background: set-var(background-color, $theme-default, $common);
+    z-index: 1;
+    display: none;
+    color: set-var(color, $theme-default, $common);
+    white-space: nowrap;
 
-:host .MenuOption,
-mgt-arrow-options .MenuOption {
-  padding: 20px;
-  cursor: pointer;
-  user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  display: flex;
-  align-items: center;
-  justify-content: stretch;
-  justify-items: stretch;
-}
+    &.open {
+      display: block;
+    }
+  }
 
-:host .MenuOption:first,
-mgt-arrow-options .MenuOption:first {
-  padding: 12px 20px 20px 20px;
-}
+  .menu-option {
+    padding: 20px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: stretch;
+    justify-items: stretch;
 
-:host .MenuOption:hover,
-mgt-arrow-options .MenuOption:hover {
-  background-color: set-var(background-color--hover, $theme-default, $common);
-}
+    &:first {
+      padding: 12px 20px 20px;
+    }
 
-:host .MenuOption:active,
-mgt-arrow-options .MenuOption:active {
-  background-color: set-var(background-color--active, $theme-default, $common);
-}
+    &:hover {
+      background-color: set-var(background-color--hover, $theme-default, $common);
+    }
 
-:host .MenuOptionCheck,
-mgt-arrow-options .MenuOptionCheck {
-  font-family: 'FabricMDL2Icons';
-  color: rgba(0, 0, 0, 0);
-  margin-right: 10px;
-}
+    &:active {
+      background-color: set-var(background-color--active, $theme-default, $common);
+    }
+  }
 
-:host .MenuOptionCheck.CurrentValue,
-mgt-arrow-options .MenuOptionCheck.CurrentValue {
-  color: $commblue_primary;
+  .menu-option-check {
+    font-family: $font-icon;
+    color: rgb(0 0 0 / 0%);
+    margin-right: 10px;
+
+    &.current-value {
+      color: $commblue_primary;
+    }
+  }
 }

@@ -68,11 +68,11 @@ export class MgtDotOptions extends MgtBaseComponent {
    */
   public render() {
     return html`
-      <div tabindex="0" class=${classMap({ DotMenu: true, Open: this.open })}
+      <div tabindex="0" class=${classMap({ 'dot-menu': true, open: this.open })}
         @click=${this.onDotClick}
         @keydown=${this.onDotKeydown}>
-        <span class="DotIcon">\uE712</span>
-        <div tabindex="0" class="Menu">
+        <span class="dot-icon">\uE712</span>
+        <div tabindex="0" class="menu">
           ${Object.keys(this.options).map(prop => this.getMenuOption(prop, this.options[prop]))}
         </div>
       </div>
@@ -89,7 +89,7 @@ export class MgtDotOptions extends MgtBaseComponent {
   public getMenuOption(name: string, click: (e: Event) => void | any) {
     return html`
       <div
-        class="DotItem"
+        class="dot-item"
         @click="${(e: Event) => {
           e.preventDefault();
           e.stopPropagation();
@@ -105,7 +105,7 @@ export class MgtDotOptions extends MgtBaseComponent {
           }
         }}"
       >
-        <span class="DotItemName">
+        <span class="dot-item-name">
           ${name}
         </span>
       </div>
