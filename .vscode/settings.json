@@ -11,9 +11,10 @@
   "css.validate": false,
   "less.validate": false,
   "scss.validate": false,
-  "stylelint.enable": true,
-  "stylelint.validate": [
-    "css",
-    "scss"
-  ]
+  "[scss]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
+  },
 }
