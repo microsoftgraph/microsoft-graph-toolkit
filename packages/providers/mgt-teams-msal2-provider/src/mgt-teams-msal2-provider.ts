@@ -13,6 +13,7 @@ import { HttpMethod, TeamsMsal2Config, TeamsMsal2Provider } from './TeamsMsal2Pr
 /**
  * Authentication Library Provider for Microsoft Teams accounts
  *
+ * @deprecated in favor of MgtTeamsFxProvider.
  * @export
  * @class MgtTeamsMsal2Provider
  * @extends {MgtBaseProvider}

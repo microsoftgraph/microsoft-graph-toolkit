@@ -19,7 +19,7 @@ mgt-arrow-options {
 :host .ArrowIcon,
 mgt-arrow-options .ArrowIcon {
   font-family: 'FabricMDL2Icons';
-  margin: 0 0 0 20px;
+  margin-inline-start: 20px;
   user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -39,11 +39,9 @@ mgt-arrow-options .Header:hover {
 mgt-arrow-options .Menu {
   position: absolute;
   left: var(--arrow-options-left, 0);
-  box-shadow: set-var(box-shadow__color, $theme-default, $common) 0px 0px 40px 5px;
-  background: set-var(background-color, $theme-default, $common);
+  background-color: var(--neutral-fill-rest);
   z-index: 1;
   display: none;
-  color: set-var(color, $theme-default, $common);
   white-space: nowrap;
 }
 
@@ -72,22 +70,22 @@ mgt-arrow-options .MenuOption:first {
 
 :host .MenuOption:hover,
 mgt-arrow-options .MenuOption:hover {
-  background-color: set-var(background-color--hover, $theme-default, $common);
+  background-color: var(--neutral-fill-hover);
 }
 
 :host .MenuOption:active,
 mgt-arrow-options .MenuOption:active {
-  background-color: set-var(background-color--active, $theme-default, $common);
+  background-color: var(--neutral-fill-active);
 }
 
 :host .MenuOptionCheck,
 mgt-arrow-options .MenuOptionCheck {
   font-family: 'FabricMDL2Icons';
-  color: rgba(0, 0, 0, 0);
+  color: var(--neutral-fill-inverse-active);
   margin-right: 10px;
 }
 
 :host .MenuOptionCheck.CurrentValue,
 mgt-arrow-options .MenuOptionCheck.CurrentValue {
-  color: $commblue_primary;
+  color: var(--accent-fill-rest);
 }

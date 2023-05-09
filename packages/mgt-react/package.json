@@ -40,6 +40,10 @@
     "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
     "wc-react": "^0.5.0"
   },
+  "peerDependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
   "publishConfig": {
     "access": "public"
   }

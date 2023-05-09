@@ -261,7 +261,6 @@ export const getUsersForUserIds = async (
       if (searchInput && Object.keys(peopleSearchMatches).length) {
         return Promise.all(Object.values(peopleSearchMatches));
       }
-      return Promise.all(Object.values(peopleDict));
     }
     return Promise.all(Object.values(peopleDict));
   } catch (_) {
