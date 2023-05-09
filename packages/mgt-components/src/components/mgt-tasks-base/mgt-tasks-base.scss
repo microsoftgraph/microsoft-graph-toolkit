@@ -197,7 +197,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         }
 
         .TaskTitle {
-          color: $title__color;
+          color: $title-color;
           font-size: 14px;
           font-weight: 600;
           grid-row: 1;

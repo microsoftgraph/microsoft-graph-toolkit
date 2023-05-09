@@ -402,7 +402,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   }
 
   .message-section {
-    border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
+    border-bottom: 1px solid set-var(tab-line__color, $theme-default, $common);
     display: flex;
 
     fluent-text-field {
