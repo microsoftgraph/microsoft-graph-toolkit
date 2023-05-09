@@ -22,7 +22,9 @@ const tags = new Set([
   'file-grid',
   'file-list-composite',
   'picker',
-  'theme-toggle'
+  'theme-toggle',
+  'search-box',
+  'search-results'
 ]);
 
 let output = '';

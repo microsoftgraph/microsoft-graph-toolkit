@@ -2,11 +2,14 @@
 
 [![npm](https://img.shields.io/npm/v/@microsoft/mgt-teams-msal2-provider?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-teams-msal2-provider)
 
+
+⚠️⚠️⚠️ This package is no longer receiving new features and will only receive critical bug and security fixes. All new applications should use [`@microsoft/mgt-teamsfx-provider`](https://learn.microsoft.com/graph/toolkit/providers/teamsfx) instead. ⚠️⚠️⚠️
+
 The `@microsoft/mgt-teams-msal2-provider` package exposes the `TeamsMsal2Provider` class to be used inside your Microsoft Teams tab applications to authenticate users, to call Microsoft Graph, and to power the Microsoft Graph Toolkit components. The provider is built on top of [msal-browser](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser) and supports both the interactive sign in flow on the client and Single Sign-On (SSO) flow via your own backend. SSO mode is enabled by setting `ssoUrl` \ `sso-url` and requires a backend service to handle the on-behalf-of flow.
 
 [See the full documentation of the TeamsMsal2Provider](https://learn.microsoft.com/graph/toolkit/providers/teams-msal2)
 
-The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
+The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph.
 
 ## Usage
 
@@ -51,15 +54,16 @@ The TeamsMsal2Provider requires the usage of the Microsoft Teams SDK which is no
 3. Alternatively, initialize the provider in html (only `client-id` and `auth-popup-url` is required):
 
     ```html
-    <script type="module" src="../node_modules/@microsoft/mgt-teams-provider/dist/es6/index.js" />
+    <script type="module" src="../node_modules/@microsoft/mgt-teamsfx-provider/dist/es6/index.js" />
 
-    <mgt-teams-msal2-provider client-id="<YOUR_CLIENT_ID>"
-                        auth-popup-url="/AUTH-PATH"
-                        scopes="user.read,people.read..." 
-                        authority=""
-                        sso-url="/api/token" 
-                        http-method="POST">
-                        ></mgt-teams-provider>
+    <mgt-teamsfx-provider
+        client-id="<YOUR_CLIENT_ID>"
+        auth-popup-url="/AUTH-PATH"
+        scopes="user.read,people.read..."
+        authority=""
+        sso-url="/api/token"
+        http-method="POST">
+    ></mgt-teamsfx-provider>
     ```
 
 See [provider usage documentation](https://learn.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.

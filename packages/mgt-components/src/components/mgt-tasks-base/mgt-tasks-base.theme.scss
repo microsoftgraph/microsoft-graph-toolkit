@@ -7,11 +7,19 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$background-color: var(--tasks-background-color, set-var(background-color, $theme-default, $common));
-$background-color--completed: var(--task-complete-background, set-var(background-color__sub1, $theme-default, $common));
 $title__color: var(--task-title-color, set-var(title__color__subtitle, $theme-default, $common));
 $button__color--cancel: var(--task-new-cancel-button-color, set-var(color__sub1, $theme-default, $common));
 $detail__color: var(--task-detail-color, set-var(color__sub2, $theme-default, $common));
+$task-color: #{var(--task-color, var(--neutral-foreground-rest))};
+$task-background-color: #{var(--task-background-color, var(--neutral-layer-floating))};
+$task-background-color--completed: #{var(--task-complete-background, var(--neutral-layer-1))};
+$task-date-input-active-color: #{var(--task-date-input-active-color, var(--accent-fill-rest))};
+$task-date-input-hover-color: #{var(--task-date-input-hover-color, var(--neutral-layer-1))};
+$task-background-color-hover: #{var(--task-background-color-hover, var(--neutral-fill-hover))};
+$task-box-shadow: #{var(--task-box-shadow, var(--elevation-shadow-card-active))};
+$task-border: #{var(--task-border, var(--neutral-stroke-input-active))};
+$task-border-completed: #{var(--task-border-completed, var(--neutral-stroke-input-active))};
+$task-radio-background-color: #{var(--task-radio-background-color, var(--accent-fill-rest))};
 
 $tasks: (
   border: (

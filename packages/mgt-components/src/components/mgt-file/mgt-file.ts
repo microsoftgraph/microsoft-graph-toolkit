@@ -327,7 +327,9 @@ export class MgtFile extends MgtFileBase {
         this.driveItem.package === undefined && this.driveItem.folder === undefined
           ? re.exec(this.driveItem.name)[1]
             ? re.exec(this.driveItem.name)[1].toLowerCase()
-            : 'null'
+            : this.driveItem.size
+            ? 'null'
+            : 'folder'
           : this.driveItem.package !== undefined
           ? this.driveItem.package.type === 'oneNote'
             ? 'onetoc'

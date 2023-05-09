@@ -5,6 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { CacheService } from '@microsoft/mgt-element';
+
 export const getRelativeDisplayDate = (date: Date): string => {
   const now = new Date();
 
@@ -45,6 +47,21 @@ export const getRelativeDisplayDate = (date: Date): string => {
     month: 'numeric',
     year: 'numeric'
   });
+};
+
+/**
+ * returns day, month and year
+ *
+ * @export
+ * @param {Date} date
+ * @returns
+ */
+export const getDateString = (date: Date) => {
+  const month = date.getMonth();
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${day} / ${month} / ${year}`;
 };
 
 /**
@@ -252,5 +269,66 @@ export const formatBytes = (bytes: number, decimals = 2) => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ' ' ${sizes[i]}`;
+};
+
+/**
+ * Formats the a provided summary to valid html
+ *
+ * @param summary
+ * @returns string
+ */
+export const sanitizeSummary = (summary: string) => {
+  if (summary) {
+    summary = summary?.replace(/<ddd\/>/gi, '...');
+    summary = summary?.replace(/<c0>/gi, '<b>');
+    summary = summary?.replace(/<\/c0>/gi, '</b>');
+  }
+
+  return summary;
+};
+
+/**
+ * Trims the file extension from a file name
+ *
+ * @param fileName
+ * @returns
+ */
+export const trimFileExtension = (fileName: string) => {
+  return fileName?.replace(/\.[^/.]+$/, '');
+};
+
+/**
+ * Get the name of a piece of content from the url
+ *
+ * @param webUrl
+ * @returns
+ */
+export const getNameFromUrl = (webUrl: string) => {
+  const url = new URL(webUrl);
+  const name = url.pathname.split('/').pop();
+  return name.replace(/-/g, ' ');
+};
+
+/**
+ * Defines the expiration time
+ *
+ * @param currentInvalidationPeriod
+ * @returns number
+ */
+export const getResponseInvalidationTime = (currentInvalidationPeriod: number) => {
+  return (
+    currentInvalidationPeriod ||
+    CacheService.config.response.invalidationPeriod ||
+    CacheService.config.defaultInvalidationPeriod
+  );
+};
+
+/**
+ * Whether the response store is enabled
+ *
+ * @returns boolean
+ */
+export const getIsResponseCacheEnabled = () => {
+  return CacheService.config.response.isEnabled && CacheService.config.isEnabled;
 };

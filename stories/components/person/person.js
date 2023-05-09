@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
-  title: 'Components/mgt-person',
+  title: 'Components / mgt-person',
   component: 'person',
   decorators: [withCodeEditor],
   parameters: {
@@ -22,7 +22,15 @@ export default {
 };
 
 export const person = () => html`
+  <mgt-person person-query="me"></mgt-person>
+  <br>
+  <mgt-person person-query="me" view="oneLine"></mgt-person>
+  <br>
   <mgt-person person-query="me" view="twoLines"></mgt-person>
+  <br>
+  <mgt-person person-query="me" view="threeLines"></mgt-person>
+  <br>
+  <mgt-person person-query="me" view="fourLines"></mgt-person>
 `;
 
 export const events = () => html`

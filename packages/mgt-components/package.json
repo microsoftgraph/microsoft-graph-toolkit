@@ -27,7 +27,7 @@
     "build": "npm-run-all clean build:compile",
     "build:compile": "npm-run-all sass compile",
     "build:watch": "npm-run-all -p sass:watch compile:watch",
-    "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
+    "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo && shx rm 'src/**/*-css.ts' || shx true",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
@@ -39,7 +39,7 @@
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "^3.0.0",
     "@microsoft/microsoft-graph-types": "^2.0.0",
-    "@microsoft/microsoft-graph-types-beta": "^0.16.0-preview",
+    "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
     "@fluentui/web-components": "^2.5.12",
     "office-ui-fabric-core": "^11.0.0"
   },

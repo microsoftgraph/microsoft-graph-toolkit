@@ -35,11 +35,13 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * @class MgtPeople
  * @extends {MgtTemplatedComponent}
  *
- * @cssprop --list-margin - {String} List margin for component
- * @cssprop --avatar-margin - {String} Margin for each person
+ * @cssprop --people-list-margin- {String} the margin around the list of people. Default is 8px 4px 8px 8px.
+ * @cssprop --people-avatar-gap - {String} the gap between the people in the list. Default is 4px.
+ * @cssprop --people-overflow-font-color - {Color} the color of the overflow text.
+ * @cssprop --people-overflow-font-size - {String} the text color of the overflow text. Default is 12px.
+ * @cssprop --people-overflow-font-weight - {String} the font weight of the overflow text. Default is 400.
  */
 @customElement('people')
-// @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

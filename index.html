@@ -30,40 +30,13 @@
   </head>
 
   <body>
-    <!-- <mgt-teams-provider
-      client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
-      auth-popup-url="auth.html"
-    ></mgt-teams-provider> -->
-
-    <!-- <mgt-teams-msal2-provider
-      client-id="72482bff-ecae-44f5-8fdc-513b7f5602e7"
-      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
-      auth-popup-url="auth.html"
-    ></mgt-teams-msal2-provider> -->
-
-    <!-- Teams Msal2 provider in SSO mode (see "teams-sso-node" sample) -->
-    <!-- <mgt-teams-msal2-provider
-      client-id="72482bff-ecae-44f5-8fdc-513b7f5602e7"
-      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
-      auth-popup-url="auth.html"
-      sso-url="http://localhost:5000/api/token"
-      http-method="POST"
-    ></mgt-teams-msal2-provider> -->
-
-    <!-- <mgt-msal-provider
-      client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
-      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
-      redirect-uri="http://localhost:3000"
-      depends-on="mgt-teams-provider"
-    ></mgt-msal-provider> -->
-
-    <mgt-msal2-provider
+    <!-- <mgt-msal2-provider
       client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
       redirect-uri="http://localhost:3000"
       scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all,files.read,files.read.all,files.readwrite,files.readwrite.all"
-    ></mgt-msal2-provider>
+    ></mgt-msal2-provider> -->
 
-    <!-- <mgt-mock-provider></mgt-mock-provider> -->
+    <mgt-mock-provider></mgt-mock-provider>
     <header>
       <mgt-theme-toggle mode="light"></mgt-theme-toggle>
     </header>
@@ -74,7 +47,7 @@
       <mgt-login login-view="compact"></mgt-login>
       <!-- <mgt-login></mgt-login>
       <h2>mgt-person me query two lines card on click with presence</h2>
-      <!-- <mgt-person person-query="me" view="twoLines" person-card="click" show-presence></mgt-person> -->
+      <mgt-person person-query="me" view="twoLines" person-card="click" show-presence></mgt-person> -->
       <mgt-person-card person-query="me"></mgt-person-card>
       <!-- <h2>mgt-people-picker</h2>
       <mgt-people-picker></mgt-people-picker>
@@ -103,7 +76,10 @@
         enable-file-upload
       ></mgt-file-list>
       <!-- <h2>mgt-picker</h2>
-      <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite"></mgt-picker> -->
+      <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite"></mgt-picker>
+      <h2>mgt-search-box</h2>
+      <mgt-search-box search-term="contoso"></mgt-search-box>
+      <h2>mgt-search-results</h2> -->
     </main>
   </body>
 </html>

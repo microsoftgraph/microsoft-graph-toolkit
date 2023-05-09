@@ -299,6 +299,7 @@ export const personQuery = () => html`
 
 export const personAvatarType = () => html`
    <mgt-person person-query="me" avatar-type="photo"></mgt-person>
+   <br>
    <mgt-person person-query="me" avatar-type="initials"></mgt-person>
  `;
 
@@ -313,22 +314,26 @@ export const moreExamples = () => html`
      }
 
      .styled-person {
-       --font-family: 'Comic Sans MS', cursive, sans-serif;
-       --color-sub1: red;
-       --avatar-size: 60px;
-       --font-size: 20px;
-       --line2-color: green;
-       --avatar-border-radius: 10% 35%;
-       --line2-text-transform: uppercase;
+       --default-font-family: 'Comic Sans MS', cursive, sans-serif;
+       --person-line1-text-color: red;
+       --person-avatar-size: 60px;
+       --default-font-size: 20px;
+       --person-line2-text-color: green;
+       --person-avatar-border-radius: 10% 35%;
+       --person-line2-text-transform: uppercase;
      }
 
-     .person-initials {
-       --initials-color: yellow;
-       --initials-background-color: red;
-       --avatar-size: 60px;
-       --avatar-border-radius: 10% 35%;
-     }
-   </style>
+    .person-initials {
+      --person-initials-text-color: yellow;
+      --person-initials-background-color: red;
+      --person-avatar-size: 60px;
+      --person-avatar-border-radius: 10% 35%;
+    }
+
+    .person-with-avatar-border {
+      --person-avatar-border: 5px dotted gold;
+    }
+  </style>
 
    <div class="example">
      <div>Default person</div>
@@ -371,18 +376,45 @@ export const moreExamples = () => html`
      <mgt-person person-query="me" view="twoLines"></mgt-person>
    </div>
 
-   <div class="example">
-     <div>Style initials (see css tab for style)</div>
-     <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
-   </div>
+  <div class="example">
+    <div>Avatar with border (see css tab for style)</div>
+    <mgt-person class="person-with-avatar-border" person-query="me" avatar-size="large" view="oneline"></mgt-person>
+  </div>
 
-   <div>
-     <div>Additional Person properties</div>
-     <mgt-person
-       person-query="me"
-       view="twoLines"
-       line1-property="displayName"
-       line2-property="officeLocation"
-     ></mgt-person>
-   </div>
- `;
+  <div class="example">
+    <div>Style initials (see css tab for style)</div>
+    <mgt-person avatar-type="initials" class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
+  </div>
+
+  <div>
+    <div>Additional Person properties</div>
+    <mgt-person
+      person-query="me"
+      view="twoLines"
+      line1-property="displayName"
+      line2-property="officeLocation"
+    ></mgt-person>
+  </div>
+
+
+  <div>
+    <div>Lists of people</div>
+    <ul role="menu">
+      <li role="menuitem" data-is-focusable="true" class="ui-list__item" tabindex="0">
+        <mgt-person
+          person-query="me"
+          view="twoLines"
+          line2-property="jobTitle"
+        ></mgt-person>
+      </li>
+      <li role="menuitem" data-is-focusable="true" class="ui-list__item" tabindex="-1">
+        <mgt-person
+          user-id="2804bc07-1e1f-4938-9085-ce6d756a32d2"
+          view="twoLines"
+          line2-property="jobTitle"
+        ></mgt-person>
+      </li>
+    </ul>
+  </div>
+
+`;

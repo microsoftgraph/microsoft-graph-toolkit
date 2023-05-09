@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/@microsoft/mgt-element?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-element)
 
-The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
+The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph.
 
 The `@microsoft/mgt-element` package contains all base classes that enable the providers and components to work together. Use this package to set the global provider, or to create your own providers and/or components that work with Microsoft Graph.
 
@@ -10,24 +10,24 @@ The `@microsoft/mgt-element` package contains all base classes that enable the p
 
 ## Set and use the global provider
 
-The `@microsoft/mgt-element` package exposes the `Providers` namespace that enables global usage of the authentication providers across your entire app. 
+The `@microsoft/mgt-element` package exposes the `Providers` namespace that enables global usage of the authentication providers across your entire app.
 
 This example illustrates how to instantiate a new provider (MsalProvider in this case) and use it across your app:
 
-1. Install the packages 
+1. Install the packages
 
     ```bash
-    npm install @microsoft/mgt-element @microsoft/mgt-msal-provider
+    npm install @microsoft/mgt-element @microsoft/mgt-msal2-provider
     ```
 
 1. Create the provider
 
     ```ts
     import {Providers} from '@microsoft/mgt-element';
-    import {MsalProvider} from '@microsoft/mgt-msal-provider';
+    import {Msal2Provider} from '@microsoft/mgt-msal2-provider';
 
     // initialize the auth provider globally
-    Providers.globalProvider = new MsalProvider({clientId: 'clientId'});
+    Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
     ```
 
 1. Use the provider to sign in and call the graph:

@@ -90,10 +90,6 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   }
 }
 
-:host .root {
-  padding-inline-start: 20px;
-}
-
 :host .file-list-wrapper {
   background-color: $file-list-background-color;
   box-shadow: $file-list-box-shadow;
@@ -103,6 +99,7 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   display: flex;
   flex-direction: column;
   border-radius: 8px;
+
   .title {
     font-size: 14px;
     font-weight: 600;
@@ -119,7 +116,6 @@ $progress-ring-size: var(--progress-ring-size, 24px);
     .file-item {
       cursor: pointer;
       border-radius: var(--file-border-radius);
-      margin: var(--file-margin, 2px 4px);
 
       &:focus,
       &:focus-within {
@@ -131,12 +127,10 @@ $progress-ring-size: var(--progress-ring-size, 24px);
       }
 
       .mgt-file-item {
-        --file-padding: 10px 8px 10px 8px;
+        --file-padding: 10px 20px 10px 20px;
         --file-padding-inline-start: 24px;
         --file-border-radius: 2px;
-        --file-background-color: var(--neutral-layer-1);
-        --file-background-color-focus: var(--neutral-layer-2);
-        --file-background-color-hover: var(--neutral-layer-2);
+        --file-background-color: var(--file-item-background-color, var(--neutral-layer-1));
       }
     }
   }

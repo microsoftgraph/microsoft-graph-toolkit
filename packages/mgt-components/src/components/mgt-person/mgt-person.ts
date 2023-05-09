@@ -5,6 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { MgtTemplatedComponent, ProviderState, Providers, customElement, mgtHtml } from '@microsoft/mgt-element';
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -12,19 +13,18 @@ import { classMap } from 'lit/directives/class-map.js';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
-import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { findUsers, getMe, getUser } from '../../graph/graph.user';
+import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
-import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
+import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
 import { strings } from './strings';
-import { PersonViewType, MgtPersonConfig, avatarType } from './mgt-person-types';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -58,43 +58,43 @@ const defaultPersonProperties = [
  * @fires {CustomEvent<IDynamicPerson>} line3clicked - Fired when line3 is clicked
  * @fires {CustomEvent<IDynamicPerson>} line4clicked - Fired when line4 is clicked
  *
- * @cssprop --avatar-size - {Length} Avatar size
- * @cssprop --avatar-border - {String} Avatar border
- * @cssprop --avatar-border-radius - {String} Avatar border radius
- * @cssprop --avatar-cursor - {String} Avatar cursor
- * @cssprop --initials-color - {Color} Initials color
- * @cssprop --initials-background-color - {Color} Initials background color
- * @cssprop --font-family - {String} Font family
- * @cssprop --font-size - {Length} Font size
- * @cssprop --font-weight - {Length} Font weight
- * @cssprop --color - {Color} Color
- * @cssprop --presence-background-color - {Color} Presence badge background color
- * @cssprop --presence-icon-color - {Color} Presence badge icon color
- * @cssprop --text-transform - {String} text transform
- * @cssprop --line1-font-size - {Length} Line 1 font size
- * @cssprop --line1-line-height - {Length} Line 1 line height
- * @cssprop --line1-color - {Color} Line 2 color
- * @cssprop --line2-font-size - {Length} Line 2 font size
- * @cssprop --line2-font-weight - {Length} Line 2 font weight
- * @cssprop --line2-line-height - {Length} Line 2 line height
- * @cssprop --line2-color - {Color} Line 2 color
- * @cssprop --line2-text-transform - {String} Line 2 text transform
- * @cssprop --line3-font-size - {Length} Line 3 font size
- * @cssprop --line3-font-weight - {Length} Line 3 font weight
- * @cssprop --line3-line-height - {Length} Line 3 line height
- * @cssprop --line3-color - {Color} Line 2 color
- * @cssprop --line3-text-transform - {String} Line 2 text transform
- * @cssprop --line4-font-size - {Length} Line 2 font size
- * @cssprop --line4-font-weight - {Length} Line 2 font weight
- * @cssprop --line4-color - {Color} Line 2 color
- * @cssprop --line4-text-transform - {String} Line 2 text transform
- * @cssprop --details-spacing - {Length} spacing between avatar and person details
- * @cssprop --details-cta-spacing - {Length} spacing between person details and CTA icons
- * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
- * @cssprop --focus-offset - {Length} spacing between element and focus ring
+ * @cssprop --person-background-color - {Color} the color of the person component background.
+ * @cssprop --person-background-border-radius - {Length} the border radius of the person component. Default is 4px.
+ *
+ * @cssprop --person-avatar-size - {Length} the width and height of the avatar. Default is 24px.
+ * @cssprop --person-avatar-border - {String} the border around an avatar. Default is none.
+ * @cssprop --person-avatar-border-radius - {String} the radius around the border of an avatar. Default is 50%.
+ *
+ * @cssprop --person-initials-text-color - {Color} the color of initials in an avatar.
+ * @cssprop --person-initials-background-color - {Color} the color of the background in an avatar with initials.
+ *
+ * @cssprop --person-details-spacing - {Length} the space between the avatar and the person details. Default is 12px.
+ *
+ * @cssprop --person-line1-font-size - {String} the font-size of the line 1 text. Default is 14px.
+ * @cssprop --person-line1-font-weight - {Length} the font weight of the line 1 text. Default is 600.
+ * @cssprop --person-line1-text-color - {Color} the color of the line 1 text.
+ * @cssprop --person-line1-text-transform - {String} the tex transform of the line 1 text. Default is inherit.
+ * @cssprop --person-line1-text-line-height - {Length} the line height of the line 1 text. Default is 20px.
+ *
+ * @cssprop --person-line2-font-size - {Length} the font-size of the line 2 text. Default is 12px.
+ * @cssprop --person-line2-font-weight - {Length} the font weight of the line 2 text. Default is 400.
+ * @cssprop --person-line2-text-color - {Color} the color of the line 2 text.
+ * @cssprop --person-line2-text-transform - {String} the tex transform of the line 2 text. Default is inherit.
+ * @cssprop --person-line2-text-line-height - {Length} the line height of the line 2 text. Default is 16px.
+ *
+ * @cssprop --person-line3-font-size - {Length} the font-size of the line 3 text. Default is 12px.
+ * @cssprop --person-line3-font-weight - {Length} the font weight of the line 3 text. Default is 400.
+ * @cssprop --person-line3-text-color - {Color} the color of the line 3 text.
+ * @cssprop --person-line3-text-transform - {String} the tex transform of the line 3 text. Default is inherit.
+ * @cssprop --person-line3-text-line-height - {Length} the line height of the line 3 text. Default is 16px.
+ *
+ * @cssprop --person-line4-font-size - {Length} the font-size of the line 4 text. Default is 12px.
+ * @cssprop --person-line4-font-weight - {Length} the font weight of the line 4 text. Default is 400.
+ * @cssprop --person-line4-text-color - {Color} the color of the line 4 text.
+ * @cssprop --person-line4-text-transform - {String} the tex transform of the line 4 text. Default is inherit.
+ * @cssprop --person-line4-text-line-height - {Length} the line height of the line 4 text. Default is 16px.
  */
 @customElement('person')
-// @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -171,11 +171,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    if (value && value.displayName) {
-      this._personAvatarBg = this.getColorFromName(value.displayName);
-    } else {
-      this._personAvatarBg = 'lightGrey';
-    }
     void this.requestStateUpdate();
   }
 
@@ -234,7 +229,8 @@ export class MgtPerson extends MgtTemplatedComponent {
   public showPresence: boolean;
 
   /**
-   * determines person component avatar size and apply presence badge accordingly
+   * determines person component avatar size and apply presence badge accordingly.
+   * Default is "auto". When you set the view > 1, it will default to "auto".
    *
    * @type {AvatarSize}
    */
@@ -264,12 +260,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._personDetailsInternal = value;
-    if (value && value.displayName) {
-      this._personAvatarBg = this.getColorFromName(value.displayName);
-    } else {
-      this._personAvatarBg = 'lightGrey';
-    }
-
     this._fetchedImage = null;
     this._fetchedPresence = null;
 
@@ -296,12 +286,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._personDetails = value;
-    if (value && value.displayName) {
-      this._personAvatarBg = this.getColorFromName(value.displayName);
-    } else {
-      this._personAvatarBg = 'lightGrey';
-    }
-
     this._fetchedImage = null;
     this._fetchedPresence = null;
 
@@ -436,7 +420,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'person-card',
-    converter: (value, type) => {
+    converter: value => {
       value = value.toLowerCase();
       if (typeof PersonCardInteraction[value] === 'undefined') {
         return PersonCardInteraction.none;
@@ -543,7 +527,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _personDetailsInternal: IDynamicPerson;
   private _personDetails: IDynamicPerson;
   private _fallbackDetails: IDynamicPerson;
-  private _personAvatarBg: string;
   private _personImage: string;
   private _personPresence: Presence;
   private _personQuery: string;
@@ -601,33 +584,37 @@ export class MgtPerson extends MgtTemplatedComponent {
       const detailsTemplate: TemplateResult = this.renderDetails(person, presence);
       const imageWithPresenceTemplate: TemplateResult = this.renderAvatar(person, image, presence);
 
-      const rootClasses = {
-        'person-root': true,
-        clickable: this.personCardInteraction === PersonCardInteraction.click,
-        vertical: this.isVertical()
-      };
-
       personTemplate = html`
-        <div class=${classMap(rootClasses)}>
-          ${imageWithPresenceTemplate} ${detailsTemplate}
-        </div>
+        ${imageWithPresenceTemplate}
+        ${detailsTemplate}
       `;
     }
 
-    if (this.personCardInteraction !== PersonCardInteraction.none) {
+    const showPersonCard = this.personCardInteraction !== PersonCardInteraction.none;
+    if (showPersonCard) {
       personTemplate = this.renderFlyout(personTemplate, person, image, presence);
     }
 
+    const rootClasses = classMap({
+      'person-root': true,
+      small: !this.isThreeLines() && !this.isFourLines() && !this.isLargeAvatar(),
+      large: this.avatarSize !== 'auto' && this.isLargeAvatar(),
+      noline: this.isNoLine(),
+      oneline: this.isOneLine(),
+      twolines: this.isTwoLines(),
+      threelines: this.isThreeLines(),
+      fourlines: this.isFourLines(),
+      vertical: this.isVertical()
+    });
+
     return html`
       <div
-        class="root"
+        class="${rootClasses}"
         dir=${this.direction}
         @click=${this.handleMouseClick}
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
-        @keydown=${this.handleKeyDown}
-        tabindex=0
-      >
+        @keydown=${this.handleKeyDown}>
         ${personTemplate}
       </div>
     `;
@@ -691,11 +678,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderPersonIcon() {
-    return html`
-       <svg width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-       <path d="M8.5 7C9.32843 7 10 7.67157 10 8.5V9C10 10.9714 8.14049 13 5 13C1.85951 13 0 10.9714 0 9V8.5C0 7.67157 0.671573 7 1.5 7H8.5ZM8.5 8H1.5C1.22386 8 1 8.22386 1 8.5V9C1 10.4376 2.43216 12 5 12C7.56784 12 9 10.4376 9 9V8.5C9 8.22386 8.77614 8 8.5 8ZM5 0.5C6.51878 0.5 7.75 1.73122 7.75 3.25C7.75 4.76878 6.51878 6 5 6C3.48122 6 2.25 4.76878 2.25 3.25C2.25 1.73122 3.48122 0.5 5 0.5ZM5 1.5C4.0335 1.5 3.25 2.2835 3.25 3.25C3.25 4.2165 4.0335 5 5 5C5.9665 5 6.75 4.2165 6.75 3.25C6.75 2.2835 5.9665 1.5 5 1.5Z" fill="#616161"/>
-       </svg>
-     `;
+    return getSvg(SvgIcon.Person);
   }
 
   /**
@@ -709,141 +692,114 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderImage(personDetailsInternal: IDynamicPerson, imageSrc: string) {
-    if (imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo') {
-      const altText = `${this.strings.photoFor} ${personDetailsInternal.displayName}`;
-      return html`
-        <div class="img-wrapper">
-          <img alt=${altText} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
-        </div>
-      `;
-    } else if (personDetailsInternal) {
-      const initials = this.getInitials(personDetailsInternal);
+    const altText = `${this.strings.photoFor} ${personDetailsInternal.displayName}`;
+    const hasImage = imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo';
+    const imageTemplate = html`<img alt=${altText} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />`;
 
-      return html`
-        <span class="initials-text" aria-label="${this.strings.initials} ${initials}">
-          ${
-            initials && initials.length
-              ? html`
-                ${initials}
-              `
-              : html`
-                <i class="contact-icon">${this.renderPersonIcon()}</i>
-              `
-          }
-        </span>
-      `;
-    }
+    const initials = personDetailsInternal ? this.getInitials(personDetailsInternal) : '';
+    const hasInitials = initials?.length;
+    const textClasses = classMap({
+      initials: hasInitials && !hasImage,
+      'contact-icon': !hasInitials
+    });
+    const contactIconTemplate = html`<i>${this.renderPersonIcon()}</i>`;
+    const textTemplate = html`<span class="${textClasses}">${hasInitials ? initials : contactIconTemplate}</span>`;
+
+    return hasImage ? imageTemplate : textTemplate;
   }
 
   /**
    * Render presence for the person.
    *
-   * @protected
-   * @param
-   * @memberof MgtPersonCard
+   * @param presence
+   * @memberof MgtPerson
+   * @returns
    */
   protected renderPresence(presence: Presence): TemplateResult {
     if (!this.showPresence || !presence) {
       return html``;
     }
+    let presenceIcon: TemplateResult;
 
-    let statusClass: string;
-    // attach appropriate css class to show different icons
-    switch (presence.availability) {
-      case 'DoNotDisturb':
-        switch (presence.activity) {
-          case 'OutOfOffice':
-            statusClass = 'presence-oof-dnd';
-            break;
-          default:
-            statusClass = 'presence-dnd';
-            break;
-        }
-        break;
-      case 'BeRightBack':
-        statusClass = 'presence-away';
-        break;
+    const { activity, availability } = presence;
+    switch (availability) {
       case 'Available':
-        switch (presence.activity) {
+        switch (activity) {
           case 'Available':
-            statusClass = 'presence-available';
+            presenceIcon = getSvg(SvgIcon.PresenceAvailable);
             break;
           case 'OutOfOffice':
-            statusClass = 'presence-oof-available';
+            presenceIcon = getSvg(SvgIcon.PresenceOofAvailable);
             break;
         }
         break;
       case 'Busy':
-        switch (presence.activity) {
-          case 'OutOfOffice':
-            statusClass = 'presence-oof-busy';
+        switch (activity) {
+          case 'Busy':
+          case 'InACall':
+          case 'InAMeeting':
+            presenceIcon = getSvg(SvgIcon.PresenceBusy);
             break;
-          default:
-            // 'Busy', 'InACall', 'InAMeeting'
-            statusClass = 'presence-busy';
+          case 'OutOfOffice':
+          case 'OnACall':
+            presenceIcon = getSvg(SvgIcon.PresenceOofBusy);
             break;
         }
         break;
-      case 'Away':
-        switch (presence.activity) {
-          case 'Away':
-            statusClass = 'presence-away';
-            break;
+      case 'DoNotDisturb':
+        switch (activity) {
           case 'OutOfOffice':
-            statusClass = 'presence-oof-offline';
+            presenceIcon = getSvg(SvgIcon.PresenceOofDnd);
+            break;
+          default:
+            presenceIcon = getSvg(SvgIcon.PresenceDnd);
+            break;
+        }
+        break;
+
+      case 'Away':
+        switch (activity) {
+          case 'OutOfOffice':
+            presenceIcon = getSvg(SvgIcon.PresenceOofAway);
+            break;
+          default:
+            presenceIcon = getSvg(SvgIcon.PresenceAway);
             break;
         }
         break;
       case 'Offline':
-        switch (presence.activity) {
+        switch (activity) {
           case 'Offline':
-            statusClass = 'presence-offline';
+            presenceIcon = getSvg(SvgIcon.PresenceOffline);
             break;
           case 'OutOfOffice':
-            statusClass = 'presence-oof-offline';
+            presenceIcon = getSvg(SvgIcon.PresenceOofAway);
             break;
-          case 'OffWork':
-            statusClass = 'presence-offline';
+          default:
+            presenceIcon = getSvg(SvgIcon.PresenceStatusUnknown);
             break;
         }
         break;
       default:
-        statusClass = 'presence-offline';
+        presenceIcon = getSvg(SvgIcon.PresenceStatusUnknown);
         break;
     }
 
-    const presenceClasses = {
-      'ms-Icon': true,
-      'presence-basic': true
-    };
-
-    presenceClasses[statusClass] = true;
-    // workaround because SkypeArrow icon from fluent doesn't work ¯\_(ツ)_/¯
-    let iconHtml = null;
-    if (statusClass === 'presence-oof-offline') {
-      iconHtml = html`
-         <div class="ms-Icon presence-basic presence-oof-offline-wrapper">
-           <i class="presence-oof-offline">
-             ${getSvg(SvgIcon.SkypeArrow, '#666666')}
-           </i>
-         </div>
-       `;
-    } else {
-      iconHtml = html`
-         <i class=${classMap(presenceClasses)} aria-hidden="true"></i>
-       `;
-    }
-    const userPresenceClass = {
-      'user-presence': true,
-      'user-presence__people': this._usage === 'people'
-    };
-    userPresenceClass[statusClass] = true;
+    const presenceWrapperClasses = classMap({
+      'presence-wrapper': true,
+      noline: this.isNoLine(),
+      oneline: this.isOneLine()
+    });
 
     return html`
-       <div class=${classMap(userPresenceClass)} title=${presence.activity} aria-label=${presence.activity} role="img">
-         ${iconHtml}
-       </div>
-     `;
+      <span
+        class="${presenceWrapperClasses}"
+        title="${availability}"
+        aria-label="${availability}"
+        role="img">
+          ${presenceIcon}
+      </span>
+    `;
   }
 
   /**
@@ -855,20 +811,10 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   protected renderAvatar(personDetailsInternal: IDynamicPerson, image: string, presence: Presence): TemplateResult {
     const hasInitials = !image || this._isInvalidImageSrc || this._avatarType === avatarType.initials;
-    const imageClasses = {
-      initials: hasInitials,
-      small: !this.isLargeAvatar(),
-      threeLines: this.isThreeLines(),
-      fourLines: this.isFourLines(),
-      'user-avatar': true,
-      vertical: this.isVertical()
-    };
 
     let title = '';
 
     if (hasInitials && personDetailsInternal) {
-      // add avatar background color
-      imageClasses[this._personAvatarBg] = true;
       title = `${this.strings.initials} ${this.getInitials(personDetailsInternal)}`;
     } else {
       title = personDetailsInternal ? personDetailsInternal.displayName || '' : '';
@@ -888,10 +834,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     const presenceTemplate: TemplateResult = this.renderPresence(presence);
 
     return html`
-       <div class=${classMap(imageClasses)} title=${title} aria-label=${title}>
-         ${imageTemplate} ${presenceTemplate}
-       </div>
-     `;
+      <div class="avatar-wrapper">
+        ${imageTemplate}
+        ${presenceTemplate}
+      </div>
+    `;
   }
 
   private handleLine1Clicked() {
@@ -913,11 +860,10 @@ export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Render the details part of the person template.
    *
-   * @protected
-   * @param {IDynamicPerson} [person]
-   * @param {string} [image]
-   * @returns {TemplateResult}
+   * @param personProps
+   * @param presence
    * @memberof MgtPerson
+   * @returns
    */
   protected renderDetails(personProps: IDynamicPerson, presence?: Presence): TemplateResult {
     if (!personProps || this.view === ViewType.image || this.view === PersonViewType.avatar) {
@@ -1014,18 +960,15 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const detailsClasses = classMap({
-      details: true,
-      small: !this.isLargeAvatar(),
-      threeLines: this.isThreeLines(),
-      fourLines: this.isFourLines(),
+      'details-wrapper': true,
       vertical: this.isVertical()
     });
 
     return html`
-       <div class="${detailsClasses}">
-         ${details}
-       </div>
-     `;
+      <div class="${detailsClasses}">
+        ${details}
+      </div>
+    `;
   }
 
   /**
@@ -1045,15 +988,18 @@ export class MgtPerson extends MgtTemplatedComponent {
       ? html`
            <div slot="flyout" data-testid="flyout-slot">
              ${this.renderFlyoutContent(personDetails, image, presence)}
-           </div>
-         `
+           </div>`
       : html``;
+
+    const slotClasses = classMap({
+      vertical: this.isVertical()
+    });
 
     return mgtHtml`
       <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${false}>
-        ${anchor} ${flyoutContent}
-      </mgt-flyout>
-`;
+        <div slot="anchor" class="${slotClasses}">${anchor}</div>
+        ${flyoutContent}
+      </mgt-flyout>`;
   }
 
   /**
@@ -1072,9 +1018,8 @@ export class MgtPerson extends MgtTemplatedComponent {
           .personDetails=${personDetails}
           .personImage=${image}
           .personPresence=${presence}
-          .showPresence=${this.showPresence}
-        ></mgt-person-card>
-      `
+          .showPresence=${this.showPresence}>
+        </mgt-person-card>`
     );
   }
 
@@ -1235,46 +1180,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     return initials;
   }
 
-  /**
-   * Gets color from name
-   *
-   * @protected
-   * @param {string} name
-   * @returns {string}
-   * @memberof MgtPerson
-   */
-  protected getColorFromName(name: string): string {
-    const charCodes = name
-      .split('')
-      .map(char => char.charCodeAt(0))
-      .join('');
-    const nameInt = parseInt(charCodes, 10);
-    const colors = [
-      'pinkRed10',
-      'red20',
-      'red10',
-      'orange20',
-      'orangeYellow20',
-      'green10',
-      'green20',
-      'cyan20',
-      'cyan30',
-      'cyanBlue10',
-      'cyanBlue20',
-      'blue10',
-      'blueMagenta30',
-      'blueMagenta20',
-      'magenta20',
-      'magenta10',
-      'magentaPink10',
-      'orange30',
-      'gray30',
-      // 'gray20',
-      'lightGrey'
-    ];
-    return colors[nameInt % colors.length];
-  }
-
   private getImage(): string {
     if (this.personImage) {
       return this.personImage;
@@ -1323,6 +1228,18 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private isLargeAvatar() {
     return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this.view > ViewType.oneline);
+  }
+
+  private isNoLine() {
+    return this.view < ViewType.oneline;
+  }
+
+  private isOneLine() {
+    return this.view === ViewType.oneline;
+  }
+
+  private isTwoLines() {
+    return this.view === ViewType.twolines;
   }
 
   private isThreeLines() {

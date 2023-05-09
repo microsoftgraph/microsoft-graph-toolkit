@@ -27,7 +27,7 @@ const es6Bundle = {
   output: {
     dir: 'assets',
     entryFileNames: 'mgt.storybook.js',
-    format: 'esm',
+    format: 'esm'
   },
   plugins: [
     babel({
