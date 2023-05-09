@@ -1257,6 +1257,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       } else {
         await this.uncompleteTask(task);
       }
+      if (target) target.classList.remove('Updating');
       e.stopPropagation();
       e.preventDefault();
     }
