@@ -72,13 +72,13 @@ export type FileListProps = {
 export type GetProps = {
 	resource?: string;
 	scopes?: string[];
+	version?: string;
 	type?: ResponseType;
 	maxPages?: number;
 	pollingRate?: number;
 	cacheEnabled?: boolean;
 	cacheInvalidationPeriod?: number;
 	response?: any;
-	error?: any;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
@@ -108,6 +108,7 @@ export type PeopleProps = {
 	showPresence?: boolean;
 	personCardInteraction?: PersonCardInteraction;
 	resource?: string;
+	version?: string;
 	scopes?: string[];
 	fallbackDetails?: IDynamicPerson[];
 	templateContext?: TemplateContext;
@@ -191,6 +192,7 @@ export type PersonCardProps = {
 
 export type PickerProps = {
 	resource?: string;
+	version?: string;
 	maxPages?: number;
 	placeholder?: string;
 	keyName?: string;
@@ -201,6 +203,36 @@ export type PickerProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: CustomEvent<any>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
+export type SearchBoxProps = {
+	placeholder?: string;
+	searchTerm?: string;
+	debounceDelay?: number;
+	mediaQuery?: ComponentMediaQuery;
+	searchTermChanged?: (e: CustomEvent<string>) => void;
+}
+
+export type SearchResultsProps = {
+	queryString?: string;
+	queryTemplate?: string;
+	entityTypes?: string[];
+	scopes?: string[];
+	contentSources?: string[];
+	version?: string;
+	from?: number;
+	size?: number;
+	pagingMax?: number;
+	fetchThumbnail?: boolean;
+	fields?: string[];
+	enableTopResults?: boolean;
+	cacheEnabled?: boolean;
+	cacheInvalidationPeriod?: number;
+	currentPage?: number;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
@@ -275,6 +307,10 @@ export const Person = wrapMgt<PersonProps>('person');
 export const PersonCard = wrapMgt<PersonCardProps>('person-card');
 
 export const Picker = wrapMgt<PickerProps>('picker');
+
+export const SearchBox = wrapMgt<SearchBoxProps>('search-box');
+
+export const SearchResults = wrapMgt<SearchResultsProps>('search-results');
 
 export const Spinner = wrapMgt<SpinnerProps>('spinner');
 

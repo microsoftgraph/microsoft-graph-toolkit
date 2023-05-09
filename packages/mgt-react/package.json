@@ -27,6 +27,8 @@
   "scripts": {
     "build": "npm run clean && npm run generate && tsc",
     "clean": "node ./scripts/clean.js",
+    "compile:watch": "tsc -w",
+    "build:watch": "npm run compile:watch",
     "postpack": "cpx *.tgz ../../artifacts",
     "analyze": "custom-elements-manifest analyze --litelement --globs \"../*/src/**/*.ts\" --outdir temp",
     "generate": "npm run analyze && node ./scripts/generate.js"
@@ -35,7 +37,7 @@
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-types": "^2.0.0",
-    "@microsoft/microsoft-graph-types-beta": "^0.16.0-preview",
+    "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
     "wc-react": "^0.5.0"
   },
   "publishConfig": {
