@@ -15,13 +15,13 @@ import {
 } from '@microsoft/mgt-element';
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
-import { PropertyValueMap, TemplateResult, html } from 'lit';
+import { HTMLTemplateResult, PropertyValueMap, TemplateResult, html } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { getMe } from '../../graph/graph.user';
-import { getShortDateString } from '../../utils/Utils';
+import { debounce, getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
@@ -32,6 +32,7 @@ import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-tasks-css';
 import { strings } from './strings';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -121,10 +122,9 @@ const TASK_RES = {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 const plannerAssignment = {
-  '@odata.type': 'microsoft.graph.plannerAssignment',
-  orderHint: 'string !'
+  '@odata.type': '#microsoft.graph.plannerAssignment',
+  orderHint: ' !'
 };
 
 /**
@@ -139,55 +139,90 @@ const plannerAssignment = {
  * @fires {CustomEvent<ITask>} taskClick - Fires when the user clicks or taps on a task.
  * @fires {CustomEvent<ITask>} taskRemoved - Fires when an existing task has been deleted.
  *
- * @cssprop --tasks-header-padding - {String} Tasks header padding
- * @cssprop --tasks-header-margin - {String} Tasks header margin
- * @cssprop --tasks-title-padding - {String} Tasks title padding
- * @cssprop --tasks-plan-title-font-size - {Length} Tasks plan title font size
- * @cssprop --tasks-plan-title-padding - {String} Tasks plan title padding
- * @cssprop --tasks-new-button-width - {String} Tasks new button width
- * @cssprop --tasks-new-button-height - {String} Tasks new button height
- * @cssprop --tasks-new-button-color - {Color} Tasks new button color
- * @cssprop --tasks-new-button-background - {String} Tasks new button background
- * @cssprop --tasks-new-button-border - {String} Tasks new button border
- * @cssprop --tasks-new-button-hover-background - {Color} Tasks new button hover background
- * @cssprop --tasks-new-button-active-background - {Color} Tasks new button active background
- * @cssprop --tasks-new-task-name-margin - {String} Tasks new task name margin
- * @cssprop --task-margin - {String} Task margin
- * @cssprop --task-box-shadow - {String} Task box shadow
- * @cssprop --task-background - {Color} Task background
- * @cssprop --task-border - {String} Task border
- * @cssprop --task-header-color - {Color} Task header color
- * @cssprop --task-header-margin - {String} Task header margin
- * @cssprop --task-detail-icon-margin -{String}  Task detail icon margin
- * @cssprop --task-new-margin - {String} Task new margin
- * @cssprop --task-new-border - {String} Task new border
- * @cssprop --task-new-line-margin - {String} Task new line margin
- * @cssprop --tasks-new-line-border - {String} Tasks new line border
- * @cssprop --task-new-input-margin - {String} Task new input margin
- * @cssprop --task-new-input-padding - {String} Task new input padding
- * @cssprop --task-new-input-font-size - {Length} Task new input font size
- * @cssprop --task-new-input-active-border - {String} Task new input active border
- * @cssprop --task-new-select-border - {String} Task new select border
- * @cssprop --task-new-add-button-background - {Color} Task new add button background
- * @cssprop --task-new-add-button-disabled-background - {Color} Task new add button disabled background
- * @cssprop --task-new-cancel-button-color - {Color} Task new cancel button color
- * @cssprop --task-complete-background - {Color} Task complete background
- * @cssprop --task-complete-border - {String} Task complete border
- * @cssprop --task-complete-header-color - {Color} Task complete header color
- * @cssprop --task-complete-detail-color - {Color} Task complete detail color
- * @cssprop --task-complete-detail-icon-color - {Color} Task complete detail icon color
- * @cssprop --tasks-background-color - {Color} Task background color
- * @cssprop --task-icon-alignment - {String} Task icon alignment
- * @cssprop --task-icon-background - {Color} Task icon color
- * @cssprop --task-icon-background-completed - {Color} Task icon background color when completed
- * @cssprop --task-icon-border - {String} Task icon border styles
- * @cssprop --task-icon-border-completed - {String} Task icon border style when task is completed
- * @cssprop --task-icon-border-radius - {String} Task icon border radius
- * @cssprop --task-icon-color - {Color} Task icon color
- * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
+ * @cssprop --tasks-header-padding - {String} Tasks header padding. Default is 0 0 14px 0.
+ * @cssprop --tasks-header-margin - {String} Tasks header margin. Default is none.
+ * @cssprop --tasks-header-text-font-size: {Length} the font size of the tasks header. Default is 24px.
+ * @cssprop --tasks-header-text-font-weight: {Length} the font weight of the tasks header. Default is 600.
+ * @cssprop --tasks-header-text-color: {Color} the font color of the tasks header.
+ * @cssprop --tasks-header-text-hover-color: {Color} the font color of the tasks header when you hover on it.
+ *
+ * @cssprop --tasks-new-button-width - {Length} Tasks new button width. Default is none.
+ * @cssprop --tasks-new-button-height - {Length} Tasks new button height. Default is none
+ * @cssprop --tasks-new-button-text-color - {Color} Tasks new button text color.
+ * @cssprop --tasks-new-button-text-font-weight - {Length} Tasks new button text font weight. Default is 700.
+ * @cssprop --tasks-new-button-background - {Length} Tasks new button background.
+ * @cssprop --tasks-new-button-border - {Length} Tasks new button border. Default is none.
+ * @cssprop --tasks-new-button-background-hover - {Color} Tasks new button hover background.
+ * @cssprop --tasks-new-button-background-active - {Color} Tasks new button active background.
+ *
+ * @cssprop --task-add-new-button-width - {Length} Add a new task button width. Default is none.
+ * @cssprop --task-add-new-button-height - {Length} Add a new task button height. Default is none
+ * @cssprop --task-add-new-button-text-color - {Color} Add a new task button text color.
+ * @cssprop --task-add-new-button-text-font-weight - {Length} Add a new task button text font weight. Default is 700.
+ * @cssprop --task-add-new-button-background - {Length} Add a new task button background.
+ * @cssprop --task-add-new-button-border - {Length} Add a new task button border. Default is none.
+ * @cssprop --task-add-new-button-background-hover - {Color} Add a new task button hover background.
+ * @cssprop --task-add-new-button-background-active - {Color} Add a new task button active background.
+ *
+ * @cssprop --task-cancel-new-button-width - {Length} Cancel adding a new task button width. Default is none.
+ * @cssprop --task-cancel-new-button-height - {Length} Cancel adding a new task button height. Default is none
+ * @cssprop --task-cancel-new-button-text-color - {Color} Cancel adding a new task button text color.
+ * @cssprop --task-cancel-new-button-text-font-weight - {Length} Cancel adding a new task button text font weight. Default is 700.
+ * @cssprop --task-cancel-new-button-background - {Length} Cancel adding a new task button background.
+ * @cssprop --task-cancel-new-button-border - {Length} Cancel adding a new task button border. Default is none.
+ * @cssprop --task-cancel-new-button-background-hover - {Color} Cancel adding a new task button hover background.
+ * @cssprop --task-cancel-new-button-background-active - {Color} Cancel adding a new task button active background.
+ *
+ * @cssprop --task-new-input-border - {Length} the border of the input for a new task. Default is fluent UI input border.
+ * @cssprop --task-new-input-border-radius - {Length} the border radius of the input for a new task. Default is fluent UI input border.
+ * @cssprop --task-new-input-background-color - {Color} the background color of the new task input.
+ * @cssprop --task-new-input-hover-background-color - {Color} the background color of the new task input when you hover.
+ * @cssprop --task-new-input-placeholder-color - {Color} the placeholder colder of the new task input.
+ * @cssprop --task-new-dropdown-border - {Length} the border of the dropdown for a new task. Default is fluent UI dropdown border.
+ * @cssprop --task-new-dropdown-border-radius - {Length} the border radius of the dropdown for a new task. Default is fluent UI dropdown border.
+ * @cssprop --task-new-dropdown-background-color - {Color} the background color of the new task dropdown.
+ * @cssprop --task-new-dropdown-hover-background-color - {Color} the background color of the new task dropdown when you hover.
+ * @cssprop --task-new-dropdown-placeholder-color - {Color} the placeholder colder of the new task dropdown.
+ * @cssprop --task-new-dropdown-list-background-color - {Color} the background color of the dropdown list options.
+ * @cssprop --task-new-dropdown-option-text-color - {Color} the text color of the dropdown option text.
+ * @cssprop --task-new-dropdown-option-hover-background-color - {Color} the background color of the dropdown option when you hover.
+ * @cssprop --task-new-person-icon-color - {Color} color of the assign person text.
+ * @cssprop --task-new-person-icon-text-color - {Color} color of the text beside the assign person icon.
+ *
+ * @cssprop --task-complete-checkbox-background-color - {Color} A completed task checkbox background color.
+ * @cssprop --task-complete-checkbox-text-color - {Color} A completed task checkbox check color.
+ * @cssprop --task-incomplete-checkbox-background-color - {Color} A incompleted task checkbox background color.
+ * @cssprop --task-incomplete-checkbox-background-hover-color - {Color} A incompleted task checkbox background color.
+ *
+ * @cssprop --task-title-text-font-size - {Length} Task title text font size. Default is medium.
+ * @cssprop --task-title-text-font-weight - {Length} Task title text font weight. Default is 600.
+ * @cssprop --task-complete-title-text-color - {Length} Task title color for a complete task.
+ * @cssprop --task-incomplete-title-text-color - {Length} Task title color for an incomplete task.
+ *
+ * @cssprop --task-icons-width - {Length} The icons in a task width size. Default is 20px;
+ * @cssprop --task-icons-height - {Length} The icons in a task height size. Default is 20px;
+ * @cssprop --task-icons-background-color - {Color} The icons in a task color background color.
+ * @cssprop --task-icons-text-font-color - {Color} The text beside icons in a task color background color.
+ * @cssprop --task-icons-text-font-size - {Length} The font size of the text beside icons in a task. Default is 12px.
+ * @cssprop --task-icons-text-font-weight - {Length} The font weight of the text beside icons in a task. Default is 600.
+ *
+ * @cssprop --task-complete-background-color - {Color} The background color of a task that is complete.
+ * @cssprop --task-incomplete-background-color - {Color} The background color of a task that is incomplete.
+ * @cssprop --task-complete-border - {Length} The border of a task that is complete.  Default is 2px dotted var(--neutral-fill-strong-rest).
+ * @cssprop --task-incomplete-border - {Length} The border of a task that is incomplete. Default is 1px solid var(--neutral-fill-strong-rest).
+ * @cssprop --task-complete-border-radius - {Length} The border radius of a task that is incomplete. Default is 4px.
+ * @cssprop --task-incomplete-border-radius - {Length} The border radius of a task that is incomplete. Default is 4px.
+ * @cssprop --task-complete-padding - {Length} The padding of a task that is complete. Default is 10px.
+ * @cssprop --task-incomplete-padding - {Length} The padding of a task that is incomplete. Default is 10px.
+ * @cssprop --tasks-gap - {Length} The size of the gap between two tasks in a row. Default is 20px.
+ *
+ * @cssprop --tasks-background-color - {Color} the color of the background where the tasks are rendered.
+ * @cssprop --tasks-border - {Length} the border of the area the tasks are rendered. Default is none.
+ * @cssprop --tasks-border-radius - {Length} the border radius of the area where the tasks are rendered. Default is none.
+ * @cssprop --tasks-padding - {Length} the padding of the are where the tasks are rendered. Default is 12px.
  */
+
 @customElement('tasks')
-// @customElement('mgt-tasks')
 export class MgtTasks extends MgtTemplatedComponent {
   /**
    * determines whether todo, or planner functionality for task component
@@ -412,9 +447,9 @@ export class MgtTasks extends MgtTemplatedComponent {
   /**
    * Synchronizes property values when attributes change.
    *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
+   * @param {string} name
+   * @param {string} oldVal
+   * @param {string} newVal
    * @memberof MgtTasks
    */
   public attributeChangedCallback(name: string, oldVal: string, newVal: string) {
@@ -491,7 +526,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     if (!this.hideHeader) {
       header = html`
-        <div class="Header" dir=${this.direction}>
+        <div class="Header">
           ${this.renderPlanOptions()}
         </div>
       `;
@@ -499,7 +534,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     return html`
       ${header}
-      <div class="Tasks" dir=${this.direction}>
+      <div class="Tasks">
         ${this._isNewTaskVisible ? this.renderNewTask() : null} ${loadingTask}
         ${repeat(
           this._tasks,
@@ -675,7 +710,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       return;
     }
     this._loadingTasks = [...this._loadingTasks, task.id];
-    await ts.setTaskComplete(task.id, task.eTag);
+    await ts.setTaskComplete(task);
     this.fireCustomEvent('taskChanged', task);
 
     await this.requestStateUpdate();
@@ -689,7 +724,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     this._loadingTasks = [...this._loadingTasks, task.id];
-    await ts.setTaskIncomplete(task.id, task.eTag);
+    await ts.setTaskIncomplete(task);
     this.fireCustomEvent('taskChanged', task);
 
     await this.requestStateUpdate();
@@ -703,91 +738,75 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     this._hiddenTasks = [...this._hiddenTasks, task.id];
-    await ts.removeTask(task.id, task.eTag);
+    await ts.removeTask(task);
     this.fireCustomEvent('taskRemoved', task);
 
     await this.requestStateUpdate();
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
-  private async assignPeople(task: ITask, people: (User | Person | Contact)[]) {
+  private async assignPeople(task: ITask, people: (User | Person | Contact)[] = []) {
     const ts = this.getTaskSource();
     if (!ts) {
       return;
     }
 
     // create previously selected people Object
-    let savedSelectedPeople = [];
+    let currentTaskAssigneesIds: string[] = [];
     if (task) {
       if (task.assignments) {
-        savedSelectedPeople = Object.keys(task.assignments).sort();
+        currentTaskAssigneesIds = Object.keys(task.assignments).sort();
       }
     }
 
-    const newPeopleIds = people.map(person => {
+    const newTaskAssigneesIds: string[] = people.map(person => {
       return person.id;
     });
 
     // new people from people picker
     const isEqual =
-      newPeopleIds.length === savedSelectedPeople.length &&
-      newPeopleIds.sort().every((value, index) => {
-        return value === savedSelectedPeople[index];
+      newTaskAssigneesIds.length === currentTaskAssigneesIds.length &&
+      newTaskAssigneesIds.sort().every((value, index) => {
+        return value === currentTaskAssigneesIds[index];
       });
 
     if (isEqual) {
       return;
     }
 
-    const peopleObj = {};
+    const peopleObj: Record<string, PlannerAssignments> = {};
 
-    if (people.length === 0) {
-      for (const p of savedSelectedPeople) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    // Removes an assignee to a task by setting the value to null
+    for (const p of currentTaskAssigneesIds) {
+      if (newTaskAssigneesIds.includes(p)) {
+        peopleObj[p] = plannerAssignment;
+      } else {
         peopleObj[p] = null;
       }
     }
 
-    if (people) {
-      // eslint-disable-next-line @typescript-eslint/prefer-for-of
-      for (let i = 0; i < savedSelectedPeople.length; i++) {
-        // eslint-disable-next-line @typescript-eslint/prefer-for-of
-        for (let j = 0; j < people.length; j++) {
-          if (savedSelectedPeople[i] !== people[j].id) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            peopleObj[savedSelectedPeople[i]] = null;
-            break;
-          } else {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            peopleObj[savedSelectedPeople[i]] = plannerAssignment;
-          }
-        }
+    // Adds a person to the task by assigning them a temporary planner value
+    newTaskAssigneesIds.forEach(assigneeId => {
+      if (!currentTaskAssigneesIds.includes(assigneeId)) {
+        peopleObj[assigneeId] = plannerAssignment;
       }
-
-      // eslint-disable-next-line @typescript-eslint/prefer-for-of
-      for (let i = 0; i < people.length; i++) {
-        peopleObj[people[i].id] = plannerAssignment;
-      }
-    }
+    });
 
     if (task) {
-      this._loadingTasks = [...this._loadingTasks, task.id];
-      await ts.assignPeopleToTask(task.id, peopleObj, task.eTag);
+      await ts.assignPeopleToTask(task, peopleObj);
       await this.requestStateUpdate();
       this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
     }
   }
 
-  private onAddTaskClick = (e: UIEvent) => {
+  private onAddTaskClick = () => {
     const picker = this.getPeoplePicker(null);
 
     const peopleObj: Record<string, unknown> = {};
 
     if (picker) {
-      for (const person of picker.selectedPeople) {
-        if (picker.selectedPeople.length) {
-          peopleObj[person.id] = plannerAssignment;
-        }
+      for (const person of picker?.selectedPeople) {
+        peopleObj[person.id] = plannerAssignment;
       }
     }
 
@@ -803,13 +822,13 @@ export class MgtTasks extends MgtTemplatedComponent {
   };
 
   private onAddTaskKeyDown = (e: KeyboardEvent) => {
-    if (e.code === 'Enter' || e.code === ' ') {
-      this.onAddTaskClick(e);
+    if (e.key === 'Enter' || e.key === ' ') {
+      this.onAddTaskClick();
     }
   };
 
   private newTaskButtonKeydown = (e: KeyboardEvent) => {
-    if (e.code === 'Enter') {
+    if (e.key === 'Enter') {
       this.isNewTaskVisible = !this.isNewTaskVisible;
     }
   };
@@ -836,12 +855,12 @@ export class MgtTasks extends MgtTemplatedComponent {
   };
 
   private newTaskVisible = (e: KeyboardEvent) => {
-    if (e.code === 'Enter') {
+    if (e.key === 'Enter') {
       this.isNewTaskVisible = false;
     }
   };
 
-  private renderPlanOptions() {
+  private renderPlanOptions(): TemplateResult {
     const p = Providers.globalProvider;
 
     if (!p || p.state !== ProviderState.SignedIn) {
@@ -849,38 +868,35 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     if (this._inTaskLoad && !this._hasDoneInitialLoad) {
-      return html`
-        <span class="LoadingHeader"></span>
-      `;
+      return html`<span class="LoadingHeader"></span>`;
     }
 
     const addButton =
       this.readOnly || this._isNewTaskVisible
         ? null
         : html`
-            <div
-              tabindex="0"
-              class="AddBarItem NewTaskButton"
-              @click="${this.addNewTaskButtonClick}"
-              @keydown="${this.newTaskButtonKeydown}"
-            >
-              <span class="TaskIcon"></span>
-              <span>${this.strings.addTaskButtonSubtitle}</span>
-            </div>
-          `;
+          <fluent-button
+            appearance="accent"
+            class="NewTaskButton"
+            @keydown=${this.newTaskButtonKeydown}
+            @click=${() => (this.isNewTaskVisible = !this.isNewTaskVisible)}>
+              <span slot="start">${getSvg(SvgIcon.Add, 'currentColor')}</span>
+              ${this.strings.addTaskButtonSubtitle}
+          </fluent-button>
+        `;
 
     if (this.dataSource === TasksSource.planner) {
       const currentGroup = this._groups.find(d => d.id === this._currentGroup) || {
         title: this.res.BASE_SELF_ASSIGNED
       };
       const groupOptions = {
-        [this.res.BASE_SELF_ASSIGNED]: e => {
+        [this.res.BASE_SELF_ASSIGNED]: () => {
           this._currentGroup = null;
           this._currentFolder = null;
         }
       };
       for (const group of this._groups) {
-        groupOptions[group.title] = e => {
+        groupOptions[group.title] = () => {
           this._currentGroup = group.id;
           this._currentFolder = null;
         };
@@ -889,23 +905,19 @@ export class MgtTasks extends MgtTemplatedComponent {
         <mgt-arrow-options class="arrow-options" .options="${groupOptions}" .value="${currentGroup.title}"></mgt-arrow-options>
       `;
 
-      const divider = !this._currentGroup
-        ? null
-        : html`
-            <span class="TaskIcon Divider">/</span>
-          `;
+      const divider = !this._currentGroup ? null : html`<fluent-divider></fluent-divider>`;
 
       const currentFolder = this._folders.find(d => d.id === this._currentFolder) || {
         name: this.res.BUCKETS_SELF_ASSIGNED
       };
       const folderOptions = {
-        [this.res.BUCKETS_SELF_ASSIGNED]: e => {
+        [this.res.BUCKETS_SELF_ASSIGNED]: () => {
           this._currentFolder = null;
         }
       };
 
       for (const folder of this._folders.filter(d => d.parentId === this._currentGroup)) {
-        folderOptions[folder.name] = e => {
+        folderOptions[folder.name] = () => {
           this._currentFolder = folder.id;
         };
       }
@@ -914,14 +926,13 @@ export class MgtTasks extends MgtTemplatedComponent {
         ? html`
             <span class="PlanTitle">
               ${this._folders[0] && this._folders[0].name}
-            </span>
-          `
+            </span>`
         : mgtHtml`
             <mgt-arrow-options class="arrow-options" .options="${folderOptions}" .value="${currentFolder.name}"></mgt-arrow-options>
           `;
 
       return html`
-        <div class="TitleCont">
+        <div class="Title">
           ${groupSelect} ${divider} ${!this._currentGroup ? null : folderSelect}
         </div>
         ${addButton}
@@ -940,7 +951,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         };
       }
 
-      folderOptions[this.res.BUCKETS_SELF_ASSIGNED] = e => {
+      folderOptions[this.res.BUCKETS_SELF_ASSIGNED] = () => {
         this._currentFolder = null;
       };
 
@@ -955,59 +966,60 @@ export class MgtTasks extends MgtTemplatedComponent {
           `;
 
       return html`
-        <span class="TitleCont">
+        <span class="Title">
           ${folderSelect}
         </span>
         ${addButton}
       `;
     }
   }
+
+  private handleDateChange = (e: UIEvent) => {
+    const value = (e.target as HTMLInputElement).value;
+    if (value) {
+      this._newTaskDueDate = new Date(value + 'T17:00');
+    } else {
+      this._newTaskDueDate = null;
+    }
+  };
+
   private renderNewTask() {
+    const iconColor = 'var(--neutral-foreground-hint)';
+
     const taskTitle = html`
-      <input
-        type="text"
+      <fluent-text-field
         placeholder=${this.strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
-        label="new-taskName-input"
-        aria-label="new-taskName-input"
-        role="textbox"
-        @input="${(e: Event) => {
-          this._newTaskName = (e.target as HTMLInputElement).value;
-        }}"
-      />
-    `;
-    const groups = this._groups;
-    if (groups.length > 0 && !this._newTaskGroupId) {
-      this._newTaskGroupId = groups[0].id;
-      if (this.dataSource === TasksSource.planner) {
-        this._newTaskContainerId = groups[0].containerId;
-      }
+        class="NewTask"
+        aria-label=${this.strings.newTaskPlaceholder}
+        @input=${(e: KeyboardEvent) => (this._newTaskName = (e.target as HTMLInputElement).value)}>
+      </fluent-text-field>`;
+
+    if (this._groups.length > 0 && !this._newTaskGroupId) {
+      this._newTaskGroupId = this._groups[0].id;
     }
+
+    const groupOptions = html`
+      ${repeat(
+        this._groups,
+        grp => grp.id,
+        grp => html`<fluent-option value="${grp.id}">${grp.title}</fluent-option>`
+      )}`;
+
     const group =
       this.dataSource === TasksSource.todo
         ? null
         : this._currentGroup
         ? html`
-            <span class="NewTaskGroup">
-              ${this.renderPlannerIcon()}
-              <span>${this.getPlanTitle(this._currentGroup)}</span>
-            </span>
-          `
+          <span class="NewTaskGroup">
+            ${this.renderPlannerIcon(iconColor)}
+            <span>${this.getPlanTitle(this._currentGroup)}</span>
+          </span>`
         : html`
-            <span class="NewTaskGroup">
-              ${this.renderPlannerIcon()}
-              <select aria-label="new task group"
-                .value="${this._newTaskGroupId}"
-                @change="${this.handleSelectedPlan}"
-              >
-                ${this._groups.map(
-                  plan => html`
-                    <option value="${plan.id}">${plan.title}</option>
-                  `
-                )}
-              </select>
-            </span>
-          `;
+            <fluent-select>
+              <span slot="start">${this.renderPlannerIcon(iconColor)}</span>
+              ${this._groups.length > 0 ? groupOptions : html`<fluent-option selected>No groups found</fluent-option>`}
+            </fluent-select>`;
 
     const folders = this._folders.filter(
       folder =>
@@ -1017,81 +1029,78 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (folders.length > 0 && !this._newTaskFolderId) {
       this._newTaskFolderId = folders[0].id;
     }
+
+    const folderOptions = html`
+      ${repeat(
+        folders,
+        folder => folder.id,
+        folder => html`<fluent-option value="${folder.id}">${folder.name}</fluent-option>`
+      )}`;
+
     const taskFolder = this._currentFolder
       ? html`
           <span class="NewTaskBucket">
-            ${this.renderBucketIcon()}
+            ${this.renderBucketIcon(iconColor)}
             <span>${this.getFolderName(this._currentFolder)}</span>
           </span>
         `
       : html`
-          <span class="NewTaskBucket">
-            ${this.renderBucketIcon()}
-            <select aria-label="new task bucket"
-              .value="${this._newTaskFolderId}"
-              @change="${(e: Event) => {
-                this._newTaskFolderId = (e.target as HTMLInputElement).value;
-              }}"
-            >
-              ${folders.map(
-                folder => html`
-                  <option value="${folder.id}">${folder.name}</option>
-                `
-              )}
-            </select>
-          </span>
-        `;
+         <fluent-select>
+          <span slot="start">${this.renderBucketIcon(iconColor)}</span>
+          ${folders.length > 0 ? folderOptions : html`<fluent-option selected>No folders found</fluent-option>`}
+        </fluent-select>`;
 
     const taskDue = html`
-      <span class="NewTaskDue">
-      ${this.renderCalendarIcon()}
-        <input
-          type="date"
-          label="new-taskDate-input"
-          aria-label="new-taskDate-input"
-          role="textbox"
-          .value="${this.dateToInputValue(this._newTaskDueDate)}"
-          @change="${this.handleNewTaskDateChange}"
-        />
-      </span>
-    `;
+      <fluent-text-field
+        type="date"
+        class="NewTask"
+        aria-label="${this.strings.addTaskDate}"
+        .value="${this.dateToInputValue(this._newTaskDueDate)}"
+        @change=${this.handleDateChange}>
+      </fluent-text-field>`;
 
-    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null);
+    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null, iconColor);
 
-    const taskAdd = this._newTaskBeingAdded
-      ? html`
-          <div class="TaskAddButtonContainer"></div>
-        `
+    const newTaskActionButtons = this._newTaskBeingAdded
+      ? html`<div class="TaskAddButtonContainer"></div>`
       : html`
-          <div class="TaskAddButtonContainer ${this._newTaskName === '' ? 'Disabled' : ''}">
-            <div tabindex="0" class="TaskIcon TaskAdd"
-              @click="${this.onAddTaskClick}"
-              @keydown="${this.onAddTaskKeyDown}">
-              <span>${this.strings.addTaskButtonSubtitle}</span>
-            </div>
-            <div tabindex="0" class="TaskIcon TaskCancel"
-              @click="${() => (this.isNewTaskVisible = false)}"
-              @keydown="${this.newTaskVisible}">
-              <span>${this.strings.cancelNewTaskSubtitle}</span>
-            </div>
-          </div>
-        `;
+          <fluent-button
+            class="AddTask"
+            @click=${this.onAddTaskClick}
+            @keydown=${this.onAddTaskKeyDown}
+            appearance="neutral">
+              ${this.strings.addTaskButtonSubtitle}
+          </fluent-button>
+          <fluent-button
+            class="CancelTask"
+            @click=${() => (this.isNewTaskVisible = false)}
+            @keydown=${this.newTaskVisible}
+            appearance="neutral">
+              ${this.strings.cancelNewTaskSubtitle}
+          </fluent-button>`;
 
     return html`
-      <div class="Task NewTask Incomplete">
-        <div class="TaskContent">
-          <div class="TaskDetailsContainer">
-            <div class="TaskTitle">
-              ${taskTitle}
-            </div>
-            <div class="TaskDetails">
-              ${group} ${taskFolder} ${taskDue} ${taskPeople}
+    <div
+      class=${classMap({
+        Task: true,
+        NewTask: true
+      })}>
+      <div class="TaskDetailsContainer">
+        <div class="Top AddNewTask">
+          <div class="CheckAndTitle">
+            ${taskTitle}
+            <div class="TaskContent">
+              <div class="TaskGroup">${group}</div>
+              <div class="TaskBucket">${taskFolder}</div>
+              ${taskPeople}
+              <div class="TaskDue">${taskDue}</div>
             </div>
           </div>
+          <div class="TaskOptions NewTaskActionButtons">${newTaskActionButtons}</div>
         </div>
-        ${taskAdd}
       </div>
-    `;
+    </div>
+  `;
   }
 
   private togglePeoplePicker(task: ITask) {
@@ -1105,9 +1114,6 @@ export class MgtTasks extends MgtTemplatedComponent {
       } else {
         picker.selectedPeople = mgtPeople.people;
         flyout.open();
-        window.requestAnimationFrame(() => {
-          picker.focus();
-        });
       }
     }
   }
@@ -1140,31 +1146,6 @@ export class MgtTasks extends MgtTemplatedComponent {
   private renderTask(task: ITask) {
     const { name = 'Task', completed = false, dueDate } = task;
 
-    const isLoading = this._loadingTasks.includes(task.id);
-
-    const taskCheckClasses = {
-      Complete: !isLoading && completed,
-      Loading: isLoading,
-      TaskCheck: true,
-      TaskIcon: true
-    };
-
-    const taskCheckContent = isLoading
-      ? html`
-          
-        `
-      : completed
-      ? html`
-          
-        `
-      : null;
-
-    const taskCheck = html`
-      <span tabindex="0" class=${classMap(
-        taskCheckClasses
-      )}><span class="TaskCheckContent">${taskCheckContent}</span></span>
-    `;
-
     const groupTitle = this._currentGroup ? null : this.getPlanTitle(task.topParentId);
     const folderTitle = this._currentFolder ? null : this.getFolderName(task.immediateParentId);
 
@@ -1178,141 +1159,147 @@ export class MgtTasks extends MgtTemplatedComponent {
     let taskDetails = this.renderTemplate('task-details', context, `task-details-${task.id}`);
 
     if (!taskDetails) {
+      const iconColor = 'var(--neutral-foreground-hint)';
       const group =
         this.dataSource === TasksSource.todo || this._currentGroup
           ? null
           : html`
-              <div class="TaskDetail TaskGroup">
-                ${this.renderPlannerIcon()}
-                <span>${this.getPlanTitle(task.topParentId)}</span>
+              <div class="TaskGroup">
+                <span class="TaskIcon">${this.renderPlannerIcon(iconColor)}</span>
+                <span class="TaskIconText">${this.getPlanTitle(task.topParentId)}</span>
               </div>
             `;
 
       const folder = this._currentFolder
         ? null
         : html`
-            <div class="TaskDetail TaskBucket">
-              ${this.renderBucketIcon()}
-              <span>${this.getFolderName(task.immediateParentId)}</span>
+            <div class="TaskBucket">
+              <span class="TaskIcon">${this.renderBucketIcon(iconColor)}</span>
+              <span class="TaskIconText">${this.getFolderName(task.immediateParentId)}</span>
             </div>
           `;
 
       const taskDue = !dueDate
         ? null
         : html`
-            <div class="TaskDetail TaskDue">
-              <span>Due ${getShortDateString(dueDate)}</span>
+            <div class="TaskDue">
+              <span class="TaskIconText">${this.strings.due}${getShortDateString(dueDate)}</span>
             </div>
           `;
 
-      const taskPeople = this.dataSource !== TasksSource.todo ? this.renderAssignedPeople(task) : null;
+      const taskPeople = this.dataSource !== TasksSource.todo ? this.renderAssignedPeople(task, iconColor) : null;
 
-      taskDetails = html`
-        <div class="TaskTitle">
-          ${name}
-        </div>
-        ${group} ${folder} ${taskPeople} ${taskDue}
-      `;
+      taskDetails = html`${group} ${folder} ${taskPeople} ${taskDue}`;
     }
 
     const taskOptions =
       this.readOnly || this.hideOptions
         ? null
         : mgtHtml`
-            <div class="TaskOptions">
-              <mgt-dot-options
-                class="dot-options"
-                .options="${{
-                  [this.strings.removeTaskSubtitle]: () => this.removeTask(task)
-                }}"
-              ></mgt-dot-options>
-            </div>
-          `;
+            <mgt-dot-options
+              class="dot-options"
+              .options="${{
+                [this.strings.removeTaskSubtitle]: () => this.removeTask(task)
+              }}"
+            ></mgt-dot-options>`;
+
+    const taskClasses = classMap({
+      Task: true,
+      Complete: completed,
+      Incomplete: !completed,
+      ReadOnly: this.readOnly
+    });
 
     return html`
       <div
-        class=${classMap({
-          Complete: completed,
-          Incomplete: !completed,
-          ReadOnly: this.readOnly,
-          Task: true
-        })}
-      >
-        <div
-          class="TaskContent"
-          @click=${() => {
-            this.handleTaskClick(task);
-          }}
-        >
-          <span
-            class=${classMap({
-              Complete: completed,
-              Incomplete: !completed,
-              TaskCheckContainer: true
-            })}
-            @click="${(e: UIEvent) => {
-              if (!this.readOnly) {
-                if (!task.completed) {
-                  void this.completeTask(task);
-                } else {
-                  void this.uncompleteTask(task);
-                }
-
-                e.stopPropagation();
-                e.preventDefault();
-              }
-            }}"
-            @keydown="${(e: KeyboardEvent) => {
-              if (e.code === 'Enter') {
-                if (!this.readOnly) {
-                  if (!task.completed) {
-                    void this.completeTask(task);
-                  } else {
-                    void this.uncompleteTask(task);
-                  }
-
-                  e.stopPropagation();
-                  e.preventDefault();
-                }
-              }
-            }}"
-          >
-            ${taskCheck}
-          </span>
-          <div class="TaskDetailsContainer ${this.mediaQuery} ${this._currentGroup ? 'NoPlan' : ''}">
-            ${taskDetails}
+        id="task-${task.id}"
+        class=${taskClasses}
+        @click=${() => this.handleTaskClick(task)}>
+        <div class="TaskDetailsContainer">
+          <div class="Top">
+            <div class="CheckAndTitle">
+              <fluent-checkbox
+                @click=${(e: MouseEvent) => this.checkTask(e, task)}
+                @keydown=${(e: KeyboardEvent) => this.handleTaskCheckKeyDown(e, task)}
+                ?checked=${completed}>
+                  ${name}
+              </fluent-checkbox>
+            </div>
+            <div class="TaskOptions">${taskOptions}</div>
           </div>
-          ${taskOptions}
-
+          <div class="Bottom">${taskDetails}</div>
         </div>
       </div>
     `;
   }
 
-  private renderAssignedPeople(task: ITask) {
-    let assignedPeopleHTML = null;
-    let assignedGroupId: string;
+  private async handleTaskCheckKeyDown(e: KeyboardEvent, task: ITask) {
+    if (e.key === 'Enter') {
+      if (!this.readOnly) {
+        if (!task.completed) {
+          await this.completeTask(task);
+        } else {
+          await this.uncompleteTask(task);
+        }
 
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }
+  }
+
+  private async checkTask(e: MouseEvent, task: ITask) {
+    if (!this.readOnly) {
+      const target = this.shadowRoot.querySelector(`#task-${task.id}`);
+      if (target) target.classList.add('Updating');
+      if (!task.completed) {
+        await this.completeTask(task);
+      } else {
+        await this.uncompleteTask(task);
+      }
+      if (target) target.classList.remove('Updating');
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  }
+
+  private renderPlannerIcon = (iconColor: string) => {
+    return getSvg(SvgIcon.Planner, iconColor);
+  };
+  private renderBucketIcon = (iconColor: string) => {
+    return getSvg(SvgIcon.Milestone, iconColor);
+  };
+
+  private handlePeopleClick = (e: MouseEvent, task: ITask) => {
+    this.togglePeoplePicker(task);
+    e.stopPropagation();
+  };
+
+  private handlePeopleKeydown = (e: KeyboardEvent, task: ITask) => {
+    if (e.key === 'Enter') {
+      this.togglePeoplePicker(task);
+      e.stopPropagation();
+    }
+  };
+
+  private handlePeoplePickerKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.stopPropagation();
+    }
+  };
+
+  private renderAssignedPeople(task: ITask, iconColor: string): TemplateResult {
+    let assignedGroupId: string;
     const taskAssigneeClasses = {
       NewTaskAssignee: task === null,
       TaskAssignee: task !== null,
       TaskDetail: task !== null
     };
 
-    const assignedPeople = task
-      ? Object.keys(task.assignments).map(key => {
-          return key;
-        })
-      : [];
-
-    const noPeopleTemplate = html`
-      <template data-type="no-data">
-        <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-      </template>
-    `;
-
     const taskId = task ? task.id : 'newTask';
     taskAssigneeClasses[`flyout-${taskId}`] = true;
+
+    const assignedPeople = task ? Object.keys(task.assignments).map(key => key) : [];
 
     if (!this.newTaskVisible) {
       const raw: PlannerTask = task?._raw as PlannerTask;
@@ -1325,44 +1312,38 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const planGroupId = this.isNewTaskVisible ? this._newTaskContainerId : assignedGroupId;
 
-    assignedPeopleHTML = html`
+    const assignedPeopleTemplate: HTMLTemplateResult = mgtHtml`
       <mgt-people
         class="people people-${taskId}"
-        .userIds="${assignedPeople}"
-        .personCardInteraction=${PersonCardInteraction.none}
-        @click=${(e: MouseEvent) => {
-          this.togglePeoplePicker(task);
-          e.stopPropagation();
-        }}
-        @keydown=${(e: KeyboardEvent) => {
-          if (e.code === 'Enter') {
-            this.togglePeoplePicker(task);
-            e.stopPropagation();
-          }
-        }}
-        >${noPeopleTemplate}
-      </mgt-people>
-    `;
+        .userIds=${assignedPeople}
+        person-card=${PersonCardInteraction.none}
+        @click=${(e: MouseEvent) => this.handlePeopleClick(e, task)}
+        @keydown=${(e: KeyboardEvent) => this.handlePeopleKeydown(e, task)}>
+          <template data-type="no-data">
+            <span style="display:flex;place-content:center;gap:4px;">
+              <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="svg" fill="currentColor">
+                <path d="M9 2a4 4 0 100 8 4 4 0 000-8zM6 6a3 3 0 116 0 3 3 0 01-6 0z"></path>
+                <path d="M4 11a2 2 0 00-2 2c0 1.7.83 2.97 2.13 3.8A9.14 9.14 0 009 18c.41 0 .82-.02 1.21-.06A5.5 5.5 0 019.6 17 12 12 0 019 17a8.16 8.16 0 01-4.33-1.05A3.36 3.36 0 013 13a1 1 0 011-1h5.6c.18-.36.4-.7.66-1H4z"></path>
+                <path d="M14.5 19a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm0-7c.28 0 .5.22.5.5V14h1.5a.5.5 0 010 1H15v1.5a.5.5 0 01-1 0V15h-1.5a.5.5 0 010-1H14v-1.5c0-.28.22-.5.5-.5z"></path>
+              </svg> Assign</span>
+          </template>
+      </mgt-people>`;
+
     const picker = mgtHtml`
       <mgt-people-picker
         class="people-picker picker-${taskId}"
         .groupId=${ifDefined(planGroupId)}
-        @click=${(e: MouseEvent) => e.stopPropagation()}
+        @keydown=${this.handlePeoplePickerKeydown}>
         .groupId=${ifDefined(planGroupId)}
-        @keydown=${(e: KeyboardEvent) => {
-          if (e.code === 'Enter') {
-            e.stopPropagation();
-          }
-        }}
-      ></mgt-people-picker>
-    `;
+        ></mgt-people-picker>`;
 
     return mgtHtml`
-      <mgt-flyout light-dismiss class=${classMap(taskAssigneeClasses)} @closed=${e => this.updateAssignedPeople(task)}>
-        ${assignedPeopleHTML}
-        <div slot="flyout" class=${classMap({ Picker: true })}>
-          ${picker}
-        </div>
+      <mgt-flyout
+        light-dismiss
+        class=${classMap(taskAssigneeClasses)}
+        @closed=${() => this.updateAssignedPeople(task)}>
+          <div slot="anchor">${assignedPeopleTemplate}</div>
+          <div slot="flyout" class="Picker">${picker}</div>
       </mgt-flyout>
     `;
   }
@@ -1375,82 +1356,58 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private renderLoadingTask() {
     return html`
-      <div class="Task LoadingTask">
-        <div class="TaskContent">
-          <div class="TaskCheckContainer">
-            <div class="TaskCheck"></div>
-          </div>
+      <div class="Header">
+        <div class="Title">
+          <fluent-skeleton shimmer class="Shimmer" shape="rect"></fluent-skeleton>
+        </div>
+        <div class="NewTaskButton">
+          <fluent-skeleton shimmer class="Shimmer" shape="rect"></fluent-skeleton>
+        </div>
+      </div>
+      <div class="Tasks">
+        <div class="Task Complete">
           <div class="TaskDetailsContainer">
-            <div class="TaskTitle"></div>
-            <div class="TaskDetails">
-              <span class="TaskDetail">
-                <div class="TaskDetailIcon"></div>
-                <div class="TaskDetailName"></div>
-              </span>
-              <span class="TaskDetail">
-                <div class="TaskDetailIcon"></div>
-                <div class="TaskDetailName"></div>
-              </span>
+            <div class="Top">
+              <div class="CheckAndTitle Shimmer">
+                <fluent-skeleton shimmer class="Checkbox" shape="circle"></fluent-skeleton>
+                <fluent-skeleton shimmer class="Title" shape="rect"></fluent-skeleton>
+              </div>
+              <div class="TaskOptions">
+                <fluent-skeleton shimmer class="Options" shape="rect"></fluent-skeleton>
+              </div>
             </div>
+            <div class="Bottom">
+              <div class="TaskGroup">
+                <div class="TaskIcon">
+                  <fluent-skeleton shimmer class="Shimmer Icon" shape="rect"></fluent-skeleton>
+                </div>
+                <div class="TaskIconText">
+                  <fluent-skeleton shimmer class="Shimmer Text" shape="rect"></fluent-skeleton>
+                </div>
+              </div>
+              <div class="TaskBucket">
+                <div class="TaskIcon">
+                  <fluent-skeleton shimmer class="Shimmer Icon" shape="rect"></fluent-skeleton>
+                </div>
+                <div class="TaskIconText">
+                  <fluent-skeleton shimmer class="Shimmer Text" shape="rect"></fluent-skeleton>
+                </div>
+              </div>
+              <div class="TaskDetails Shimmer">
+                <fluent-skeleton shimmer class="Shimmer Icon" shape="circle"></fluent-skeleton>
+                <fluent-skeleton shimmer class="Shimmer Icon" shape="circle"></fluent-skeleton>
+                <fluent-skeleton shimmer class="Shimmer Icon" shape="circle"></fluent-skeleton>
+              </div>
+              <div class="TaskDue">
+                <div class="TaskIconText">
+                  <fluent-skeleton shimmer class="Shimmer Text" shape="rect"></fluent-skeleton>
+                </div>
+              </div>
+              </div>
           </div>
         </div>
       </div>
     `;
-  }
-
-  private renderPlannerIcon() {
-    return html`
-      <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M7.223 1.156C6.98 1.26 6.769 1.404 6.586 1.586C6.403 1.768 6.261 1.98 6.157 2.223C6.052 2.465 6 2.724 6 3H2V17H14V3H10C10 2.724 9.948 2.465 9.844 2.223C9.74 1.98 9.596 1.768 9.414 1.586C9.231 1.404 9.02 1.26 8.777 1.156C8.535 1.053 8.276 1 8 1C7.723 1 7.465 1.053 7.223 1.156ZM5 4H7V3C7 2.86 7.026 2.729 7.078 2.609C7.13 2.49 7.202 2.385 7.293 2.293C7.384 2.202 7.49 2.131 7.609 2.079C7.73 2.026 7.859 2 8 2C8.14 2 8.271 2.026 8.39 2.079C8.511 2.131 8.616 2.202 8.707 2.293C8.798 2.385 8.87 2.49 8.922 2.609C8.974 2.729 9 2.86 9 3V4H11V5H5V4ZM12 6V4H13V16H3V4H4V6H12Z"
-          fill="#3C3C3C"
-        />
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M7.35156 12.3517L5.49956 14.2037L4.14856 12.8517L4.85156 12.1487L5.49956 12.7967L6.64856 11.6487L7.35156 12.3517Z"
-          fill="#3C3C3C"
-        />
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M7.35156 8.35168L5.49956 10.2037L4.14856 8.85168L4.85156 8.14868L5.49956 8.79668L6.64856 7.64868L7.35156 8.35168Z"
-          fill="#3C3C3C"
-        />
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 14H12.001V13H8V14Z" fill="#3C3C3C" />
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 10H12.001V9H8V10Z" fill="#3C3C3C" />
-      </svg>
-    `;
-  }
-
-  private renderBucketIcon() {
-    return html`
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M14 2H2V4H3H5H6H10H11H13H14V2ZM10 5H6V6H10V5ZM5 5H3V14H13V5H11V6C11 6.55228 10.5523 7 10 7H6C5.44772 7 5 6.55228 5 6V5ZM1 5H2V14V15H3H13H14V14V5H15V4V2V1H14H2H1V2V4V5Z"
-          fill="#3C3C3C"
-        />
-      </svg>
-    `;
-  }
-
-  /**
-   * Render a calendar icon.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtTodo
-   */
-  protected renderCalendarIcon() {
-    return html`
-          <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 11C5.55228 11 6 10.5523 6 10C6 9.44771 5.55228 9 5 9C4.44772 9 4 9.44771 4 10C4 10.5523 4.44772 11 5 11ZM6 13C6 13.5523 5.55228 14 5 14C4.44772 14 4 13.5523 4 13C4 12.4477 4.44772 12 5 12C5.55228 12 6 12.4477 6 13ZM8 11C8.55229 11 9 10.5523 9 10C9 9.44771 8.55229 9 8 9C7.44771 9 7 9.44771 7 10C7 10.5523 7.44771 11 8 11ZM9 13C9 13.5523 8.55229 14 8 14C7.44771 14 7 13.5523 7 13C7 12.4477 7.44771 12 8 12C8.55229 12 9 12.4477 9 13ZM11 11C11.5523 11 12 10.5523 12 10C12 9.44771 11.5523 9 11 9C10.4477 9 10 9.44771 10 10C10 10.5523 10.4477 11 11 11ZM15 5.5C15 4.11929 13.8807 3 12.5 3H3.5C2.11929 3 1 4.11929 1 5.5V14.5C1 15.8807 2.11929 17 3.5 17H12.5C13.8807 17 15 15.8807 15 14.5V5.5ZM2 7H14V14.5C14 15.3284 13.3284 16 12.5 16H3.5C2.67157 16 2 15.3284 2 14.5V7ZM3.5 4H12.5C13.3284 4 14 4.67157 14 5.5V6H2V5.5C2 4.67157 2.67157 4 3.5 4Z" fill="#717171"/>
-          </svg>
-        `;
   }
 
   private getTaskSource(): ITaskSource {
@@ -1497,7 +1454,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   private isTaskInSelectedGroupFilter(task: ITask) {
     return (
       task.topParentId === this._currentGroup ||
-      (!this._currentGroup && this.getTaskSource().isAssignedToMe(task, this._me.id))
+      (!this._currentGroup && this.getTaskSource().isAssignedToMe(task, this._me?.id))
     );
   }
 
