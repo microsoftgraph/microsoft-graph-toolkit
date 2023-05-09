@@ -61,6 +61,13 @@ export const schemas: Record<CacheNames, CacheSchema> = {
     },
     version: 1
   },
+  search: {
+    name: 'search',
+    stores: {
+      responses: 'responses'
+    },
+    version: 1
+  },
   files: {
     name: 'files',
     stores: {

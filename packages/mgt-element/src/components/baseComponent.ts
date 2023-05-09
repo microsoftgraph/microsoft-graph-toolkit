@@ -51,7 +51,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * @static
    * @memberof MgtBaseComponent
    */
-  public static get version(): string {
+  public static get packageVersion() {
     return PACKAGE_VERSION;
   }
 
@@ -299,14 +299,14 @@ export abstract class MgtBaseComponent extends LitElement {
     }
   }
 
-  private setLoadingState(value: boolean) {
+  protected setLoadingState = (value: boolean) => {
     if (this._isLoadingState === value) {
       return;
     }
 
     this._isLoadingState = value;
     this.requestUpdate('isLoadingState');
-  }
+  };
 
   private handleProviderUpdates = () => {
     void this.requestStateUpdate();

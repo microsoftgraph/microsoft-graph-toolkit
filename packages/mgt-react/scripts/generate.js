@@ -21,7 +21,9 @@ const tags = new Set([
   'file-list',
   'picker',
   'theme-toggle',
-  'spinner'
+  'spinner',
+  'search-box',
+  'search-results'
 ]);
 
 let output = '';

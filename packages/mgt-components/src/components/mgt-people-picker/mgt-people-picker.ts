@@ -925,27 +925,31 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected renderSearchResults(people: IDynamicPerson[]) {
     const filteredPeople = people.filter(person => person.id);
-
     return html`
       <ul
         id="suggestions-list"
         class="searched-people-list"
         role="listbox"
-        aria-label="${this.strings.suggestedContacts}">
-          ${repeat(
-            filteredPeople,
-            person => person.id,
-            person => html`
-              <li
-              role="option"
-              id="${person.id}"
-              aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
-              class="searched-people-list-result"
-              @click="${() => this.handleSuggestionClick(person)}">
-                ${this.renderPersonResult(person)}
-              </li>
-            `
-          )}
+        aria-live="polite"
+      >
+         ${repeat(
+           filteredPeople,
+           person => person.id,
+           person => {
+             const lineTwo = person.jobTitle || (person as User).mail;
+             const ariaLabel = `${this.strings.suggestedContact} ${person.displayName} ${lineTwo ?? ''}`;
+             return html`
+               <li
+                id="${person.id}"
+                aria-label="${ariaLabel}"
+                class="searched-people-list-result"
+                role="option"
+                @click="${e => this.handleSuggestionClick(person)}">
+                  ${this.renderPersonResult(person)}
+               </li>
+             `;
+           }
+         )}
        </ul>
      `;
   }
@@ -1752,7 +1756,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if (this._arrowSelectionCount === -1) {
             this._arrowSelectionCount = 0;
           } else {
-            this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
+            this._arrowSelectionCount =
+              (this._arrowSelectionCount + 1 + peopleList.children.length) % peopleList.children.length;
           }
         }
       }

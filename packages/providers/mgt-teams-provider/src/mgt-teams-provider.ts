@@ -13,6 +13,7 @@ import { TeamsConfig, TeamsProvider } from './TeamsProvider';
 /**
  * Authentication Library Provider for Microsoft Teams accounts
  *
+ * @deprecated in favor of MgtTeamsFxProvider.
  * @export
  * @class MgtTeamsProvider
  * @extends {MgtBaseProvider}
