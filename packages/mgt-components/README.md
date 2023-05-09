@@ -33,7 +33,7 @@ The components can be used on their own, but they are at their best when they ar
 1. Install the packages
 
     ```bash
-    npm install @microsoft/mgt-element @microsoft/mgt-components @microsoft/mgt-msal-provider
+    npm install @microsoft/mgt-element @microsoft/mgt-components @microsoft/mgt-msal2-provider
     ```
 
 1. Use components in your code
@@ -47,7 +47,7 @@ The components can be used on their own, but they are at their best when they ar
       import '@microsoft/mgt-components';
 
       // initialize the auth provider globally
-      Providers.globalProvider = new MsalProvider({clientId: 'clientId'});
+      Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
     </script>
 
     <mgt-login></mgt-login>
