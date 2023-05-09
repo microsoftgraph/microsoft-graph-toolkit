@@ -59,6 +59,13 @@ export const schemas = {
     },
     version: 1
   },
+  search: {
+    name: 'search',
+    stores: {
+      responses: 'responses'
+    },
+    version: 1
+  },
   files: {
     name: 'files',
     stores: {
