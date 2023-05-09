@@ -7,7 +7,7 @@
 
 import { GraphPageIterator, Providers, ProviderState, customElement, mgtHtml } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { html, nothing, TemplateResult } from 'lit';
+import { CSSResult, html, nothing, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
@@ -102,7 +102,7 @@ export class MgtFileGrid extends MgtFileListBase {
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
     return styles;
   }
 
@@ -113,7 +113,7 @@ export class MgtFileGrid extends MgtFileListBase {
    * @protected
    * @memberof MgtFileList
    */
-  protected get strings() {
+  protected get strings(): Record<string, string> {
     return strings;
   }
 
@@ -142,7 +142,7 @@ export class MgtFileGrid extends MgtFileListBase {
   private _preloadedFiles: DriveItem[];
   private pageIterator: GraphPageIterator<DriveItem>;
   // tracking user arrow key input of selection for accessibility purpose
-  private _focusedItemIndex: number = -1;
+  private _focusedItemIndex = -1;
 
   @state()
   private _isLoadingMore: boolean;
@@ -260,7 +260,7 @@ export class MgtFileGrid extends MgtFileListBase {
           f => f.id,
           f => html`
                 <div
-                  class="${this.isSelected(f) ? 'file-row selected' : 'file-row'}"
+                  class="${classMap({ 'file-row': true, selected: this.isSelected(f) })}"
                   @click=${() => this.onSelectorClicked(f)}
                   data-drive-item-id=${f.id}
                 >
@@ -334,17 +334,17 @@ export class MgtFileGrid extends MgtFileListBase {
     return this.files && this.files.length > 0 && this._selectedFiles.size === this.files.length;
   }
 
-  private selectAll(): void {
-    const tmp = new Map();
+  private selectAll = (): void => {
+    const tmp = new Map<string, DriveItem>();
     this.files.forEach(file => tmp.set(file.id, file));
     this._selectedFiles = tmp;
     this.fireCustomEvent('selectionChanged', this.files);
-  }
+  };
 
-  private deselectAll(): void {
+  private deselectAll = (): void => {
     this._selectedFiles = new Map();
     this.fireCustomEvent('selectionChanged', []);
-  }
+  };
 
   private renderSelector(file: DriveItem): TemplateResult {
     const classes = {
@@ -394,7 +394,7 @@ export class MgtFileGrid extends MgtFileListBase {
       this.renderTemplate('file', { file }, file.id) ||
       mgtHtml`
         <mgt-file
-          @click=${e => this.handleItemSelect(file, e)}
+          @click=${(e: MouseEvent) => this.handleItemSelect(file, e)}
           class="file-item"
           .fileDetails=${file}
           .view=${view}
@@ -412,7 +412,7 @@ export class MgtFileGrid extends MgtFileListBase {
    */
   protected renderFileName(file: DriveItem): TemplateResult {
     return file.folder
-      ? html`<a class="file-item" href="#" @click=${e => this.handleItemSelect(file, e)}>${file.name}</a>`
+      ? html`<a class="file-item" href="#" @click=${(e: MouseEvent) => this.handleItemSelect(file, e)}>${file.name}</a>`
       : html`<a class="file-item" target="_blank" href=${file.webUrl}>${file.name}</a>`;
   }
 
@@ -668,7 +668,7 @@ export class MgtFileGrid extends MgtFileListBase {
   }
 
   private clickFileLink = (url: string) => {
-    const a = this.renderRoot.querySelector('#file-link') as HTMLAnchorElement;
+    const a = this.renderRoot.querySelector<HTMLAnchorElement>('#file-link');
     a.href = url;
     if (a.href) {
       a.click();
@@ -728,7 +728,7 @@ export class MgtFileGrid extends MgtFileListBase {
    * @param name file name
    * @returns {string} file extension
    */
-  private getFileExtension(name) {
+  private getFileExtension(name: string) {
     const re = /(?:\.([^.]+))?$/;
     const fileExtension = re.exec(name)[1] || '';
 
@@ -742,10 +742,10 @@ export class MgtFileGrid extends MgtFileListBase {
    * @param focusedItem HTML element
    * @param className background class to be applied
    */
-  private updateItemBackgroundColor(fileList, focusedItem, className) {
+  private updateItemBackgroundColor(fileList: Element, focusedItem: Element, className: string) {
     // reset background color
-    for (let i = 0; i < fileList.children.length; i++) {
-      fileList.children[i].classList.remove(className);
+    for (const c of fileList.children) {
+      c.classList.remove(className);
     }
 
     // set focused item background color
@@ -763,9 +763,9 @@ export class MgtFileGrid extends MgtFileListBase {
   public reload(clearCache = false) {
     if (clearCache) {
       // clear cache File List
-      clearFilesCache();
+      void clearFilesCache();
     }
 
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 }
