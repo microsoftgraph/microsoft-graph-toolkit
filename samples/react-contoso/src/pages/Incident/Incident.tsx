@@ -77,7 +77,9 @@ export const Incident: React.FunctionComponent = () => {
           <div className={styles.panels}>
             {selectedTab === 'files' && (
               <FileListComposite
+                // enableCommandBar={true}
                 breadcrumbRootName="aslkdj"
+                enableFileUpload={true}
                 useGridView={true}
                 driveId={incident.driveId}
                 itemPath="General"

@@ -270,7 +270,7 @@ class MgtFileListComposite extends MgtFileListBase {
   }
 
   private renderCommandBar(): TemplateResult | typeof nothing {
-    if (this.comandBarItems?.length < 1) return nothing;
+    // if (this.comandBarItems?.length < 1) return nothing;
 
     return html`
       <div class="command-bar">
