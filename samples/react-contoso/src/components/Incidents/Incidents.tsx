@@ -41,6 +41,23 @@ export function Incidents(props: IIndicentsProps) {
       }
     }),
     createTableColumn<any>({
+      columnId: 'requestedBy',
+      renderHeaderCell: () => {
+        return 'Requested By';
+      },
+      renderCell: item => {
+        return (
+          <TableCellLayout>
+            <Person
+              userId={item.requestedBy}
+              view={ViewType.oneline}
+              personCardInteraction={PersonCardInteraction.hover}
+            ></Person>
+          </TableCellLayout>
+        );
+      }
+    }),
+    createTableColumn<any>({
       columnId: 'description',
       renderHeaderCell: () => {
         return 'Title';

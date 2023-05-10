@@ -102,9 +102,7 @@ class MgtFileListComposite extends MgtFileListBase {
       { id: 'download', name: 'Download', onClickFunction: this.downloadFile, shouldRender: f => !f.folder }
     ];
 
-    if (this.enableCommandBar) {
-      this.comandBarItems = [{ text: 'New folder', onClick: this.showNewFolderDialog, appearance: 'accent' }];
-    }
+    this.comandBarItems = [{ text: 'New folder', onClick: this.showNewFolderDialog, appearance: 'accent' }];
   }
 
   /**
@@ -116,7 +114,17 @@ class MgtFileListComposite extends MgtFileListBase {
   @property({
     attribute: 'breadcrumb-root-name'
   })
-  public breadcrumbRootName: string;
+  private _breadcrumbRootName: string;
+  public get breadcrumbRootName(): string {
+    return this._breadcrumbRootName;
+  }
+  public set breadcrumbRootName(value: string) {
+    this._breadcrumbRootName = value;
+
+    if (this.breadcrumb?.length > 0) {
+      this.breadcrumb[0].name = value;
+    }
+  }
 
   /**
    * Switch to use grid view instead of list view
@@ -140,7 +148,19 @@ class MgtFileListComposite extends MgtFileListBase {
     attribute: 'enable-command-bar',
     type: Boolean
   })
-  public enableCommandBar: boolean;
+  private _enableCommandBar: boolean;
+  public get enableCommandBar(): boolean {
+    return this._enableCommandBar;
+  }
+  public set enableCommandBar(value: boolean) {
+    if (value) {
+      this.comandBarItems = [{ text: 'New folder', onClick: this.showNewFolderDialog, appearance: 'accent' }];
+    } else {
+      this.comandBarItems = [];
+    }
+
+    this._enableCommandBar = value;
+  }
 
   /**
    * Enables a custom breadcrumb root name
@@ -239,6 +259,9 @@ class MgtFileListComposite extends MgtFileListBase {
   @state()
   private shareUrl: string;
 
+  @state()
+  private comandBarItems: CommandBarItem[] = [];
+
   /**
    * Render the component
    *
@@ -262,8 +285,6 @@ class MgtFileListComposite extends MgtFileListBase {
   }
 
   private menuCommands: MenuCommand<DriveItem>[] = [];
-
-  private comandBarItems: CommandBarItem[] = [];
 
   private get uploadButton(): MgtFileUpload {
     return this.renderRoot.querySelector('mgt-file-upload');

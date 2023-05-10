@@ -13,6 +13,7 @@ import {
 } from '@fluentui/react-components';
 import { FileListComposite } from '@microsoft/mgt-react';
 import { Chat, allChatScopes } from '@microsoft/mgt-chat';
+import { Tasks } from '@microsoft/mgt-react';
 
 const useStyles = makeStyles({
   panels: {
@@ -25,7 +26,8 @@ const useStyles = makeStyles({
  */
 const incidentOperationScopes: Record<string, string[]> = {
   conversation: [...allChatScopes],
-  files: ['Files.ReadWrite.All']
+  tasks: ['group.readwrite.all'],
+  files: ['files.readwrite.all']
 };
 
 /**
@@ -77,15 +79,16 @@ export const Incident: React.FunctionComponent = () => {
           <div className={styles.panels}>
             {selectedTab === 'files' && (
               <FileListComposite
-                // enableCommandBar={true}
-                breadcrumbRootName="aslkdj"
+                enableCommandBar={true}
+                breadcrumbRootName="Relevant Documents"
                 enableFileUpload={true}
                 useGridView={true}
                 driveId={incident.driveId}
-                itemPath="General"
+                itemPath={incident.itemPath}
                 pageSize={100}
               />
             )}
+            {selectedTab === 'tasks' && incident.planId && <Tasks targetId={incident.planId} />}
             {selectedTab === 'conversation' && incident.conversationId && <Chat chatId={incident.conversationId} />}
           </div>
         </>
