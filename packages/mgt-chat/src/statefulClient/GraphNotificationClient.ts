@@ -178,7 +178,7 @@ export class GraphNotificationClient {
   private onSubscribed = (subscriptionRecord: SubscriptionRecord) => {
     console.log(`Subscription created. SubscriptionId: ${subscriptionRecord.SubscriptionId}`);
     this.cacheSubscription(subscriptionRecord);
-    this.subscriptionEmitter[subscriptionRecord.SubscriptionId]?.chatMessageNotificationsSubscribed(
+    this.subscriptionEmitter[subscriptionRecord.SubscriptionId]?.notificationsSubscribedForResource(
       subscriptionRecord.Resource
     );
   };

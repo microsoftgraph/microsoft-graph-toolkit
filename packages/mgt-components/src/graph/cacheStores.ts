@@ -5,10 +5,21 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { CacheSchema } from '@microsoft/mgt-element';
+export type CacheNames =
+  | 'presence'
+  | 'users'
+  | 'photos'
+  | 'people'
+  | 'groups'
+  | 'files'
+  | 'get'
+  | 'fileLists'
+  | 'search';
 /**
  * All schemas and stores for caching component calls
  */
-export const schemas = {
+export const schemas: Record<CacheNames, CacheSchema> = {
   presence: {
     name: 'presence',
     stores: {

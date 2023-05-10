@@ -21,6 +21,9 @@ const chatStyles = mergeStyleSets({
 
   chatInput: {
     overflow: 'unset'
+  },
+  fullHeight: {
+    height: '100%'
   }
 });
 

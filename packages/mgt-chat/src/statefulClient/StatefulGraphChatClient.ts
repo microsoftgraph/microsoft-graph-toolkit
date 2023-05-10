@@ -31,18 +31,23 @@ import {
   sendChatMessage,
   updateChatMessage,
   removeChatMember,
-  addChatMembers
+  addChatMembers,
+  loadChatImage
 } from './graph.chat';
 import { getUserWithPhoto } from '@microsoft/mgt-components';
-import { graphChatMessageToAcsChatMessage } from './acs.chat';
 import { GraphNotificationClient } from './GraphNotificationClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
 import { IDynamicPerson } from '@microsoft/mgt-react';
+import { updateMessageContentWithImage } from './updateMessageContentWithImage';
+
+// 1x1 grey pixel
+const placeholderImageContent =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY7h58yYABRoCjB9qX5UAAAAASUVORK5CYII=';
 
 type ODataType = {
   '@odata.type': MessageEventType;
 };
-
+// defines the type of the state object returned from the StatefulGraphChatClient
 type GraphChatClient = Pick<
   MessageThreadProps,
   | 'userId'
@@ -105,7 +110,21 @@ type MessageEventType =
   | '#microsoft.graph.membersAddedEventMessageDetail'
   | '#microsoft.graph.membersDeletedEventMessageDetail';
 
-const isString = (value: any): value is string => typeof value === 'string';
+/**
+ * Holder type account for async conversion of messages.
+ * Some messages need to be written to the UI immediately and recieve an async update.
+ * Some messages do not have a current value and will be added after the future value is resolved.
+ * Some messages do not have a future value and will be added immediately.
+ */
+type MessageConversion = {
+  currentValue?: AcsChatMessage | SystemMessage;
+  futureValue?: Promise<AcsChatMessage | SystemMessage>;
+};
+
+/**
+ * Regex to detect and replace image urls using graph requests to supply the image content
+ */
+const graphImageUrlRegex = /(<img[^>]+)src=(["']https:\/\/graph\.microsoft\.com[^"']*["'])/;
 
 class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private _notificationClient: GraphNotificationClient;
@@ -274,43 +293,84 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     });
     this._chat = await loadChat(this.graph, this._chatId);
     const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
+    await this.writeMessagesToState(messages);
+  }
+
+  /**
+   * Handles updating state based on the response to a graph request for a collection of messages
+   * Handles messages that can be imedately rendered and those that require async calls to fetch data
+   *
+   * @private
+   * @param {MessageCollection} messages
+   * @memberof StatefulGraphChatClient
+   */
+  private async writeMessagesToState(messages: MessageCollection) {
     this._nextLink = messages.nextLink;
 
-    const initialMessages = await Promise.all(
-      messages.value
-        // trying to filter out system messages on the graph request causes a 400
-        // delted messages are returned as messages with no content, which we can't filter on the graph request
-        // so we filter them out here
-        .filter(m => m.body?.content)
-        .map(m => this.convertChatMessage(m))
-    );
-    // Allow messages to be loaded via the loadMoreMessages callback
+    const messageConversions = messages.value
+      // trying to filter out messages on the graph request causes a 400
+      // deleted messages are returned as messages with no content, which we can't filter on the graph request
+      // so we filter them out here
+      .filter(m => m.body?.content)
+      // This gives us both current and eventual values for each message
+      .map(m => this.convertChatMessage(m));
+
+    // update the state with the current values
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.participants = this._chat?.members || [];
       draft.participantCount = draft.participants.length;
-      draft.messages = initialMessages;
+      const initialMessages: (AcsChatMessage | SystemMessage)[] = [];
+      draft.messages = draft.messages.concat(
+        messageConversions
+          .map(m => m.currentValue)
+          // need to use a reduce here to filter out undefined values in a way that TypeScript understands
+          .reduce((acc, val) => {
+            if (val) acc.push(val);
+            return acc;
+          }, initialMessages)
+      );
       draft.onLoadPreviousChatMessages = this._nextLink ? this.loadMoreMessages : undefined;
       draft.status = this._nextLink ? 'loading messages' : 'ready';
       draft.chat = this._chat;
     });
-    // if for some reason the first page only has un-renderable messages, load more
-    if (this._nextLink && initialMessages.length < 1) {
-      // load more messages
-      await this.loadMoreMessages();
+    const futureMessages = messageConversions.filter(m => m.futureValue).map(m => m.futureValue);
+    // if there are eventual future values, wait for them to resolve and update the state
+    if (futureMessages.length > 0) {
+      (await Promise.all(futureMessages)).forEach(m => {
+        this.updateMessages(m);
+      });
     }
   }
 
-  private convertChatMessage(message: ChatMessage): Promise<AcsChatMessage | SystemMessage> {
+  /**
+   * Utility to convert a Graph Chat Message to an ACS Chat Message
+   * Some graph chat messages can synchronously be converted to ACS chat messages
+   * Others require an async call to get the ACS chat message
+   * Some messages can provide an initial state for immediate rendering while the async call is in progress
+   * This method returns an object containing the current value and a Promise of a future value
+   *
+   * @private
+   * @param {ChatMessage} message
+   * @return {*}  {MessageConversion}
+   * @memberof StatefulGraphChatClient
+   */
+  private convertChatMessage(message: ChatMessage): MessageConversion {
     switch (message.messageType) {
       case 'message':
-        return Promise.resolve(graphChatMessageToAcsChatMessage(message, this._userId));
+        return this.graphChatMessageToAcsChatMessage(message, this._userId);
       case 'unknownFutureValue':
-        return this.buildSystemContentMessage(message);
+        return { futureValue: this.buildSystemContentMessage(message) };
       default:
         throw new Error(`Unknown message type ${message.messageType?.toString() || 'undefined'}`);
     }
   }
 
+  /**
+   * Convert an event type to the name of an icon registered in registerIcons.tsx
+   *
+   * @param eventType
+   * @returns
+   */
   private resolveIcon = (eventType: MessageEventType): string => {
     switch (eventType) {
       case '#microsoft.graph.membersAddedEventMessageDetail':
@@ -349,6 +409,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         case '#microsoft.graph.membersDeletedEventMessageDetail':
           messageContent = `${this.getUserName(initiatorId, people)} removed ${userNames}`;
           break;
+        // TODO: move this default case to a console.warn before release and emit an empty message
+        // it's here to help us catch messages we have't handled yet
         default:
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           messageContent = `Unknown system message type ${eventDetail['@odata.type']}
@@ -382,22 +444,8 @@ detail: ${JSON.stringify(eventDetail)}`;
     if (!this._nextLink) {
       return true;
     }
-    const result: MessageCollection = await loadMoreChatMessages(this.graph, this._nextLink);
-
-    const messages = await Promise.all(
-      result.value
-        // trying to filter out system messages on the graph request causes a 400
-        // delted messages are returned as messages with no content, which we can't filter on the graph request
-        // so we filter them out here
-        .filter(m => m.body?.content)
-        .map(m => this.convertChatMessage(m))
-    );
-    this._nextLink = result.nextLink;
-    this.notifyStateChange((draft: GraphChatClient) => {
-      const nextMessages = messages;
-      draft.messages = nextMessages.concat(draft.messages as AcsChatMessage[]).sort(MessageCreatedComparator);
-      draft.onLoadPreviousChatMessages = this._nextLink ? this.loadMoreMessages : undefined;
-    });
+    const messages: MessageCollection = await loadMoreChatMessages(this.graph, this._nextLink);
+    await this.writeMessagesToState(messages);
     // return true when there are no more messages to load
     return !Boolean(this._nextLink);
   };
@@ -435,7 +483,10 @@ detail: ${JSON.stringify(eventDetail)}`;
       // emit new state
       this.notifyStateChange((draft: GraphChatClient) => {
         const draftIndex = draft.messages.findIndex(m => m.messageId === pendingId);
-        draft.messages.splice(draftIndex, 1, graphChatMessageToAcsChatMessage(chat, this._userId));
+        const message = this.graphChatMessageToAcsChatMessage(chat, this._userId).currentValue;
+        // we only need use the current value of the message
+        // this message can't have a future value as it's not been sent yet
+        if (message) draft.messages.splice(draftIndex, 1, message);
       });
     } catch (e) {
       this.notifyStateChange((draft: GraphChatClient) => {
@@ -527,18 +578,14 @@ detail: ${JSON.stringify(eventDetail)}`;
    * Event handler to be called when a new message is received by the notification service
    */
   private onMessageReceived = async (message: ChatMessage) => {
-    const acsMessage = await this.convertChatMessage(message);
-    this.notifyStateChange((draft: GraphChatClient) => {
-      const index = draft.messages.findIndex(m => m.messageId === acsMessage.messageId);
-      // this message is not already in thread so just add it
-      if (index === -1) {
-        // sort to ensure that messages are in the correct order should we get messages out of order
-        draft.messages = draft.messages.concat(acsMessage).sort(MessageCreatedComparator);
-      } else {
-        // replace the existing version of the message with the new one
-        draft.messages.splice(index, 1, acsMessage);
-      }
-    });
+    const messageConversion = this.convertChatMessage(message);
+    const acsMessage = messageConversion.currentValue;
+    this.updateMessages(acsMessage);
+    if (messageConversion.futureValue) {
+      // if we have a future value then we need to wait for it to resolve before we can send the read receipt
+      const futureMessageState = await messageConversion.futureValue;
+      this.updateMessages(futureMessageState);
+    }
   };
 
   /*
@@ -555,15 +602,16 @@ detail: ${JSON.stringify(eventDetail)}`;
    * Event handler to be called when a message edit is received by the notification service
    */
   private onMessageEdited = async (message: ChatMessage) => {
-    const acsMessage = await this.convertChatMessage(message);
-    this.notifyStateChange((draft: GraphChatClient) => {
-      const index = draft.messages.findIndex(m => m.messageId === acsMessage.messageId);
-      draft.messages.splice(index, 1, acsMessage);
-    });
+    const messageConversion = this.convertChatMessage(message);
+    this.updateMessages(messageConversion.currentValue);
+    if (messageConversion.futureValue) {
+      const eventualState = await messageConversion.futureValue;
+      this.updateMessages(eventualState);
+    }
   };
 
-  private onChatNotificationsSubscribed = (messagesResource: string): void => {
-    if (messagesResource.includes(`/${this._chatId}/`)) {
+  private onChatNotificationsSubscribed = (resource: string): void => {
+    if (resource.includes(`/${this._chatId}/`) && resource.includes('/messages')) {
       void this.loadChatData();
     } else {
       // better clean this up as we don't want to be listening to events for other chats
@@ -588,6 +636,29 @@ detail: ${JSON.stringify(eventDetail)}`;
   private onParticipantRemoved = (added: AadUserConversationMember): void => {
     if (added.id) this.removeParticipantFromState(added.id);
   };
+
+  /**
+   * Update the state with given message either replacing an existing message matching on the id or adding to the list
+   *
+   * @private
+   * @param {(AcsChatMessage | SystemMessage)} [message]
+   * @return {*}
+   * @memberof StatefulGraphChatClient
+   */
+  private updateMessages(message?: AcsChatMessage | SystemMessage) {
+    if (!message) return;
+    this.notifyStateChange((draft: GraphChatClient) => {
+      const index = draft.messages.findIndex(m => m.messageId === message.messageId);
+      // this message is not already in thread so just add it
+      if (index === -1) {
+        // sort to ensure that messages are in the correct order should we get messages out of order
+        draft.messages = draft.messages.concat(message).sort(MessageCreatedComparator);
+      } else {
+        // replace the existing version of the message with the new one
+        draft.messages.splice(index, 1, message);
+      }
+    });
+  }
 
   private removeParticipantFromState(membershipId: string): void {
     this.notifyStateChange((draft: GraphChatClient) => {
@@ -617,6 +688,90 @@ detail: ${JSON.stringify(eventDetail)}`;
     this.removeParticipantFromState(membershpId);
   };
 
+  private graphImageMatch(messageContent: string): RegExpMatchArray | null {
+    return messageContent.match(graphImageUrlRegex);
+  }
+
+  private processMessageContent(graphMessage: ChatMessage, currentUser: string): MessageConversion {
+    const conversion: MessageConversion = {};
+    // using a record here lets us track which image in the content each request is for
+    const futureImages: Record<number, Promise<string | null>> = {};
+    let messageResult = graphMessage.body?.content ?? '';
+    const messageId = graphMessage.id ?? '';
+    let index = 0;
+    let match = this.graphImageMatch(messageResult);
+    while (match) {
+      // note that the regex to replace the placeholder requires that the id be before and adjacent to the src attribute
+      messageResult = messageResult.replace(
+        graphImageUrlRegex,
+        `$1id="${messageId}-${index}" src="${placeholderImageContent}"`
+      );
+      const graphImageUrl = match[2].replace(/["']/g, '');
+      // collect promises for the image requests so that we can update the message content once they are all resolved
+      futureImages[index] = loadChatImage(this.graph, graphImageUrl);
+      index++;
+      match = this.graphImageMatch(messageResult);
+    }
+    let placeholderMessage = this.buildAcsMessage(graphMessage, currentUser, messageId, messageResult);
+    conversion.currentValue = placeholderMessage;
+    // local function to update the message with data from each of the resolved image requests
+    const updateMessage = async () => {
+      await Promise.all(Object.values(futureImages));
+      for (const [imageIndex, futureImage] of Object.entries(futureImages)) {
+        const image = await futureImage;
+        if (image) {
+          placeholderMessage = {
+            ...placeholderMessage,
+            ...{
+              content: updateMessageContentWithImage(placeholderMessage.content || '', imageIndex, messageId, image)
+            }
+          };
+        }
+      }
+      return placeholderMessage;
+    };
+    conversion.futureValue = updateMessage();
+    return conversion;
+  }
+
+  private graphChatMessageToAcsChatMessage(graphMessage: ChatMessage, currentUser: string): MessageConversion {
+    if (!graphMessage.id) {
+      throw new Error('Cannot convert graph message to ACS message. No ID found on graph message');
+    }
+    const content = graphMessage.body?.content ?? 'undefined';
+    let result: MessageConversion = {};
+    const imageMatch = this.graphImageMatch(content ?? '');
+    if (imageMatch) {
+      // if the message contains an image, we need to fetch the image and replace the placeholder
+      result = this.processMessageContent(graphMessage, currentUser);
+    } else {
+      result.currentValue = this.buildAcsMessage(graphMessage, currentUser, graphMessage.id, content);
+    }
+    return result;
+  }
+
+  private buildAcsMessage(
+    graphMessage: ChatMessage,
+    currentUser: string,
+    messageId: string,
+    content: string
+  ): AcsChatMessage {
+    const senderId = graphMessage.from?.user?.id || undefined;
+    return {
+      messageId,
+      contentType: graphMessage.body?.contentType ?? 'text',
+      messageType: 'chat',
+      content,
+      senderDisplayName: graphMessage.from?.user?.displayName ?? undefined,
+      createdOn: new Date(graphMessage.createdDateTime ?? Date.now()),
+      editedOn: graphMessage.lastEditedDateTime ? new Date(graphMessage.lastEditedDateTime) : undefined,
+      senderId,
+      mine: senderId === currentUser,
+      status: 'seen',
+      attached: 'top'
+    };
+  }
+
   /**
    * Register event listeners for chat events to be triggered from the notification service
    */
@@ -624,7 +779,7 @@ detail: ${JSON.stringify(eventDetail)}`;
     this._eventEmitter.on('chatMessageReceived', (message: ChatMessage) => void this.onMessageReceived(message));
     this._eventEmitter.on('chatMessageDeleted', this.onMessageDeleted);
     this._eventEmitter.on('chatMessageEdited', (message: ChatMessage) => void this.onMessageEdited(message));
-    this._eventEmitter.on('chatMessageNotificationsSubscribed', this.onChatNotificationsSubscribed);
+    this._eventEmitter.on('notificationsSubscribedForResource', this.onChatNotificationsSubscribed);
     this._eventEmitter.on('chatThreadPropertiesUpdated', this.onChatPropertiesUpdated);
     // TODO: add define how to handle chat deletion
     // this._eventEmitter.on('chatThreadDeleted', this.onChatDeleted);
