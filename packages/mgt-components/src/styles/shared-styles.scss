@@ -29,6 +29,12 @@
   margin: 4px 0;
 }
 
+.error {
+  background-color: rgb(253, 231, 233);
+  padding-block: 8px;
+  padding-inline: 8px 12px;
+}
+
 .ms-Icon--ChevronDown::before {
   content: '\\\E70D';
 }

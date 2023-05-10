@@ -1,11 +1,12 @@
 {
   "name": "root",
   "private": true,
-  "version": "3.0.0-preview.1",
+  "version": "3.0.0-preview.2",
   "workspaces": {
     "packages": [
       "packages/*",
       "packages/providers/*",
+      "samples/react-admin-app",
       "samples/react-app",
       "samples/angular-app",
       "samples/vue-app",
@@ -22,6 +23,7 @@
     ]
   },
   "scripts": {
+    "init": "yarn && yarn build",
     "analyze": "custom-elements-manifest analyze --litelement --globs \"./packages/*/src/**/*.ts\"",
     "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
     "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope @microsoft/*",
@@ -38,7 +40,7 @@
     "bootstrap": "lerna bootstrap --useWorkspaces",
     "clean": "lerna run --parallel --stream --scope @microsoft/* clean",
     "link": "lerna link --force-local",
-    "lint": "eslint -c .eslintrc.js  'packages/*/src/**/*.ts'",
+    "lint": "eslint -c .eslintrc.js --quiet 'packages/*/src/**/*.ts'",
     "pack": "shx rm -rf artifacts/*.tgz && lerna exec --stream --scope @microsoft/* -- npm pack",
     "prepare": "lerna bootstrap --force-local",
     "sass": "lerna run sass --scope @microsoft/*",
@@ -50,6 +52,9 @@
     "watch": "lerna run --parallel --stream --scope @microsoft/* build:watch ",
     "watch:serve": "npm-run-all --parallel watch serve",
     "watch:serve:https": "npm-run-all -parallel watch serve:https",
+    "watch:components": "lerna run --parallel build:watch --scope @microsoft/mgt-components --include-dependents",
+    "watch:react-admin-app": "lerna run start --scope react-admin-app",
+    "watch:react": "npm-run-all --parallel watch:components watch:react-admin-app",
     "prettier:base": "prettier --parser typescript",
     "prettier:check": "npm run prettier:base -- --check \"packages/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"packages/**/*.{ts,tsx}\"",
@@ -165,7 +170,6 @@
     "embeddedLanguageFormatting": "off"
   },
   "resolutions": {
-    "@microsoft/microsoft-graph-client": "3.0.2",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",

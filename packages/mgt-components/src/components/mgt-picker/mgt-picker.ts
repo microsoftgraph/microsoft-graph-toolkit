@@ -27,7 +27,6 @@ registerFluentComponents(fluentCombobox, fluentOption);
  *
  * @cssprop --picker-background-color - {Color} Picker component background color
  */
-// @customElement('mgt-picker')
 @customElement('picker')
 export class MgtPicker extends MgtTemplatedComponent {
   protected get strings() {
@@ -150,7 +149,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   private isRefreshing: boolean;
 
   @state() private response: Entity[];
-  @state() private error: object;
 
   constructor() {
     super();
@@ -196,7 +194,8 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (this.isLoadingState && !this.response) {
       return this.renderTemplate('loading', null);
     } else if (this.hasTemplate('error')) {
-      return this.renderTemplate('error', this.error ? this.error : null, 'error');
+      const error = this.error ? (this.error as Error) : null;
+      return this.renderTemplate('error', { error }, 'error');
     } else if (this.hasTemplate('no-data')) {
       return this.renderTemplate('no-data', null);
     }
