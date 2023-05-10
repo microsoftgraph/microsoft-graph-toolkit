@@ -18,18 +18,18 @@ export default {
       page: defaultDocsPage,
       source: {
         code:
-          '<mgt-taxonomy-picker term-set-id="138a652e-7f23-46f6-b480-13da2308c235"></mgt-taxonomy-picker>'
+          '<mgt-taxonomy-picker term-set-id="f1c3d275-b202-41f0-83f3-80d63ffaa052"></mgt-taxonomy-picker>'
       }
     }
   }
 };
 
 export const TaxonomyPicker = () => html`
-  <mgt-taxonomy-picker term-set-id="138a652e-7f23-46f6-b480-13da2308c235"></mgt-taxonomy-picker>
+  <mgt-taxonomy-picker term-set-id="f1c3d275-b202-41f0-83f3-80d63ffaa052"></mgt-taxonomy-picker>
 `;
 
 export const SelectionChangedEvent = () => html`
-  <mgt-taxonomy-picker term-set-id="138a652e-7f23-46f6-b480-13da2308c235"></mgt-taxonomy-picker>
+  <mgt-taxonomy-picker term-set-id="f1c3d275-b202-41f0-83f3-80d63ffaa052"></mgt-taxonomy-picker>
   <!-- Check the console tab for results -->
   <script>
     document.querySelector('mgt-taxonomy-picker').addEventListener('selectionChanged', e => {
