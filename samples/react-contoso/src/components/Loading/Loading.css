@@ -1,4 +1,4 @@
-#outer {
+.outer {
   position: absolute;
   top: 0;
   left: 0;
@@ -7,17 +7,21 @@
   z-index: -1000;
 }
 
-#table-container {
+.table-container {
   height: 100%;
   width: 100%;
   display: table;
   top: 50%;
 }
 
-#table-cell {
+.table-cell {
   vertical-align: middle;
   height: 100%;
   display: table-cell;
   padding-left: 280px;
   padding-top: 50px;
+}
+
+.loading {
+  margin: auto;
 }

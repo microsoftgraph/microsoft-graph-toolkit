@@ -282,7 +282,7 @@ export class MgtGet extends MgtTemplatedComponent {
     } else if (this.error) {
       return this.renderTemplate('error', this.error);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
-    } else if (this.hasTemplate('value') && isCollectionResponse(this.response)) {
+    } else if (this.hasTemplate('value') && this.response && isCollectionResponse(this.response)) {
       let valueContent: TemplateResult;
 
       if (isCollectionResponse(this.response)) {

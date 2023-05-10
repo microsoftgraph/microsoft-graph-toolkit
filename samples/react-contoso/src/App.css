@@ -43,15 +43,3 @@
   height: 100px; /* fixed header height*/
   margin: -100px 0 0; /* negative fixed header height */
 }
-
-mgt-login {
-  --button-background-color--hover: transparent;
-}
-
-mgt-person.simple-login {
-  --avatar-size-s: 32px;
-}
-
-mgt-person {
-  --font-weight: 400;
-}

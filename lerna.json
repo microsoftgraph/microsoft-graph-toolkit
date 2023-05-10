@@ -2,7 +2,7 @@
   "packages": [
     "packages/*",
     "packages/providers/*",
-    "samples/react-admin-app",
+    "samples/react-contoso",
     "samples/react-app",
     "samples/react-chat",
     "samples/angular-app",

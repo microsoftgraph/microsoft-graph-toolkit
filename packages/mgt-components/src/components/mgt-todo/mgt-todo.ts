@@ -20,6 +20,7 @@ import '../sub-components/mgt-dot-options/mgt-dot-options';
 import {
   createTodoTask,
   deleteTodoTask,
+  getTodoTaskList,
   getTodoTasks,
   TaskStatus,
   TodoTask,
@@ -209,7 +210,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const cancelIcon = html`
       <fluent-button
-        class="task-cancel-icon" 
+        class="task-cancel-icon"
         @click="${this.clearNewTaskData}">
         ${getSvg(SvgIcon.Cancel)}
       </fluent-button>
@@ -257,7 +258,7 @@ export class MgtTodo extends MgtTasksBase {
             </div>
         `
           : html``
-      }  
+      }
      `;
   };
 
@@ -387,6 +388,9 @@ export class MgtTodo extends MgtTasksBase {
     const currentList = this.currentList;
     if (currentList) {
       await this.loadTasks(currentList);
+    } else if (this.targetId) {
+      this.currentList = await getTodoTaskList(this._graph, this.targetId);
+      this.loadTasks(this.currentList);
     }
   };
 

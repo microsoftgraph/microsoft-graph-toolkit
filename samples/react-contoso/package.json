@@ -1,5 +1,5 @@
 {
-  "name": "react-admin-app",
+  "name": "react-contoso",
   "version": "1.3.0",
   "private": true,
   "dependencies": {
@@ -7,9 +7,12 @@
     "@fluentui/react": "^8.0.0",
     "@fluentui/react-hooks": "^8.2.0",
     "@fluentui/react-theme-provider": "^0.18.5",
+    "@fluentui/react-components": "^9.19.1",
+    "@fluentui/react-migration-v8-v9": "^9.2.10",
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-msal2-provider": "*",
     "@microsoft/mgt-react": "*",
+    "@microsoft/mgt-chat": "*",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

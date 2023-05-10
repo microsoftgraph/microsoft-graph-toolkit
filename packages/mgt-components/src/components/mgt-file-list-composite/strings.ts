@@ -6,7 +6,7 @@
  */
 
 export const strings = {
-  rootNode: 'Home',
+  rootNode: 'General',
   deleteFileTitle: 'Delete file: ',
   deleteFileMessage: 'Are you sure you want to delete this file? This action cannot be undone.',
   deleteFileButton: 'Delete',

@@ -1,0 +1,19 @@
+mgt-login {
+  --login-signed-in-hover-background: transparent;
+}
+
+.signed-out {
+  padding: 4px 8px;
+}
+
+.signed-in {
+  margin: 0px 10px;
+}
+
+.header-search {
+  min-width: 320px;
+  max-width: 468px;
+  padding-right: 1em;
+  padding-left: 1em;
+  width: 100%;
+}

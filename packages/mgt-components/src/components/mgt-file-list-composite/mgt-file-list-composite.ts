@@ -102,7 +102,9 @@ class MgtFileListComposite extends MgtFileListBase {
       { id: 'download', name: 'Download', onClickFunction: this.downloadFile, shouldRender: f => !f.folder }
     ];
 
-    this.comandBarItems = [{ text: 'New folder', onClick: this.showNewFolderDialog, appearance: 'accent' }];
+    if (this.enableCommandBar) {
+      this.comandBarItems = [{ text: 'New folder', onClick: this.showNewFolderDialog, appearance: 'accent' }];
+    }
   }
 
   /**
@@ -127,6 +129,30 @@ class MgtFileListComposite extends MgtFileListBase {
     type: Boolean
   })
   public useGridView: boolean;
+
+  /**
+   * Enables the command bar
+   *
+   * @type {boolean}
+   * @memberof MgtFileListComposite
+   */
+  @property({
+    attribute: 'enable-command-bar',
+    type: Boolean
+  })
+  public enableCommandBar: boolean;
+
+  /**
+   * Enables a custom breadcrumb root name
+   *
+   * @type {boolean}
+   * @memberof MgtFileListComposite
+   */
+  @property({
+    attribute: 'enable-breadcrumb-root-name',
+    type: Boolean
+  })
+  public enableBreadcrumbRootName: boolean;
 
   @state()
   private fileUploadData: MgtFileUploadItem[] = [];
@@ -289,7 +315,7 @@ class MgtFileListComposite extends MgtFileListBase {
     };
     return mgtHtml`
       <mgt-file-upload
-        .fileUploadList=${fileUploadConfig} 
+        .fileUploadList=${fileUploadConfig}
         exportparts="upload-button-wrapper"
         hide-inline-progress
         @fileUploadChanged=${this.onFileUploadChanged}

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Stack, ILinkStyleProps, ILinkStyles, ITheme, IStackProps, FontIcon, Label } from '@fluentui/react';
 import { mergeStyles, Stylesheet } from '@fluentui/merge-styles';
-import { Login } from '@microsoft/mgt-react';
+import { Login, SearchBox } from '@microsoft/mgt-react';
 import { SimpleLogin } from '../SimpleLogin/SimpleLogin';
 import { useIsSignedIn } from '../../hooks/useIsSignedIn';
 import './Header.css';
@@ -52,14 +52,18 @@ const HeaderComponent: React.FunctionComponent<IHeaderProps> = (props: IHeaderPr
 
   return (
     <Stack horizontal verticalAlign="center" grow={0} styles={headerStackStyles} className={headerStyles}>
-      <Stack horizontal grow={1} verticalAlign="center">
+      <Stack horizontal grow={1} verticalAlign="center" styles={{ root: { minWidth: 'max-content' } }}>
         <a href={'https://myapps.microsoft.com'} target="_blank" rel="noreferrer">
           <FontIcon iconName="Waffle" className={waffleIconClass} />
         </a>
 
         <Label styles={pipeFabricStyles}>{process.env.REACT_APP_SITE_NAME}</Label>
       </Stack>
-      <Login className={!isSignedIn ? 'signed-out' : ''}>
+      <Stack horizontal styles={{ root: { width: '100%', margin: 'auto' } }} grow={1} horizontalAlign="center">
+        <SearchBox className="header-search"></SearchBox>
+      </Stack>
+
+      <Login className={!isSignedIn ? 'signed-out' : 'signed-in'}>
         <SimpleLogin template="signed-in-button-content" />
       </Login>
     </Stack>

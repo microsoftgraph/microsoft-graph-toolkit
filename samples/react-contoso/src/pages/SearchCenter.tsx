@@ -6,7 +6,7 @@ import { AllResults, ExternalItems, Interleaving, PeopleResults } from './Search
 export const SearchCenter: React.FunctionComponent = () => {
   const searchCenterStyles: React.CSSProperties = {
     maxWidth: '1028px',
-    minWidth: '1028px',
+    width: '100%',
     margin: 'auto'
   };
 

@@ -35,6 +35,7 @@ $progress-ring-size: var(--progress-ring-size, 24px);
 
   .file-item {
     width: fit-content;
+    cursor: pointer;
   }
 
   .file-grid {

@@ -7,6 +7,9 @@ import { SideNavigation } from './components/SideNavigation/SideNavigation';
 import { Home } from './pages/Home';
 import { SearchCenter } from './pages/SearchCenter';
 import { useIsSignedIn } from './hooks/useIsSignedIn';
+import { Emails } from './pages/Emails';
+import { Dashboard } from './pages/Dashboard';
+import { Incident } from './pages/Incident/Incident';
 
 export const App: React.FunctionComponent = theme => {
   const [navigationItems, setNavigationItems] = React.useState<INavLinkGroup[]>([]);
@@ -27,6 +30,22 @@ export const App: React.FunctionComponent = theme => {
     });
 
     if (isSignedIn) {
+      navItems.push({
+        name: 'Dashboard',
+        url: '#/dashboard',
+        icon: 'GoToDashboard',
+        key: 'dashboard',
+        requiresLogin: true
+      });
+
+      navItems.push({
+        name: 'Messages',
+        url: '#/messages',
+        icon: 'Mail',
+        key: 'messages',
+        requiresLogin: true
+      });
+
       navItems.push({
         name: 'Search',
         url: '#/search',
@@ -66,7 +85,12 @@ export const App: React.FunctionComponent = theme => {
   const Main = (props: IStackProps) => (
     <Stack
       grow={80}
-      className={mergeStyles({ padding: '40px', paddingLeft: '300px', paddingTop: '42px' })}
+      className={mergeStyles({
+        padding: '40px',
+        paddingLeft: '300px',
+        paddingTop: '42px',
+        minHeight: 'calc(100vh - 10px)'
+      })}
       disableShrink
       {...props}
     />
@@ -101,7 +125,10 @@ export const App: React.FunctionComponent = theme => {
                 <Redirect to="/home" />
               </Route>
               <Route exact path="/home" component={Home} />
+              {isSignedIn && <Route exact path="/dashboard" component={Dashboard} />}
               {isSignedIn && <Route exact path="/search" component={SearchCenter} />}
+              {isSignedIn && <Route exact path="/messages" component={Emails} />}
+              {isSignedIn && <Route path="/incident/:id" component={Incident} />}
               <Route path="*" component={Home} />
             </Switch>
           </Main>

@@ -412,7 +412,7 @@ export class MgtFileGrid extends MgtFileListBase {
    */
   protected renderFileName(file: DriveItem): TemplateResult {
     return file.folder
-      ? html`<a class="file-item" href="#" @click=${e => this.handleItemSelect(file, e)}>${file.name}</a>`
+      ? html`<a class="file-item" @click=${e => this.handleItemSelect(file, e)}>${file.name}</a>`
       : html`<a class="file-item" target="_blank" href=${file.webUrl}>${file.name}</a>`;
   }
 

@@ -3,9 +3,8 @@ import { PageHeader } from '../components/PageHeader/PageHeader';
 
 export const Home: React.FunctionComponent = () => {
   return (
-    <PageHeader
-      title={'Home'}
-      description={'Use this application to test Microsoft Graph Toolkit capabilities in rich scenarios.'}
-    ></PageHeader>
+    <>
+      <PageHeader title={'Home'} description={'Welcome to Contoso!'}></PageHeader>
+    </>
   );
 };
