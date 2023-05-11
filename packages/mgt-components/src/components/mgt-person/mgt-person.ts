@@ -61,7 +61,11 @@ const defaultPersonProperties = [
  * @cssprop --person-background-color - {Color} the color of the person component background.
  * @cssprop --person-background-border-radius - {Length} the border radius of the person component. Default is 4px.
  *
- * @cssprop --person-avatar-size - {Length} the width and height of the avatar. Default is 24px.
+ * @cssprop --person-avatar-size-small - {Length} the width and height of the avatar. Default is 24px.
+ * @cssprop --person-avatar-size-2-lines - {Length} the width and height of the avatar. Default is 40px.
+ * @cssprop --person-avatar-size-3-lines - {Length} the width and height of the avatar. Default is 56px.
+ * @cssprop --person-avatar-size-4-lines - {Length} the width and height of the avatar. Default is 72px.
+ * @cssprop --person-avatar-size-vertical - {Length} the width and height of the avatar. Default is 72px.
  * @cssprop --person-avatar-border - {String} the border around an avatar. Default is none.
  * @cssprop --person-avatar-border-radius - {String} the radius around the border of an avatar. Default is 50%.
  *

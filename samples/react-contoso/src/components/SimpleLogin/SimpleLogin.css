@@ -3,5 +3,5 @@ mgt-login {
 }
 
 .simple-login {
-  --person-avatar-size: 32px !important;
+  --person-avatar-size-small: 32px;
 }
