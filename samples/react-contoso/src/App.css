@@ -60,14 +60,14 @@
 .sidebar {
   display: flex;
   flex-flow: column nowrap;
-  width: 295px;
+  min-width: 295px;
   height: 100%;
   box-sizing: border-box;
   background-color: rgb(233, 233, 233);
 }
 
 .minimized {
-  width: auto;
+  min-width: auto;
 }
 
 .content {
