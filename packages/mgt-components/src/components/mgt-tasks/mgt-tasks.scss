@@ -7,36 +7,31 @@
 
 @import '../../styles/shared-styles';
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import './mgt-tasks.theme.scss';
+@import './mgt-tasks.theme';
 
 $tasks-header-padding: var(--tasks-header-padding, 0 0 14px 0);
 $tasks-header-margin: var(--tasks-header-margin, none);
 $tasks-header-text-font-size: var(--tasks-header-font-size, 16px);
 $tasks-header-text-font-weight: var(--tasks-header-font-weight, 600);
-
 $tasks-new-button-width: var(--tasks-new-button-width, none);
 $tasks-new-button-height: var(--tasks-new-button-height, none);
 $tasks-new-button-text-font-weight: var(--tasks-new-button-text-font-weight, 700);
 $tasks-new-button-border: var(--tasks-new-button-border, none);
 $neutral-btn-border: calc(var(--stroke-width) * 1px) solid transparent;
-
 $task-add-new-button-width: var(--task-add-new-button-width, none);
 $task-add-new-button-height: var(--task-add-new-button-height, none);
 $task-add-new-button-text-font-weight: var(--task-add-new-button-text-font-weight, initial);
 $task-add-new-button-border: var(--task-add-new-button-border, $neutral-btn-border);
-
 $task-cancel-new-button-width: var(--task-cancel-new-button-width, none);
 $task-cancel-new-button-height: var(--task-cancel-new-button-height, none);
 $task-cancel-new-button-text-font-weight: var(--task-cancel-new-button-text-font-weight, initial);
 $task-cancel-new-button-border: var(--task-cancel-new-button-border, $neutral-btn-border);
-
 $task-title-text-font-size: var(--task-title-text-font-size, medium);
 $task-title-text-font-weight: var(--task-title-text-font-weight, 600);
 $task-icons-width: var(--task-icons-width, 20px);
 $task-icons-height: var(--task-icons-height, 20px);
 $task-icons-text-size: var(--task-icons-text-font-size, 12px);
 $task-icons-text-weight: var(--task-icons-text-font-weight, 600);
-
 $task-complete-border: var(--task-complete-border, 2px dotted var(--neutral-foreground-active));
 $task-incomplete-border: var(--task-incomplete-border, 1px solid var(--neutral-foreground-active));
 $task-complete-border-radius: var(--task-complete-border-radius, 4px);
@@ -44,14 +39,11 @@ $task-incomplete-border-radius: var(--task-incomplete-border-radius, 4px);
 $task-complete-padding: var(--task-complete-padding, 10px);
 $task-incomplete-padding: var(--task-incomplete-padding, 10px);
 $tasks-gap: var(--tasks-gap, 20px);
-
 $tasks-border: var(--tasks-border, 0);
 $tasks-border-radius: var(--tasks-border-radius, 0);
 $tasks-padding: var(--tasks-padding, 12px);
-
 $task-new-input-border: var(--task-new-input-border, calc(var(--stroke-width) * 1px) solid transparent);
 $task-new-input-border-radius: var(--task-new-input-border-radius, calc(var(--control-corner-radius) * 1px));
-
 $task-new-dropdown-border: var(--task-new-dropdown-border, calc(var(--stroke-width) * 1px) solid transparent);
 $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(var(--control-corner-radius) * 1px));
 
@@ -60,6 +52,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
   padding: $tasks-padding;
   border: $tasks-border;
   border-radius: $tasks-border-radius;
+
   --skeleton-fill: var(--neutral-foreground-active);
 
   .Header {
@@ -133,6 +126,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
         border-radius: $task-complete-border-radius;
         background: $task-complete-bg-color;
         padding: $task-complete-padding;
+
         --dot-options-button-background-color: $task-complete-bg-color;
       }
 
@@ -141,6 +135,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
         border-radius: $task-complete-border-radius;
         background: $task-incomplete-bg-color;
         padding: $task-incomplete-padding;
+
         --dot-options-button-background-color: $task-incomplete-bg-color;
       }
 
@@ -194,6 +189,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
               height: 10px;
               width: 20px;
             }
+
             &.NewTaskActionButtons {
               display: flex;
               flex-direction: column;
@@ -231,6 +227,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
               svg {
                 width: $task-icons-width;
                 height: $task-icons-height;
+
                 path {
                   fill: $task-icons-bg-color;
                 }
@@ -331,9 +328,11 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
 
   fluent-option {
     background: $task-new-dropdown-list-background-color;
+
     &:hover {
       background: $task-new-dropdown-option-hover-bg-color;
     }
+
     &::part(content) {
       color: $task-new-dropdown-option-text-color;
     }
@@ -366,6 +365,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
     &::part(control) {
       border-radius: 50%;
       background: $task-incomplete-checkbox-bg;
+
       &:hover {
         background: $task-incomplete-checkbox-hover-bg;
       }
@@ -425,7 +425,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
   }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (width <= 600px) {
   :host {
     fluent-select {
       width: 100%;
