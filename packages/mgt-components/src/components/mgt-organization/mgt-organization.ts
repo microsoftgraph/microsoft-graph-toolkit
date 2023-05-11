@@ -24,7 +24,6 @@ import { mgtHtml, customElement } from '@microsoft/mgt-element';
  * @extends {MgtTemplatedComponent}
  */
 @customElement('organization')
-// @customElement('mgt-organization')
 export class MgtOrganization extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined

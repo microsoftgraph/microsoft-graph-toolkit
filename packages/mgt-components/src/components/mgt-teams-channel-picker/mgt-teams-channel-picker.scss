@@ -61,7 +61,7 @@
     padding: 5px;
 
     .loading-text {
-      color: var(--color, #0078d4);
+      color: $channel-picker-loading-text-color;
       margin: auto;
     }
   }
@@ -69,18 +69,17 @@
 
 :host {
   fluent-card {
-    --fill-color: var(--dropdown-background-color, --fill-color);
+    --fill-color: var(--channel-picker-dropdown-background-color, --fill-color);
     --card-height: auto;
     --width: var(--card-width);
   }
 
   fluent-text-field {
     width: 100%;
-
-    --fill-color: var(--color, $color);
-    --neutral-fill-input-rest: var(--input-background-color, #fff);
-    --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
-    --input-placeholder-hover: var(--placeholder-color-focus, --input-placeholder-hover);
+    --fill-color: var(--channel-picker-color, $color);
+    --neutral-fill-input-rest: var(--channel-picker-input-background-color, #ffffff);
+    --input-placeholder-rest: var(--channel-picker-placeholder-color, --input-placeholder-rest);
+    --input-placeholder-hover: var(--channel-picker-placeholder-color--focus, --input-placeholder-hover);
   }
 
   fluent-tree-view {
@@ -91,10 +90,10 @@
 
   fluent-tree-item {
     --tree-item-nested-width: 2em;
-    --neutral-foreground-rest: var(--color, $color);
-    --neutral-fill-stealth-hover: var(--dropdown-item-hover-background, --neutral-fill-stealth-hover);
-    --neutral-fill-secondary-rest: var(--dropdown-item-selected-background, --neutral-fill-secondary-rest);
-    --neutral-fill-stealth-rest: var(--dropdown-background-color, --neutral-fill-stealth-rest);
+    --neutral-foreground-rest: var(--channel-picker-color, $color);
+    --neutral-fill-stealth-hover: var(--channel-picker-dropdown-item-hover-background, --neutral-fill-stealth-hover);
+    --neutral-fill-secondary-rest: var(--channel-picker-dropdown-item-selected-background, --neutral-fill-secondary-rest);
+    --neutral-fill-stealth-rest: var(--channel-picker-dropdown-background-color, --neutral-fill-stealth-rest);
   }
 
   fluent-breadcrumb-item {
@@ -113,7 +112,7 @@
       margin-right: 8px;
 
       svg {
-        stroke: var(--arrow-fill, $color);
+        stroke: $channel-picker-arrow-fill-color;
       }
     }
   }

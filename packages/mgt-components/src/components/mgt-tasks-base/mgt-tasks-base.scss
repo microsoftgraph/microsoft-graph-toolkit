@@ -17,6 +17,7 @@ $task-icon-border-completed: var(--task-icon-border-completed, solid 1px white);
 $task-icon-border-radius: var(--task-icon-border-radius, 50%);
 $task-icon-color-completed: var(--task-icon-color-completed, white);
 $task-border-completed: var(--task-complete-border, 2px dotted inherit);
+$task-icon-color: var(--task-icon-color, $ms-color-gray120);
 
 :host {
   font-family: $font-family;
@@ -87,7 +88,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
       input {
         flex: 1 1 auto;
-        background-color: set-var(background-color-sub1, $theme-default, $common);
+        background-color: $task-background-color;
       }
     }
 
@@ -143,7 +144,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     margin: var(--task-margin, 0 0 0 0);
     padding: var(--task-padding, 0 0 0 0);
     background-color: $task-background-color;
-    border: set-var(border, $theme-default, $tasks);
+    border: $task-border;
     border-radius: 8px;
 
     .task-content {
@@ -155,7 +156,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: set-var(background-color-sub1, $theme-default, $common);
+        background-color: $task-background-color;
       }
 
       .task-details-container {
@@ -317,7 +318,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         span,
         select {
           vertical-align: middle;
-          color: set-var(color__sub2, $theme-default, $common);
+          color: $detail__color;
         }
 
         .task-icon {
@@ -335,7 +336,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         }
 
         .picker {
-          background-color: set-var(background-color-sub1, $theme-default, $common);
+          background-color: $task-background-color;
           background-clip: padding-box;
           width: var(--mgt-flyout-set-width, 350px);
           color: $detail-color;
@@ -349,7 +350,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         select {
           color: $detail-color;
           font-size: 0.9em;
-          background-color: set-var(background-color-sub1, $theme-default, $common);
+          background-color: $task-background-color;
         }
       }
     }
@@ -373,7 +374,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
         .task-content .task-details-container .task-title {
           text-decoration: line-through;
-          color: set-var(color__sub3, $theme-default, $common);
+          color: $detail__color;
         }
       }
 
@@ -384,7 +385,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         height: 18px;
         border-radius: $task-icon-border-radius;
         border: $task-icon-border;
-        color: set-var(icon__color, $theme-default, $tasks);
+        color: $task-icon-color;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -411,11 +412,11 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
     &.complete {
       background: $task-background-color--completed;
-      border: set-var(border--completed, $theme-default, $tasks);
+      border: $task-border-completed;
 
       .task-content .task-details-container .task-title {
         text-decoration: line-through;
-        color: set-var(color__sub3, $theme-default, $common);
+        color: $detail__color;
       }
     }
 
@@ -478,7 +479,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
               border-bottom: 1px solid $ms-color-gray40;
               outline: none;
               border-radius: 0;
-              background-color: set-var(background-color-sub1, $theme-default, $common);
+              background-color: $task-background-color;
             }
 
             input:hover {

@@ -98,7 +98,6 @@ type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
  * @cssprop --person-card-chat-input-focus-color - {Color} The chat input focus color
  */
 @customElement('person-card')
-// @customElement('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

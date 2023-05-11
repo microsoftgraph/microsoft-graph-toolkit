@@ -220,9 +220,7 @@ $font-size: var(--default-font-size);
 $font-weight: var(--default-font-weight, 400);
 $font-icon: 'FabricMDL2Icons';
 
-/* ---------------Common theming vars / functions / mixins--------------- */
-$themes: ('light', 'dark');
-$theme-default: 'light';
+/* ---------------Common variables / functions / mixins--------------- */
 $common: (
   color: (
     _var: --color,
@@ -427,40 +425,4 @@ $common: (
   @return var(#{map.get($theme-value, '_var')}, #{map.get($theme-value, $theme)});
 }
 
-@mixin create-themes($component) {
-  @each $theme in $themes {
-    .mgt-#{$theme} {
-      @each $name, $var in $component {
-        #{map.get($var, _var)}: #{map.get($var, $theme)};
-      }
-    }
-  }
-}
-
-$color: set-var(color__sub1, $theme-default, $common);
-$placeholder-color: set-var(input-outlined__placeholder__color, $theme-default, $common);
-$placeholder-color--focus: set-var(input-outlined__placeholder__color--focus, $theme-default, $common);
-$input-background-color: set-var(input-outlined__background-color, $theme-default, $common);
-$input-border: set-var(input-outlined__border, $theme-default, $common);
-$input-border-top: set-var(input-outlined__border-top, $theme-default, $common);
-$input-border-right: set-var(input-outlined__border-right, $theme-default, $common);
-$input-border-bottom: set-var(input-outlined__border-bottom, $theme-default, $common);
-$input-border-left: set-var(input-outlined__border-left, $theme-default, $common);
-$input-border-color--hover: set-var(input-outlined__border-color--hover, $theme-default, $common);
-$input-border-color--focus: set-var(input-outlined__border-color--focus, $theme-default, $common);
-$dropdown-background-color: var(--dropdown-background-color, set-var(list__background-color, $theme-default, $common));
-$dropdown-item-background-color--hover: var(
-  --dropdown-item-hover-background,
-  set-var(input-outlined__background-color--hover, $theme-default, $common)
-);
-$dropdown-item-text-color: set-var(dropdown__item__text__color, $theme-default, $common);
-$dropdown-item-text-color--hover: set-var(dropdown__item__text__color--hover, $theme-default, $common);
-
-@mixin input-border($theme) {
-  border-top: $input-border-top;
-  border-right: $input-border-right;
-  border-bottom: $input-border-bottom;
-  border-left: $input-border-left;
-}
-
-@include create-themes($common);
+$color: var(--color, var(--neutral-foreground-rest));
