@@ -9,7 +9,10 @@
 @import '../../styles/shared-styles';
 @import './mgt-teams-channel-picker.theme';
 
-:host {
+:host,
+:host mgt-teams-channel-picker {
+  font-family: $font-family;
+
   .container {
     display: flex;
     flex-direction: column;
@@ -40,108 +43,110 @@
         width: auto;
       }
     }
+  }
 
-    .search-error-text,
+  .search-error-text,
+  .loading-text {
+    font-family: $font-family;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .message-parent {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    padding: 5px;
+
     .loading-text {
-      font-family: $font-family;
-      font-style: normal;
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 20px;
+      color: var(--color, #0078d4);
+      margin: auto;
+    }
+  }
+}
+
+:host {
+  fluent-card {
+    --fill-color: var(--dropdown-background-color, --fill-color);
+    --card-height: auto;
+    --width: var(--card-width);
+  }
+
+  fluent-text-field {
+    width: 100%;
+
+    --fill-color: var(--color, $color);
+    --neutral-fill-input-rest: var(--input-background-color, #fff);
+    --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
+    --input-placeholder-hover: var(--placeholder-color-focus, --input-placeholder-hover);
+  }
+
+  fluent-tree-view {
+    min-width: 100%;
+
+    --tree-item-nested-width: 2em;
+  }
+
+  fluent-tree-item {
+    --tree-item-nested-width: 2em;
+    --neutral-foreground-rest: var(--color, $color);
+    --neutral-fill-stealth-hover: var(--dropdown-item-hover-background, --neutral-fill-stealth-hover);
+    --neutral-fill-secondary-rest: var(--dropdown-item-selected-background, --neutral-fill-secondary-rest);
+    --neutral-fill-stealth-rest: var(--dropdown-background-color, --neutral-fill-stealth-rest);
+  }
+
+  fluent-breadcrumb-item {
+    .team-parent-name {
+      font-weight: bold;
     }
 
-    .message-parent {
-      display: flex;
-      flex-direction: row;
-      gap: 5px;
-      padding: 5px;
-
-      .loading-text {
-        color: var(--color, #0078d4);
-        margin: auto;
-      }
+    .team-photo {
+      width: 19px;
+      position: inherit;
+      border-radius: 50%;
     }
 
-    fluent-card {
-      --fill-color: var(--dropdown-background-color, --fill-color);
-      --card-height: auto;
-      --width: var(--card-width);
-    }
+    .arrow {
+      margin-left: 8px;
+      margin-right: 8px;
 
-    fluent-text-field {
-      width: 100%;
-
-      --fill-color: var(--color, $color);
-      --neutral-fill-input-rest: var(--input-background-color, #fff);
-      --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
-      --input-placeholder-hover: var(--placeholder-color-focus, --input-placeholder-hover);
-    }
-
-    fluent-tree-view {
-      --tree-item-nested-width: 2em;
-
-      min-width: 100%;
-    }
-
-    fluent-tree-item {
-      --tree-item-nested-width: 2em;
-      --neutral-foreground-rest: var(--color, $color);
-      --neutral-fill-stealth-hover: var(--dropdown-item-hover-background, --neutral-fill-stealth-hover);
-      --neutral-fill-secondary-rest: var(--dropdown-item-selected-background, --neutral-fill-secondary-rest);
-      --neutral-fill-stealth-rest: var(--dropdown-background-color, --neutral-fill-stealth-rest);
-    }
-
-    fluent-breadcrumb-item {
-      .team-parent-name {
-        font-weight: bold;
-      }
-
-      .team-photo {
-        width: 19px;
-        position: inherit;
-        border-radius: 50%;
-      }
-
-      .arrow {
-        margin-left: 8px;
-        margin-right: 8px;
-
-        svg {
-          stroke: var(--arrow-fill, $color);
-        }
+      svg {
+        stroke: var(--arrow-fill, $color);
       }
     }
   }
 
+}
 
-  [dir='rtl'] {
-    :host {
-      --direction: rtl;
-    }
+[dir='rtl'] {
+  :host {
+    --direction: rtl;
+  }
 
-    .dropdown {
+  .dropdown {
+    text-align: right;
+  }
+
+  .arrow {
+    transform: scaleX(-1);
+    filter: fliph;
+    filter: 'FlipH';
+    margin-right: 0;
+    margin-left: 5px;
+  }
+
+  .selected-team {
+    padding-left: 10px;
+  }
+
+  .message-parent {
+    .loading-text {
+      right: auto;
+      left: 10px;
+      padding-right: 8px;
       text-align: right;
-    }
-
-    .arrow {
-      transform: scaleX(-1);
-      filter: fliph;
-      filter: 'FlipH';
-      margin-right: 0;
-      margin-left: 5px;
-    }
-
-    .selected-team {
-      padding-left: 10px;
-    }
-
-    .message-parent {
-      .loading-text {
-        right: auto;
-        left: 10px;
-        padding-right: 8px;
-        text-align: right;
-      }
     }
   }
 }
