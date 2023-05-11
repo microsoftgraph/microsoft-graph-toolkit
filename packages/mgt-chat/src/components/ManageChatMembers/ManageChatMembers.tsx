@@ -103,9 +103,11 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
                         Cancel
                       </Button>
                     </DialogTrigger>
-                    <Button appearance="primary" onClick={leaveChat}>
-                      Leave
-                    </Button>
+                    {members.length > 2 && (
+                      <Button appearance="primary" onClick={leaveChat}>
+                        Leave
+                      </Button>
+                    )}
                   </DialogActions>
                 </DialogBody>
               </DialogSurface>

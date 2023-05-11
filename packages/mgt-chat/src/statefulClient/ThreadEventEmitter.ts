@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
@@ -15,7 +22,7 @@ export type ChatEvent =
   | 'chatThreadPropertiesUpdated'
   | 'participantAdded'
   | 'participantRemoved'
-  | 'chatMessageNotificationsSubscribed';
+  | 'notificationsSubscribedForResource';
 
 export class ThreadEventEmitter {
   private emitter: EventEmitter = new EventEmitter();
@@ -55,8 +62,7 @@ export class ThreadEventEmitter {
   participantRemoved(e: AadUserConversationMember) {
     this.emitter.emit('participantRemoved', e);
   }
-
-  chatMessageNotificationsSubscribed(messagesResource: string) {
-    this.emitter.emit('chatMessageNotificationsSubscribed', messagesResource);
+  notificationsSubscribedForResource(resouce: string) {
+    this.emitter.emit('notificationsSubscribedForResource', resouce);
   }
 }

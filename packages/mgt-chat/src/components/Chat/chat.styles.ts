@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { mergeStyleSets } from '@fluentui/react';
 const chatStyles = mergeStyleSets({
   chat: {
@@ -14,6 +21,9 @@ const chatStyles = mergeStyleSets({
 
   chatInput: {
     overflow: 'unset'
+  },
+  fullHeight: {
+    height: '100%'
   }
 });
 

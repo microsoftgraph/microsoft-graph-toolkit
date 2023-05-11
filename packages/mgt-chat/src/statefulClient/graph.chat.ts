@@ -1,4 +1,19 @@
-import { IGraph, prepScopes } from '@microsoft/mgt-element';
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+import {
+  schemas,
+  CachePhoto,
+  getPhotoInvalidationTime,
+  storePhotoInCache,
+  blobToBase64
+} from '@microsoft/mgt-components';
+import { CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
+import { ResponseType } from '@microsoft/microsoft-graph-client';
 import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 
 /**
@@ -21,6 +36,7 @@ export type MessageCollection = GraphCollection<ChatMessage>;
 const chatOperationScopes: Record<string, string[]> = {
   loadChat: ['chat.readbasic'],
   loadChatMessages: ['chat.read'],
+  loadChatImage: ['chat.read'],
   sendChatMessage: ['chatmessage.send'],
   updateChatMessage: ['chat.readwrite'],
   deleteChatMessage: ['chat.readwrite'],
@@ -193,4 +209,46 @@ export const addChatMembers = async (
     .api('$batch')
     .middlewareOptions(prepScopes(...chatOperationScopes.addChatMember))
     .post(body);
+};
+/**
+ * Whether or not the cache is enabled
+ */
+export const isPhotoCacheEnabled = (): boolean => CacheService.config.photos.isEnabled && CacheService.config.isEnabled;
+
+export const loadChatImage = async (graph: IGraph, url: string): Promise<string | null> => {
+  let cachedPhoto: CachePhoto;
+
+  // attempt to get user and photo from cache if enabled
+  if (isPhotoCacheEnabled()) {
+    const cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.teams);
+    cachedPhoto = await cache.getValue(url);
+    if (
+      cachedPhoto?.timeCached &&
+      cachedPhoto.photo &&
+      getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached
+    ) {
+      return cachedPhoto.photo;
+    }
+  }
+  const response = (await graph
+    .api(url)
+    .responseType(ResponseType.RAW)
+    .middlewareOptions(prepScopes(...chatOperationScopes.loadChatImage))
+    .get()) as Response & { '@odata.mediaEtag'?: string };
+
+  if (response.status === 404) {
+    // 404 means the resource does not have a photo
+    // we still want to cache that state
+    // so we return an object that can be cached
+    cachedPhoto = { eTag: undefined, photo: undefined };
+  } else if (!response.ok) {
+    return null;
+  }
+
+  const eTag = response['@odata.mediaEtag'];
+  const blob = await blobToBase64(await response.blob());
+
+  cachedPhoto = { eTag, photo: blob };
+  await storePhotoInCache(url, schemas.photos.stores.teams, cachedPhoto);
+  return blob;
 };
