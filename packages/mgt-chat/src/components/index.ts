@@ -6,5 +6,5 @@
  */
 
 import { Chat } from './Chat/Chat';
-
-export { Chat };
+import { NewChat } from './NewChat/NewChat';
+export { Chat, NewChat };

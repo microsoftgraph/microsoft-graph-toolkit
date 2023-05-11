@@ -41,7 +41,8 @@ const chatOperationScopes: Record<string, string[]> = {
   updateChatMessage: ['chat.readwrite'],
   deleteChatMessage: ['chat.readwrite'],
   removeChatMemeber: ['chatmember.readwrite'],
-  addChatMember: ['chatmember.readwrite']
+  addChatMember: ['chatmember.readwrite'],
+  createChat: ['chat.create']
 };
 
 /**
@@ -251,4 +252,45 @@ export const loadChatImage = async (graph: IGraph, url: string): Promise<string 
   cachedPhoto = { eTag, photo: blob };
   await storePhotoInCache(url, schemas.photos.stores.teams, cachedPhoto);
   return blob;
+};
+
+/**
+ * Creates a new chat thread via HTTP POST
+ *
+ * @returns {Promise<void>}
+ * @param graph authenticated graph client from mgt
+ * @param memberIds array of the user ids of users to be members of the chat. Must be at least 2.
+ * @param chatMessage if provided a message with this content will be sent to the chat after creation
+ * @param chatName if provided and there are more than 2 members the topic of the chat will be set to this value
+ * @returns {Promise<Chat>} the newly created chat
+ */
+export const createChatThread = async (
+  graph: IGraph,
+  memberIds: string[],
+  chatMessage: string | undefined,
+  chatName: string | undefined
+): Promise<Chat> => {
+  const isGroupChat = memberIds.length > 2;
+  const body: Chat = {
+    chatType: isGroupChat ? 'group' : 'oneOnOne',
+    members: memberIds.map(id => {
+      return {
+        '@odata.type': '#microsoft.graph.aadUserConversationMember',
+        roles: ['owner'],
+        'user@odata.bind': `https://graph.microsoft.com/v1.0/users('${id}')`
+      };
+    })
+  };
+  if (isGroupChat && chatName) body.topic = chatName;
+
+  const chat = (await graph
+    .api('/chats')
+    .middlewareOptions(prepScopes(...chatOperationScopes.loadChatImage))
+    .post(body)) as Chat;
+  if (!chat?.id) throw new Error('Chat id not returned from create chat thread');
+  if (chatMessage) {
+    await sendChatMessage(graph, chat.id, chatMessage);
+  }
+
+  return chat;
 };

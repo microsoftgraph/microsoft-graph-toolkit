@@ -39,6 +39,8 @@ import { GraphNotificationClient } from './GraphNotificationClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
 import { IDynamicPerson } from '@microsoft/mgt-react';
 import { updateMessageContentWithImage } from './updateMessageContentWithImage';
+import { graph } from '../utils/graph';
+import { currentUserId } from '../utils/currentUser';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -235,7 +237,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   }
 
   private updateCurrentUserId() {
-    this.userId = Providers.globalProvider.getActiveAccount?.().id.split('.')[0] || '';
+    this.userId = currentUserId();
   }
 
   private _userId = '';
@@ -796,7 +798,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * @memberof StatefulGraphChatClient
    */
   private get graph(): IGraph {
-    return Providers.globalProvider.graph.forComponent('mgt-chat');
+    return graph('mgt-chat');
   }
 
   private _initialState: GraphChatClient = {
