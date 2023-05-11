@@ -1,4 +1,4 @@
-import { Tab, TabList, TabValue, makeStyles } from '@fluentui/react-components';
+import { Tab, TabList, TabValue, makeStyles, mergeClasses } from '@fluentui/react-components';
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { NavigationRegular } from '@fluentui/react-icons';
@@ -51,7 +51,7 @@ export const SideNavigation: React.FunctionComponent<ISideNavigationProps> = pro
             icon={item.icon}
             value={item.url}
             key={index}
-            className={`${styles.tab} ${item.url === selectedTab ? styles.activeTab : ''}`}
+            className={mergeClasses(styles.tab, item.url === selectedTab && styles.activeTab)}
           >
             {!isMinimized ? item.name : ''}
           </Tab>
