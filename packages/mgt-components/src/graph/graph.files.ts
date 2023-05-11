@@ -412,7 +412,7 @@ export const getFilesByListQueryIterator = async (
 };
 
 // GET /me/insights/{trending	| used | shared}
-export const getMyInsightsFiles = async (graph: IGraph, insightType: string): Promise<DriveItem[]> => {
+export const getMyInsightsFiles = async (graph: IGraph, insightType: string, top = 10): Promise<DriveItem[]> => {
   const endpoint = `/me/insights/${insightType}`;
   const cacheStore = schemas.fileLists.stores.insightfileLists;
 
@@ -420,7 +420,7 @@ export const getMyInsightsFiles = async (graph: IGraph, insightType: string): Pr
   const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
   const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
   if (fileList) {
-    return fileList.files as DriveItem[];
+    return fileList.files.map((file: string) => JSON.parse(file) as DriveItem);
   }
 
   // get files from graph request
@@ -430,6 +430,7 @@ export const getMyInsightsFiles = async (graph: IGraph, insightType: string): Pr
     insightResponse = (await graph
       .api(endpoint)
       .filter("resourceReference/type eq 'microsoft.graph.driveItem'")
+      .top(top)
       .middlewareOptions(prepScopes(...scopes))
       .get()) as CollectionResponse<Insight>;
     // eslint-disable-next-line no-empty

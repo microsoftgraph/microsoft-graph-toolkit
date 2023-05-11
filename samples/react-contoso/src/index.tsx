@@ -6,7 +6,7 @@ import { ThemeProvider } from '@fluentui/react-theme-provider';
 import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
 import { Providers, LoginType } from '@microsoft/mgt-element';
 import { FluentProvider, webLightTheme } from '@fluentui/react-components';
-import { allDashboardScopes } from './pages/Dashboard';
+import { allDashboardScopes } from './pages/DashboardPage';
 import { allIncidentScopes } from './pages/Incident/Incident';
 
 initializeIcons(undefined, { disableWarnings: true });

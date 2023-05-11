@@ -35,7 +35,7 @@ export const allDashboardScopes = Array.from(
   }, new Set<string>())
 );
 
-export const Dashboard: React.FunctionComponent = () => {
+export const DashboardPage: React.FunctionComponent = () => {
   const styles = useStyles();
 
   const [taskListId, setTaskListId] = React.useState<string>('');

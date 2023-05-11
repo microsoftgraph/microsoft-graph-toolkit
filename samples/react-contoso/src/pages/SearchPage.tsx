@@ -22,7 +22,7 @@ const useStyles = makeStyles({
   }
 });
 
-export const SearchCenter: React.FunctionComponent = () => {
+export const SearchPage: React.FunctionComponent = () => {
   const styles = useStyles();
   const appContext = useAppContext();
 

@@ -84,6 +84,7 @@ class MgtFileListComposite extends MgtFileListBase {
   constructor() {
     super();
     this.breadcrumbRootName = strings.rootNode;
+    this.enableBreadcrumb = true;
     this.menuCommands = [
       {
         id: 'share-edit',
@@ -163,16 +164,16 @@ class MgtFileListComposite extends MgtFileListBase {
   }
 
   /**
-   * Enables a custom breadcrumb root name
+   * Enables the breadcrum
    *
    * @type {boolean}
    * @memberof MgtFileListComposite
    */
   @property({
-    attribute: 'enable-breadcrumb-root-name',
+    attribute: 'enable-breadcrumb',
     type: Boolean
   })
-  public enableBreadcrumbRootName: boolean;
+  public enableBreadcrumb: boolean;
 
   @state()
   private fileUploadData: MgtFileUploadItem[] = [];
@@ -274,7 +275,7 @@ class MgtFileListComposite extends MgtFileListBase {
       <div class="root">
         ${this.renderCommandBar()}
         <a id="file-link" style="display:none"  target="_blank"></a>
-        ${this.renderBreadcrumb()}
+        ${this.enableBreadcrumb && this.renderBreadcrumb()}
         ${this.renderFiles()}
         ${this.renderDeleteDialog()}
         ${this.renderNewFolderDialog()}

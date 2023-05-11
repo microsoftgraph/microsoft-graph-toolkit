@@ -2,14 +2,12 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { Header } from './components/Header';
 import { SideNavigation } from './components/SideNavigation/SideNavigation';
-import { Home } from './pages/Home';
-import { SearchCenter } from './pages/SearchCenter';
+import { HomePage } from './pages/HomePage';
 import { useIsSignedIn } from './hooks/useIsSignedIn';
-import { Emails } from './pages/Emails';
-import { Dashboard } from './pages/Dashboard';
 import { Incident } from './pages/Incident/Incident';
 import './App.css';
-import { HomeRegular, SearchRegular, MailRegular, TextBulletListSquareRegular } from '@fluentui/react-icons';
+import { NavigationItem } from './models/NavigationItem';
+import { getNavigation } from './services/Navigation';
 
 type AppContextState = { searchTerm: string; isSideBarMinimized: boolean };
 
@@ -21,48 +19,12 @@ type AppContextValue = {
 export const AppContext = React.createContext<AppContextValue | undefined>(undefined);
 
 export const App: React.FunctionComponent = theme => {
-  const [navigationItems, setNavigationItems] = React.useState<any[]>([]);
+  const [navigationItems, setNavigationItems] = React.useState<NavigationItem[]>([]);
   const [isSignedIn] = useIsSignedIn();
   const [state, setState] = React.useState({ searchTerm: '', isSideBarMinimized: false });
 
   React.useEffect(() => {
-    let navItems: any[] = [];
-
-    navItems.push({
-      name: 'Home',
-      url: '/home',
-      icon: <HomeRegular />,
-      key: 'home',
-      requiresLogin: false
-    });
-
-    if (isSignedIn) {
-      navItems.push({
-        name: 'Dashboard',
-        url: '/dashboard',
-        icon: <TextBulletListSquareRegular />,
-        key: 'dashboard',
-        requiresLogin: true
-      });
-
-      navItems.push({
-        name: 'Messages',
-        url: '/messages',
-        icon: <MailRegular />,
-        key: 'messages',
-        requiresLogin: true
-      });
-
-      navItems.push({
-        name: 'Search',
-        url: '/search',
-        icon: <SearchRegular />,
-        key: 'search',
-        requiresLogin: true
-      });
-    }
-
-    setNavigationItems(navItems);
+    setNavigationItems(getNavigation(isSignedIn));
   }, [isSignedIn]);
 
   return (
@@ -79,12 +41,15 @@ export const App: React.FunctionComponent = theme => {
                 <Route exact path="/">
                   <Redirect to="/home" />
                 </Route>
-                <Route exact path="/home" component={Home} />
-                {isSignedIn && <Route exact path="/dashboard" component={Dashboard} />}
-                {isSignedIn && <Route exact path="/search" component={SearchCenter} />}
-                {isSignedIn && <Route exact path="/messages" component={Emails} />}
+                {navigationItems.map(
+                  item =>
+                    ((item.requiresLogin && isSignedIn) || !item.requiresLogin) && (
+                      <Route exact path={item.url} children={item.component} key={item.url} />
+                    )
+                )}
+
                 {isSignedIn && <Route path="/incident/:id" component={Incident} />}
-                <Route path="*" component={Home} />
+                <Route path="*" component={HomePage} />
               </Switch>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PageHeader } from '../components/PageHeader/PageHeader';
-import { Get } from '@microsoft/mgt-react';
+import { Agenda, Get } from '@microsoft/mgt-react';
 import { Messages } from '../components/Messages/Messages';
 import { Loading } from '../components/Loading';
 import {
@@ -10,16 +10,33 @@ import {
   TabList,
   TabValue,
   shorthands,
-  makeStyles
+  makeStyles,
+  mergeClasses
 } from '@fluentui/react-components';
 
 const useStyles = makeStyles({
+  container: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
   panels: {
     ...shorthands.padding('10px')
+  },
+  main: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexWrap: 'nowrap',
+    width: '70%'
+  },
+  side: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexWrap: 'nowrap',
+    width: '30%'
   }
 });
 
-export const Emails: React.FunctionComponent = () => {
+export const OutlookPage: React.FunctionComponent = () => {
   const styles = useStyles();
   const [selectedTab, setSelectedTab] = React.useState<TabValue>('focused');
 
@@ -29,14 +46,17 @@ export const Emails: React.FunctionComponent = () => {
 
   return (
     <>
-      <PageHeader title={'My Emails'} description={'Your Microsoft 365 emails.'}></PageHeader>
+      <PageHeader
+        title={'Mail and Calendar'}
+        description={'Stay productive and navigate your emails and your calendar appointments'}
+      ></PageHeader>
 
-      <div>
-        <TabList selectedValue={selectedTab} onTabSelect={onTabSelect}>
-          <Tab value="focused">Focused</Tab>
-          <Tab value="others">Others</Tab>
-        </TabList>
-        <div className={styles.panels}>
+      <TabList selectedValue={selectedTab} onTabSelect={onTabSelect} className={styles.container}>
+        <Tab value="focused">Focused</Tab>
+        <Tab value="others">Others</Tab>
+      </TabList>
+      <div className={styles.container}>
+        <div className={mergeClasses(styles.panels, styles.main)}>
           {selectedTab === 'focused' && (
             <Get
               resource="/me/mailFolders/Inbox/messages?$orderby=InferenceClassification, createdDateTime DESC&filter=InferenceClassification eq 'Focused'"
@@ -57,6 +77,9 @@ export const Emails: React.FunctionComponent = () => {
               <Loading template="loading" message={'Loading your other inbox...'}></Loading>
             </Get>
           )}
+        </div>
+        <div className={styles.side}>
+          <Agenda groupByDay={true}></Agenda>
         </div>
       </div>
     </>

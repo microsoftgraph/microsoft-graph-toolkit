@@ -576,7 +576,7 @@ export class MgtFileGrid extends MgtFileListBase {
         } else if (this.itemPath) {
           pageIterator = await getFilesByPathIterator(graph, this.itemPath, this.pageSize);
         } else if (this.insightType) {
-          files = await getMyInsightsFiles(graph, this.insightType);
+          files = await getMyInsightsFiles(graph, this.insightType, this.pageSize);
         } else {
           pageIterator = await getFilesIterator(graph, this.pageSize);
         }
