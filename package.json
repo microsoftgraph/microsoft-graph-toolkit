@@ -42,7 +42,7 @@
     "link": "lerna link --force-local",
     "lint:eslint": "eslint -c .eslintrc.js --quiet 'packages/*/src/**/*.ts'",
     "lint:styles": "stylelint './packages/mgt-components/**/*.{css,scss}'",
-    "lint:fix": "stylelint './packages/mgt-components/**/sub-components/**/*.{css,scss}' --fix",
+    "lint:fix": "npm run lint:styles -- --fix",
     "lint": "npm run lint:eslint && npm run lint:styles",
     "pack": "shx rm -rf artifacts/*.tgz && lerna exec --stream --scope @microsoft/* -- npm pack",
     "prepare": "lerna bootstrap --force-local",
