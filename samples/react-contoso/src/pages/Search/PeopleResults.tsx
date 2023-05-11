@@ -1,13 +1,14 @@
 import { SearchBox, SearchResults } from '@microsoft/mgt-react';
 import * as React from 'react';
 
-export const PeopleResults: React.FunctionComponent = () => {
-  const [searchTerm, setSearchTerm] = React.useState<string>('');
+export interface IPeopleResultsProps {
+  searchTerm: string;
+}
 
+export const PeopleResults: React.FunctionComponent<IPeopleResultsProps> = (props: IPeopleResultsProps) => {
   return (
     <>
-      <SearchBox searchTermChanged={e => setSearchTerm(e.detail)}></SearchBox>
-      <SearchResults entityTypes={['people']} size={20} queryString={searchTerm} version={'beta'}></SearchResults>
+      <SearchResults entityTypes={['people']} size={20} queryString={props.searchTerm} version={'beta'}></SearchResults>
     </>
   );
 };

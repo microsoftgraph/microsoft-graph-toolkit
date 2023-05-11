@@ -17,3 +17,52 @@ mgt-login {
   padding-left: 1em;
   width: 100%;
 }
+
+.header {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  align-items: center;
+  background-color: rgb(51, 74, 95);
+  z-index: 1;
+  min-height: 50px;
+}
+
+.waffle {
+  display: flex;
+  width: auto;
+  height: auto;
+  box-sizing: border-box;
+  flex-grow: 1;
+  align-items: center;
+  min-width: max-content;
+}
+
+.waffle .logo {
+  flex: none;
+}
+
+.waffle .title {
+  flex: auto;
+}
+
+.header .search {
+  display: flex;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.header .login {
+  display: flex;
+  width: auto;
+  height: auto;
+  box-sizing: border-box;
+  flex-grow: 1;
+  align-items: center;
+  min-width: max-content;
+}

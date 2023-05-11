@@ -13,7 +13,7 @@
   padding-left: 6px;
 }
 
-.email .title h3 {
+.email .email-title h3 {
   color: var(--color-sub1);
   font-size: 14px;
   grid-area: 1 / 1 / auto / 3;
@@ -26,7 +26,7 @@
   text-decoration: none;
 }
 
-.email .command-bar-action a {
+.email .email-command-bar-action a {
   color: var(--icon-color);
   text-decoration: none;
 }
@@ -36,7 +36,7 @@
   --avatar-size-s: 16px;
 }
 
-.email .preview {
+.email .email-preview {
   font-size: 13px;
   text-overflow: ellipsis;
   word-wrap: break-word;
@@ -46,18 +46,18 @@
   color: var(--color-sub2);
 }
 
-.email .empty-body {
+.email .email-empty-body {
   font-style: italic;
 }
 
-.email .command-bar {
+.email .email-command-bar {
   font-family: FabricMDL2Icons;
   font-style: inherit;
   text-decoration: none;
   color: var(--color-sub1);
 }
 
-.email .command-bar-action {
+.email .email-command-bar-action {
   font-family: FabricMDL2Icons;
   font-style: inherit;
   text-decoration: none;
@@ -66,24 +66,20 @@
   padding-left: 4px;
 }
 
-.email .header {
+.email .email-header {
   display: flex;
   justify-content: space-between;
 }
 
-.email .title {
+.email .email-title {
   display: flex;
   justify-content: space-between;
   margin-bottom: 4px;
   color: var(--color-sub1);
 }
 
-.email .date {
+.email .email-date {
   font-size: 12px;
   padding-left: 4px;
   float: right;
-}
-
-.messages-title {
-  padding-left: 20px;
 }

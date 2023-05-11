@@ -37,9 +37,45 @@
   }
 }
 
+.page {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
 :target::before {
   content: '';
   display: block;
   height: 100px; /* fixed header height*/
   margin: -100px 0 0; /* negative fixed header height */
+}
+
+.main {
+  display: flex;
+  flex-flow: row nowrap;
+  width: auto;
+  height: calc(100vh - 50px);
+  box-sizing: border-box;
+}
+
+.sidebar {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 295px;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: rgb(233, 233, 233);
+}
+
+.minimized {
+  width: auto;
+}
+
+.content {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  margin: 10px;
+  overflow: auto;
 }

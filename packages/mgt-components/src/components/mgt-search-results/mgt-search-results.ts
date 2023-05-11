@@ -1246,7 +1246,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     }
 
     if (this.version === 'beta') {
-      requestOptions.query.queryString = this.queryTemplate ? this.queryTemplate : undefined;
+      (requestOptions as BetaSearchRequest).query.queryTemplate = this.queryTemplate ? this.queryTemplate : undefined;
     }
 
     return requestOptions;

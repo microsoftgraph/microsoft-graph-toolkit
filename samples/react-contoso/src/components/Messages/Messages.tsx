@@ -6,7 +6,7 @@ export function Messages(props: MgtTemplateProps) {
   return (
     <div className="email">
       <a href={email.webLink} target="_blank" rel="noreferrer">
-        <div className="header">
+        <div className="email-header">
           <div>
             <Person
               personQuery={email.sender.emailAddress.address}
@@ -15,12 +15,12 @@ export function Messages(props: MgtTemplateProps) {
             />
           </div>
         </div>
-        <div className="title">
+        <div className="email-title">
           <h3>{email.subject}</h3>
-          <span className="date">{new Date(email.receivedDateTime).toLocaleDateString()}</span>
+          <span className="email-date">{new Date(email.receivedDateTime).toLocaleDateString()}</span>
         </div>
-        {email.bodyPreview ?? <div className="preview">{email.bodyPreview}</div>}
-        {!email.bodyPreview ?? <div className="preview empty-body">...</div>}
+        {email.bodyPreview ?? <div className="email-preview">{email.bodyPreview}</div>}
+        {!email.bodyPreview ?? <div className="email-preview email-empty-body">...</div>}
       </a>
     </div>
   );

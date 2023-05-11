@@ -2,8 +2,6 @@ mgt-login {
   --button-background-color--hover: transparent;
 }
 
-mgt-person.simple-login {
-  --person-avatar-size: 32px;
-  --person-line1-text-color: white;
-  --font-weight: 400;
+.simple-login {
+  --person-avatar-size: 32px !important;
 }

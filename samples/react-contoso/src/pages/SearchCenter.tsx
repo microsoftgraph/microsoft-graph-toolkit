@@ -1,17 +1,35 @@
-import { IPivotStyleProps, IPivotStyles, IStyleFunctionOrObject, Pivot, PivotItem } from '@fluentui/react';
 import * as React from 'react';
 import { PageHeader } from '../components/PageHeader/PageHeader';
-import { AllResults, ExternalItems, Interleaving, PeopleResults } from './Search';
+import { AllResults, PeopleResults } from './Search';
+import {
+  SelectTabData,
+  SelectTabEvent,
+  Tab,
+  TabList,
+  TabValue,
+  makeStyles,
+  shorthands
+} from '@fluentui/react-components';
+import { useAppContext } from '../hooks/useAppContext';
+
+const useStyles = makeStyles({
+  panels: {
+    ...shorthands.padding('10px')
+  },
+  container: {
+    maxWidth: '1028px',
+    width: '100%'
+  }
+});
 
 export const SearchCenter: React.FunctionComponent = () => {
-  const searchCenterStyles: React.CSSProperties = {
-    maxWidth: '1028px',
-    width: '100%',
-    margin: 'auto'
-  };
+  const styles = useStyles();
+  const appContext = useAppContext();
 
-  const pivotStyles: IStyleFunctionOrObject<IPivotStyleProps, IPivotStyles> = {
-    root: { paddingBottom: '10px' }
+  const [selectedTab, setSelectedTab] = React.useState<TabValue>('allResults');
+
+  const onTabSelect = (event: SelectTabEvent, data: SelectTabData) => {
+    setSelectedTab(data.value);
   };
 
   return (
@@ -21,21 +39,15 @@ export const SearchCenter: React.FunctionComponent = () => {
         description={'Use this Search Center to test Microsot Graph Toolkit search components capabilities'}
       ></PageHeader>
 
-      <div style={searchCenterStyles}>
-        <Pivot styles={pivotStyles}>
-          <PivotItem headerText="All Results">
-            <AllResults></AllResults>
-          </PivotItem>
-          <PivotItem headerText="Connectors">
-            <ExternalItems></ExternalItems>
-          </PivotItem>
-          <PivotItem headerText="Interleaving">
-            <Interleaving></Interleaving>
-          </PivotItem>
-          <PivotItem headerText="People">
-            <PeopleResults></PeopleResults>
-          </PivotItem>
-        </Pivot>
+      <div className={styles.container}>
+        <TabList selectedValue={selectedTab} onTabSelect={onTabSelect}>
+          <Tab value="allResults">All Results</Tab>
+          <Tab value="people">People</Tab>
+        </TabList>
+        <div className={styles.panels}>
+          {selectedTab === 'allResults' && <AllResults searchTerm={appContext.state.searchTerm}></AllResults>}
+          {selectedTab === 'people' && <PeopleResults searchTerm={appContext.state.searchTerm}></PeopleResults>}
+        </div>
       </div>
     </>
   );

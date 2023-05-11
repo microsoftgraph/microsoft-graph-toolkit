@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { PageHeader } from '../components/PageHeader/PageHeader';
-import { IPivotStyleProps, IPivotStyles, IStyleFunctionOrObject, Pivot, PivotItem } from '@fluentui/react';
 import { Providers, Todo } from '@microsoft/mgt-react';
 import { Incidents } from '../components/Incidents/Incidents';
 import {

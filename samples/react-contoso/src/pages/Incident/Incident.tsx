@@ -18,7 +18,7 @@ import { Tasks } from '@microsoft/mgt-react';
 const useStyles = makeStyles({
   panels: {
     ...shorthands.padding('10px'),
-    maxHeight: '850px',
+    maxHeight: '100vh',
     overflowY: 'auto'
   }
 });
