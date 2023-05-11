@@ -118,14 +118,14 @@ export class MgtDotOptions extends MgtBaseComponent {
         @click="${(e: Event) => {
           e.preventDefault();
           e.stopPropagation();
-          click(e);
+          clickFn(e);
           this.open = false;
         }}"
         @keydown="${(e: KeyboardEvent) => {
           if (e.code === 'Enter' || e.code === 'Space') {
             e.preventDefault();
             e.stopPropagation();
-            click(e);
+            clickFn(e);
             this.open = false;
           }
         }}"
