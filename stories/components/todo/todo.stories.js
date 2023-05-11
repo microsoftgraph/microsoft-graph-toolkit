@@ -28,12 +28,3 @@ export const tasks = () => html`
 export const ReadOnly = () => html`
   <mgt-todo read-only></mgt-todo>
 `;
-
-export const darkTheme = () => html`
-  <mgt-todo class="mgt-dark"></mgt-todo>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
-`;

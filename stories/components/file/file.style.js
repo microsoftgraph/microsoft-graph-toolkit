@@ -14,10 +14,6 @@ export default {
   decorators: [withCodeEditor]
 };
 
-export const darkTheme = () => html`
-    <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2" class="mgt-dark"></mgt-file>
-`;
-
 export const customCSSProperties = () => html`
   <style>
     .file {
