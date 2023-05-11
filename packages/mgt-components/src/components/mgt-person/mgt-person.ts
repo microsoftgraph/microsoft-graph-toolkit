@@ -609,7 +609,6 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     return html`
       <div
-        tabindex="1"
         class="${rootClasses}"
         dir=${this.direction}
         @click=${this.handleMouseClick}
