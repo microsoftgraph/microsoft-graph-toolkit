@@ -64,7 +64,6 @@ import { strings } from './strings';
  */
 
 @customElement('file')
-// @customElement('mgt-file')
 export class MgtFile extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

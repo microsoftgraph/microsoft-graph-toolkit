@@ -100,7 +100,6 @@ export type DataChangedDetail = {
  * @extends {MgtTemplatedComponent}
  */
 @customElement('get')
-// @customElement('mgt-get')
 export class MgtGet extends MgtTemplatedComponent {
   /**
    * The resource to get
