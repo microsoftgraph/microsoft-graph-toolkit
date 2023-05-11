@@ -29,7 +29,7 @@ $mft-flyout-box-shadow: var(--mgt-flyout-box-shadow, var(--elevation-shadow-card
     position: fixed;
     z-index: 9999999;
     opacity: 0;
-    box-shadow: $mft-flyout-box-shadow;
+    box-shadow: $mgt-flyout-box-shadow;
     border-radius: 8px;
 
     &.small {
