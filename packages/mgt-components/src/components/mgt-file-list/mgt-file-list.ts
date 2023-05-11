@@ -5,15 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  arraysAreEqual,
-  GraphPageIterator,
-  Providers,
-  ProviderState,
-  customElement,
-  mgtHtml,
-  MgtTemplatedComponent
-} from '@microsoft/mgt-element';
+import { GraphPageIterator, Providers, ProviderState, customElement, mgtHtml } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, PropertyValueMap, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';

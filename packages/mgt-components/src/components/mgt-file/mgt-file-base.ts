@@ -36,7 +36,7 @@ export abstract class MgtFileBase extends MgtTemplatedComponent {
     }
 
     this._siteId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -57,7 +57,7 @@ export abstract class MgtFileBase extends MgtTemplatedComponent {
     }
 
     this._driveId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -78,7 +78,7 @@ export abstract class MgtFileBase extends MgtTemplatedComponent {
     }
 
     this._groupId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -99,7 +99,7 @@ export abstract class MgtFileBase extends MgtTemplatedComponent {
     }
 
     this._listId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -120,7 +120,7 @@ export abstract class MgtFileBase extends MgtTemplatedComponent {
     }
 
     this._userId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -141,7 +141,7 @@ export abstract class MgtFileBase extends MgtTemplatedComponent {
     }
 
     this._itemId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -162,7 +162,7 @@ export abstract class MgtFileBase extends MgtTemplatedComponent {
     }
 
     this._itemPath = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -184,6 +184,6 @@ export abstract class MgtFileBase extends MgtTemplatedComponent {
     }
 
     this._insightType = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 }

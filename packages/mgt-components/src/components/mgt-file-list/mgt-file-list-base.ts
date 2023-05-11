@@ -31,7 +31,7 @@ export abstract class MgtFileListBase extends MgtFileBase {
     }
 
     this._fileListQuery = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   private _fileQueries: string[];
@@ -60,7 +60,7 @@ export abstract class MgtFileListBase extends MgtFileBase {
     }
 
     this._fileQueries = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -91,7 +91,7 @@ export abstract class MgtFileListBase extends MgtFileBase {
       if (typeof ViewType[value] === 'undefined') {
         return ViewType.threelines;
       } else {
-        return ViewType[value];
+        return ViewType[value] as ViewType;
       }
     }
   })
@@ -120,12 +120,13 @@ export abstract class MgtFileListBase extends MgtFileBase {
     }
 
     this._fileExtensions = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   private _pageSize: number;
   /**
    * A number value to indicate the number of more files to load when show more button is clicked
+   *
    * @type {number}
    * @memberof MgtFileList
    */
@@ -142,11 +143,12 @@ export abstract class MgtFileListBase extends MgtFileBase {
     }
 
     this._pageSize = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
    * A boolean value indication if 'show-more' button should be disabled
+   *
    * @type {boolean}
    * @memberof MgtFileList
    */
@@ -159,6 +161,7 @@ export abstract class MgtFileListBase extends MgtFileBase {
   private _maxFileSize: number;
   /**
    * A number value indication for file size upload (KB)
+   *
    * @type {number}
    * @memberof MgtFileList
    */
@@ -175,11 +178,12 @@ export abstract class MgtFileListBase extends MgtFileBase {
     }
 
     this._maxFileSize = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
    * A boolean value indication if file upload extension should be enable or disabled
+   *
    * @type {boolean}
    * @memberof MgtFileList
    */
@@ -192,6 +196,7 @@ export abstract class MgtFileListBase extends MgtFileBase {
   private _maxUploadFile: number;
   /**
    * A number value to indicate the max number allowed of files to upload.
+   *
    * @type {number}
    * @memberof MgtFileList
    */
@@ -208,7 +213,7 @@ export abstract class MgtFileListBase extends MgtFileBase {
     }
 
     this._maxUploadFile = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   private _excludedFileExtensions: string[];
@@ -233,6 +238,6 @@ export abstract class MgtFileListBase extends MgtFileBase {
     }
 
     this._excludedFileExtensions = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 }
