@@ -167,6 +167,7 @@ export interface TeamsMsal2Config {
 /**
  * Enables authentication of Single page apps inside of a Microsoft Teams tab
  *
+ * @deprecated in favor of TeamsFxProvider.
  * @export
  * @class TeamsMsal2Provider
  * @extends {Msal2Provider}
