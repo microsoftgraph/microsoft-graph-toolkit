@@ -15,7 +15,7 @@ export const App: React.FunctionComponent = theme => {
   const [navigationItems, setNavigationItems] = React.useState<INavLinkGroup[]>([]);
 
   const [isSignedIn] = useIsSignedIn();
-  const sectionStackTokens: IStackTokens = { childrenGap: 10 };
+  //const sectionStackTokens: IStackTokens = { childrenGap: 10 };
   const sidebarStackTokens: IStackTokens = { childrenGap: 20 };
 
   React.useEffect(() => {
@@ -63,18 +63,14 @@ export const App: React.FunctionComponent = theme => {
   }, [isSignedIn]);
 
   const Content = (props: IStackProps) => (
-    <Stack horizontal tokens={sectionStackTokens} className={mergeStyles({ overflow: 'hidden' })} {...props} />
+    <Stack horizontal className={mergeStyles({ /*overflow: 'hidden'*/ height: 'calc(100vh - 50px)' })} {...props} />
   );
 
   const Sidebar = (props: IStackProps) => (
     <Stack
-      disableShrink
       tokens={sidebarStackTokens}
-      grow={20}
       className={mergeStyles({
-        position: 'fixed',
-        top: 48,
-        left: 0,
+        width: '20%',
         backgroundColor: 'rgb(233, 233, 233)'
       })}
       verticalFill={true}
@@ -84,21 +80,22 @@ export const App: React.FunctionComponent = theme => {
 
   const Main = (props: IStackProps) => (
     <Stack
-      grow={80}
       className={mergeStyles({
-        padding: '40px',
+        margin: '10px',
+        //overflow: 'hidden',
+        width: '80%'
+        /*padding: '40px',
         paddingLeft: '300px',
-        paddingTop: '42px',
-        minHeight: 'calc(100vh - 10px)'
+        paddingTop: '42px',*/
+        //minHeight: 'calc(100vh - 10px)'
       })}
-      disableShrink
       {...props}
     />
   );
 
   const Page = (props: IStackProps) => (
     <Stack
-      tokens={sectionStackTokens}
+      //tokens={sectionStackTokens}
       className={mergeStyles({
         selectors: {
           ':global(body)': {

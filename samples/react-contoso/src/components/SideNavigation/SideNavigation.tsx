@@ -14,7 +14,7 @@ export const SideNavigation: React.FunctionComponent<ISideNavigationProps> = pro
     },
     root: {
       overflowY: 'auto',
-      width: '280px',
+      //width: '280px',
       backgroundColor: 'rgb(233, 233, 233)'
     },
     link: {},

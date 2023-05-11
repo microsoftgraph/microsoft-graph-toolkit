@@ -33,9 +33,6 @@ const headerStackStyles = (p: IStackProps, theme: ITheme) => ({
 
 const headerStyles = mergeStyles({
   backgroundColor: '#334A5F',
-  position: 'fixed',
-  top: 0,
-  left: 0,
   width: '100%',
   zIndex: 1
 });

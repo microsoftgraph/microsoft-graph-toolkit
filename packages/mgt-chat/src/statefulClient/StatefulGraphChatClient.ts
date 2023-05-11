@@ -412,10 +412,10 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         // TODO: move this default case to a console.warn before release and emit an empty message
         // it's here to help us catch messages we have't handled yet
         default:
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          messageContent = `Unknown system message type ${eventDetail['@odata.type']}
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, no-console
+          console.warn(`Unknown system message type ${eventDetail['@odata.type']}
 
-detail: ${JSON.stringify(eventDetail)}`;
+detail: ${JSON.stringify(eventDetail)}`);
       }
     }
 
@@ -646,7 +646,7 @@ detail: ${JSON.stringify(eventDetail)}`;
    * @memberof StatefulGraphChatClient
    */
   private updateMessages(message?: AcsChatMessage | SystemMessage) {
-    if (!message) return;
+    if (!message || !(message as ContentSystemMessage).content) return;
     this.notifyStateChange((draft: GraphChatClient) => {
       const index = draft.messages.findIndex(m => m.messageId === message.messageId);
       // this message is not already in thread so just add it

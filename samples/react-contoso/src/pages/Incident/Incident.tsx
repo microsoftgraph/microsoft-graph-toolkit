@@ -17,7 +17,9 @@ import { Tasks } from '@microsoft/mgt-react';
 
 const useStyles = makeStyles({
   panels: {
-    ...shorthands.padding('10px')
+    ...shorthands.padding('10px'),
+    maxHeight: '850px',
+    overflowY: 'auto'
   }
 });
 
@@ -90,6 +92,9 @@ export const Incident: React.FunctionComponent = () => {
             )}
             {selectedTab === 'tasks' && incident.planId && <Tasks targetId={incident.planId} />}
             {selectedTab === 'conversation' && incident.conversationId && <Chat chatId={incident.conversationId} />}
+            {/*selectedTab === 'conversation' && incident.conversationId && (
+              <div style={{ height: '1650px', backgroundColor: 'red' }} />
+            )*/}
           </div>
         </>
       )}

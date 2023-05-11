@@ -16,7 +16,8 @@ mergeStyles({
   ':global(body,html,#root)': {
     margin: 0,
     padding: 0,
-    height: '100vh'
+    height: '100vh',
+    overflow: 'hidden'
   }
 });
 
