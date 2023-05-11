@@ -102,7 +102,7 @@ export type FileListCompositeProps = {
 	breadcrumbRootName?: string;
 	useGridView?: boolean;
 	enableCommandBar?: boolean;
-	enableBreadcrumbRootName?: boolean;
+	enableBreadcrumb?: boolean;
 	fileListQuery?: string;
 	fileQueries?: string[];
 	files?: MicrosoftGraph.DriveItem[];
