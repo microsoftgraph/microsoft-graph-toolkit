@@ -14,15 +14,6 @@ export default {
   decorators: [withCodeEditor]
 };
 
-export const darkTheme = () => html`
-  <mgt-person-card person-query="me" class="mgt-dark"></mgt-person-card>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
-`;
-
 export const customCSSProperties = () => html`
   <style>
     .person-card {
