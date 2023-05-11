@@ -31,7 +31,7 @@ describe('mgt-person - tests', () => {
       )
       // response to the $batch request to load the user photo and user data when there is nothing in the cache
       // note that this used mockOnceIf matching the fake url supplied in the first mock.
-      .mockOnceIf(/https:\/\/fake-proxy.microsoft.com\/*$/, () =>
+      .mockOnceIf(/https:\/\/fake-proxy\.microsoft\.com\/*$/, () =>
         Promise.resolve({
           headers: {
             'Content-Type': 'application/json'

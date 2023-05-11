@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@microsoft/mgt-element": "*",
-    "@microsoft/microsoft-graph-client": "^3.0.0",
+    "@microsoft/microsoft-graph-client": "3.0.2",
     "@microsoft/microsoft-graph-types": "^2.0.0",
     "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
     "@fluentui/web-components": "^2.5.12",

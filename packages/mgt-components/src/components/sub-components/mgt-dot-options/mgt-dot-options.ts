@@ -5,11 +5,21 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { fluentMenu, fluentMenuItem, fluentButton } from '@fluentui/web-components';
+import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
+import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { styles } from './mgt-dot-options-css';
+
+registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
+
+/**
+ * Defines the event functions passed to the option item.
+ */
+type MenuOptionEventFunction = (e: Event) => void | any;
+
 /**
  * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.
  *
@@ -18,7 +28,6 @@ import { styles } from './mgt-dot-options-css';
  * @extends {MgtBaseComponent}
  */
 @customElement('dot-options')
-// @customElement('mgt-dot-options')
 export class MgtDotOptions extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -67,6 +76,8 @@ export class MgtDotOptions extends MgtBaseComponent {
    * trigger the element to update.
    */
   public render() {
+    const menuOptions = Object.keys(this.options);
+
     return html`
       <div tabindex="0" class=${classMap({ 'dot-menu': true, open: this.open })}
         @click=${this.onDotClick}
@@ -78,15 +89,29 @@ export class MgtDotOptions extends MgtBaseComponent {
       </div>
     `;
   }
+
+  private handleItemClick = (e: MouseEvent, fn: MenuOptionEventFunction) => {
+    e.preventDefault();
+    e.stopPropagation();
+    fn(e);
+    this.open = false;
+  };
+
+  private handleItemKeydown = (e: KeyboardEvent, fn: MenuOptionEventFunction) => {
+    this.handleKeydownMenuOption(e);
+    fn(e);
+    this.open = false;
+  };
+
   /**
    * Used by the render method to attach click handler to each dot item
    *
    * @param {string} name
-   * @param {((e: Event) => void | any)} click
+   * @param {MenuOptionEventFunction} clickFn
    * @returns
    * @memberof MgtDotOptions
    */
-  public getMenuOption(name: string, click: (e: Event) => void | any) {
+  public getMenuOption(name: string, clickFn: (e: Event) => void | any) {
     return html`
       <div
         class="dot-item"
@@ -107,9 +132,7 @@ export class MgtDotOptions extends MgtBaseComponent {
       >
         <span class="dot-item-name">
           ${name}
-        </span>
-      </div>
-    `;
+      </fluent-menu-item>`;
   }
 
   private onDotClick = (e: MouseEvent) => {
@@ -120,11 +143,18 @@ export class MgtDotOptions extends MgtBaseComponent {
   };
 
   private onDotKeydown = (e: KeyboardEvent) => {
-    if (e.code === 'Enter') {
+    if (e.key === 'Enter') {
       e.preventDefault();
       e.stopPropagation();
 
       this.open = !this.open;
     }
   };
+
+  private handleKeydownMenuOption(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }
 }

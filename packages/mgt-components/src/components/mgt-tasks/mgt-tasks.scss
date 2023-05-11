@@ -7,4 +7,470 @@
 
 @import '../../styles/shared-styles';
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../mgt-tasks-base/mgt-tasks-base';
+@import './mgt-tasks.theme.scss';
+
+$tasks-header-padding: var(--tasks-header-padding, 0 0 14px 0);
+$tasks-header-margin: var(--tasks-header-margin, none);
+$tasks-header-text-font-size: var(--tasks-header-font-size, 16px);
+$tasks-header-text-font-weight: var(--tasks-header-font-weight, 600);
+
+$tasks-new-button-width: var(--tasks-new-button-width, none);
+$tasks-new-button-height: var(--tasks-new-button-height, none);
+$tasks-new-button-text-font-weight: var(--tasks-new-button-text-font-weight, 700);
+$tasks-new-button-border: var(--tasks-new-button-border, none);
+$neutral-btn-border: calc(var(--stroke-width) * 1px) solid transparent;
+
+$task-add-new-button-width: var(--task-add-new-button-width, none);
+$task-add-new-button-height: var(--task-add-new-button-height, none);
+$task-add-new-button-text-font-weight: var(--task-add-new-button-text-font-weight, initial);
+$task-add-new-button-border: var(--task-add-new-button-border, $neutral-btn-border);
+
+$task-cancel-new-button-width: var(--task-cancel-new-button-width, none);
+$task-cancel-new-button-height: var(--task-cancel-new-button-height, none);
+$task-cancel-new-button-text-font-weight: var(--task-cancel-new-button-text-font-weight, initial);
+$task-cancel-new-button-border: var(--task-cancel-new-button-border, $neutral-btn-border);
+
+$task-title-text-font-size: var(--task-title-text-font-size, medium);
+$task-title-text-font-weight: var(--task-title-text-font-weight, 600);
+$task-icons-width: var(--task-icons-width, 20px);
+$task-icons-height: var(--task-icons-height, 20px);
+$task-icons-text-size: var(--task-icons-text-font-size, 12px);
+$task-icons-text-weight: var(--task-icons-text-font-weight, 600);
+
+$task-complete-border: var(--task-complete-border, 2px dotted var(--neutral-foreground-active));
+$task-incomplete-border: var(--task-incomplete-border, 1px solid var(--neutral-foreground-active));
+$task-complete-border-radius: var(--task-complete-border-radius, 4px);
+$task-incomplete-border-radius: var(--task-incomplete-border-radius, 4px);
+$task-complete-padding: var(--task-complete-padding, 10px);
+$task-incomplete-padding: var(--task-incomplete-padding, 10px);
+$tasks-gap: var(--tasks-gap, 20px);
+
+$tasks-border: var(--tasks-border, 0);
+$tasks-border-radius: var(--tasks-border-radius, 0);
+$tasks-padding: var(--tasks-padding, 12px);
+
+$task-new-input-border: var(--task-new-input-border, calc(var(--stroke-width) * 1px) solid transparent);
+$task-new-input-border-radius: var(--task-new-input-border-radius, calc(var(--control-corner-radius) * 1px));
+
+$task-new-dropdown-border: var(--task-new-dropdown-border, calc(var(--stroke-width) * 1px) solid transparent);
+$task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(var(--control-corner-radius) * 1px));
+
+:host {
+  background-color: $tasks-background-color;
+  padding: $tasks-padding;
+  border: $tasks-border;
+  border-radius: $tasks-border-radius;
+  --skeleton-fill: var(--neutral-foreground-active);
+
+  .Header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $tasks-header-padding;
+    margin: $tasks-header-padding;
+    font-size: $tasks-header-text-font-size;
+    font-weight: $tasks-header-text-font-weight;
+    color: $tasks-header-text-color;
+
+    &:hover {
+      color: $tasks-header-text-hover-color;
+    }
+
+    .Title {
+      justify-content: left;
+
+      .Shimmer {
+        width: 80px;
+        height: 20px;
+      }
+    }
+
+    .NewTaskButton {
+      justify-content: right;
+
+      .Shimmer {
+        width: 40px;
+        height: 24px;
+      }
+
+      &::part(control) {
+        font-weight: $tasks-new-button-text-font-weight;
+        color: $tasks-new-button-text-color;
+        width: $tasks-new-button-width;
+        height: $tasks-new-button-height;
+        background: $tasks-new-button-background;
+
+        &:hover {
+          background: $tasks-new-button-background-hover;
+        }
+
+        &:active {
+          background: $tasks-new-button-background-active;
+        }
+      }
+    }
+  }
+
+  .Tasks {
+    display: flex;
+    flex-direction: column;
+    row-gap: $tasks-gap;
+
+    .Task {
+      display: flex;
+      column-gap: 4px;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      &.Updating {
+        background: var(--neutral-stroke-rest) !important;
+        pointer-events: none;
+        opacity: 0.4;
+      }
+
+      &.Complete {
+        border: $task-complete-border;
+        border-radius: $task-complete-border-radius;
+        background: $task-complete-bg-color;
+        padding: $task-complete-padding;
+        --dot-options-button-background-color: $task-complete-bg-color;
+      }
+
+      &.Incomplete {
+        border: $task-incomplete-border;
+        border-radius: $task-complete-border-radius;
+        background: $task-incomplete-bg-color;
+        padding: $task-incomplete-padding;
+        --dot-options-button-background-color: $task-incomplete-bg-color;
+      }
+
+      .TaskDetailsContainer {
+        display: flex;
+        flex-direction: column;
+        row-gap: 12px;
+        width: 100%;
+
+        .Top {
+          display: flex;
+          justify-content: space-between;
+          column-gap: 4px;
+
+          &.AddNewTask {
+            flex-direction: row;
+          }
+
+          .CheckAndTitle {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+            width: 100%;
+            row-gap: 12px;
+
+            &.Shimmer {
+              display: flex;
+              flex-direction: inherit;
+              gap: 10px;
+
+              .Checkbox {
+                height: 10px;
+                width: 10px;
+              }
+
+              .Title {
+                height: 10px;
+                width: 100%;
+              }
+            }
+
+            .TaskContent {
+              display: grid;
+              grid-auto-flow: column;
+              column-gap: 12px;
+            }
+          }
+
+          .TaskOptions {
+            .Options {
+              height: 10px;
+              width: 20px;
+            }
+            &.NewTaskActionButtons {
+              display: flex;
+              flex-direction: column;
+              row-gap: 12px;
+            }
+          }
+        }
+
+        .Bottom {
+          display: grid;
+          grid-auto-flow: column;
+          grid-auto-columns: 1fr;
+          grid-column-gap: 6px;
+
+          .TaskGroup,
+          .TaskBucket,
+          .TaskDue {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            .TaskIcon {
+              display: flex;
+              place-content: center;
+              width: $task-icons-width;
+              height: $task-icons-height;
+
+              .Shimmer {
+                &.Icon {
+                  width: 20px;
+                  height: 20px;
+                }
+              }
+
+              svg {
+                width: $task-icons-width;
+                height: $task-icons-height;
+                path {
+                  fill: $task-icons-bg-color;
+                }
+              }
+            }
+
+            .TaskIconText {
+              color: $task-icons-text-color;
+              font-size: $task-icons-text-size;
+              font-weight: $task-icons-text-weight;
+              white-space: normal;
+              width: 100%;
+
+              .Shimmer {
+                &.Text {
+                  width: 100%;
+                  height: 10px;
+                }
+              }
+            }
+          }
+        }
+
+        .TaskDetails {
+          display: flex;
+          flex-direction: column;
+          row-gap: 8px;
+
+          &.Shimmer {
+            flex-direction: row;
+            place-items: center;
+            column-gap: 6px;
+
+            .Shimmer {
+              &.Icon {
+                width: 24px;
+                height: 24px;
+              }
+
+              &.Text {
+                width: 100%;
+                height: 10px;
+              }
+            }
+          }
+
+          .TaskTitle {
+            color: var(--foreground-on-neutral-rest);
+          }
+
+          .TaskBody {
+            display: flex;
+          }
+        }
+      }
+    }
+  }
+
+  fluent-button {
+    &.AddTask {
+      &::part(control) {
+        font-weight: $task-add-new-button-text-font-weight;
+        color: $task-add-new-button-text-color;
+        width: $task-add-new-button-width;
+        height: $task-add-new-button-height;
+        background: $task-add-new-button-background;
+        border: $task-add-new-button-border;
+
+        &:hover {
+          background: $task-add-new-button-background-hover;
+        }
+
+        &:active {
+          background: $task-add-new-button-background-active;
+        }
+      }
+    }
+
+    &.CancelTask {
+      &::part(control) {
+        font-weight: $task-cancel-new-button-text-font-weight;
+        color: $task-cancel-new-button-text-color;
+        width: $task-cancel-new-button-width;
+        height: $task-cancel-new-button-height;
+        background: $task-cancel-new-button-background;
+        border: $task-cancel-new-button-border;
+
+        &:hover {
+          background: $task-cancel-new-button-background-hover;
+        }
+
+        &:active {
+          background: $task-cancel-new-button-background-active;
+        }
+      }
+    }
+  }
+
+  fluent-option {
+    background: $task-new-dropdown-list-background-color;
+    &:hover {
+      background: $task-new-dropdown-option-hover-bg-color;
+    }
+    &::part(content) {
+      color: $task-new-dropdown-option-text-color;
+    }
+  }
+
+  fluent-select {
+    &::part(listbox) {
+      background: $task-new-dropdown-list-background-color;
+    }
+
+    &::part(control) {
+      border: $task-new-dropdown-border;
+      border-radius: $task-new-dropdown-border-radius;
+      background: $task-new-dropdown-background-color;
+
+      &:hover {
+        background: $task-new-dropdown-hover-background-color;
+      }
+
+      &::placeholder {
+        color: $task-new-dropdown-placeholder-color;
+      }
+    }
+  }
+
+  fluent-checkbox {
+    padding-top: 1px;
+
+    // Incomplete checkbox
+    &::part(control) {
+      border-radius: 50%;
+      background: $task-incomplete-checkbox-bg;
+      &:hover {
+        background: $task-incomplete-checkbox-hover-bg;
+      }
+    }
+
+    // Incomplete checkbox label
+    &::part(label) {
+      font-size: $task-title-text-font-size;
+      font-weight: $task-title-text-font-weight;
+      color: $task-incomplete-title-text-color;
+    }
+
+    &.checked {
+      // Complete checkbox
+      &::part(control) {
+        background: $task-complete-checkbox-bg;
+        color: $task-complete-checkbox-check-bg;
+      }
+
+      // Complete checkbox label
+      &::part(label) {
+        text-decoration: line-through;
+        color: $task-complete-title-text-color;
+      }
+    }
+  }
+
+  fluent-text-field {
+    &.NewTask {
+      width: 100%;
+
+      &::part(root) {
+        border: $task-new-input-border;
+        border-radius: $task-new-input-border-radius;
+        background: $task-new-input-background-color;
+
+        &:hover {
+          background: $task-new-input-hover-background-color;
+        }
+
+        &::placeholder {
+          color: $task-new-input-placeholder-color;
+        }
+      }
+    }
+  }
+
+  mgt-people {
+    [slot='no-data'] {
+      margin-top: 8px;
+      color: $task-new-person-icon-text-color;
+
+      svg {
+        fill: $task-new-person-icon-color;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  :host {
+    fluent-select {
+      width: 100%;
+    }
+
+    .Tasks {
+      .Task {
+        .TaskDetailsContainer {
+          .Bottom {
+            display: grid;
+            grid-auto-flow: row;
+            grid-auto-columns: unset;
+            row-gap: 4px;
+
+            .TaskGroup,
+            .TaskBucket,
+            .TaskDue {
+              margin-inline-start: 8px;
+            }
+          }
+
+          .Top {
+            &.AddNewTask {
+              flex-direction: column;
+              row-gap: 12px;
+
+              .CheckAndTitle {
+                .TaskContent {
+                  display: grid;
+                  grid-auto-flow: row;
+                  row-gap: 12px;
+                  width: 100%;
+                }
+              }
+
+              .TaskOptions {
+                &.NewTaskActionButtons {
+                  flex-direction: row;
+                  column-gap: 4px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
