@@ -275,7 +275,7 @@ class MgtFileListComposite extends MgtFileListBase {
       <div class="root">
         ${this.renderCommandBar()}
         <a id="file-link" style="display:none"  target="_blank"></a>
-        ${this.enableBreadcrumb && this.renderBreadcrumb()}
+        ${this.enableBreadcrumb ? this.renderBreadcrumb() : nothing}
         ${this.renderFiles()}
         ${this.renderDeleteDialog()}
         ${this.renderNewFolderDialog()}

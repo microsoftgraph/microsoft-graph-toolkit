@@ -4,13 +4,15 @@ import {
   SearchRegular,
   TextBulletListSquareRegular,
   CalendarMailRegular,
-  DocumentRegular
+  DocumentRegular,
+  ChatRegular
 } from '@fluentui/react-icons';
 import { DashboardPage } from '../pages/DashboardPage';
 import { OutlookPage } from '../pages/OutlookPage';
 import { SearchPage } from '../pages/SearchPage';
 import { HomePage } from '../pages/HomePage';
 import { FilesPage } from '../pages/FilesPage';
+import { ChatPage } from '../pages/ChatPage';
 
 export const getNavigation = (isSignedIn: boolean) => {
   let navItems: NavigationItem[] = [];
@@ -50,6 +52,15 @@ export const getNavigation = (isSignedIn: boolean) => {
       key: 'files',
       requiresLogin: true,
       component: <FilesPage />
+    });
+
+    navItems.push({
+      name: 'Chat',
+      url: '/chat',
+      icon: <ChatRegular />,
+      key: 'chat',
+      requiresLogin: true,
+      component: <ChatPage />
     });
 
     navItems.push({

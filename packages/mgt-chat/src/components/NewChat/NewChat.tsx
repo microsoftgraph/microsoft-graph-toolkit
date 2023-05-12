@@ -31,10 +31,10 @@ const useStyles = makeStyles({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    ...shorthands.paddingBlock('3px', '16px'),
-    minWidth: '300px',
-    backgroundColor: tokens.colorNeutralBackground1,
-    boxShadow: tokens.shadow8
+    // ...shorthands.paddingBlock('3px', '16px'),
+    // minWidth: '300px',
+    backgroundColor: tokens.colorNeutralBackground1
+    // boxShadow: tokens.shadow8
   },
   title: {
     ...typographyStyles.subtitle2,
@@ -44,8 +44,8 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     gridRowGap: '16px',
-    marginBlockStart: '16px',
-    ...shorthands.marginInline('32px')
+    marginBlockStart: '16px'
+    // ...shorthands.marginInline('32px')
   },
   formButtons: {
     display: 'flex',
@@ -99,10 +99,10 @@ const NewChat: FC<NewChatProps> = ({ onChatCreated, onCancelClicked }: NewChatPr
     <FluentProvider theme={teamsLightTheme}>
       {state === 'initial' ? (
         <div className={styles.container}>
-          <Text as="h2" className={styles.title}>
+          {/* <Text as="h2" className={styles.title}>
             New Chat
-          </Text>
-          <Divider />
+      </Text> */}
+          {/* <Divider /> */}
           <div className={styles.form}>
             <Field label="To">
               <PeoplePicker selectedPeople={selectedPeople} selectionChanged={onSelectedPeopleChange} />
@@ -132,7 +132,7 @@ const NewChat: FC<NewChatProps> = ({ onChatCreated, onCancelClicked }: NewChatPr
         </div>
       ) : (
         <>
-          {state}
+          {/* state */}
           {state !== 'done' && <Spinner />}
         </>
       )}

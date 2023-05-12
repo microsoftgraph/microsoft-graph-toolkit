@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PageHeader } from '../components/PageHeader/PageHeader';
-import { FileListComposite, SelectedChannel, TeamsChannelPicker } from '@microsoft/mgt-react';
+import { FileListComposite } from '@microsoft/mgt-react';
 import {
   SelectTabData,
   SelectTabEvent,
