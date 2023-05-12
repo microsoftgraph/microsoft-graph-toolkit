@@ -13,7 +13,6 @@ function App() {
 
   const [showNewChat, setShowNewChat] = useState<boolean>(false);
   const onChatCreated = useCallback((chat: GraphChat) => {
-    console.log('chat created', chat);
     setChatId(chat.id);
     setShowNewChat(false);
   }, []);
