@@ -9,16 +9,19 @@ const ChatListTemplate = (props: MgtTemplateProps & ChatInteractionProps) => {
   const chats: Chat[] = value;
   const [selectedChat, setSelectedChat] = useState<GraphChat>(props.selectedChat || chats[0]);
 
-  React.useEffect(() => {
-    props.onSelected(selectedChat);
-  }, [selectedChat]);
-
   const onChatSelected = React.useCallback(
     (e: GraphChat) => {
       setSelectedChat(e);
+      props.onSelected(selectedChat);
     },
-    [setSelectedChat]
+    [setSelectedChat, props]
   );
+
+  // Set the selected chat to the first chat in the list
+  // Fires only the first time the component is rendered
+  React.useEffect(() => {
+    onChatSelected(selectedChat);
+  }, []);
 
   const isChatActive = (chat: Chat) => {
     if (selectedChat) {

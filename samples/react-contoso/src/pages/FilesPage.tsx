@@ -11,6 +11,7 @@ import {
   makeStyles
 } from '@fluentui/react-components';
 import { ChannelFiles } from './Files/ChannelFiles';
+import { SiteFiles } from './Files/SiteFiles';
 
 const useStyles = makeStyles({
   panels: {
@@ -39,6 +40,7 @@ export const FilesPage: React.FunctionComponent = () => {
         <TabList selectedValue={selectedTab} onTabSelect={onTabSelect}>
           <Tab value="my">My Files</Tab>
           <Tab value="recent">Recent Files</Tab>
+          <Tab value="site">Site Files</Tab>
           <Tab value="channel">Channel Files</Tab>
         </TabList>
         <div className={styles.panels}>
@@ -55,6 +57,7 @@ export const FilesPage: React.FunctionComponent = () => {
               pageSize={100}
             ></FileListComposite>
           )}
+          {selectedTab === 'site' && <SiteFiles />}
           {selectedTab === 'channel' && <ChannelFiles />}
         </div>
       </div>

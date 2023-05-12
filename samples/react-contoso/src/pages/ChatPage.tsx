@@ -64,10 +64,12 @@ export const ChatPage: React.FunctionComponent = () => {
 
   const chatSelected = React.useCallback(
     (e: GraphChat) => {
-      if (isNewChatOpen) {
-        setIsNewChatOpen(false);
+      if (e.id !== selectedChat?.id) {
+        if (isNewChatOpen) {
+          setIsNewChatOpen(false);
+        }
+        setSelectedChat(e);
       }
-      setSelectedChat(e);
     },
     [isNewChatOpen, setSelectedChat, setIsNewChatOpen]
   );
@@ -84,12 +86,12 @@ export const ChatPage: React.FunctionComponent = () => {
           <div className={styles.newChat}>
             <Dialog
               open={isNewChatOpen}
-              onOpenChange={(event, data) => {
+              /*onOpenChange={(event, data) => {
                 setIsNewChatOpen(data.open);
-              }}
+              }}*/
             >
               <DialogTrigger disableButtonEnhancement>
-                <Button>New Chat</Button>
+                <Button onClick={() => setIsNewChatOpen(true)}>New Chat</Button>
               </DialogTrigger>
               <DialogSurface>
                 <DialogBody className={styles.dialog}>
@@ -117,7 +119,7 @@ interface ChatListProps {
   chatSelected: GraphChat | undefined;
 }
 
-const ChatList = (props: ChatListProps) => {
+const ChatList = React.memo((props: ChatListProps) => {
   const getPreviousDate = (months: number) => {
     const date = new Date();
     date.setMonth(date.getMonth() - months);
@@ -140,4 +142,4 @@ const ChatList = (props: ChatListProps) => {
       <Loading template="loading" message={'Loading your chats...'}></Loading>
     </Get>
   );
-};
+});

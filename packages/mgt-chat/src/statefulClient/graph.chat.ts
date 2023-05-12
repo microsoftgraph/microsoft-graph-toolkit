@@ -14,7 +14,7 @@ import {
 } from '@microsoft/mgt-components';
 import { CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
-import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import { AadUserConversationMember, Chat, ChatMessage, ChatType } from '@microsoft/microsoft-graph-types';
 
 /**
  * Generic collection response from graph
@@ -268,9 +268,10 @@ export const createChatThread = async (
   graph: IGraph,
   memberIds: string[],
   chatMessage: string | undefined,
-  chatName: string | undefined
+  chatName: string | undefined,
+  chatType: ChatType = 'oneOnOne'
 ): Promise<Chat> => {
-  const isGroupChat = memberIds.length > 2;
+  const isGroupChat = memberIds.length > 2 || chatType === 'group';
   const body: Chat = {
     chatType: isGroupChat ? 'group' : 'oneOnOne',
     members: memberIds.map(id => {

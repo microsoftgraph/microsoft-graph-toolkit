@@ -10,25 +10,23 @@ import {
   TableColumnDefinition,
   createTableColumn
 } from '@fluentui/react-components';
-import { SettingsRegular, StarRegular, StarFilled } from '@fluentui/react-icons';
-import { Person, PersonCardInteraction, ViewType } from '@microsoft/mgt-react';
+import { SettingsRegular, StarRegular } from '@fluentui/react-icons';
+import { Get, MgtTemplateProps, Person, PersonCardInteraction, Providers, ViewType } from '@microsoft/mgt-react';
 import './Incidents.css';
 import React from 'react';
 
 export interface IIndicentsProps {}
 
 export function Incidents(props: IIndicentsProps) {
-  const [incidents, setIncidents] = React.useState<any[]>([]);
+  return (
+    <Get resource={`sites/root/lists/${process.env.REACT_APP_INCIDENTS_LIST_ID!}/items?$expand=fields`}>
+      <DataGridTemplate template="default"></DataGridTemplate>
+    </Get>
+  );
+}
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('incidents.json');
-      const data = await response.json();
-      setIncidents(data);
-    };
-
-    fetchData();
-  }, []);
+const DataGridTemplate = (props: MgtTemplateProps) => {
+  const [incidents] = React.useState<any[]>(props.dataContext.value);
 
   const columns: TableColumnDefinition<any>[] = [
     createTableColumn<any>({
@@ -37,7 +35,25 @@ export function Incidents(props: IIndicentsProps) {
         return 'Title';
       },
       renderCell: item => {
-        return <TableCellLayout>{item.title}</TableCellLayout>;
+        return <TableCellLayout>{item.fields.Title}</TableCellLayout>;
+      }
+    }),
+    createTableColumn<any>({
+      columnId: 'status',
+      renderHeaderCell: () => {
+        return 'Status';
+      },
+      renderCell: item => {
+        return <TableCellLayout>{item.fields.Status}</TableCellLayout>;
+      }
+    }),
+    createTableColumn<any>({
+      columnId: 'priority',
+      renderHeaderCell: () => {
+        return 'Priority';
+      },
+      renderCell: item => {
+        return <TableCellLayout>{item.fields.Priority}</TableCellLayout>;
       }
     }),
     createTableColumn<any>({
@@ -48,55 +64,13 @@ export function Incidents(props: IIndicentsProps) {
       renderCell: item => {
         return (
           <TableCellLayout>
-            <Person
-              userId={item.requestedBy}
-              view={ViewType.oneline}
-              personCardInteraction={PersonCardInteraction.hover}
-            ></Person>
-          </TableCellLayout>
-        );
-      }
-    }),
-    createTableColumn<any>({
-      columnId: 'description',
-      renderHeaderCell: () => {
-        return 'Title';
-      },
-      renderCell: item => {
-        return <TableCellLayout>{item.description}</TableCellLayout>;
-      }
-    }),
-    createTableColumn<any>({
-      columnId: 'status',
-      renderHeaderCell: () => {
-        return 'Status';
-      },
-      renderCell: item => {
-        return <TableCellLayout>{item.status}</TableCellLayout>;
-      }
-    }),
-    createTableColumn<any>({
-      columnId: 'priority',
-      renderHeaderCell: () => {
-        return 'Priority';
-      },
-      renderCell: item => {
-        return <TableCellLayout>{item.priority}</TableCellLayout>;
-      }
-    }),
-    createTableColumn<any>({
-      columnId: 'assignedTo',
-      renderHeaderCell: () => {
-        return 'Assigned To';
-      },
-      renderCell: item => {
-        return (
-          <TableCellLayout>
-            <Person
-              userId={item.assignedTo}
-              view={ViewType.oneline}
-              personCardInteraction={PersonCardInteraction.hover}
-            ></Person>
+            <Get
+              resource={`sites/root/lists/${process.env.REACT_APP_USER_INFORMATION_LIST_ID!}/items/${
+                item.fields.IssueloggedbyLookupId
+              }`}
+            >
+              <PersonFromUserFormationListTemplate template="default"></PersonFromUserFormationListTemplate>
+            </Get>
           </TableCellLayout>
         );
       }
@@ -110,7 +84,6 @@ export function Incidents(props: IIndicentsProps) {
         return (
           <TableCellLayout>
             <Button as="a" icon={<SettingsRegular />} size="small" href={`#/incident/${item.id}`} />
-            <Button icon={<StarRegular />} size="small" />
           </TableCellLayout>
         );
       }
@@ -133,4 +106,14 @@ export function Incidents(props: IIndicentsProps) {
       </DataGridBody>
     </DataGrid>
   );
-}
+};
+
+const PersonFromUserFormationListTemplate = (props: MgtTemplateProps) => {
+  return (
+    <Person
+      personQuery={props.dataContext.fields.EMail}
+      view={ViewType.oneline}
+      personCardInteraction={PersonCardInteraction.hover}
+    ></Person>
+  );
+};
