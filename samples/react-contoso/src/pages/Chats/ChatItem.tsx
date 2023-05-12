@@ -24,6 +24,13 @@ const useStyles = makeStyles({
     '--person-avatar-size-small': '40px',
     '& .fui-Persona__primaryText': {
       fontSize: 'var(--fontSizeBase300);'
+    },
+    '& .fui-Persona__secondaryText': {
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      width: '200px',
+      display: 'inline-block',
+      ...shorthands.overflow('hidden')
     }
   },
   messagePreview: {
