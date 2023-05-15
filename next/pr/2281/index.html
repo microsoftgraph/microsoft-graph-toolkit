@@ -419,9 +419,15 @@
     display: none !important;
   }
 
-  a[class*="sto-"][data-selected="true"]{
-    border: 2px solid transparent;
-    border-radius: 2px;
+  @media (forced-colors: active) {
+    a[class*="sto-"][data-selected="true"]{
+      background: SelectedItem;
+      color: SelectedItemText;
+    }
+    a[class*="sto-"][data-selected="false"]:focus,
+    a[class*="sto-"][data-selected="false"]:hover{
+      background: Highlight;
+    }
   }</style><style>#root[hidden],
       #docs-root[hidden] {
         display: none !important;
@@ -441,4 +447,4 @@
           
       
           
-            window['DOCS_MODE'] = false;</script><script src="runtime~main.c7fb3f3b3e1ff13bb644.manager.bundle.js"></script><script src="vendors~main.b6db650e78deede380c7.manager.bundle.js"></script><script src="main.c4dcfcff85a295ff2559.manager.bundle.js"></script></body></html>
+            window['DOCS_MODE'] = false;</script><script src="runtime~main.c7fb3f3b3e1ff13bb644.manager.bundle.js"></script><script src="vendors~main.b6db650e78deede380c7.manager.bundle.js"></script><script src="main.7271face53a6e7512618.manager.bundle.js"></script></body></html>
