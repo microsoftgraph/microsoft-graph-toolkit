@@ -30,6 +30,7 @@ import { styles } from './mgt-todo-css';
 import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentCheckbox, fluentRadioGroup, fluentButton } from '@fluentui/web-components';
+import { isElementDark } from '../../utils/isDark';
 
 registerFluentComponents(fluentCheckbox, fluentRadioGroup, fluentButton);
 
@@ -103,6 +104,7 @@ export class MgtTodo extends MgtTasksBase {
   private _isNewTaskBeingAdded: boolean;
   private _graph: IGraph;
   @state() private currentList: TodoTaskList;
+  @state() private _isDarkMode = false;
 
   constructor() {
     super();
@@ -113,6 +115,32 @@ export class MgtTodo extends MgtTasksBase {
     this._isLoadingTasks = false;
     this.addEventListener('selectionChanged', this.handleSelectionChanged);
   }
+
+  /**
+   * updates provider state
+   *
+   * @memberof MgtTasks
+   */
+  public connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('darkmodechanged', this.onThemeChanged);
+    // invoked to ensure we have the correct initial value for _isDarkMode
+    this.onThemeChanged();
+  }
+
+  /**
+   * removes updates on provider state
+   *
+   * @memberof MgtTasks
+   */
+  public disconnectedCallback() {
+    window.removeEventListener('darkmodechanged', this.onThemeChanged);
+    super.disconnectedCallback();
+  }
+
+  private onThemeChanged = () => {
+    this._isDarkMode = isElementDark(this);
+  };
 
   /**
    * Render the list of todo tasks
@@ -214,12 +242,12 @@ export class MgtTodo extends MgtTasksBase {
         ${getSvg(SvgIcon.Cancel)}
       </fluent-button>
     `;
-
+    const dateClass = { dark: this._isDarkMode, date: true };
     const calendarTemplate = html`
       <fluent-text-field
         type="date"
         id="new-taskDate-input"
-        class="date"
+        class="${classMap(dateClass)}"
         aria-label="${this.strings.newTaskDateInputLabel}"
         .value="${this.dateToInputValue(this._newTaskDueDate)}"
         @change="${this.handleDateChange}">

@@ -33,6 +33,7 @@ import { styles } from './mgt-tasks-css';
 import { strings } from './strings';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { isElementDark } from '../../utils/isDark';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -413,7 +414,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   @property() private _currentGroup: string;
   @property() private _currentFolder: string;
-
+  @state() private _isDarkMode = false;
   @state() private _me: User = null;
   private previousMediaQuery: ComponentMediaQuery;
 
@@ -432,6 +433,9 @@ export class MgtTasks extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('resize', this.onResize);
+    window.addEventListener('darkmodechanged', this.onThemeChanged);
+    // invoked to ensure we have the correct initial value for _isDarkMode
+    this.onThemeChanged();
   }
 
   /**
@@ -441,6 +445,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('darkmodechanged', this.onThemeChanged);
     super.disconnectedCallback();
   }
 
@@ -598,6 +603,10 @@ export class MgtTasks extends MgtTemplatedComponent {
       this.previousMediaQuery = this.mediaQuery;
       this.requestUpdate();
     }
+  };
+
+  private onThemeChanged = () => {
+    this._isDarkMode = isElementDark(this);
   };
 
   private async _loadTargetTodoTasks(ts: ITaskSource) {
@@ -1050,10 +1059,12 @@ export class MgtTasks extends MgtTemplatedComponent {
           ${folders.length > 0 ? folderOptions : html`<fluent-option selected>No folders found</fluent-option>`}
         </fluent-select>`;
 
+    const dateField = { dark: this._isDarkMode, NewTask: true };
+
     const taskDue = html`
       <fluent-text-field
         type="date"
-        class="NewTask"
+        class=${classMap(dateField)}
         aria-label="${this.strings.addTaskDate}"
         .value="${this.dateToInputValue(this._newTaskDueDate)}"
         @change=${this.handleDateChange}>

@@ -104,13 +104,20 @@
           fill: $task-color;
         }
 
-        .date {
-          margin-inline-start: 10px;
-          color: $task-color;
-          width: auto;
-          cursor: pointer;
-          &::after {
-            border-bottom: none;
+        fluent-text-field {
+          &.date {
+            margin-inline-start: 10px;
+            color: $task-color;
+            width: auto;
+            cursor: pointer;
+            &::after {
+              border-bottom: none;
+            }
+            &.dark {
+              &::part(control) {
+                color-scheme: dark;
+              }
+            }
           }
         }
 
