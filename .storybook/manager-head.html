@@ -402,8 +402,14 @@
     display: none !important;
   }
 
-  a[class*="sto-"][data-selected="true"]{
-    border: 2px solid transparent;
-    border-radius: 2px;
+  @media (forced-colors: active) {
+    a[class*="sto-"][data-selected="true"]{
+      background: SelectedItem;
+      color: SelectedItemText;
+    }
+    a[class*="sto-"][data-selected="false"]:focus,
+    a[class*="sto-"][data-selected="false"]:hover{
+      background: Highlight;
+    }
   }
 </style>
