@@ -8,4 +8,5 @@
 import { allChatScopes } from './statefulClient/graph.chat';
 
 export * from './components';
+export * from './utils/createNewChat';
 export { allChatScopes };

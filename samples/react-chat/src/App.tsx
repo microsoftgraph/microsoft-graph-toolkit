@@ -1,9 +1,17 @@
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import './App.css';
 import { Get, Login } from '@microsoft/mgt-react';
 import { Chat, NewChat } from '@microsoft/mgt-chat';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import ChatListTemplate from './components/ChatListTemplate/ChatListTemplate';
+
+const ChatList = memo(({ chatSelected }: { chatSelected: (e: GraphChat) => void }) => {
+  return (
+    <Get resource="me/chats?$expand=members" scopes={['chat.read']} cacheEnabled={false}>
+      <ChatListTemplate template="default" onSelected={chatSelected} />
+    </Get>
+  );
+});
 
 function App() {
   const [chatId, setChatId] = useState<string>();
@@ -26,15 +34,19 @@ function App() {
       </header>
       <main className="main">
         <div className="chat-selector">
-          <Get resource="me/chats?$expand=members" scopes={['chat.read']} cacheEnabled={true}>
-            <ChatListTemplate template="default" onSelected={chatSelected} />
-          </Get>
+          <ChatList chatSelected={chatSelected} />
           Selected chat: {chatId}
           <br />
           <button onClick={() => setShowNewChat(true)}>New Chat</button>
           {showNewChat && (
             <div className="new-chat">
-              <NewChat onChatCreated={onChatCreated} onCancelClicked={() => setShowNewChat(false)} />
+              <NewChat
+                onChatCreated={onChatCreated}
+                onCancelClicked={() => setShowNewChat(false)}
+                mode="auto"
+                hideTitle={true}
+                title="Create a new chat"
+              />
             </div>
           )}
         </div>
