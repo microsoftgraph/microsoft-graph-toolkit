@@ -1,14 +1,46 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { AadUserConversationMember, Chat } from '@microsoft/microsoft-graph-types';
 import { styles } from './chat-header.styles';
-import { IconButton, IIconProps } from '@fluentui/react';
+import { Edit20Filled, Edit20Regular, bundleIcon } from '@fluentui/react-icons';
 import { Person, PersonCardInteraction, ViewType } from '@microsoft/mgt-react';
-import { buttonIconStyle, buttonIconStyles, iconOnlyButtonStyle } from '../styles/common.styles';
+import {
+  Button,
+  Divider,
+  Field,
+  Input,
+  InputOnChangeData,
+  OnOpenChangeData,
+  Popover,
+  PopoverSurface,
+  PopoverTrigger,
+  Text,
+  makeStyles,
+  shorthands,
+  tokens
+} from '@fluentui/react-components';
 
 interface ChatHeaderProps {
   chat?: Chat;
   currentUserId?: string;
 }
+
+const EditIcon = bundleIcon(Edit20Filled, Edit20Regular);
+
+const useStyles = makeStyles({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    gridRowGap: '16px',
+    minWidth: '300px',
+    backgroundColor: tokens.colorNeutralBackground1
+  },
+  formButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gridColumnGap: '8px'
+  }
+});
 
 const reduceToFirstNamesList = (participants: AadUserConversationMember[] = [], userId = '') => {
   return participants
@@ -23,23 +55,46 @@ const reduceToFirstNamesList = (participants: AadUserConversationMember[] = [], 
 };
 
 const GroupChatHeader = ({ chat, currentUserId }: ChatHeaderProps) => {
+  const styles = useStyles();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const handleOpenChange = useCallback((_, data: OnOpenChangeData) => setIsPopoverOpen(data.open || false), []);
+  const onCancelClicked = useCallback(() => setIsPopoverOpen(false), []);
+  const [chatName, setChatName] = useState(chat?.topic);
+  const onChatNameChanged = useCallback(
+    (_: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, data: InputOnChangeData) => {
+      setChatName(data.value);
+    },
+    []
+  );
+  const renameChat = useCallback(() => {
+    console.log('rename chat', chatName);
+  }, [chatName]);
   const chatTitle = chat?.topic
     ? chat.topic
     : reduceToFirstNamesList(chat?.members as AadUserConversationMember[], currentUserId);
-
-  const editIcon: IIconProps = {
-    iconName: 'edit-svg',
-    className: (buttonIconStyles.button, iconOnlyButtonStyle),
-    styles: { root: buttonIconStyle }
-  };
   return (
     <>
       {chatTitle}
-      <IconButton
-        iconProps={editIcon}
-        className={(buttonIconStyles.button, iconOnlyButtonStyle)}
-        ariaLabel="Name group chat"
-      />
+      <Popover trapFocus positioning={'below-start'} open={isPopoverOpen} onOpenChange={handleOpenChange}>
+        <PopoverTrigger>
+          <Button appearance="transparent" icon={<EditIcon />} aria-label="Name group chat"></Button>
+        </PopoverTrigger>
+        <PopoverSurface>
+          <div className={styles.container}>
+            <Field label="Group name">
+              <Input placeholder="Enter group name" onChange={onChatNameChanged} value={chatName || ''} />
+            </Field>
+            <div className={styles.formButtons}>
+              <Button appearance="secondary" onClick={onCancelClicked}>
+                Cancel
+              </Button>
+              <Button appearance="primary" disabled={chatName === chat?.topic} onClick={renameChat}>
+                Send
+              </Button>
+            </div>
+          </div>
+        </PopoverSurface>
+      </Popover>
     </>
   );
 };

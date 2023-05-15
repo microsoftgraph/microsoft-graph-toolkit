@@ -100,7 +100,7 @@ const NewChat: FC<NewChatProps> = ({ onChatCreated, onCancelClicked }: NewChatPr
       {state === 'initial' ? (
         <div className={styles.container}>
           <Text as="h2" className={styles.title}>
-            New Chat
+            New chat
           </Text>
           <Divider />
           <div className={styles.form}>
