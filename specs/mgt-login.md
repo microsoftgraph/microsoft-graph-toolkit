@@ -69,7 +69,7 @@ Single account view of Login component is rendered.
 ### Example 2: Login component is used with MSAL 2.0 Provider
 
 ```
-<mgt-msal-2-provider client-id="123"></mgt--msal-2-provider>
+<mgt-msal2-provider client-id="123"></mgt-msal2-provider>
 <mgt-login></mgt-login>
 ```
 

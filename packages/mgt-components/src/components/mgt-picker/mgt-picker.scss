@@ -6,8 +6,8 @@
  */
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../../styles/shared-styles.scss';
-@import './mgt-picker.theme.scss';
+@import '../../styles/shared-styles';
+@import './mgt-picker.theme';
 
 :host {
   font-family: $font-family;

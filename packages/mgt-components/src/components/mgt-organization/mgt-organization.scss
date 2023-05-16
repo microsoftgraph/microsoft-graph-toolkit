@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../base-person-card-section.scss';
-@import '../../styles/shared-styles.scss';
-@import '../../styles/shared-sass-variables.scss';
-@import './mgt-organization.theme.scss';
+@import '../base-person-card-section';
+@import '../../styles/shared-styles';
+@import '../../styles/shared-sass-variables';
+@import './mgt-organization.theme';
 
 :host {
   position: relative;
@@ -23,8 +23,10 @@
           height: 40px;
           width: 40px;
           border-radius: 40px;
+
           --avatar-size: 40px;
           --avatar-size-s: 40px;
+
           margin-right: 12px;
         }
 
@@ -41,17 +43,14 @@
     .subtitle {
       color: $organization-sub-title-color;
       font-size: 14px;
-      margin: 0 20px 8px 20px;
+      margin: 0 20px 8px;
     }
 
     .divider {
       display: flex;
       background: $organization-coworker-border-color;
       height: 1px;
-      margin-top: 26px;
-      margin-bottom: 18px;
-      margin-left: 20px;
-      margin-right: 20px;
+      margin: 26px 20px 18px;
     }
 
     .org-member {
@@ -132,6 +131,7 @@
         width: 38px;
         margin-right: 4px;
         display: inline;
+
         --avatar-size: 38px;
       }
     }
@@ -141,12 +141,9 @@
 [dir='rtl'] {
   .org-member {
     .org-member__more {
-      -moz-transform: scaleX(-1);
-      -o-transform: scaleX(-1);
-      -webkit-transform: scaleX(-1);
       transform: scaleX(-1);
-      filter: FlipH;
-      -ms-filter: 'FlipH';
+      filter: fliph;
+      filter: 'FlipH';
     }
   }
 }
@@ -154,7 +151,7 @@
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
   :host svg,
   :host svg > path {
-    fill: rgb(255, 255, 255) !important;
+    fill: rgb(255 255 255) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
   }
@@ -163,7 +160,7 @@
 @media (forced-colors: active) and (prefers-color-scheme: light) {
   :host svg,
   :host svg > path {
-    fill: rgb(0, 0, 0) !important;
+    fill: rgb(0 0 0) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
   }
