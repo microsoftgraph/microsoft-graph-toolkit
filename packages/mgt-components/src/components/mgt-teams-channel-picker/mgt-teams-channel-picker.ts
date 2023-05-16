@@ -175,15 +175,15 @@ export interface MgtTeamsChannelPickerConfig {
  * @cssprop --channel-picker-input-border-bottom - {String} Input section border bottom only
  * @cssprop --channel-picker-input-border-left - {String} Input section border left only
  * @cssprop --channel-picker-input-background-color - {Color} Input section background color
- * @cssprop --channel-picker-input-border-color--hover - {Color} Input border hover color
- * @cssprop --channel-picker-input-border-color--focus - {Color} Input border focus color
+ * @cssprop --channel-picker-input-border-color-hover - {Color} Input border hover color
+ * @cssprop --channel-picker-input-border-color-focus - {Color} Input border focus color
  *
  * @cssprop --channel-picker-dropdown-background-color - {Color} Background color of dropdown area
  * @cssprop --channel-picker-dropdown-item-hover-background - {Color} Background color of channel or team during hover
  * @cssprop --channel-picker-dropdown-item-selected-background - {Color} Background color of selected channel
  *
  * @cssprop --channel-picker-arrow-fill - {Color} Color of arrow svg
- * @cssprop --channel-picker-placeholder-color--focus - {Color} Color of placeholder text during focus state
+ * @cssprop --channel-picker-placeholder-color-focus - {Color} Color of placeholder text during focus state
  * @cssprop --channel-picker-placeholder-color - {Color} Color of placeholder text
  *
  */

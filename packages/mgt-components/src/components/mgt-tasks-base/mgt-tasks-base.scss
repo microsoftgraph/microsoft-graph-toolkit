@@ -318,7 +318,7 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
         span,
         select {
           vertical-align: middle;
-          color: $detail__color;
+          color: $detail-color;
         }
 
         .task-icon {
@@ -374,7 +374,7 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
 
         .task-content .task-details-container .task-title {
           text-decoration: line-through;
-          color: $detail__color;
+          color: $detail-color;
         }
       }
 
@@ -416,7 +416,7 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
 
       .task-content .task-details-container .task-title {
         text-decoration: line-through;
-        color: $detail__color;
+        color: $detail-color;
       }
     }
 

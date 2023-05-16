@@ -8,8 +8,8 @@
 @import '../../styles/shared-sass-variables';
 
 $title-color: #{var(--task-title-color, var(--neutral-foreground-rest))};
-$button-color--cancel: #{var(--task-new-cancel-button-color, var(--neutral-foreground-rest))};
-$detail-color: #{var(--task-detail-color, var(--neutral-foreground-hint))};
+$button-color-cancel: #{var(--task-new-cancel-button-color, var(--neutral-foreground-rest))};
+$detail-color: var(--task-detail-color,  var(--neutral-foreground-hint));
 $task-color: #{var(--task-color, var(--neutral-foreground-rest))};
 $task-background-color: #{var(--task-background-color, var(--neutral-layer-floating))};
 $task-background-color--completed: #{var(--task-complete-background, var(--neutral-layer-1))};
