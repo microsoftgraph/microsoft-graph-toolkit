@@ -5,11 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../../styles/shared-sass-variables.scss';
+@import '../../../styles/shared-sass-variables';
 
 $file-upload-button-background-color: var(--file-upload-button-background-color, var(--accent-fill-rest));
 $file-upload-button-background-color-hover: var(--file-upload-button-background-color-hover, var(--accent-fill-hover));
-$file-upload-background-color-drag: var(--file-upload-background-color-drag, rgba(0, 120, 212, 0.1));
+$file-upload-background-color-drag: var(--file-upload-background-color-drag, rgb(0 120 212 / 10%));
 $file-upload-button-text-color: var(--file-upload-button-text-color, var(--foreground-on-accent-rest));
 $file-upload-dialog-background-color: var(--file-upload-dialog-background-color, var(--accent-fill-rest));
 $file-upload-dialog-text-color: var(--file-upload-dialog-text-color, var(--neutral-foreground-rest));

@@ -204,7 +204,7 @@ export class MgtTodo extends MgtTasksBase {
         </fluent-checkbox>
       `
       : html`
-        <span class="addIcon">${getSvg(SvgIcon.Add)}</span>
+        <span class="add-icon">${getSvg(SvgIcon.Add)}</span>
       `;
 
     const cancelIcon = html`
@@ -229,8 +229,8 @@ export class MgtTodo extends MgtTasksBase {
     const newTaskDetails = html`
       <fluent-text-field
         appearance="outline"
-        class="NewTask"
-        id="new-taskName-input"
+        class="new-task"
+        id="new-task-name-input"
         aria-label="${this.strings.newTaskLabel}"
         .value=${this._newTaskName}
         placeholder="${this.strings.newTaskPlaceholder}"
@@ -252,7 +252,7 @@ export class MgtTodo extends MgtTasksBase {
       ${
         this.currentList
           ? html`
-            <div dir=${this.direction} class="Task NewTask Incomplete">
+            <div dir=${this.direction} class="task new-task incomplete">
               ${newTaskDetails}
             </div>
         `
@@ -295,8 +295,8 @@ export class MgtTodo extends MgtTasksBase {
 
     const taskDueTemplate = task.dueDateTime
       ? html`
-        <span class="TaskCalendar">${getSvg(SvgIcon.Calendar)}</span>
-        <span class="TaskDueDate">${getDateString(new Date(task.dueDateTime.dateTime))}</span>
+        <span class="task-calendar">${getSvg(SvgIcon.Calendar)}</span>
+        <span class="task-due-date">${getDateString(new Date(task.dueDateTime.dateTime))}</span>
       `
       : html``;
 
@@ -304,10 +304,10 @@ export class MgtTodo extends MgtTasksBase {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
     } else {
       taskDetailsTemplate = html`
-      <div class="TaskDetails">
-        <div class="Title">${task.title}</div>
-        <div class="TaskDue">${taskDueTemplate}</div>
-        <fluent-button class="TaskDelete"
+      <div class="task-details">
+        <div class="title">${task.title}</div>
+        <div class="task-due">${taskDueTemplate}</div>
+        <fluent-button class="task-delete"
           @click="${() => this.removeTask(task.id)}"
           aria-label="${this.strings.deleteTaskLabel}">
           ${getSvg(SvgIcon.Delete)}
@@ -329,8 +329,8 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected renderTask = (task: TodoTask) => {
     const taskClasses = classMap({
-      ReadOnly: this.readOnly,
-      Task: true
+      'read-only': this.readOnly,
+      task: true
     });
 
     return html`
@@ -350,9 +350,9 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected renderCompletedTask = (task: TodoTask) => {
     const taskClasses = classMap({
-      Complete: true,
-      ReadOnly: this.readOnly,
-      Task: true
+      complete: true,
+      'read-only': this.readOnly,
+      task: true
     });
 
     const taskCheckContent = html`${getSvg(SvgIcon.CheckMark)}`;
@@ -491,7 +491,7 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   private handleInput = (e: MouseEvent) => {
-    if ((e.target as HTMLInputElement).id === 'new-taskName-input') {
+    if ((e.target as HTMLInputElement).id === 'new-task-name-input') {
       this._newTaskName = (e.target as HTMLInputElement).value;
     }
   };

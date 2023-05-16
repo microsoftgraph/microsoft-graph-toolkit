@@ -6,8 +6,8 @@
  */
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../../styles/shared-styles.scss';
-@import './mgt-login.theme.scss';
+@import '../../styles/shared-styles';
+@import './mgt-login.theme';
 
 $signed-out-bg: padding-box linear-gradient(var(--neutral-fill-rest), var(--neutral-fill-rest)),
   border-box var(--neutral-stroke-control-rest);
@@ -20,12 +20,13 @@ $button-padding: var(--login-button-padding, 0);
   mgt-person {
     &.signed-in-person {
       --person-background-color: $signed-in-background-color;
+
       padding: var(--login-button-padding, 10px 16px);
     }
 
     &.account {
-      padding: 0px;
-      margin: 7px 0px;
+      padding: 0;
+      margin: 7px 0;
     }
   }
 
@@ -70,13 +71,14 @@ $button-padding: var(--login-button-padding, 0);
 
   fluent-card {
     --fill-color: #{var(--login-popup-background-color, var(--neutral-layer-1))};
+
     padding: var(--login-popup-padding, 16px);
   }
 
   .login-root {
     .small {
       mgt-person {
-        padding: 0px;
+        padding: 0;
         background: transparent;
 
         &:hover,

@@ -103,10 +103,10 @@ export class MgtArrowOptions extends MgtBaseComponent {
    */
   public render() {
     return html`
-      <span class="Header" @click=${this.onHeaderClick}>
-        <span class="CurrentValue">${this.value}</span>
+      <span class="header" @click=${this.onHeaderClick}>
+        <span class="current-value">${this.value}</span>
       </span>
-      <div class=${classMap({ Menu: true, Open: this.open, Closed: !this.open })}>
+      <div class=${classMap({ menu: true, open: this.open, closed: !this.open })}>
         ${this.getMenuOptions()}
       </div>
     `;
@@ -119,16 +119,16 @@ export class MgtArrowOptions extends MgtBaseComponent {
     return keys.map(
       opt => html`
         <div
-          class="MenuOption"
+          class="menu-option"
           @click="${(e: MouseEvent) => {
             this.open = false;
             funcs[opt](e);
           }}"
         >
-          <span class=${classMap({ MenuOptionCheck: true, CurrentValue: this.value === opt })}>
+          <span class=${classMap({ 'menu-option-check': true, 'current-value': this.value === opt })}>
             \uE73E
           </span>
-          <span class="MenuOptionName">${opt}</span>
+          <span class="menu-option-name">${opt}</span>
         </div>
       `
     );
