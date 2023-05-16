@@ -215,7 +215,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
 
   @state() private terms: TermStore.Term[];
   @state() private noTerms: boolean;
-  @state() private error: object;
+  // @state() private error: object;
 
   constructor() {
     super();
