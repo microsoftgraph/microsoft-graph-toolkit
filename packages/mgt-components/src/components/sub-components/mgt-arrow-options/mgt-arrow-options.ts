@@ -10,6 +10,9 @@ import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { styles } from './mgt-arrow-options-css';
+import { registerFluentComponents } from '../../../utils/FluentComponents';
+import { fluentMenu, fluentMenuItem } from '@fluentui/web-components';
+registerFluentComponents(fluentMenu, fluentMenuItem);
 
 /*
   Ok, the name here deserves a bit of explanation,
@@ -53,20 +56,20 @@ export class MgtArrowOptions extends MgtBaseComponent {
   @property({ type: String }) public value: string;
 
   /**
-   * Menu options to be rendered with an attached MouseEvent handler for expansion of details
+   * Menu options to be rendered with an attached UIEvent handler for expansion of details
    *
    * @type {object}
    * @memberof MgtArrowOptions
    */
-  @property({ type: Object }) public options: { [name: string]: (e: MouseEvent) => any | void };
+  @property({ type: Object }) public options: { [name: string]: (e: UIEvent) => any | void };
 
-  private _clickHandler: (e: MouseEvent) => void | any;
+  private _clickHandler: (e: UIEvent) => void | any;
 
   constructor() {
     super();
     this.value = '';
     this.options = {};
-    this._clickHandler = (e: MouseEvent) => (this.open = false);
+    this._clickHandler = () => (this.open = false);
   }
 
   // eslint-disable-next-line @typescript-eslint/tslint/config
@@ -84,10 +87,10 @@ export class MgtArrowOptions extends MgtBaseComponent {
   /**
    * Handles clicking for header menu, utilizing boolean switch open
    *
-   * @param {MouseEvent} e attaches to Header to open menu
+   * @param {UIEvent} e attaches to Header to open menu
    * @memberof MgtArrowOptions
    */
-  public onHeaderClick = (e: MouseEvent) => {
+  public onHeaderClick = (e: UIEvent) => {
     const keys = Object.keys(this.options);
     if (keys.length > 1) {
       e.preventDefault();
@@ -103,34 +106,35 @@ export class MgtArrowOptions extends MgtBaseComponent {
    */
   public render() {
     return html`
-      <span class="Header" @click=${this.onHeaderClick}>
-        <span class="CurrentValue">${this.value}</span>
-      </span>
-      <div class=${classMap({ Menu: true, Open: this.open, Closed: !this.open })}>
-        ${this.getMenuOptions()}
-      </div>
-    `;
+      <a class="Header" @click=${this.onHeaderClick} href="javascript:void">${this.value}</a>
+      <fluent-menu
+        class=${classMap({ Menu: true, Open: this.open, Closed: !this.open })}>
+          ${this.getMenuOptions()}
+      </fluent-menu>`;
   }
 
   private getMenuOptions() {
     const keys = Object.keys(this.options);
-    const funcs = this.options;
 
-    return keys.map(
-      opt => html`
-        <div
-          class="MenuOption"
-          @click="${(e: MouseEvent) => {
-            this.open = false;
-            funcs[opt](e);
-          }}"
-        >
-          <span class=${classMap({ MenuOptionCheck: true, CurrentValue: this.value === opt })}>
-            \uE73E
-          </span>
-          <span class="MenuOptionName">${opt}</span>
-        </div>
-      `
-    );
+    return keys.map((opt: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      const clickFn = (e: MouseEvent) => {
+        this.open = false;
+        this.options[opt](e);
+      };
+
+      const keyDownFn = (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+          this.open = false;
+          this.options[opt](e);
+        }
+      };
+      return html`
+          <fluent-menu-item
+            @click=${clickFn}
+            @keydown=${keyDownFn}>
+              ${opt}
+          </fluent-menu-item>`;
+    });
   }
 }
