@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "3.0.0-preview.1",
+  "version": "3.0.0-preview.2",
   "workspaces": {
     "packages": [
       "packages/*",
@@ -170,7 +170,6 @@
     "embeddedLanguageFormatting": "off"
   },
   "resolutions": {
-    "@microsoft/microsoft-graph-client": "3.0.2",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",

@@ -236,32 +236,6 @@ module.exports = {
       }
     ],
     'use-isnan': 'error',
-    'valid-typeof': 'off',
-    '@typescript-eslint/tslint/config': [
-      'warn',
-      {
-        rules: {
-          'completed-docs': [
-            true,
-            {
-              methods: {
-                privacies: ['public', 'protected']
-              },
-              properties: {
-                privacies: ['public', 'protected']
-              },
-              classes: true,
-              enums: true,
-              'enum-members': true,
-              functions: true,
-              interfaces: true,
-              namespaces: true,
-              types: true,
-              variables: true
-            }
-          ]
-        }
-      }
-    ]
+    'valid-typeof': 'off'
   }
 };
