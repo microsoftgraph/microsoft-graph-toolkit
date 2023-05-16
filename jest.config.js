@@ -13,8 +13,7 @@ const esModules = [
   'exenv-es6',
   '@microsoft/microsoft-graph-client',
   '@microsoft/mgt-element',
-  '@microsoft/mgt-components',
-  '@microsoft/mgt-msal-provider'
+  '@microsoft/mgt-components'
 ].join('|');
 
 const config = {
