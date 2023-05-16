@@ -25,6 +25,9 @@ import { graph } from '../../utils/graph';
 import { currentUserId } from '../../utils/currentUser';
 
 interface NewChatProps {
+  hideTitle?: boolean;
+  title?: string;
+  mode?: 'oneOnOne' | 'group' | 'auto';
   onChatCreated: (chat: Chat) => void;
   onCancelClicked: () => void;
   theme?: Theme;
@@ -58,16 +61,33 @@ const useStyles = makeStyles({
   }
 });
 
-const NewChat: FC<NewChatProps> = ({ onChatCreated, onCancelClicked, theme }: NewChatProps) => {
+const NewChat: FC<NewChatProps> = ({
+  hideTitle,
+  title,
+  mode = 'auto',
+  onChatCreated,
+  onCancelClicked,
+  theme
+}: NewChatProps) => {
   const styles = useStyles();
   type NewChatState = 'initial';
+
+  const [isGroup, setIsGroup] = useState<boolean>(mode === 'group');
 
   const [state, setState] = useState<NewChatState | 'creating chat' | 'done'>('initial');
   // chat member data control
   const [selectedPeople, setSelectedPeople] = useState<IDynamicPerson[]>([]);
-  const onSelectedPeopleChange = useCallback((event: CustomEvent<IDynamicPerson[]>) => {
-    if (event.detail) setSelectedPeople(event.detail);
-  }, []);
+  const onSelectedPeopleChange = useCallback(
+    (event: CustomEvent<IDynamicPerson[]>) => {
+      if (event.detail) {
+        setSelectedPeople(event.detail);
+        if (mode === 'auto') {
+          setIsGroup(event.detail.length > 1);
+        }
+      }
+    },
+    [mode]
+  );
   // chat name data control
   const [chatName, setChatName] = useState<string>();
   const onChatNameChanged = useCallback(
@@ -92,26 +112,33 @@ const NewChat: FC<NewChatProps> = ({ onChatCreated, onCancelClicked, theme }: Ne
       if (person.id) acc.push(person.id);
       return acc;
     }, chatMembers);
-    void createChatThread(graphClient, chatMembers, initialMessage, chatName).then(chat => {
+    void createChatThread(graphClient, chatMembers, isGroup, initialMessage, chatName).then(chat => {
       setState('done');
       onChatCreated(chat);
     });
-  }, [onChatCreated, selectedPeople, initialMessage, chatName]);
+  }, [onChatCreated, selectedPeople, initialMessage, chatName, isGroup]);
 
   return (
     <FluentProvider theme={theme ? theme : webLightTheme}>
       {state === 'initial' ? (
         <div className={styles.container}>
-          {/* <Text as="h2" className={styles.title}>
-            New Chat
-      </Text> */}
-          {/* <Divider /> */}
+          {!hideTitle && (
+            <Text as="h2" className={styles.title}>
+              {title ? title : 'New chat'}
+            </Text>
+          )}
+          <Divider />
           <div className={styles.form}>
             <Field label="To">
-              <PeoplePicker selectedPeople={selectedPeople} selectionChanged={onSelectedPeopleChange} />
+              <PeoplePicker
+                disabled={(mode === 'oneOnOne' && selectedPeople?.length > 0) || selectedPeople?.length > 19}
+                ariaLabel="Select people to chat with"
+                selectedPeople={selectedPeople}
+                selectionChanged={onSelectedPeopleChange}
+              />
             </Field>
 
-            {selectedPeople.length > 1 && (
+            {isGroup && (
               <Field label="Group name">
                 <Input placeholder="Chat name" onChange={onChatNameChanged} value={chatName} />
               </Field>
