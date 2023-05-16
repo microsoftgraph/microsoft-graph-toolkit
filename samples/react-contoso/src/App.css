@@ -57,19 +57,6 @@
   box-sizing: border-box;
 }
 
-.sidebar {
-  display: flex;
-  flex-flow: column nowrap;
-  min-width: 295px;
-  height: 100%;
-  box-sizing: border-box;
-  background-color: rgb(233, 233, 233);
-}
-
-.minimized {
-  min-width: auto;
-}
-
 .content {
   display: flex;
   flex-flow: column nowrap;

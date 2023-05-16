@@ -10,3 +10,4 @@ import { allChatScopes } from './statefulClient/graph.chat';
 export * from './components';
 export { createChatThread } from './statefulClient/graph.chat';
 export { allChatScopes };
+export { lightTheme, darkTheme } from '@azure/communication-react';

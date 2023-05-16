@@ -21,6 +21,7 @@ import { FileListComposite, Providers } from '@microsoft/mgt-react';
 import { Chat, NewChat, allChatScopes } from '@microsoft/mgt-chat';
 import { Tasks } from '@microsoft/mgt-react';
 import { createChatThread } from '@microsoft/mgt-chat';
+import { useAppContext } from '../../AppContext';
 
 const useStyles = makeStyles({
   panels: {
@@ -64,6 +65,7 @@ export const Incident: React.FunctionComponent = () => {
   const [planId, setPlanId] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
+  const appContext = useAppContext();
 
   const onTabSelect = (event: SelectTabEvent, data: SelectTabData) => {
     setSelectedTab(data.value);
@@ -236,7 +238,13 @@ export const Incident: React.FunctionComponent = () => {
               />
             )}
             {selectedTab === 'tasks' && planId && <Tasks targetId={planId} />}
-            {selectedTab === 'conversation' && chatId && <Chat chatId={chatId} />}
+            {selectedTab === 'conversation' && chatId && (
+              <Chat
+                chatId={chatId}
+                chatTheme={appContext.state.theme.chatTheme}
+                fluentTheme={appContext.state.theme.fluentTheme}
+              />
+            )}
           </div>
         </>
       )}

@@ -27,11 +27,4 @@ Providers.globalProvider = new Msal2Provider({
   scopes: ['User.Read', ...allDashboardScopes, ...allIncidentScopes]
 });
 
-ReactDOM.render(
-  <FluentProvider theme={webLightTheme}>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
-  </FluentProvider>,
-  document.getElementById('root')
-);
+ReactDOM.render(<App />, document.getElementById('root'));

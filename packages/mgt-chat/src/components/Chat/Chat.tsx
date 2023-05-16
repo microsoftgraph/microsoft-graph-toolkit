@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
+import { CallingTheme, ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
-import { FluentTheme } from '@fluentui/react';
-import { FluentProvider, teamsLightTheme } from '@fluentui/react-components';
+import { FluentTheme, PartialTheme } from '@fluentui/react';
+import { FluentProvider, Theme, webLightTheme } from '@fluentui/react-components';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import { registerAppIcons } from '../styles/registerIcons';
@@ -14,9 +14,11 @@ registerAppIcons();
 
 interface IMgtChatProps {
   chatId: string;
+  chatTheme?: PartialTheme & CallingTheme;
+  fluentTheme?: Theme;
 }
 
-export const Chat = ({ chatId }: IMgtChatProps) => {
+export const Chat = ({ chatId, chatTheme, fluentTheme }: IMgtChatProps) => {
   const chatClient = useGraphChatClient(chatId);
   const [chatState, setChatState] = useState(chatClient.getState());
   useEffect(() => {
@@ -26,8 +28,8 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
     };
   }, [chatClient]);
   return (
-    <FluentThemeProvider fluentTheme={FluentTheme}>
-      <FluentProvider theme={teamsLightTheme} className={chatStyles.fullHeight}>
+    <FluentThemeProvider fluentTheme={chatTheme ? chatTheme : FluentTheme}>
+      <FluentProvider theme={fluentTheme ? fluentTheme : webLightTheme} className={chatStyles.fullHeight}>
         <div className={chatStyles.chat}>
           {chatState.userId && chatState.messages.length > 0 ? (
             <>

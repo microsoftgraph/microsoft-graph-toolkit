@@ -1,8 +1,8 @@
-import { Tab, TabList, TabValue, makeStyles, mergeClasses } from '@fluentui/react-components';
+import { Tab, TabList, TabValue, makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { NavigationRegular } from '@fluentui/react-icons';
-import { useAppContext } from '../../hooks/useAppContext';
+import { useAppContext } from '../../AppContext';
 
 export interface ISideNavigationProps {
   items: any[];
@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     paddingBottom: '12px'
   },
   activeTab: {
-    backgroundColor: 'var(--colorSubtleBackgroundHover)'
+    backgroundColor: tokens.colorSubtleBackgroundHover
   }
 });
 
@@ -30,7 +30,10 @@ export const SideNavigation: React.FunctionComponent<ISideNavigationProps> = pro
     if (data.value === 'navigation') {
       const futureIsMinimized = !isMinimized;
       setIsMinimized(futureIsMinimized);
-      appContext.setState({ ...appContext.state, isSideBarMinimized: futureIsMinimized });
+      appContext.setState({
+        ...appContext.state,
+        sidebar: { ...appContext.state.sidebar, isMinimized: futureIsMinimized }
+      });
     } else {
       setSelectedTab(data.value);
       history.push(data.value);

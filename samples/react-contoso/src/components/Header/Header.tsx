@@ -1,39 +1,63 @@
 import * as React from 'react';
-import { ILinkStyleProps, ILinkStyles, FontIcon, Label } from '@fluentui/react';
-import { mergeStyles } from '@fluentui/merge-styles';
 import { Login, SearchBox } from '@microsoft/mgt-react';
 import { SimpleLogin } from '../SimpleLogin/SimpleLogin';
 import { useIsSignedIn } from '../../hooks/useIsSignedIn';
 import './Header.css';
-import { useAppContext } from '../../hooks/useAppContext';
 import { useHistory } from 'react-router-dom';
+import { ThemeSwitcher } from '../ThemeSwitcher/ThemeSwitcher';
+import { useAppContext } from '../../AppContext';
+import { Label, makeStyles, shorthands, tokens } from '@fluentui/react-components';
+import { GridDotsRegular } from '@fluentui/react-icons';
 
-export interface IHeaderProps {
-  //onGenerate: (event: React.MouseEvent<HTMLButtonElement>) => void;
-}
+const useStyles = makeStyles({
+  name: {
+    color: tokens.colorNeutralForegroundOnBrand,
+    fontWeight: tokens.fontWeightMedium,
+    fontSize: tokens.fontSizeBase400,
+    paddingLeft: '8px'
+  },
+  wafffleIcon: {
+    fontSize: tokens.fontSizeBase600,
+    ...shorthands.margin('0 10px'),
+    paddingTop: '5px',
+    color: tokens.colorNeutralForegroundOnBrand
+  },
+  waffle: {
+    display: 'flex',
+    width: 'auto',
+    height: 'auto',
+    boxSizing: 'border-box',
+    flexGrow: '1',
+    alignItems: 'center',
+    minWidth: 'max-content',
+    paddingLeft: '8px'
+  },
+  waffleLogo: {
+    ...shorthands.flex('none')
+  },
+  waffleTitle: {
+    ...shorthands.flex('auto')
+  },
+  search: {
+    display: 'flex',
+    width: '100%',
+    height: 'auto',
+    boxSizing: 'border-box',
+    flexGrow: '1',
+    justifyContent: 'center'
+  },
 
-const pipeFabricStyles = (p: ILinkStyleProps): ILinkStyles => ({
-  root: {
-    textDecoration: 'none',
-    color: '#ffffff',
-    fontWeight: '600',
-    fontSize: p.theme.fonts.mediumPlus.fontSize,
-    paddingLeft: '8px',
-    focus: {
-      textDecorationColor: '#ffffff',
-      textDecorationStyle: 'underline'
-    }
+  searchBox: {
+    minWidth: '320px',
+    maxWidth: '468px',
+    paddingRight: '1em',
+    paddingLeft: '1em',
+    width: '100%'
   }
 });
 
-const waffleIconClass = mergeStyles({
-  fontSize: 24,
-  margin: '0 10px',
-  paddingTop: '5px',
-  color: 'var(--color-brand-iconColor)'
-});
-
-const HeaderComponent: React.FunctionComponent<IHeaderProps> = (props: IHeaderProps) => {
+const HeaderComponent: React.FunctionComponent = () => {
+  const styles = useStyles();
   const [isSignedIn] = useIsSignedIn();
   const appContext = useAppContext();
   const history = useHistory();
@@ -50,22 +74,23 @@ const HeaderComponent: React.FunctionComponent<IHeaderProps> = (props: IHeaderPr
 
   return (
     <div className="header">
-      <div className="waffle">
-        <div className="logo">
+      <div className={styles.waffle}>
+        <div className={styles.waffleLogo}>
           <a href={'https://myapps.microsoft.com'} target="_blank" rel="noreferrer">
-            <FontIcon iconName="Waffle" className={waffleIconClass} />
+            <GridDotsRegular className={styles.wafffleIcon} />
           </a>
         </div>
 
-        <div className="title">
-          <Label styles={pipeFabricStyles}>{process.env.REACT_APP_SITE_NAME}</Label>
+        <div className={styles.waffleTitle}>
+          <Label className={styles.name}>{process.env.REACT_APP_SITE_NAME}</Label>
         </div>
       </div>
-      <div className="search">
-        <SearchBox className="header-search" searchTermChanged={onSearchTermChanged}></SearchBox>
+      <div className={styles.search}>
+        <SearchBox className={styles.searchBox} searchTermChanged={onSearchTermChanged}></SearchBox>
       </div>
 
       <div className="login">
+        <ThemeSwitcher />
         <Login className={!isSignedIn ? 'signed-out' : 'signed-in'}>
           <SimpleLogin template="signed-in-button-content" />
         </Login>

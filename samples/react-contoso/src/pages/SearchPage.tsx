@@ -10,7 +10,7 @@ import {
   makeStyles,
   shorthands
 } from '@fluentui/react-components';
-import { useAppContext } from '../hooks/useAppContext';
+import { useAppContext } from '../AppContext';
 
 const useStyles = makeStyles({
   panels: {

@@ -16,7 +16,9 @@ import {
   makeStyles,
   typographyStyles,
   shorthands,
-  tokens
+  tokens,
+  Theme,
+  webLightTheme
 } from '@fluentui/react-components';
 import { createChatThread } from '../../statefulClient/graph.chat';
 import { graph } from '../../utils/graph';
@@ -25,6 +27,7 @@ import { currentUserId } from '../../utils/currentUser';
 interface NewChatProps {
   onChatCreated: (chat: Chat) => void;
   onCancelClicked: () => void;
+  theme?: Theme;
 }
 
 const useStyles = makeStyles({
@@ -55,7 +58,7 @@ const useStyles = makeStyles({
   }
 });
 
-const NewChat: FC<NewChatProps> = ({ onChatCreated, onCancelClicked }: NewChatProps) => {
+const NewChat: FC<NewChatProps> = ({ onChatCreated, onCancelClicked, theme }: NewChatProps) => {
   const styles = useStyles();
   type NewChatState = 'initial';
 
@@ -96,7 +99,7 @@ const NewChat: FC<NewChatProps> = ({ onChatCreated, onCancelClicked }: NewChatPr
   }, [onChatCreated, selectedPeople, initialMessage, chatName]);
 
   return (
-    <FluentProvider theme={teamsLightTheme}>
+    <FluentProvider theme={theme ? theme : webLightTheme}>
       {state === 'initial' ? (
         <div className={styles.container}>
           {/* <Text as="h2" className={styles.title}>

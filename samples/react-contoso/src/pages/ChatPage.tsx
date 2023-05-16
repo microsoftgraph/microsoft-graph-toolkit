@@ -17,6 +17,7 @@ import {
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { Chat, NewChat } from '@microsoft/mgt-chat';
 import ChatListTemplate from './Chats/ChatListTemplate';
+import { useAppContext } from '../AppContext';
 
 const useStyles = makeStyles({
   container: {
@@ -61,6 +62,7 @@ export const ChatPage: React.FunctionComponent = () => {
   const styles = useStyles();
   const [selectedChat, setSelectedChat] = React.useState<GraphChat>();
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
+  const appContext = useAppContext();
 
   const chatSelected = React.useCallback(
     (e: GraphChat) => {
@@ -71,7 +73,7 @@ export const ChatPage: React.FunctionComponent = () => {
         setSelectedChat(e);
       }
     },
-    [isNewChatOpen, setSelectedChat, setIsNewChatOpen]
+    [isNewChatOpen, selectedChat?.id, setSelectedChat, setIsNewChatOpen]
   );
 
   return (
@@ -84,14 +86,11 @@ export const ChatPage: React.FunctionComponent = () => {
       <div className={styles.container}>
         <div className={mergeClasses(styles.panels, styles.main)}>
           <div className={styles.newChat}>
-            <Dialog
-              open={isNewChatOpen}
-              /*onOpenChange={(event, data) => {
-                setIsNewChatOpen(data.open);
-              }}*/
-            >
+            <Dialog open={isNewChatOpen}>
               <DialogTrigger disableButtonEnhancement>
-                <Button onClick={() => setIsNewChatOpen(true)}>New Chat</Button>
+                <Button appearance="primary" onClick={() => setIsNewChatOpen(true)}>
+                  New Chat
+                </Button>
               </DialogTrigger>
               <DialogSurface>
                 <DialogBody className={styles.dialog}>
@@ -101,6 +100,7 @@ export const ChatPage: React.FunctionComponent = () => {
                     onCancelClicked={() => {
                       setIsNewChatOpen(false);
                     }}
+                    theme={appContext.state.theme.fluentTheme}
                   ></NewChat>
                 </DialogBody>
               </DialogSurface>
@@ -108,7 +108,15 @@ export const ChatPage: React.FunctionComponent = () => {
           </div>
           <ChatList chatSelected={selectedChat} onChatSelected={chatSelected}></ChatList>
         </div>
-        <div className={styles.side}>{selectedChat && <Chat chatId={selectedChat.id!}></Chat>}</div>
+        <div className={styles.side}>
+          {selectedChat && (
+            <Chat
+              chatId={selectedChat.id!}
+              chatTheme={appContext.state.theme.chatTheme}
+              fluentTheme={appContext.state.theme.fluentTheme}
+            ></Chat>
+          )}
+        </div>
       </div>
     </>
   );
