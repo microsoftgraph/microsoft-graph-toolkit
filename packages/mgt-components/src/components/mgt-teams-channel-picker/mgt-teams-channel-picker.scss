@@ -6,8 +6,8 @@
  */
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../../styles/shared-styles.scss';
-@import './mgt-teams-channel-picker.theme.scss';
+@import '../../styles/shared-styles';
+@import './mgt-teams-channel-picker.theme';
 
 :host,
 :host mgt-teams-channel-picker {
@@ -32,7 +32,7 @@
         width: 24px;
         position: inherit;
         border-radius: 50%;
-        margin: 0px 6px;
+        margin: 0 6px;
       }
 
       &-start-slot {
@@ -67,74 +67,80 @@
   }
 }
 
-:host fluent-card {
-  --fill-color: var(--dropdown-background-color, --fill-color);
-  --card-height: auto;
-  --width: var(--card-width);
-}
-
-:host fluent-text-field {
-  width: 100%;
-  --fill-color: var(--color, $color);
-  --neutral-fill-input-rest: var(--input-background-color, #ffffff);
-  --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
-  --input-placeholder-hover: var(--placeholder-color--focus, --input-placeholder-hover);
-}
-:host fluent-tree-view {
-  --tree-item-nested-width: 2em;
-}
-
-:host fluent-tree-item {
-  --tree-item-nested-width: 2em;
-  --neutral-foreground-rest: var(--color, $color);
-  --neutral-fill-stealth-hover: var(--dropdown-item-hover-background, --neutral-fill-stealth-hover);
-  --neutral-fill-secondary-rest: var(--dropdown-item-selected-background, --neutral-fill-secondary-rest);
-  --neutral-fill-stealth-rest: var(--dropdown-background-color, --neutral-fill-stealth-rest);
-}
-
-:host fluent-tree-view {
-  min-width: 100%;
-}
-
-:host fluent-breadcrumb-item {
-  .team-parent-name {
-    font-weight: bold;
+:host {
+  fluent-card {
+    --fill-color: var(--dropdown-background-color, --fill-color);
+    --card-height: auto;
+    --width: var(--card-width);
   }
-  .team-photo {
-    width: 19px;
-    position: inherit;
-    border-radius: 50%;
-  }
-  .arrow {
-    margin-left: 8px;
-    margin-right: 8px;
 
-    svg {
-      stroke: var(--arrow-fill, $color);
+  fluent-text-field {
+    width: 100%;
+
+    --fill-color: var(--color, $color);
+    --neutral-fill-input-rest: var(--input-background-color, #fff);
+    --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
+    --input-placeholder-hover: var(--placeholder-color-focus, --input-placeholder-hover);
+  }
+
+  fluent-tree-view {
+    min-width: 100%;
+
+    --tree-item-nested-width: 2em;
+  }
+
+  fluent-tree-item {
+    --tree-item-nested-width: 2em;
+    --neutral-foreground-rest: var(--color, $color);
+    --neutral-fill-stealth-hover: var(--dropdown-item-hover-background, --neutral-fill-stealth-hover);
+    --neutral-fill-secondary-rest: var(--dropdown-item-selected-background, --neutral-fill-secondary-rest);
+    --neutral-fill-stealth-rest: var(--dropdown-background-color, --neutral-fill-stealth-rest);
+  }
+
+  fluent-breadcrumb-item {
+    .team-parent-name {
+      font-weight: bold;
+    }
+
+    .team-photo {
+      width: 19px;
+      position: inherit;
+      border-radius: 50%;
+    }
+
+    .arrow {
+      margin-left: 8px;
+      margin-right: 8px;
+
+      svg {
+        stroke: var(--arrow-fill, $color);
+      }
     }
   }
+
 }
 
 [dir='rtl'] {
   :host {
     --direction: rtl;
   }
+
   .dropdown {
     text-align: right;
   }
+
   .arrow {
-    -moz-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
-    filter: FlipH;
-    -ms-filter: 'FlipH';
-    margin-right: 0px;
+    filter: fliph;
+    filter: 'FlipH';
+    margin-right: 0;
     margin-left: 5px;
   }
+
   .selected-team {
     padding-left: 10px;
   }
+
   .message-parent {
     .loading-text {
       right: auto;
@@ -148,7 +154,7 @@
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
   :host fluent-text-field {
     svg {
-      stroke: rgb(255, 255, 255) !important;
+      stroke: rgb(255 255 255) !important;
     }
   }
 }
@@ -156,7 +162,7 @@
 @media (forced-colors: active) and (prefers-color-scheme: light) {
   :host fluent-text-field {
     svg {
-      stroke: rgb(0, 0, 0) !important;
+      stroke: rgb(0 0 0) !important;
     }
   }
 }
