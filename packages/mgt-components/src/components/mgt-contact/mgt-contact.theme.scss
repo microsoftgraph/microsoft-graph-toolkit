@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-sass-variables';
 
 $contact-title-color: var(--contact-title-color, var(--neutral-foreground-hint));
 $contact-value-color: var(--contact-value-color, var(--neutral-foreground-rest));

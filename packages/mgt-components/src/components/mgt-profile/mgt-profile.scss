@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../base-person-card-section.scss';
-@import '../../styles/shared-styles.scss';
-@import '../../styles/shared-sass-variables.scss';
-@import './mgt-profile.theme.scss';
+@import '../base-person-card-section';
+@import '../../styles/shared-styles';
+@import '../../styles/shared-sass-variables';
+@import './mgt-profile.theme';
 
 :host {
   position: relative;
@@ -26,7 +26,7 @@
       font-size: 14px;
       font-weight: 600;
       color: $profile-title-color;
-      margin: 0 20px 12px 20px;
+      margin: 0 20px 12px;
     }
 
     section {
@@ -51,8 +51,7 @@
 
     .token-list {
       display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
+      flex-flow: row wrap;
       margin-top: -10px;
 
       .token-list__item {
@@ -126,7 +125,7 @@
 
     .work-position {
       .work-position__company {
-        color: $commblue_primary;
+        color: $comm-blue-primary;
       }
 
       .work-position__location {
@@ -163,6 +162,6 @@
 
 [dir='rtl'] {
   .token-list__item {
-    margin-right: 0px !important;
+    margin-right: 0 !important;
   }
 }
