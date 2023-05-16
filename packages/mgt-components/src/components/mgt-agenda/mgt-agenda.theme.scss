@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-@import '../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-sass-variables';
 
 $agenda-event-time-color: var(--agenda-event-time-color, var(--neutral-foreground-rest));
 $agenda-event-subject-color: var(--agenda-event-subject-color, var(--neutral-foreground-rest));

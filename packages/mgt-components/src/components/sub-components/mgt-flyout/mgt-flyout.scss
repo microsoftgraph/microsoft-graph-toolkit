@@ -6,9 +6,9 @@
  */
 
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../../../styles/shared-sass-variables.scss';
+@import '../../../styles/shared-sass-variables';
 
-$mgt-flyout-border-radius: var(--mgt-flyout-border-radius, 0px);
+$mgt-flyout-border-radius: var(--mgt-flyout-border-radius, 0);
 
 .root {
   .scout-top {
@@ -30,6 +30,7 @@ $mgt-flyout-border-radius: var(--mgt-flyout-border-radius, 0px);
     opacity: 0;
     box-shadow: set-var(box-shadow, $theme-default, $common);
     border-radius: 8px;
+
     &.small {
       overflow-y: auto;
       overflow-x: hidden;
@@ -39,11 +40,12 @@ $mgt-flyout-border-radius: var(--mgt-flyout-border-radius, 0px);
   &.visible {
     .flyout {
       display: inline-block;
-      animation-name: fadeIn;
+      animation-name: fade-in;
       animation-duration: 0.3s;
       animation-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
       animation-fill-mode: both;
       transition: top 0.3s ease, bottom 0.3s ease, left 0.3s ease;
+
       &.small {
         overflow-y: auto;
         overflow-x: hidden;
@@ -52,12 +54,13 @@ $mgt-flyout-border-radius: var(--mgt-flyout-border-radius, 0px);
   }
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
   from {
     opacity: 0;
     margin-top: -10px;
     margin-bottom: -10px;
   }
+
   to {
     opacity: 1;
     margin-top: 0;

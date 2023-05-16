@@ -5,44 +5,55 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../../styles/shared-styles.scss';
-@import '../../../styles/shared-sass-variables.scss';
+@import '../../../styles/shared-styles';
+@import '../../../styles/shared-sass-variables';
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
-$dot-options-translateX: var(--dot-options-translateX, translateX(-50px));
-$dot-btn-bg: var(--dot-options-button-background-color, var(--neutral-fill-stealth-rest));
-$dot-btn-hover-bg: var(--dot-options-button-hover-background-color, var(--neutral-fill-stealth-hover));
+$dot-options-translatex: var(--dot-options-translatex, translateX(-50px));
 
 :host {
-  font-family: $font-family;
-  position: relative;
-
-  .DotIcon {
-    font-family: 'FabricMDL2Icons';
-    display: flex;
-    place-content: flex-end;
+  .dot-icon {
+    display: inline-block;
+    font-family: $font-icon;
+    min-width: 40px;
+    min-height: 30px;
+    text-align: center;
+    line-height: 30px;
   }
 
-  .Menu {
+  .menu {
+    position: absolute;
+    box-shadow: set-var(box-shadow__color, $theme-default, $common) 0 0 40px 5px;
+    background: set-var(background-color, $theme-default, $common);
+    z-index: 1;
     display: none;
-
-    &.Open {
-      z-index: 1;
-      display: unset;
-      position: absolute;
-      top: 16px;
-      right: 0px;
-      width: max-content;
-      padding: 4px;
-    }
+    color: set-var(color, $theme-default, $common);
+    white-space: nowrap;
+    transform: var(--dot-options-translatex, translateX(-50px));
   }
 
-  fluent-button {
-    &::part(control) {
-      background: $dot-btn-bg;
+  .dot-menu {
+    &.open{
+      .menu {
+        display: block;
+      }
+    }
+
+    .dot-item {
+      direction: ltr;
+      text-align: left;
+      padding: 10px 10px 8px;
 
       &:hover {
-        background: $dot-btn-hover-bg;
+        background: set-var(background-color--hover, $theme-default, $common);
+      }
+
+      &:active {
+        background: set-var(background-color--active, $theme-default, $common);
+      }
+
+      .dot-item-name {
+        direction: rtl;
       }
     }
   }
