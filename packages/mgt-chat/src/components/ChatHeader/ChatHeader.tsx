@@ -5,7 +5,6 @@ import { Edit20Filled, Edit20Regular, bundleIcon } from '@fluentui/react-icons';
 import { Person, PersonCardInteraction, ViewType } from '@microsoft/mgt-react';
 import {
   Button,
-  Divider,
   Field,
   Input,
   InputOnChangeData,
@@ -13,9 +12,7 @@ import {
   Popover,
   PopoverSurface,
   PopoverTrigger,
-  Text,
   makeStyles,
-  shorthands,
   tokens
 } from '@fluentui/react-components';
 

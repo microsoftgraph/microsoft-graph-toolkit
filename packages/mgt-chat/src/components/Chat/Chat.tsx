@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { FluentTheme } from '@fluentui/react';
-import { FluentProvider, teamsLightTheme } from '@fluentui/react-components';
+import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
-
-import { chatStyles } from './chat.styles';
 
 registerAppIcons();
 
@@ -16,7 +14,31 @@ interface IMgtChatProps {
   chatId: string;
 }
 
+const useStyles = makeStyles({
+  chat: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    ...shorthands.overflow('auto')
+  },
+  chatMessages: {
+    height: 'auto',
+    ...shorthands.overflow('auto'),
+    '& img': {
+      maxWidth: '100%',
+      height: 'auto'
+    }
+  },
+  chatInput: {
+    ...shorthands.overflow('unset')
+  },
+  fullHeight: {
+    height: '100%'
+  }
+});
+
 export const Chat = ({ chatId }: IMgtChatProps) => {
+  const styles = useStyles();
   const chatClient = useGraphChatClient(chatId);
   const [chatState, setChatState] = useState(chatClient.getState());
   useEffect(() => {
@@ -27,12 +49,11 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
   }, [chatClient]);
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
-      <FluentProvider theme={teamsLightTheme} className={chatStyles.fullHeight}>
-        <div className={chatStyles.chat}>
+      <FluentProvider theme={teamsLightTheme} className={styles.fullHeight}>
+        <div className={styles.chat}>
           {chatState.userId && chatState.messages.length > 0 ? (
             <>
               <ChatHeader chat={chatState.chat} currentUserId={chatState.userId} />
-
               {chatState.participants?.length > 0 && chatState.chat?.chatType === 'group' && (
                 <ManageChatMembers
                   members={chatState.participants}
@@ -41,7 +62,8 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   addChatMembers={chatState.onAddChatMembers}
                 />
               )}
-              <div className={chatStyles.chatMessages}>
+              asdfasdf
+              <div className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}
                   messages={chatState.messages}
@@ -64,7 +86,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   }}
                 />
               </div>
-              <div className={chatStyles.chatInput}>
+              <div className={styles.chatInput}>
                 <SendBox onSendMessage={chatState.onSendMessage} />
               </div>
               <ErrorBar activeErrorMessages={chatState.activeErrorMessages} />
