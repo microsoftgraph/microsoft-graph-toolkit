@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-$line1__color: var(--file-line1-color, var(--neutral-foreground-rest));
-$line2__color: var(--file-line2-color, var(--neutral-foreground-hint));
-$line3__color: var(--file-line3-color, var(--neutral-foreground-hint));
+$line1-color: var(--file-line1-color, var(--neutral-foreground-rest));
+$line2-color: var(--file-line2-color, var(--neutral-foreground-hint));
+$line3-color: var(--file-line3-color, var(--neutral-foreground-hint));
 $file-background-color: var(--file-background-color);
 $file-background-color-focus: var(--file-background-color-focus, var(--neutral-fill-hover));
 $file-background-color-hover: var(--file-background-color-hover, var(--neutral-fill-hover));

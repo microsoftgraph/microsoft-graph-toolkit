@@ -1,4 +1,4 @@
-@import '../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-sass-variables';
 
 $message-subject-color: var(--message-subject-color, var(--neutral-foreground-color));
 $message-from-color: var(--message-from-color, var(--neutral-foreground-color));
