@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-sass-variables.scss';
-@import '../../components/mgt-file/mgt-file.theme.scss';
+@import '../../styles/shared-sass-variables';
+@import '../../components/mgt-file/mgt-file.theme';
 
 $file-list-background-color: var(--file-list-background-color, var(--neutral-layer-1));
 $show-more-button-background-color: var(--show-more-button-background-color, var(--neutral-layer-1));
