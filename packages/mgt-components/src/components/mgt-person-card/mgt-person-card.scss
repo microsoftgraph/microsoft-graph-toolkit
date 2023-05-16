@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-styles.scss';
+@import '../../styles/shared-styles';
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import './mgt-person-card.theme.scss';
+@import './mgt-person-card.theme';
 
 // For documentation these are the tokens removed in v3
 // --person-card-base-links-color: red;
@@ -19,19 +19,16 @@
 $person-card-line1-font-size: var(--person-card-line1-font-size, 20px);
 $person-card-line1-font-weight: var(--person-card-line1-font-weight, 600);
 $person-card-line1-line-height: var(--person-card-line1-line-height, 28px);
-
 $person-card-line2-font-size: var(--person-card-line2-font-size, 14px);
 $person-card-line2-font-weight: var(--person-card-line2-font-weight, 400);
 $person-card-line2-line-height: var(--person-card-line2-line-height, 20px);
-
 $person-card-line3-font-size: var(--person-card-line3-font-size, 14px);
 $person-card-line3-font-weight: var(--person-card-line3-font-weight, 400);
 $person-card-line3-line-height: var(--person-card-line3-line-height, 19px);
-
 $person-card-avatar-size: var(--person-card-avatar-size, 75px);
 $person-card-details-left-spacing: var(--person-card-details-left-spacing, 15px);
 $person-card-avatar-top-spacing: var(--person-card-avatar-top-spacing, 15px);
-$person-card-details-bottom-spacing: var(--person-card-details-bottom-spacing, 0px);
+$person-card-details-bottom-spacing: var(--person-card-details-bottom-spacing, 0);
 $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing, 83px);
 
 :host {
@@ -42,6 +39,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   user-select: none;
   border-radius: 8px;
   background-color: $person-card-background-color;
+
   --file-list-background-color: transparent;
   --file-list-box-shadow: none;
   --file-item-background-color: transparent;
@@ -53,7 +51,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   }
 
   .nav {
-    height: 0px;
+    height: 0;
     position: relative;
     z-index: 100;
 
@@ -76,9 +74,11 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       }
     }
   }
+
   .close-card-container {
     position: relative;
     z-index: 100;
+
     .close-button {
       position: absolute;
       right: 10px;
@@ -91,6 +91,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
           fill: $person-card-icon-color;
         }
       }
+
       &:hover {
         svg {
           path {
@@ -113,17 +114,14 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       --person-details-left-spacing: #{$person-card-details-left-spacing};
       --person-details-bottom-spacing: #{$person-card-details-bottom-spacing};
       --person-background-color: #{$person-card-background-color};
-
       --person-line1-font-size: #{$person-card-line1-font-size};
       --person-line1-font-weight: #{$person-card-line1-font-weight};
       --person-line1-text-line-height: #{$person-card-line1-line-height};
       --person-line1-text-color: #{$person-card-line1-text-color};
-
       --person-line2-font-size: #{$person-card-line2-font-size};
       --person-line2-font-weight: #{$person-card-line2-font-weight};
       --person-line2-text-line-height: #{$person-card-line2-line-height};
       --person-line2-text-color: #{$person-card-line2-text-color};
-
       --person-line3-font-size: #{$person-card-line3-font-size};
       --person-line3-font-weight: #{$person-card-line3-font-weight};
       --person-line3-text-line-height: #{$person-card-line3-line-height};
@@ -134,7 +132,6 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 
     .base-icons {
       display: flex;
-      -webkit-align-items: center;
       align-items: center;
       margin-inline-start: $person-card-base-icons-left-spacing;
       z-index: 1;
@@ -153,9 +150,11 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
           .filled {
             display: none;
           }
+
           .regular {
             display: block;
           }
+
           path {
             fill: $person-card-icon-color;
           }
@@ -167,9 +166,11 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
             .filled {
               display: block;
             }
+
             .regular {
               display: none;
             }
+
             path {
               fill: $person-card-icon-hover-color;
             }
@@ -188,6 +189,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       display: flex;
       justify-content: center;
       height: 32px;
+
       svg {
         path {
           stroke: $person-card-icon-color;
@@ -207,7 +209,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
         flex-direction: column;
         position: relative;
 
-        &:not(:last-child):after {
+        &:not(:last-child)::after {
           position: absolute;
           content: '';
           width: 90%;
@@ -236,6 +238,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
           font-weight: 600;
           align-self: center;
           vertical-align: top;
+
           --base-height-multiplier: 6;
 
           &:hover {
@@ -252,6 +255,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
         }
       }
     }
+
     .divider {
       z-index: 100;
       position: relative;
@@ -276,37 +280,44 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
           min-height: 360px;
           overflow-y: auto;
           overflow-x: hidden;
-          padding: 0px;
+          padding: 0;
           scrollbar-width: thin;
 
           .inserted {
             padding: 20px 0;
             max-width: var(--mgt-flyout-set-width, 375px);
             min-width: var(--mgt-flyout-set-width, 360px);
+
             --file-list-box-shadow: none;
             --file-list-padding: 0;
+
             .title {
               font-size: 14px;
               font-weight: 600;
               color: var(--title-color-subtitle, var(--neutral-foreground-rest, #1a1a1a));
-              margin: 0px 20px 20px;
+              margin: 0 20px 20px;
               line-height: 19px;
             }
           }
+
           .overview-panel {
             max-width: var(--mgt-flyout-set-width, 375px);
           }
+
           &::-webkit-scrollbar {
             height: 4em;
             width: 4px;
             border-radius: 11px;
           }
+
           &::-webkit-scrollbar-button {
             height: 1px;
           }
+
           &::-webkit-scrollbar-track {
             border-radius: 10px;
           }
+
           &::-webkit-scrollbar-thumb {
             background: grey;
             border-radius: 10px;
@@ -317,9 +328,11 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
         fluent-tab {
           padding-bottom: 1px !important;
           border: 1px solid transparent !important;
+
           &:focus-visible {
             border: 1px solid #2b2b2b !important;
           }
+
           &.section-nav__icon {
             cursor: pointer;
             box-sizing: border-box;
@@ -354,26 +367,32 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
         width: 4px;
         border-radius: 11px;
       }
+
       &::-webkit-scrollbar-button {
         background: white;
       }
+
       &::-webkit-scrollbar-track {
         background: white;
         border-radius: 10px;
       }
+
       &::-webkit-scrollbar-track-piece {
         background: white;
       }
+
       &::-webkit-scrollbar-thumb {
         background: grey;
         border-radius: 10px;
         height: 4px;
       }
+
       &.small {
         overflow-y: hidden;
       }
     }
   }
+
   .loading {
     margin: 40px 20px;
     display: flex;
@@ -382,14 +401,16 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   }
 
   .message-section {
-    border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
+    border-bottom: 1px solid set-var(tab-line__color, $theme-default, $common);
     display: flex;
 
     fluent-text-field {
       margin: 10px 10px 10px 16px;
+
       --neutral-fill-input-rest: $person-card-background-color;
       --neutral-fill-input-hover: $person-card-chat-input-hover-color;
       --neutral-fill-input-focus: $person-card-chat-input-focus-color;
+
       width: 300px;
       margin-inline-start: 16px;
       border-radius: 4px;
@@ -429,11 +450,13 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   &.close-button.lightweight::part(control) {
     background: $person-card-fluent-background-color;
   }
+
   &.icon::part(control),
   &.nav__back::part(control) {
     border: none;
     padding: 0;
     background: none;
+
     :hover {
       background: none;
     }
@@ -444,15 +467,14 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   .base-icons {
     right: 91px;
   }
+
   .nav__back {
     width: 20px !important;
-    -moz-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
-    filter: FlipH;
-    -ms-filter: 'FlipH';
+    filter: fliph;
+    filter: 'FlipH';
   }
+
   .close-card-container .close-button {
     right: auto;
     left: 10px;
@@ -467,21 +489,22 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
   .root {
-    border: 1px solid rgb(255, 255, 255);
+    border: 1px solid rgb(255 255 255);
     border-radius: inherit;
 
     svg,
     svg > path {
-      fill: rgb(255, 255, 255) !important;
+      fill: rgb(255 255 255) !important;
       fill-rule: nonzero !important;
       clip-rule: nonzero !important;
     }
   }
+
   svg,
   svg > path,
   .expanded-details-container > svg,
   .expanded-details-container > svg > path {
-    fill: rgb(255, 255, 255) !important;
+    fill: rgb(255 255 255) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
   }
@@ -489,21 +512,22 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 
 @media (forced-colors: active) and (prefers-color-scheme: light) {
   .root {
-    border: 1px solid rgb(0, 0, 0);
+    border: 1px solid rgb(0 0 0);
     border-radius: inherit;
 
     svg,
     svg > path {
-      fill: rgb(0, 0, 0) !important;
+      fill: rgb(0 0 0) !important;
       fill-rule: nonzero !important;
       clip-rule: nonzero !important;
     }
   }
+
   svg,
   svg > path,
   .expanded-details-container > svg,
   .expanded-details-container > svg > path {
-    fill: rgb(0, 0, 0) !important;
+    fill: rgb(0 0 0) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
   }

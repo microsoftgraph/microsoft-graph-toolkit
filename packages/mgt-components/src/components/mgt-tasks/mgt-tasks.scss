@@ -5,38 +5,33 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-styles.scss';
+@import '../../styles/shared-styles';
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import './mgt-tasks.theme.scss';
+@import './mgt-tasks.theme';
 
 $tasks-header-padding: var(--tasks-header-padding, 0 0 14px 0);
 $tasks-header-margin: var(--tasks-header-margin, none);
 $tasks-header-text-font-size: var(--tasks-header-font-size, 16px);
 $tasks-header-text-font-weight: var(--tasks-header-font-weight, 600);
-
 $tasks-new-button-width: var(--tasks-new-button-width, none);
 $tasks-new-button-height: var(--tasks-new-button-height, none);
 $tasks-new-button-text-font-weight: var(--tasks-new-button-text-font-weight, 700);
 $tasks-new-button-border: var(--tasks-new-button-border, none);
 $neutral-btn-border: calc(var(--stroke-width) * 1px) solid transparent;
-
 $task-add-new-button-width: var(--task-add-new-button-width, none);
 $task-add-new-button-height: var(--task-add-new-button-height, none);
 $task-add-new-button-text-font-weight: var(--task-add-new-button-text-font-weight, initial);
 $task-add-new-button-border: var(--task-add-new-button-border, $neutral-btn-border);
-
 $task-cancel-new-button-width: var(--task-cancel-new-button-width, none);
 $task-cancel-new-button-height: var(--task-cancel-new-button-height, none);
 $task-cancel-new-button-text-font-weight: var(--task-cancel-new-button-text-font-weight, initial);
 $task-cancel-new-button-border: var(--task-cancel-new-button-border, $neutral-btn-border);
-
 $task-title-text-font-size: var(--task-title-text-font-size, medium);
 $task-title-text-font-weight: var(--task-title-text-font-weight, 600);
 $task-icons-width: var(--task-icons-width, 20px);
 $task-icons-height: var(--task-icons-height, 20px);
 $task-icons-text-size: var(--task-icons-text-font-size, 12px);
 $task-icons-text-weight: var(--task-icons-text-font-weight, 600);
-
 $task-complete-border: var(--task-complete-border, 2px dotted var(--neutral-foreground-active));
 $task-incomplete-border: var(--task-incomplete-border, 1px solid var(--neutral-foreground-active));
 $task-complete-border-radius: var(--task-complete-border-radius, 4px);
@@ -44,14 +39,11 @@ $task-incomplete-border-radius: var(--task-incomplete-border-radius, 4px);
 $task-complete-padding: var(--task-complete-padding, 10px);
 $task-incomplete-padding: var(--task-incomplete-padding, 10px);
 $tasks-gap: var(--tasks-gap, 20px);
-
 $tasks-border: var(--tasks-border, 0);
 $tasks-border-radius: var(--tasks-border-radius, 0);
 $tasks-padding: var(--tasks-padding, 12px);
-
 $task-new-input-border: var(--task-new-input-border, calc(var(--stroke-width) * 1px) solid transparent);
 $task-new-input-border-radius: var(--task-new-input-border-radius, calc(var(--control-corner-radius) * 1px));
-
 $task-new-dropdown-border: var(--task-new-dropdown-border, calc(var(--stroke-width) * 1px) solid transparent);
 $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(var(--control-corner-radius) * 1px));
 
@@ -60,9 +52,10 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
   padding: $tasks-padding;
   border: $tasks-border;
   border-radius: $tasks-border-radius;
+
   --skeleton-fill: var(--neutral-foreground-active);
 
-  .Header {
+  .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -76,19 +69,19 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
       color: $tasks-header-text-hover-color;
     }
 
-    .Title {
+    .title {
       justify-content: left;
 
-      .Shimmer {
+      .shimmer {
         width: 80px;
         height: 20px;
       }
     }
 
-    .NewTaskButton {
+    .new-task-button {
       justify-content: right;
 
-      .Shimmer {
+      .shimmer {
         width: 40px;
         height: 24px;
       }
@@ -111,78 +104,80 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
     }
   }
 
-  .Tasks {
+  .tasks {
     display: flex;
     flex-direction: column;
     row-gap: $tasks-gap;
 
-    .Task {
+    .task {
       display: flex;
       column-gap: 4px;
       align-items: flex-start;
       justify-content: space-between;
 
-      &.Updating {
+      &.updating {
         background: var(--neutral-stroke-rest) !important;
         pointer-events: none;
         opacity: 0.4;
       }
 
-      &.Complete {
+      &.complete {
         border: $task-complete-border;
         border-radius: $task-complete-border-radius;
         background: $task-complete-bg-color;
         padding: $task-complete-padding;
+
         --dot-options-button-background-color: $task-complete-bg-color;
       }
 
-      &.Incomplete {
+      &.incomplete {
         border: $task-incomplete-border;
         border-radius: $task-complete-border-radius;
         background: $task-incomplete-bg-color;
         padding: $task-incomplete-padding;
+
         --dot-options-button-background-color: $task-incomplete-bg-color;
       }
 
-      .TaskDetailsContainer {
+      .task-details-container {
         display: flex;
         flex-direction: column;
         row-gap: 12px;
         width: 100%;
 
-        .Top {
+        .top {
           display: flex;
           justify-content: space-between;
           column-gap: 4px;
 
-          &.AddNewTask {
+          &.add-new-task {
             flex-direction: row;
           }
 
-          .CheckAndTitle {
+          .check-and-title {
             display: flex;
             align-items: flex-start;
             flex-direction: column;
             width: 100%;
             row-gap: 12px;
 
-            &.Shimmer {
+            &.shimmer {
               display: flex;
               flex-direction: inherit;
               gap: 10px;
 
-              .Checkbox {
+              .checkbox {
                 height: 10px;
                 width: 10px;
               }
 
-              .Title {
+              .title {
                 height: 10px;
                 width: 100%;
               }
             }
 
-            .TaskContent {
+            .task-content {
               display: grid;
               grid-auto-flow: column;
               column-gap: 12px;
@@ -198,12 +193,13 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
             }
           }
 
-          .TaskOptions {
-            .Options {
+          .task-options {
+            .options {
               height: 10px;
               width: 20px;
             }
-            &.NewTaskActionButtons {
+
+            &.new-task-action-buttons {
               display: flex;
               flex-direction: column;
               row-gap: 12px;
@@ -211,27 +207,27 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
           }
         }
 
-        .Bottom {
+        .bottom {
           display: grid;
           grid-auto-flow: column;
           grid-auto-columns: 1fr;
           grid-column-gap: 6px;
 
-          .TaskGroup,
-          .TaskBucket,
-          .TaskDue {
+          .task-group,
+          .task-bucket,
+          .task-due {
             display: flex;
             align-items: center;
             gap: 6px;
 
-            .TaskIcon {
+            .task-icon {
               display: flex;
               place-content: center;
               width: $task-icons-width;
               height: $task-icons-height;
 
-              .Shimmer {
-                &.Icon {
+              .shimmer {
+                &.icon {
                   width: 20px;
                   height: 20px;
                 }
@@ -240,21 +236,22 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
               svg {
                 width: $task-icons-width;
                 height: $task-icons-height;
+
                 path {
                   fill: $task-icons-bg-color;
                 }
               }
             }
 
-            .TaskIconText {
+            .task-icon-text {
               color: $task-icons-text-color;
               font-size: $task-icons-text-size;
               font-weight: $task-icons-text-weight;
               white-space: normal;
               width: 100%;
 
-              .Shimmer {
-                &.Text {
+              .shimmer {
+                &.text {
                   width: 100%;
                   height: 10px;
                 }
@@ -263,34 +260,34 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
           }
         }
 
-        .TaskDetails {
+        .task-details {
           display: flex;
           flex-direction: column;
           row-gap: 8px;
 
-          &.Shimmer {
+          &.shimmer {
             flex-direction: row;
             place-items: center;
             column-gap: 6px;
 
-            .Shimmer {
-              &.Icon {
+            .shimmer {
+              &.icon {
                 width: 24px;
                 height: 24px;
               }
 
-              &.Text {
+              &.text {
                 width: 100%;
                 height: 10px;
               }
             }
           }
 
-          .TaskTitle {
+          .task-title {
             color: var(--foreground-on-neutral-rest);
           }
 
-          .TaskBody {
+          .task-body {
             display: flex;
           }
         }
@@ -299,7 +296,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
   }
 
   fluent-button {
-    &.AddTask {
+    &.add-task {
       &::part(control) {
         font-weight: $task-add-new-button-text-font-weight;
         color: $task-add-new-button-text-color;
@@ -318,7 +315,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
       }
     }
 
-    &.CancelTask {
+    &.cancel-task {
       &::part(control) {
         font-weight: $task-cancel-new-button-text-font-weight;
         color: $task-cancel-new-button-text-color;
@@ -340,9 +337,11 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
 
   fluent-option {
     background: $task-new-dropdown-list-background-color;
+
     &:hover {
       background: $task-new-dropdown-option-hover-bg-color;
     }
+
     &::part(content) {
       color: $task-new-dropdown-option-text-color;
     }
@@ -375,6 +374,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
     &::part(control) {
       border-radius: 50%;
       background: $task-incomplete-checkbox-bg;
+
       &:hover {
         background: $task-incomplete-checkbox-hover-bg;
       }
@@ -403,7 +403,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
   }
 
   fluent-text-field {
-    &.NewTask {
+    &.new-task {
       width: 100%;
 
       &::part(root) {
@@ -434,35 +434,35 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
   }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (width <= 600px) {
   :host {
     fluent-select {
       width: 100%;
     }
 
-    .Tasks {
-      .Task {
-        .TaskDetailsContainer {
-          .Bottom {
+    .tasks {
+      .task {
+        .task-details-container {
+          .bottom {
             display: grid;
             grid-auto-flow: row;
             grid-auto-columns: unset;
             row-gap: 4px;
 
-            .TaskGroup,
-            .TaskBucket,
-            .TaskDue {
+            .ask-group,
+            .ask-bucket,
+            .ask-due {
               margin-inline-start: 8px;
             }
           }
 
-          .Top {
-            &.AddNewTask {
+          .top {
+            &.add-new-task {
               flex-direction: column;
               row-gap: 12px;
 
-              .CheckAndTitle {
-                .TaskContent {
+              .check-and-title {
+                .task-content {
                   display: grid;
                   grid-auto-flow: row;
                   row-gap: 12px;
@@ -470,8 +470,8 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
                 }
               }
 
-              .TaskOptions {
-                &.NewTaskActionButtons {
+              .task-options {
+                &.new-task-action-buttons {
                   flex-direction: row;
                   column-gap: 4px;
                 }

@@ -5,27 +5,27 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../mgt-tasks-base/mgt-tasks-base.scss';
-@import '../mgt-tasks-base/mgt-tasks-base.theme.scss';
+@import '../mgt-tasks-base/mgt-tasks-base';
+@import '../mgt-tasks-base/mgt-tasks-base.theme';
 
 :host {
-  @extend :host;
   border-radius: 8px;
   width: 100%;
 
-  .Task,
-  &.LoadingTask {
-    @extend .Task;
+  .task,
+  &.loading-task {
     margin-block: 1px;
     box-shadow: $task-box-shadow;
     width: 100%;
     background-color: $task-background-color;
     border: 1px solid $task-border;
-    &.NewTask {
-      margin: 14px 0 1px 0;
+
+    &.new-task {
+      margin: 14px 0 1px;
       box-shadow: $task-box-shadow;
     }
-    &.Complete {
+
+    &.complete {
       text-decoration: line-through;
       border: 1px solid $task-border-completed;
       background: $task-background-color--completed;
@@ -36,36 +36,39 @@
       border-radius: 8px;
     }
 
-    .TaskDetails {
+    .task-details {
       box-sizing: border-box;
       display: flex;
       flex-direction: row;
       align-items: center;
       padding: 2px;
       line-height: 24px;
-
       border-radius: 4px;
-      .Task {
+
+      .task {
         > div {
           display: flex;
           align-items: center;
           width: 200px;
         }
       }
-      .Title {
+
+      .title {
         flex-grow: 1;
       }
-      .TaskDelete {
+
+      .task-delete {
         display: flex;
       }
-      .TaskDue {
+
+      .task-due {
         min-width: 120px;
         margin-inline-end: 12px;
         height: 32px;
         text-decoration: inherit;
         display: flex;
 
-        .TaskCalendar {
+        .task-calendar {
           display: flex;
           margin-top: 5px;
           margin-inline-end: 10px;
@@ -74,7 +77,8 @@
             fill: $task-color;
           }
         }
-        .TaskDueDate {
+
+        .task-due-date {
           display: flex;
           margin-top: 5px;
         }
@@ -82,70 +86,6 @@
     }
   }
 
-  fluent-text-field.NewTask {
-    width: 100%;
-    height: 34px;
-
-    div.start {
-      .addIcon {
-        display: flex;
-        margin-inline: 10px;
-      }
-    }
-
-    div:nth-child(2) {
-      display: flex;
-      align-items: center;
-      .calendar {
-        display: flex;
-        align-items: center;
-
-        svg {
-          fill: $task-color;
-        }
-
-        fluent-text-field {
-          &.date {
-            margin-inline-start: 10px;
-            color: $task-color;
-            width: auto;
-            cursor: pointer;
-            &::after {
-              border-bottom: none;
-            }
-            &.dark {
-              &::part(control) {
-                color-scheme: dark;
-              }
-            }
-          }
-        }
-
-        input {
-          flex: 1;
-          border: none;
-          border-bottom: 1px solid $task-color;
-          outline: none;
-          border-radius: 0;
-        }
-
-        input:hover {
-          border-bottom: 1px solid $task-date-input-hover-color;
-        }
-
-        input:active {
-          border-bottom: 1px solid $task-date-input-active-color;
-        }
-
-        input:focus {
-          border-bottom: 1px solid $task-date-input-active-color;
-        }
-      }
-    }
-  }
-}
-
-:host {
   fluent-text-field {
     &::part(start),
     &::part(end) {
@@ -156,15 +96,77 @@
       padding: 0;
       cursor: pointer;
     }
+
     &::part(root) {
       background: none;
     }
-  }
-}
 
-:host {
+    &.new-task {
+      width: 100%;
+      height: 34px;
+
+      div.start {
+        .add-icon {
+          display: flex;
+          margin-inline: 10px;
+        }
+      }
+
+      div:nth-child(2) {
+        display: flex;
+        align-items: center;
+
+        .calendar {
+          display: flex;
+          align-items: center;
+
+          svg {
+            fill: $task-color;
+          }
+
+          .date {
+            margin-inline-start: 10px;
+            color: $task-color;
+            width: auto;
+            cursor: pointer;
+
+            &::after {
+              border-bottom: none;
+            }
+
+            &.dark {
+              &::part(control) {
+                color-scheme: dark;
+              }
+            }
+          }
+
+          input {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid $task-color;
+            outline: none;
+            border-radius: 0;
+          }
+
+          input:hover {
+            border-bottom: 1px solid $task-date-input-hover-color;
+          }
+
+          input:active {
+            border-bottom: 1px solid $task-date-input-active-color;
+          }
+
+          input:focus {
+            border-bottom: 1px solid $task-date-input-active-color;
+          }
+        }
+      }
+    }
+  }
+
   fluent-button {
-    &.TaskDelete.neutral,
+    &.task-delete.neutral,
     &.task-add-icon.neutral,
     &.task-cancel-icon.neutral {
       fill: $task-color;
@@ -181,15 +183,17 @@
   }
 
   fluent-checkbox {
-    &.Task {
-      &.Complete {
+    &.task {
+      &.complete {
         div > svg {
           .filled {
             display: block;
           }
+
           .regular {
             display: none;
           }
+
           path {
             fill: $task-radio-background-color;
           }
@@ -200,6 +204,7 @@
         .filled {
           display: none;
         }
+
         .regular {
           display: block;
         }
@@ -209,11 +214,13 @@
         }
       }
     }
+
     &::part(control) {
       margin-inline-start: 10px;
       background: none;
       border-radius: 50%;
     }
+
     &::part(label) {
       margin-inline-end: unset;
       width: 100%;

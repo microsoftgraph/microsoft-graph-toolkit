@@ -531,7 +531,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     if (!this.hideHeader) {
       header = html`
-        <div class="Header">
+        <div class="header">
           ${this.renderPlanOptions()}
         </div>
       `;
@@ -539,7 +539,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     return html`
       ${header}
-      <div class="Tasks">
+      <div class="tasks">
         ${this._isNewTaskVisible ? this.renderNewTask() : null} ${loadingTask}
         ${repeat(
           this._tasks,
@@ -877,7 +877,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     if (this._inTaskLoad && !this._hasDoneInitialLoad) {
-      return html`<span class="LoadingHeader"></span>`;
+      return html`<span class="loading-header"></span>`;
     }
 
     const addButton =
@@ -886,7 +886,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         : html`
           <fluent-button
             appearance="accent"
-            class="NewTaskButton"
+            class="new-task-button"
             @keydown=${this.newTaskButtonKeydown}
             @click=${() => (this.isNewTaskVisible = !this.isNewTaskVisible)}>
               <span slot="start">${getSvg(SvgIcon.Add, 'currentColor')}</span>
@@ -933,7 +933,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
       const folderSelect = this.targetBucketId
         ? html`
-            <span class="PlanTitle">
+            <span class="plan-title">
               ${this._folders[0] && this._folders[0].name}
             </span>`
         : mgtHtml`
@@ -941,7 +941,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           `;
 
       return html`
-        <div class="Title">
+        <div class="title">
           ${groupSelect} ${divider} ${!this._currentGroup ? null : folderSelect}
         </div>
         ${addButton}
@@ -966,7 +966,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
       const folderSelect = this.targetId
         ? html`
-            <span class="PlanTitle">
+            <span class="plan-title">
               ${folder.name}
             </span>
           `
@@ -975,7 +975,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           `;
 
       return html`
-        <span class="Title">
+        <span class="title">
           ${folderSelect}
         </span>
         ${addButton}
@@ -999,7 +999,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       <fluent-text-field
         placeholder=${this.strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
-        class="NewTask"
+        class="new-task"
         aria-label=${this.strings.newTaskPlaceholder}
         @input=${(e: KeyboardEvent) => (this._newTaskName = (e.target as HTMLInputElement).value)}>
       </fluent-text-field>`;
@@ -1020,7 +1020,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         ? null
         : this._currentGroup
         ? html`
-          <span class="NewTaskGroup">
+          <span class="new-task-group">
             ${this.renderPlannerIcon(iconColor)}
             <span>${this.getPlanTitle(this._currentGroup)}</span>
           </span>`
@@ -1048,7 +1048,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const taskFolder = this._currentFolder
       ? html`
-          <span class="NewTaskBucket">
+          <span class="new-task-bucket">
             ${this.renderBucketIcon(iconColor)}
             <span>${this.getFolderName(this._currentFolder)}</span>
           </span>
@@ -1059,7 +1059,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           ${folders.length > 0 ? folderOptions : html`<fluent-option selected>No folders found</fluent-option>`}
         </fluent-select>`;
 
-    const dateField = { dark: this._isDarkMode, NewTask: true };
+    const dateField = { dark: this._isDarkMode, 'new-task': true };
 
     const taskDue = html`
       <fluent-text-field
@@ -1073,17 +1073,17 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null, iconColor);
 
     const newTaskActionButtons = this._newTaskBeingAdded
-      ? html`<div class="TaskAddButtonContainer"></div>`
+      ? html`<div class="task-add-button-container"></div>`
       : html`
           <fluent-button
-            class="AddTask"
+            class="add-task"
             @click=${this.onAddTaskClick}
             @keydown=${this.onAddTaskKeyDown}
             appearance="neutral">
               ${this.strings.addTaskButtonSubtitle}
           </fluent-button>
           <fluent-button
-            class="CancelTask"
+            class="cancel-task"
             @click=${() => (this.isNewTaskVisible = false)}
             @keydown=${this.newTaskVisible}
             appearance="neutral">
@@ -1093,21 +1093,21 @@ export class MgtTasks extends MgtTemplatedComponent {
     return html`
     <div
       class=${classMap({
-        Task: true,
-        NewTask: true
+        task: true,
+        'new-task': true
       })}>
-      <div class="TaskDetailsContainer">
-        <div class="Top AddNewTask">
-          <div class="CheckAndTitle">
+      <div class="task-details-container">
+        <div class="top add-new-task">
+          <div class="check-and-title">
             ${taskTitle}
-            <div class="TaskContent">
-              <div class="TaskGroup">${group}</div>
-              <div class="TaskBucket">${taskFolder}</div>
+            <div class="task-content">
+              <div class="task-group">${group}</div>
+              <div class="task-bucket">${taskFolder}</div>
               ${taskPeople}
-              <div class="TaskDue">${taskDue}</div>
+              <div class="task-due">${taskDue}</div>
             </div>
           </div>
-          <div class="TaskOptions NewTaskActionButtons">${newTaskActionButtons}</div>
+          <div class="task-options new-task-action-buttons">${newTaskActionButtons}</div>
         </div>
       </div>
     </div>
@@ -1140,17 +1140,17 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private getPeoplePicker(task: ITask): MgtPeoplePicker {
-    const taskId = task ? task.id : 'newTask';
+    const taskId = task ? task.id : 'new-task';
     return this.renderRoot.querySelector<MgtPeoplePicker>(`.picker-${taskId}`);
   }
 
   private getMgtPeople(task: ITask): MgtPeople {
-    const taskId = task ? task.id : 'newTask';
+    const taskId = task ? task.id : 'new-task';
     return this.renderRoot.querySelector<MgtPeople>(`.people-${taskId}`);
   }
 
   private getFlyout(task: ITask): MgtFlyout {
-    const taskId = task ? task.id : 'newTask';
+    const taskId = task ? task.id : 'new-task';
     return this.renderRoot.querySelector(`.flyout-${taskId}`);
   }
 
@@ -1175,26 +1175,26 @@ export class MgtTasks extends MgtTemplatedComponent {
         this.dataSource === TasksSource.todo || this._currentGroup
           ? null
           : html`
-              <div class="TaskGroup">
-                <span class="TaskIcon">${this.renderPlannerIcon(iconColor)}</span>
-                <span class="TaskIconText">${this.getPlanTitle(task.topParentId)}</span>
+              <div class="task-group">
+                <span class="task-icon">${this.renderPlannerIcon(iconColor)}</span>
+                <span class="task-icon-text">${this.getPlanTitle(task.topParentId)}</span>
               </div>
             `;
 
       const folder = this._currentFolder
         ? null
         : html`
-            <div class="TaskBucket">
-              <span class="TaskIcon">${this.renderBucketIcon(iconColor)}</span>
-              <span class="TaskIconText">${this.getFolderName(task.immediateParentId)}</span>
+            <div class="task-bucket">
+              <span class="task-icon">${this.renderBucketIcon(iconColor)}</span>
+              <span class="task-icon-text">${this.getFolderName(task.immediateParentId)}</span>
             </div>
           `;
 
       const taskDue = !dueDate
         ? null
         : html`
-            <div class="TaskDue">
-              <span class="TaskIconText">${this.strings.due}${getShortDateString(dueDate)}</span>
+            <div class="task-due">
+              <span class="task-icon-text">${this.strings.due}${getShortDateString(dueDate)}</span>
             </div>
           `;
 
@@ -1215,10 +1215,10 @@ export class MgtTasks extends MgtTemplatedComponent {
             ></mgt-dot-options>`;
 
     const taskClasses = classMap({
-      Task: true,
-      Complete: completed,
-      Incomplete: !completed,
-      ReadOnly: this.readOnly
+      task: true,
+      complete: completed,
+      incomplete: !completed,
+      'read-only': this.readOnly
     });
 
     return html`
@@ -1226,9 +1226,9 @@ export class MgtTasks extends MgtTemplatedComponent {
         id="task-${task.id}"
         class=${taskClasses}
         @click=${() => this.handleTaskClick(task)}>
-        <div class="TaskDetailsContainer">
-          <div class="Top">
-            <div class="CheckAndTitle">
+        <div class="task-details-container">
+          <div class="top">
+            <div class="check-and-title">
               <fluent-checkbox
                 @click=${(e: MouseEvent) => this.checkTask(e, task)}
                 @keydown=${(e: KeyboardEvent) => this.handleTaskCheckKeyDown(e, task)}
@@ -1236,9 +1236,9 @@ export class MgtTasks extends MgtTemplatedComponent {
                   ${name}
               </fluent-checkbox>
             </div>
-            <div class="TaskOptions">${taskOptions}</div>
+            <div class="task-options">${taskOptions}</div>
           </div>
-          <div class="Bottom">${taskDetails}</div>
+          <div class="bottom">${taskDetails}</div>
         </div>
       </div>
     `;
@@ -1262,13 +1262,13 @@ export class MgtTasks extends MgtTemplatedComponent {
   private async checkTask(e: MouseEvent, task: ITask) {
     if (!this.readOnly) {
       const target = this.shadowRoot.querySelector(`#task-${task.id}`);
-      if (target) target.classList.add('Updating');
+      if (target) target.classList.add('updating');
       if (!task.completed) {
         await this.completeTask(task);
       } else {
         await this.uncompleteTask(task);
       }
-      if (target) target.classList.remove('Updating');
+      if (target) target.classList.remove('updating');
       e.stopPropagation();
       e.preventDefault();
     }
@@ -1302,12 +1302,12 @@ export class MgtTasks extends MgtTemplatedComponent {
   private renderAssignedPeople(task: ITask, iconColor: string): TemplateResult {
     let assignedGroupId: string;
     const taskAssigneeClasses = {
-      NewTaskAssignee: task === null,
-      TaskAssignee: task !== null,
-      TaskDetail: task !== null
+      'new-task-assignee': task === null,
+      'task-assignee': task !== null,
+      'task-detail': task !== null
     };
 
-    const taskId = task ? task.id : 'newTask';
+    const taskId = task ? task.id : 'new-task';
     taskAssigneeClasses[`flyout-${taskId}`] = true;
 
     const assignedPeople = task ? Object.keys(task.assignments).map(key => key) : [];
@@ -1367,51 +1367,51 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private renderLoadingTask() {
     return html`
-      <div class="Header">
-        <div class="Title">
-          <fluent-skeleton shimmer class="Shimmer" shape="rect"></fluent-skeleton>
+      <div class="header">
+        <div class="title">
+          <fluent-skeleton shimmer class="shimmer" shape="rect"></fluent-skeleton>
         </div>
-        <div class="NewTaskButton">
-          <fluent-skeleton shimmer class="Shimmer" shape="rect"></fluent-skeleton>
+        <div class="new-task-button">
+          <fluent-skeleton shimmer class="shimmer" shape="rect"></fluent-skeleton>
         </div>
       </div>
-      <div class="Tasks">
-        <div class="Task Complete">
-          <div class="TaskDetailsContainer">
-            <div class="Top">
-              <div class="CheckAndTitle Shimmer">
-                <fluent-skeleton shimmer class="Checkbox" shape="circle"></fluent-skeleton>
-                <fluent-skeleton shimmer class="Title" shape="rect"></fluent-skeleton>
+      <div class="tasks">
+        <div class="task incomplete">
+          <div class="task-details-container">
+            <div class="top">
+              <div class="check-and-title shimmer">
+                <fluent-skeleton shimmer class="checkbox" shape="circle"></fluent-skeleton>
+                <fluent-skeleton shimmer class="title" shape="rect"></fluent-skeleton>
               </div>
-              <div class="TaskOptions">
-                <fluent-skeleton shimmer class="Options" shape="rect"></fluent-skeleton>
+              <div class="task-options">
+                <fluent-skeleton shimmer class="options" shape="rect"></fluent-skeleton>
               </div>
             </div>
-            <div class="Bottom">
-              <div class="TaskGroup">
-                <div class="TaskIcon">
-                  <fluent-skeleton shimmer class="Shimmer Icon" shape="rect"></fluent-skeleton>
+            <div class="bottom">
+              <div class="task-group">
+                <div class="task-icon">
+                  <fluent-skeleton shimmer class="shimmer icon" shape="rect"></fluent-skeleton>
                 </div>
-                <div class="TaskIconText">
-                  <fluent-skeleton shimmer class="Shimmer Text" shape="rect"></fluent-skeleton>
-                </div>
-              </div>
-              <div class="TaskBucket">
-                <div class="TaskIcon">
-                  <fluent-skeleton shimmer class="Shimmer Icon" shape="rect"></fluent-skeleton>
-                </div>
-                <div class="TaskIconText">
-                  <fluent-skeleton shimmer class="Shimmer Text" shape="rect"></fluent-skeleton>
+                <div class="task-icon-text">
+                  <fluent-skeleton shimmer class="shimmer text" shape="rect"></fluent-skeleton>
                 </div>
               </div>
-              <div class="TaskDetails Shimmer">
-                <fluent-skeleton shimmer class="Shimmer Icon" shape="circle"></fluent-skeleton>
-                <fluent-skeleton shimmer class="Shimmer Icon" shape="circle"></fluent-skeleton>
-                <fluent-skeleton shimmer class="Shimmer Icon" shape="circle"></fluent-skeleton>
+              <div class="task-bucket">
+                <div class="task-icon">
+                  <fluent-skeleton shimmer class="shimmer icon" shape="rect"></fluent-skeleton>
+                </div>
+                <div class="task-icon-text">
+                  <fluent-skeleton shimmer class="shimmer text" shape="rect"></fluent-skeleton>
+                </div>
               </div>
-              <div class="TaskDue">
-                <div class="TaskIconText">
-                  <fluent-skeleton shimmer class="Shimmer Text" shape="rect"></fluent-skeleton>
+              <div class="task-details shimmer">
+                <fluent-skeleton shimmer class="shimmer icon" shape="circle"></fluent-skeleton>
+                <fluent-skeleton shimmer class="shimmer icon" shape="circle"></fluent-skeleton>
+                <fluent-skeleton shimmer class="shimmer icon" shape="circle"></fluent-skeleton>
+              </div>
+              <div class="task-due">
+                <div class="task-icon-text">
+                  <fluent-skeleton shimmer class="shimmer text" shape="rect"></fluent-skeleton>
                 </div>
               </div>
               </div>
