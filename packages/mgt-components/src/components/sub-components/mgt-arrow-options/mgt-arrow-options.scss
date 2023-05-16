@@ -5,38 +5,39 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../../styles/shared-styles.scss';
-@import '../../../styles/shared-sass-variables.scss';
+@import '../../../styles/shared-styles';
+@import '../../../styles/shared-sass-variables';
 
 $arrow-options-left: var(--arrow-options-left, 0);
 
-:host,
-mgt-arrow-options {
+:host {
   position: relative;
   font-family: $font-family;
 
-  .Header {
+  .header {
     text-decoration: none;
     color: var(--accent-fill-rest);
 
     &:hover{
       color: var(--accent-fill-hover);
     }
+
     &:active{
       color: var(--accent-fill-active);
     }
+    
     &:focus{
       color: var(--accent-fill-focus);
     }
   }
 
-  .Menu{
+  .menu{
     position: absolute;
     left: $arrow-options-left;
     z-index: 1;
     display: none;
     
-    &.Open{
+    &.open{
       display: block;
       width: max-content;
     }

@@ -108,7 +108,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
     return html`
       <a class="Header" @click=${this.onHeaderClick} href="javascript:void">${this.value}</a>
       <fluent-menu
-        class=${classMap({ Menu: true, Open: this.open, Closed: !this.open })}>
+        class=${classMap({ menu: true, open: this.open, closed: !this.open })}>
           ${this.getMenuOptions()}
       </fluent-menu>`;
   }
