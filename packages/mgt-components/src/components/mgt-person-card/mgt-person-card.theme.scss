@@ -5,19 +5,19 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-sass-variables';
 
 /**
 * Loading the themes of the components used within mgt-person-card to
 * allow mgt-dark specifications to propagate. Also it allows re-using already
 * declared theme values like $person-theme in the mgt-person-card.scss#L362,L363.
 */
-@import '../../components/mgt-person/mgt-person.theme.scss';
-@import '../../components/mgt-contact/mgt-contact.theme.scss';
-@import '../../components/mgt-organization/mgt-organization.theme.scss';
-@import '../../components/mgt-profile/mgt-profile.theme.scss';
-@import '../../components/mgt-messages/mgt-messages.theme.scss';
-@import '../../components/mgt-file-list/mgt-file-list.theme.scss';
+@import '../../components/mgt-person/mgt-person.theme';
+@import '../../components/mgt-contact/mgt-contact.theme';
+@import '../../components/mgt-organization/mgt-organization.theme';
+@import '../../components/mgt-profile/mgt-profile.theme';
+@import '../../components/mgt-messages/mgt-messages.theme';
+@import '../../components/mgt-file-list/mgt-file-list.theme';
 
 $person-card-background-color: var(--person-card-background-color, var(--neutral-layer-floating));
 $person-card-expanded-background-color-hover: var(

@@ -1,5 +1,5 @@
 # Node.js Server for Microsoft Teams Single Sign On (SSO)
-This sample is a reference implementation of a backend service that can be used with the [Teams Msal2 Provider](https://learn.microsoft.com/graph/toolkit/providers/teams-msal2) for a single sign on experience. 
+This sample is a reference implementation of a backend service that can be used with the [Teams Msal2 Provider](https://learn.microsoft.com/graph/toolkit/providers/teams-msal2) for a single sign on experience.
 
 This sample implements both a `GET` and `POST` api for exchanging the Microsoft Teams authentication token with a token that can be used to call Microsoft Graph. It uses the [on-behalf-of flow](https://learn.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow) to exchange the tokens.
 
@@ -24,12 +24,12 @@ You will need:
     > cd microsoft-graph-toolkit
     > yarn
     > yarn build
-    ``` 
+    ```
 
-1. Open `index.html` in the root of the repo and 
+1. Open `index.html` in the root of the repo and
     - Comment out the `mgt-mock-provider`
     - Comment out the `mgt-login` component
-    - Uncomment the `mgt-teams-msal2-provider` used for sso
+    - Uncomment the `mgt-teamsfx-provider` used for sso
     - Update the `client-id` used in the provider with your own (see below for creating the AAD registration)
 
 
@@ -79,7 +79,7 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
 
     - Set **Name** to `Node.js Teams SSO` (or a name of your choice).
     - Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
-    - Under **Redirect URI**, set the first drop-down to `Single Page Application` and set the value to the application's public url + `/auth.html`. Ex: `https://mgtsso.example.com/auth.html`. 
+    - Under **Redirect URI**, set the first drop-down to `Single Page Application` and set the value to the application's public url + `/auth.html`. Ex: `https://mgtsso.example.com/auth.html`.
 
 1. From the app overview page, copy the value of the **Application (client) ID** for later. You will need it for the following steps. You will use this value in the `index.html` and `.env` files
 
@@ -90,13 +90,13 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
     > **IMPORTANT**
     > This client secret is never shown again, so make sure you copy it now.
 
-1. Navigate to **API permissions** under **Manage**. Select **Add a permission** > **Microsoft Graph** > **Delegated permissions**, then add the following permissions   
+1. Navigate to **API permissions** under **Manage**. Select **Add a permission** > **Microsoft Graph** > **Delegated permissions**, then add the following permissions
     - `email`, `offline_access`, `openid`, `profile`, `User.Read`
     - Select **Add permissions** when done
 
-1. (OPTIONAL) If you want to pre-consent the scopes that the Microsoft Graph Toolkit components used in this sample, add the following permissions: 
+1. (OPTIONAL) If you want to pre-consent the scopes that the Microsoft Graph Toolkit components used in this sample, add the following permissions:
     - `user.read.all, mail.readBasic, people.read.all, sites.read.all, user.readbasic.all, contacts.read, presence.read, presence.read.all, tasks.readwrite, tasks.read`
-    
+
     - If you use different components or plan to use other Microsoft Graph APIs, you may require additional permissions. See the [documentation](https://learn.microsoft.com/graph/toolkit/overview) for each component for details on required permissions.
 
     - To pre-consent as an admin, select **Grant admin consent**, then select **Yes**
@@ -112,11 +112,11 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
     - User consent display name: `Teams can access the user profile and make requests on the user's behalf`
     - User consent description: `Enable Teams to call this app’s APIs with the same rights as the user.`
     - State: **Enabled**
-    
-    Your API URL should look like this: `api://mgtsso.example.com/{appID}/access_as_user`. 
+
+    Your API URL should look like this: `api://mgtsso.example.com/{appID}/access_as_user`.
 
 1. Next, add two client applications. This is for the Teams desktop/mobile clients and the web client. Under the **Authorized client applications** section, select **Add a client application**. Fill in the Client ID and select the scope we created. Then select **Add application**. Do this for the followings Ids
-    
+
     - 5e3ce6c0-2b1f-4285-8d4b-75ee78787346
     - 1fec8e78-bce4-4aaf-ab1b-5451cc387264
 ## Creating a Teams App
