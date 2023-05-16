@@ -14,78 +14,32 @@ $arrow-options-left: var(--arrow-options-left, 0);
 mgt-arrow-options {
   position: relative;
   font-family: $font-family;
-}
 
-:host .ArrowIcon,
-mgt-arrow-options .ArrowIcon {
-  font-family: 'FabricMDL2Icons';
-  margin-inline-start: 20px;
-  user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
+  .Header {
+    text-decoration: none;
+    color: var(--accent-fill-rest);
 
-:host .Header,
-mgt-arrow-options .Header {
-  cursor: pointer;
-}
+    &:hover{
+      color: var(--accent-fill-hover);
+    }
+    &:active{
+      color: var(--accent-fill-active);
+    }
+    &:focus{
+      color: var(--accent-fill-focus);
+    }
+  }
 
-:host .Header:hover,
-mgt-arrow-options .Header:hover {
-  color: var(--theme-primary-color);
-}
+  .Menu{
+    position: absolute;
+    left: $arrow-options-left;
+    z-index: 1;
+    display: none;
+    
+    &.Open{
+      display: block;
+      width: max-content;
+    }
+  }
 
-:host .Menu,
-mgt-arrow-options .Menu {
-  position: absolute;
-  left: var(--arrow-options-left, 0);
-  background-color: var(--neutral-fill-rest);
-  z-index: 1;
-  display: none;
-  white-space: nowrap;
-}
-
-:host .Menu.Open,
-mgt-arrow-options .Menu.Open {
-  display: block;
-}
-
-:host .MenuOption,
-mgt-arrow-options .MenuOption {
-  padding: 20px;
-  cursor: pointer;
-  user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  display: flex;
-  align-items: center;
-  justify-content: stretch;
-  justify-items: stretch;
-}
-
-:host .MenuOption:first,
-mgt-arrow-options .MenuOption:first {
-  padding: 12px 20px 20px 20px;
-}
-
-:host .MenuOption:hover,
-mgt-arrow-options .MenuOption:hover {
-  background-color: var(--neutral-fill-hover);
-}
-
-:host .MenuOption:active,
-mgt-arrow-options .MenuOption:active {
-  background-color: var(--neutral-fill-active);
-}
-
-:host .MenuOptionCheck,
-mgt-arrow-options .MenuOptionCheck {
-  font-family: 'FabricMDL2Icons';
-  color: var(--neutral-fill-inverse-active);
-  margin-right: 10px;
-}
-
-:host .MenuOptionCheck.CurrentValue,
-mgt-arrow-options .MenuOptionCheck.CurrentValue {
-  color: var(--accent-fill-rest);
 }
