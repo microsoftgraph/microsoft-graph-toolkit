@@ -18,7 +18,7 @@ export const darkTheme = () => html`
 
 export const customCSSProperties = () => html`
   <style>
-    mgt-teams-channel-picker {
+    .teams-channel-picker {
       --input-border: 2px rgb(255, 0, 0) solid;
 
       --input-background-color: #fcc0e5;
@@ -35,5 +35,5 @@ export const customCSSProperties = () => html`
       --placeholder-color--focus: rgba(255, 255, 255, 0.8);
     }
   </style>
-  <mgt-teams-channel-picker person-query="me"></mgt-teams-channel-picker>
+  <mgt-teams-channel-picker class="teams-channel-picker" person-query="me"></mgt-teams-channel-picker>
 `;
