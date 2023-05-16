@@ -140,7 +140,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     return html`
       ${picker}
       ${newTaskTemplate}
-      <div class="Tasks" dir=${this.direction}>
+      <div class="tasks" dir=${this.direction}>
         ${tasksTemplate}
       </div>
     `;
@@ -155,11 +155,11 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    */
   protected renderLoadingTask() {
     return html`
-      <div class="Task LoadingTask">
-        <div class="TaskDetails">
-          <div class="Title"></div>
-          <div class="TaskDue"></div>
-          <div class="TaskDelete"></div>
+      <div class="task loading-task">
+        <div class="task-details">
+          <div class="title"></div>
+          <div class="task-due"></div>
+          <div class="task-delete"></div>
         </div>
       </div>
     `;
