@@ -78,10 +78,19 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
 
     .Title {
       justify-content: left;
+      display: flex;
+      align-items: center;
 
       .Shimmer {
         width: 80px;
         height: 20px;
+      }
+
+      svg {
+        margin-top: 3px;
+        padding: 0px 4px;
+        width: 16px;
+        height: 16px;
       }
     }
 

@@ -901,11 +901,13 @@ export class MgtTasks extends MgtTemplatedComponent {
           this._currentFolder = null;
         };
       }
-      const groupSelect = mgtHtml`
-        <mgt-arrow-options class="arrow-options" .options="${groupOptions}" .value="${currentGroup.title}"></mgt-arrow-options>
-      `;
+      const groupSelect: TemplateResult = mgtHtml`
+        <mgt-arrow-options
+          class="arrow-options"
+          .options="${groupOptions}"
+          .value="${currentGroup.title}"></mgt-arrow-options>`;
 
-      const divider = !this._currentGroup ? null : html`<fluent-divider></fluent-divider>`;
+      const separator = !this._currentGroup ? null : getSvg(SvgIcon.ChevronRight);
 
       const currentFolder = this._folders.find(d => d.id === this._currentFolder) || {
         name: this.res.BUCKETS_SELF_ASSIGNED
@@ -933,7 +935,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
       return html`
         <div class="Title">
-          ${groupSelect} ${divider} ${!this._currentGroup ? null : folderSelect}
+          ${groupSelect} ${separator} ${!this._currentGroup ? null : folderSelect}
         </div>
         ${addButton}
       `;
