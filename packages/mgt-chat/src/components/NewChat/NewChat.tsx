@@ -119,11 +119,13 @@ const NewChat: FC<NewChatProps> = ({
       {state === 'initial' ? (
         <div className={styles.container}>
           {!hideTitle && (
-            <Text as="h2" className={styles.title}>
-              {title ? title : 'New chat'}
-            </Text>
+            <>
+              <Text as="h2" className={styles.title}>
+                {title ? title : 'New chat'}
+              </Text>
+              <Divider />
+            </>
           )}
-          <Divider />
           <div className={styles.form}>
             <Field label="To">
               <PeoplePicker
