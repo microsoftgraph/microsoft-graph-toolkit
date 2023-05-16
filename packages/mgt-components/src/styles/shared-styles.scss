@@ -5,22 +5,24 @@
  * -------------------------------------------------------------------------------------------
  */
 
+@import './shared-sass-variables';
+
 :host([hidden]) {
   display: none;
 }
 
 :host {
   display: block;
-  --default-font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont,
-    Roboto, 'Helvetica Neue', sans-serif;
+
+  --default-font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, 'BlinkMacSystemFont', 'Roboto', 'Helvetica Neue', sans-serif;
   --default-font-size: 14px;
   --theme-primary-color: #0078d7;
   --theme-dark-color: #005a9e;
 }
 
-.ms-Icon {
+.ms-icon {
   display: inline-block;
-  font-family: 'FabricMDL2Icons';
+  font-family: $font-icon;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -30,27 +32,27 @@
 }
 
 .error {
-  background-color: rgb(253, 231, 233);
+  background-color: rgb(253 231 233);
   padding-block: 8px;
   padding-inline: 8px 12px;
 }
 
-.ms-Icon--ChevronDown::before {
+.ms-icon-chevron-down::before {
   content: '\\\E70D';
 }
 
-.ms-Icon--ChevronUp::before {
+.ms-icon-chevron-up::before {
   content: '\\\E70E';
 }
 
-.ms-Icon--Contact::before {
+.ms-icon-contact::before {
   content: '\\\E77B';
 }
 
-.ms-Icon--AddFriend::before {
+.ms-icon-add-friend::before {
   content: '\\\E8FA';
 }
 
-.ms-Icon--OutlookLogoInverse::before {
+.ms-icon-outlook-logo-inverser::before {
   content: '\\\EB6D';
 }

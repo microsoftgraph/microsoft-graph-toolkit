@@ -79,14 +79,15 @@ export class MgtDotOptions extends MgtBaseComponent {
     const menuOptions = Object.keys(this.options);
 
     return html`
-      <fluent-button
-        appearance="stealth"
+      <div tabindex="0" class=${classMap({ 'dot-menu': true, open: this.open })}
         @click=${this.onDotClick}
-        @keydown=${this.onDotKeydown}
-        class="DotIcon">\uE712</fluent-button>
-      <fluent-menu class=${classMap({ Menu: true, Open: this.open })}>
-        ${menuOptions.map(opt => this.getMenuOption(opt, this.options[opt]))}
-      </fluent-menu>`;
+        @keydown=${this.onDotKeydown}>
+        <span class="dot-icon">\uE712</span>
+        <div tabindex="0" class="menu">
+          ${Object.keys(this.options).map(prop => this.getMenuOption(prop, this.options[prop]))}
+        </div>
+      </div>
+    `;
   }
 
   private handleItemClick = (e: MouseEvent, fn: MenuOptionEventFunction) => {
@@ -112,9 +113,24 @@ export class MgtDotOptions extends MgtBaseComponent {
    */
   public getMenuOption(name: string, clickFn: (e: Event) => void | any) {
     return html`
-      <fluent-menu-item
-        @click=${(e: MouseEvent) => this.handleItemClick(e, clickFn)}
-        @keydown=${(e: KeyboardEvent) => this.handleItemKeydown(e, clickFn)}>
+      <div
+        class="dot-item"
+        @click="${(e: Event) => {
+          e.preventDefault();
+          e.stopPropagation();
+          clickFn(e);
+          this.open = false;
+        }}"
+        @keydown="${(e: KeyboardEvent) => {
+          if (e.code === 'Enter' || e.code === 'Space') {
+            e.preventDefault();
+            e.stopPropagation();
+            clickFn(e);
+            this.open = false;
+          }
+        }}"
+      >
+        <span class="dot-item-name">
           ${name}
       </fluent-menu-item>`;
   }
