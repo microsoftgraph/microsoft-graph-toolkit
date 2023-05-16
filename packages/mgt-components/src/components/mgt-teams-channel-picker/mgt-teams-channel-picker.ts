@@ -183,7 +183,7 @@ export interface MgtTeamsChannelPickerConfig {
  * @cssprop --dropdown-item-selected-background - {Color} Background color of selected channel
  *
  * @cssprop --arrow-fill - {Color} Color of arrow svg
- * @cssprop --placeholder-color--focus - {Color} Color of placeholder text during focus state
+ * @cssprop --placeholder-color-focus - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
  */
