@@ -11,8 +11,8 @@ import { classMap } from 'lit/directives/class-map.js';
 import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { styles } from './mgt-arrow-options-css';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
-import { fluentMenu, fluentMenuItem } from '@fluentui/web-components';
-registerFluentComponents(fluentMenu, fluentMenuItem);
+import { fluentMenu, fluentMenuItem, fluentButton } from '@fluentui/web-components';
+registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
 
 /*
   Ok, the name here deserves a bit of explanation,
@@ -25,6 +25,12 @@ registerFluentComponents(fluentMenu, fluentMenuItem);
 /**
  * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.
  *
+ * @cssprop --arrow-options-left {Length} The distance of the dropdown menu from the left in absolute position. Default is 0.
+ * @cssprop --arrow-options-button-background-color {Color} The background color of the arrow options button.
+ * @cssprop --arrow-options-button-font-size {Length} The font size of the button text. Default is large.
+ * @cssprop --arrow-options-button-font-weight {Length} The font weight of the button text. Default is 600.
+ * @cssprop --arrow-options-button-font-color {Color} The font color of the text in the button.
+ * 
  * @export MgtArrowOptions
  * @class MgtArrowOptions
  * @extends {MgtBaseComponent}
@@ -106,7 +112,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
    */
   public render() {
     return html`
-      <a class="Header" @click=${this.onHeaderClick} href="javascript:void">${this.value}</a>
+      <fluent-button class="header" @click=${this.onHeaderClick} appearance="lightweight">${this.value}</fluent-button>
       <fluent-menu
         class=${classMap({ menu: true, open: this.open, closed: !this.open })}>
           ${this.getMenuOptions()}

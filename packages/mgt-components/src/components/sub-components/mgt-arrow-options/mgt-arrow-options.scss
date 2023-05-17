@@ -9,25 +9,30 @@
 @import '../../../styles/shared-sass-variables';
 
 $arrow-options-left: var(--arrow-options-left, 0);
+$arrow-options-btn-bg-color: var(--arrow-options-button-background-color, var(--neutral-layer-2));
+$arrow-options-btn-font-size: var(--arrow-options-button-font-size, large);
+$arrow-options-btn-font-weight: var(--arrow-options-button-font-weight, 600);
+$arrow-options-btn-font-color: var(--arrow-options-button-font-color, var(--accent-base-color));
 
 :host {
   position: relative;
   font-family: $font-family;
 
   .header {
-    text-decoration: none;
-    color: var(--accent-fill-rest);
+    &::part(control){
+      font-size: $arrow-options-btn-font-size;
+      font-weight: $arrow-options-btn-font-weight;
+      color: $arrow-options-btn-font-color;
+      background: $arrow-options-btn-bg-color;
+      
+      &:hover {
+        background: var(--neutral-fill-stealth-hover);
+      }
 
-    &:hover{
-      color: var(--accent-fill-hover);
-    }
-
-    &:active{
-      color: var(--accent-fill-active);
-    }
-    
-    &:focus{
-      color: var(--accent-fill-focus);
+      &:active,
+      &:focus {
+        background: var(--neutral-fill-stealth-active);
+      }
     }
   }
 
