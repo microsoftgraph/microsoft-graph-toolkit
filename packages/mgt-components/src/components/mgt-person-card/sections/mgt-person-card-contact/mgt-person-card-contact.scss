@@ -160,13 +160,13 @@ $person-card-contact-link-hover-color: var(--person-card-contact-link-hover-colo
 
 @media (forced-colors: active) and (prefers-color-scheme: light) {
   .root svg {
-    fill: rgb(0,0,0) !important;
+    fill: rgb(0, 0, 0) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
 
     path,
     rect {
-      fill: rgb(0,0,0) !important;
+      fill: rgb(0, 0, 0) !important;
       fill-rule: nonzero !important;
       clip-rule: nonzero !important;
     }

@@ -4,7 +4,14 @@
     "outDir": "dist/es6",
     "sourceRoot": "src",
     "rootDir": "src",
-    "composite": true
+    "composite": true,
+    "useDefineForClassFields": false, // Needed to mix class fields and reactive properties in Lit elements https://lit.dev/docs/components/properties/#avoiding-issues-with-class-fields
+    "plugins": [
+      {
+        "name": "ts-lit-plugin",
+        "strict": false
+      }
+    ]
   },
   "include": ["src"]
 }

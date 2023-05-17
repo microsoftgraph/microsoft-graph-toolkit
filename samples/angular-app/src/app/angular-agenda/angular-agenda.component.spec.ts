@@ -5,12 +5,13 @@ describe('AngularAgendaComponent', () => {
   let component: AngularAgendaComponent;
   let fixture: ComponentFixture<AngularAgendaComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AngularAgendaComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [AngularAgendaComponent]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AngularAgendaComponent);

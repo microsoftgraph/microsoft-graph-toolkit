@@ -22,7 +22,8 @@ import {
   deleteSessionFile
 } from '../../../graph/graph.files';
 
-export { FluentProgress, FluentButton, FluentCheckbox, FluentCard } from '@fluentui/web-components';
+//export { FluentProgress, FluentButton, FluentCheckbox, FluentCard } from '@fluentui/web-components';
+export { fluentProgress, fluentButton, fluentCheckbox, fluentCard } from '@fluentui/web-components';
 
 // import { registerFluentComponents } from '../../../utils/FluentComponents';
 // import { fluentButton, fluentCheckbox, fluentProgress } from '@fluentui/web-components';

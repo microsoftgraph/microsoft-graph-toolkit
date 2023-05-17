@@ -16,33 +16,33 @@ This example illustrates how to instantiate a new provider (MsalProvider in this
 
 1. Install the packages
 
-    ```bash
-    npm install @microsoft/mgt-element @microsoft/mgt-msal2-provider
-    ```
+   ```bash
+   npm install @microsoft/mgt-element @microsoft/mgt-msal2-provider
+   ```
 
 1. Create the provider
 
-    ```ts
-    import {Providers} from '@microsoft/mgt-element';
-    import {Msal2Provider} from '@microsoft/mgt-msal2-provider';
+   ```ts
+   import {Providers} from '@microsoft/mgt-element';
+   import {Msal2Provider} from '@microsoft/mgt-msal2-provider';
 
-    // initialize the auth provider globally
-    Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
-    ```
+   // initialize the auth provider globally
+   Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
+   ```
 
 1. Use the provider to sign in and call the graph:
 
-    ```ts
-    import {Providers, ProviderState} from '@microsoft/mgt-element';
+   ```ts
+   import {Providers, ProviderState} from '@microsoft/mgt-element';
 
-    const handleLoginClicked = async () => {
-      await Providers.globalProvider.login();
+   const handleLoginClicked = async () => {
+     await Providers.globalProvider.login();
 
-      if (Providers.globalProvider.state === ProviderState.SignedIn) {
-        let me = await Provider.globalProvider.graph.client.api('/me').get();
-      }
-    }
-    ```
+     if (Providers.globalProvider.state === ProviderState.SignedIn) {
+       let me = await Provider.globalProvider.graph.client.api('/me').get();
+     }
+   }
+   ```
 
 You can learn more about how to use the providers in the [documentation](https://learn.microsoft.com/graph/toolkit/providers).
 
@@ -84,10 +84,10 @@ Provider.globalProvider = new SimpleProvider(getAccessToken, login, logout);
 
 You can extend the IProvider abstract class to create your own provider. The IProvider is similar to the SimpleProvider in that it requires the developer to implement the `getAccessToken()` function.
 
-
 See the [custom provider documentation](https://learn.microsoft.com/graph/toolkit/providers/custom) for more details on both ways to create custom providers.
 
 ## Sea also
-* [Microsoft Graph Toolkit docs](https://aka.ms/mgt-docs)
-* [Microsoft Graph Toolkit repository](https://aka.ms/mgt)
-* [Microsoft Graph Toolkit playground](https://mgt.dev)
+
+- [Microsoft Graph Toolkit docs](https://aka.ms/mgt-docs)
+- [Microsoft Graph Toolkit repository](https://aka.ms/mgt)
+- [Microsoft Graph Toolkit playground](https://mgt.dev)

@@ -47,7 +47,7 @@ jobs:
     needs: build
     if: always()
     steps:
-      - name: All build matrix options are successful 
+      - name: All build matrix options are successful
         if: ${{ !(contains(needs.*.result, 'failure')) }}
         run: exit 0
       - name: One or more build matrix options failed

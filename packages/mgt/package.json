@@ -27,7 +27,7 @@
   "scripts": {
     "build": "npm-run-all clean build:compile build:bundle",
     "build:bundle": "npm-run-all copy:loader copy:wc sass rollup",
-    "build:compile": "npm-run-all sass compile",
+    "build:compile": "npm-run-all tailwind sass compile",
     "build:watch": "npm-run-all -p sass:watch compile:watch",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
     "compile": "tsc -b",
@@ -37,6 +37,7 @@
     "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts",
     "rollup": "rollup -c",
+    "tailwind": "npx tailwindcss@latest -c tailwind.config.mjs -m -o ../mgt-components/src/styles/tailwind-styles.scss",
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd .",
     "test": "jest",
@@ -53,7 +54,8 @@
     "@microsoft/mgt-teams-msal2-provider": "*"
   },
   "devDependencies": {
-    "@webcomponents/webcomponentsjs": "^2.5.0"
+    "@webcomponents/webcomponentsjs": "^2.5.0",
+    "postcss": "8.4.19"
   },
   "jest-junit": {
     "suiteName": "jest tests",

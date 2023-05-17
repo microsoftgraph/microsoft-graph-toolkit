@@ -7,7 +7,8 @@
 
 export type Position = 'top' | 'right' | 'bottom' | 'left';
 
-export type Placement = 'auto-start'
+export type Placement =
+  | 'auto-start'
   | 'auto'
   | 'auto-end'
   | 'top-start'
@@ -38,33 +39,33 @@ export interface BaseModifier {
 export interface Modifiers {
   shift?: BaseModifier;
   offset?: BaseModifier & {
-    offset?: number | string,
+    offset?: number | string;
   };
   preventOverflow?: BaseModifier & {
-    priority?: Position[],
-    padding?: number,
-    boundariesElement?: Boundary | Element,
-    escapeWithReference?: boolean
+    priority?: Position[];
+    padding?: number;
+    boundariesElement?: Boundary | Element;
+    escapeWithReference?: boolean;
   };
   keepTogether?: BaseModifier;
   arrow?: BaseModifier & {
-    element?: string | Element,
+    element?: string | Element;
   };
   flip?: BaseModifier & {
-    behavior?: Behavior | Position[],
-    padding?: number,
-    boundariesElement?: Boundary | Element,
+    behavior?: Behavior | Position[];
+    padding?: number;
+    boundariesElement?: Boundary | Element;
   };
   inner?: BaseModifier;
   hide?: BaseModifier;
   applyStyle?: BaseModifier & {
-    onLoad?: Function,
-    gpuAcceleration?: boolean,
+    onLoad?: Function;
+    gpuAcceleration?: boolean;
   };
   computeStyle?: BaseModifier & {
     gpuAcceleration?: boolean;
-    x?: 'bottom' | 'top',
-    y?: 'left' | 'right'
+    x?: 'bottom' | 'top';
+    y?: 'left' | 'right';
   };
 
   [name: string]: (BaseModifier & Record<string, any>) | undefined;
@@ -87,12 +88,12 @@ export interface Data {
   styles: CSSStyleDeclaration;
   boundaries: Object;
   offsets: {
-    popper: Offset,
-    reference: Offset,
+    popper: Offset;
+    reference: Offset;
     arrow: {
-      top: number,
-      left: number,
-    },
+      top: number;
+      left: number;
+    };
   };
 }
 

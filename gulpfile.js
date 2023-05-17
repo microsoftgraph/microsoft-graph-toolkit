@@ -37,7 +37,7 @@ export const PACKAGE_VERSION = '[VERSION]';
 
 function runSass() {
   return gulp
-    .src('src/**/!(shared)*.scss')
+    .src(['src/**/!(shared)*.scss', '!src/styles/tailwind-styles.scss'])
     .pipe(sass())
     .pipe(cleanCSS())
     .pipe(gap.prependText(scssFileHeader))
@@ -48,7 +48,7 @@ function runSass() {
 
 function setLicense() {
   return gulp
-    .src(['packages/**/src/**/*.{ts,js,scss}', "!packages/**/generated/**/*"], { base: './' })
+    .src(['packages/**/src/**/*.{ts,js,scss}', '!packages/**/generated/**/*'], { base: './' })
     .pipe(license(licenseStr))
     .pipe(gulp.dest('./'));
 }

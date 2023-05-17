@@ -48,9 +48,7 @@
           }
         ],
         "eventType": "issue",
-        "eventNames": [
-          "issue_comment"
-        ]
+        "eventNames": ["issue_comment"]
       },
       "id": "CIypIJG15L"
     },
@@ -92,10 +90,7 @@
           }
         ],
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ]
+        "eventNames": ["issues", "project_card"]
       },
       "id": "tfFb5MZkEN"
     },
@@ -109,206 +104,31 @@
         "frequency": [
           {
             "weekDay": 0,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 1,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 2,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 3,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 4,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 5,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 6,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           }
         ],
         "searchTerms": [
@@ -358,206 +178,31 @@
         "frequency": [
           {
             "weekDay": 0,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 1,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 2,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 3,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 4,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 5,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 6,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           }
         ],
         "searchTerms": [
@@ -615,206 +260,31 @@
         "frequency": [
           {
             "weekDay": 0,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 1,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 2,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 3,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 4,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 5,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           },
           {
             "weekDay": 6,
-            "hours": [
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              13,
-              14,
-              15,
-              16,
-              17,
-              18,
-              19,
-              20,
-              21,
-              22,
-              23
-            ]
+            "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
           }
         ],
         "searchTerms": [
@@ -861,9 +331,7 @@
       "version": "1.0",
       "config": {
         "eventType": "issue",
-        "eventNames": [
-          "issue_comment"
-        ],
+        "eventNames": ["issue_comment"],
         "conditions": {
           "operator": "and",
           "operands": [
@@ -983,9 +451,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issue_comment"
-        ],
+        "eventNames": ["issue_comment"],
         "taskName": "For issues closed due to inactivity, re-open an issue if issue author posts a reply within 7 days.",
         "actions": [
           {
@@ -1062,9 +528,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issue_comment"
-        ],
+        "eventNames": ["issue_comment"],
         "taskName": "For issues closed with no activity over 7 days, ask non-contributor to consider opening a new issue instead.",
         "actions": [
           {
@@ -1086,66 +550,31 @@
         "frequency": [
           {
             "weekDay": 0,
-            "hours": [
-              0,
-              6,
-              12,
-              18
-            ]
+            "hours": [0, 6, 12, 18]
           },
           {
             "weekDay": 1,
-            "hours": [
-              0,
-              6,
-              12,
-              18
-            ]
+            "hours": [0, 6, 12, 18]
           },
           {
             "weekDay": 2,
-            "hours": [
-              0,
-              6,
-              12,
-              18
-            ]
+            "hours": [0, 6, 12, 18]
           },
           {
             "weekDay": 3,
-            "hours": [
-              0,
-              6,
-              12,
-              18
-            ]
+            "hours": [0, 6, 12, 18]
           },
           {
             "weekDay": 4,
-            "hours": [
-              0,
-              6,
-              12,
-              18
-            ]
+            "hours": [0, 6, 12, 18]
           },
           {
             "weekDay": 5,
-            "hours": [
-              0,
-              6,
-              12,
-              18
-            ]
+            "hours": [0, 6, 12, 18]
           },
           {
             "weekDay": 6,
-            "hours": [
-              0,
-              6,
-              12,
-              18
-            ]
+            "hours": [0, 6, 12, 18]
           }
         ],
         "searchTerms": [
@@ -1213,9 +642,7 @@
           }
         ],
         "eventType": "pull_request",
-        "eventNames": [
-          "pull_request_review"
-        ]
+        "eventNames": ["pull_request_review"]
       },
       "id": "UoZhI9Xa_b"
     },
@@ -1265,11 +692,7 @@
           }
         ],
         "eventType": "pull_request",
-        "eventNames": [
-          "pull_request",
-          "issues",
-          "project_card"
-        ]
+        "eventNames": ["pull_request", "issues", "project_card"]
       },
       "id": "OBnWQyDvQP"
     },
@@ -1308,9 +731,7 @@
           }
         ],
         "eventType": "pull_request",
-        "eventNames": [
-          "issue_comment"
-        ]
+        "eventNames": ["issue_comment"]
       },
       "id": "-vTgwlrBFi"
     },
@@ -1349,9 +770,7 @@
           }
         ],
         "eventType": "pull_request",
-        "eventNames": [
-          "pull_request_review"
-        ]
+        "eventNames": ["pull_request_review"]
       },
       "id": "n0PmRx-B7j"
     },
@@ -1393,11 +812,7 @@
           }
         ],
         "eventType": "pull_request",
-        "eventNames": [
-          "pull_request",
-          "issues",
-          "project_card"
-        ]
+        "eventNames": ["pull_request", "issues", "project_card"]
       },
       "id": "wnHBiGRhLL"
     },
@@ -1428,9 +843,7 @@
           }
         ],
         "eventType": "pull_request",
-        "eventNames": [
-          "issue_comment"
-        ]
+        "eventNames": ["issue_comment"]
       },
       "id": "zQ4HFBl0o8"
     },
@@ -1461,9 +874,7 @@
           }
         ],
         "eventType": "pull_request",
-        "eventNames": [
-          "pull_request_review"
-        ]
+        "eventNames": ["pull_request_review"]
       },
       "id": "8Zyb0OGTkn"
     },
@@ -1477,66 +888,31 @@
         "frequency": [
           {
             "weekDay": 0,
-            "hours": [
-              4,
-              10,
-              16,
-              22
-            ]
+            "hours": [4, 10, 16, 22]
           },
           {
             "weekDay": 1,
-            "hours": [
-              4,
-              10,
-              16,
-              22
-            ]
+            "hours": [4, 10, 16, 22]
           },
           {
             "weekDay": 2,
-            "hours": [
-              4,
-              10,
-              16,
-              22
-            ]
+            "hours": [4, 10, 16, 22]
           },
           {
             "weekDay": 3,
-            "hours": [
-              4,
-              10,
-              16,
-              22
-            ]
+            "hours": [4, 10, 16, 22]
           },
           {
             "weekDay": 4,
-            "hours": [
-              4,
-              10,
-              16,
-              22
-            ]
+            "hours": [4, 10, 16, 22]
           },
           {
             "weekDay": 5,
-            "hours": [
-              4,
-              10,
-              16,
-              22
-            ]
+            "hours": [4, 10, 16, 22]
           },
           {
             "weekDay": 6,
-            "hours": [
-              4,
-              10,
-              16,
-              22
-            ]
+            "hours": [4, 10, 16, 22]
           }
         ],
         "searchTerms": [
@@ -1586,66 +962,31 @@
         "frequency": [
           {
             "weekDay": 0,
-            "hours": [
-              5,
-              11,
-              17,
-              23
-            ]
+            "hours": [5, 11, 17, 23]
           },
           {
             "weekDay": 1,
-            "hours": [
-              5,
-              11,
-              17,
-              23
-            ]
+            "hours": [5, 11, 17, 23]
           },
           {
             "weekDay": 2,
-            "hours": [
-              5,
-              11,
-              17,
-              23
-            ]
+            "hours": [5, 11, 17, 23]
           },
           {
             "weekDay": 3,
-            "hours": [
-              5,
-              11,
-              17,
-              23
-            ]
+            "hours": [5, 11, 17, 23]
           },
           {
             "weekDay": 4,
-            "hours": [
-              5,
-              11,
-              17,
-              23
-            ]
+            "hours": [5, 11, 17, 23]
           },
           {
             "weekDay": 5,
-            "hours": [
-              5,
-              11,
-              17,
-              23
-            ]
+            "hours": [5, 11, 17, 23]
           },
           {
             "weekDay": 6,
-            "hours": [
-              5,
-              11,
-              17,
-              23
-            ]
+            "hours": [5, 11, 17, 23]
           }
         ],
         "searchTerms": [
@@ -1734,10 +1075,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add \"work-in Progress\" label when moved to In progress column in the project",
         "actions": [
           {
@@ -1792,10 +1130,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add Blocked label when moved to blocked column in the project",
         "actions": [
           {
@@ -1862,10 +1197,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add needs triage label with welcome message",
         "actions": [
           {
@@ -1907,10 +1239,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add Completed label when moved to Done column in the project",
         "actions": [
           {
@@ -1964,10 +1293,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add Needs Triage label when moved to Need Triage column in the project",
         "actions": [
           {
@@ -2021,10 +1347,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add In Review label when moved to To do column in the project",
         "actions": [
           {
@@ -2073,10 +1396,7 @@
           "operands": []
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add Completed label when moved to Completed column in the project"
       }
     },
@@ -2092,10 +1412,7 @@
           "operands": []
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add Completed label when moved to Completed column in the project"
       }
     },
@@ -2111,10 +1428,7 @@
           "operands": []
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ]
+        "eventNames": ["issues", "project_card"]
       }
     },
     {
@@ -2129,10 +1443,7 @@
           "operands": []
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add Completed label when moved to Completed column in the project"
       }
     },
@@ -2148,10 +1459,7 @@
           "operands": []
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add Completed label when moved to Completed column in the project"
       }
     },
@@ -2198,10 +1506,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add needs triage label to new issues",
         "actions": [
           {
@@ -2257,10 +1562,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add needs triage label to new issues",
         "actions": [
           {
@@ -2316,10 +1618,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add needs triage label to new issues",
         "actions": [
           {
@@ -2375,10 +1674,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add needs triage label to new issues",
         "actions": [
           {
@@ -2434,10 +1730,7 @@
           ]
         },
         "eventType": "issue",
-        "eventNames": [
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["issues", "project_card"],
         "taskName": "Add needs triage label to new issues",
         "actions": [
           {
@@ -2469,11 +1762,7 @@
           ]
         },
         "eventType": "pull_request",
-        "eventNames": [
-          "pull_request",
-          "issues",
-          "project_card"
-        ],
+        "eventNames": ["pull_request", "issues", "project_card"],
         "actions": [
           {
             "name": "addReply",

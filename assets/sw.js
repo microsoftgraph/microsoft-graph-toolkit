@@ -4,16 +4,16 @@ if (!self.define) {
   const n = (n, e) => (
     (n = new URL(n + '.js', e).href),
     i[n] ||
-    new Promise(i => {
-      if ('document' in self) {
-        const c = document.createElement('script');
-        (c.src = n), (c.onload = i), document.head.appendChild(c);
-      } else (c = n), importScripts(n), i();
-    }).then(() => {
-      let c = i[n];
-      if (!c) throw new Error(`Module ${n} didn’t register its module`);
-      return c;
-    })
+      new Promise(i => {
+        if ('document' in self) {
+          const c = document.createElement('script');
+          (c.src = n), (c.onload = i), document.head.appendChild(c);
+        } else (c = n), importScripts(n), i();
+      }).then(() => {
+        let c = i[n];
+        if (!c) throw new Error(`Module ${n} didn’t register its module`);
+        return c;
+      })
   );
   self.define = (e, o) => {
     const f = c || ('document' in self ? document.currentScript.src : '') || location.href;

@@ -12,12 +12,7 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
 import { ProfileComponent } from './pages/profile/profile.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavBarComponent,
-    AngularAgendaComponent,
-    HomeComponent,
-    ProfileComponent],
+  declarations: [AppComponent, NavBarComponent, AngularAgendaComponent, HomeComponent, ProfileComponent],
   imports: [
     BrowserModule,
     MsalModule.forRoot(new PublicClientApplication(MsalConfig), MsalGuardConfig, MsalInterceptorConfig),
@@ -28,4 +23,4 @@ import { ProfileComponent } from './pages/profile/profile.component';
   providers: [],
   bootstrap: [AppComponent, MsalRedirectComponent]
 })
-export class AppModule { }
+export class AppModule {}

@@ -20,7 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private msalService: MsalService,
     private cd: ChangeDetectorRef,
     private msalBroadcastService: MsalBroadcastService
-    ) { }
+  ) {}
 
   public ngOnInit() {
     this.msalBroadcastService.inProgress$
