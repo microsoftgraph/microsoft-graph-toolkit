@@ -651,12 +651,12 @@ detail: ${JSON.stringify(eventDetail)}`;
       // TODO handle the case where there were a lot of missed messages and we ned to get the next page of messages.
       // This is not a common case, but we should handle it.
     }
+    // eslint-disable-next-line no-console
     console.log('checked for missed messages');
   };
 
   private onChatNotificationsSubscribed = (resource: string): void => {
     if (resource.includes(`/${this._chatId}/`) && resource.includes('/messages')) {
-      //void this.loadChatData();
       void this.checkForMissedMessages();
     } else {
       // better clean this up as we don't want to be listening to events for other chats
