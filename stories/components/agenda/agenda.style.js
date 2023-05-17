@@ -23,7 +23,7 @@ export const darkTheme = () => html`
   </style>
 `;
 
-export const customProperties = () => html`
+export const customCSSProperties = () => html`
   <mgt-agenda group-by-day></mgt-agenda>
   <style>
     mgt-agenda {

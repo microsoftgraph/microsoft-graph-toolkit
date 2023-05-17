@@ -21,7 +21,7 @@ export default {
   }
 };
 
-export const CustomCSSProperties = () => html`
+export const customCSSProperties = () => html`
   <style>
     mgt-tasks {
         --tasks-header-padding: 28px 14px;

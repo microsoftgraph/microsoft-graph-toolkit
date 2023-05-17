@@ -17,7 +17,7 @@ export default {
 export const darkTheme = () => html`
   <mgt-people-picker class="mgt-dark"></mgt-people-picker>`;
 
-export const customCssProperties = () => html`
+export const customCSSProperties = () => html`
 <mgt-people-picker></mgt-people-picker>
 <style>
   mgt-people-picker {

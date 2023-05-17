@@ -69,7 +69,7 @@ export const withCodeEditor = makeDecorator({
   parameterName: 'myParameter',
   skipIfNoParametersOrOptions: false,
   wrapper: (getStory, context, { options }) => {
-    const disableThemeToggle = options ? options.disableThemeToggle : false;
+    const disableThemeToggle = context &&  context.name === 'Custom CSS Properties';
     let story = getStory(context);
 
     let storyHtml;

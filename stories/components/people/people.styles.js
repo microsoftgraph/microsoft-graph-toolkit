@@ -23,7 +23,7 @@ export const darkTheme = () => html`
  </style>
 `;
 
-export const customCssProperties = () => html`
+export const customCSSProperties = () => html`
 <mgt-people></mgt-people>
 <style>
   mgt-people {
