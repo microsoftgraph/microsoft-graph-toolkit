@@ -295,3 +295,17 @@ export const createChatThread = async (
 
   return chat;
 };
+
+/**
+ * Updates the topic of a chat via HTTP PATCH
+ *
+ * @param graph {IGraph} - authenticated graph client from mgt
+ * @param chatId {string} - id of the chat to update
+ * @param topic {string | null} - new value for the chat topic, null will remove the currently set topic
+ */
+export const updateChatTopic = async (graph: IGraph, chatId: string, topic: string | null): Promise<void> => {
+  await graph
+    .api(`/chats/${chatId}`)
+    .middlewareOptions(prepScopes(...chatOperationScopes.updateChatMessage))
+    .patch({ topic });
+};

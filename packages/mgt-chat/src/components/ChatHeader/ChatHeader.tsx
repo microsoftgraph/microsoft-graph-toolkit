@@ -19,6 +19,7 @@ import {
 interface ChatHeaderProps {
   chat?: Chat;
   currentUserId?: string;
+  onRenameChat: (newName: string | null) => void;
 }
 
 const EditIcon = bundleIcon(Edit20Filled, Edit20Regular);
@@ -51,7 +52,7 @@ const reduceToFirstNamesList = (participants: AadUserConversationMember[] = [], 
     .join(', ');
 };
 
-const GroupChatHeader = ({ chat, currentUserId }: ChatHeaderProps) => {
+const GroupChatHeader = ({ chat, currentUserId, onRenameChat }: ChatHeaderProps) => {
   const styles = useStyles();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const handleOpenChange = useCallback((_, data: OnOpenChangeData) => setIsPopoverOpen(data.open || false), []);
@@ -64,8 +65,8 @@ const GroupChatHeader = ({ chat, currentUserId }: ChatHeaderProps) => {
     []
   );
   const renameChat = useCallback(() => {
-    console.log('rename chat', chatName);
-  }, [chatName]);
+    void onRenameChat(chatName || null);
+  }, [chatName, onRenameChat]);
   const chatTitle = chat?.topic
     ? chat.topic
     : reduceToFirstNamesList(chat?.members as AadUserConversationMember[], currentUserId);
@@ -118,13 +119,13 @@ const getOtherParticipantUserId = (chat?: Chat, currentUserId = '') =>
  * For group chats with no topic it will show the first names of other participants comma separated.
  * For 1:1 chats it will show the first name of the other participant.
  */
-const ChatHeader = memo(({ chat, currentUserId }: ChatHeaderProps) => {
+const ChatHeader = memo(({ chat, currentUserId, onRenameChat }: ChatHeaderProps) => {
   return (
     <div className={styles.chatHeader}>
       {chat?.chatType === 'group' ? (
-        <GroupChatHeader chat={chat} currentUserId={currentUserId} />
+        <GroupChatHeader chat={chat} currentUserId={currentUserId} onRenameChat={onRenameChat} />
       ) : (
-        <OneToOneChatHeader chat={chat} currentUserId={currentUserId} />
+        <OneToOneChatHeader chat={chat} currentUserId={currentUserId} onRenameChat={onRenameChat} />
       )}
     </div>
   );

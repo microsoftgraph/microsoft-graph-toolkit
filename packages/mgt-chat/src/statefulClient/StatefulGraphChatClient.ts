@@ -32,7 +32,8 @@ import {
   updateChatMessage,
   removeChatMember,
   addChatMembers,
-  loadChatImage
+  loadChatImage,
+  updateChatTopic
 } from './graph.chat';
 import { getUserWithPhoto } from '@microsoft/mgt-components';
 import { GraphNotificationClient } from './GraphNotificationClient';
@@ -75,6 +76,7 @@ type GraphChatClient = Pick<
     participants: AadUserConversationMember[];
     onAddChatMembers: (userIds: string[], history?: Date) => Promise<void>;
     onRemoveChatMember: (membershipId: string) => Promise<void>;
+    onRenameChat: (topic: string | null) => Promise<void>;
   };
 
 type StatefulClient<T> = {
@@ -849,6 +851,11 @@ detail: ${JSON.stringify(eventDetail)}`;
     };
   }
 
+  private renameChat = async (topic: string | null): Promise<void> => {
+    await updateChatTopic(this.graph, this._chatId, topic);
+    this.notifyStateChange(() => void (this._chat = { ...this._chat, ...{ topic } }));
+  };
+
   /**
    * Register event listeners for chat events to be triggered from the notification service
    */
@@ -891,6 +898,7 @@ detail: ${JSON.stringify(eventDetail)}`;
     onUpdateMessage: this.updateMessage,
     onAddChatMembers: this.addChatMembers,
     onRemoveChatMember: this.removeChatMember,
+    onRenameChat: this.renameChat,
     activeErrorMessages: [],
     chat: this._chat
   };

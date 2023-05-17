@@ -53,7 +53,11 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
         <div className={styles.chat}>
           {chatState.userId && chatState.messages.length > 0 ? (
             <>
-              <ChatHeader chat={chatState.chat} currentUserId={chatState.userId} />
+              <ChatHeader
+                chat={chatState.chat}
+                currentUserId={chatState.userId}
+                onRenameChat={chatState.onRenameChat}
+              />
               {chatState.participants?.length > 0 && chatState.chat?.chatType === 'group' && (
                 <ManageChatMembers
                   members={chatState.participants}
