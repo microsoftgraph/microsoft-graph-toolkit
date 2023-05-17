@@ -76,6 +76,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
     this.value = '';
     this.options = {};
     this._clickHandler = () => (this.open = false);
+    window.addEventListener('onblur', () => (this.open = false));
   }
 
   // eslint-disable-next-line @typescript-eslint/tslint/config
