@@ -17,6 +17,8 @@ import {
   AadUserConversationMember,
   Chat,
   ChatMessage,
+  ChatRenamedEventMessageDetail,
+  MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
@@ -50,6 +52,29 @@ const placeholderImageContent =
 type ODataType = {
   '@odata.type': MessageEventType;
 };
+type MembersAddedEventDetail = ODataType &
+  MembersAddedEventMessageDetail & {
+    '@odata.type': '#microsoft.graph.membersAddedEventMessageDetail';
+  };
+type MembersRemovedEventDetail = ODataType &
+  MembersDeletedEventMessageDetail & {
+    '@odata.type': '#microsoft.graph.membersDeletedEventMessageDetail';
+  };
+type ChatRenamedEventDetail = ODataType &
+  ChatRenamedEventMessageDetail & {
+    '@odata.type': '#microsoft.graph.chatRenamedEventMessageDetail';
+  };
+
+type ChatMessageEvents = MembersAddedEventDetail | MembersRemovedEventDetail | ChatRenamedEventDetail;
+
+const isChatMemberChangeEvent = (
+  eventDetail: unknown
+): eventDetail is MembersDeletedEventMessageDetail | MembersAddedEventMessageDetail => {
+  return (
+    typeof (eventDetail as MembersDeletedEventMessageDetail | MembersAddedEventMessageDetail)?.members !== 'undefined'
+  );
+};
+
 // defines the type of the state object returned from the StatefulGraphChatClient
 type GraphChatClient = Pick<
   MessageThreadProps,
@@ -112,7 +137,8 @@ const MessageCreatedComparator = (a: CreatedOn, b: CreatedOn) => a.createdOn.get
 
 type MessageEventType =
   | '#microsoft.graph.membersAddedEventMessageDetail'
-  | '#microsoft.graph.membersDeletedEventMessageDetail';
+  | '#microsoft.graph.membersDeletedEventMessageDetail'
+  | '#microsoft.graph.chatRenamedEventMessageDetail';
 
 /**
  * Holder type account for async conversion of messages.
@@ -134,10 +160,10 @@ const graphImageUrlRegex = /(<img[^>]+)src=(["']https:\/\/graph\.microsoft\.com[
  * Regex to detect and extract emoji alt text
  *
  * Pattern breakdown:
- *  (<emoji[^>]+): Captures the opening emoji tag, including any attributes.
- *  alt=["'](\w*[^"']*)["']: Matches and captures the "alt" attribute value within single or double quotes. The value can contain word characters but not quotes.
- *  (.*[^>]): Captures any remaining text within the opening emoji tag, excluding the closing tag.
- *  </emoji>: Matches the closing emoji tag.
+ * (<emoji[^>]+): Captures the opening emoji tag, including any attributes.
+ * alt=["'](\w*[^"']*)["']: Matches and captures the "alt" attribute value within single or double quotes. The value can contain word characters but not quotes.
+ * (.*[^>]): Captures any remaining text within the opening emoji tag, excluding the closing tag.
+ * </emoji>: Matches the closing emoji tag.
  */
 const emojiRegex = /(<emoji[^>]+)alt=["'](\w*[^"']*)["'](.*[^>])<\/emoji>/;
 
@@ -397,13 +423,15 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         return 'add-friend';
       case '#microsoft.graph.membersDeletedEventMessageDetail':
         return 'left-chat';
+      case '#microsoft.graph.chatRenamedEventMessageDetail':
+        return 'edit-svg';
       default:
         return 'Unknown';
     }
   };
 
   private async buildSystemContentMessage(message: ChatMessage): Promise<SystemMessage> {
-    const eventDetail = message.eventDetail as MembersDeletedEventMessageDetail & ODataType;
+    const eventDetail = message.eventDetail as ChatMessageEvents;
     let messageContent = '';
     const awaits: Promise<IDynamicPerson>[] = [];
     const initiatorId = eventDetail.initiator?.user?.id;
@@ -411,12 +439,14 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     if (initiatorId) {
       awaits.push(getUserWithPhoto(this.graph, initiatorId));
       const userIds: string[] = [];
-      eventDetail.members?.reduce((acc, m) => {
-        if (typeof m.id === 'string') {
-          acc.push(m.id);
-        }
-        return acc;
-      }, userIds);
+      if (isChatMemberChangeEvent(eventDetail)) {
+        eventDetail.members?.reduce((acc, m) => {
+          if (typeof m.id === 'string') {
+            acc.push(m.id);
+          }
+          return acc;
+        }, userIds);
+      }
       for (const id of userIds ?? []) {
         awaits.push(getUserWithPhoto(this.graph, id));
       }
@@ -428,6 +458,11 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
           break;
         case '#microsoft.graph.membersDeletedEventMessageDetail':
           messageContent = `${this.getUserName(initiatorId, people)} removed ${userNames}`;
+          break;
+        case '#microsoft.graph.chatRenamedEventMessageDetail':
+          messageContent = eventDetail.chatDisplayName
+            ? `${this.getUserName(initiatorId, people)} renamed the chat to ${eventDetail.chatDisplayName}`
+            : `${this.getUserName(initiatorId, people)} removed the group name for this conversation`;
           break;
         // TODO: move this default case to a console.warn before release and emit an empty message
         // it's here to help us catch messages we have't handled yet
@@ -441,7 +476,7 @@ detail: ${JSON.stringify(eventDetail)}`;
 
     const result: ContentSystemMessage = {
       createdOn: message.createdDateTime ? new Date(message.createdDateTime) : new Date(),
-      messageId: message.id!,
+      messageId: message.id || '',
       systemMessageType: 'content',
       messageType: 'system',
       iconName: this.resolveIcon(eventDetail['@odata.type']),
