@@ -168,14 +168,15 @@ export class MgtArrowOptions extends MgtBaseComponent {
       };
 
       const keyDownFn = (e: KeyboardEvent) => {
+        const header: HTMLButtonElement = this.renderRoot.querySelector<HTMLButtonElement>('.header');
         if (e.key === 'Enter') {
           this.open = false;
           this.options[opt](e);
+          header.focus();
         } else if (e.key === 'Tab') {
           this.open = false;
         } else if (e.key === 'Escape') {
           this.open = false;
-          const header: HTMLButtonElement = this.renderRoot.querySelector<HTMLButtonElement>('.header');
           if (header) {
             header.focus();
           }
