@@ -171,6 +171,8 @@ export class MgtArrowOptions extends MgtBaseComponent {
         if (e.key === 'Enter') {
           this.open = false;
           this.options[opt](e);
+        } else if (e.key === 'Tab'){
+          this.open = false;
         }
       };
       return html`
