@@ -19,9 +19,9 @@ export const darkTheme = () => html`
 `;
 
 export const customCssProperties = () => html`
-<mgt-login></mgt-login>
+<mgt-login class="login"></mgt-login>
 <style>
-  mgt-login {
+  .login {
     --login-signed-out-button-background: red;
     --login-signed-out-button-hover-background: orange;
     --login-signed-out-button-text-color: purple;
