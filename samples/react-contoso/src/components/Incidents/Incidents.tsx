@@ -210,18 +210,20 @@ const DataGridTemplate = (props: MgtTemplateProps) => {
           </ToolbarButton>
         </ToolbarGroup>
         <ToolbarGroup role="presentation">
-          <Menu mountNode={toolbarReference.current}>
-            <MenuTrigger>
-              <MenuButton icon={<ListRegular />}>{selectedView}</MenuButton>
-            </MenuTrigger>
+          <FluentProvider theme={webLightTheme}>
+            <Menu>
+              <MenuTrigger>
+                <MenuButton icon={<ListRegular />}>{selectedView}</MenuButton>
+              </MenuTrigger>
 
-            <MenuPopover>
-              <MenuList>
-                <MenuItem onClick={() => onViewMenuClick('My Incidents')}>My Incidents</MenuItem>
-                <MenuItem onClick={() => onViewMenuClick('All Incidents')}>All Incidents</MenuItem>
-              </MenuList>
-            </MenuPopover>
-          </Menu>
+              <MenuPopover>
+                <MenuList>
+                  <MenuItem onClick={() => onViewMenuClick('My Incidents')}>My Incidents</MenuItem>
+                  <MenuItem onClick={() => onViewMenuClick('All Incidents')}>All Incidents</MenuItem>
+                </MenuList>
+              </MenuPopover>
+            </Menu>
+          </FluentProvider>
         </ToolbarGroup>
       </Toolbar>
       <DataGrid

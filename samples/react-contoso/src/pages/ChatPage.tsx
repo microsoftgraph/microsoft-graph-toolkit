@@ -64,17 +64,12 @@ export const ChatPage: React.FunctionComponent = () => {
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
   const appContext = useAppContext();
 
-  const chatSelected = React.useCallback(
-    (e: GraphChat) => {
-      if (e.id !== selectedChat?.id) {
-        if (isNewChatOpen) {
-          setIsNewChatOpen(false);
-        }
-        setSelectedChat(e);
-      }
-    },
-    [isNewChatOpen, selectedChat?.id, setSelectedChat, setIsNewChatOpen]
-  );
+  const chatSelected = (e: GraphChat) => {
+    if (e.id !== selectedChat?.id && isNewChatOpen) {
+      setIsNewChatOpen(false);
+    }
+    setSelectedChat(e);
+  };
 
   return (
     <>
@@ -101,12 +96,13 @@ export const ChatPage: React.FunctionComponent = () => {
                       setIsNewChatOpen(false);
                     }}
                     theme={appContext.state.theme.fluentTheme}
+                    hideTitle={true}
                   ></NewChat>
                 </DialogBody>
               </DialogSurface>
             </Dialog>
           </div>
-          <ChatList chatSelected={selectedChat} onChatSelected={chatSelected}></ChatList>
+          <ChatList chatSelected={selectedChat} onChatSelected={setSelectedChat}></ChatList>
         </div>
         <div className={styles.side}>
           {selectedChat && (

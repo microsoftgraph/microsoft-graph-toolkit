@@ -34,7 +34,8 @@ const useStyles = makeStyles({
     '--accent-foreground-hover': tokens.colorCompoundBrandForeground1Hover,
     '--accent-stroke-control-rest': tokens.colorCompoundBrandStroke,
     '--accent-stroke-control-active': tokens.colorCompoundBrandStrokePressed,
-    '--accent-base-color': tokens.colorNeutralForeground1
+    '--accent-base-color': tokens.colorNeutralForeground1,
+    '--input-background-color': tokens.colorNeutralBackground1
   }
 });
 

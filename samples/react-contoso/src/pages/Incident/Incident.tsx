@@ -20,7 +20,7 @@ import {
 import { FileListComposite, Providers } from '@microsoft/mgt-react';
 import { Chat, NewChat, allChatScopes } from '@microsoft/mgt-chat';
 import { Tasks } from '@microsoft/mgt-react';
-import { createChatThread } from '@microsoft/mgt-chat';
+import { createNewChat } from '@microsoft/mgt-chat';
 import { useAppContext } from '../../AppContext';
 
 const useStyles = makeStyles({
@@ -98,12 +98,11 @@ export const Incident: React.FunctionComponent = () => {
           .get();
 
         if (!chats.value.length) {
-          chat = await createChatThread(
-            Providers.globalProvider.graph,
+          chat = await createNewChat(
             [me.id!, requestedBy.fields.EMail],
+            true,
             `Hello ${requestedBy.fields.Title},\n\nI am reaching out to you regarding the incident: ${incident.fields.Title}.\n\nWe will be using this thread for effective communication regarding this incident.\n\nThanks,\n${me.displayName}`,
-            incident.fields.Title,
-            'group'
+            incident.fields.Title
           );
         } else {
           chat = chats.value[0];
