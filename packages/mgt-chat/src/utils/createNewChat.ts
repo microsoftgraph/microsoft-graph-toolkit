@@ -17,5 +17,5 @@ export const createNewChat = (
   chatMessage: string | undefined,
   chatName: string | undefined
 ): Promise<Chat> => {
-  return createChatThread(graph('mgt-functions'), memberIds, isGroupChat, chatMessage, chatName);
+  return createChatThread(graph('mgt-chat'), memberIds, isGroupChat, chatMessage, chatName);
 };

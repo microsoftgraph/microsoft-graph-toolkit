@@ -23,7 +23,7 @@ export default {
 
 export const CustomCSSProperties = () => html`
   <style>
-    mgt-tasks {
+    .tasks {
         --tasks-header-padding: 28px 14px;
         --tasks-header-margin: 0 14px;
         --tasks-header-font-size: large;
@@ -111,5 +111,5 @@ export const CustomCSSProperties = () => html`
         --task-new-person-icon-color: blue;
       }
   </style>
-  <mgt-tasks></mgt-tasks>
+  <mgt-tasks class="tasks"></mgt-tasks>
 `;
