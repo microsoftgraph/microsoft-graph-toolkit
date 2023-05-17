@@ -30,7 +30,7 @@ registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
  * @cssprop --arrow-options-button-font-size {Length} The font size of the button text. Default is large.
  * @cssprop --arrow-options-button-font-weight {Length} The font weight of the button text. Default is 600.
  * @cssprop --arrow-options-button-font-color {Color} The font color of the text in the button.
- * 
+ *
  * @export MgtArrowOptions
  * @class MgtArrowOptions
  * @extends {MgtBaseComponent}
@@ -93,15 +93,47 @@ export class MgtArrowOptions extends MgtBaseComponent {
   /**
    * Handles clicking for header menu, utilizing boolean switch open
    *
-   * @param {UIEvent} e attaches to Header to open menu
+   * @param {MouseEvent} e attaches to Header to open menu
    * @memberof MgtArrowOptions
    */
-  public onHeaderClick = (e: UIEvent) => {
+  public onHeaderClick = (e: MouseEvent) => {
     const keys = Object.keys(this.options);
     if (keys.length > 1) {
       e.preventDefault();
       e.stopPropagation();
       this.open = !this.open;
+    }
+  };
+
+  /**
+   * Handles key down presses done on the header element.
+   *
+   * @param {KeyboardEvent} e
+   */
+  private onHeaderKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      this.open = !this.open;
+
+      // Manually adding the 'open' class to display the menu because
+      // by the time I set the first element's focus, the classes are not
+      // updated and that has no effect. You can't set focus on elements
+      // that have no display.
+      const fluentMenuEl: HTMLElement = this.renderRoot.querySelector('fluent-menu');
+      if (fluentMenuEl) {
+        fluentMenuEl.classList.remove('closed');
+        fluentMenuEl.classList.add('open');
+      }
+
+      const header: HTMLButtonElement = e.target as HTMLButtonElement;
+      if (header) {
+        const firstMenuItem: HTMLElement = this.renderRoot.querySelector("fluent-menu-item[tabindex='0']");
+        if (firstMenuItem) {
+          header.blur();
+          firstMenuItem.focus();
+        }
+      }
     }
   };
 
@@ -112,7 +144,13 @@ export class MgtArrowOptions extends MgtBaseComponent {
    */
   public render() {
     return html`
-      <fluent-button class="header" @click=${this.onHeaderClick} appearance="lightweight">${this.value}</fluent-button>
+      <fluent-button
+        class="header"
+        @click=${this.onHeaderClick}
+        @keydown=${this.onHeaderKeyDown}
+        appearance="lightweight">
+          ${this.value}
+      </fluent-button>
       <fluent-menu
         class=${classMap({ menu: true, open: this.open, closed: !this.open })}>
           ${this.getMenuOptions()}
