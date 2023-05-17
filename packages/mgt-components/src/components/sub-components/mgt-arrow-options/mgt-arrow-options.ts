@@ -171,10 +171,17 @@ export class MgtArrowOptions extends MgtBaseComponent {
         if (e.key === 'Enter') {
           this.open = false;
           this.options[opt](e);
-        } else if (e.key === 'Tab'){
+        } else if (e.key === 'Tab') {
           this.open = false;
+        } else if (e.key === 'Escape') {
+          this.open = false;
+          const header: HTMLButtonElement = this.renderRoot.querySelector<HTMLButtonElement>('.header');
+          if (header) {
+            header.focus();
+          }
         }
       };
+
       return html`
           <fluent-menu-item
             @click=${clickFn}
