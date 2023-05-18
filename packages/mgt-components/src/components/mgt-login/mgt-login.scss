@@ -60,10 +60,6 @@ mgt-login .login-button {
     border-radius: 4px;
   }
 
-  &:focus {
-    outline: 0;
-  }
-
   &:disabled {
     opacity: 0.4;
     pointer-events: none;
@@ -74,7 +70,7 @@ mgt-login .login-button {
   }
 
   &:focus-visible {
-    outline: auto;
+    outline-style: $focus-ring-style;
   }
 }
 
