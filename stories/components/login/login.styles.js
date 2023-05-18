@@ -18,7 +18,7 @@ export const darkTheme = () => html`
   <mgt-login class="mgt-dark"></mgt-login>
 `;
 
-export const customCssProperties = () => html`
+export const customCSSProperties = () => html`
 <mgt-login class="login"></mgt-login>
 <style>
   .login {
