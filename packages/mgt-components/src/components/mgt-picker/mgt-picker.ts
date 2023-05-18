@@ -213,8 +213,8 @@ export class MgtPicker extends MgtTemplatedComponent {
   protected renderPicker(): TemplateResult {
     return mgtHtml`
       <fluent-combobox
-        part="picker"
-        class="picker"
+        part="combobox"
+        class="combobox"
         id="combobox"
         autocomplete="list"
         placeholder=${this.placeholder}
@@ -232,7 +232,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Render picker.
+   * Renders mgt-get which does a GET request to the resource.
    *
    * @protected
    * @returns {TemplateResult}
@@ -294,7 +294,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       value = fluentOptionEl.getAttribute('value');
     }
 
-    if (['Enter', 'Backspace'].includes(keyName)) {
+    if (['Enter', 'Tab'].includes(keyName)) {
       if (value) {
         item = this.response.filter(res => res.id === value).pop();
         this.fireCustomEvent('selectionChanged', item, true, false, true);
