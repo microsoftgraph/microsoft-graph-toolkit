@@ -956,7 +956,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            person => person.id,
            person => {
              const lineTwo = person.jobTitle || (person as User).mail;
-             const ariaLabel = `${this.strings.suggestedContact} ${person.displayName} ${lineTwo ?? ''}`;
+             const ariaLabel = `${person.displayName} ${lineTwo ?? ''}`;
              return html`
                <li
                 id="${person.id}"
