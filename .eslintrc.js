@@ -36,12 +36,9 @@ module.exports = {
       'packages/providers/mgt-electron-provider/tsconfig.authenticator.json',
       'packages/providers/mgt-electron-provider/tsconfig.provider.json',
       'packages/providers/mgt-mock-provider/tsconfig.json',
-      'packages/providers/mgt-msal-provider/tsconfig.json',
       'packages/providers/mgt-msal2-provider/tsconfig.json',
       'packages/providers/mgt-proxy-provider/tsconfig.json',
       'packages/providers/mgt-sharepoint-provider/tsconfig.json',
-      'packages/providers/mgt-teams-msal2-provider/tsconfig.json',
-      'packages/providers/mgt-teams-provider/tsconfig.json',
       'packages/providers/mgt-teamsfx-provider/tsconfig.json'
     ],
     sourceType: 'module'

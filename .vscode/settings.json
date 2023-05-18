@@ -4,7 +4,17 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.tslint": true
   },
-  "lit-html.tags": ["mgtHtml"],
+  "lit-html.tags": [
+    "mgtHtml"
+  ],
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["Msal", "spfx"]
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "[scss]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
+  },
 }

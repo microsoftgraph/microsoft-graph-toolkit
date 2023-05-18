@@ -388,7 +388,7 @@ export class MgtFileUpload extends MgtBaseComponent {
               <span class="upload-text">${this.strings.buttonUploadFile}</span>
           </fluent-button>
         </div>
-        <div class="file-upload-Template">
+        <div class="file-upload-template">
           ${this.renderFolderTemplate(this.filesToUpload)}
         </div>
        `;

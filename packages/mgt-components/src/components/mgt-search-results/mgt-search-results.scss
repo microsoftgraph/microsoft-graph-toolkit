@@ -5,13 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-styles.scss';
+@import '../../styles/shared-styles';
 
 $answer-border-radius: var(--answer-border-radius, 4px);
 $answer-box-shadow: var(
   --answer-box-shadow,
-  0px 3.2px 7.2px rgba(0, 0, 0, 0.132),
-  0px 0.6px 1.8px rgba(0, 0, 0, 0.108)
+  0 3.2px 7.2px rgb(0 0 0 / 13.2%),
+  0 0.6px 1.8px rgb(0 0 0 / 10.8%)
 );
 $answer-border: var(--answer-border, none);
 $answer-padding: var(--answer-padding, 10px);
@@ -41,7 +41,7 @@ $font-family: var(--default-font-family);
 }
 
 .search-result-info {
-  margin: 4px 0px;
+  margin: 4px 0;
   display: inline-flex;
 }
 
@@ -53,11 +53,12 @@ $font-family: var(--default-font-family);
     height: 10px;
     width: 200px;
   }
+
   padding-top: 3px;
 }
 
 .search-result-summary {
-  margin: 4px 0px;
+  margin: 4px 0;
   color: var(--body-subtle-text-color);
 }
 
@@ -66,6 +67,7 @@ $font-family: var(--default-font-family);
     width: 126px;
     height: 72px;
   }
+
   img {
     height: 72px;
     max-width: 126px;
@@ -77,10 +79,12 @@ $font-family: var(--default-font-family);
 .search-result-url {
   font-size: 14px;
   font-weight: 600;
-  margin: 4px 0px;
+  margin: 4px 0;
+
   a {
     color: var(--color);
     text-decoration: none;
+
     &:hover {
       text-decoration: underline;
     }
@@ -94,6 +98,7 @@ $font-family: var(--default-font-family);
     height: 10px;
   }
 }
+
 .search-result-name {
   &__shimmer {
     border-radius: 4px;
@@ -101,12 +106,15 @@ $font-family: var(--default-font-family);
     height: 10px;
     width: 20%;
   }
+
   font-size: 16px;
   font-weight: 600;
-  margin: 4px 0px;
+  margin: 4px 0;
+
   a {
     color: var(--color);
     text-decoration: none;
+
     &:hover {
       text-decoration: underline;
     }
@@ -125,6 +133,7 @@ $font-family: var(--default-font-family);
     width: 32px;
     height: 32px;
   }
+
   width: 30px;
   height: 30px;
 
