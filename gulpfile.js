@@ -37,9 +37,18 @@ export const PACKAGE_VERSION = '[VERSION]';
 
 function runSass() {
   return gulp
-    .src(['src/**/!(shared)*.scss', '!src/styles/tailwind-styles.scss'])
+    .src(['src/**/!(shared)*.scss', '!src/styles/tailwind-styles.css'])
     .pipe(sass())
     .pipe(cleanCSS())
+    .pipe(gap.prependText(scssFileHeader))
+    .pipe(gap.appendText(scssFileFooter))
+    .pipe(rename({ extname: '-css.ts' }))
+    .pipe(gulp.dest('src/'));
+}
+
+function tailwind() {
+  return gulp
+    .src(['src/**/tailwind-styles.css'])
     .pipe(gap.prependText(scssFileHeader))
     .pipe(gap.appendText(scssFileFooter))
     .pipe(rename({ extname: '-css.ts' }))
@@ -59,11 +68,13 @@ function setVersion() {
   fs.writeFileSync('./src/utils/version.ts', versionFile.replace('[VERSION]', pkg.version));
 }
 
-gulp.task('sass', runSass);
+gulp.task('sass', gulp.series(tailwind, runSass));
+gulp.task('tailwind', tailwind);
 gulp.task('setLicense', setLicense);
 gulp.task('setVersion', async () => setVersion());
 
 gulp.task('watchSass', () => {
+  tailwind();
   runSass();
-  return gulp.watch('src/**/*.scss', gulp.series('sass'));
+  return gulp.watch('src/**/*.{scss,css}', gulp.series('sass'));
 });

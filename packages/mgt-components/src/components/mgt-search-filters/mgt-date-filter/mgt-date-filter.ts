@@ -24,10 +24,6 @@ export class MgtDateFilterComponent extends MgtBaseFilterComponent {
 
   private declare allIntervals: { [key in DateFilterInterval]: string };
 
-  static get scopedElements() {
-    return super.scopedElements;
-  }
-
   public get fromDate(): string {
     return this.getDateValue(DateFilterKeys.From);
   }

@@ -7,16 +7,15 @@ import {
   FilterSortType,
   FilterSortDirection
 } from '../mgt-search-results/models/IDataFilterConfiguration';
-import { ScopedElementsMixin } from '@open-wc/scoped-elements';
+import { fluentSelect, fluentOption, provideFluentDesignSystem, fluentListbox } from '@fluentui/web-components';
+import { styles as tailwindStyles } from '../../styles/tailwind-styles-css';
 
 export enum DateFilterKeys {
   From = 'from',
   To = 'to'
 }
 
-export class MgtTemplatedComponentBase extends MgtConnectableComponent {}
-
-export abstract class MgtBaseFilterComponent extends ScopedElementsMixin(MgtTemplatedComponentBase) {
+export abstract class MgtBaseFilterComponent extends MgtConnectableComponent {
   /**
    * Filter information to display
    */
@@ -85,6 +84,9 @@ export abstract class MgtBaseFilterComponent extends ScopedElementsMixin(MgtTemp
     this.onItemUpdated = this.onItemUpdated.bind(this);
     this.applyFilters = this.applyFilters.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
+
+    // Register fluent tabs (as scoped elements)
+    provideFluentDesignSystem().register(fluentSelect(), fluentOption(), fluentListbox());
   }
 
   public render() {
@@ -114,26 +116,16 @@ export abstract class MgtBaseFilterComponent extends ScopedElementsMixin(MgtTemp
     }
 
     return html`
-                <egg-menu class=${this.disabled ? 'opacity-75 pointer-events-none' : ''}>
 
-                    <egg-button slot="invoker" class="flex items-center font-sans">
-                        ${renderFilterName}
-                        ${
-                          this.isExpanded && !this.disabled
-                            ? html`<egg-icon icon-id="egg-global:arrow:arrow-up-fill" class="text-primary"></egg-icon>`
-                            : html`<egg-icon icon-id="egg-global:arrow:arrow-down-fill" class="text-primary"></egg-icon>`
-                        }
-                    </egg-button>
-                    
-                    <div id="filter-menu-content" slot="content" class="min-w-[300px] max-w-[350px] rounded-lg overflow-x-hidden">
-                        <div @click=${(e: Event) => {
-                          e.stopPropagation();
-                        }}>
+                <fluent-listbox title=${this.localizedFilterName}>
+                ${renderFilterName}
+                <div @click=${(e: Event) => {
+                  e.stopPropagation();
+                }}>
                             ${this.renderFilterContent()}
-                        </div>
-                    </div>
-
-                </egg-menu>`;
+                        </div>            
+                </fluent-select>
+                `;
   }
 
   protected firstUpdated(changedProperties: PropertyValues<this>): void {
@@ -299,5 +291,9 @@ export abstract class MgtBaseFilterComponent extends ScopedElementsMixin(MgtTemp
 
     const eggMenu = this.renderRoot.querySelector("[data-tag-name='egg-menu']");
     eggMenu.removeAttribute('opened');
+  }
+
+  static get styles() {
+    return [tailwindStyles];
   }
 }

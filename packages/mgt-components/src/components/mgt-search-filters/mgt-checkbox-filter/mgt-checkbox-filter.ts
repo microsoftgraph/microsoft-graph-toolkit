@@ -85,61 +85,56 @@ export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
                         }
                     </div>
                 </div>
-                <div class="p-2">
+                <div class="p-8 flex-col flex space-y-1">
                     ${repeat(
                       this.filteredValues,
                       filterValue => filterValue.key,
                       filterValue => {
                         return html`
-                                    <egg-menu-item
-                                        class="hover:rounded-lg"
-                                        @click=${() => {
-                                          this.onItemUpdated(filterValue, !this.isSelectedValue(filterValue.key));
+                            <fluent-option
+                                class="hover:rounded-lg p-2 block"
+                                @click=${() => {
+                                  this.onItemUpdated(filterValue, !this.isSelectedValue(filterValue.key));
 
-                                          if (!this.filterConfiguration.isMulti) {
-                                            this.applyFilters();
-                                          }
-                                        }}
-                                        data-ref-value=${filterValue.value}
-                                        data-ref-name=${filterValue.name}
-                                    >
-                                        <div class="flex items-center space-x-3">
-                                            <div class="place-items-center">
-                                                <input  type="checkbox" 
-                                                        value="${filterValue.value}" 
-                                                        .checked=${this.isSelectedValue(filterValue.key)}
-                                                        class="checked:bg-primary focus:opacity-75 text-primary rounded-sm border border-opacity-25 focus:ring-primary"
-                                                >
-                                            </div>
-                                            <div class="flex items-center space-x-2">
-                                                ${
-                                                  this.getFilterAggregation(filterValue.name)
-                                                    ? html`<img data-ref="icon" class="w-[24px]" src=${
-                                                        this.getFilterAggregation(filterValue.name)
-                                                          .aggregationValueIconUrl
-                                                      }>`
-                                                    : null
-                                                }
-                                                <div data-ref="value" class="font-medium ${
-                                                  this.isSelectedValue(filterValue.key) ? 'text-primary' : ''
-                                                }">
-                                                    ${
-                                                      this.searchKeyword
-                                                        ? this.highlightMatches(filterValue.name)
-                                                        : filterValue.name
-                                                    }
-                                                </div>
-                                            </div>
+                                  if (!this.filterConfiguration.isMulti) {
+                                    this.applyFilters();
+                                  }
+                                }}
+                                data-ref-value=${filterValue.value}
+                                value=${filterValue.value}
+                                data-ref-name=${filterValue.name}
+                                .selected=${this.isSelectedValue(filterValue.key)}
+                            >
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex items-center space-x-2">
+                                        ${
+                                          this.getFilterAggregation(filterValue.name)
+                                            ? html`<img data-ref="icon" class="w-[24px]" src=${
+                                                this.getFilterAggregation(filterValue.name).aggregationValueIconUrl
+                                              }>`
+                                            : null
+                                        }
+                                        <div data-ref="value" class="font-medium ${
+                                          this.isSelectedValue(filterValue.key) ? 'text-primary' : ''
+                                        }">
                                             ${
-                                              this.filterConfiguration.showCount
-                                                ? html`<div>
-                                                        <label class="opacity-75">(${filterValue.count})</label>
-                                                    </div>
-                                                `
-                                                : null
+                                              this.searchKeyword
+                                                ? this.highlightMatches(filterValue.name)
+                                                : filterValue.name
                                             }
                                         </div>
-                                    </egg-menu-item>
+                                    </div>
+                                    ${
+                                      this.filterConfiguration.showCount
+                                        ? html`
+                                            <div>
+                                                <label class="opacity-75">(${filterValue.count})</label>
+                                            </div>
+                                        `
+                                        : null
+                                    }
+                                </div>
+                              </fluent-option>
                             `;
                       }
                     )}

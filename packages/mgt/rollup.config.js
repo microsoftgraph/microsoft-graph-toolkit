@@ -26,9 +26,7 @@ const getBabelConfig = isEs5 => {
 
 const commonPlugins = [
   json(),
-  commonJS({
-    include: 'node_modules/markdown-it/**/*'
-  }),
+  commonJS(),
   resolve({ module: true, jsnext: true, extensions }),
   postcss(),
   terser({ keep_classnames: true, keep_fnames: true })

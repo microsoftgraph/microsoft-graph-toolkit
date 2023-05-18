@@ -29,10 +29,10 @@ import { ScopedElementsMixin } from '@open-wc/scoped-elements';
 import { MgtCheckboxFilterComponent } from './mgt-checkbox-filter/mgt-checkbox-filter';
 import { MgtDateFilterComponent } from './mgt-date-filter/mgt-date-filter';
 
-export class MgtTemplatedComponentBase extends MgtConnectableComponent {}
+export class MgtSearchFiltersComponentBase extends MgtConnectableComponent {}
 
 @customElement('mgt-search-filters')
-export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtTemplatedComponentBase) {
+export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFiltersComponentBase) {
   /**
    * The connected search results component ids
    */
