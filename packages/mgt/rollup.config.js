@@ -84,8 +84,8 @@ const es5Bundle = {
         '@babel/typescript'
       ],
       ...getBabelConfig(true)
-    })
-    //...commonPlugins
+    }),
+    ...commonPlugins
   ]
 };
 
@@ -110,8 +110,8 @@ const cjsBundle = {
         '@babel/typescript'
       ],
       ...getBabelConfig(true)
-    })
-    //...commonPlugins
+    }),
+    ...commonPlugins
   ]
 };
 

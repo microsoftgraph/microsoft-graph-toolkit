@@ -1,11 +1,10 @@
-import { state, html, PropertyValues } from 'lit-element';
+import { state, html, PropertyValues, customElement } from 'lit-element';
 import { cloneDeep } from 'lodash-es';
 import { repeat } from 'lit-html/directives/repeat.js';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-import { strings } from '../../mgt-person-card/strings';
-import { IDataFilterResultValue } from '../../mgt-search-results/models/IDataFilter';
-import { IDataFilterAggregation } from '../../mgt-search-results/models/IDataFilterConfiguration';
+import { strings } from './strings';
 import { MgtBaseFilterComponent } from '../mgt-base-filter';
+import { IDataFilterResultValue, IDataFilterAggregation } from '@microsoft/mgt-element';
 
 export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
   @state()
@@ -55,37 +54,43 @@ export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
                         autocomplete="off"
                         class="bg-black/[0.02] text-sm border-black/[0.04] w-full pl-9 pr-9 rounded-lg" 
                         type="text" 
-                        placeholder=${'strings.searchPlaceholder'}
+                        placeholder=${strings.searchPlaceholder}
                         @input=${e => {
                           this.filterValues(e.target.value);
                         }}
+
                 />
             </div>
         `;
 
     return html`
-        
-                <div class="sticky top-0 flex flex-col space-y-2 bg-white z-10"> 
+                <div class="sticky top-0 flex flex-col space-y-2 bg-white z-10"
+    
+                          @mousedown=${(e: Event) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }} 
+                > 
                     <div class="border-b px-6 py-3 space-y-2">                  
                         <label class="text-base">${this.filter.values.length} ${filterName}</label>
-                        ${renderSearchBox}                        
+                        ${renderSearchBox}                         
                     </div>
 
                     <div class="flex justify-between items-center px-6 py-3 min-h-[48px]">
 
-                        <div class="opacity-75"><label>${selectedValues.length} ${'strings.selections'}</label></div>
+                        <div class="opacity-75"><label>${selectedValues.length} ${strings.selections}</label></div>
                         ${
                           this.selectedValues.length > 0 || this.submittedFilterValues.length > 0
                             ? html`<button data-ref="reset" type="reset" class="flex cursor-pointer space-x-1 items-center hover:text-primary opacity-75" @click=${() =>
                                 this.clearSelectedValues()}>
                                     <egg-icon icon-id="egg-global:action:restore"></egg-icon>
-                                    <span>${'strings.reset'}</span>
+                                    <span>${strings.reset}</span>
                                 </button>`
                             : null
                         }
                     </div>
                 </div>
-                <div class="p-8 flex-col flex space-y-1">
+                <div class="p-1 flex-col flex space-y-1">
                     ${repeat(
                       this.filteredValues,
                       filterValue => filterValue.key,
@@ -142,13 +147,19 @@ export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
                 ${
                   this.filterConfiguration.isMulti
                     ? html`
-                        <div class="sticky bottom-0 flex justify-around py-2 px-2 space-x-4 bg-white border-t border-gray-400 w-full border-opacity-25">
+                        <div 
+                          class="sticky bottom-0 flex justify-around py-2 px-2 space-x-4 bg-white border-t border-gray-400 w-full border-opacity-25"
+                          @mousedown=${(e: Event) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }} 
+                        >
                             <button data-ref="cancel" type="submit" class="flex items-center justify-center text-primary rounded-lg border-2 border-gray-400 px-4 py-1 min-w-[140px] font-medium" @click=${
                               this.closeMenu
                             }>
-                                ${'strings.cancel'}
+                                ${strings.cancel}
                             </button>
-                            <button data-ref="apply" type="submit" class="flex items-center justify-center text-white rounded-lg bg-primary px-4 py-1 min-w-[140px] font-medium ${
+                            <button data-ref="apply" type="submit" class="flex items-center justify-center text-primary rounded-lg border-2 border-gray-400 px-4 py-1 min-w-[140px] font-medium ${
                               this.selectedValues.length === 0 || !this.canApplyValues
                                 ? 'opacity-50 cursor-not-allowed'
                                 : ''
@@ -156,7 +167,7 @@ export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
                                     ?disabled=${this.selectedValues.length === 0 || !this.canApplyValues}
                                     @click=${this.applyFilters}
                             >
-                                ${'strings.apply'}
+                                ${strings.apply}
                             </button>
                         </div>
                     `

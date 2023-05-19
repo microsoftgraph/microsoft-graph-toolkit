@@ -1,10 +1,10 @@
 import { IMicrosoftSearchService } from './IMicrosoftSearchService';
-import { Providers } from '@microsoft/mgt-element';
 import { IMicrosoftSearchDataSourceData } from '../models/IMicrosoftSearchDataSourceData';
 import { EntityType, IMicrosoftSearchQuery } from '../models/IMicrosoftSearchRequest';
 import { IMicrosoftSearchResponse, IMicrosoftSearchResultSet } from '../models/IMicrosoftSearchResponse';
 import { IDataFilterResult, IDataFilterResultValue, FilterComparisonOperator } from '../models/IDataFilter';
 import { Client, ClientOptions, FetchOptions } from '@microsoft/microsoft-graph-client';
+import { Providers } from '../providers/Providers';
 
 export const EntityTypesValidCombination = [
   EntityType.Drive,

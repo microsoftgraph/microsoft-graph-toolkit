@@ -34,7 +34,12 @@
     "@microsoft/microsoft-graph-client": "^2.2.1",
     "lodash-es": "4.17.21",
     "lit-element": "^2.4.0",
-    "@open-wc/scoped-elements": "1.3.3",
+    "jspath": "0.4.0",
+    "adaptive-expressions": "4.18.0",
+    "adaptivecards": "2.7.1",
+    "adaptivecards-templating": "2.3.1",
+    "dayjs": "^1.11.7",
+    "markdown-it": "13.0.1",
     "idb": "6.0.0"
   },
   "publishConfig": {

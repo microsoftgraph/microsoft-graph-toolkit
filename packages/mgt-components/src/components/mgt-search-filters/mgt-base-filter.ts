@@ -1,12 +1,8 @@
-import { MgtConnectableComponent, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { MgtConnectableComponent } from '@microsoft/mgt-element';
 import { property, state, html, PropertyValues, TemplateResult } from 'lit-element';
 import { isEqual, cloneDeep, sumBy, orderBy } from 'lodash-es';
-import { IDataFilterResult, IDataFilterValue, IDataFilterResultValue } from '../mgt-search-results/models/IDataFilter';
-import {
-  IDataFilterConfiguration,
-  FilterSortType,
-  FilterSortDirection
-} from '../mgt-search-results/models/IDataFilterConfiguration';
+import { IDataFilterResult, IDataFilterValue, IDataFilterResultValue } from '@microsoft/mgt-element';
+import { IDataFilterConfiguration, FilterSortType, FilterSortDirection } from '@microsoft/mgt-element';
 import { fluentSelect, fluentOption, provideFluentDesignSystem, fluentListbox } from '@fluentui/web-components';
 import { styles as tailwindStyles } from '../../styles/tailwind-styles-css';
 
@@ -117,8 +113,11 @@ export abstract class MgtBaseFilterComponent extends MgtConnectableComponent {
 
     return html`
 
-                <fluent-listbox title=${this.localizedFilterName}>
-                ${renderFilterName}
+                <fluent-select title=${this.localizedFilterName}>
+                  <div slot="selected-value">
+                    ${renderFilterName}
+                  </div>
+                 
                 <div @click=${(e: Event) => {
                   e.stopPropagation();
                 }}>

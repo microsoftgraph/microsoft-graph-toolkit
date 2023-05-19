@@ -1,10 +1,8 @@
-import { LocalizationHelper } from '@microsoft/mgt-element';
-import { html, PropertyValues } from 'lit-element';
+import { DateHelper, FilterComparisonOperator, IDataFilterValue, LocalizationHelper } from '@microsoft/mgt-element';
+import { customElement, html, PropertyValues } from 'lit-element';
 import { nothing } from 'lit-html';
-import { strings } from '../../mgt-person-card/strings';
-import { DateHelper } from '../../mgt-search-results/helpers/DateHelper';
-import { IDataFilterValue, FilterComparisonOperator } from '../../mgt-search-results/models/IDataFilter';
 import { MgtBaseFilterComponent, DateFilterKeys } from '../mgt-base-filter';
+import { strings } from './strings';
 
 export enum DateFilterInterval {
   AnyTime,
@@ -57,15 +55,13 @@ export class MgtDateFilterComponent extends MgtBaseFilterComponent {
 
     return html`
                     <div class="sticky top-0 flex justify-between items-center px-6 py-3 space-x-2 bg-white z-10 min-h-[48px]">
-                        <div class="opacity-75"><label>${
-                          this.selectedValues.length
-                        } ${'strings.selections'}</label></div>
+                        <div class="opacity-75"><label>${this.selectedValues.length} ${strings.selections}</label></div>
                         ${
                           this.selectedValues.length > 0
                             ? html`<div class="flex cursor-pointer space-x-1 items-center hover:text-primary opacity-75" @click=${() =>
                                 this.clearSelectedValues()}>
                                     <egg-icon icon-id="egg-global:action:restore"></egg-icon>
-                                    <span>${'strings.reset'}</span>
+                                    <span>${strings.reset}</span>
                                 </div>`
                             : null
                         }
@@ -116,7 +112,7 @@ export class MgtDateFilterComponent extends MgtBaseFilterComponent {
                     </div>
                     <div class="flex flex-col px-6 py-3 text-sm space-y-2 bg-white border-t border-gray-400 border-opacity-25">
                         <div class="flex flex-col">
-                            <span class="opacity-75">${'strings.from'}:</span>
+                            <span class="opacity-75">${strings.from}:</span>
                             <input  id="from" 
                                     type="date"
                                     max=${this.toDate} 
@@ -126,7 +122,7 @@ export class MgtDateFilterComponent extends MgtBaseFilterComponent {
                         </div>
                         
                         <div class="flex flex-col">
-                            <span class="opacity-75">${'strings.to'}:</span>
+                            <span class="opacity-75">${strings.to}:</span>
                             <input  id="to"
                                     type="date"
                                     min=${this.fromDate}
@@ -139,7 +135,7 @@ export class MgtDateFilterComponent extends MgtBaseFilterComponent {
                           (!this.toDate && !this.fromDate) || !this.canApplyValues
                             ? 'opacity-50 cursor-not-allowed pointer-events-none'
                             : ''
-                        }" @click=${this.applyDateFilters}>${'strings.applyDates'}</button>
+                        }" @click=${this.applyDateFilters}>${strings.applyDates}</button>
                     </div>
             `;
   }
@@ -220,7 +216,7 @@ export class MgtDateFilterComponent extends MgtBaseFilterComponent {
       date = new Date().toISOString().split('T')[0];
     }
 
-    const filterName = `${'strings.from'} ${this.dayJs(date).format('ll')}`;
+    const filterName = `${strings.from} ${this.dayJs(date).format('ll')}`;
     this.onItemUpdated(
       {
         key: DateFilterKeys.From,
@@ -244,7 +240,7 @@ export class MgtDateFilterComponent extends MgtBaseFilterComponent {
       date = new Date().toISOString().split('T')[0];
     }
 
-    const filterName = `${'strings.to'} ${this.dayJs(date).format('ll')}`;
+    const filterName = `${strings.to} ${this.dayJs(date).format('ll')}`;
     this.onItemUpdated(
       {
         key: DateFilterKeys.To,
@@ -289,14 +285,14 @@ export class MgtDateFilterComponent extends MgtBaseFilterComponent {
 
   private getAllIntervals() {
     return {
-      [DateFilterInterval.AnyTime]: 'strings.anyTime',
-      [DateFilterInterval.Today]: 'strings.today',
-      [DateFilterInterval.Past24]: 'strings.past24',
-      [DateFilterInterval.PastWeek]: 'strings.pastWeek',
-      [DateFilterInterval.PastMonth]: 'strings.pastMonth',
-      [DateFilterInterval.Past3Months]: 'strings.past3Months',
-      [DateFilterInterval.PastYear]: 'strings.pastYear',
-      [DateFilterInterval.OlderThanAYear]: 'strings.olderThanAYear'
+      [DateFilterInterval.AnyTime]: strings.anyTime,
+      [DateFilterInterval.Today]: strings.today,
+      [DateFilterInterval.Past24]: strings.past24,
+      [DateFilterInterval.PastWeek]: strings.pastWeek,
+      [DateFilterInterval.PastMonth]: strings.pastMonth,
+      [DateFilterInterval.Past3Months]: strings.past3Months,
+      [DateFilterInterval.PastYear]: strings.pastYear,
+      [DateFilterInterval.OlderThanAYear]: strings.olderThanAYear
     };
   }
 }

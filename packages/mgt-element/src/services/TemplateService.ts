@@ -129,7 +129,7 @@ export class TemplateService implements ITemplateService {
 
             // Replace the HTML element corresponding to the item by its result type
             if (defaultItem) {
-              const adaptiveCardComponent = document.createElement(ComponentElements.UbisoftAdaptiveCard) as any; //UbisoftAdaptiveCardComponent;
+              const adaptiveCardComponent = document.createElement(ComponentElements.MgtAdaptiveCard) as any; //MgtAdaptiveCardComponent;
               adaptiveCardComponent.cardContent = JSON.stringify(templatePayload);
               adaptiveCardComponent.cardContext = item;
 

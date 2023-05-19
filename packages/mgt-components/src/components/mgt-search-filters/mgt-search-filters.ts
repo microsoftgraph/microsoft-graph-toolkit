@@ -1,28 +1,27 @@
-import { MgtConnectableComponent, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import {
+  BuiltinFilterTemplates,
+  ComponentElements,
+  EventConstants,
+  FilterConditionOperator,
+  FilterSortDirection,
+  FilterSortType,
+  IDataFilter,
+  IDataFilterConfiguration,
+  IDataFilterResult,
+  IDataFilterResultValue,
+  IDataFilterValue,
+  ISearchFiltersEventData,
+  ISearchResultsEventData,
+  ISearchSortEventData,
+  ISearchSortProperty,
+  MgtConnectableComponent,
+  MgtTemplatedComponent
+} from '@microsoft/mgt-element';
 import { customElement, property, state, html } from 'lit-element';
 import { isEmpty, cloneDeep, sortBy } from 'lodash-es';
 import { nothing } from 'lit-html';
 import { repeat } from 'lit-html/directives/repeat.js';
-import { strings } from '../mgt-person-card/strings';
-import { EventConstants, ComponentElements, AnalyticsEventConstants } from '../mgt-search-results/Constants';
-import { ISearchFiltersEventData } from '../mgt-search-results/events/ISearchFiltersEventData.ts';
-import { ISearchResultsEventData } from '../mgt-search-results/events/ISearchResultsEventData';
-import { ISearchSortEventData } from '../mgt-search-results/events/ISearchSortEventData';
-import { UserAction, EventCategory, ITrackingEventData } from '../mgt-search-results/events/ITrackingEventData';
-import { BuiltinFilterTemplates } from '../mgt-search-results/models/BuiltinTemplate';
-import {
-  FilterConditionOperator,
-  IDataFilterResult,
-  IDataFilter,
-  IDataFilterValue,
-  IDataFilterResultValue
-} from '../mgt-search-results/models/IDataFilter';
-import {
-  IDataFilterConfiguration,
-  FilterSortDirection,
-  FilterSortType
-} from '../mgt-search-results/models/IDataFilterConfiguration';
-import { ISearchSortProperty } from '../mgt-search-results/models/IMicrosoftSearchRequest';
+import { strings } from './strings';
 import { styles as tailwindStyles } from '../../styles/tailwind-styles-css';
 import { MgtBaseFilterComponent } from './mgt-base-filter';
 import { ScopedElementsMixin } from '@open-wc/scoped-elements';
@@ -97,16 +96,6 @@ export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFilt
   private declare submittedQueryText: string;
 
   private declare searchResultsEventData: ISearchResultsEventData;
-
-  static get scopedElements() {
-    return {
-      ...super.scopedElements,
-      'mgt-filter-checkbox': MgtCheckboxFilterComponent,
-      'mgt-filter-date': MgtDateFilterComponent
-      //"ubisoft-search-sort": UbisoftSearchSortComponent
-    };
-  }
-
   constructor() {
     super();
 
@@ -204,7 +193,7 @@ export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFilt
       if (isEmpty(this.submittedQueryText)) {
         renderFilters = renderShimmers;
       } else {
-        renderFilters = html`<span>${'strings.noFilters'}</span>`;
+        renderFilters = html`<span>${strings.noFilters}</span>`;
       }
     }
 
@@ -220,10 +209,9 @@ export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFilt
                               this.allSubmittedFilters.length > 0
                                 ? html`<button data-ref="reset" class="flex cursor-pointer space-x-1 items-center hover:text-primary opacity-75" @click=${() => {
                                     this.clearAllSelectedValues();
-                                    this.trackEvents();
                                   }}>
                                         <egg-icon icon-id="egg-global:action:restore"></egg-icon>
-                                        <span>${'strings.resetAllFilters'}</span>
+                                        <span>${strings.resetAllFilters}</span>
                                     </button>`
                                 : null
                             }
@@ -239,6 +227,14 @@ export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFilt
 
   static get styles() {
     return [tailwindStyles];
+  }
+
+  static get scopedElements() {
+    return {
+      'mgt-filter-checkbox': MgtCheckboxFilterComponent,
+      'mgt-filter-date': MgtDateFilterComponent
+      //"mgt-search-sort": MgtSearchSortComponent
+    };
   }
 
   protected get strings(): { [x: string]: string } {
@@ -529,25 +525,13 @@ export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFilt
     // Reset all values from sub components. List all valid sub filter components
     const filterComponents: MgtBaseFilterComponent[] = Array.prototype.slice.call(
       this.renderRoot.querySelectorAll<MgtBaseFilterComponent>(`
-            [data-tag-name='${ComponentElements.UbisoftDateFilterComponentElement}'],
-            [data-tag-name='${ComponentElements.UbisoftCheckboxFilterComponentElement}']
+            [data-tag-name='${ComponentElements.MgtDateFilterComponentElement}'],
+            [data-tag-name='${ComponentElements.MgtCheckboxFilterComponentElement}']
         `)
     );
 
     return filterName
       ? filterComponents.filter(component => component.filter.filterName === filterName)
       : filterComponents;
-  }
-
-  private trackEvents() {
-    // Analytics events
-    this.fireCustomEvent(
-      AnalyticsEventConstants.MONITORED_EVENT,
-      {
-        action: UserAction.SearchFilterResetAllValues,
-        category: EventCategory.SearchFiltersEvents
-      } as ITrackingEventData,
-      true
-    );
   }
 }

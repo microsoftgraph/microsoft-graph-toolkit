@@ -1,46 +1,51 @@
-import { LocalizationHelper, Providers, ProviderState, MgtConnectableComponent } from '@microsoft/mgt-element';
-import { css, customElement, html, property, PropertyValues, state } from 'lit-element';
-import { IDataSourceData } from './models/IDataSourceData';
 import {
-  IMicrosoftSearchQuery,
-  SearchAggregationSortBy,
-  ISearchRequestAggregation,
+  LocalizationHelper,
+  Providers,
+  ProviderState,
+  MgtConnectableComponent,
+  BuiltinFilterTemplates,
+  BuiltinTokenNames,
+  DateHelper,
   EntityType,
-  ISearchSortProperty
-} from './models/IMicrosoftSearchRequest';
-import { IMicrosoftSearchService } from './services/IMicrosoftSearchService';
-import { ITemplateService } from './services/ITemplateService';
-import { MicrosoftSearchService } from './services/MicrosoftSearchService';
-import { TemplateService } from './services/TemplateService';
+  FilterSortDirection,
+  FilterSortType,
+  IDataSourceData,
+  ILocalizedString,
+  IMicrosoftSearchQuery,
+  IMicrosoftSearchService,
+  ISearchFiltersEventData,
+  ISearchInputEventData,
+  ISearchRequestAggregation,
+  ISearchResultsEventData,
+  ISearchSortEventData,
+  ISearchSortProperty,
+  ISearchVerticalEventData,
+  ISortFieldConfiguration,
+  ITemplateService,
+  ITokenService,
+  MicrosoftSearchService,
+  SearchAggregationSortBy,
+  SearchResultsHelper,
+  SortFieldDirection,
+  TemplateService,
+  TokenService,
+  UrlHelper,
+  DataFilterHelper
+} from '@microsoft/mgt-element';
+import { css, customElement, html, property, PropertyValues, state } from 'lit-element';
 import { isEmpty } from 'lodash-es';
-import { ISearchFiltersEventData } from './events/ISearchFiltersEventData.ts';
-import { DataFilterHelper } from './helpers/DataFilterHelper';
-import { ISearchResultsEventData } from './events/ISearchResultsEventData';
-import { AnalyticsEventConstants, ComponentElements, EventConstants } from './Constants';
-import { FilterSortDirection, FilterSortType } from './models/IDataFilterConfiguration';
 //import { MgtSearchFiltersComponent } from "../Mgt-search-filters/Mgt-search-filters";
-import { BuiltinFilterTemplates } from './models/BuiltinTemplate';
-import { DateHelper } from './helpers/DateHelper';
+
 //import { MgtPaginationComponent } from "../../internal/Mgt-pagination/Mgt-pagination";
 //import { MgtSearchInputComponent } from "../Mgt-search-input/Mgt-search-input";
 import { unsafeHTML } from 'lit-html/directives/unsafe-html';
-import { SearchResultsHelper } from './helpers/SearchResultsHelper';
-import { ISearchVerticalEventData } from './events/ISearchVerticalEventData';
 //import { MgtSearchVerticalsComponent } from "../Mgt-search-verticals/Mgt-search-verticals";
 import { repeat } from 'lit-html/directives/repeat';
-import { ISearchInputEventData } from './events/ISearchInputEventData';
-import { UrlHelper } from './helpers/UrlHelper';
 import { MgtSearchResultsStrings as strings } from './loc/strings.default';
-import { ILocalizedString } from './models/ILocalizedString';
 import { nothing } from 'lit-html';
-import { BuiltinTokenNames, TokenService } from './services/TokenService';
-import { ITokenService } from './services/ITokenService';
-import { UserAction, EventCategory, ITrackingEventData, SearchTrackedDimensions } from './events/ITrackingEventData';
-import { IMicrosoftSearchDataSourceData } from './models/IMicrosoftSearchDataSourceData';
 //import { MgtErrorMessageComponent } from "../../../components/internal/Mgt-error-message/Mgt-error-message";
-import { ISortFieldConfiguration, SortFieldDirection } from './models/ISortFieldConfiguration';
-import { ISearchSortEventData } from './events/ISearchSortEventData';
 import { styles as tailwindStyles } from '../../styles/tailwind-styles-css';
+import { EventConstants } from '@microsoft/mgt-element';
 
 @customElement('mgt-search-results')
 export class MgtSearchResultsComponent extends MgtConnectableComponent {
@@ -648,9 +653,6 @@ export class MgtSearchResultsComponent extends MgtConnectableComponent {
         queryAlterationResponse: results.queryAlterationResponse,
         from: this.searchQuery.requests[0].from
       } as ISearchResultsEventData);
-
-      // Track events for analytics
-      this.trackEvents(results);
     } catch (error) {
       this.error = error;
     }
@@ -932,62 +934,5 @@ export class MgtSearchResultsComponent extends MgtConnectableComponent {
     const queryText = this.getDefaultQueryText();
     this.searchQuery.requests[0].query.queryString = queryText;
   }
-
-  /**
-   * Notify analytics system
-   */
-  private trackEvents(results: IMicrosoftSearchDataSourceData) {
-    // Search results (except bookmarks)
-    if (this.entityTypes.indexOf(EntityType.Bookmark) === -1) {
-      const customEventData: ITrackingEventData = {
-        action: results.items.length === 0 ? UserAction.SearchResultsNoResult : UserAction.SearchResultsDisplayed,
-        category: EventCategory.SearchResultsEvents,
-        name: results.items.length.toString()
-      };
-
-      if (!this.searchQuery.requests[0].aggregationFilters) {
-        // Reset custom value
-        customEventData.eventCustomDimensions = [
-          {
-            key: SearchTrackedDimensions.SelectedFilter,
-            value: null
-          }
-        ];
-      }
-
-      this.fireCustomEvent(AnalyticsEventConstants.MONITORED_EVENT, customEventData, true);
-    }
-
-    // Bookmarks (in any)
-    if (
-      this.entityTypes.length === 1 &&
-      this.entityTypes.indexOf(EntityType.Bookmark) !== -1 &&
-      results.items.length > 0
-    ) {
-      this.fireCustomEvent(
-        AnalyticsEventConstants.MONITORED_EVENT,
-        {
-          action: UserAction.SearchBookmarksDisplayed,
-          category: EventCategory.SearchResultsEvents,
-          name: results.items.length.toString()
-        } as ITrackingEventData,
-        true
-      );
-    }
-
-    // Search suggestions (if any)
-    if (results.queryAlterationResponse?.queryAlteration?.alteredQueryTokens) {
-      this.fireCustomEvent(
-        AnalyticsEventConstants.MONITORED_EVENT,
-        {
-          action: UserAction.SearchSuggestionsDisplayed,
-          category: EventCategory.SearchResultsEvents,
-          name: results.queryAlterationResponse.queryAlteration.alteredQueryTokens.length.toString()
-        } as ITrackingEventData,
-        true
-      );
-    }
-  }
-
   //#endregion
 }

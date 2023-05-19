@@ -19,6 +19,14 @@
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}",
       "version": "dev"
+    },
+    {
+      "name": "Tests debug (Edge)",
+      "request": "launch",
+      "type": "msedge",
+      "url": "http://localhost:8000/",
+      "webRoot": "${workspaceRoot}",
+      "sourceMaps": true
     }
   ]
 }

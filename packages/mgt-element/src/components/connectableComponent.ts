@@ -1,13 +1,10 @@
-import { css, CSSResultGroup, html, property, state, unsafeCSS } from 'lit-element';
+import { state } from 'lit-element';
 import { MgtTemplatedComponent } from './templatedComponent';
 import { EventHandler } from '../utils/EventDispatcher';
 import { isObjectLike } from 'lodash-es';
 import { IComponentBinding } from '../utils/IComponentBinding';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
 import { ILocalizedString } from '../utils/ILocalizedString';
-import { ScopedElementsMixin } from '@open-wc/scoped-elements';
-
-export class MgtTemplatedComponentBase extends MgtTemplatedComponent {}
 
 export abstract class MgtConnectableComponent extends MgtTemplatedComponent {
   /**
