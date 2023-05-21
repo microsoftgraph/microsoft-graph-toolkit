@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useState } from 'react';
 import { AadUserConversationMember, Chat } from '@microsoft/microsoft-graph-types';
-import { styles } from './chat-header.styles';
 import { Edit20Filled, Edit20Regular, bundleIcon } from '@fluentui/react-icons';
 import { Person, PersonCardInteraction, ViewType } from '@microsoft/mgt-react';
 import {
@@ -19,12 +18,20 @@ import {
 interface ChatHeaderProps {
   chat?: Chat;
   currentUserId?: string;
-  onRenameChat: (newName: string | null) => void;
+  onRenameChat: (newName: string | null) => Promise<void>;
 }
 
 const EditIcon = bundleIcon(Edit20Filled, Edit20Regular);
 
 const useStyles = makeStyles({
+  chatHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    columnGap: '4px',
+    lineHeight: '32px',
+    fontSize: '18px',
+    fontWeight: 700
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -120,6 +127,7 @@ const getOtherParticipantUserId = (chat?: Chat, currentUserId = '') =>
  * For 1:1 chats it will show the first name of the other participant.
  */
 const ChatHeader = memo(({ chat, currentUserId, onRenameChat }: ChatHeaderProps) => {
+  const styles = useStyles();
   return (
     <div className={styles.chatHeader}>
       {chat?.chatType === 'group' ? (
