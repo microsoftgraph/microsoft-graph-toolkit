@@ -280,13 +280,18 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.status = 'creating server connections';
     });
+    const promises: Promise<void>[] = [];
+    promises.push(this.loadChatData());
     // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
     // this client will then load the chat and messages when that event listener is called
-    await this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, this._eventEmitter, () =>
-      this.notifyStateChange((draft: GraphChatClient) => {
-        draft.status = 'subscribing to notifications';
-      })
+    promises.push(
+      this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, this._eventEmitter, () =>
+        this.notifyStateChange((draft: GraphChatClient) => {
+          draft.status = 'subscribing to notifications';
+        })
+      )
     );
+    await Promise.all(promises);
   }
 
   private async loadChatData() {
@@ -612,9 +617,47 @@ detail: ${JSON.stringify(eventDetail)}`);
     }
   };
 
+  private checkForMissedMessages = async () => {
+    const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
+    const messageConversions = messages.value
+      // trying to filter out messages on the graph request causes a 400
+      // deleted messages are returned as messages with no content, which we can't filter on the graph request
+      // so we filter them out here
+      .filter(m => m.body?.content)
+      // This gives us both current and eventual values for each message
+      .map(m => this.convertChatMessage(m));
+
+    // update the state with the current values
+    const currentValueMessages: (AcsChatMessage | SystemMessage)[] = [];
+    messageConversions
+      .map(m => m.currentValue)
+      // need to use a reduce here to filter out undefined values in a way that TypeScript understands
+      .reduce((acc, val) => {
+        if (val) acc.push(val);
+        return acc;
+      }, currentValueMessages);
+    currentValueMessages.forEach(m => this.updateMessages(m));
+    const futureMessages = messageConversions.filter(m => m.futureValue).map(m => m.futureValue);
+    // if there are eventual future values, wait for them to resolve and update the state
+    if (futureMessages.length > 0) {
+      (await Promise.all(futureMessages)).forEach(m => {
+        this.updateMessages(m);
+      });
+    }
+    const hasOverlapWithExistingMessages = messages.value.some(m =>
+      this._state.messages.find(sm => sm.messageId === m.id)
+    );
+    if (!hasOverlapWithExistingMessages) {
+      // TODO handle the case where there were a lot of missed messages and we ned to get the next page of messages.
+      // This is not a common case, but we should handle it.
+    }
+    console.log('checked for missed messages');
+  };
+
   private onChatNotificationsSubscribed = (resource: string): void => {
     if (resource.includes(`/${this._chatId}/`) && resource.includes('/messages')) {
-      void this.loadChatData();
+      //void this.loadChatData();
+      void this.checkForMissedMessages();
     } else {
       // better clean this up as we don't want to be listening to events for other chats
     }

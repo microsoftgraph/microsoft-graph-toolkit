@@ -6,8 +6,8 @@
  */
 
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../../../styles/shared-sass-variables.scss';
-@import './mgt-file-upload.theme.scss';
+@import '../../../styles/shared-sass-variables';
+@import './mgt-file-upload.theme';
 
 
 $file-upload-button-border: var(--file-upload-button-border, none);
@@ -73,6 +73,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
     &::part(control) {
       --dialog-width: $file-upload-dialog-width;
       --dialog-height: $file-upload-dialog-height;
+
       padding: $file-upload-dialog-padding;
       border: $file-upload-dialog-border;
     }
@@ -117,7 +118,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
   }
 
   .file-upload-cell {
-    padding: 1px 0px 1px 1px;
+    padding: 1px 0 1px 1px;
     display: table-cell;
     vertical-align: middle;
     position: relative;
@@ -164,7 +165,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
   --file-padding-inline-start: 24px;
 }
 
-:host .file-upload-Template {
+:host .file-upload-template {
   clear: both;
 
   .file-upload-folder-tab {
@@ -186,7 +187,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
   }
 
   .file-upload-dialog-title {
-    margin-top: 0px;
+    margin-top: 0;
   }
 
   .file-upload-dialog-editor {
@@ -227,10 +228,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
     border: $file-upload-border-drag;
     background-color: $file-upload-background-color-drag;
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    inset: 0;
     z-index: 1;
     display: inline-block;
   }
@@ -238,7 +236,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
 
 [dir="rtl"] {
   :host .file-upload-status{
-    left: 0px;
+    left: 0;
     right: 28px;
   }
 }
