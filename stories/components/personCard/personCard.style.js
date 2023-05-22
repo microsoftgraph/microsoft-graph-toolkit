@@ -25,7 +25,7 @@ export const darkTheme = () => html`
 
 export const customCSSProperties = () => html`
   <style>
-    mgt-person-card {
+    .person-card {
       --person-card-nav-back-arrow-hover-color: green;
       --person-card-icon-color: red;
       --person-card-line1-font-size: 30px;
@@ -58,5 +58,5 @@ export const customCSSProperties = () => html`
     }
 
   </style>
-  <mgt-person-card person-query="me"></mgt-person-card>
+  <mgt-person-card class="person-card" person-query="me"></mgt-person-card>
 `;
