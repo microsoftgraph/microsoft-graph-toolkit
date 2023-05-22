@@ -20,7 +20,7 @@ export const darkTheme = () => html`
 
 export const customCSSProperties = () => html`
   <style>
-    mgt-file {
+    .file {
       /**NOTE: default-* tokens will override anything you set in the component.
       --default-font-size: 15px;
       --default-font-weight: 2px;
@@ -50,5 +50,5 @@ export const customCSSProperties = () => html`
       --file-line3-text-transform: capitalize;
     }
   </style>
-  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
+  <mgt-file class="file" file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
 `;
