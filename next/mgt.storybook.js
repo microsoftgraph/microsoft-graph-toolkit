@@ -2087,7 +2087,7 @@ PERFORMANCE OF THIS SOFTWARE.
         role="listbox"
         aria-live="polite"
       >
-         ${eo(t,(e=>e.id),(e=>{const t=e.jobTitle||e.mail,r=`${this.strings.suggestedContact} ${e.displayName} ${null!=t?t:""}`;return html$1`
+         ${eo(t,(e=>e.id),(e=>{const t=e.jobTitle||e.mail,r=`${e.displayName} ${null!=t?t:""}`;return html$1`
                <li
                 id="${e.id}"
                 aria-label="${r}"
