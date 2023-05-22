@@ -12,7 +12,7 @@ import { GridDotsRegular } from '@fluentui/react-icons';
 const useStyles = makeStyles({
   name: {
     color: tokens.colorNeutralForegroundOnBrand,
-    fontWeight: tokens.fontWeightMedium,
+    fontWeight: tokens.fontWeightSemibold,
     fontSize: tokens.fontSizeBase400,
     paddingLeft: '8px'
   },

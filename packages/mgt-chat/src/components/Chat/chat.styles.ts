@@ -24,6 +24,12 @@ const chatStyles = mergeStyleSets({
   },
   fullHeight: {
     height: '100%'
+  },
+  spinnerContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 'calc(100vh - 300px)'
   }
 });
 

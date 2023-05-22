@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { CallingTheme, ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { FluentTheme, PartialTheme } from '@fluentui/react';
-import { FluentProvider, Theme, webLightTheme } from '@fluentui/react-components';
+import { Divider, FluentProvider, Theme, webLightTheme } from '@fluentui/react-components';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
 
 import { chatStyles } from './chat.styles';
+import { styles } from '../ChatHeader/chat-header.styles';
 
 registerAppIcons();
 
@@ -36,12 +37,16 @@ export const Chat = ({ chatId, chatTheme, fluentTheme }: IMgtChatProps) => {
               <ChatHeader chat={chatState.chat} currentUserId={chatState.userId} />
 
               {chatState.participants?.length > 0 && chatState.chat?.chatType === 'group' && (
-                <ManageChatMembers
-                  members={chatState.participants}
-                  removeChatMember={chatState.onRemoveChatMember}
-                  currentUserId={chatState.userId}
-                  addChatMembers={chatState.onAddChatMembers}
-                />
+                <>
+                  <Divider></Divider>
+                  <ManageChatMembers
+                    members={chatState.participants}
+                    removeChatMember={chatState.onRemoveChatMember}
+                    currentUserId={chatState.userId}
+                    addChatMembers={chatState.onAddChatMembers}
+                  />
+                  <Divider></Divider>
+                </>
               )}
               <div className={chatStyles.chatMessages}>
                 <MessageThread
@@ -72,10 +77,10 @@ export const Chat = ({ chatId, chatTheme, fluentTheme }: IMgtChatProps) => {
               <ErrorBar activeErrorMessages={chatState.activeErrorMessages} />
             </>
           ) : (
-            <>
-              {chatState.status}
+            <div className={chatStyles.spinnerContainer}>
+              {/* chatState.status */}
               <Spinner />
-            </>
+            </div>
           )}
         </div>
       </FluentProvider>

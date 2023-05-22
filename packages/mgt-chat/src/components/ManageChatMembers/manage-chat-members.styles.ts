@@ -6,6 +6,7 @@
  */
 
 import { mergeStyles } from '@fluentui/react';
+import { shorthands } from '@fluentui/react-components';
 const styles = {
   actionIcon: mergeStyles({
     height: '18px',
@@ -58,8 +59,10 @@ const styles = {
     columnGap: '4px'
   }),
   triggerButton: mergeStyles({
-    minWidth: 'max-content',
-    width: 'max-content'
+    minWidth: 'max-content !important',
+    width: 'max-content',
+    paddingLeft: '0px !important',
+    paddingRight: '0px !important'
   })
 };
 export { styles };

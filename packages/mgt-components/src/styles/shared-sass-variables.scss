@@ -55,7 +55,7 @@ $grey-hover: #f7f7f7; /* Person Card Hover */
 $grey-background: #fbfbfb; /* Person Card Background */
 $comm-blue-org: #0360b9; /* Person Card Org border */
 $grey-separator-org: #d6d6d6; /* Person Card Org target borders */
-$show-more-btn-hover: #efefef; /* File List Hover */
+$show_more_button_hover: #efefef; /* File List Hover */
 
 /* ---------------Common style variables---------------
 * -----Background----- */
@@ -226,8 +226,8 @@ $theme-default: 'light';
 $common: (
   fluent-color: (
     _var: --neutral-foreground-rest,
-    dark: $text__color__main--dark,
-    light: $text__color__main--light
+    dark: $text-color-main--dark,
+    light: $text-color-main--light
   ),
   color: (
     _var: --color,
