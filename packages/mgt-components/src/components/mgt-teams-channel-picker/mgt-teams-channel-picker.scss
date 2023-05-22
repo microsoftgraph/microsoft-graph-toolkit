@@ -16,12 +16,14 @@
   .container {
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   .dropdown {
-    z-index: 1;
     display: none;
-    margin-top: 4px;
+    position: absolute;
+    z-index: 1000;
+    top: 34px;
 
     &.visible {
       display: flex;
