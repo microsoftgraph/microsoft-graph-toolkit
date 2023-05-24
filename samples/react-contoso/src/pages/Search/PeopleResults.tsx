@@ -1,4 +1,4 @@
-import { SearchBox, SearchResults } from '@microsoft/mgt-react';
+import { SearchResults } from '@microsoft/mgt-react';
 import * as React from 'react';
 
 export interface IPeopleResultsProps {
