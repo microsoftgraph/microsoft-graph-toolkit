@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PageHeader } from '../components/PageHeader/PageHeader';
-import { Agenda, Get } from '@microsoft/mgt-react';
+import { Get } from '@microsoft/mgt-react';
 import { Loading } from '../components/Loading';
 import {
   shorthands,
@@ -11,8 +11,7 @@ import {
   DialogTrigger,
   DialogSurface,
   DialogBody,
-  DialogTitle,
-  DialogActions
+  DialogTitle
 } from '@fluentui/react-components';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { Chat, NewChat } from '@microsoft/mgt-chat';

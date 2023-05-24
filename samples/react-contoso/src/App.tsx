@@ -3,7 +3,6 @@ import './App.css';
 import { AppContext } from './AppContext';
 import { Layout } from './Layout';
 import { webLightTheme } from '@fluentui/react-components';
-import { FluentTheme } from '@fluentui/react';
 import { lightTheme } from '@microsoft/mgt-chat';
 
 export const App: React.FunctionComponent = theme => {

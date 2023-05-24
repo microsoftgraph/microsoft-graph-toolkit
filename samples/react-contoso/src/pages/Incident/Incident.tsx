@@ -9,16 +9,10 @@ import {
   TabList,
   TabValue,
   shorthands,
-  makeStyles,
-  Button,
-  Dialog,
-  DialogTrigger,
-  DialogSurface,
-  DialogBody,
-  DialogTitle
+  makeStyles
 } from '@fluentui/react-components';
 import { FileListComposite, Providers } from '@microsoft/mgt-react';
-import { Chat, NewChat, allChatScopes } from '@microsoft/mgt-chat';
+import { Chat, allChatScopes } from '@microsoft/mgt-chat';
 import { Tasks } from '@microsoft/mgt-react';
 import { createNewChat } from '@microsoft/mgt-chat';
 import { useAppContext } from '../../AppContext';
@@ -64,7 +58,6 @@ export const Incident: React.FunctionComponent = () => {
   const [driveId, setDriveId] = React.useState<string>();
   const [planId, setPlanId] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
   const appContext = useAppContext();
 
   const onTabSelect = (event: SelectTabEvent, data: SelectTabData) => {

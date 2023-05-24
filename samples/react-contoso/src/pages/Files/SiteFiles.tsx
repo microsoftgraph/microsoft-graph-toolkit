@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { FileListComposite, Picker, Providers, SelectedChannel, TeamsChannelPicker } from '@microsoft/mgt-react';
-import { Label, makeStyles } from '@fluentui/react-components';
+import { FileListComposite, Picker, Providers } from '@microsoft/mgt-react';
+import { makeStyles } from '@fluentui/react-components';
 
 const useStyles = makeStyles({
   picker: {

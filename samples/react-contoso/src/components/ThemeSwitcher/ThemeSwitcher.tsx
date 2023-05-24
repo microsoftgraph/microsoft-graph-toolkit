@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { mergeStyles } from '@fluentui/merge-styles';
 import {
   Menu,
   MenuButton,

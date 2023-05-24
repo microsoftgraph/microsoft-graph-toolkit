@@ -14,14 +14,14 @@ const ChatListTemplate = (props: MgtTemplateProps & ChatInteractionProps) => {
       setSelectedChat(e);
       props.onSelected(selectedChat);
     },
-    [setSelectedChat, props]
+    [setSelectedChat, selectedChat, props]
   );
 
   // Set the selected chat to the first chat in the list
   // Fires only the first time the component is rendered
   React.useEffect(() => {
     onChatSelected(selectedChat);
-  }, []);
+  });
 
   const isChatActive = (chat: Chat) => {
     if (selectedChat) {

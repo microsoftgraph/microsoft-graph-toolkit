@@ -27,7 +27,6 @@ import { AddRegular, ContentViewRegular, CheckmarkRegular, ListRegular } from '@
 import { Get, MgtTemplateProps, Person, PersonCardInteraction, Providers, ViewType } from '@microsoft/mgt-react';
 import './Incidents.css';
 import React, { useRef } from 'react';
-import { useAppContext } from '../../AppContext';
 
 export interface IIndicentsProps {}
 const useStyles = makeStyles({

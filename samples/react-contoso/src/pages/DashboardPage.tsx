@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PageHeader } from '../components/PageHeader/PageHeader';
-import { PersonCard, Providers, Todo } from '@microsoft/mgt-react';
+import { Providers, Todo } from '@microsoft/mgt-react';
 import { Incidents } from '../components/Incidents/Incidents';
 import {
   SelectTabData,
@@ -61,7 +61,6 @@ export const DashboardPage: React.FunctionComponent = () => {
         description={'This dashboard helps you being productive with your tasks and your incidents.'}
       ></PageHeader>
       <div>
-        <PersonCard personQuery="me"></PersonCard>
         <TabList selectedValue={selectedTab} onTabSelect={onTabSelect}>
           <Tab value="tasks">My Tasks</Tab>
           <Tab value="incidents">My Incidents</Tab>

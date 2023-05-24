@@ -1,4 +1,4 @@
-import { Persona, makeStyles, mergeClasses, shorthands, subtitle1ClassNames } from '@fluentui/react-components';
+import { Persona, makeStyles, mergeClasses, shorthands } from '@fluentui/react-components';
 import { Providers } from '@microsoft/mgt-element';
 import { MgtTemplateProps, Person, ViewType } from '@microsoft/mgt-react';
 import { Chat, AadUserConversationMember } from '@microsoft/microsoft-graph-types';
