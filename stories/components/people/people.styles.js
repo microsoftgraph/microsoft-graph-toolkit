@@ -24,9 +24,9 @@ export const darkTheme = () => html`
 `;
 
 export const customCssProperties = () => html`
-<mgt-people></mgt-people>
+<mgt-people class="people"></mgt-people>
 <style>
-  mgt-people {
+  .people {
     --people-list-margin: 12px;
     --people-avatar-gap: 8px;
     --people-overflow-font-color: orange;

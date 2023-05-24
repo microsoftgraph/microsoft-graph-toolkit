@@ -16,12 +16,12 @@ export default {
 
 export const customCSSProperties = () => html`
   <style>
-    mgt-search-results {
+    .search-results {
       --answer-border-radius: 10px;
       --answer-box-shadow: 0px 2px 30px pink;;
       --answer-border: dotted 2px white;;
       --answer-padding: 8px 0px;
     }
   </style>
-  <mgt-search-results query-string="yammer" entity-types="bookmark" version="beta"></mgt-search-results>
+  <mgt-search-results class="search-results" query-string="yammer" entity-types="bookmark" version="beta"></mgt-search-results>
 `;

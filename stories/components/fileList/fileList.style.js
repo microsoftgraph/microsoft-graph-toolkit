@@ -20,7 +20,7 @@ export const darkTheme = () => html`
 
 export const customCSSProperties = () => html`
     <style>
-      mgt-file-list {
+      .file-list {
         /** mgt-file-upload custom styling */
         --file-upload-background-color-drag: rgb(255, 0, 0, 0.5);
         --file-upload-border-drag: 2px groove black;
@@ -82,5 +82,5 @@ export const customCSSProperties = () => html`
         --show-more-button-border-bottom-left-radius: 12px;
       }
     </style>
-    <mgt-file-list enable-file-upload></mgt-file-list>
+    <mgt-file-list class="file-list" enable-file-upload></mgt-file-list>
   `;

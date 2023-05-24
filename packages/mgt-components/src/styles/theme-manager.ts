@@ -55,6 +55,8 @@ type ColorScheme = {
    * @type {number}
    */
   baseLayerLuminance: number;
+
+  designTokenOverrides?: Record<string, string>;
 };
 
 /**
@@ -67,6 +69,14 @@ const applyColorScheme = (settings: ColorScheme, element: HTMLElement = document
   accentBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.accentBaseColor)));
   neutralBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.neutralBaseColor)));
   baseLayerLuminance.setValueFor(element, settings.baseLayerLuminance);
+  // put this work on the macro queue so that it happens after promise based/reactive work of setting the base colors above
+  if (settings.designTokenOverrides) {
+    setTimeout(() => {
+      Object.entries(settings.designTokenOverrides).forEach(([key, value]) => {
+        element.style.setProperty(key, value);
+      });
+    });
+  }
 };
 
 /**
@@ -93,7 +103,35 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
       return {
         accentBaseColor: '#479ef5',
         neutralBaseColor: '#adadad',
-        baseLayerLuminance: StandardLuminance.DarkMode
+        baseLayerLuminance: StandardLuminance.DarkMode,
+        designTokenOverrides: {
+          '--neutral-layer-card-container': '#292929',
+          '--neutral-layer-floating': '#292929',
+          '--accent-fill-rest': '#62ABF5',
+          '--accent-fill-hover': '#96C6FA',
+          '--accent-fill-active': '#62ABF5',
+          '--accent-fill-focus': '#62ABF5',
+          '--accent-foreground-rest': '#62ABF5',
+          '--accent-foreground-hover': '#96C6FA',
+          '--accent-foreground-active': '#62ABF5',
+          '--accent-foreground-focus': '#EBF3FC',
+          '--accent-stroke-control-rest': 'linear-gradient(#62ABF5 90%, #479ef5 100%)',
+          '--accent-stroke-control-hover': 'linear-gradient(#96C6FA 90%, #115EA3 100%)',
+          '--accent-stroke-control-active': '#62ABF5',
+          '--accent-stroke-control-focus': 'linear-gradient(#EBF3FC 90%, #479ef5 100%)',
+          '--neutral-foreground-hint': '#666666',
+          '--neutral-stroke-rest': '#666666',
+          '--neutral-stroke-hover': '#636363',
+          '--neutral-stroke-active': '#6b6b6b',
+          '--neutral-stroke-focus': '#707070',
+          '--neutral-stroke-layer-rest': '#666666',
+          '--neutral-stroke-layer-hover': '#383838',
+          '--neutral-stroke-layer-active': '#383838',
+          '--neutral-stroke-strong-rest': '#666666',
+          '--neutral-stroke-strong-hover': '#636363',
+          '--neutral-stroke-strong-active': '#6b6b6b',
+          '--neutral-stroke-strong-focus': '#707070'
+        }
       };
     case 'light':
     default:
