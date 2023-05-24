@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Login, SearchBox } from '@microsoft/mgt-react';
+import { PACKAGE_VERSION } from '@microsoft/mgt-element';
+import { InfoButton } from '@fluentui/react-components/unstable';
 import { SimpleLogin } from '../SimpleLogin/SimpleLogin';
 import { useIsSignedIn } from '../../hooks/useIsSignedIn';
 import './Header.css';
@@ -36,7 +38,9 @@ const useStyles = makeStyles({
     ...shorthands.flex('none')
   },
   waffleTitle: {
-    ...shorthands.flex('auto')
+    ...shorthands.flex('auto'),
+    display: 'flex',
+    alignItems: 'center'
   },
   search: {
     display: 'flex',
@@ -53,6 +57,16 @@ const useStyles = makeStyles({
     paddingRight: '1em',
     paddingLeft: '1em',
     width: '100%'
+  },
+
+  infoIcon: {
+    color: tokens.colorNeutralForegroundOnBrand,
+    ':hover': {
+      color: tokens.colorNeutralForegroundOnBrand,
+      ':active': {
+        color: tokens.colorNeutralForegroundOnBrand
+      }
+    }
   }
 });
 
@@ -82,7 +96,8 @@ const HeaderComponent: React.FunctionComponent = () => {
         </div>
 
         <div className={styles.waffleTitle}>
-          <Label className={styles.name}>{process.env.REACT_APP_SITE_NAME}</Label>
+          <Label className={styles.name}>{process.env.REACT_APP_SITE_NAME} </Label>
+          <InfoButton className={styles.infoIcon} size="medium" info={<>{PACKAGE_VERSION}</>} />
         </div>
       </div>
       <div className={styles.search}>
