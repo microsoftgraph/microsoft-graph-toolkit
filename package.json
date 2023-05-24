@@ -36,6 +36,7 @@
     "build:sp-webpart": "lerna run build --scope mgt-demo",
     "build:sp-mgt": "lerna run build --scope sp-mgt-no-framework",
     "build:mgt-chat": "lerna run build --scope @microsoft/mgt-chat",
+    "build:react-contoso": "lerna run build --scope react-contoso",
     "package:sp-webpart": "lerna run package --scope mgt-demo",
     "package:sp-mgt": "lerna run package --scope sp-mgt-no-framework",
     "bundle": "cd ./packages/mgt && npm run bundle",
