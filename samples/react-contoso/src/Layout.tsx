@@ -27,7 +27,7 @@ const useStyles = makeStyles({
     minWidth: 'auto'
   },
   mgtFluent: {
-    '--accent-fill-rest': tokens.colorCompoundBrandForeground1,
+    /*'--accent-fill-rest': tokens.colorCompoundBrandForeground1,
     '--accent-fill-active': tokens.colorCompoundBrandForeground1Pressed,
     '--accent-fill-hover': tokens.colorCompoundBrandForeground1Hover,
     '--accent-foreground-rest': tokens.colorCompoundBrandForeground1,
@@ -35,7 +35,7 @@ const useStyles = makeStyles({
     '--accent-stroke-control-rest': tokens.colorCompoundBrandStroke,
     '--accent-stroke-control-active': tokens.colorCompoundBrandStrokePressed,
     '--accent-base-color': tokens.colorNeutralForeground1,
-    '--input-background-color': tokens.colorNeutralBackground1
+    '--input-background-color': tokens.colorNeutralBackground1*/
   }
 });
 
