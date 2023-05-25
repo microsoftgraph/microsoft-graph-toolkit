@@ -76,10 +76,11 @@
 
   fluent-text-field {
     width: 100%;
+
     --fill-color: var(--channel-picker-color, $color);
-    --neutral-fill-input-rest: var(--channel-picker-input-background-color, #ffffff);
+    --neutral-fill-input-rest: var(--channel-picker-input-background-color, #fff);
     --input-placeholder-rest: var(--channel-picker-placeholder-color, --input-placeholder-rest);
-    --input-placeholder-hover: var(--channel-picker-placeholder-color--focus, --input-placeholder-hover);
+    --input-placeholder-hover: var(--channel-picker-placeholder-color-focus, --input-placeholder-hover);
   }
 
   fluent-tree-view {

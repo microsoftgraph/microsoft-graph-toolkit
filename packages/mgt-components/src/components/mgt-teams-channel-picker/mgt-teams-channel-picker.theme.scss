@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-sass-variables';
 
 $channel-picker-loading-text-color: var(--channel-picker-loading-text-color, #0078d4);
 $channel-picker-arrow-fill-color: var(--channel-picker-arrow-fill, $color);
