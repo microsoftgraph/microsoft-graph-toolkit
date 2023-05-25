@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Header } from './components/Header';
 import { SideNavigation } from './components/SideNavigation/SideNavigation';
 import { HomePage } from './pages/HomePage';
