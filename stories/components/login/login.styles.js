@@ -14,7 +14,7 @@ export default {
   decorators: [withCodeEditor]
 };
 
-export const customCssProperties = () => html`
+export const customCSSProperties = () => html`
 <mgt-login></mgt-login>
 <style>
   .login {
