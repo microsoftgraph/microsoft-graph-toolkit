@@ -19,7 +19,7 @@ export const getNavigation = (isSignedIn: boolean) => {
 
   navItems.push({
     name: 'Home',
-    url: '/home',
+    url: '/',
     icon: <HomeRegular />,
     key: 'home',
     requiresLogin: false,

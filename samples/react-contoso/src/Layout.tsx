@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { Header } from './components/Header';
 import { SideNavigation } from './components/SideNavigation/SideNavigation';
 import { HomePage } from './pages/HomePage';
@@ -57,7 +57,7 @@ export const Layout: React.FunctionComponent = theme => {
   return (
     <FluentProvider theme={appContext.state.theme.fluentTheme}>
       <div className={mergeClasses('page', appContext.state.theme.key === 'dark' ? styles.mgtFluent : '')}>
-        <HashRouter>
+        <BrowserRouter>
           <Header></Header>
           <div className="main">
             <div
@@ -70,9 +70,6 @@ export const Layout: React.FunctionComponent = theme => {
             </div>
             <div className="content">
               <Switch>
-                <Route exact path="/">
-                  <Redirect to="/home" />
-                </Route>
                 {navigationItems.map(
                   item =>
                     ((item.requiresLogin && isSignedIn) || !item.requiresLogin) && (
@@ -85,7 +82,7 @@ export const Layout: React.FunctionComponent = theme => {
               </Switch>
             </div>
           </div>
-        </HashRouter>
+        </BrowserRouter>
       </div>
     </FluentProvider>
   );
