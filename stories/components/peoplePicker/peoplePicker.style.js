@@ -17,10 +17,10 @@ export default {
 export const darkTheme = () => html`
   <mgt-people-picker class="mgt-dark"></mgt-people-picker>`;
 
-export const customCssProperties = () => html`
-<mgt-people-picker></mgt-people-picker>
+export const customCSSProperties = () => html`
+<mgt-people-picker class="people-picker"></mgt-people-picker>
 <style>
-  mgt-people-picker {
+  .people-picker {
     --people-picker-selected-option-background-color: orange;
     --people-picker-selected-option-highlight-background-color: red;
     --people-picker-dropdown-background-color: blue;

@@ -5,5 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from './TeamsProvider';
-export * from './mgt-teams-provider';
+export const strings = {
+  termsetIdRequired: 'The termsetId property or termset-id attribute is required',
+  noTermsFound: 'No terms found',
+  comboboxPlaceholder: 'Select a term',
+  loadingMessage: 'Loading...'
+};
