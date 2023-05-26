@@ -172,7 +172,7 @@ export const theme = () => html`
       </div>
     </header>
     <article>
-      <p>I should be light, global class. Toggle the color mode to see dark form</p>
+      <p>I should be light, global class</p>
       <mgt-teams-channel-picker></mgt-teams-channel-picker>
     </article>
     <p>I am custom themed</p>
