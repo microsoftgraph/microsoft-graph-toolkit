@@ -9,7 +9,7 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / Preview / mgt-search-results',
+  title: 'Preview / mgt-search-results',
   component: 'search-results',
   decorators: [withCodeEditor]
 };
