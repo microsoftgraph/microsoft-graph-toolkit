@@ -9,7 +9,7 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-search-box',
+  title: 'Components / Preview / mgt-search-box',
   component: 'search-box',
   decorators: [withCodeEditor]
 };
@@ -17,12 +17,16 @@ export default {
 export const searchBox = () => html`
   <mgt-search-box>
   </mgt-search-box>
+  <script type="module">
+  import '@microsoft/mgt-components/dist/es6/components/preview';
+  </script>
 `;
 
 export const localization = () => html`
   <mgt-search-box>
   </mgt-search-box>
   <script>
+  import '@microsoft/mgt-components/dist/es6/components/preview';
   import { LocalizationHelper } from '@microsoft/mgt';
   LocalizationHelper.strings = {
     _components: {
@@ -41,6 +45,7 @@ export const events = () => html`
 
   <mgt-search-box></mgt-search-box>
   <script>
+    import '@microsoft/mgt-components/dist/es6/components/preview';
     const searchBox = document.querySelector('mgt-search-box');
     searchBox.addEventListener('searchTermChanged', (e) => {
       console.log(e.detail);
