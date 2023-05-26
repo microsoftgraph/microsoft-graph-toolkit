@@ -123,7 +123,7 @@ export const customCSSProperties = () => html`
     dndPerson.personPresence = dnd;
   </script>
 
-  <mgt-person person-query="me" view="fourlines" id="online" show-presence></mgt-person>
+  <mgt-person class="person" person-query="me" view="fourlines" id="online" show-presence></mgt-person>
   <br>
-  <mgt-person person-query="me" view="fourlines" avatar-type="initials" id="dnd" show-presence vertical-layout></mgt-person>
+  <mgt-person class="person" person-query="me" view="fourlines" avatar-type="initials" id="dnd" show-presence vertical-layout></mgt-person>
 `;
