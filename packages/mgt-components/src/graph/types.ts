@@ -67,3 +67,8 @@ export enum ViewType {
    */
   fourlines = 6
 }
+
+/**
+ * Postion describes the position of the dropdown
+ */
+export type Position = 'above' | 'below';
