@@ -151,6 +151,8 @@
   }
 
   fluent-tree-item {
+    width: 100%;
+    
     --tree-item-nested-width: 2em;
     
     &::part(content-region),
