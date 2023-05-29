@@ -31,9 +31,10 @@ export const customCSSProperties = () => html`
       --channel-picker-input-background-color-hover: #008394; /* input area border hover color */
       --channel-picker-input-background-color-focus: #0f78d4; /* input area border focus color */
 
-      --channel-picker-dropdown-background-color: #1f1f1f; /* channel background color */
-      --channel-picker-dropdown-item-hover-background: #333d47; /* channel or team hover background */
-      --channel-picker-dropdown-item-selected-background: #0F78D4; /* selected channel background color */
+      --channel-picker-dropdown-background-color: brown; /* channel background color */
+      --channel-picker-dropdown-item-text-color: #fff;
+      --channel-picker-dropdown-item-background-color-hover: #333d47; /* channel or team hover background */
+      --channel-picker-dropdown-item-text-color-selected: #0F78D4; /* selected channel background color */
 
       --channel-picker-color: white; /* input area border focus color */
       --channel-picker-arrow-fill: #ffffff;

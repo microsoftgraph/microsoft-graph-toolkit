@@ -22,4 +22,7 @@ $input-focus-background: padding-box linear-gradient(
 $placeholder-text-color: var(--channel-picker-input-placeholder-text-color, var(--input-placeholder-rest));
 $placeholder-hover-text-color: var(--channel-picker-input-placeholder-text-color-hover, var(--input-placeholder-hover));
 $placeholder-focus-text-color: var(--channel-picker-input-placeholder-text-color-focus, var(--input-placeholder-filled));
-    
+$dropdown-background-color: var(--channel-picker-dropdown-background-color, var(--fill-color));
+$dropdown-item-text-color: var(--channel-picker-dropdown-item-text-color, currentColor);
+$dropdown-item-background-color-hover: var(--channel-picker-dropdown-item-background-color-hover, var(--neutral-fill-stealth-hover));
+$dropdown-item-selected-text-color: var(--channel-picker-dropdown-item-text-color-selected, var(--neutral-foreground-rest));

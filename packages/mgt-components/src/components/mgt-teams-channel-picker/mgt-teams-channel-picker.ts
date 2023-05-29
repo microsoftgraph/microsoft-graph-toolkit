@@ -180,10 +180,11 @@ export interface MgtTeamsChannelPickerConfig {
  * @cssprop --channel-picker-input-background-color-focus - {Color} Input background focus color
  *
  * @cssprop --channel-picker-dropdown-background-color - {Color} Background color of dropdown area
- * @cssprop --channel-picker-dropdown-item-hover-background - {Color} Background color of channel or team during hover
- * @cssprop --channel-picker-dropdown-item-selected-background - {Color} Background color of selected channel
+ * @cssprop --channel-picker-dropdown-item-text-color - {Color} Text color of the dropdown text.
+ * @cssprop --channel-picker-dropdown-item-background-color-hover - {Color} Background color of channel or team during hover
+ * @cssprop --channel-picker-dropdown-item-text-color-selected - {Color} Text color of channel or team during after selection
  *
- * @cssprop --arrow-fill - {Color} Color of arrow svg
+ * @cssprop --channel-picker-arrow-fill - {Color} Color of arrow svg
  * @cssprop --placeholder-color-focus - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
@@ -596,7 +597,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
                   alt="${obj.item.displayName}"
                   src=${
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                    this.teamsPhotos[obj.item.id].photo
+                    this.teamsPhotos[obj.item.id]?.photo
                   } />`;
               }
               return html`
