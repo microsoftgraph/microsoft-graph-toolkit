@@ -23,10 +23,10 @@ export const darkTheme = () => html`
   </style>
 `;
 
-export const customProperties = () => html`
-  <mgt-agenda group-by-day></mgt-agenda>
+export const customCSSProperties = () => html`
+  <mgt-agenda class="agenda" group-by-day></mgt-agenda>
   <style>
-    mgt-agenda {
+    .agenda {
       --agenda-event-box-shadow: 0px 2px 30px pink;
       --agenda-event-margin: 0px 10px 40px 10px;
       --agenda-event-padding: 8px 0px;
