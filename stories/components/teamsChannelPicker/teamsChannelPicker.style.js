@@ -21,12 +21,6 @@ export const customCSSProperties = () => html`
     .teams-channel-picker {
       --channel-picker-input-border: 2px rgba(255, 255, 255, 0.5) solid; /* sets all input area border */
 
-      /* OR individual input border sides */
-      --channel-picker-input-border-bottom: 2px rgba(255, 255, 255, 0.5) solid;
-      --channel-picker-input-border-right: 2px rgba(255, 255, 255, 0.5) solid;
-      --channel-picker-input-border-left: 2px rgba(255, 255, 255, 0.5) solid;
-      --channel-picker-input-border-top: 2px rgba(255, 255, 255, 0.5) solid;
-
       --channel-picker-input-background-color: #1f1f1f; /* input area background color */
       --channel-picker-input-background-color-hover: #008394; /* input area border hover color */
       --channel-picker-input-background-color-focus: #0f78d4; /* input area border focus color */

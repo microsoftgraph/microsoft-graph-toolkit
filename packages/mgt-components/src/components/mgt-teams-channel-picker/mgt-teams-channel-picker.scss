@@ -63,7 +63,6 @@
     padding: 5px;
 
     .loading-text {
-      // color: var(--color, #0078d4);
       margin: auto;
     }
   }
@@ -143,11 +142,6 @@
         }
       }
     }
-
-    // --fill-color: var(--color, $color);
-    // --neutral-fill-input-rest: var(--input-background-color, #fff);
-    // --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
-    // --input-placeholder-hover: var(--placeholder-color-focus, --input-placeholder-hover);
   }
 
   fluent-tree-view {
@@ -173,14 +167,6 @@
         }
       }
     }
-    
-    // &::part(positioning-region){
-    // }
-
-    // --neutral-foreground-rest: var(--color, $color);
-    // --neutral-fill-stealth-hover: var(--dropdown-item-hover-background, --neutral-fill-stealth-hover);
-    // --neutral-fill-secondary-rest: var(--dropdown-item-selected-background, --neutral-fill-secondary-rest);
-    // --neutral-fill-stealth-rest: var(--dropdown-background-color, --neutral-fill-stealth-rest);
   }
 
   fluent-breadcrumb-item {
