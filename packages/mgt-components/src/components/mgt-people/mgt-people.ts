@@ -410,7 +410,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     } else if (keyName === 'Tab' || keyName === 'Escape') {
       this._arrowKeyLocation = -1;
       peopleContainer.blur();
-    } else if (keyName === 'Enter' || keyName === 'space') {
+    } else if (['Enter', 'space', ' '].includes(keyName)) {
       if (this.personCardInteraction !== PersonCardInteraction.none) {
         const personEl = peopleElements[this._arrowKeyLocation] as HTMLElement;
         const mgtPerson = personEl.querySelector<MgtPerson>('mgt-person');
