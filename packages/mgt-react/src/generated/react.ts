@@ -201,6 +201,7 @@ export type PickerProps = {
 	scopes?: string[];
 	cacheEnabled?: boolean;
 	cacheInvalidationPeriod?: number;
+	selectedValue?: string;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: CustomEvent<any>) => void;
