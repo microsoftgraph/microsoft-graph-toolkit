@@ -52,8 +52,9 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        margin-inline-start: 0px;
-        --person-avatar-size: #{$person-avatar-size-vertical};
+        margin-inline-start: 0;
+
+        --person-avatar-size: 72px;
       }
     }
   }
@@ -96,7 +97,8 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      --person-avatar-size: #{$person-avatar-size-vertical};
+
+      --person-avatar-size: 72px;
     }
 
     .avatar-wrapper {

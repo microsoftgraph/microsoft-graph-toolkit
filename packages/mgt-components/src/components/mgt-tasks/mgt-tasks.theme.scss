@@ -42,7 +42,7 @@ $task-incomplete-checkbox-hover-bg: var(
 );
 $task-complete-bg-color: var(--task-complete-background-color, transparent);
 $task-incomplete-bg-color: var(--task-incomplete-background-color, var(--neutral-layer-1));
-$tasks-background-color: var(--tasks-background-color, var(--neutral-layer));
+$tasks-background-color: var(--tasks-background-color, var(--neutral-layer-2));
 $input-bg: padding-box linear-gradient(var(--neutral-fill-input-rest), var(--neutral-fill-input-rest)),
   border-box var(--neutral-stroke-input-rest);
 $input-hover-bg: padding-box linear-gradient(var(--neutral-fill-input-hover), var(--neutral-fill-input-hover)),

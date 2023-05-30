@@ -17,6 +17,8 @@ import {
   AadUserConversationMember,
   Chat,
   ChatMessage,
+  ChatRenamedEventMessageDetail,
+  MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
@@ -32,7 +34,8 @@ import {
   updateChatMessage,
   removeChatMember,
   addChatMembers,
-  loadChatImage
+  loadChatImage,
+  updateChatTopic
 } from './graph.chat';
 import { getUserWithPhoto } from '@microsoft/mgt-components';
 import { GraphNotificationClient } from './GraphNotificationClient';
@@ -49,6 +52,29 @@ const placeholderImageContent =
 type ODataType = {
   '@odata.type': MessageEventType;
 };
+type MembersAddedEventDetail = ODataType &
+  MembersAddedEventMessageDetail & {
+    '@odata.type': '#microsoft.graph.membersAddedEventMessageDetail';
+  };
+type MembersRemovedEventDetail = ODataType &
+  MembersDeletedEventMessageDetail & {
+    '@odata.type': '#microsoft.graph.membersDeletedEventMessageDetail';
+  };
+type ChatRenamedEventDetail = ODataType &
+  ChatRenamedEventMessageDetail & {
+    '@odata.type': '#microsoft.graph.chatRenamedEventMessageDetail';
+  };
+
+type ChatMessageEvents = MembersAddedEventDetail | MembersRemovedEventDetail | ChatRenamedEventDetail;
+
+const isChatMemberChangeEvent = (
+  eventDetail: unknown
+): eventDetail is MembersDeletedEventMessageDetail | MembersAddedEventMessageDetail => {
+  return (
+    typeof (eventDetail as MembersDeletedEventMessageDetail | MembersAddedEventMessageDetail)?.members !== 'undefined'
+  );
+};
+
 // defines the type of the state object returned from the StatefulGraphChatClient
 type GraphChatClient = Pick<
   MessageThreadProps,
@@ -75,6 +101,7 @@ type GraphChatClient = Pick<
     participants: AadUserConversationMember[];
     onAddChatMembers: (userIds: string[], history?: Date) => Promise<void>;
     onRemoveChatMember: (membershipId: string) => Promise<void>;
+    onRenameChat: (topic: string | null) => Promise<void>;
   };
 
 type StatefulClient<T> = {
@@ -110,7 +137,8 @@ const MessageCreatedComparator = (a: CreatedOn, b: CreatedOn) => a.createdOn.get
 
 type MessageEventType =
   | '#microsoft.graph.membersAddedEventMessageDetail'
-  | '#microsoft.graph.membersDeletedEventMessageDetail';
+  | '#microsoft.graph.membersDeletedEventMessageDetail'
+  | '#microsoft.graph.chatRenamedEventMessageDetail';
 
 /**
  * Holder type account for async conversion of messages.
@@ -127,6 +155,17 @@ type MessageConversion = {
  * Regex to detect and replace image urls using graph requests to supply the image content
  */
 const graphImageUrlRegex = /(<img[^>]+)src=(["']https:\/\/graph\.microsoft\.com[^"']*["'])/;
+
+/**
+ * Regex to detect and extract emoji alt text
+ *
+ * Pattern breakdown:
+ * (<emoji[^>]+): Captures the opening emoji tag, including any attributes.
+ * alt=["'](\w*[^"']*)["']: Matches and captures the "alt" attribute value within single or double quotes. The value can contain word characters but not quotes.
+ * (.*[^>]): Captures any remaining text within the opening emoji tag, excluding the closing tag.
+ * </emoji>: Matches the closing emoji tag.
+ */
+const emojiRegex = /(<emoji[^>]+)alt=["'](\w*[^"']*)["'](.*[^>])<\/emoji>/;
 
 class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private _notificationClient: GraphNotificationClient;
@@ -384,13 +423,15 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         return 'add-friend';
       case '#microsoft.graph.membersDeletedEventMessageDetail':
         return 'left-chat';
+      case '#microsoft.graph.chatRenamedEventMessageDetail':
+        return 'edit-svg';
       default:
         return 'Unknown';
     }
   };
 
   private async buildSystemContentMessage(message: ChatMessage): Promise<SystemMessage> {
-    const eventDetail = message.eventDetail as MembersDeletedEventMessageDetail & ODataType;
+    const eventDetail = message.eventDetail as ChatMessageEvents;
     let messageContent = '';
     const awaits: Promise<IDynamicPerson>[] = [];
     const initiatorId = eventDetail.initiator?.user?.id;
@@ -398,12 +439,14 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     if (initiatorId) {
       awaits.push(getUserWithPhoto(this.graph, initiatorId));
       const userIds: string[] = [];
-      eventDetail.members?.reduce((acc, m) => {
-        if (typeof m.id === 'string') {
-          acc.push(m.id);
-        }
-        return acc;
-      }, userIds);
+      if (isChatMemberChangeEvent(eventDetail)) {
+        eventDetail.members?.reduce((acc, m) => {
+          if (typeof m.id === 'string') {
+            acc.push(m.id);
+          }
+          return acc;
+        }, userIds);
+      }
       for (const id of userIds ?? []) {
         awaits.push(getUserWithPhoto(this.graph, id));
       }
@@ -415,6 +458,11 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
           break;
         case '#microsoft.graph.membersDeletedEventMessageDetail':
           messageContent = `${this.getUserName(initiatorId, people)} removed ${userNames}`;
+          break;
+        case '#microsoft.graph.chatRenamedEventMessageDetail':
+          messageContent = eventDetail.chatDisplayName
+            ? `${this.getUserName(initiatorId, people)} renamed the chat to ${eventDetail.chatDisplayName}`
+            : `${this.getUserName(initiatorId, people)} removed the group name for this conversation`;
           break;
         // TODO: move this default case to a console.warn before release and emit an empty message
         // it's here to help us catch messages we have't handled yet
@@ -428,7 +476,7 @@ detail: ${JSON.stringify(eventDetail)}`);
 
     const result: ContentSystemMessage = {
       createdOn: message.createdDateTime ? new Date(message.createdDateTime) : new Date(),
-      messageId: message.id!,
+      messageId: message.id || '',
       systemMessageType: 'content',
       messageType: 'system',
       iconName: this.resolveIcon(eventDetail['@odata.type']),
@@ -651,12 +699,12 @@ detail: ${JSON.stringify(eventDetail)}`);
       // TODO handle the case where there were a lot of missed messages and we ned to get the next page of messages.
       // This is not a common case, but we should handle it.
     }
+    // eslint-disable-next-line no-console
     console.log('checked for missed messages');
   };
 
   private onChatNotificationsSubscribed = (resource: string): void => {
     if (resource.includes(`/${this._chatId}/`) && resource.includes('/messages')) {
-      //void this.loadChatData();
       void this.checkForMissedMessages();
     } else {
       // better clean this up as we don't want to be listening to events for other chats
@@ -733,8 +781,24 @@ detail: ${JSON.stringify(eventDetail)}`);
     this.removeParticipantFromState(membershpId);
   };
 
+  private emojiMatch(messageContent: string): RegExpMatchArray | null {
+    return messageContent.match(emojiRegex);
+  }
+
   private graphImageMatch(messageContent: string): RegExpMatchArray | null {
     return messageContent.match(graphImageUrlRegex);
+  }
+
+  // iterative repave the emoji custom element with the content of the alt attribute
+  // on the emoji element
+  private processEmojiContent(messageContent: string): string {
+    let result = messageContent;
+    let match = this.emojiMatch(result);
+    while (match) {
+      result = result.replace(emojiRegex, '$2');
+      match = this.emojiMatch(result);
+    }
+    return result;
   }
 
   private processMessageContent(graphMessage: ChatMessage, currentUser: string): MessageConversion {
@@ -783,8 +847,13 @@ detail: ${JSON.stringify(eventDetail)}`);
     if (!graphMessage.id) {
       throw new Error('Cannot convert graph message to ACS message. No ID found on graph message');
     }
-    const content = graphMessage.body?.content ?? 'undefined';
+    let content = graphMessage.body?.content ?? 'undefined';
     let result: MessageConversion = {};
+    // do simple emoji replacement first
+    if (this.emojiMatch(content)) {
+      content = this.processEmojiContent(content);
+    }
+
     const imageMatch = this.graphImageMatch(content ?? '');
     if (imageMatch) {
       // if the message contains an image, we need to fetch the image and replace the placeholder
@@ -816,6 +885,11 @@ detail: ${JSON.stringify(eventDetail)}`);
       attached: 'top'
     };
   }
+
+  private renameChat = async (topic: string | null): Promise<void> => {
+    await updateChatTopic(this.graph, this._chatId, topic);
+    this.notifyStateChange(() => void (this._chat = { ...this._chat, ...{ topic } }));
+  };
 
   /**
    * Register event listeners for chat events to be triggered from the notification service
@@ -859,6 +933,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     onUpdateMessage: this.updateMessage,
     onAddChatMembers: this.addChatMembers,
     onRemoveChatMember: this.removeChatMember,
+    onRenameChat: this.renameChat,
     activeErrorMessages: [],
     chat: this._chat
   };

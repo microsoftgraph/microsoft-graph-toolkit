@@ -17,8 +17,7 @@ import {
   typographyStyles,
   shorthands,
   tokens,
-  Theme,
-  webLightTheme
+  Theme
 } from '@fluentui/react-components';
 import { createChatThread } from '../../statefulClient/graph.chat';
 import { graph } from '../../utils/graph';
@@ -37,10 +36,10 @@ const useStyles = makeStyles({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    // ...shorthands.paddingBlock('3px', '16px'),
-    // minWidth: '300px',
-    backgroundColor: tokens.colorNeutralBackground1
-    // boxShadow: tokens.shadow8
+    ...shorthands.paddingBlock('3px', '16px'),
+    minWidth: '300px',
+    backgroundColor: tokens.colorNeutralBackground1,
+    boxShadow: tokens.shadow8
   },
   title: {
     ...typographyStyles.subtitle2,
@@ -50,8 +49,8 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     gridRowGap: '16px',
-    marginBlockStart: '16px'
-    // ...shorthands.marginInline('32px')
+    marginBlockStart: '16px',
+    ...shorthands.marginInline('32px')
   },
   formButtons: {
     display: 'flex',
@@ -119,7 +118,7 @@ const NewChat: FC<NewChatProps> = ({
   }, [onChatCreated, selectedPeople, initialMessage, chatName, isGroup]);
 
   return (
-    <FluentProvider theme={theme ? theme : webLightTheme}>
+    <FluentProvider theme={theme ? theme : teamsLightTheme}>
       {state === 'initial' ? (
         <div className={styles.container}>
           {!hideTitle && (
@@ -164,7 +163,7 @@ const NewChat: FC<NewChatProps> = ({
         </div>
       ) : (
         <>
-          {/* state */}
+          {state}
           {state !== 'done' && <Spinner />}
         </>
       )}

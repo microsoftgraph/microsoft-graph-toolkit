@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { CallingTheme, ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { FluentTheme, PartialTheme } from '@fluentui/react';
-import { Divider, FluentProvider, Theme, webLightTheme } from '@fluentui/react-components';
+import { Divider, FluentProvider, Theme, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
-
 import { chatStyles } from './chat.styles';
-import { styles } from '../ChatHeader/chat-header.styles';
 
 registerAppIcons();
 
@@ -19,7 +17,31 @@ interface IMgtChatProps {
   fluentTheme?: Theme;
 }
 
+const useStyles = makeStyles({
+  chat: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    ...shorthands.overflow('auto')
+  },
+  chatMessages: {
+    height: 'auto',
+    ...shorthands.overflow('auto'),
+    '& img': {
+      maxWidth: '100%',
+      height: 'auto'
+    }
+  },
+  chatInput: {
+    ...shorthands.overflow('unset')
+  },
+  fullHeight: {
+    height: '100%'
+  }
+});
+
 export const Chat = ({ chatId, chatTheme, fluentTheme }: IMgtChatProps) => {
+  const styles = useStyles();
   const chatClient = useGraphChatClient(chatId);
   const [chatState, setChatState] = useState(chatClient.getState());
   useEffect(() => {
@@ -30,12 +52,15 @@ export const Chat = ({ chatId, chatTheme, fluentTheme }: IMgtChatProps) => {
   }, [chatClient]);
   return (
     <FluentThemeProvider fluentTheme={chatTheme ? chatTheme : FluentTheme}>
-      <FluentProvider theme={fluentTheme ? fluentTheme : webLightTheme} className={chatStyles.fullHeight}>
+      <FluentProvider theme={fluentTheme ? fluentTheme : teamsLightTheme} className={chatStyles.fullHeight}>
         <div className={chatStyles.chat}>
           {chatState.userId && chatState.messages.length > 0 ? (
             <>
-              <ChatHeader chat={chatState.chat} currentUserId={chatState.userId} />
-
+              <ChatHeader
+                chat={chatState.chat}
+                currentUserId={chatState.userId}
+                onRenameChat={chatState.onRenameChat}
+              />
               {chatState.participants?.length > 0 && chatState.chat?.chatType === 'group' && (
                 <>
                   <Divider></Divider>
@@ -48,7 +73,8 @@ export const Chat = ({ chatId, chatTheme, fluentTheme }: IMgtChatProps) => {
                   <Divider></Divider>
                 </>
               )}
-              <div className={chatStyles.chatMessages}>
+
+              <div className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}
                   messages={chatState.messages}
@@ -71,7 +97,7 @@ export const Chat = ({ chatId, chatTheme, fluentTheme }: IMgtChatProps) => {
                   }}
                 />
               </div>
-              <div className={chatStyles.chatInput}>
+              <div className={styles.chatInput}>
                 <SendBox onSendMessage={chatState.onSendMessage} />
               </div>
               <ErrorBar activeErrorMessages={chatState.activeErrorMessages} />

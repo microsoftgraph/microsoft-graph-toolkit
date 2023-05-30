@@ -257,7 +257,6 @@ export const loadChatImage = async (graph: IGraph, url: string): Promise<string 
 /**
  * Creates a new chat thread via HTTP POST
  *
- * @returns {Promise<void>}
  * @param graph authenticated graph client from mgt
  * @param memberIds array of the user ids of users to be members of the chat. Must be at least 2.
  * @param isGroupChat if true a group chat will be created, otherwise a 1:1 chat will be created. Must be true if there are more than 2 members.
@@ -294,4 +293,18 @@ export const createChatThread = async (
   }
 
   return chat;
+};
+
+/**
+ * Updates the topic of a chat via HTTP PATCH
+ *
+ * @param graph {IGraph} - authenticated graph client from mgt
+ * @param chatId {string} - id of the chat to update
+ * @param topic {string | null} - new value for the chat topic, null will remove the currently set topic
+ */
+export const updateChatTopic = async (graph: IGraph, chatId: string, topic: string | null): Promise<void> => {
+  await graph
+    .api(`/chats/${chatId}`)
+    .middlewareOptions(prepScopes(...chatOperationScopes.updateChatMessage))
+    .patch({ topic });
 };

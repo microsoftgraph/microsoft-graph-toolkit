@@ -4,8 +4,6 @@ import { graph } from './graph';
 /**
  * Creates a new chat thread via HTTP POST
  *
- * @returns {Promise<void>}
- * @param graph authenticated graph client from mgt
  * @param memberIds array of the user ids of users to be members of the chat. Must be at least 2.
  * @param isGroupChat if true a group chat will be created, otherwise a 1:1 chat will be created. Must be true if there are more than 2 members.
  * @param chatMessage if provided a message with this content will be sent to the chat after creation
@@ -18,5 +16,5 @@ export const createNewChat = (
   chatMessage: string | undefined,
   chatName: string | undefined
 ): Promise<Chat> => {
-  return createChatThread(graph('mgt-functions'), memberIds, isGroupChat, chatMessage, chatName);
+  return createChatThread(graph('mgt-chat'), memberIds, isGroupChat, chatMessage, chatName);
 };
