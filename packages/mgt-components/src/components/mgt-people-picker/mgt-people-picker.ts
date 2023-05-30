@@ -818,6 +818,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 role="button"
                 tabindex="0"
                 class="selected-list-item-close-icon"
+                aria-label="${this.strings.removeSelectedUser}${person?.displayName ?? ''}"
                 @click="${(e: UIEvent) => this.removePerson(person, e)}"
                 @keydown="${(e: KeyboardEvent) => this.handleRemovePersonKeyDown(person, e)}">
                   ${getSvg(SvgIcon.Close)}
