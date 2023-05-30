@@ -21,7 +21,7 @@ mergeStyles({
 
 Providers.globalProvider = new Msal2Provider({
   clientId: process.env.REACT_APP_CLIENT_ID!,
-  loginType: LoginType.Popup,
+  loginType: LoginType.Redirect,
   scopes: ['User.Read', ...allDashboardScopes, ...allIncidentScopes]
 });
 
