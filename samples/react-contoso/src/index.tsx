@@ -22,7 +22,7 @@ mergeStyles({
 Providers.globalProvider = new Msal2Provider({
   clientId: process.env.REACT_APP_CLIENT_ID!,
   loginType: LoginType.Popup,
-  redirectUri: window.location.hostname,
+  redirectUri: window.location.protocol + '//' + window.location.host,
   scopes: ['User.Read', ...allDashboardScopes, ...allIncidentScopes]
 });
 
