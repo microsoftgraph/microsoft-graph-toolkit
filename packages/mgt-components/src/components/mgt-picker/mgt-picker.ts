@@ -147,6 +147,13 @@ export class MgtPicker extends MgtTemplatedComponent {
   })
   public cacheInvalidationPeriod = 0;
 
+  /**
+   * Sets the currently selected value for the picker
+   * Must be present as an option in the supplied data returned from the the underlying graph query
+   *
+   * @type {string}
+   * @memberof MgtPicker
+   */
   @property({
     attribute: 'selected-value',
     type: String
