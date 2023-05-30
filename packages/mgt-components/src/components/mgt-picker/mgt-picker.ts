@@ -7,6 +7,7 @@
 
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
@@ -146,6 +147,12 @@ export class MgtPicker extends MgtTemplatedComponent {
   })
   public cacheInvalidationPeriod = 0;
 
+  @property({
+    attribute: 'selected-value',
+    type: String
+  })
+  public selectedValue: string;
+
   private isRefreshing: boolean;
 
   @state() private response: Entity[];
@@ -212,7 +219,9 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected renderPicker(): TemplateResult {
     return mgtHtml`
-      <fluent-combobox part="picker" class="picker" id="combobox" autocomplete="list" placeholder=${this.placeholder}>
+      <fluent-combobox current-value=${ifDefined(
+        this.selectedValue
+      )} part="picker" class="picker" id="combobox" autocomplete="list" placeholder=${this.placeholder}>
         ${this.response.map(
           item => html`
           <fluent-option value=${item.id} @click=${(e: MouseEvent) => this.handleClick(e, item)}> ${
