@@ -810,6 +810,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       const file = focusedItem.children[0] as MgtFile;
       event.preventDefault();
       this.fireCustomEvent('itemClick', file.fileDetails);
+      this.handleFileClick(file.fileDetails);
 
       this.updateItemBackgroundColor(fileList, focusedItem, 'selected');
     }

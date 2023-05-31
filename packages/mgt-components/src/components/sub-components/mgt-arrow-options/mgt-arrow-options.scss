@@ -9,70 +9,43 @@
 @import '../../../styles/shared-sass-variables';
 
 $arrow-options-left: var(--arrow-options-left, 0);
+$arrow-options-btn-bg-color: var(--arrow-options-button-background-color, var(--neutral-layer-2));
+$arrow-options-btn-font-size: var(--arrow-options-button-font-size, large);
+$arrow-options-btn-font-weight: var(--arrow-options-button-font-weight, 600);
+$arrow-options-btn-font-color: var(--arrow-options-button-font-color, var(--accent-base-color));
 
 :host {
   position: relative;
   font-family: $font-family;
 
-  .arrow-icon {
-    font-family: $font-icon;
-    margin: 0 0 0 20px;
-    user-select: none;
-
-  }
-
   .header {
-    cursor: pointer;
+    &::part(control){
+      font-size: $arrow-options-btn-font-size;
+      font-weight: $arrow-options-btn-font-weight;
+      color: $arrow-options-btn-font-color;
+      background: $arrow-options-btn-bg-color;
+      
+      &:hover {
+        background: var(--neutral-fill-stealth-hover);
+      }
 
-    &:hover {
-      color: var(--theme-primary-color);
+      &:active,
+      &:focus {
+        background: var(--neutral-fill-stealth-active);
+      }
     }
   }
 
-  .menu {
+  .menu{
     position: absolute;
-    left: var(--arrow-options-left, 0);
-    box-shadow: set-var(box-shadow__color, $theme-default, $common) 0 0 40px 5px;
-    background: set-var(background-color, $theme-default, $common);
+    left: $arrow-options-left;
     z-index: 1;
     display: none;
-    color: set-var(color, $theme-default, $common);
-    white-space: nowrap;
-
-    &.open {
+    
+    &.open{
       display: block;
+      width: max-content;
     }
   }
 
-  .menu-option {
-    padding: 20px;
-    cursor: pointer;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    justify-content: stretch;
-    justify-items: stretch;
-
-    &:first {
-      padding: 12px 20px 20px;
-    }
-
-    &:hover {
-      background-color: set-var(background-color--hover, $theme-default, $common);
-    }
-
-    &:active {
-      background-color: set-var(background-color--active, $theme-default, $common);
-    }
-  }
-
-  .menu-option-check {
-    font-family: $font-icon;
-    color: rgb(0 0 0 / 0%);
-    margin-right: 10px;
-
-    &.current-value {
-      color: $comm-blue-primary;
-    }
-  }
 }
