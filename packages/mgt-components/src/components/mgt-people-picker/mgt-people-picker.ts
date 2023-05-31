@@ -762,6 +762,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.lostFocus();
       return html``;
     }
+    this.ariaLabel = this.ariaLabel || this.strings.selectContact;
 
     const searchIcon = html`<span class="search-icon">${getSvg(SvgIcon.Search)}</span>`;
     const startSlot = this.selectedPeople?.length > 0 ? selectedPeopleTemplate : searchIcon;
