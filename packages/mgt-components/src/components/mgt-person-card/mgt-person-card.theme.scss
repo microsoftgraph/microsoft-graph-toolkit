@@ -9,7 +9,7 @@
 
 /**
 * Loading the themes of the components used within mgt-person-card to
-* allow mgt-dark specifications to propagate. Also it allows re-using already
+* allow theming specifications to propagate. Also it allows re-using already
 * declared theme values like $person-theme in the mgt-person-card.scss#L362,L363.
 */
 @import '../../components/mgt-person/mgt-person.theme';

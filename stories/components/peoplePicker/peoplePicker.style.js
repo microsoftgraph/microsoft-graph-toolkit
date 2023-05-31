@@ -14,7 +14,7 @@ export default {
   decorators: [withCodeEditor]
 };
 
-export const customCssProperties = () => html`
+export const customCSSProperties = () => html`
 <mgt-people-picker></mgt-people-picker>
 <style>
   .people-picker {

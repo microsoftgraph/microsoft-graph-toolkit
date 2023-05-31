@@ -162,11 +162,11 @@ export const cache = () => html`
   </script>
 `;
 export const theme = () => html`
-  <div class="mgt-light root">
-    <header class="mgt-dark">
+  <div>
+    <header id="dark">
       <p>I should be dark, regional class</p>
-      <mgt-people-picker></mgt-people-picker>
-      <div class="mgt-light">
+      <mgt-teams-channel-picker></mgt-teams-channel-picker>
+      <div id="light">
         <p>I should be light, second level regional class</p>
         <mgt-teams-channel-picker></mgt-teams-channel-picker>
       </div>
@@ -177,30 +177,51 @@ export const theme = () => html`
     </article>
     <p>I am custom themed</p>
     <mgt-teams-channel-picker class="custom1"></mgt-teams-channel-picker>
-    <p>I have both custom input background color and mgt-dark theme</p>
-    <mgt-teams-channel-picker class="mgt-dark custom2"></mgt-teams-channel-picker>
+    <div id="custom-dark">
+      <p>I have both the custom input background color and dark theme</p>
+      <mgt-teams-channel-picker class="custom2"></mgt-teams-channel-picker>
+    </div>
     <p>I should be light, with unknown class mgt-foo</p>
     <mgt-teams-channel-picker class="mgt-foo"></mgt-teams-channel-picker>
   </div>
+
+  <script>
+    import { applyTheme } from '@microsoft/mgt';
+    const dark = document.querySelector("#dark");
+    const customDark = document.querySelector("#custom-dark");
+    const light = document.querySelector("#light");
+
+    if (dark && customDark) {
+        // apply the dark theme on the id=dark and id=custom-dark only
+        applyTheme('dark', dark)
+        applyTheme('dark', customDark)
+    }
+
+    if (light) {
+        // apply the light theme on the id=light component only
+        applyTheme('light', light)
+    }
+
+  </script>
   <style>
     .root {
       --focus-ring-color: red;
       --focus-ring-style: solid;
     }
     .custom1 {
-      --input-border: 2px solid teal;
-      --input-background-color: #33c2c2;
-      --dropdown-background-color: #33c2c2;
-      --dropdown-item-hover-background: #2a7d88;
-      --input-hover-color: #b911b1;
-      --input-focus-color: #441540;
-      --font-color: white;
-      --placeholder-default-color: white;
-      --placeholder-focus-color: #441540;
+      --channel-picker-input-border: 2px solid teal;
+      --channel-picker-input-background-color: #33c2c2;
+      --channel-picker-dropdown-background-color: #33c2c2;
+      --channel-picker-dropdown-item-hover-background: #2a7d88;
+      --channel-picker-input-hover-color: #b911b1;
+      --channel-picker-input-focus-color: #441540;
+      --channel-picker-font-color: white;
+      --channel-picker-placeholder-default-color: white;
+      --channel-picker-placeholder-focus-color: #441540;
     }
 
     .custom2 {
-      --input-background-color: #e47c4d;
+      --channel-picker-input-background-color: #e47c4d;
     }
   </style>
 `;
