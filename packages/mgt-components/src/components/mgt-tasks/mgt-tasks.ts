@@ -1205,12 +1205,15 @@ export class MgtTasks extends MgtTemplatedComponent {
       taskDetails = html`${group} ${folder} ${taskPeople} ${taskDue}`;
     }
 
+    const ariaLabel = this.strings.dotOptionsTitle;
+
     const taskOptions =
       this.readOnly || this.hideOptions
         ? null
         : mgtHtml`
             <mgt-dot-options
               class="dot-options"
+              aria-label="${ariaLabel}"
               .options="${{
                 [this.strings.removeTaskSubtitle]: () => this.removeTask(task)
               }}"

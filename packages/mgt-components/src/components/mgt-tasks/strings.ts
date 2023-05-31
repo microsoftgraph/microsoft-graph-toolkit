@@ -11,5 +11,6 @@ export const strings = {
   addTaskButtonSubtitle: 'Add',
   due: 'Due ',
   addTaskDate: 'Add the task date',
-  assign: 'Assign'
+  assign: 'Assign',
+  dotOptionsTitle: 'More options'
 };
