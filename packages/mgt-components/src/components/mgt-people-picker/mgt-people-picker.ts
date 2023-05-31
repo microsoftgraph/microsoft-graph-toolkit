@@ -762,7 +762,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.lostFocus();
       return html``;
     }
-    this.ariaLabel = this.ariaLabel || this.strings.selectContact;
 
     const searchIcon = html`<span class="search-icon">${getSvg(SvgIcon.Search)}</span>`;
     const startSlot = this.selectedPeople?.length > 0 ? selectedPeopleTemplate : searchIcon;
@@ -772,8 +771,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         appearance="outline"
         slot="anchor"
         id="people-picker-input"
+        role="combobox"
         placeholder=${placeholder}
-        aria-label=${this.ariaLabel || placeholder}
+        aria-label=${this.ariaLabel || this.strings.selectContact || placeholder}
         @click="${this.handleInputClick}"
         @focus="${this.gainedFocus}"
         @keydown="${this.onUserKeyDown}"
