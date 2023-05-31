@@ -21,7 +21,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { getMe } from '../../graph/graph.user';
-import { debounce, getShortDateString } from '../../utils/Utils';
+import { getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
@@ -901,11 +901,13 @@ export class MgtTasks extends MgtTemplatedComponent {
           this._currentFolder = null;
         };
       }
-      const groupSelect = mgtHtml`
-        <mgt-arrow-options class="arrow-options" .options="${groupOptions}" .value="${currentGroup.title}"></mgt-arrow-options>
-      `;
+      const groupSelect: TemplateResult = mgtHtml`
+        <mgt-arrow-options
+          class="arrow-options"
+          .options="${groupOptions}"
+          .value="${currentGroup.title}"></mgt-arrow-options>`;
 
-      const divider = !this._currentGroup ? null : html`<fluent-divider></fluent-divider>`;
+      const separator = !this._currentGroup ? null : getSvg(SvgIcon.ChevronRight);
 
       const currentFolder = this._folders.find(d => d.id === this._currentFolder) || {
         name: this.res.BUCKETS_SELF_ASSIGNED
@@ -932,8 +934,8 @@ export class MgtTasks extends MgtTemplatedComponent {
           `;
 
       return html`
-        <div class="title">
-          ${groupSelect} ${divider} ${!this._currentGroup ? null : folderSelect}
+        <div class="Title">
+          ${groupSelect} ${separator} ${!this._currentGroup ? null : folderSelect}
         </div>
         ${addButton}
       `;
