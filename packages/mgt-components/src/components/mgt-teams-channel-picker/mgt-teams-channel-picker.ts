@@ -169,22 +169,29 @@ export interface MgtTeamsChannelPickerConfig {
  *
  * @cssprop --color - {font} Default font color
  *
- * @cssprop --input-border - {String} Input section entire border
- * @cssprop --input-border-top - {String} Input section border top only
- * @cssprop --input-border-right - {String} Input section border right only
- * @cssprop --input-border-bottom - {String} Input section border bottom only
- * @cssprop --input-border-left - {String} Input section border left only
- * @cssprop --input-background-color - {Color} Input section background color
- * @cssprop --input-border-color--hover - {Color} Input border hover color
- * @cssprop --input-border-color--focus - {Color} Input border focus color
+ * @cssprop --channel-picker-input-border - {String} Input section entire border
+ * @cssprop --channel-picker-input-border-top - {String} Input section border top only
+ * @cssprop --channel-picker-input-border-right - {String} Input section border right only
+ * @cssprop --channel-picker-input-border-bottom - {String} Input section border bottom only
+ * @cssprop --channel-picker-input-border-left - {String} Input section border left only
+ * @cssprop --channel-picker-input-border-color - {Color} Input border color
+ * @cssprop --channel-picker-input-background-color - {Color} Input section background color
+ * @cssprop --channel-picker-input-background-color-hover - {Color} Input background hover color
+ * @cssprop --channel-picker-input-background-color-focus - {Color} Input background focus color
  *
- * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
- * @cssprop --dropdown-item-hover-background - {Color} Background color of channel or team during hover
- * @cssprop --dropdown-item-selected-background - {Color} Background color of selected channel
+ * @cssprop --channel-picker-dropdown-background-color - {Color} Background color of dropdown area
+ * @cssprop --channel-picker-dropdown-item-text-color - {Color} Text color of the dropdown text.
+ * @cssprop --channel-picker-dropdown-item-background-color-hover - {Color} Background color of channel or team during hover
+ * @cssprop --channel-picker-dropdown-item-text-color-selected - {Color} Text color of channel or team during after selection
  *
- * @cssprop --arrow-fill - {Color} Color of arrow svg
+ * @cssprop --channel-picker-arrow-fill - {Color} Color of arrow svg
  * @cssprop --placeholder-color-focus - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-color - {Color} Color of placeholder text
+ *
+ * @cssprop --channel-picker-search-icon-color - {Color} the search icon color.
+ * @cssprop --channel-picker-down-chevron-color - {Color} the down chevron icon color.
+ * @cssprop --channel-picker-up-chevron-color - {Color} the up chevron icon color.
+ * @cssprop --channel-picker-close-icon-color - {Color} the close icon color.
  *
  */
 @customElement('teams-channel-picker')
@@ -590,7 +597,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
                   alt="${obj.item.displayName}"
                   src=${
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                    this.teamsPhotos[obj.item.id].photo
+                    this.teamsPhotos[obj.item.id]?.photo
                   } />`;
               }
               return html`
