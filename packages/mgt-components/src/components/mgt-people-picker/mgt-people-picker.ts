@@ -767,6 +767,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const startSlot = this.selectedPeople?.length > 0 ? selectedPeopleTemplate : searchIcon;
     return html`
       <fluent-text-field
+        autocomplete="off
         appearance="outline"
         slot="anchor"
         id="people-picker-input"
@@ -945,7 +946,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 aria-label="${ariaLabel}"
                 class="searched-people-list-result"
                 role="option"
-                @click="${e => this.handleSuggestionClick(person)}">
+                @click="${_ => this.handleSuggestionClick(person)}">
                   ${this.renderPersonResult(person)}
                </li>
              `;
