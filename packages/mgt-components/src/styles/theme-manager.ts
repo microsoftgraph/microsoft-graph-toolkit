@@ -74,7 +74,9 @@ type ColorScheme = {
    */
   baseLayerLuminance: number;
 
-  // designTokenOverrides?: Record<string, string>;
+  /**
+   * Optional function to override design tokens
+   */
   designTokenOverrides?: (element: HTMLElement) => void;
 };
 
