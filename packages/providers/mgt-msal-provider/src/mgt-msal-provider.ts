@@ -11,6 +11,7 @@ import { MsalConfig, MsalProvider } from './MsalProvider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
  *
+ * @deprecated in favor of MgtMsal2Provider.
  * @export
  * @class MgtMsalProvider
  * @extends {MgtBaseProvider}
