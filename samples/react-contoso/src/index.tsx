@@ -1,13 +1,8 @@
 import ReactDOM from 'react-dom';
 import { App } from './App';
 import { mergeStyles } from '@fluentui/react';
-import { initializeIcons } from '@uifabric/icons';
 import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
 import { Providers, LoginType } from '@microsoft/mgt-element';
-import { allDashboardScopes } from './pages/DashboardPage';
-import { allIncidentScopes } from './pages/Incident/Incident';
-
-initializeIcons(undefined, { disableWarnings: true });
 
 // Inject some global styles
 mergeStyles({
@@ -21,9 +16,35 @@ mergeStyles({
 
 Providers.globalProvider = new Msal2Provider({
   clientId: process.env.REACT_APP_CLIENT_ID!,
-  loginType: LoginType.Popup,
+  loginType: LoginType.Redirect,
   redirectUri: window.location.protocol + '//' + window.location.host,
-  scopes: ['User.Read', ...allDashboardScopes, ...allIncidentScopes]
+  scopes: [
+    'Bookmark.Read.All',
+    'Calendars.Read',
+    'Chat.Create',
+    'Chat.ReadBasic',
+    'Chat.Read',
+    'Chat.ReadWrite',
+    'ChatMember.ReadWrite',
+    'ChatMessage.Send',
+    'Files.Read',
+    'Files.ReadWrite.All',
+    'Group.Read.All',
+    'Group.ReadWrite.All',
+    'Mail.Read',
+    'Mail.ReadBasic',
+    'People.Read',
+    'People.Read.All',
+    'Presence.Read.All',
+    'User.Read',
+    'Sites.Read.All',
+    'Sites.ReadWrite.All',
+    'Tasks.Read',
+    'Tasks.ReadWrite',
+    'Team.ReadBasic.All',
+    'User.ReadBasic.All',
+    'User.Read.All'
+  ]
 });
 
 ReactDOM.render(<App />, document.getElementById('root'));

@@ -162,10 +162,7 @@ const NewChat: FC<NewChatProps> = ({
           </div>
         </div>
       ) : (
-        <>
-          {state}
-          {state !== 'done' && <Spinner />}
-        </>
+        <>{state !== 'done' && <Spinner />}</>
       )}
     </FluentProvider>
   );
