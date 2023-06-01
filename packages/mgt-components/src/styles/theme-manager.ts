@@ -117,22 +117,6 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
           '--accent-stroke-control-hover': '#0f6cbd',
           '--accent-stroke-control-active': '#0c3b5e',
           '--accent-stroke-control-focus': '#0f548c',
-          // neutral layers
-          '--neutral-layer-card-container': '#292929',
-          '--neutral-layer-floating': '#292929',
-          // neutral forground/strokes
-          '--neutral-foreground-hint': '#666666',
-          '--neutral-stroke-rest': '#666666',
-          '--neutral-stroke-hover': '#636363',
-          '--neutral-stroke-active': '#6b6b6b',
-          '--neutral-stroke-focus': '#707070',
-          '--neutral-stroke-layer-rest': '#666666',
-          '--neutral-stroke-layer-hover': '#383838',
-          '--neutral-stroke-layer-active': '#383838',
-          '--neutral-stroke-strong-rest': '#666666',
-          '--neutral-stroke-strong-hover': '#636363',
-          '--neutral-stroke-strong-active': '#6b6b6b',
-          '--neutral-stroke-strong-focus': '#707070',
           // foreground on accents
           '--foreground-on-accent-rest': '#ffffff',
           '--foreground-on-accent-active': '#ffffff',
