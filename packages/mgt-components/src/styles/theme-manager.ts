@@ -105,20 +105,22 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
         neutralBaseColor: '#adadad',
         baseLayerLuminance: StandardLuminance.DarkMode,
         designTokenOverrides: {
+          '--accent-fill-rest': '#115ea3',
+          '--accent-fill-hover': '#0f6cbd',
+          '--accent-fill-active': '#0c3b5e',
+          '--accent-fill-focus': '#0f548c',
+          '--accent-foreground-rest': '#479EF5',
+          '--accent-foreground-hover': '#62abf5',
+          '--accent-foreground-active': '#2886de',
+          '--accent-foreground-focus': '#479ef5',
+          '--accent-stroke-control-rest': '#115ea3',
+          '--accent-stroke-control-hover': '#0f6cbd',
+          '--accent-stroke-control-active': '#0c3b5e',
+          '--accent-stroke-control-focus': '#0f548c',
+          // neutral layers
           '--neutral-layer-card-container': '#292929',
           '--neutral-layer-floating': '#292929',
-          '--accent-fill-rest': '#62ABF5',
-          '--accent-fill-hover': '#96C6FA',
-          '--accent-fill-active': '#62ABF5',
-          '--accent-fill-focus': '#62ABF5',
-          '--accent-foreground-rest': '#62ABF5',
-          '--accent-foreground-hover': '#96C6FA',
-          '--accent-foreground-active': '#62ABF5',
-          '--accent-foreground-focus': '#EBF3FC',
-          '--accent-stroke-control-rest': 'linear-gradient(#62ABF5 90%, #479ef5 100%)',
-          '--accent-stroke-control-hover': 'linear-gradient(#96C6FA 90%, #115EA3 100%)',
-          '--accent-stroke-control-active': '#62ABF5',
-          '--accent-stroke-control-focus': 'linear-gradient(#EBF3FC 90%, #479ef5 100%)',
+          // neutral forground/strokes
           '--neutral-foreground-hint': '#666666',
           '--neutral-stroke-rest': '#666666',
           '--neutral-stroke-hover': '#636363',
@@ -130,7 +132,16 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
           '--neutral-stroke-strong-rest': '#666666',
           '--neutral-stroke-strong-hover': '#636363',
           '--neutral-stroke-strong-active': '#6b6b6b',
-          '--neutral-stroke-strong-focus': '#707070'
+          '--neutral-stroke-strong-focus': '#707070',
+          // foreground on accents
+          '--foreground-on-accent-rest': '#ffffff',
+          '--foreground-on-accent-active': '#ffffff',
+          '--foreground-on-accent-rest-large': '#ffffff',
+          '--foreground-on-accent-hover': '#ffffff',
+          '--foreground-on-accent-hover-large': '#ffffff',
+          '--foreground-on-accent-active-large': '#ffffff',
+          '--foreground-on-accent-focus': '#ffffff',
+          '--foreground-on-accent-focus-large': '#ffffff'
         }
       };
     case 'light':
