@@ -11,12 +11,12 @@ scssFileHeader = `
 // ANY CHANGES WILL BE LOST DURING BUILD
 // MODIFY THE .SCSS FILE INSTEAD
 
-import { css } from 'lit';
+import { css, CSSResult } from 'lit';
 /**
  * exports lit-element css
  * @export styles
  */
-export const styles = [
+export const styles: CSSResult[] = [
   css\``;
 
 scssFileFooter = '`];';
