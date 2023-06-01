@@ -5,6 +5,7 @@ import { EditorElement } from './editor';
 import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from '../../env';
 
 const mgtScriptName = './mgt.storybook.js';
+const mgtPreviewScriptName = './mgt.preview.storybook.js';
 
 // function is used for dragging and moving
 const setupEditorResize = (first, separator, last, dragComplete) => {
@@ -185,8 +186,14 @@ export const withCodeEditor = makeDecorator({
       </header>
 `;
 
+    const resolveScript = () => {
+      const usingPreview =
+        editor.files.js.indexOf(`import '@microsoft/mgt-components/dist/es6/components/preview'`) > -1;
+      return usingPreview ? mgtPreviewScriptName : mgtScriptName;
+    };
+
     let providerInitCode = `
-      import {Providers, MockProvider} from "${mgtScriptName}";
+      import {Providers, MockProvider} from "${resolveScript()}";
       Providers.globalProvider = new MockProvider(true);
     `;
 
@@ -194,12 +201,12 @@ export const withCodeEditor = makeDecorator({
     channel.on(SETPROVIDER_EVENT, params => {
       if (params.state === ProviderState.SignedIn && params.name === 'MgtMockProvider') {
         providerInitCode = `
-          import { Providers, MockProvider } from "${mgtScriptName}";
+          import { Providers, MockProvider } from "${resolveScript()}";
           Providers.globalProvider = new MockProvider(true);
         `;
       } else if (params.state === ProviderState.SignedIn && params.name === 'MgtMsal2Provider') {
         providerInitCode = `
-          import { Providers, Msal2Provider, LoginType } from "${mgtScriptName}";
+          import { Providers, Msal2Provider, LoginType } from "${resolveScript()}";
           Providers.globalProvider = new Msal2Provider({
             clientId: "${CLIENTID}",
             loginType: LoginType.Popup,
@@ -219,15 +226,17 @@ export const withCodeEditor = makeDecorator({
           let doc = storyElement.contentDocument;
 
           let { html, css, js } = editor.files;
+          // strip the preview import, we include it in the resolved script
+          js = js.replace(/import '@microsoft\/mgt-components\/dist\/es6\/components\/preview'/gm, ``);
           js = js.replace(
             /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
-            `import {$1} from '${mgtScriptName}';`
+            `import {$1} from '${resolveScript()}';`
           );
 
           const docContent = `
           <html>
             <head>
-              <script type="module" src="${mgtScriptName}"></script>
+              <script type="module" src="${resolveScript()}"></script>
               <script type="module">
                 ${providerInitCode}
               </script>

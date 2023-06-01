@@ -32,6 +32,9 @@ export const MaxPages = () => html`
   <mgt-picker resource="me/messages" scopes="mail.read" placeholder="Select a message" key-name="subject" max-pages="2"></mgt-picker>
 `;
 
+export const SelectedValue = () => html`
+  <mgt-picker resource="/groups" selected-value="Activewear" scopes="group.read.all" key-name="displayName"></mgt-picker>
+`;
 export const CacheEnabled = () => html`
   <mgt-picker resource="/groups" placeholder="Select a group" scopes="group.read.all" key-name="displayName" cache-enabled="true" cache-invalidation-period="50000"></mgt-picker>
 `;
