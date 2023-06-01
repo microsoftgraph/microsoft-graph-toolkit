@@ -28,6 +28,7 @@ Providers.globalProvider = new Msal2Provider({
     'ChatMember.ReadWrite',
     'ChatMessage.Send',
     'Files.Read',
+    'Files.Read.All',
     'Files.ReadWrite.All',
     'Group.Read.All',
     'Group.ReadWrite.All',
