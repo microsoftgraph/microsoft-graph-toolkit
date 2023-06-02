@@ -7,6 +7,7 @@
 
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
@@ -146,6 +147,19 @@ export class MgtPicker extends MgtTemplatedComponent {
   })
   public cacheInvalidationPeriod = 0;
 
+  /**
+   * Sets the currently selected value for the picker
+   * Must be present as an option in the supplied data returned from the the underlying graph query
+   *
+   * @type {string}
+   * @memberof MgtPicker
+   */
+  @property({
+    attribute: 'selected-value',
+    type: String
+  })
+  public selectedValue: string;
+
   private isRefreshing: boolean;
 
   @state() private response: Entity[];
@@ -213,12 +227,13 @@ export class MgtPicker extends MgtTemplatedComponent {
   protected renderPicker(): TemplateResult {
     return mgtHtml`
       <fluent-combobox
-        part="combobox"
-        class="combobox"
+        @keydown=${this.handleComboboxKeydown}>
+        current-value=${ifDefined(this.selectedValue)}
+        part="picker"
+        class="picker"
         id="combobox"
         autocomplete="list"
-        placeholder=${this.placeholder}
-        @keydown=${this.handleComboboxKeydown}>
+        placeholder=${this.placeholder}>
         ${this.response.map(
           item => html`
           <fluent-option
