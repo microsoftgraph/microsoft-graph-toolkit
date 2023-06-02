@@ -55,6 +55,8 @@ type ColorScheme = {
    * @type {number}
    */
   baseLayerLuminance: number;
+
+  designTokenOverrides?: Record<string, string>;
 };
 
 /**
@@ -67,6 +69,14 @@ const applyColorScheme = (settings: ColorScheme, element: HTMLElement = document
   accentBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.accentBaseColor)));
   neutralBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.neutralBaseColor)));
   baseLayerLuminance.setValueFor(element, settings.baseLayerLuminance);
+  // put this work on the macro queue so that it happens after promise based/reactive work of setting the base colors above
+  if (settings.designTokenOverrides) {
+    setTimeout(() => {
+      Object.entries(settings.designTokenOverrides).forEach(([key, value]) => {
+        element.style.setProperty(key, value);
+      });
+    });
+  }
 };
 
 /**
@@ -93,7 +103,30 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
       return {
         accentBaseColor: '#479ef5',
         neutralBaseColor: '#adadad',
-        baseLayerLuminance: StandardLuminance.DarkMode
+        baseLayerLuminance: StandardLuminance.DarkMode,
+        designTokenOverrides: {
+          '--accent-fill-rest': '#115ea3',
+          '--accent-fill-hover': '#0f6cbd',
+          '--accent-fill-active': '#0c3b5e',
+          '--accent-fill-focus': '#0f548c',
+          '--accent-foreground-rest': '#479EF5',
+          '--accent-foreground-hover': '#62abf5',
+          '--accent-foreground-active': '#2886de',
+          '--accent-foreground-focus': '#479ef5',
+          '--accent-stroke-control-rest': '#115ea3',
+          '--accent-stroke-control-hover': '#0f6cbd',
+          '--accent-stroke-control-active': '#0c3b5e',
+          '--accent-stroke-control-focus': '#0f548c',
+          // foreground on accents
+          '--foreground-on-accent-rest': '#ffffff',
+          '--foreground-on-accent-active': '#ffffff',
+          '--foreground-on-accent-rest-large': '#ffffff',
+          '--foreground-on-accent-hover': '#ffffff',
+          '--foreground-on-accent-hover-large': '#ffffff',
+          '--foreground-on-accent-active-large': '#ffffff',
+          '--foreground-on-accent-focus': '#ffffff',
+          '--foreground-on-accent-focus-large': '#ffffff'
+        }
       };
     case 'light':
     default:
