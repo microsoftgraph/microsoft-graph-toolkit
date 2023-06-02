@@ -9,10 +9,10 @@ import { CSSResult, html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { customElement, MgtBaseComponent } from '@microsoft/mgt-element';
 import { fluentSearch } from '@fluentui/web-components';
-import { registerFluentComponents } from '../../utils/FluentComponents';
+import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { strings } from './strings';
 import { styles } from './mgt-search-box-css';
-import { debounce } from '../../utils/Utils';
+import { debounce } from '../../../utils/Utils';
 
 registerFluentComponents(fluentSearch);
 
