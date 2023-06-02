@@ -15,7 +15,7 @@ $show-more-button-font-size: var(--show-more-button-font-size, 12px);
 $show-more-button-padding: var(--show-more-button-padding, 6px);
 $show-more-button-border-bottom-right-radius: var(--show-more-button-border-bottom-right-radius, 8px);
 $show-more-button-border-bottom-left-radius: var(--show-more-button-border-bottom-left-radius, 8px);
-$show-more-button-background-color--hover: var(--show-more-button-background-color--hover, $show_more_button_hover);
+$show-more-button-background-color--hover: var(--show-more-button-background-color--hover, $show-more-button-hover);
 $progress-ring-size: var(--progress-ring-size, 24px);
 
 :host {
