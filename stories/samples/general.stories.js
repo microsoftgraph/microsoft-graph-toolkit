@@ -162,10 +162,10 @@ export const cache = () => html`
   </script>
 `;
 export const theme = () => html`
-  <div class="mgt-light">
+  <div class="mgt-light root">
     <header class="mgt-dark">
       <p>I should be dark, regional class</p>
-      <mgt-teams-channel-picker></mgt-teams-channel-picker>
+      <mgt-people-picker></mgt-people-picker>
       <div class="mgt-light">
         <p>I should be light, second level regional class</p>
         <mgt-teams-channel-picker></mgt-teams-channel-picker>
@@ -183,6 +183,10 @@ export const theme = () => html`
     <mgt-teams-channel-picker class="mgt-foo"></mgt-teams-channel-picker>
   </div>
   <style>
+    .root {
+      --focus-ring-color: red;
+      --focus-ring-style: solid;
+    }
     .custom1 {
       --input-border: 2px solid teal;
       --input-background-color: #33c2c2;

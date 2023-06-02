@@ -67,6 +67,10 @@ $button-padding: var(--login-button-padding, 0);
         }
       }
     }
+
+    &:focus-visible {
+      outline-style: $focus-ring-style;
+    }
   }
 
   fluent-card {
