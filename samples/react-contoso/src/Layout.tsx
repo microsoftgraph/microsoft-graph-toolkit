@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import { Header } from './components/Header';
 import { SideNavigation } from './components/SideNavigation/SideNavigation';
 import { HomePage } from './pages/HomePage';
@@ -57,7 +57,7 @@ export const Layout: React.FunctionComponent = theme => {
   return (
     <FluentProvider theme={appContext.state.theme.fluentTheme}>
       <div className={mergeClasses('page', appContext.state.theme.key === 'dark' ? styles.mgtFluent : '')}>
-        <BrowserRouter>
+        <HashRouter>
           <Header></Header>
           <div className="main">
             <div
@@ -82,7 +82,7 @@ export const Layout: React.FunctionComponent = theme => {
               </Switch>
             </div>
           </div>
-        </BrowserRouter>
+        </HashRouter>
       </div>
     </FluentProvider>
   );
