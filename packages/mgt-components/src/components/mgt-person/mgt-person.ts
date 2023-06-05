@@ -1303,7 +1303,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   };
 
-  private showPersonCard = () => {
+  public showPersonCard = () => {
     if (!this._personCardShouldRender) {
       this._personCardShouldRender = true;
     }
