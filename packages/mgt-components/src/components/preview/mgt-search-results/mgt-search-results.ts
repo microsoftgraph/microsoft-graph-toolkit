@@ -214,8 +214,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     attribute: 'scopes',
     converter: (value, type) => {
       return value ? value.toLowerCase().split(',') : null;
-    },
-    reflect: true
+    }
   })
   public scopes: string[] = [];
 
@@ -229,8 +228,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     attribute: 'content-sources',
     converter: (value, type) => {
       return value ? value.toLowerCase().split(',') : null;
-    },
-    reflect: true
+    }
   })
   public contentSources: string[] = [];
 
@@ -1246,7 +1244,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     }
 
     if (this.version === 'beta') {
-      requestOptions.query.queryString = this.queryTemplate ? this.queryTemplate : undefined;
+      (requestOptions as BetaSearchRequest).query.queryTemplate = this.queryTemplate ? this.queryTemplate : undefined;
     }
 
     return requestOptions;

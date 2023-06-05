@@ -44,11 +44,13 @@ export const events = () => html`
   <!-- See js tab for event subscription -->
 
   <mgt-search-box></mgt-search-box>
+  <mgt-search-results entity-types="driveItem"></mgt-search-results>
   <script>
     import '@microsoft/mgt-components/dist/es6/components/preview';
     const searchBox = document.querySelector('mgt-search-box');
+    const searchResults = document.querySelector('mgt-search-results');
     searchBox.addEventListener('searchTermChanged', (e) => {
-      console.log(e.detail);
-    })
+      searchResults.queryString = e.detail;
+    });
   </script>
 `;

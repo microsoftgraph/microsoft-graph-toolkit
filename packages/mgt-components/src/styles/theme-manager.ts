@@ -7,7 +7,25 @@
 
 import {
   accentBaseColor,
+  accentFillActive,
+  accentFillFocus,
+  accentFillHover,
+  accentFillRest,
+  accentForegroundActive,
+  accentForegroundFocus,
+  accentForegroundHover,
+  accentForegroundRest,
+  accentStrokeControlActive,
+  accentStrokeControlFocus,
+  accentStrokeControlHover,
+  accentStrokeControlRest,
   baseLayerLuminance,
+  foregroundOnAccentActive,
+  foregroundOnAccentFocus,
+  foregroundOnAccentHover,
+  foregroundOnAccentRecipe,
+  foregroundOnAccentRest,
+  foregroundOnAccentRestLarge,
   neutralBaseColor,
   StandardLuminance,
   SwatchRGB
@@ -56,7 +74,10 @@ type ColorScheme = {
    */
   baseLayerLuminance: number;
 
-  designTokenOverrides?: Record<string, string>;
+  /**
+   * Optional function to override design tokens
+   */
+  designTokenOverrides?: (element: HTMLElement) => void;
 };
 
 /**
@@ -69,14 +90,7 @@ const applyColorScheme = (settings: ColorScheme, element: HTMLElement = document
   accentBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.accentBaseColor)));
   neutralBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.neutralBaseColor)));
   baseLayerLuminance.setValueFor(element, settings.baseLayerLuminance);
-  // put this work on the macro queue so that it happens after promise based/reactive work of setting the base colors above
-  if (settings.designTokenOverrides) {
-    setTimeout(() => {
-      Object.entries(settings.designTokenOverrides).forEach(([key, value]) => {
-        element.style.setProperty(key, value);
-      });
-    });
-  }
+  settings.designTokenOverrides?.(element);
 };
 
 /**
@@ -104,28 +118,24 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
         accentBaseColor: '#479ef5',
         neutralBaseColor: '#adadad',
         baseLayerLuminance: StandardLuminance.DarkMode,
-        designTokenOverrides: {
-          '--accent-fill-rest': '#115ea3',
-          '--accent-fill-hover': '#0f6cbd',
-          '--accent-fill-active': '#0c3b5e',
-          '--accent-fill-focus': '#0f548c',
-          '--accent-foreground-rest': '#479EF5',
-          '--accent-foreground-hover': '#62abf5',
-          '--accent-foreground-active': '#2886de',
-          '--accent-foreground-focus': '#479ef5',
-          '--accent-stroke-control-rest': '#115ea3',
-          '--accent-stroke-control-hover': '#0f6cbd',
-          '--accent-stroke-control-active': '#0c3b5e',
-          '--accent-stroke-control-focus': '#0f548c',
-          // foreground on accents
-          '--foreground-on-accent-rest': '#ffffff',
-          '--foreground-on-accent-active': '#ffffff',
-          '--foreground-on-accent-rest-large': '#ffffff',
-          '--foreground-on-accent-hover': '#ffffff',
-          '--foreground-on-accent-hover-large': '#ffffff',
-          '--foreground-on-accent-active-large': '#ffffff',
-          '--foreground-on-accent-focus': '#ffffff',
-          '--foreground-on-accent-focus-large': '#ffffff'
+        designTokenOverrides: element => {
+          accentFillRest.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#115ea3')));
+          accentFillHover.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0f6cbd')));
+          accentFillActive.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0c3b5e')));
+          accentFillFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0f548c')));
+          accentForegroundRest.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#479EF5')));
+          accentForegroundHover.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#62abf5')));
+          accentForegroundActive.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#2886de')));
+          accentForegroundFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#479ef5')));
+          accentStrokeControlRest.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#115ea3')));
+          accentStrokeControlHover.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0f6cbd')));
+          accentStrokeControlActive.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0c3b5e')));
+          accentStrokeControlFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0f548c')));
+          foregroundOnAccentActive.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
+          foregroundOnAccentRest.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
+          foregroundOnAccentRestLarge.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
+          foregroundOnAccentHover.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
+          foregroundOnAccentFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
         }
       };
     case 'light':
