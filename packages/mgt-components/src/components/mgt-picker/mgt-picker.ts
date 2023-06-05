@@ -227,7 +227,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   protected renderPicker(): TemplateResult {
     return mgtHtml`
       <fluent-combobox
-        @keydown=${this.handleComboboxKeydown}>
+        @keydown=${this.handleComboboxKeydown}
         current-value=${ifDefined(this.selectedValue)}
         part="picker"
         class="picker"
