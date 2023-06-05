@@ -42,7 +42,7 @@
         /* eslint-enable object-shorthand */
       })
     );
-  };</script><meta name="theme-color" content="#F6F9FC"/><link rel="shortcut icon" type="image/png" href="/favicon.png"/><link rel="manifest" href="manifest.json"/><script>navigator.serviceWorker.register("sw.js");</script><footer class="storybook-footer">Microsoft Graph Toolkit (v<span id="mgt-version"></span>) Playground was founded by Microsoft as a community guided, open source project. <a tabindex="-1" href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a> <a tabindex="-1" href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Term of use</a></footer><script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script><script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script><script type="module" src="https://unpkg.com/@fluentui/web-components@2"></script><script>const xmlns = "http://www.w3.org/2000/svg";
+  };</script><meta name="theme-color" content="#F6F9FC"/><link rel="shortcut icon" type="image/png" href="/favicon.png"/><link rel="manifest" href="manifest.json"/><script>navigator.serviceWorker.register("sw.js");</script><footer class="storybook-footer">Microsoft Graph Toolkit (v<span id="mgt-version"></span>) Playground was founded by Microsoft as a community guided, open source project. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a> <a href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Terms of use</a></footer><script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script><script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script><script type="module" src="https://unpkg.com/@fluentui/web-components@2"></script><script>const xmlns = "http://www.w3.org/2000/svg";
 
   var config = {
     autoCapture: {
@@ -56,7 +56,6 @@
 
   window.onload = () => {
     addUsefulLinks();
-    setUpBottomBar();
   }
 
   function addUsefulLinks() {
@@ -182,80 +181,7 @@
     svgElem.appendChild(svgElemPath);
     return svgElem;
   }
-  const windowWidth = window.innerWidth;
-  // Whenever the browser zoom is added or reduced, as long as it's
-  // over 100%, then get the footer height and set that as the value
-  // of the bottom offset of the bar.
-  const updateOnZoom = () => {
-    const pr = window.devicePixelRatio;
-    // Add an event listener to get any zoom changes based on
-    // on the resolution.
-    matchMedia(`(resolution: ${pr}dppx)`).addEventListener("change", updateOnZoom, {
-      once: true,
-    });
-
-    if ((pr * 100).toFixed(0) > 110) {
-      return setUpBottomBar();
-    }
-    return;
-  };
-
-  // Whenever the browser is resized, also get the footer height and set the
-  // bottom bar value offset to it.
-  const updateOnWindowResize = () => {
-    if (windowWidth.innerWidth != windowWidth) {
-      setUpBottomBar();
-    }
-    window.addEventListener("resize", updateOnWindowResize, {
-      once: true,
-    });
-    return;
-  };
-
-  const updateOnOrientationChange = () => {
-    const orientation = window.matchMedia("(orientation: landscape)");
-    updateBottomBar();
-    // This is just to detect whether there has been an orientation change
-    // By default we expect to be in landscape so just in case it's something
-    // else, we still do the updates.
-    orientation.addEventListener("change", updateOnOrientationChange, {
-      once: true,
-    });
-  };
-
-  const setUpBottomBar = () => {
-    const pr = (window.devicePixelRatio * 100).toFixed(0);
-    // This is a special case. When zooming in, in the first instance the content
-    // has to make the side bar disappear, the content takes a while to load. This
-    // makes the bottom bar unavailable hence it's hidden when the content loads.
-    // This delay should allow that to happen so that we are able to do get the
-    // bottom bar when we query it after 3 seconds.
-    if (pr > 190 && pr < 310) {
-      sleep(3000)
-        .then(() => {
-          updateBottomBar();
-        })
-        .catch(() => { });
-    }
-    return updateBottomBar();
-  };
-
-  function updateBottomBar() {
-    const footer = document.getElementsByClassName("storybook-footer")[0];
-    const bottomBar = document.getElementsByClassName("css-1td7bem");
-    if (bottomBar && bottomBar.length > 0) {
-      bottomBar[0].style.bottom = `${footer.clientHeight}px`;
-    }
-    return;
-  }
-
-  function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  updateOnZoom();
-  updateOnWindowResize();
-  updateOnOrientationChange();</script><style>.css-bt79wf>svg>path,
+  const windowWidth = window.innerWidth;</script><style>.css-bt79wf>svg>path,
   .css-1j9r8vi>svg>path {
     color: rgba(153, 153, 153, 0.6) !important;
     fill: rgba(153, 153, 153, 0.6) !important;
@@ -329,26 +255,7 @@
     .os-scrollbar>.os-scrollbar-track {
       border: 1px solid transparent;
     }
-  }</style><style>/* don't show the footer on mobile */
-  @media (max-width: 599px) {
-    .storybook-footer {
-        display: none !important;
-    }
-  }
-
-  /* this keeps the storybook body area above footer */
-  @media (max-width: 768px) {
-    #root>div:first-of-type {
-      height: calc(100% - 50px);
-    }
-  }
-
-  @media (min-width: 769px) {
-    #root>div:first-of-type {
-      height: calc(100% - 40px);
-    }
-  }
-  .sidebar-header button {
+  }</style><style>.sidebar-header button {
     display: none !important;
   }
 
@@ -417,7 +324,22 @@
   }
   .search-field {
     display: none !important;
-  }</style><style>#root[hidden],
+  }</style><script>let attempts = 0;
+  // Uses setInterval to wait for the sidebar to be rendered into the page
+  // interval is cleared on success or after 100 tries (10 seconds)
+  const retry = setInterval(() => {
+    attempts++;
+    if (attempts > 100) {
+      clearInterval(retry);
+      return;
+    }
+    const footer = document.querySelector('footer');
+    const sidebar = document.querySelector('nav.sidebar-container');
+    if (!sidebar) return;
+    sidebar.parentElement.appendChild(footer);
+    sidebar.style.height = `calc(100% - ${footer.clientHeight}px)`;
+    clearInterval(retry);
+  }, 100)</script><style>#root[hidden],
       #docs-root[hidden] {
         display: none !important;
       }</style></head><body><div id="root"></div><div id="docs-root"></div><script>window['CONFIG_TYPE'] = "PRODUCTION";
@@ -436,4 +358,4 @@
           
       
           
-            window['DOCS_MODE'] = false;</script><script src="runtime~main.c7fb3f3b3e1ff13bb644.manager.bundle.js"></script><script src="vendors~main.b6db650e78deede380c7.manager.bundle.js"></script><script src="main.abd9b71e5ca93f1a15da.manager.bundle.js"></script></body></html>
+            window['DOCS_MODE'] = false;</script><script src="runtime~main.c7fb3f3b3e1ff13bb644.manager.bundle.js"></script><script src="vendors~main.14b766c48957fbf4401f.manager.bundle.js"></script><script src="main.0fe9f416bdd1cda1f874.manager.bundle.js"></script></body></html>
