@@ -34,6 +34,17 @@ import { strings } from './strings';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { isElementDark } from '../../utils/isDark';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+import {
+  fluentSelect,
+  fluentOption,
+  fluentTextField,
+  fluentButton,
+  fluentCheckbox,
+  fluentSkeleton
+} from '@fluentui/web-components';
+
+registerFluentComponents(fluentSelect, fluentOption, fluentTextField, fluentButton, fluentCheckbox, fluentSkeleton);
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -1333,7 +1344,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         @click=${(e: MouseEvent) => this.handlePeopleClick(e, task)}
         @keydown=${(e: KeyboardEvent) => this.handlePeopleKeydown(e, task)}>
           <template data-type="no-data">
-            <span style="display:flex;place-content:center;gap:4px;">
+            <span style="display:flex;place-content:start;gap:4px;padding-inline-start:4px">
               <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="svg" fill="currentColor">
                 <path d="M9 2a4 4 0 100 8 4 4 0 000-8zM6 6a3 3 0 116 0 3 3 0 01-6 0z"></path>
                 <path d="M4 11a2 2 0 00-2 2c0 1.7.83 2.97 2.13 3.8A9.14 9.14 0 009 18c.41 0 .82-.02 1.21-.06A5.5 5.5 0 019.6 17 12 12 0 019 17a8.16 8.16 0 01-4.33-1.05A3.36 3.36 0 013 13a1 1 0 011-1h5.6c.18-.36.4-.7.66-1H4z"></path>
@@ -1356,7 +1367,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         class=${classMap(taskAssigneeClasses)}
         @closed=${() => this.updateAssignedPeople(task)}>
           <div slot="anchor">${assignedPeopleTemplate}</div>
-          <div slot="flyout" class="Picker">${picker}</div>
+          <div slot="flyout" part="picker" class="picker">${picker}</div>
       </mgt-flyout>
     `;
   }
