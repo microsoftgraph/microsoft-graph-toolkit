@@ -1,4 +1,4 @@
-import { SearchBox, SearchResults } from '@microsoft/mgt-react';
+import { SearchBox, SearchResults } from '@microsoft/mgt-react/dist/es6/generated/react-preview';
 import * as React from 'react';
 
 export const PeopleResults: React.FunctionComponent = () => {
