@@ -44,6 +44,10 @@ const updateSpfxSolutionVersion = (solutions, version) => {
   if (isPreview) {
     version = version.replace(/-preview\./, '.');
   }
+  const isRC = version.indexOf('-rc') > 0;
+  if (isRC) {
+    version = version.replace(/-rc\./, '.');
+  }
   for (let solution of solutions) {
     console.log(`updating spfx solution ${solution} with version ${version}`);
     const data = fs.readFileSync(solution, 'utf8');
