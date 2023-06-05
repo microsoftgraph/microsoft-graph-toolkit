@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// THIS FILE IS AUTO GENERATED
-// ANY CHANGES WILL BE LOST DURING BUILD
-
-export const PACKAGE_VERSION = '3.0.0-rc.1';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+import 'whatwg-fetch';
+import '@webcomponents/webcomponentsjs/webcomponents-bundle';
+export * from '../preview';
