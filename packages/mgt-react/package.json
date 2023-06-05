@@ -41,8 +41,8 @@
     "wc-react": "^0.5.0"
   },
   "peerDependencies": {
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react": "^17.0.1 || ^18.0.0",
+    "react-dom": "^17.0.1 || ^18.0.0"
   },
   "publishConfig": {
     "access": "public"
