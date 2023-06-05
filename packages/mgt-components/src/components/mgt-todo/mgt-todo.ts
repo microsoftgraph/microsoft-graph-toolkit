@@ -209,6 +209,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const cancelIcon = html`
       <fluent-button
+        aria-label=${this.strings.cancelAddingTask}
         class="task-cancel-icon" 
         @click="${this.clearNewTaskData}">
         ${getSvg(SvgIcon.Cancel)}
