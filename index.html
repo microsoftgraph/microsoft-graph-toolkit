@@ -26,6 +26,11 @@
         font-family: var(--body-font);
         padding: 24px 12px;
       }
+      .right-align {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+      }
     </style>
   </head>
 
@@ -44,7 +49,9 @@
     <h1>Developer test page</h1>
     <main>
       <h2>mgt-login</h2>
-      <mgt-login login-view="compact"></mgt-login>
+      <div class="right-align">
+        <mgt-login login-view="compact"></mgt-login>
+      </div>
       <mgt-login></mgt-login>
       <h2>mgt-person me query two lines card on click with presence</h2>
       <!-- <mgt-person person-query="me" view="twoLines" person-card="click" show-presence></mgt-person> -->
