@@ -95,7 +95,6 @@ class MgtThemeToggle extends MgtBaseComponent {
 
   private onSwitchChanged = (e: Event) => {
     this.darkModeActive = (e.target as HTMLInputElement).checked;
-    this.fireCustomEvent('darkmodechanged', this.darkModeActive);
   };
 
   private applyTheme(active: boolean) {
@@ -104,5 +103,6 @@ class MgtThemeToggle extends MgtBaseComponent {
 
     document.body.classList.remove('mgt-dark-mode', 'mgt-light-mode');
     document.body.classList.add(`mgt-${targetTheme}-mode`);
+    this.fireCustomEvent('darkmodechanged', this.darkModeActive, true, false, true);
   }
 }
