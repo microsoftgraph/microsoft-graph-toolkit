@@ -396,6 +396,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             placeholder="${!!this._selectedItemState ? '' : this.strings.inputPlaceholderText} "
             label="teams-channel-picker-input"
             @click=${this.gainedFocus}
+            @keydown=${this.handleInputKeydown}
             @keyup=${(e: KeyboardEvent) => this.handleInputChanged(e)}>
               <div slot="start" style="width: max-content;">${this.renderSelected()}</div>
               <div slot="end">${this.renderChevrons()}${this.renderCloseButton()}</div>
@@ -406,6 +407,19 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         </div>`
     );
   }
+
+  handleInputKeydown = (e: KeyboardEvent) => {
+    const keyName = e.key;
+    if (keyName === 'ArrowDown') {
+      if (!this._isDropdownVisible) {
+        this.gainedFocus();
+      } else {
+        // focus on the first item on the list. Ideally, focus on the selected.
+        const firstTreeItem = this.renderRoot.querySelector<HTMLElement>('fluent-tree-item');
+        firstTreeItem.focus();
+      }
+    }
+  };
 
   /**
    * Renders selected channel
