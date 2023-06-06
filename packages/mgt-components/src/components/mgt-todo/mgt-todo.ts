@@ -20,6 +20,7 @@ import '../sub-components/mgt-dot-options/mgt-dot-options';
 import {
   createTodoTask,
   deleteTodoTask,
+  getTodoTaskList,
   getTodoTasks,
   TaskStatus,
   TodoTask,
@@ -178,18 +179,21 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   /**
-   * Render the generic picker.
+   * Render the generic picker or the task list displayName.
    *
    */
   protected renderPicker() {
-    return mgtHtml`
-      <mgt-picker
-        resource="me/todo/lists"
-        scopes="tasks.read, tasks.readwrite"
-        key-name="displayName"
-        placeholder="Select a task list"
-      ></mgt-picker>
-        `;
+    if (this.targetId) {
+      return html`<p>${this.currentList?.displayName}</p>`;
+    } else {
+      return mgtHtml`
+        <mgt-picker
+          resource="me/todo/lists"
+          scopes="tasks.read, tasks.readwrite"
+          key-name="displayName"
+          placeholder="Select a task list">
+        </mgt-picker>`;
+    }
   }
 
   /**
@@ -300,9 +304,8 @@ export class MgtTodo extends MgtTasksBase {
    */
 
   protected handleSelectionChanged = (e: CustomEvent<TodoTaskList>) => {
-    const list: TodoTaskList = e.detail;
-    this.currentList = list;
-    void this.loadTasks(list);
+    this.currentList = e.detail as TodoTaskList;
+    void this.loadTasks(this.currentList);
   };
 
   /**
@@ -413,9 +416,11 @@ export class MgtTodo extends MgtTasksBase {
       this._graph = graph;
     }
 
-    const currentList = this.currentList;
-    if (currentList) {
-      await this.loadTasks(currentList);
+    if (this.targetId) {
+      // Call to get the displayName of the list
+      this.currentList = await getTodoTaskList(this._graph, this.targetId);
+      this._tasks = await getTodoTasks(this._graph, this.targetId);
+      this._isLoadingTasks = false;
     }
   };
 
