@@ -773,7 +773,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         id="people-picker-input"
         role="combobox"
         placeholder=${placeholder}
-        aria-label=${this.ariaLabel || this.strings.selectContact || placeholder}
+        aria-label=${this.ariaLabel || placeholder || this.strings.selectContact}
         @click="${this.handleInputClick}"
         @focus="${this.gainedFocus}"
         @keydown="${this.onUserKeyDown}"
