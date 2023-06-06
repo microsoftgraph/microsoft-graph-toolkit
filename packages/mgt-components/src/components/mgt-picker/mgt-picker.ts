@@ -309,7 +309,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       value = fluentOptionEl.getAttribute('value');
     }
 
-    if (['Enter', 'Tab'].includes(keyName)) {
+    if (['Enter'].includes(keyName)) {
       if (value) {
         item = this.response.filter(res => res.id === value).pop();
         this.fireCustomEvent('selectionChanged', item, true, false, true);
