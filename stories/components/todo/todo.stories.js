@@ -29,6 +29,10 @@ export const tasksWithTargetId = () => html`
   <mgt-todo target-id="AQMkADhiZTI2MGUyLTZjYmUtNDNlYS05YTJkLWNmNzA4MTIwNWI5YQAuAAAD7zBnIbVuBE6ECinrQyLxwwEAcUAkVjKRgUeDolDvaYAd0AAAAgESAAAA"></mgt-todo>
 `;
 
+export const tasksWithInitialId = () => html`
+  <mgt-todo initial-id="AQMkADhiZTI2MGUyLTZjYmUtNDNlYS05YTJkLWNmNzA4MTIwNWI5YQAuAAAD7zBnIbVuBE6ECinrQyLxwwEAcUAkVjKRgUeDolDvaYAd0AAAAgESAAAA"></mgt-todo>
+`;
+
 export const ReadOnly = () => html`
   <mgt-todo read-only></mgt-todo>
 `;

@@ -32,6 +32,7 @@ import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentCheckbox, fluentRadioGroup, fluentButton } from '@fluentui/web-components';
 import { isElementDark } from '../../utils/isDark';
+import { ifDefined } from 'lit/directives/if-defined';
 
 registerFluentComponents(fluentCheckbox, fluentRadioGroup, fluentButton);
 
@@ -191,6 +192,7 @@ export class MgtTodo extends MgtTasksBase {
           resource="me/todo/lists"
           scopes="tasks.read, tasks.readwrite"
           key-name="displayName"
+          selected-value="${ifDefined(this.currentList?.displayName)}"
           placeholder="Select a task list">
         </mgt-picker>`;
     }
@@ -411,6 +413,7 @@ export class MgtTodo extends MgtTasksBase {
       return;
     }
 
+    this._isLoadingTasks = true;
     if (!this._graph) {
       const graph = provider.graph.forComponent(this);
       this._graph = graph;
@@ -420,8 +423,12 @@ export class MgtTodo extends MgtTasksBase {
       // Call to get the displayName of the list
       this.currentList = await getTodoTaskList(this._graph, this.targetId);
       this._tasks = await getTodoTasks(this._graph, this.targetId);
-      this._isLoadingTasks = false;
+    } else if (this.initialId) {
+      // Call to get the displayName of the list
+      this.currentList = await getTodoTaskList(this._graph, this.initialId);
+      this._tasks = await getTodoTasks(this._graph, this.initialId);
     }
+    this._isLoadingTasks = false;
   };
 
   /**
