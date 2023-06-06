@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/tslint/config */
 /**
  * -------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
