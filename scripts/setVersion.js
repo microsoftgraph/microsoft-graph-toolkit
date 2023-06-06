@@ -52,9 +52,10 @@ const updateSpfxSolutionVersion = (solutions, version) => {
     console.log(`updating spfx solution ${solution} with version ${version}`);
     const data = fs.readFileSync(solution, 'utf8');
 
-    const result = isPreview
-      ? data.replace(/"version": "(.*)"/g, `"version": "${version}"`)
-      : data.replace(/"version": "(.*)"/g, `"version": "${version}.0"`);
+    const result =
+      isPreview || isRC
+        ? data.replace(/"version": "(.*)"/g, `"version": "${version}"`)
+        : data.replace(/"version": "(.*)"/g, `"version": "${version}.0"`);
 
     fs.writeFileSync(solution, result, 'utf8');
   }
