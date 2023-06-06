@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "edge",
+      "type": "msedge",
       "request": "launch",
       "name": "Launch Edge Canary against localhost",
       "url": "http://localhost:3000",
@@ -13,7 +13,7 @@
       "version": "canary"
     },
     {
-      "type": "edge",
+      "type": "msedge",
       "request": "launch",
       "name": "Launch Edge Dev against localhost",
       "url": "http://localhost:3000",
@@ -28,6 +28,14 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "port": 9229
+    },
+    {
+      "name": "Tests debug (Edge)",
+      "request": "launch",
+      "type": "msedge",
+      "url": "http://localhost:8000/",
+      "webRoot": "${workspaceRoot}",
+      "sourceMaps": true
     }
   ]
 }

@@ -70,7 +70,9 @@
     "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static",
     "setLicense": "gulp setLicense",
     "test": "jest",
-    "version:tsc": "tsc -v"
+    "version:tsc": "tsc -v",
+    "wtr": "wtr",
+    "wtr:watch": "wtr --watch"
   },
   "storybook-deployer": {
     "gitUsername": "@microsoft/mgt",
@@ -101,6 +103,9 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.2.4",
+    "@types/mocha": "10.0.1",
+    "@types/chai-dom": "^0.0.8",
+    "@types/lodash-es": "^4.17.6",
     "@types/node": "12.12.22",
     "@types/react": "^17.0.00",
     "@types/react-dom": "^17.0.0",
@@ -109,6 +114,7 @@
     "@typescript-eslint/parser": "^5.54.0",
     "@web/dev-server": "^0.1.10",
     "@webcomponents/webcomponentsjs": "^2.5.0",
+    "autoprefixer": "10.4.13",
     "babel-loader": "^8.2.1",
     "core-js": "^3.7.0",
     "cpx": "^1.5.0",
@@ -161,7 +167,13 @@
     "ts-jest": "^29.0.3",
     "typescript": "^4.9.4",
     "web-component-analyzer": "^1.1.6",
-    "whatwg-fetch": "^3.6.2"
+    "whatwg-fetch": "^3.6.2",
+    "tailwindcss": "3.2.4",
+    "sinon": "15.0.1",
+    "@open-wc/testing": "3.1.7",
+    "@web/test-runner": "0.15.0",
+    "@web/dev-server-esbuild": "0.3.3",
+    "@web/test-runner-playwright": "0.9.0"
   },
   "husky": {
     "hooks": {

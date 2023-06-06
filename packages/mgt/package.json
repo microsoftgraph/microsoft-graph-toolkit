@@ -27,8 +27,8 @@
   "scripts": {
     "build": "npm-run-all clean build:compile build:bundle",
     "build:bundle": "npm-run-all copy:loader copy:wc sass rollup",
-    "build:compile": "npm-run-all sass compile",
-    "build:watch": "npm-run-all -p sass:watch compile:watch",
+    "build:compile": "npm-run-all tailwind sass compile",
+    "build:watch": "npm-run-all -p tailwind:watch sass:watch compile:watch",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
@@ -37,6 +37,8 @@
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts",
     "rollup": "rollup -c",
+    "tailwind": "cross-env postcss ./tailwind.css -o ../mgt-components/src/styles/tailwind-styles.css",
+    "tailwind:watch": "cross-env TAILWIND_MODE=watch postcss ./tailwind.css -o ../mgt-components/src/styles/tailwind-styles.css --watch",
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd .",
     "test": "jest",
@@ -51,7 +53,11 @@
     "@microsoft/mgt-mock-provider": "*"
   },
   "devDependencies": {
-    "@webcomponents/webcomponentsjs": "^2.5.0"
+    "@webcomponents/webcomponentsjs": "^2.5.0",
+    "postcss": "8.4.19",
+    "postcss-cli": "10.1.0",
+    "cross-env": "7.0.3",
+    "cssnano": "6.0.1"
   },
   "jest-junit": {
     "suiteName": "jest tests",

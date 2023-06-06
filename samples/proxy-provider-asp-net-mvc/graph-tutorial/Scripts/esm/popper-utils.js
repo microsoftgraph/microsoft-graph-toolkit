@@ -76,9 +76,9 @@ function getScrollParent(element) {
   // Firefox want us to check `-x` and `-y` variations as well
 
   var _getStyleComputedProp = getStyleComputedProperty(element),
-      overflow = _getStyleComputedProp.overflow,
-      overflowX = _getStyleComputedProp.overflowX,
-      overflowY = _getStyleComputedProp.overflowY;
+    overflow = _getStyleComputedProp.overflow,
+    overflowX = _getStyleComputedProp.overflowX,
+    overflowY = _getStyleComputedProp.overflowY;
 
   if (/(auto|scroll|overlay)/.test(overflow + overflowY + overflowX)) {
     return element;
@@ -116,9 +116,11 @@ var isIE = function () {
   }
 
   //Set IE
-  cache.all = cache.all || Object.keys(cache).some(function (key) {
-    return cache[key];
-  });
+  cache.all =
+    cache.all ||
+    Object.keys(cache).some(function (key) {
+      return cache[key];
+    });
   return cache[version];
 };
 
@@ -151,7 +153,10 @@ function getOffsetParent(element) {
 
   // .offsetParent will return the closest TD or TABLE in case
   // no offsetParent is present, I hate this job...
-  if (['TD', 'TABLE'].indexOf(offsetParent.nodeName) !== -1 && getStyleComputedProperty(offsetParent, 'position') === 'static') {
+  if (
+    ['TD', 'TABLE'].indexOf(offsetParent.nodeName) !== -1 &&
+    getStyleComputedProperty(offsetParent, 'position') === 'static'
+  ) {
     return getOffsetParent(offsetParent);
   }
 
@@ -209,7 +214,7 @@ function findCommonOffsetParent(element1, element2) {
 
   // Both nodes are inside #document
 
-  if (element1 !== commonAncestorContainer && element2 !== commonAncestorContainer || start.contains(end)) {
+  if ((element1 !== commonAncestorContainer && element2 !== commonAncestorContainer) || start.contains(end)) {
     if (isOffsetContainer(commonAncestorContainer)) {
       return commonAncestorContainer;
     }
@@ -289,7 +294,18 @@ function getBordersSize(styles, axis) {
 }
 
 function getSize(axis, body, html, computedStyle) {
-  return Math.max(body['offset' + axis], body['scroll' + axis], html['client' + axis], html['offset' + axis], html['scroll' + axis], isIE(10) ? html['offset' + axis] + computedStyle['margin' + (axis === 'Height' ? 'Top' : 'Left')] + computedStyle['margin' + (axis === 'Height' ? 'Bottom' : 'Right')] : 0);
+  return Math.max(
+    body['offset' + axis],
+    body['scroll' + axis],
+    html['client' + axis],
+    html['offset' + axis],
+    html['scroll' + axis],
+    isIE(10)
+      ? html['offset' + axis] +
+          computedStyle['margin' + (axis === 'Height' ? 'Top' : 'Left')] +
+          computedStyle['margin' + (axis === 'Height' ? 'Bottom' : 'Right')]
+      : 0
+  );
 }
 
 function getWindowSizes() {
@@ -303,19 +319,21 @@ function getWindowSizes() {
   };
 }
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
+var _extends =
+  Object.assign ||
+  function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
 
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
       }
     }
-  }
 
-  return target;
-};
+    return target;
+  };
 
 /**
  * Given element offsets, generate an output similar to getBoundingClientRect
@@ -432,7 +450,11 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
     offsets.marginLeft = marginLeft;
   }
 
-  if (isIE10 && !fixedPosition ? parent.contains(scrollParent) : parent === scrollParent && scrollParent.nodeName !== 'BODY') {
+  if (
+    isIE10 && !fixedPosition
+      ? parent.contains(scrollParent)
+      : parent === scrollParent && scrollParent.nodeName !== 'BODY'
+  ) {
     offsets = includeScroll(offsets, parent);
   }
 
@@ -540,8 +562,8 @@ function getBoundaries(popper, reference, padding, boundariesElement) {
     // In case of HTML, we need a different computation
     if (boundariesNode.nodeName === 'HTML' && !isFixed(offsetParent)) {
       var _getWindowSizes = getWindowSizes(),
-          height = _getWindowSizes.height,
-          width = _getWindowSizes.width;
+        height = _getWindowSizes.height,
+        width = _getWindowSizes.width;
 
       boundaries.top += offsets.top - offsets.marginTop;
       boundaries.bottom = height + offsets.top;
@@ -564,7 +586,7 @@ function getBoundaries(popper, reference, padding, boundariesElement) {
 
 function getArea(_ref) {
   var width = _ref.width,
-      height = _ref.height;
+    height = _ref.height;
 
   return width * height;
 }
@@ -606,19 +628,25 @@ function computeAutoPlacement(placement, refRect, popper, reference, boundariesE
     }
   };
 
-  var sortedAreas = Object.keys(rects).map(function (key) {
-    return _extends({
-      key: key
-    }, rects[key], {
-      area: getArea(rects[key])
+  var sortedAreas = Object.keys(rects)
+    .map(function (key) {
+      return _extends(
+        {
+          key: key
+        },
+        rects[key],
+        {
+          area: getArea(rects[key])
+        }
+      );
+    })
+    .sort(function (a, b) {
+      return b.area - a.area;
     });
-  }).sort(function (a, b) {
-    return b.area - a.area;
-  });
 
   var filteredAreas = sortedAreas.filter(function (_ref2) {
     var width = _ref2.width,
-        height = _ref2.height;
+      height = _ref2.height;
     return width >= popper.clientWidth && height >= popper.clientHeight;
   });
 
@@ -669,14 +697,14 @@ function taskDebounce(fn) {
 var supportsMicroTasks = isBrowser && window.Promise;
 
 /**
-* Create a debounced version of a method, that's asynchronously deferred
-* but called in the minimum time possible.
-*
-* @method
-* @memberof Popper.Utils
-* @argument {Function} fn
-* @returns {Function}
-*/
+ * Create a debounced version of a method, that's asynchronously deferred
+ * but called in the minimum time possible.
+ *
+ * @method
+ * @memberof Popper.Utils
+ * @argument {Function} fn
+ * @returns {Function}
+ */
 var debounce = supportsMicroTasks ? microtaskDebounce : taskDebounce;
 
 /**
@@ -733,8 +761,8 @@ function getOffsetRect(element) {
   var elementRect = void 0;
   if (element.nodeName === 'HTML') {
     var _getWindowSizes = getWindowSizes(),
-        width = _getWindowSizes.width,
-        height = _getWindowSizes.height;
+      width = _getWindowSizes.width,
+      height = _getWindowSizes.height;
 
     elementRect = {
       width: width,
@@ -816,7 +844,8 @@ function getPopperOffsets(popper, referenceOffsets, placement) {
   var measurement = isHoriz ? 'height' : 'width';
   var secondaryMeasurement = !isHoriz ? 'height' : 'width';
 
-  popperOffsets[mainSide] = referenceOffsets[mainSide] + referenceOffsets[measurement] / 2 - popperRect[measurement] / 2;
+  popperOffsets[mainSide] =
+    referenceOffsets[mainSide] + referenceOffsets[measurement] / 2 - popperRect[measurement] / 2;
   if (placement === secondarySide) {
     popperOffsets[secondarySide] = referenceOffsets[secondarySide] - popperRect[secondaryMeasurement];
   } else {
@@ -839,7 +868,9 @@ function getPopperOffsets(popper, referenceOffsets, placement) {
 function getReferenceOffsets(state, popper, reference) {
   var fixedPosition = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
-  var commonOffsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, reference);
+  var commonOffsetParent = fixedPosition
+    ? getFixedPositionOffsetParent(popper)
+    : findCommonOffsetParent(popper, reference);
   return getOffsetRectRelativeToArbitraryNode(reference, commonOffsetParent, fixedPosition);
 }
 
@@ -885,7 +916,7 @@ function isFunction(functionToCheck) {
 function isModifierEnabled(modifiers, modifierName) {
   return modifiers.some(function (_ref) {
     var name = _ref.name,
-        enabled = _ref.enabled;
+      enabled = _ref.enabled;
     return enabled && name === modifierName;
   });
 }
@@ -906,14 +937,23 @@ function isModifierRequired(modifiers, requestingName, requestedName) {
     return name === requestingName;
   });
 
-  var isRequired = !!requesting && modifiers.some(function (modifier) {
-    return modifier.name === requestedName && modifier.enabled && modifier.order < requesting.order;
-  });
+  var isRequired =
+    !!requesting &&
+    modifiers.some(function (modifier) {
+      return modifier.name === requestedName && modifier.enabled && modifier.order < requesting.order;
+    });
 
   if (!isRequired) {
     var _requesting = '`' + requestingName + '`';
     var requested = '`' + requestedName + '`';
-    console.warn(requested + ' modifier is required by ' + _requesting + ' modifier in order to work, be sure to include it before ' + _requesting + '!');
+    console.warn(
+      requested +
+        ' modifier is required by ' +
+        _requesting +
+        ' modifier in order to work, be sure to include it before ' +
+        _requesting +
+        '!'
+    );
   }
   return isRequired;
 }
@@ -1102,6 +1142,36 @@ var index = {
   setupEventListeners: setupEventListeners
 };
 
-export { computeAutoPlacement, debounce, findIndex, getBordersSize, getBoundaries, getBoundingClientRect, getClientRect, getOffsetParent, getOffsetRect, getOffsetRectRelativeToArbitraryNode, getOuterSizes, getParentNode, getPopperOffsets, getReferenceOffsets, getScroll, getScrollParent, getStyleComputedProperty, getSupportedPropertyName, getWindowSizes, isFixed, isFunction, isModifierEnabled, isModifierRequired, isNumeric, removeEventListeners, runModifiers, setAttributes, setStyles, setupEventListeners };
+export {
+  computeAutoPlacement,
+  debounce,
+  findIndex,
+  getBordersSize,
+  getBoundaries,
+  getBoundingClientRect,
+  getClientRect,
+  getOffsetParent,
+  getOffsetRect,
+  getOffsetRectRelativeToArbitraryNode,
+  getOuterSizes,
+  getParentNode,
+  getPopperOffsets,
+  getReferenceOffsets,
+  getScroll,
+  getScrollParent,
+  getStyleComputedProperty,
+  getSupportedPropertyName,
+  getWindowSizes,
+  isFixed,
+  isFunction,
+  isModifierEnabled,
+  isModifierRequired,
+  isNumeric,
+  removeEventListeners,
+  runModifiers,
+  setAttributes,
+  setStyles,
+  setupEventListeners
+};
 export default index;
 //# sourceMappingURL=popper-utils.js.map

@@ -17,7 +17,7 @@ const getBabelConfig = isEs5 => {
     include: [
       'src/**/*',
       'node_modules/lit-element/**/*',
-      'node_modules/lit-html/**/*',
+      'node_modules/lit-element/**/*',
       'node_modules/@microsoft/microsoft-graph-client/lib/es/**/*',
       'node_modules/msal/lib-es6/**/*'
     ]
@@ -39,7 +39,8 @@ const es6Bundle = {
     entryFileNames: 'mgt.es6.js',
     format: 'iife',
     name: 'mgt',
-    sourcemap: false
+    sourcemap: false,
+    inlineDynamicImports: true
   },
   plugins: [
     babel({
