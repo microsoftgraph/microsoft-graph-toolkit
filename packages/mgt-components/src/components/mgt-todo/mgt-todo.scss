@@ -133,6 +133,12 @@
             &::after {
               border-bottom: none;
             }
+
+            &.dark {
+              &::part(control) {
+                color-scheme: dark;
+              }
+            }
           }
 
           input {
