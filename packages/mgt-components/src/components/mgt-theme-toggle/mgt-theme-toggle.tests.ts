@@ -10,6 +10,18 @@ import { screen } from 'testing-library__dom';
 import { fixture } from '@open-wc/testing-helpers';
 import './mgt-theme-toggle';
 
+class Deferred<T = unknown> {
+  promise: Promise<T>;
+  resolve: (value: T) => void;
+  reject: (reason?: any) => void;
+  constructor() {
+    this.promise = new Promise((resolve, reject) => {
+      this.resolve = resolve;
+      this.reject = reject;
+    });
+  }
+}
+
 describe('mgt-theme-toggle - tests', () => {
   it('should render', async () => {
     await fixture('<mgt-theme-toggle></mgt-theme-toggle>');
@@ -21,17 +33,21 @@ describe('mgt-theme-toggle - tests', () => {
     const element = await fixture('<mgt-theme-toggle></mgt-theme-toggle>');
     const toggle: HTMLInputElement = await screen.findByRole('switch');
     expect(toggle).not.toBeNull();
+    let deferred = new Deferred<boolean>();
     element.addEventListener('darkmodechanged', (e: CustomEvent<boolean>) => {
-      darkModeState = e.detail;
+      deferred.resolve(e.detail);
     });
     expect(darkModeState).toBe(false);
     expect(toggle.checked).toBe(false);
     toggle.click();
-    expect(darkModeState).toBe(true);
     expect(toggle.checked).toBe(true);
+    darkModeState = await deferred.promise;
+    expect(darkModeState).toBe(true);
+    deferred = new Deferred<boolean>();
     toggle.click();
-    expect(darkModeState).toBe(false);
     expect(toggle.checked).toBe(false);
+    darkModeState = await deferred.promise;
+    expect(darkModeState).toBe(false);
   });
 
   it('should have a checked switch if mode is dark', async () => {
