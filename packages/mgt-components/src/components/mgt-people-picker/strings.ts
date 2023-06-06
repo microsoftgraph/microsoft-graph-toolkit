@@ -12,5 +12,6 @@ export const strings = {
   suggestedContact: 'suggested contact',
   suggestedContacts: 'suggested contacts',
   selected: 'selected',
-  removeSelectedItem: 'remove selected item'
+  removeSelectedItem: 'remove selected item',
+  removeSelectedUser: 'Remove '
 };
