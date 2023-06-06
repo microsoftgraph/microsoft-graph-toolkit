@@ -40,6 +40,9 @@ $button-padding: var(--login-button-padding, 0);
         height: 100%;
         padding: $button-padding;
         background: $signed-in-background-color;
+        word-spacing: inherit;
+        text-indent: inherit;
+        letter-spacing: inherit;
 
         &:hover,
         &:focus-within {
@@ -126,6 +129,9 @@ $button-padding: var(--login-button-padding, 0);
               &::part(control) {
                 color: $login-command-btn-text-color;
                 background: $login-command-btn-bg-color;
+                word-spacing: inherit;
+                text-indent: inherit;
+                letter-spacing: inherit;
 
                 &:hover {
                   background: $login-command-btn-bg-hover-color;
@@ -148,6 +154,9 @@ $button-padding: var(--login-button-padding, 0);
               &::part(control) {
                 color: $login-add-account-btn-text-color;
                 background: $login-add-account-btn-bg-color;
+                word-spacing: inherit;
+                text-indent: inherit;
+                letter-spacing: inherit;
 
                 &:hover {
                   background: $login-add-account-btn-hover-bg-color;
