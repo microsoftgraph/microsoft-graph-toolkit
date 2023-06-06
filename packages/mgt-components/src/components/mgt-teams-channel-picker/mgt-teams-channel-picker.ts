@@ -34,6 +34,7 @@ import {
   fluentCard,
   fluentTextField
 } from '@fluentui/web-components';
+import { cachedWrappers } from '@open-wc/testing-helpers';
 
 registerFluentComponents(
   fluentBreadcrumb,
@@ -397,7 +398,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             label="teams-channel-picker-input"
             @click=${this.gainedFocus}
             @keydown=${this.handleInputKeydown}
-            @keyup=${(e: KeyboardEvent) => this.handleInputChanged(e)}>
+            @keyup=${this.handleInputChanged}>
               <div slot="start" style="width: max-content;">${this.renderSelected()}</div>
               <div slot="end">${this.renderChevrons()}${this.renderCloseButton()}</div>
           </fluent-text-field>
@@ -418,6 +419,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         const firstTreeItem = this.renderRoot.querySelector<HTMLElement>('fluent-tree-item');
         firstTreeItem.focus();
       }
+    } else if (keyName === 'Escape') {
+      this.lostFocus();
     }
   };
 
@@ -951,6 +954,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (input) {
       input.value = this._inputValue = '';
       input.textContent = '';
+      const wrapper = this.renderRoot.querySelector<HTMLInputElement>('fluent-text-field');
+      wrapper.value = '';
     }
 
     this._isFocused = false;
