@@ -603,7 +603,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       return html`
         <fluent-tree-view
           class="tree-view"
-          dir=${this.direction}>
+          dir=${this.direction}
+          @keydown=${this.onKeydownTreeView}>
           ${repeat(
             items,
             (itemObj: ChannelPickerItemState) => itemObj?.item,
@@ -778,6 +779,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       });
     }
   }
+
+  onKeydownTreeView = (e: KeyboardEvent) => {
+    const keyName = e.key;
+    if (keyName === 'Escape') {
+      this.lostFocus();
+    }
+  };
 
   private handleItemClick(item: ChannelPickerItemState) {
     if (item.channels) {
