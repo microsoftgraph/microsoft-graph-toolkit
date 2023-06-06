@@ -434,13 +434,14 @@ export async function getUserInsightsDriveItemById(
 // GET /me/drive/root/children
 export async function getFilesIterator(graph: IGraph, top?: number): Promise<GraphPageIterator<DriveItem>> {
   const endpoint = '/me/drive/root/children';
+  const cacheKey = `${endpoint}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -458,7 +459,7 @@ export async function getFilesIterator(graph: IGraph, top?: number): Promise<Gra
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
@@ -472,13 +473,14 @@ export async function getDriveFilesByIdIterator(
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> {
   const endpoint = `/drives/${driveId}/items/${itemId}/children`;
+  const cacheKey = `${endpoint}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -496,7 +498,7 @@ export async function getDriveFilesByIdIterator(
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
@@ -510,13 +512,14 @@ export async function getDriveFilesByPathIterator(
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> {
   const endpoint = `/drives/${driveId}/root:/${itemPath}:/children`;
+  const cacheKey = `${endpoint}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -534,7 +537,7 @@ export async function getDriveFilesByPathIterator(
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
@@ -548,13 +551,14 @@ export async function getGroupFilesByIdIterator(
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> {
   const endpoint = `/groups/${groupId}/drive/items/${itemId}/children`;
+  const cacheKey = `${endpoint}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -572,7 +576,7 @@ export async function getGroupFilesByIdIterator(
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
@@ -586,13 +590,14 @@ export async function getGroupFilesByPathIterator(
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> {
   const endpoint = `/groups/${groupId}/drive/root:/${itemPath}:/children`;
+  const cacheKey = `${endpoint}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -610,7 +615,7 @@ export async function getGroupFilesByPathIterator(
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
@@ -623,13 +628,14 @@ export async function getFilesByIdIterator(
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> {
   const endpoint = `/me/drive/items/${itemId}/children`;
+  const cacheKey = `${endpoint}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -647,7 +653,7 @@ export async function getFilesByIdIterator(
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
@@ -660,13 +666,14 @@ export async function getFilesByPathIterator(
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> {
   const endpoint = `/me/drive/root:/${itemPath}:/children`;
+  const cacheKey = `${endpoint}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -684,7 +691,7 @@ export async function getFilesByPathIterator(
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
@@ -698,13 +705,14 @@ export async function getSiteFilesByIdIterator(
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> {
   const endpoint = `/sites/${siteId}/drive/items/${itemId}/children`;
+  const cacheKey = `${endpoint}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -722,7 +730,7 @@ export async function getSiteFilesByIdIterator(
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
@@ -736,13 +744,14 @@ export async function getSiteFilesByPathIterator(
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> {
   const endpoint = `/sites/${siteId}/drive/root:/${itemPath}:/children`;
+  const cacheKey = `${endpoint}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -760,7 +769,7 @@ export async function getSiteFilesByPathIterator(
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
@@ -774,13 +783,14 @@ export async function getUserFilesByIdIterator(
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> {
   const endpoint = `/users/${userId}/drive/items/${itemId}/children`;
+  const cacheKey = `${endpoint}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -798,7 +808,7 @@ export async function getUserFilesByIdIterator(
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
@@ -812,13 +822,14 @@ export async function getUserFilesByPathIterator(
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> {
   const endpoint = `/users/${userId}/drive/root:/${itemPath}:/children`;
+  const cacheKey = `${endpoint}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -836,7 +847,7 @@ export async function getUserFilesByPathIterator(
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
@@ -847,13 +858,14 @@ export async function getFilesByListQueryIterator(
   listQuery: string,
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> {
+  const cacheKey = `${listQuery}?top=${top}`;
   let filesPageIterator;
 
   // get iterator from cached values
   let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, listQuery);
+  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
   if (fileList) {
     filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -872,7 +884,7 @@ export async function getFilesByListQueryIterator(
     filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
 
     if (getIsFileListsCacheEnabled()) {
-      cache.putValue(listQuery, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
   } catch {}
   return filesPageIterator || null;
