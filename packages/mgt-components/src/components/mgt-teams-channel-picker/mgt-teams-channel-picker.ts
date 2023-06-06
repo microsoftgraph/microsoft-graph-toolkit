@@ -410,7 +410,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   handleInputKeydown = (e: KeyboardEvent) => {
     const keyName = e.key;
-    if (keyName === 'ArrowDown') {
+    if (['ArrowDown', 'Enter'].includes(keyName)) {
       if (!this._isDropdownVisible) {
         this.gainedFocus();
       } else {
