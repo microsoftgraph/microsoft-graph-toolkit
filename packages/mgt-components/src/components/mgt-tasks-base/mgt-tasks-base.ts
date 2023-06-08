@@ -182,14 +182,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   protected abstract renderPicker(): TemplateResult;
 
   /**
-   * Render the generic picker.
-   *
-   * @protected
-   * @memberof MgtTasksBase
-   */
-  protected abstract renderPicker(): TemplateResult;
-
-  /**
    * Render the list of todo tasks
    *
    * @protected
