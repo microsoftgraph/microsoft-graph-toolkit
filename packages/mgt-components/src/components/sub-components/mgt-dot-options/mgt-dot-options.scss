@@ -33,7 +33,7 @@ $dot-options-translatex: var(--dot-options-translatex, translateX(-50px));
   }
 
   .dot-menu {
-    &.open{
+    &.open {
       .menu {
         display: block;
       }
@@ -55,6 +55,12 @@ $dot-options-translatex: var(--dot-options-translatex, translateX(-50px));
       .dot-item-name {
         direction: rtl;
       }
+    }
+  }
+
+  fluent-button {
+    &::part(control) {
+      background: inherit;
     }
   }
 }

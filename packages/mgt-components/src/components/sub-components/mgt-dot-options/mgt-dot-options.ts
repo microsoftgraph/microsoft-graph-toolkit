@@ -10,6 +10,7 @@ import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { strings } from './strings';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { styles } from './mgt-dot-options-css';
 
@@ -36,6 +37,18 @@ export class MgtDotOptions extends MgtBaseComponent {
   public static get styles() {
     return styles;
   }
+
+  /**
+   * Strings for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtDotOptions
+   */
+  protected get strings() {
+    return strings;
+  }
+
   /**
    * Determines if header menu is rendered or hidden.
    *
@@ -79,14 +92,20 @@ export class MgtDotOptions extends MgtBaseComponent {
     const menuOptions = Object.keys(this.options);
 
     return html`
-      <div tabindex="0" class=${classMap({ 'dot-menu': true, open: this.open })}
+      <fluent-button 
+        aria-label=${this.strings.dotOptionsTitle} 
+        appearance="stealth" 
+        class=${classMap({
+          'dot-menu': true,
+          open: this.open
+        })}
         @click=${this.onDotClick}
         @keydown=${this.onDotKeydown}>
         <span class="dot-icon">\uE712</span>
         <div tabindex="0" class="menu">
-          ${Object.keys(this.options).map(prop => this.getMenuOption(prop, this.options[prop]))}
+          ${menuOptions.map(prop => this.getMenuOption(prop, this.options[prop]))}
         </div>
-      </div>
+      </fluent-button>
     `;
   }
 
