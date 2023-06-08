@@ -1,5 +1,5 @@
 
-import { ViewType,OfficeGraphInsightString,MenuCommand<MicrosoftGraph.DriveItem>,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { ViewType,OfficeGraphInsightString,MenuCommand,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -266,6 +266,10 @@ export type PickerProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type SpinnerProps = {
+	mediaQuery?: ComponentMediaQuery;
+}
+
 export type TasksProps = {
 	res?: TasksStringResource;
 	isNewTaskVisible?: boolean;
@@ -337,6 +341,8 @@ export const Person = wrapMgt<PersonProps>('person');
 export const PersonCard = wrapMgt<PersonCardProps>('person-card');
 
 export const Picker = wrapMgt<PickerProps>('picker');
+
+export const Spinner = wrapMgt<SpinnerProps>('spinner');
 
 export const Tasks = wrapMgt<TasksProps>('tasks');
 

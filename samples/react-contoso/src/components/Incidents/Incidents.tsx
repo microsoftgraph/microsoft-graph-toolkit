@@ -196,7 +196,7 @@ const DataGridTemplate = (props: MgtTemplateProps) => {
             icon={<ContentViewRegular />}
             disabled={!selectedIncident}
             as="a"
-            href={`/incident/${selectedIncident?.id}`}
+            href={`#/incident/${selectedIncident?.id}`}
           >
             View
           </ToolbarButton>

@@ -749,3 +749,5 @@ class MgtFileListComposite extends MgtFileListBase {
     // this.fileUploadData = e.detail;
   };
 }
+
+export { MenuCommand };

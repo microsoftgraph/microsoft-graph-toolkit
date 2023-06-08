@@ -1,4 +1,4 @@
-import { SearchResults } from '@microsoft/mgt-react';
+import { SearchResults } from '@microsoft/mgt-react/dist/es6/generated/react-preview';
 import * as React from 'react';
 export interface IAllResultsProps {
   searchTerm: string;
