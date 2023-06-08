@@ -37,6 +37,19 @@ export const ShowPresenceLogin = () => html`
   <mgt-login show-presence login-view="full"></mgt-login>
 `;
 
+export const RightAligned = () => html`
+<div class="right">
+    <mgt-login login-view="compact"></mgt-login>
+</div>
+<style>
+.right {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+</style>
+`;
+
 export const Templates = () => html`
   <mgt-login>
     <template data-type="signed-out-button-content">
