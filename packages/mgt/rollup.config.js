@@ -58,12 +58,67 @@ const es6Bundle = {
     ...commonPlugins
   ]
 };
+const es6PreviewBundle = {
+  input: ['src/preview.ts'],
+  output: {
+    dir: 'dist/bundle',
+    entryFileNames: 'mgt.preview.es6.js',
+    format: 'iife',
+    name: 'mgt',
+    sourcemap: false
+  },
+  plugins: [
+    babel({
+      extensions,
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            targets: '>25%'
+          }
+        ],
+        '@babel/typescript'
+      ],
+      ...getBabelConfig(false)
+    }),
+    ...commonPlugins
+  ]
+};
 
 const es5Bundle = {
   input: ['src/bundle/index.es5.ts'],
   output: {
     dir: 'dist/bundle',
     entryFileNames: 'mgt.es5.js',
+    format: 'iife',
+    name: 'mgt',
+    sourcemap: false
+  },
+  plugins: [
+    babel({
+      extensions,
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            targets: 'last 2 versions',
+            useBuiltIns: 'entry',
+            corejs: 3
+          }
+        ],
+        '@babel/typescript'
+      ],
+      ...getBabelConfig(true)
+    }),
+    ...commonPlugins
+  ]
+};
+
+const es5PreviewBundle = {
+  input: ['src/bundle/preview.es5.ts'],
+  output: {
+    dir: 'dist/bundle',
+    entryFileNames: 'mgt.preview.es5.js',
     format: 'iife',
     name: 'mgt',
     sourcemap: false
@@ -114,4 +169,30 @@ const cjsBundle = {
   ]
 };
 
-export default [es6Bundle, es5Bundle, cjsBundle];
+const cjsPreviewBundle = {
+  input: ['src/bundle/preview.es5.ts'],
+  output: {
+    dir: 'dist/commonjs',
+    entryFileNames: 'preview.js',
+    format: 'cjs',
+    sourcemap: true
+  },
+  plugins: [
+    babel({
+      extensions,
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            targets: 'last 2 versions'
+          }
+        ],
+        '@babel/typescript'
+      ],
+      ...getBabelConfig(true)
+    }),
+    ...commonPlugins
+  ]
+};
+export default [es6Bundle, es6PreviewBundle, es5Bundle, es5PreviewBundle, cjsBundle, cjsPreviewBundle];
+// export default [es6Bundle, es6PreviewBundle, es5Bundle, cjsBundle];

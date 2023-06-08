@@ -97,6 +97,8 @@ const defaultPersonProperties = [
  * @cssprop --person-line4-text-color - {Color} the color of the line 4 text.
  * @cssprop --person-line4-text-transform - {String} the tex transform of the line 4 text. Default is inherit.
  * @cssprop --person-line4-text-line-height - {Length} the line height of the line 4 text. Default is 16px.
+ *
+ * @cssprop --person-details-wrapper-width - {Length} the minimum width of the details section. Default is 168px.
  */
 @customElement('person')
 export class MgtPerson extends MgtTemplatedComponent {
@@ -1306,7 +1308,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   };
 
-  private showPersonCard = () => {
+  public showPersonCard = () => {
     if (!this._personCardShouldRender) {
       this._personCardShouldRender = true;
     }

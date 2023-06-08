@@ -10,6 +10,8 @@
 @import './mgt-people-picker.theme';
 
 :host {
+  --person-details-wrapper-width: 0;
+
   width: auto;
 
   fluent-text-field {
@@ -38,6 +40,9 @@
     &::part(control) {
       width: min-content;
       height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
+      word-spacing: inherit;
+      text-indent: inherit;
+      letter-spacing: inherit;
 
       &::placeholder {
         color: $placeholder-text-color;

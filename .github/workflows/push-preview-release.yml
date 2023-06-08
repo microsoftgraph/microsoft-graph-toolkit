@@ -7,7 +7,7 @@
 name: Create Preview release
 on:
   push:
-    tags: ['v3.*-preview.*']
+    tags: ['v3.*-preview.*', 'v3.*-rc.*']
 
 jobs:
   version:

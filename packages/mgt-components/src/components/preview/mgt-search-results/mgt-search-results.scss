@@ -5,14 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-styles';
+@import '../../../styles/shared-styles';
 
 $answer-border-radius: var(--answer-border-radius, 4px);
-$answer-box-shadow: var(
-  --answer-box-shadow,
-  0 3.2px 7.2px rgb(0 0 0 / 13.2%),
-  0 0.6px 1.8px rgb(0 0 0 / 10.8%)
-);
+$answer-box-shadow: var(--answer-box-shadow, 0 3.2px 7.2px rgb(0 0 0 / 13.2%), 0 0.6px 1.8px rgb(0 0 0 / 10.8%));
 $answer-border: var(--answer-border, none);
 $answer-padding: var(--answer-padding, 10px);
 $font-family: var(--default-font-family);

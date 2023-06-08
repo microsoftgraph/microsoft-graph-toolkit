@@ -26,17 +26,22 @@
         font-family: var(--body-font);
         padding: 24px 12px;
       }
+      .right-align {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+      }
     </style>
   </head>
 
   <body>
-    <!-- <mgt-msal2-provider
+    <mgt-msal2-provider
       client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
       redirect-uri="http://localhost:3000"
       scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all,files.read,files.read.all,files.readwrite,files.readwrite.all"
-    ></mgt-msal2-provider> -->
+    ></mgt-msal2-provider>
 
-    <mgt-mock-provider></mgt-mock-provider>
+    <!-- <mgt-mock-provider></mgt-mock-provider> -->
     <header>
       <mgt-theme-toggle mode="light"></mgt-theme-toggle>
     </header>
@@ -44,52 +49,33 @@
     <h1>Developer test page</h1>
     <main>
       <h2>mgt-login</h2>
-      <mgt-login login-view="compact"></mgt-login>
-      <!-- <mgt-login></mgt-login>
+      <div class="right-align">
+        <mgt-login login-view="compact"></mgt-login>
+      </div>
+      <mgt-login></mgt-login>
       <h2>mgt-person me query two lines card on click with presence</h2>
       <mgt-person person-query="me" view="twoLines" person-card="click" show-presence></mgt-person> -->
       <mgt-person-card person-query="me"></mgt-person-card>
-      <!-- <h2>mgt-people-picker</h2>
+      <h2>mgt-people-picker</h2>
       <mgt-people-picker></mgt-people-picker>
-      <h2>mgt-teams-channel-picker</h2>
-      <mgt-teams-channel-picker></mgt-teams-channel-picker>
+      <!-- <h2>mgt-teams-channel-picker</h2>
+      <mgt-teams-channel-picker></mgt-teams-channel-picker> -->
       <h2>mgt-tasks</h2>
       <mgt-tasks></mgt-tasks>
-      <h2>mgt-agenda group-by-day</h2>
-      <mgt-agenda group-by-day></mgt-agenda>
-      <h2>mgt-people show-presence</h2>
-      <mgt-people show-presence></mgt-people>
+      <!-- <h2>mgt-agenda group-by-day</h2>
+      <mgt-agenda group-by-day></mgt-agenda> -->
+      <!-- <h2>mgt-people show-presence</h2>
+      <mgt-people show-presence></mgt-people> -->
       <h2>mgt-todo</h2>
-      <mgt-todo></mgt-todo>-->
-      <h2>mgt-file-list-composite</h2>
-      <mgt-file-list-composite
-        breadcrumb-root-name="Drive"
-        drive-id="b!M5IeZ2QKf0y18TIIXsDQkecHx1QrukxCte8X3n6ka6yn409-utaER7M2W9uRO4yB"
-        item-id="01WEUQSTTDRNNTJAJ7L5AJYYYSIOC665GF"
-        use-grid-view
-        enable-file-upload
-      ></mgt-file-list-composite>
-      <h2>mgt-file-list</h2>
-      <<<<<<< HEAD
-      <mgt-file-list></mgt-file-list>
-      <h2>mgt-picker</h2>
-      <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite"></mgt-picker>
-      <h2>mgt-search-box</h2>
+      <mgt-todo></mgt-todo>
+      <!-- <h2>mgt-file-list</h2>
+      <mgt-file-list></mgt-file-list> -->
+      <!-- <h2>mgt-picker</h2>
+      <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite"></mgt-picker> -->
+      <!-- <h2>mgt-search-box</h2>
       <mgt-search-box search-term="contoso"></mgt-search-box>
       <h2>mgt-search-results</h2>
-      <mgt-search-results query-string="contoso"></mgt-search-results>
-      <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite"></mgt-picker> --> =======
-      <mgt-file-list
-        drive-id="b!M5IeZ2QKf0y18TIIXsDQkecHx1QrukxCte8X3n6ka6yn409-utaER7M2W9uRO4yB"
-        item-id="01WEUQSTTDRNNTJAJ7L5AJYYYSIOC665GF"
-        enable-file-upload
-      ></mgt-file-list>
-      <!-- <h2>mgt-picker</h2>
-      <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite"></mgt-picker>
-      <h2>mgt-search-box</h2>
-      <mgt-search-box search-term="contoso"></mgt-search-box>
-      <h2>mgt-search-results</h2> -->
-      >>>>>>> origin/next/fix-grid
+      <mgt-search-results query-string="contoso"></mgt-search-results> -->
     </main>
   </body>
 </html>

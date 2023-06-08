@@ -9,7 +9,8 @@
 @import '../../styles/shared-styles';
 @import './mgt-login.theme';
 
-$signed-out-bg: padding-box linear-gradient(var(--neutral-fill-rest), var(--neutral-fill-rest)), border-box var(--neutral-stroke-control-rest);
+$signed-out-bg: padding-box linear-gradient(var(--neutral-fill-rest), var(--neutral-fill-rest)),
+  border-box var(--neutral-stroke-control-rest);
 $signed-out-background: #{var(--login-signed-out-button-background, $signed-out-bg)};
 $signed-out-hover-background: #{var(--login-signed-out-button-hover-background, var(--neutral-fill-stealth-hover))};
 $login-popup-background-color: #{var(--login-popup-background-color, var(--neutral-layer-1))};
@@ -39,6 +40,9 @@ $button-padding: var(--login-button-padding, 0);
         height: 100%;
         padding: $button-padding;
         background: $signed-in-background-color;
+        word-spacing: inherit;
+        text-indent: inherit;
+        letter-spacing: inherit;
 
         &:hover,
         &:focus-within {
@@ -66,6 +70,10 @@ $button-padding: var(--login-button-padding, 0);
         }
       }
     }
+
+    &:focus-visible {
+      outline-style: $focus-ring-style;
+    }
   }
 
   fluent-card {
@@ -87,15 +95,17 @@ $button-padding: var(--login-button-padding, 0);
       }
     }
 
-    fluent-listbox {
-      --stroke-width: 0;
+    .account-list {
+      padding: calc(var(--design-unit) * 1px) 0;
+      margin: 0;
     }
 
-    fluent-option {
+    .account-item {
       height: auto;
       min-width: auto;
       margin-top: 4px;
       background: $login-popup-background-color;
+      list-style-type: none;
 
       &:hover {
         background: var(--neutral-fill-stealth-hover);
@@ -119,6 +129,9 @@ $button-padding: var(--login-button-padding, 0);
               &::part(control) {
                 color: $login-command-btn-text-color;
                 background: $login-command-btn-bg-color;
+                word-spacing: inherit;
+                text-indent: inherit;
+                letter-spacing: inherit;
 
                 &:hover {
                   background: $login-command-btn-bg-hover-color;
@@ -141,6 +154,9 @@ $button-padding: var(--login-button-padding, 0);
               &::part(control) {
                 color: $login-add-account-btn-text-color;
                 background: $login-add-account-btn-bg-color;
+                word-spacing: inherit;
+                text-indent: inherit;
+                letter-spacing: inherit;
 
                 &:hover {
                   background: $login-add-account-btn-hover-bg-color;
@@ -151,6 +167,5 @@ $button-padding: var(--login-button-padding, 0);
         }
       }
     }
-
   }
 }

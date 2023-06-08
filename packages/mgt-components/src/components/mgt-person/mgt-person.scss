@@ -102,7 +102,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     }
 
     .avatar-wrapper {
-      width: $person-avatar-size;
+      min-width: $person-avatar-size;
       height: $person-avatar-size;
       position: relative;
       box-sizing: border-box;
@@ -144,13 +144,14 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     }
 
     .details-wrapper {
-      display: flex;
-      flex-direction: column;
+      display: inline-block;
+      min-width: var(--person-details-wrapper-width, 168px);
       margin-inline-start: $person-details-left-spacing;
-      align-items: flex-start;
       margin-block-end: $person-details-bottom-spacing;
 
       &.vertical {
+        display: inline-flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         margin-inline-start: 0;

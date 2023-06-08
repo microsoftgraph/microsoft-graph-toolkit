@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-styles';
-
-:host fluent-search {
-  width: 100%;
-}
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+import 'whatwg-fetch';
+import '@webcomponents/webcomponentsjs/webcomponents-bundle';
+export * from '../preview';

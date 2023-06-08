@@ -22,7 +22,7 @@ import {
   CollectionResponse
 } from '@microsoft/mgt-element';
 
-import { schemas } from '../../graph/cacheStores';
+import { schemas } from '../../../graph/cacheStores';
 import { strings } from './strings';
 import { styles } from './mgt-search-results-css';
 import {
@@ -47,11 +47,11 @@ import {
   getResponseInvalidationTime,
   sanitizeSummary,
   trimFileExtension
-} from '../../utils/Utils';
-import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+} from '../../../utils/Utils';
+import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { fluentSkeleton, fluentButton, fluentTooltip, fluentDivider } from '@fluentui/web-components';
-import { registerFluentComponents } from '../../utils/FluentComponents';
-import { CacheResponse } from '../CacheResponse';
+import { registerFluentComponents } from '../../../utils/FluentComponents';
+import { CacheResponse } from '../../CacheResponse';
 
 registerFluentComponents(fluentSkeleton, fluentButton, fluentTooltip, fluentDivider);
 
@@ -214,8 +214,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     attribute: 'scopes',
     converter: (value, type) => {
       return value ? value.toLowerCase().split(',') : null;
-    },
-    reflect: true
+    }
   })
   public scopes: string[] = [];
 
@@ -229,8 +228,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     attribute: 'content-sources',
     converter: (value, type) => {
       return value ? value.toLowerCase().split(',') : null;
-    },
-    reflect: true
+    }
   })
   public contentSources: string[] = [];
 

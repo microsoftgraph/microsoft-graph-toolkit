@@ -21,7 +21,7 @@ export default {
   }
 };
 
-export const tasks = () => html`
+export const todos = () => html`
   <mgt-todo></mgt-todo>
 `;
 

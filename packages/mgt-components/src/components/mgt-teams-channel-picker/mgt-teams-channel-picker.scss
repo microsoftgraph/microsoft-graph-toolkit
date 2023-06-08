@@ -16,12 +16,14 @@
   .container {
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   .dropdown {
-    z-index: 1;
     display: none;
-    margin-top: 4px;
+    position: absolute;
+    z-index: 1000;
+    top: 34px;
 
     &.visible {
       display: flex;
@@ -61,7 +63,6 @@
     padding: 5px;
 
     .loading-text {
-      color: var(--color, #0078d4);
       margin: auto;
     }
   }
@@ -69,7 +70,8 @@
 
 :host {
   fluent-card {
-    --fill-color: var(--dropdown-background-color, --fill-color);
+    background: $dropdown-background-color;
+
     --card-height: auto;
     --width: var(--card-width);
   }
@@ -77,10 +79,73 @@
   fluent-text-field {
     width: 100%;
 
-    --fill-color: var(--color, $color);
-    --neutral-fill-input-rest: var(--input-background-color, #fff);
-    --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
-    --input-placeholder-hover: var(--placeholder-color-focus, --input-placeholder-hover);
+    &::part(root) {
+      background: $input-background;
+
+      &:hover {
+        background: $input-hover-background;
+      }
+
+      &:focus,
+      &:focus-within {
+        background: $input-focus-background;
+      }
+    }
+
+    &::part(control) {
+      word-spacing: inherit;
+      text-indent: inherit;
+      letter-spacing: inherit;
+
+      &::placeholder {
+        color: $placeholder-text-color;
+      }
+
+      &:hover {
+        &::placeholder {
+          color: $placeholder-hover-text-color;
+        }
+      }
+
+      &:focus,
+      &:focus-within {
+        &::placeholder {
+          color: $placeholder-focus-text-color;
+        }
+      }
+    }
+
+    .search-icon {
+      svg {
+        path {
+          fill: var(--channel-picker-search-icon-color, currentColor);
+        }
+      }
+    }
+
+    .down-chevron {
+      svg {
+        path {
+          fill: var(--channel-picker-down-chevron-color, currentColor);
+        }
+      }
+    }
+
+    .up-chevron {
+      svg {
+        path {
+          fill: var(--channel-picker-up-chevron-color, currentColor);
+        }
+      }
+    }
+
+    .close-icon {
+      svg {
+        path {
+          fill: var(--channel-picker-close-icon-color, currentColor);
+        }
+      }
+    }
   }
 
   fluent-tree-view {
@@ -90,14 +155,29 @@
   }
 
   fluent-tree-item {
+    width: 100%;
+
     --tree-item-nested-width: 2em;
-    --neutral-foreground-rest: var(--color, $color);
-    --neutral-fill-stealth-hover: var(--dropdown-item-hover-background, --neutral-fill-stealth-hover);
-    --neutral-fill-secondary-rest: var(--dropdown-item-selected-background, --neutral-fill-secondary-rest);
-    --neutral-fill-stealth-rest: var(--dropdown-background-color, --neutral-fill-stealth-rest);
+
+    &::part(content-region),
+    &::part(positioning-region),
+    &::part(expand-collapse-button) {
+      color: $dropdown-item-text-color;
+      background: $dropdown-background-color;
+
+      &:hover {
+        background: $dropdown-item-background-color-hover;
+
+        &::part(expand-collapse-button) {
+          background: $dropdown-item-background-color-hover;
+        }
+      }
+    }
   }
 
   fluent-breadcrumb-item {
+    color: $dropdown-item-selected-text-color;
+
     .team-parent-name {
       font-weight: bold;
     }
@@ -113,11 +193,10 @@
       margin-right: 8px;
 
       svg {
-        stroke: var(--arrow-fill, $color);
+        stroke: var(--channel-picker-arrow-fill, var(--neutral-foreground-rest));
       }
     }
   }
-
 }
 
 [dir='rtl'] {

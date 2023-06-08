@@ -820,7 +820,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         this._dialogTitle = strings.maximumFileSizeTitle;
         this._dialogContent =
           strings.maximumFileSize
-            .replace('{FileSize}', formatBytes(fileUploadList.maxFileSize))
+            .replace('{FileSize}', formatBytes(fileUploadList.maxFileSize * 1024))
             .replace('{FileName}', file.name) +
           formatBytes(file.size) +
           '.';
