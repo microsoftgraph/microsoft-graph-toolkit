@@ -11,12 +11,12 @@ import * as signalR from '@microsoft/signalr';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
 import { ChatMessage, Chat, ConversationMember, AadUserConversationMember } from '@microsoft/microsoft-graph-types';
 
-const appSettings = {
-  functionHost: 'https://mgtgnbfunc.azurewebsites.net', // TODO: improve how this is loaded
+export const appSettings = {
+  functionHost: '', // TODO: improve how this is loaded
   defaultSubscriptionLifetimeInMinutes: 5,
   renewalThreshold: 45, // The number of seconds before subscription expires it will be renewed
   timerInterval: 10, // The number of seconds the timer will check on expiration
-  appId: 'de25c6a1-c9e7-4681-9288-eba1b93446fb'
+  appId: ''
 };
 
 const SubscriptionMethods = {

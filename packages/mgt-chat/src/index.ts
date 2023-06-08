@@ -7,6 +7,8 @@
 
 import { allChatScopes } from './statefulClient/graph.chat';
 
+import { appSettings } from './statefulClient/GraphNotificationClient';
+
 export * from './components';
 export * from './utils/createNewChat';
-export { allChatScopes };
+export { allChatScopes, appSettings as brokerSettings };
