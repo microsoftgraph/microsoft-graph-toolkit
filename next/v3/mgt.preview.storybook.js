@@ -4308,10 +4308,21 @@ ${display("inline-block")} :host {
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const l=t=>null!=t?t:he,Hc={comboboxPlaceholder:"Select an item"};var __decorate$n=function(t,o,n,s){var a,c=arguments.length,h=c<3?o:null===s?s=Object.getOwnPropertyDescriptor(o,n):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)h=Reflect.decorate(t,o,n,s);else for(var f=t.length-1;f>=0;f--)(a=t[f])&&(h=(c<3?a(h):c>3?a(o,n,h):a(o,n))||h);return c>3&&h&&Object.defineProperty(o,n,h),h},__metadata$m=function(t,o){if("object"==typeof Reflect&&"function"==typeof Reflect.metadata)return Reflect.metadata(t,o)},__awaiter$l=function(t,o,n,s){return new(n||(n=Promise))((function(a,c){function fulfilled(t){try{step(s.next(t))}catch(t){c(t)}}function rejected(t){try{step(s.throw(t))}catch(t){c(t)}}function step(t){t.done?a(t.value):function adopt(t){return t instanceof n?t:new n((function(o){o(t)}))}(t.value).then(fulfilled,rejected)}step((s=s.apply(t,o||[])).next())}))};registerFluentComponents(Zl,tc);let Uc=class MgtPicker extends MgtTemplatedComponent{get strings(){return Hc}constructor(){super(),this.version="v1.0",this.maxPages=3,this.scopes=[],this.cacheEnabled=!1,this.cacheInvalidationPeriod=0,this.placeholder=this.strings.comboboxPlaceholder,this.entityType=null,this.keyName=null,this.isRefreshing=!1}refresh(t=!1){this.isRefreshing=!0,t&&this.clearState(),this.requestStateUpdate(t)}clearState(){this.response=null,this.error=null}render(){var t;if(this.isLoadingState&&!this.response)return this.renderTemplate("loading",null);if(this.hasTemplate("error")){const t=this.error?this.error:null;return this.renderTemplate("error",{error:t},"error")}return this.hasTemplate("no-data")?this.renderTemplate("no-data",null):(null===(t=this.response)||void 0===t?void 0:t.length)>0?this.renderPicker():this.renderGet()}renderPicker(){return mgtHtml`
-      <fluent-combobox current-value=${l(this.selectedValue)} part="picker" class="picker" id="combobox" autocomplete="list" placeholder=${this.placeholder}>
+const l=t=>null!=t?t:he,Hc={comboboxPlaceholder:"Select an item"};var __decorate$n=function(t,o,n,s){var a,c=arguments.length,h=c<3?o:null===s?s=Object.getOwnPropertyDescriptor(o,n):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)h=Reflect.decorate(t,o,n,s);else for(var f=t.length-1;f>=0;f--)(a=t[f])&&(h=(c<3?a(h):c>3?a(o,n,h):a(o,n))||h);return c>3&&h&&Object.defineProperty(o,n,h),h},__metadata$m=function(t,o){if("object"==typeof Reflect&&"function"==typeof Reflect.metadata)return Reflect.metadata(t,o)},__awaiter$l=function(t,o,n,s){return new(n||(n=Promise))((function(a,c){function fulfilled(t){try{step(s.next(t))}catch(t){c(t)}}function rejected(t){try{step(s.throw(t))}catch(t){c(t)}}function step(t){t.done?a(t.value):function adopt(t){return t instanceof n?t:new n((function(o){o(t)}))}(t.value).then(fulfilled,rejected)}step((s=s.apply(t,o||[])).next())}))};registerFluentComponents(Zl,tc);let Uc=class MgtPicker extends MgtTemplatedComponent{get strings(){return Hc}constructor(){super(),this.version="v1.0",this.maxPages=3,this.scopes=[],this.cacheEnabled=!1,this.cacheInvalidationPeriod=0,this.handleComboboxKeydown=t=>{let o,n;const s=t.key,a=t.target.querySelector(".selected");a&&(o=a.getAttribute("value")),["Enter"].includes(s)&&o&&(n=this.response.filter((t=>t.id===o)).pop(),this.fireCustomEvent("selectionChanged",n,!0,!1,!0))},this.placeholder=this.strings.comboboxPlaceholder,this.entityType=null,this.keyName=null,this.isRefreshing=!1}refresh(t=!1){this.isRefreshing=!0,t&&this.clearState(),this.requestStateUpdate(t)}clearState(){this.response=null,this.error=null}render(){var t;if(this.isLoadingState&&!this.response)return this.renderTemplate("loading",null);if(this.hasTemplate("error")){const t=this.error?this.error:null;return this.renderTemplate("error",{error:t},"error")}return this.hasTemplate("no-data")?this.renderTemplate("no-data",null):(null===(t=this.response)||void 0===t?void 0:t.length)>0?this.renderPicker():this.renderGet()}renderPicker(){return mgtHtml`
+      <fluent-combobox
+        @keydown=${this.handleComboboxKeydown}
+        current-value=${l(this.selectedValue)}
+        part="picker"
+        class="picker"
+        id="combobox"
+        autocomplete="list"
+        placeholder=${this.placeholder}>
         ${this.response.map((t=>Ne`
-          <fluent-option value=${t.id} @click=${o=>this.handleClick(o,t)}> ${t[this.keyName]} </fluent-option>`))}
+          <fluent-option
+            value=${t.id}
+            @click=${o=>this.handleClick(o,t)}>
+              ${t[this.keyName]}
+          </fluent-option>`))}
       </fluent-combobox>
      `}renderGet(){return mgtHtml`
       <mgt-get
