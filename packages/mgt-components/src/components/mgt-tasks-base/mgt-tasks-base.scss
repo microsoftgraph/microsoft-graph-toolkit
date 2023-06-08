@@ -168,7 +168,7 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
         -ms-grid-rows: auto auto auto auto;
         justify-content: space-between;
         align-items: flex-start;
-        color: $detail-color;
+        color: $task-detail-color;
         font-size: 12px;
         font-weight: 600;
         white-space: normal;
@@ -184,7 +184,7 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
         }
 
         .task-title {
-          color: $title-color;
+          color: $task-color;
           font-size: 14px;
           font-weight: 600;
           grid-row: 1;
@@ -311,14 +311,14 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
           margin-right: 4px;
 
           path {
-            fill: $detail-color;
+            fill: $task-detail-color;
           }
         }
 
         span,
         select {
           vertical-align: middle;
-          color: $detail-color;
+          color: $task-detail-color;
         }
 
         .task-icon {
@@ -327,7 +327,7 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
         }
 
         .people {
-          color: $detail-color;
+          color: $task-detail-color;
           font-size: 16px;
         }
 
@@ -339,7 +339,7 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
           background-color: $task-background-color;
           background-clip: padding-box;
           width: var(--mgt-flyout-set-width, 350px);
-          color: $detail-color;
+          color: $task-detail-color;
 
           .people-picker {
             --separator-margin: 0px 10px 0px 10px;
@@ -348,7 +348,7 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
 
         input,
         select {
-          color: $detail-color;
+          color: $task-detail-color;
           font-size: 0.9em;
           background-color: $task-background-color;
         }
@@ -374,7 +374,7 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
 
         .task-content .task-details-container .task-title {
           text-decoration: line-through;
-          color: $detail-color;
+          color: $task-detail-color;
         }
       }
 
@@ -385,7 +385,7 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
         height: 18px;
         border-radius: $task-icon-border-radius;
         border: $task-icon-border;
-        color: $task-icon-color;
+        color: $task-color;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -411,12 +411,12 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
     }
 
     &.complete {
-      background: $task-background-color--completed;
+      background: $task-background-color-completed;
       border: $task-border-completed;
 
       .task-content .task-details-container .task-title {
         text-decoration: line-through;
-        color: $detail-color;
+        color: $task-detail-color;
       }
     }
 
@@ -575,11 +575,11 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
         }
 
         .task-cancel {
-          color: $button-color-cancel;
+          color: $task-button-color-cancel;
         }
 
         &.disabled .task-add {
-          color: $button-color-cancel;
+          color: $task-button-color-cancel;
           background: var(--task-new-add-button-disabled-background, #fff);
           cursor: default;
         }

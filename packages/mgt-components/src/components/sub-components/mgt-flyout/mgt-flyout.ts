@@ -243,7 +243,17 @@ export class MgtFlyout extends MgtBaseComponent {
     `;
   }
 
-  private updateFlyout() {
+  /**
+   * Updates the position of the flyout.
+   * Makes a second recursive call to ensure the flyout is positioned correctly.
+   * This is needed as the width of the flyout is not settled until afer the first render.
+   *
+   * @private
+   * @param {boolean} [firstPass=true]
+   * @return {*}
+   * @memberof MgtFlyout
+   */
+  private updateFlyout(firstPass = true) {
     if (!this.isOpen) {
       return;
     }
@@ -412,6 +422,9 @@ export class MgtFlyout extends MgtBaseComponent {
       } else {
         flyout.style.maxHeight = null;
         flyout.style.setProperty('--mgt-flyout-set-height', 'unset');
+      }
+      if (firstPass) {
+        window.requestAnimationFrame(() => this.updateFlyout(false));
       }
     }
   }

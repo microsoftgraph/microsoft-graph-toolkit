@@ -8,6 +8,7 @@
 import { CSSResult, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import {
   Providers,
   ProviderState,
@@ -166,7 +167,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @private
    * @type {boolean}
    */
-  @property({ attribute: false }) private _isFlyoutOpen: boolean;
+  @state() private _isFlyoutOpen: boolean;
 
   /**
    * The image blob string
@@ -319,13 +320,14 @@ export class MgtLogin extends MgtTemplatedComponent {
       small: this.loginView === 'avatar'
     });
     const appearance = isSignedIn ? 'stealth' : 'neutral';
-    const buttonContentTemplate =
-      isSignedIn && this.userDetails
-        ? this.renderSignedInButtonContent(this.userDetails, this._image)
-        : this.renderSignedOutButtonContent();
-
+    const showSignedInState = isSignedIn && this.userDetails;
+    const buttonContentTemplate = showSignedInState
+      ? this.renderSignedInButtonContent(this.userDetails, this._image)
+      : this.renderSignedOutButtonContent();
+    const expandedState: boolean | undefined = showSignedInState ? this._isFlyoutOpen : undefined;
     return html`
       <fluent-button
+        aria-expanded="${ifDefined(expandedState)}"
         appearance=${appearance}
         aria-label=${ariaLabel}
         ?disabled=${this.isLoadingState}
