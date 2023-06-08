@@ -6,8 +6,9 @@
  */
 
 import { CSSResult, html, TemplateResult } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import {
   Providers,
   ProviderState,
@@ -163,7 +164,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @private
    * @type {boolean}
    */
-  @property({ attribute: false }) private _isFlyoutOpen: boolean;
+  @state() private _isFlyoutOpen: boolean;
 
   /**
    * The image blob string
@@ -182,6 +183,8 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   private _userDetailsKey = '-userDetails';
+
+  @state() private _arrowKeyLocation = -1;
 
   constructor() {
     super();
@@ -314,13 +317,14 @@ export class MgtLogin extends MgtTemplatedComponent {
       small: this.loginView === 'avatar'
     });
     const appearance = isSignedIn ? 'stealth' : 'neutral';
-    const buttonContentTemplate =
-      isSignedIn && this.userDetails
-        ? this.renderSignedInButtonContent(this.userDetails, this._image)
-        : this.renderSignedOutButtonContent();
-
+    const showSignedInState = isSignedIn && this.userDetails;
+    const buttonContentTemplate = showSignedInState
+      ? this.renderSignedInButtonContent(this.userDetails, this._image)
+      : this.renderSignedOutButtonContent();
+    const expandedState: boolean | undefined = showSignedInState ? this._isFlyoutOpen : undefined;
     return html`
       <fluent-button
+        aria-expanded="${ifDefined(expandedState)}"
         appearance=${appearance}
         aria-label=${ariaLabel}
         ?disabled=${this.isLoadingState}
@@ -543,33 +547,76 @@ export class MgtLogin extends MgtTemplatedComponent {
 
       if (accounts?.length > 1) {
         return html`
-         <div id="accounts">
-             <fluent-listbox class="accounts" name="Account list">
-              ${accounts.map(account => {
-                if (account.id !== provider.getActiveAccount().id) {
+          <div id="accounts">
+            <ul
+              tabindex="0"
+              class="account-list"
+              part="account-list"
+              aria-label="${this.ariaLabel}"
+              @keydown=${this.handleAccountListKeyDown}
+            >
+              ${accounts
+                .filter(a => a.id !== provider.getActiveAccount().id)
+                .map(account => {
                   const details = localStorage.getItem(account.id + this._userDetailsKey);
                   return mgtHtml`
-                    <fluent-option class="account-option" value="${account.name}" role="option">
+                    <li 
+                      tabindex="-1" 
+                      part="account-item" 
+                      class="account-item"
+                      @click=${() => this.setActiveAccount(account)}
+                      @keyup=${(e: KeyboardEvent) => {
+                        if (e.key === 'Enter') this.setActiveAccount(account);
+                      }}
+                    >
                       <mgt-person
-                        @click=${() => this.setActiveAccount(account)}
-                        @keyup=${(e: KeyboardEvent) => {
-                          if (e.key === 'Enter') {
-                            this.setActiveAccount(account);
-                          }
-                        }}
                         .personDetails=${details ? JSON.parse(details) : null}
                         .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
                         .view=${PersonViewType.twolines}
-                        class="account"/>
-                    </fluent-option>`;
-                }
-              })}
-             </fluent-listbox>
-         </div>
+                        class="account"
+                      ></mgt-person>
+                    </li>`;
+                })}
+            </ul>
+          </div>
        `;
       }
     }
   }
+
+  private handleAccountListKeyDown = (event: KeyboardEvent) => {
+    const list: HTMLUListElement = this.renderRoot.querySelector('ul.account-list');
+    let item: HTMLLIElement;
+    const listItems: HTMLCollection = list?.children;
+    // Default all tabindex values in li nodes to -1
+    for (const element of listItems) {
+      const el = element as HTMLLIElement;
+      el.setAttribute('tabindex', '-1');
+      el.blur();
+    }
+
+    const childElementCount = list.childElementCount;
+    const keyName = event.key;
+    if (keyName === 'ArrowDown') {
+      this._arrowKeyLocation = (this._arrowKeyLocation + 1 + childElementCount) % childElementCount;
+    } else if (keyName === 'ArrowUp') {
+      this._arrowKeyLocation = (this._arrowKeyLocation - 1 + childElementCount) % childElementCount;
+    } else if (keyName === 'Tab' || keyName === 'Escape') {
+      this._arrowKeyLocation = -1;
+      list.blur();
+      if (keyName === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      return;
+    }
+
+    if (this._arrowKeyLocation > -1) {
+      item = listItems[this._arrowKeyLocation] as HTMLLIElement;
+      item.setAttribute('tabindex', '1');
+      item.focus();
+    }
+  };
 
   /**
    * Set one of the non-active accounts as the active account

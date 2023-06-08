@@ -7,7 +7,25 @@
 
 import {
   accentBaseColor,
+  accentFillActive,
+  accentFillFocus,
+  accentFillHover,
+  accentFillRest,
+  accentForegroundActive,
+  accentForegroundFocus,
+  accentForegroundHover,
+  accentForegroundRest,
+  accentStrokeControlActive,
+  accentStrokeControlFocus,
+  accentStrokeControlHover,
+  accentStrokeControlRest,
   baseLayerLuminance,
+  foregroundOnAccentActive,
+  foregroundOnAccentFocus,
+  foregroundOnAccentHover,
+  foregroundOnAccentRecipe,
+  foregroundOnAccentRest,
+  foregroundOnAccentRestLarge,
   neutralBaseColor,
   StandardLuminance,
   SwatchRGB
@@ -55,6 +73,11 @@ type ColorScheme = {
    * @type {number}
    */
   baseLayerLuminance: number;
+
+  /**
+   * Optional function to override design tokens
+   */
+  designTokenOverrides?: (element: HTMLElement) => void;
 };
 
 /**
@@ -67,6 +90,7 @@ const applyColorScheme = (settings: ColorScheme, element: HTMLElement = document
   accentBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.accentBaseColor)));
   neutralBaseColor.setValueFor(element, SwatchRGB.from(parseColorHexRGB(settings.neutralBaseColor)));
   baseLayerLuminance.setValueFor(element, settings.baseLayerLuminance);
+  settings.designTokenOverrides?.(element);
 };
 
 /**
@@ -93,7 +117,26 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
       return {
         accentBaseColor: '#479ef5',
         neutralBaseColor: '#adadad',
-        baseLayerLuminance: StandardLuminance.DarkMode
+        baseLayerLuminance: StandardLuminance.DarkMode,
+        designTokenOverrides: element => {
+          accentFillRest.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#115ea3')));
+          accentFillHover.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0f6cbd')));
+          accentFillActive.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0c3b5e')));
+          accentFillFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0f548c')));
+          accentForegroundRest.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#479EF5')));
+          accentForegroundHover.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#62abf5')));
+          accentForegroundActive.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#2886de')));
+          accentForegroundFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#479ef5')));
+          accentStrokeControlRest.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#115ea3')));
+          accentStrokeControlHover.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0f6cbd')));
+          accentStrokeControlActive.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0c3b5e')));
+          accentStrokeControlFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0f548c')));
+          foregroundOnAccentActive.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
+          foregroundOnAccentRest.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
+          foregroundOnAccentRestLarge.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
+          foregroundOnAccentHover.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
+          foregroundOnAccentFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
+        }
       };
     case 'light':
     default:

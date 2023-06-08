@@ -6,10 +6,10 @@
  */
 
 import { html } from 'lit';
-import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { withCodeEditor } from '../../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-search-results / Style',
+  title: 'Preview / mgt-search-results / Style',
   component: 'search-results',
   decorators: [withCodeEditor]
 };
@@ -24,4 +24,7 @@ export const customCSSProperties = () => html`
     }
   </style>
   <mgt-search-results class="search-results" query-string="yammer" entity-types="bookmark" version="beta"></mgt-search-results>
+  <script type="module">
+  import '@microsoft/mgt-components/dist/es6/components/preview';
+  </script>
 `;

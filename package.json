@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "3.0.0-preview.2",
+  "version": "3.0.0-rc.3",
   "workspaces": {
     "packages": [
       "packages/*",
@@ -42,7 +42,7 @@
     "bootstrap": "lerna bootstrap --useWorkspaces",
     "clean": "lerna run --parallel --stream --scope @microsoft/* clean",
     "link": "lerna link --force-local",
-    "lint:eslint": "eslint -c .eslintrc.js  'packages/*/src/**/*.{ts,tsx}'",
+    "lint:eslint": "eslint -c .eslintrc.js --quiet 'packages/*/src/**/*.ts'",
     "lint:styles": "stylelint './packages/mgt-components/**/*.{css,scss}'",
     "lint:fix": "npm run lint:styles -- --fix",
     "lint": "npm run lint:eslint && npm run lint:styles",

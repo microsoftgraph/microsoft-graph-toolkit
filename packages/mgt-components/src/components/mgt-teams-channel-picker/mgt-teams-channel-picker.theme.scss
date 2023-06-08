@@ -6,3 +6,23 @@
  */
 
 @import '../../styles/shared-sass-variables';
+
+$input-background: padding-box linear-gradient(
+    var(--channel-picker-input-background-color, var(--neutral-fill-input-rest)),
+    var(--channel-picker-input-background-color, var(--neutral-fill-input-rest))),
+    border-box var(--channel-picker-input-border-color, var(--neutral-stroke-input-rest));
+$input-hover-background: padding-box linear-gradient(
+    var(--channel-picker-input-background-color-hover, var(--neutral-fill-input-hover)),
+    var(--channel-picker-input-background-color-hover, var(--neutral-fill-input-hover))),
+    border-box var(--channel-picker-input-hover-border-color, var(--neutral-stroke-input-hover));
+$input-focus-background: padding-box linear-gradient(
+    var(--channel-picker-input-background-color-focus, var(--neutral-fill-input-focus)),
+    var(--channel-picker-input-background-color-focus, var(--neutral-fill-input-focus))),
+    border-box var(--channel-picker-input-focus-border-color, var(--neutral-stroke-input-focus));
+$placeholder-text-color: var(--channel-picker-input-placeholder-text-color, var(--input-placeholder-rest));
+$placeholder-hover-text-color: var(--channel-picker-input-placeholder-text-color-hover, var(--input-placeholder-hover));
+$placeholder-focus-text-color: var(--channel-picker-input-placeholder-text-color-focus, var(--input-placeholder-filled));
+$dropdown-background-color: var(--channel-picker-dropdown-background-color, var(--fill-color));
+$dropdown-item-text-color: var(--channel-picker-dropdown-item-text-color, currentColor);
+$dropdown-item-background-color-hover: var(--channel-picker-dropdown-item-background-color-hover, var(--neutral-fill-stealth-hover));
+$dropdown-item-selected-text-color: var(--channel-picker-dropdown-item-text-color-selected, var(--neutral-foreground-rest));
