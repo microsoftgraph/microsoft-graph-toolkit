@@ -83,7 +83,7 @@ export class MgtDotOptions extends MgtBaseComponent {
         appearance="stealth"
         @click=${this.onDotClick}
         @keydown=${this.onDotKeydown}
-        class="DotIcon">\uE712</fluent-button>
+        class="dot-icon">\uE712</fluent-button>
       <fluent-menu class=${classMap({ Menu: true, Open: this.open })}>
         ${menuOptions.map(opt => this.getMenuOption(opt, this.options[opt]))}
       </fluent-menu>`;
