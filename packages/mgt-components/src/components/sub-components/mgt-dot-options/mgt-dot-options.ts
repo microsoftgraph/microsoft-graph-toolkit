@@ -69,6 +69,7 @@ export class MgtDotOptions extends MgtBaseComponent {
    * trigger the element to update.
    */
   public render() {
+    const menuOptions = Object.keys(this.options);
     return html`
       <fluent-button
         appearance="stealth"
