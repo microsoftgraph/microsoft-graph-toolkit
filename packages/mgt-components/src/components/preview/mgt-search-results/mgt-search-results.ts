@@ -371,8 +371,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   @state() private response: SearchResponseCollection;
 
   private isRefreshing = false;
-  private readonly searchEndpoint: string = '/search/query';
-  private readonly maxPageSize: number = 1000;
+  private get searchEndpoint() {
+    return '/search/query';
+  }
+  private get maxPageSize() {
+    return 1000;
+  }
   private readonly defaultFields: string[] = [
     'webUrl',
     'lastModifiedBy',
@@ -852,7 +856,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * Triggers a first page click
    *
    */
-  private onFirstPageClick = () => {
+  private readonly onFirstPageClick = () => {
     this.currentPage = 1;
     this.scrollToFirstResult();
   };
@@ -860,7 +864,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Triggers a previous page click
    */
-  private onPageBackClick = () => {
+  private readonly onPageBackClick = () => {
     this.currentPage--;
     this.scrollToFirstResult();
   };
@@ -868,7 +872,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Triggers a next page click
    */
-  private onPageNextClick = () => {
+  private readonly onPageNextClick = () => {
     this.currentPage++;
     this.scrollToFirstResult();
   };

@@ -872,7 +872,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       return html``;
     }
 
-    // eslint-disable-next-line @typescript-eslint/tslint/config
     const person: IDynamicPerson & { presenceActivity?: string; presenceAvailability?: string } = personProps;
     if (presence) {
       person.presenceActivity = presence?.activity;
@@ -1256,14 +1255,14 @@ export class MgtPerson extends MgtTemplatedComponent {
     return this.verticalLayout;
   }
 
-  private handleMouseClick = (e: MouseEvent) => {
+  private readonly handleMouseClick = (e: MouseEvent) => {
     const element = e.target as HTMLElement;
     if (this.personCardInteraction === PersonCardInteraction.click && element.tagName !== 'MGT-PERSON-CARD') {
       this.showPersonCard();
     }
   };
 
-  private handleKeyDown = (e: KeyboardEvent) => {
+  private readonly handleKeyDown = (e: KeyboardEvent) => {
     // enter activates person-card
     if (e) {
       if (e.key === 'Enter') {
@@ -1272,7 +1271,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   };
 
-  private handleMouseEnter = (e: MouseEvent) => {
+  private readonly handleMouseEnter = (e: MouseEvent) => {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
     if (this.personCardInteraction !== PersonCardInteraction.hover) {
@@ -1281,7 +1280,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._mouseEnterTimeout = window.setTimeout(this.showPersonCard, 500);
   };
 
-  private handleMouseLeave = (e: MouseEvent) => {
+  private readonly handleMouseLeave = (e: MouseEvent) => {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
     this._mouseLeaveTimeout = window.setTimeout(this.hidePersonCard, 500);

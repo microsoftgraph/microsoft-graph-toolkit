@@ -114,7 +114,7 @@ class MgtSearchBox extends MgtBaseComponent {
       </fluent-search>`;
   }
 
-  private onInputChanged = (e: Event) => {
+  private readonly onInputChanged = (e: Event) => {
     this.searchTerm = (e.target as HTMLInputElement).value;
   };
 

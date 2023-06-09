@@ -69,7 +69,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
    */
   @property({ type: Object }) public options: { [name: string]: (e: UIEvent) => any | void };
 
-  private _clickHandler: (e: UIEvent) => void | any;
+  private readonly _clickHandler: (e: UIEvent) => void | any;
 
   constructor() {
     super();
@@ -79,13 +79,11 @@ export class MgtArrowOptions extends MgtBaseComponent {
     window.addEventListener('onblur', () => (this.open = false));
   }
 
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this._clickHandler);
   }
 
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   public disconnectedCallback() {
     window.removeEventListener('click', this._clickHandler);
     super.disconnectedCallback();
@@ -111,7 +109,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
    *
    * @param {KeyboardEvent} e
    */
-  private onHeaderKeyDown = (e: KeyboardEvent) => {
+  private readonly onHeaderKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       e.stopPropagation();

@@ -59,7 +59,6 @@ const isFileSystemFileEntry = (entry: FileEntry): entry is FileSystemFileEntry =
   return entry.isFile;
 };
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 interface FutureDataTransferItem extends DataTransferItem {
   /**
    * Possible future implementation of webkitGetAsEntry
@@ -226,9 +225,7 @@ export interface MgtFileUploadConfig {
   excludedFileExtensions?: string[];
 }
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 interface FileWithPath extends File {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   fullPath: string;
 }
 
@@ -307,9 +304,11 @@ export class MgtFileUpload extends MgtBaseComponent {
   // variable manage drag style when mouse over
   private _dragCounter = 0;
   // variable avoids removal of files after drag and drop, https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect
-  private _dropEffect: DataTransfer['dropEffect'] = 'copy';
+  private get _dropEffect() {
+    return 'copy';
+  }
   // variable defined max chuck size "4MB" for large files .
-  private _maxChunkSize: number = 4 * 1024 * 1024;
+  private readonly _maxChunkSize: number = 4 * 1024 * 1024;
   private _dialogTitle = '';
   private _dialogContent = '';
   private _dialogPrimaryButton = '';
@@ -786,7 +785,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     const fileUploadDialog: HTMLElement = this.renderRoot.querySelector('#file-upload-dialog');
 
     switch (DialogStatus) {
-      case 'Upload':
+      case 'Upload': {
         const driveItem = await getGraphfile(this.fileUploadList.graph, `${this.getGrapQuery(fullPath)}?$select=id`);
         if (driveItem !== null) {
           if (this._applyAll === true) {
@@ -838,6 +837,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           return null;
         }
         break;
+      }
       case 'ExcludedFileType':
         fileUploadDialog.classList.add('visible');
         this._dialogTitle = strings.fileTypeTitle;
@@ -1260,6 +1260,6 @@ export class MgtFileUpload extends MgtBaseComponent {
     });
   }
   private writeFilePath(file: File | FileSystemEntry, path: string) {
-    ((file as unknown) as FileEntry).fullPath = path;
+    (file as unknown as FileEntry).fullPath = path;
   }
 }

@@ -774,14 +774,14 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    *
    * @returns void
    */
-  private onFocusFirstItem = () => (this._focusedItemIndex = 0);
+  private readonly onFocusFirstItem = () => (this._focusedItemIndex = 0);
 
   /**
    * Handle accessibility keyboard keydown events (arrow up, arrow down, enter, tab) on file list
    *
    * @param event
    */
-  private onFileListKeyDown = (event: KeyboardEvent): void => {
+  private readonly onFileListKeyDown = (event: KeyboardEvent): void => {
     const fileList = this.renderRoot.querySelector('.file-list');
     let focusedItem: HTMLElement;
 

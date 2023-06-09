@@ -299,7 +299,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    *
    * @param {KeyboardEvent} e
    */
-  private handleComboboxKeydown = (e: KeyboardEvent) => {
+  private readonly handleComboboxKeydown = (e: KeyboardEvent) => {
     let value: string;
     let item: any;
     const keyName: string = e.key;

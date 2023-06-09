@@ -41,11 +41,8 @@ registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluent
  */
 export type LoginViewType = 'avatar' | 'compact' | 'full';
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 type PersonViewConfig = {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   view: ViewType;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   avatarSize: AvatarSize;
 };
 
@@ -185,7 +182,9 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtLogin
    */
-  private _userDetailsKey = '-userDetails';
+  private get _userDetailsKey() {
+    return '-userDetails';
+  }
 
   @state() private _arrowKeyLocation = -1;
 
@@ -337,10 +336,10 @@ export class MgtLogin extends MgtTemplatedComponent {
       </fluent-button>`;
   }
 
-  private flyoutOpened = () => {
+  private readonly flyoutOpened = () => {
     this._isFlyoutOpen = true;
   };
-  private flyoutClosed = () => {
+  private readonly flyoutClosed = () => {
     this._isFlyoutOpen = false;
   };
 
@@ -587,7 +586,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
-  private handleAccountListKeyDown = (event: KeyboardEvent) => {
+  private readonly handleAccountListKeyDown = (event: KeyboardEvent) => {
     const list: HTMLUListElement = this.renderRoot.querySelector('ul.account-list');
     let item: HTMLLIElement;
     const listItems: HTMLCollection = list?.children;
@@ -690,7 +689,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @private
    * @memberof MgtLogin
    */
-  private onClick = (): void => {
+  private readonly onClick = (): void => {
     if (this.userDetails && this._isFlyoutOpen) {
       this.hideFlyout();
     } else if (this.userDetails) {

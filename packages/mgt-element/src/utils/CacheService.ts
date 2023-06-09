@@ -178,10 +178,10 @@ export class CacheService {
     }
   }
 
-  private static cacheStore: Map<string, CacheStore<CacheItem>> = new Map();
+  private static readonly cacheStore = new Map<string, CacheStore<CacheItem>>();
   private static isInitialized = false;
 
-  private static cacheConfig: CacheConfig = {
+  private static readonly cacheConfig: CacheConfig = {
     defaultInvalidationPeriod: 3600000,
     groups: {
       invalidationPeriod: null,

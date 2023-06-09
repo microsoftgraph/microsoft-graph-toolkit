@@ -93,7 +93,7 @@ class MgtThemeToggle extends MgtBaseComponent {
 `;
   }
 
-  private onSwitchChanged = (e: Event) => {
+  private readonly onSwitchChanged = (e: Event) => {
     this.darkModeActive = (e.target as HTMLInputElement).checked;
   };
 

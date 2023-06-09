@@ -22,15 +22,10 @@ import { strings } from './strings';
  * @interface IContactPart
  */
 interface IContactPart {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   icon: TemplateResult;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   title: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   value?: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   onClick?: (e: Event) => void;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   showCompact: boolean;
 }
 
@@ -76,9 +71,9 @@ export class MgtContact extends BasePersonCardSection {
     return !!availableParts.length;
   }
 
-  private _person?: User;
+  private readonly _person?: User;
 
-  private _contactParts: Record<string, IContactPart> = {
+  private readonly _contactParts: Record<string, IContactPart> = {
     email: {
       icon: getSvg(SvgIcon.Email),
       onClick: () => this.sendEmail(getEmailFromGraphEntity(this._person)),

@@ -247,7 +247,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     return null;
   }
 
-  private onResize = () => {
+  private readonly onResize = () => {
     if (this.mediaQuery !== this._previousMediaQuery) {
       this._previousMediaQuery = this.mediaQuery;
       this.requestUpdate();

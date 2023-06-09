@@ -17,9 +17,9 @@ import { EventDispatcher, EventHandler } from './EventDispatcher';
 export class LocalizationHelper {
   static _strings: any;
 
-  static _stringsEventDispatcher: EventDispatcher<any> = new EventDispatcher();
+  static _stringsEventDispatcher = new EventDispatcher<any>();
 
-  static _directionEventDispatcher: EventDispatcher<any> = new EventDispatcher();
+  static _directionEventDispatcher = new EventDispatcher<any>();
 
   private static mutationObserver: MutationObserver;
 

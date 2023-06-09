@@ -21,14 +21,16 @@ import { BatchRequest } from './BatchRequest';
 export class Batch<T = any> implements IBatch<T> {
   // this doesn't really mater what it is as long as it's a root base url
   // otherwise a Request assumes the current path and that could change the relative path
-  private static baseUrl = 'https://graph.microsoft.com';
+  private static get baseUrl() {
+    return 'https://graph.microsoft.com';
+  }
 
-  private allRequests: BatchRequest[];
-  private requestsQueue: number[];
+  private readonly allRequests: BatchRequest[];
+  private readonly requestsQueue: number[];
   private scopes: string[];
   private retryAfter: number;
 
-  private graph: IGraph;
+  private readonly graph: IGraph;
 
   private nextIndex: number;
 
@@ -78,7 +80,7 @@ export class Batch<T = any> implements IBatch<T> {
    * @memberof Batch
    */
   public async executeNext(): Promise<Map<string, BatchResponse<T>>> {
-    const responses: Map<string, BatchResponse<T>> = new Map();
+    const responses = new Map<string, BatchResponse<T>>();
 
     if (this.retryAfter) {
       await delay(this.retryAfter * 1000);
@@ -155,7 +157,7 @@ export class Batch<T = any> implements IBatch<T> {
    * @memberof Batch
    */
   public async executeAll(): Promise<Map<string, BatchResponse<T>>> {
-    const responses: Map<string, BatchResponse<T>> = new Map();
+    const responses = new Map<string, BatchResponse<T>>();
 
     while (this.hasRequests) {
       const r = await this.executeNext();

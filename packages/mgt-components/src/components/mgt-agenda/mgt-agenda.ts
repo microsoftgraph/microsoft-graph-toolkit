@@ -229,10 +229,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
   private _date: string;
   private _preferredTimezone: string;
 
-  constructor() {
-    super();
-  }
-
   /**
    * Determines width available if resize is necessary, adds onResize event listener to window
    *
@@ -585,7 +581,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     await this.requestStateUpdate(true);
   }
 
-  private onResize = () => {
+  private readonly onResize = () => {
     this._isNarrow = this.offsetWidth < 600;
   };
 

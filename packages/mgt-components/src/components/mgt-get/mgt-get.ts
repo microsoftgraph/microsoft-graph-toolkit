@@ -84,9 +84,7 @@ const getIsResponseCacheEnabled = (): boolean =>
  * Holder type emitted with the dataChange event
  */
 export type DataChangedDetail = {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   response?: CollectionResponse<Entity>;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   error?: object;
 };
 

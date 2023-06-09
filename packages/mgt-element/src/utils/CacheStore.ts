@@ -17,8 +17,8 @@ import { CacheItem, CacheSchema, dbListKey } from './CacheService';
  */
 
 export class CacheStore<T extends CacheItem> {
-  private schema: CacheSchema;
-  private store: string;
+  private readonly schema: CacheSchema;
+  private readonly store: string;
 
   public constructor(schema: CacheSchema, store: string) {
     if (!(store in schema.stores)) {
@@ -42,7 +42,7 @@ export class CacheStore<T extends CacheItem> {
     }
     try {
       const db = await this.getDb();
-      return (db.get(this.store, key) as unknown) as T;
+      return db.get(this.store, key) as unknown as T;
     } catch (e) {
       return null;
     }
@@ -106,7 +106,10 @@ export class CacheStore<T extends CacheItem> {
           }
           localStorage.setItem(dbListKey, JSON.stringify(dbArray));
           for (const storeName in this.schema.stores) {
-            if (this.schema.stores.hasOwnProperty(storeName) && !db.objectStoreNames.contains(storeName)) {
+            if (
+              Object.prototype.hasOwnProperty.call(this.schema.stores, storeName) &&
+              !db.objectStoreNames.contains(storeName)
+            ) {
               db.createObjectStore(storeName);
             }
           }

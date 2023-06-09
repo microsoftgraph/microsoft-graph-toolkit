@@ -46,17 +46,12 @@ import { BasePersonCardSection, CardSection } from '../BasePersonCardSection';
 
 registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 interface MgtPersonCardStateHistory {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   state: MgtPersonCardState;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   personDetails: IDynamicPerson;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   personImage: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
 
 /**
@@ -198,7 +193,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return this._config;
   }
 
-  private static _config: MgtPersonCardConfig = {
+  private static readonly _config: MgtPersonCardConfig = {
     sections: {
       files: true,
       mailMessages: true,
@@ -577,7 +572,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
      `;
   }
 
-  private handleEndOfCard = (e: KeyboardEvent) => {
+  private readonly handleEndOfCard = (e: KeyboardEvent) => {
     if (e && e.code === 'Tab') {
       const endOfCardEl = this.renderRoot.querySelector<HTMLElement>('#end-of-container');
       if (endOfCardEl) {
@@ -1336,13 +1331,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
   }
 
-  private sendQuickMessageOnEnter = (e: KeyboardEvent) => {
+  private readonly sendQuickMessageOnEnter = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
       void this.sendQuickMessage();
     }
   };
 
-  private handleGoBack = (e: KeyboardEvent) => {
+  private readonly handleGoBack = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
       void this.goBack();
     }
