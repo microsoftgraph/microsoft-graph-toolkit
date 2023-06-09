@@ -226,21 +226,28 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected renderPicker(): TemplateResult {
     return mgtHtml`
-      <fluent-combobox current-value=${ifDefined(
-        this.selectedValue
-      )} part="picker" class="picker" id="combobox" autocomplete="list" placeholder=${this.placeholder}>
+      <fluent-combobox
+        @keydown=${this.handleComboboxKeydown}
+        current-value=${ifDefined(this.selectedValue)}
+        part="picker"
+        class="picker"
+        id="combobox"
+        autocomplete="list"
+        placeholder=${this.placeholder}>
         ${this.response.map(
           item => html`
-          <fluent-option value=${item.id} @click=${(e: MouseEvent) => this.handleClick(e, item)}> ${
-            item[this.keyName]
-          } </fluent-option>`
+          <fluent-option
+            value=${item.id}
+            @click=${(e: MouseEvent) => this.handleClick(e, item)}>
+              ${item[this.keyName]}
+          </fluent-option>`
         )}
       </fluent-combobox>
      `;
   }
 
   /**
-   * Render picker.
+   * Renders mgt-get which does a GET request to the resource.
    *
    * @protected
    * @returns {TemplateResult}
@@ -285,4 +292,28 @@ export class MgtPicker extends MgtTemplatedComponent {
   private handleClick(e: MouseEvent, item: any) {
     this.fireCustomEvent('selectionChanged', item, true, false, true);
   }
+
+  /**
+   * Handles getting the fluent option item in the dropdown and fires a custom
+   * event with it when you press Enter or Backspace keys.
+   *
+   * @param {KeyboardEvent} e
+   */
+  private handleComboboxKeydown = (e: KeyboardEvent) => {
+    let value: string;
+    let item: any;
+    const keyName: string = e.key;
+    const comboBox: HTMLElement = e.target as HTMLElement;
+    const fluentOptionEl = comboBox.querySelector('.selected');
+    if (fluentOptionEl) {
+      value = fluentOptionEl.getAttribute('value');
+    }
+
+    if (['Enter'].includes(keyName)) {
+      if (value) {
+        item = this.response.filter(res => res.id === value).pop();
+        this.fireCustomEvent('selectionChanged', item, true, false, true);
+      }
+    }
+  };
 }
