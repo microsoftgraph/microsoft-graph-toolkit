@@ -296,9 +296,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    this.addEventListener('focus', _ => this.loadTeamsIfNotLoaded());
-    this.addEventListener('mouseover', _ => this.loadTeamsIfNotLoaded());
-    this.addEventListener('blur', _ => this.lostFocus());
+    this.addEventListener('focus', () => this.loadTeamsIfNotLoaded());
+    this.addEventListener('mouseover', () => this.loadTeamsIfNotLoaded());
+    this.addEventListener('blur', () => this.lostFocus());
     this.clearState();
   }
 

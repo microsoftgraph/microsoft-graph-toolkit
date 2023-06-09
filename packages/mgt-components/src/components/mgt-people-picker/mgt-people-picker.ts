@@ -53,16 +53,6 @@ export { GroupType } from '../../graph/graph.groups';
 export { PersonType, UserType } from '../../graph/graph.people';
 
 /**
- * An interface used to mark an object as 'focused',
- * so it can be rendered differently.
- *
- * @interface IFocusable
- */
-interface IFocusable {
-  isFocused: boolean;
-}
-
-/**
  * Web component used to search for people from the Microsoft Graph
  *
  * @export
@@ -792,7 +782,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderSelectedPeople(selectedPeople?: IDynamicPerson[]): TemplateResult {
-    if (!selectedPeople || !selectedPeople.length) {
+    if (!selectedPeople?.length) {
       return html``;
     }
 
@@ -946,7 +936,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 aria-label="${ariaLabel}"
                 class="searched-people-list-result"
                 role="option"
-                @click="${_ => this.handleSuggestionClick(person)}">
+                @click="${() => this.handleSuggestionClick(person)}">
                   ${this.renderPersonResult(person)}
                </li>
              `;
@@ -1158,7 +1148,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               // Default UserType === any
               if (this.userType === UserType.contact || this.userType === UserType.user) {
                 // we might have a user-filters property set, search for users with it.
-                if (this.userIds && this.userIds.length) {
+                if (this.userIds?.length) {
                   // has the user-ids proerty set
                   people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
                 } else {
@@ -1166,7 +1156,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 }
               } else {
                 if (!this.groupIds) {
-                  if (this.userIds && this.userIds.length) {
+                  if (this.userIds?.length) {
                     // has the user-ids proerty set
                     people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
                   } else {

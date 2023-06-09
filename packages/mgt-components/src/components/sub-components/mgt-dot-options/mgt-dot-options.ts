@@ -49,9 +49,9 @@ export class MgtDotOptions extends MgtBaseComponent {
    *
    * @memberof MgtDotOptions
    */
-  @property({ type: Object }) public options: { [option: string]: (e: Event) => void | any };
+  @property({ type: Object }) public options: Record<string, (e: Event) => void | any>;
 
-  private readonly _clickHandler = (e: MouseEvent) => (this.open = false);
+  private readonly _clickHandler = () => (this.open = false);
 
   public connectedCallback() {
     super.connectedCallback();
@@ -69,8 +69,6 @@ export class MgtDotOptions extends MgtBaseComponent {
    * trigger the element to update.
    */
   public render() {
-    const menuOptions = Object.keys(this.options);
-
     return html`
       <div tabindex="0" class=${classMap({ 'dot-menu': true, open: this.open })}
         @click=${this.onDotClick}

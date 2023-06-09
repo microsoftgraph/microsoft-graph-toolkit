@@ -214,7 +214,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     if (!provider.isMultiAccountSupportedAndEnabled && (this.userDetails || !this.fireCustomEvent('loginInitiated'))) {
       return;
     }
-    if (provider && provider.login) {
+    if (provider?.login) {
       await provider.login();
 
       if (provider.state === ProviderState.SignedIn) {
@@ -237,10 +237,10 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
 
     const provider = Providers.globalProvider;
-    if (provider && provider.isMultiAccountSupportedAndEnabled) {
+    if (provider?.isMultiAccountSupportedAndEnabled) {
       localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
     }
-    if (provider && provider.logout) {
+    if (provider?.logout) {
       await provider.logout();
       this.userDetails = null;
       if (provider.isMultiAccountSupportedAndEnabled) {

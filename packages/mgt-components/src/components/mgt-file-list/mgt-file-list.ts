@@ -15,7 +15,6 @@ import {
   MgtTemplatedComponent
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { classMap } from 'lit/directives/class-map.js';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -785,7 +784,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     const fileList = this.renderRoot.querySelector('.file-list');
     let focusedItem: HTMLElement;
 
-    if (!fileList || !fileList.children.length) {
+    if (!fileList?.children.length) {
       return;
     }
 
@@ -913,7 +912,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       let filteredByFileExtension: DriveItem[];
       if (this.fileExtensions && this.fileExtensions !== null) {
         // retrive all pages before filtering
-        if (this.pageIterator && this.pageIterator.value) {
+        if (this.pageIterator?.value) {
           while (this.pageIterator.hasNext) {
             await fetchNextAndCacheForFilesPageIterator(this.pageIterator);
           }
@@ -929,7 +928,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
         });
       }
 
-      if (filteredByFileExtension && filteredByFileExtension.length >= 0) {
+      if (filteredByFileExtension?.length >= 0) {
         this.files = filteredByFileExtension;
         if (this.pageSize) {
           files = this.files.splice(0, this.pageSize);
@@ -982,7 +981,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       if (this.pageIterator.hasNext) {
         this._isLoadingMore = true;
         const root = this.renderRoot.querySelector('file-list-wrapper');
-        if (root && root.animate) {
+        if (root?.animate) {
           // play back
           root.animate(
             [
@@ -1012,7 +1011,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   }
 
   private handleFileClick(file: DriveItem) {
-    if (file && file.webUrl) {
+    if (file?.webUrl) {
       window.open(file.webUrl, '_blank', 'noreferrer');
     }
   }

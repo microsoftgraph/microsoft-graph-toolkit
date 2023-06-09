@@ -1081,7 +1081,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         @change=${this.handleDateChange}>
       </fluent-text-field>`;
 
-    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null, iconColor);
+    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null);
 
     const newTaskActionButtons = this._newTaskBeingAdded
       ? html`<div class="task-add-button-container"></div>`
@@ -1209,7 +1209,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             </div>
           `;
 
-      const taskPeople = this.dataSource !== TasksSource.todo ? this.renderAssignedPeople(task, iconColor) : null;
+      const taskPeople = this.dataSource !== TasksSource.todo ? this.renderAssignedPeople(task) : null;
 
       taskDetails = html`${group} ${folder} ${taskPeople} ${taskDue}`;
     }
@@ -1310,7 +1310,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   };
 
-  private renderAssignedPeople(task: ITask, iconColor: string): TemplateResult {
+  private renderAssignedPeople(task: ITask): TemplateResult {
     let assignedGroupId: string;
     const taskAssigneeClasses = {
       'new-task-assignee': task === null,

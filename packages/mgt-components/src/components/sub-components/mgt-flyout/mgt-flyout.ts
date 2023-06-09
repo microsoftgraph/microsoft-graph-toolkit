@@ -470,7 +470,7 @@ export class MgtFlyout extends MgtBaseComponent {
     this.close();
   };
 
-  private readonly handleResize = (e: Event) => {
+  private readonly handleResize = () => {
     this.close();
   };
 

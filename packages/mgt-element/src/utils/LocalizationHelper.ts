@@ -140,7 +140,7 @@ export class LocalizationHelper {
       }
       // strings defined component specific
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (this._strings._components && this._strings._components[tagName]) {
+      if (this._strings._components?.[tagName]) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const strings: any = this._strings._components[tagName];
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

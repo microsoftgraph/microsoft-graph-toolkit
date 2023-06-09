@@ -313,12 +313,8 @@ export class ElectronAuthenticator {
       }
     });
     ipcMain.handle('token', async (_e, options: AuthenticationProviderOptions) => {
-      try {
-        const token = await this.getAccessToken(options);
-        return token;
-      } catch (e) {
-        throw e;
-      }
+      const token = await this.getAccessToken(options);
+      return token;
     });
 
     ipcMain.handle('logout', async () => {
@@ -336,8 +332,8 @@ export class ElectronAuthenticator {
    * @memberof ElectronAuthenticator
    */
   protected async getAccessToken(options?: AuthenticationProviderOptions): Promise<string | undefined> {
-    let authResponse: AuthenticationResult;
-    const scopes = options && options.scopes ? options.scopes : this.authCodeUrlParams.scopes;
+    let authResponse: AuthenticationResult | null = null;
+    const scopes = options?.scopes ? options.scopes : this.authCodeUrlParams.scopes;
     const account = this.account || (await this.getAccount());
     if (account) {
       const request = {
@@ -347,7 +343,7 @@ export class ElectronAuthenticator {
       };
       authResponse = await this.getTokenSilent(request, scopes);
     }
-    if (authResponse) {
+    if (authResponse && authResponse !== null) {
       return authResponse.accessToken;
     }
     return undefined;
