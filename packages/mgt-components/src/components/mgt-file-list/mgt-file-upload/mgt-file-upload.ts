@@ -304,7 +304,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   // variable manage drag style when mouse over
   private _dragCounter = 0;
   // variable avoids removal of files after drag and drop, https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect
-  private get _dropEffect() {
+  private get _dropEffect(): DataTransfer['dropEffect'] {
     return 'copy';
   }
   // variable defined max chuck size "4MB" for large files .
@@ -629,7 +629,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     };
     const dragFileBorder: HTMLElement = this.renderRoot.querySelector('#file-upload-border');
     dragFileBorder.classList.remove('visible');
-    if (event.dataTransfer && event.dataTransfer.items) {
+    if (event.dataTransfer?.items) {
       void this.readUploadedFiles(event.dataTransfer.items, done);
     }
     this._dragCounter = 0;

@@ -575,7 +575,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (!person && !image) {
       return this.renderNoData();
     }
-    if (!(person && person.personImage) && image) {
+    if (!person?.personImage && image) {
       person.personImage = image;
     }
 
@@ -1106,7 +1106,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         people = (await findUsers(graph, this.personQuery, 1)) || [];
       }
 
-      if (people && people.length) {
+      if (people?.length) {
         this.personDetailsInternal = people[0];
         this.personDetails = people[0];
         if (this._avatarType === 'photo' && !this.disableImageFetch) {
@@ -1191,7 +1191,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const person = this.personDetailsInternal || this.personDetails;
-    return person && person.personImage ? person.personImage : null;
+    return person?.personImage ? person.personImage : null;
   }
 
   private isLetter(char: string) {
@@ -1271,7 +1271,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   };
 
-  private readonly handleMouseEnter = (e: MouseEvent) => {
+  private readonly handleMouseEnter = () => {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
     if (this.personCardInteraction !== PersonCardInteraction.hover) {
@@ -1280,7 +1280,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._mouseEnterTimeout = window.setTimeout(this.showPersonCard, 500);
   };
 
-  private readonly handleMouseLeave = (e: MouseEvent) => {
+  private readonly handleMouseLeave = () => {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
     this._mouseLeaveTimeout = window.setTimeout(this.hidePersonCard, 500);

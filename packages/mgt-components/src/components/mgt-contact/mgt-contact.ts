@@ -126,7 +126,7 @@ export class MgtContact extends BasePersonCardSection {
     this._contactParts.title.value = this._person.jobTitle;
     this._contactParts.officeLocation.value = this._person.officeLocation;
 
-    if (this._person.businessPhones && this._person.businessPhones.length) {
+    if (this._person.businessPhones?.length) {
       this._contactParts.businessPhone.value = this._person.businessPhones[0];
     }
   }
@@ -196,7 +196,7 @@ export class MgtContact extends BasePersonCardSection {
       (p: IContactPart) => !!p.value && p.showCompact
     );
 
-    if (!compactParts || !compactParts.length) {
+    if (!compactParts?.length) {
       compactParts = Object.values(availableParts).slice(0, 2);
     }
 

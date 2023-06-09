@@ -61,7 +61,7 @@ export class Batch<T = any> implements IBatch<T> {
    * @param {string[]} [scopes]
    * @memberof Batch
    */
-  public get(id: string, resource: string, scopes?: string[], headers?: { [header: string]: string }) {
+  public get(id: string, resource: string, scopes?: string[], headers?: Record<string, string>) {
     const index = this.nextIndex++;
     const request = new BatchRequest(index, id, resource, 'GET');
     request.headers = headers;

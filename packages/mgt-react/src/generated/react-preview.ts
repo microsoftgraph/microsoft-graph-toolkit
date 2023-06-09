@@ -1,8 +1,6 @@
 import '@microsoft/mgt-components/dist/es6/components/preview';
 import { DataChangedDetail } from '@microsoft/mgt-components';
 import { ComponentMediaQuery,TemplateContext,TemplateRenderedData } from '@microsoft/mgt-element';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
 
 export type SearchBoxProps = {

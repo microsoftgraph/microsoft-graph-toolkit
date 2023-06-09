@@ -285,7 +285,7 @@ export interface CacheSchema {
    * @type {{ [name: string]: CacheSchemaStore }}
    * @memberof CacheSchema
    */
-  stores: { [name: string]: string };
+  stores: Record<string, string>;
 }
 
 /**

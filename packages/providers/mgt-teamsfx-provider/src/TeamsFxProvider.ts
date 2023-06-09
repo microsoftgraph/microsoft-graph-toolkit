@@ -48,7 +48,7 @@ export class TeamsFxProvider extends IProvider {
    * @memberof TeamsFxProvider
    */
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  private scopes: string | string[] = [];
+  private readonly scopes: string | string[] = [];
 
   /**
    * TeamsFxUserCredential instance
