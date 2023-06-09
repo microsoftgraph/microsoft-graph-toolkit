@@ -30,7 +30,7 @@ export const tasksWithTargetId = () => html`
 `;
 
 export const tasksWithInitialId = () => html`
-  <mgt-todo initial-id="AQMkADhiZTI2MGUyLTZjYmUtNDNlYS05YTJkLWNmNzA4MTIwNWI5YQAuAAAD7zBnIbVuBE6ECinrQyLxwwEAcUAkVjKRgUeDolDvaYAd0AAAAgESAAAA"></mgt-todo>
+  <mgt-todo initial-id="AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OAAuAAAAAAAiQ8W967B7TKBjgx9rVEURAQAiIsqMbYjsT5e-T7KzowPTAAAAAAESAAA="></mgt-todo>
 `;
 
 export const ReadOnly = () => html`
