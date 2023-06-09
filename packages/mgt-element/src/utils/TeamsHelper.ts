@@ -5,7 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 export interface loginContext {
   loginHint: string;
 }
