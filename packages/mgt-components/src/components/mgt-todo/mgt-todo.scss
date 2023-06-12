@@ -28,7 +28,7 @@
     &.complete {
       text-decoration: line-through;
       border: 1px solid $task-border-completed;
-      background: $task-background-color--completed;
+      background: $task-background-color-completed;
     }
 
     &:hover {
@@ -132,6 +132,12 @@
 
             &::after {
               border-bottom: none;
+            }
+
+            &.dark {
+              &::part(control) {
+                color-scheme: dark;
+              }
             }
           }
 

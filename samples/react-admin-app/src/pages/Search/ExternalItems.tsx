@@ -1,5 +1,11 @@
-import { MgtTemplateProps, SearchBox, SearchResults } from '@microsoft/mgt-react';
+import { MgtTemplateProps } from '@microsoft/mgt-react';
+import { SearchBox, SearchResults } from '@microsoft/mgt-react/dist/es6/generated/react-preview';
+
 import * as React from 'react';
+
+const entityTypes = ['externalItem'];
+const scopes = ['ExternalItem.Read.All'];
+const contentSources = ['/external/connections/contosopartsinventory'];
 
 export const ExternalItems: React.FunctionComponent = () => {
   const [searchTerm, setSearchTerm] = React.useState<string>('');
@@ -7,12 +13,7 @@ export const ExternalItems: React.FunctionComponent = () => {
   return (
     <>
       <SearchBox searchTermChanged={e => setSearchTerm(e.detail)}></SearchBox>
-      <SearchResults
-        entityTypes={['externalItem']}
-        contentSources={['/external/connections/contosopartsinventory']}
-        queryString={searchTerm}
-        scopes={['ExternalItem.Read.All']}
-      >
+      <SearchResults entityTypes={entityTypes} contentSources={contentSources} queryString={searchTerm} scopes={scopes}>
         <ExternalItemTemplate template="result-externalItem"></ExternalItemTemplate>
       </SearchResults>
     </>

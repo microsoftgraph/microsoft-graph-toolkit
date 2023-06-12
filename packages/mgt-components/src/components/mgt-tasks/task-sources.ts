@@ -4,14 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-
 /* eslint-disable max-classes-per-file */
-/**
- * -------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
- * See License in the project root for license information.
- * -------------------------------------------------------------------------------------------
- */
 
 import { IGraph, BetaGraph } from '@microsoft/mgt-element';
 import { PlannerAssignments } from '@microsoft/microsoft-graph-types';

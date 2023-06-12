@@ -7,6 +7,8 @@
 
 @import './shared-sass-variables';
 
+$focus-ring-style: var(--focus-ring-style, auto);
+
 :host([hidden]) {
   display: none;
 }
@@ -18,6 +20,19 @@
   --default-font-size: 14px;
   --theme-primary-color: #0078d7;
   --theme-dark-color: #005a9e;
+}
+
+:focus-visible {
+  // ensure default is correctly set for Firefox
+  outline-color: var(--focus-ring-color, Highlight);
+
+  // ensure default is set for other browsers
+  /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
+  outline-color: var(--focus-ring-color, -webkit-focus-ring-color);
+  
+  // set the style of the focus ring
+  // this needs to be something other than auto in Firefox to use the custom color
+  outline-style: $focus-ring-style;
 }
 
 .ms-icon {

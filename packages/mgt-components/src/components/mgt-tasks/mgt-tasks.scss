@@ -71,10 +71,19 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
 
     .title {
       justify-content: left;
+      display: flex;
+      align-items: center;
 
       .shimmer {
         width: 80px;
         height: 20px;
+      }
+
+      svg {
+        margin-top: 3px;
+        padding: 0 4px;
+        width: 16px;
+        height: 16px;
       }
     }
 
@@ -179,8 +188,24 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
 
             .task-content {
               display: grid;
-              grid-auto-flow: column;
-              column-gap: 12px;
+              grid-template-columns: repeat(auto-fit, 250px);
+              gap: 12px;
+              justify-content: start;
+              width: 100%;
+
+              .picker {
+                max-width: 250px;
+              }
+
+              .task-due {
+                fluent-text-field {
+                  &.dark {
+                    &::part(control) {
+                      color-scheme: dark;
+                    }
+                  }
+                }
+              }
             }
           }
 
