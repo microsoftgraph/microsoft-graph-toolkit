@@ -46,7 +46,7 @@ class MgtSearchBox extends MgtBaseComponent {
   }
 
   /**
-   * Placeholder text
+   * The placeholder rendered in the search input (for example, `Select a user` or `Select a task list`).
    *
    * @type {string}
    * @memberof MgtSearchBox
@@ -76,7 +76,7 @@ class MgtSearchBox extends MgtBaseComponent {
   }
 
   /**
-   * Debounce delay of the search input
+   * Debounce delay of the search input in milliseconds
    *
    * @type {number}
    * @memberof MgtSearchBox
