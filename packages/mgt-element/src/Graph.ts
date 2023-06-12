@@ -72,9 +72,9 @@ export class Graph implements IGraph {
     return this._version;
   }
 
-  private _client: Client;
+  private readonly _client: Client;
   private _componentName: string;
-  private _version: string;
+  private readonly _version: string;
 
   constructor(client: Client, version: string = GRAPH_VERSION) {
     this._client = client;

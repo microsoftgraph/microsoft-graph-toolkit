@@ -44,7 +44,7 @@ export class BatchRequest {
    * @type {{[headerName: string]: string}}
    * @memberof BatchRequest
    */
-  public headers: { [header: string]: string };
+  public headers: Record<string, string>;
 
   /**
    * The id of the requests

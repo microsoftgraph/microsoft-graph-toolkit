@@ -17,9 +17,9 @@ import { EventDispatcher, EventHandler } from './EventDispatcher';
 export class LocalizationHelper {
   static _strings: any;
 
-  static _stringsEventDispatcher: EventDispatcher<any> = new EventDispatcher();
+  static _stringsEventDispatcher = new EventDispatcher<any>();
 
-  static _directionEventDispatcher: EventDispatcher<any> = new EventDispatcher();
+  static _directionEventDispatcher = new EventDispatcher<any>();
 
   private static mutationObserver: MutationObserver;
 
@@ -140,7 +140,7 @@ export class LocalizationHelper {
       }
       // strings defined component specific
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (this._strings._components && this._strings._components[tagName]) {
+      if (this._strings._components?.[tagName]) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const strings: any = this._strings._components[tagName];
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

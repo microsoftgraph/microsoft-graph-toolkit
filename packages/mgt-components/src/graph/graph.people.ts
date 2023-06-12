@@ -5,15 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  IGraph,
-  prepScopes,
-  CacheItem,
-  CacheService,
-  CacheStore,
-  CacheConfig,
-  CacheSchema
-} from '@microsoft/mgt-element';
+import { IGraph, prepScopes, CacheItem, CacheService, CacheStore, CacheSchema } from '@microsoft/mgt-element';
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
 import { CollectionResponse } from '@microsoft/mgt-element';
 import { extractEmailAddress } from '../utils/Utils';
@@ -242,9 +234,9 @@ export const getEmailFromGraphEntity = (entity: IDynamicPerson): string => {
 
   if (user.mail) {
     return extractEmailAddress(user.mail);
-  } else if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
+  } else if (person.scoredEmailAddresses?.length) {
     return extractEmailAddress(person.scoredEmailAddresses[0].address);
-  } else if (contact.emailAddresses && contact.emailAddresses.length) {
+  } else if (contact.emailAddresses?.length) {
     return extractEmailAddress(contact.emailAddresses[0].address);
   }
   return null;
@@ -310,22 +302,20 @@ export const getPeopleFromResource = async (
 
   let request = graph.api(resource).version(version);
 
-  if (scopes && scopes.length) {
+  if (scopes?.length) {
     request = request.middlewareOptions(prepScopes(...scopes));
   }
 
   let response = (await request.get()) as CollectionResponse<Person>;
   // get more pages if there are available
   if (response && Array.isArray(response.value) && response['@odata.nextLink']) {
-    let pageCount = 1;
     let page = response;
 
-    while (page && page['@odata.nextLink']) {
-      pageCount++;
+    while (page?.['@odata.nextLink']) {
       const nextLink = page['@odata.nextLink'] as string;
       const nextResource = nextLink.split(version)[1];
       page = (await graph.client.api(nextResource).version(version).get()) as CollectionResponse<Person>;
-      if (page && page.value && page.value.length) {
+      if (page?.value?.length) {
         page.value = response.value.concat(page.value);
         response = page;
       }

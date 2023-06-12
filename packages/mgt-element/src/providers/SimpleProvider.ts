@@ -17,9 +17,9 @@ import { IProvider } from './IProvider';
  * @extends {IProvider}
  */
 export class SimpleProvider extends IProvider {
-  private _getAccessTokenHandler: (scopes: string[]) => Promise<string>;
-  private _loginHandler: () => Promise<void>;
-  private _logoutHandler: () => Promise<void>;
+  private readonly _getAccessTokenHandler: (scopes: string[]) => Promise<string>;
+  private readonly _loginHandler: () => Promise<void>;
+  private readonly _logoutHandler: () => Promise<void>;
 
   /**
    * Name used for analytics
