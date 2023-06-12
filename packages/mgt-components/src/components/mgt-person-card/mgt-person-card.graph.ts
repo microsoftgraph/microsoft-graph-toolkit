@@ -13,11 +13,9 @@ import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { IDynamicPerson } from '../../graph/types';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 const userProperties =
   'businessPhones,companyName,department,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,accountEnabled';
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 const batchKeys = {
   directReports: 'directReports',
   files: 'files',
@@ -104,7 +102,6 @@ export const getPersonCardGraphData = async (
   return data;
 };
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 const buildOrgStructureRequest = (batch: IBatch, userId: string) => {
   const expandManagers = `manager($levels=max;$select=${userProperties})`;
 
@@ -120,17 +117,14 @@ const buildOrgStructureRequest = (batch: IBatch, userId: string) => {
   batch.get(batchKeys.directReports, `users/${userId}/directReports?$select=${userProperties}`);
 };
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 const buildWorksWithRequest = (batch: IBatch, userId: string) => {
   batch.get(batchKeys.people, `users/${userId}/people?$filter=personType/class eq 'Person'`, ['People.Read.All']);
 };
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 const buildMessagesWithUserRequest = (batch: IBatch, emailAddress: string) => {
   batch.get(batchKeys.messages, `me/messages?$search="from:${emailAddress}"`, ['Mail.ReadBasic']);
 };
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 const buildFilesRequest = (batch: IBatch, emailAddress?: string) => {
   let request: string;
 

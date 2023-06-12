@@ -22,15 +22,10 @@ import { strings } from './strings';
  * @interface IContactPart
  */
 interface IContactPart {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   icon: TemplateResult;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   title: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   value?: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   onClick?: (e: Event) => void;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   showCompact: boolean;
 }
 
@@ -76,9 +71,9 @@ export class MgtContact extends BasePersonCardSection {
     return !!availableParts.length;
   }
 
-  private _person?: User;
+  private readonly _person?: User;
 
-  private _contactParts: Record<string, IContactPart> = {
+  private readonly _contactParts: Record<string, IContactPart> = {
     email: {
       icon: getSvg(SvgIcon.Email),
       onClick: () => this.sendEmail(getEmailFromGraphEntity(this._person)),
@@ -131,7 +126,7 @@ export class MgtContact extends BasePersonCardSection {
     this._contactParts.title.value = this._person.jobTitle;
     this._contactParts.officeLocation.value = this._person.officeLocation;
 
-    if (this._person.businessPhones && this._person.businessPhones.length) {
+    if (this._person.businessPhones?.length) {
       this._contactParts.businessPhone.value = this._person.businessPhones[0];
     }
   }
@@ -201,7 +196,7 @@ export class MgtContact extends BasePersonCardSection {
       (p: IContactPart) => !!p.value && p.showCompact
     );
 
-    if (!compactParts || !compactParts.length) {
+    if (!compactParts?.length) {
       compactParts = Object.values(availableParts).slice(0, 2);
     }
 

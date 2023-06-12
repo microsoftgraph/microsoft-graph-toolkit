@@ -140,7 +140,7 @@ export class MgtTodo extends MgtTasksBase {
     super.disconnectedCallback();
   }
 
-  private onThemeChanged = () => {
+  private readonly onThemeChanged = () => {
     this._isDarkMode = isElementDark(this);
   };
 
@@ -481,7 +481,7 @@ export class MgtTodo extends MgtTasksBase {
     this._isLoadingTasks = false;
   };
 
-  private loadTasks = async (list: TodoTaskList): Promise<void> => {
+  private readonly loadTasks = async (list: TodoTaskList): Promise<void> => {
     this._isLoadingTasks = true;
     this.currentList = list;
 
@@ -491,7 +491,7 @@ export class MgtTodo extends MgtTasksBase {
     this.requestUpdate();
   };
 
-  private updateTaskStatus = async (task: TodoTask, taskStatus: TaskStatus): Promise<void> => {
+  private readonly updateTaskStatus = async (task: TodoTask, taskStatus: TaskStatus): Promise<void> => {
     this._loadingTasks = [...this._loadingTasks, task.id];
     this.requestUpdate();
 
@@ -509,7 +509,7 @@ export class MgtTodo extends MgtTasksBase {
     this.requestUpdate();
   };
 
-  private removeTask = async (taskId: string): Promise<void> => {
+  private readonly removeTask = async (taskId: string): Promise<void> => {
     this._tasks = this._tasks.filter(t => t.id !== taskId);
     this.requestUpdate();
 
@@ -531,19 +531,19 @@ export class MgtTodo extends MgtTasksBase {
     }
   }
 
-  private handleInput = (e: MouseEvent) => {
+  private readonly handleInput = (e: MouseEvent) => {
     if ((e.target as HTMLInputElement).id === 'new-task-name-input') {
       this._newTaskName = (e.target as HTMLInputElement).value;
     }
   };
 
-  private handleKeyDown = async (e: KeyboardEvent) => {
+  private readonly handleKeyDown = async (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       await this.addTask();
     }
   };
 
-  private handleDateChange = (e: Event) => {
+  private readonly handleDateChange = (e: Event) => {
     const value = (e.target as HTMLInputElement).value;
     if (value) {
       this._newTaskDueDate = new Date(value + 'T17:00');

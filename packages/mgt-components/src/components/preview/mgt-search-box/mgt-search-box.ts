@@ -25,12 +25,12 @@ registerFluentComponents(fluentSearch);
  * @extends {MgtBaseComponent}
  */
 @customElement('search-box')
-class MgtSearchBox extends MgtBaseComponent {
+export class MgtSearchBox extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * user the `css` tag function.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
     return styles;
   }
 
@@ -114,7 +114,7 @@ class MgtSearchBox extends MgtBaseComponent {
       </fluent-search>`;
   }
 
-  private onInputChanged = (e: Event) => {
+  private readonly onInputChanged = (e: Event) => {
     this.searchTerm = (e.target as HTMLInputElement).value;
   };
 

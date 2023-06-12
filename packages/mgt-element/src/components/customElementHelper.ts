@@ -6,7 +6,9 @@
  */
 
 class CustomElementHelper {
-  private readonly defaultPrefix = 'mgt';
+  private get defaultPrefix() {
+    return 'mgt';
+  }
   private _disambiguation = '';
 
   /**
