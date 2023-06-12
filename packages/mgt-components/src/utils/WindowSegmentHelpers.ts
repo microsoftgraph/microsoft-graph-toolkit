@@ -11,13 +11,9 @@
  * @interface IWindowSegment
  */
 export interface IWindowSegment {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   top: number;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   left: number;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   width: number;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   height: number;
 }
 
@@ -43,7 +39,7 @@ export interface ISegmentAwareWindow extends Window {
  * @returns {boolean}
  */
 export const isWindowSegmentAware = (): boolean => {
-  return ((window as unknown) as ISegmentAwareWindow).getWindowSegments !== undefined;
+  return (window as unknown as ISegmentAwareWindow).getWindowSegments !== undefined;
 };
 
 /**
@@ -53,5 +49,5 @@ export const isWindowSegmentAware = (): boolean => {
  * @returns {ISegmentAwareWindow}
  */
 export const getSegmentAwareWindow = (): ISegmentAwareWindow => {
-  return isWindowSegmentAware() ? ((window as unknown) as ISegmentAwareWindow) : null;
+  return isWindowSegmentAware() ? (window as unknown as ISegmentAwareWindow) : null;
 };

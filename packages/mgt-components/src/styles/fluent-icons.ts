@@ -34,7 +34,6 @@ const fileTypeMap: Record<string, string> = {
   Other: 'genericfile'
 };
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 const baseUri = 'https://spoprod-a.akamaihd.net/files/fabric-cdn-prod_20201008.001/assets/item-types';
 
 /**

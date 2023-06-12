@@ -19,7 +19,7 @@ const designSystem = provideFluentDesignSystem();
  * @returns
  */
 export const registerFluentComponents = (...fluentComponents: (() => unknown)[]) => {
-  if (!fluentComponents || !fluentComponents.length) {
+  if (!fluentComponents?.length) {
     return;
   }
 
