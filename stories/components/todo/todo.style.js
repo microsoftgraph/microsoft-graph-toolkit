@@ -21,27 +21,20 @@ export default {
   }
 };
 
-export const todos = () => html`
-  <mgt-todo></mgt-todo>
-`;
-
-export const tasksWithTargetId = () => html`
-  <mgt-todo target-id="AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OAAuAAAAAAAiQ8W967B7TKBjgx9rVEURAQAiIsqMbYjsT5e-T7KzowPTAAAAAAESAAA="></mgt-todo>
-`;
-
-export const tasksWithInitialId = () => html`
-  <mgt-todo initial-id="AAMkAGVmMDEzMTM4LTZmYWUtNDdkNC1hMDZiLTU1OGY5OTZhYmY4OAAuAAAAAAAiQ8W967B7TKBjgx9rVEURAQAiIsqMbYjsT5e-T7KzowPTAAAAAAESAAA="></mgt-todo>
-`;
-
-export const ReadOnly = () => html`
-  <mgt-todo read-only></mgt-todo>
-`;
-
-export const darkTheme = () => html`
-  <mgt-todo class="mgt-dark"></mgt-todo>
+export const customCSSProperties = () => html`
   <style>
-    body {
-      background-color: black;
+    .todo {
+        --task-color: black;
+        --task-background-color: white;
+        --task-complete-background-color: grey;
+        --task-date-input-active-color: blue;
+        --task-date-input-hover-color: green;
+        --task-background-color-hover: grey;
+        --task-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+        --task-border: 1px solid black;
+        --task-border-completed: 1px solid grey;
+        --task-radio-background-color: green;
     }
   </style>
+  <mgt-todo class="todo"></mgt-todo>
 `;

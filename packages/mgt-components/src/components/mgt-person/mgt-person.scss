@@ -141,9 +141,8 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
     .details-wrapper {
       display: inline-block;
-      min-width: 168px;
+      min-width: var(--person-details-wrapper-width, 168px);
       margin-inline-start: $person-details-left-spacing;
-      align-items: flex-start;
       margin-block-end: $person-details-bottom-spacing;
 
       &.vertical {
