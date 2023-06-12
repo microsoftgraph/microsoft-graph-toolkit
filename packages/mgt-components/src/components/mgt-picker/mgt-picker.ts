@@ -28,7 +28,7 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * @extends {MgtTemplatedComponent}
  *
  * @cssprop --picker-background-color - {Color} Picker component background color
- * @cssprop --picker-list-max-height - {String} max height for options list
+ * @cssprop --picker-list-max-height - {String} max height for options list. Default value is 380px.
  */
 @customElement('picker')
 export class MgtPicker extends MgtTemplatedComponent {
