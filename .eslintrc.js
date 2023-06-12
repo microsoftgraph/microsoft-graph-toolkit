@@ -26,7 +26,7 @@ module.exports = {
   },
   plugins: ['eslint-plugin-jsdoc', 'eslint-plugin-prefer-arrow', 'eslint-plugin-react', '@typescript-eslint'],
   root: true,
-  ignorePatterns: ['**/**-css.ts', '.eslintrc.js'],
+  ignorePatterns: ['**/**-css.ts', '.eslintrc.js', '*.cjs'],
   rules: {
     '@typescript-eslint/prefer-optional-chain': 'warn',
     'newline-per-chained-call': 'off'
