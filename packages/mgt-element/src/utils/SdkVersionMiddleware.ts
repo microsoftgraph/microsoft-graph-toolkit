@@ -26,15 +26,14 @@ export class SdkVersionMiddleware implements Middleware {
    * A member to hold next middleware in the middleware chain
    */
   private _nextMiddleware: Middleware;
-  private _packageVersion: string;
-  private _providerName: string;
+  private readonly _packageVersion: string;
+  private readonly _providerName: string;
 
   constructor(packageVersion: string, providerName?: string) {
     this._packageVersion = packageVersion;
     this._providerName = providerName;
   }
 
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   public async execute(context: Context): Promise<void> {
     try {
       if (typeof context.request === 'string') {

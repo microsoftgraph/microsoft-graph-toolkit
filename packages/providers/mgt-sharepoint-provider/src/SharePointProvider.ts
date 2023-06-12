@@ -35,7 +35,6 @@ declare interface AadTokenProvider {
  * @interface WebPartContext
  */
 declare interface WebPartContext {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   aadTokenProviderFactory: { getTokenProvider(): Promise<AadTokenProvider> };
 }
 
@@ -115,14 +114,8 @@ export class SharePointProvider extends IProvider {
    * @memberof SharePointProvider
    */
   public async getAccessToken(): Promise<string> {
-    let accessToken: string;
     const baseUrl = this.baseURL ? this.baseURL : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
-    try {
-      accessToken = await this.provider.getToken(baseUrl);
-    } catch (e) {
-      throw e;
-    }
-    return accessToken;
+    return await this.provider.getToken(baseUrl);
   }
   /**
    * update scopes

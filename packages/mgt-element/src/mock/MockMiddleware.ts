@@ -32,7 +32,6 @@ export class MockMiddleware implements Middleware {
     return this._cache;
   }
 
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   public async execute(context: Context): Promise<void> {
     try {
       const baseUrl = await MockMiddleware.getBaseUrl();

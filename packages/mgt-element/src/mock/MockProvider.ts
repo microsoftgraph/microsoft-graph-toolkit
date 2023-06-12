@@ -16,10 +16,9 @@ import { MockGraph } from './MockGraph';
  * @extends {IProvider}
  */
 export class MockProvider extends IProvider {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   public provider: any;
 
-  private _mockGraphPromise: Promise<MockGraph>;
+  private readonly _mockGraphPromise: Promise<MockGraph>;
 
   /**
    * new instance of mock graph provider
@@ -50,7 +49,7 @@ export class MockProvider extends IProvider {
     return !this.isMultipleAccountDisabled && this.isMultipleAccountSupported;
   }
 
-  private _accounts: IProviderAccount[] = [];
+  private readonly _accounts: IProviderAccount[] = [];
   /**
    * Returns the array of accounts the MockProviders has been configured with
    *

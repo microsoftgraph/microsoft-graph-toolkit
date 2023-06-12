@@ -10,7 +10,7 @@
  * this to set, get and clear session items.
  */
 export class SessionCache {
-  private session: Storage;
+  private readonly session: Storage;
 
   constructor() {
     this.session = window.sessionStorage;

@@ -227,7 +227,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return this._config;
   }
 
-  private static _config = {
+  private static readonly _config = {
     useTeamsBasedScopes: false
   };
   private teamsPhotos = {};
@@ -296,9 +296,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    this.addEventListener('focus', _ => this.loadTeamsIfNotLoaded());
-    this.addEventListener('mouseover', _ => this.loadTeamsIfNotLoaded());
-    this.addEventListener('blur', _ => this.lostFocus());
+    this.addEventListener('focus', () => this.loadTeamsIfNotLoaded());
+    this.addEventListener('mouseover', () => this.loadTeamsIfNotLoaded());
+    this.addEventListener('blur', () => this.lostFocus());
     this.clearState();
   }
 
@@ -393,7 +393,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             appearance="outline"
             id="teams-channel-picker-input"
             aria-label="Select a channel"
-            placeholder="${!!this._selectedItemState ? '' : this.strings.inputPlaceholderText} "
+            placeholder="${this._selectedItemState ? '' : this.strings.inputPlaceholderText} "
             label="teams-channel-picker-input"
             role="combobox"
             @click=${this.gainedFocus}
@@ -779,7 +779,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (element) {
       const expanded = element.getAttribute('expanded');
 
-      if (!!expanded) {
+      if (expanded) {
         element.removeAttribute('expanded');
       } else {
         element.setAttribute('expanded', 'true');
@@ -904,13 +904,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
   }
 
-  private handleWindowClick = (e: MouseEvent) => {
+  private readonly handleWindowClick = (e: MouseEvent) => {
     if (e.target !== this) {
       this.lostFocus();
     }
   };
 
-  private gainedFocus = () => {
+  private readonly gainedFocus = () => {
     this._isFocused = true;
     const input = this._input;
     if (input) {
@@ -922,7 +922,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.resetFocusState();
   };
 
-  private lostFocus = () => {
+  private readonly lostFocus = () => {
     const input = this._input;
     if (input) {
       input.value = this._inputValue = '';

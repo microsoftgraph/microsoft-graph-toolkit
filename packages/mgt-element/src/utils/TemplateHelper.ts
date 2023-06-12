@@ -44,7 +44,7 @@ export class TemplateHelper {
 
     let rendered: Node;
 
-    if (template.content && template.content.childNodes.length) {
+    if (template.content?.childNodes.length) {
       const templateContent = template.content.cloneNode(true);
       rendered = this.renderNode(templateContent, root, context);
     } else if (template.childNodes.length) {
@@ -91,7 +91,7 @@ export class TemplateHelper {
     return this._globalContext;
   }
 
-  private static _globalContext = {};
+  private static readonly _globalContext = {};
 
   private static get expression() {
     if (!this._expression) {
@@ -106,7 +106,7 @@ export class TemplateHelper {
   private static _expression: RegExp;
 
   private static escapeRegex(string: string) {
-    return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    return string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
   }
 
   // simple implementation of deep cloneNode

@@ -205,7 +205,7 @@ export const getUsersForUserIds = async (
       if (searchInput) {
         if (user) {
           const displayName = user.displayName;
-          const searchMatches = displayName && displayName.toLowerCase().includes(searchInput);
+          const searchMatches = displayName?.toLowerCase().includes(searchInput);
           if (searchMatches) {
             peopleSearchMatches[id] = user;
           }
@@ -237,7 +237,7 @@ export const getUsersForUserIds = async (
       // iterate over userIds to ensure the order of ids
       for (const id of userIds) {
         const response = responses.get(id);
-        if (response && response.content) {
+        if (response?.content) {
           const user = response.content;
           if (searchInput) {
             const displayName = user?.displayName.toLowerCase() || '';
@@ -337,7 +337,7 @@ export const getUsersForPeopleQueries = async (
 
       for (const personQuery of peopleQueries) {
         const response = responses.get(personQuery);
-        if (response && response.content && response.content.value && response.content.value.length > 0) {
+        if (response?.content?.value && response.content.value.length > 0) {
           people.push(response.content.value[0]);
           if (getIsUsersCacheEnabled()) {
             await cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(response.content.value[0])] });
@@ -358,7 +358,7 @@ export const getUsersForPeopleQueries = async (
             .filter(personQuery => personQuery && personQuery !== '')
             .map(async personQuery => {
               const personArray = await findPeople(graph, personQuery, 1);
-              if (personArray && personArray.length) {
+              if (personArray?.length) {
                 if (getIsUsersCacheEnabled()) {
                   await cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(personArray[0])] });
                 }

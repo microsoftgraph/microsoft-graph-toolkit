@@ -23,9 +23,7 @@ import {
   foregroundOnAccentActive,
   foregroundOnAccentFocus,
   foregroundOnAccentHover,
-  foregroundOnAccentRecipe,
   foregroundOnAccentRest,
-  foregroundOnAccentRestLarge,
   neutralBaseColor,
   StandardLuminance,
   SwatchRGB
@@ -133,7 +131,6 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
           accentStrokeControlFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0f548c')));
           foregroundOnAccentActive.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
           foregroundOnAccentRest.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
-          foregroundOnAccentRestLarge.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
           foregroundOnAccentHover.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
           foregroundOnAccentFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
         }

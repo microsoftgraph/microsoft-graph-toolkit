@@ -49,22 +49,15 @@ export class MgtDotOptions extends MgtBaseComponent {
    *
    * @memberof MgtDotOptions
    */
-  @property({ type: Object }) public options: { [option: string]: (e: Event) => void | any };
+  @property({ type: Object }) public options: Record<string, (e: Event) => void | any>;
 
-  private _clickHandler: (e: MouseEvent) => void | any = null;
+  private readonly _clickHandler = () => (this.open = false);
 
-  constructor() {
-    super();
-    this._clickHandler = (e: MouseEvent) => (this.open = false);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this._clickHandler);
   }
 
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   public disconnectedCallback() {
     window.removeEventListener('click', this._clickHandler);
     super.disconnectedCallback();
@@ -77,7 +70,6 @@ export class MgtDotOptions extends MgtBaseComponent {
    */
   public render() {
     const menuOptions = Object.keys(this.options);
-
     return html`
       <fluent-button
         appearance="stealth"
@@ -89,14 +81,14 @@ export class MgtDotOptions extends MgtBaseComponent {
       </fluent-menu>`;
   }
 
-  private handleItemClick = (e: MouseEvent, fn: MenuOptionEventFunction) => {
+  private readonly handleItemClick = (e: MouseEvent, fn: MenuOptionEventFunction) => {
     e.preventDefault();
     e.stopPropagation();
     fn(e);
     this.open = false;
   };
 
-  private handleItemKeydown = (e: KeyboardEvent, fn: MenuOptionEventFunction) => {
+  private readonly handleItemKeydown = (e: KeyboardEvent, fn: MenuOptionEventFunction) => {
     this.handleKeydownMenuOption(e);
     fn(e);
     this.open = false;
@@ -119,14 +111,14 @@ export class MgtDotOptions extends MgtBaseComponent {
       </fluent-menu-item>`;
   }
 
-  private onDotClick = (e: MouseEvent) => {
+  private readonly onDotClick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     this.open = !this.open;
   };
 
-  private onDotKeydown = (e: KeyboardEvent) => {
+  private readonly onDotKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       e.stopPropagation();

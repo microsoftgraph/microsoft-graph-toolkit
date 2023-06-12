@@ -190,7 +190,7 @@ export const getPersonImage = async (graph: IGraph, person: IDynamicPerson, useC
       // if person is a contact, look for them and their photo in contact api
       const contactMail = getEmailFromGraphEntity(person);
       const contact = await findContactsByEmail(graph, contactMail);
-      if (contact && contact.length && contact[0].id) {
+      if (contact?.length && contact[0].id) {
         return await getContactPhoto(graph, contact[0].id);
       }
     }
@@ -219,14 +219,14 @@ export const getPersonImage = async (graph: IGraph, person: IDynamicPerson, useC
   if (email) {
     // try to find user
     const users = await findUsers(graph, email, 1);
-    if (users && users.length) {
+    if (users?.length) {
       return await getUserPhoto(graph, users[0].id);
     }
 
     // if no user, try to find a contact
     if (useContactsApis) {
       const contacts = await findContactsByEmail(graph, email);
-      if (contacts && contacts.length) {
+      if (contacts?.length) {
         return await getContactPhoto(graph, contacts[0].id);
       }
     }
