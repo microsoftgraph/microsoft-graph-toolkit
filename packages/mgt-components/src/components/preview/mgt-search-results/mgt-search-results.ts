@@ -1191,10 +1191,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @param resource
    */
   private getResourceName(resource: SearchResource) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return (
       resource.displayName ||
       resource.subject ||
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (resource.properties && (resource.properties as any).title) ||
       trimFileExtension(resource.name)
     );
@@ -1210,11 +1211,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       result.summary ||
         (result.resource as SearchResource)?.description ||
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         ((result.resource as SearchResource).properties &&
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           ((result.resource as SearchResource).properties as any).body) ||
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         ((result.resource as SearchResource).properties &&
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           ((result.resource as SearchResource).properties as any).description) ||
         null
     );
