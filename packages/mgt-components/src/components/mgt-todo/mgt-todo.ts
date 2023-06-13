@@ -306,7 +306,7 @@ export class MgtTodo extends MgtTasksBase {
    */
 
   protected handleSelectionChanged = (e: CustomEvent<TodoTaskList>) => {
-    this.currentList = e.detail as TodoTaskList;
+    this.currentList = e.detail;
     void this.loadTasks(this.currentList);
   };
 
