@@ -395,6 +395,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             aria-label="Select a channel"
             placeholder="${this._selectedItemState ? '' : this.strings.inputPlaceholderText} "
             label="teams-channel-picker-input"
+            role="combobox"
             @click=${this.gainedFocus}
             @keyup=${(e: KeyboardEvent) => this.handleInputChanged(e)}>
               <div slot="start" style="width: max-content;">${this.renderSelected()}</div>
