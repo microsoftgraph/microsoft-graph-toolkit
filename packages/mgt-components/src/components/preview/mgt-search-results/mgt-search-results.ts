@@ -30,6 +30,7 @@ import {
   Drive,
   DriveItem,
   EntityType,
+  ExternalConnectors,
   List,
   ListItem,
   Message,
@@ -97,6 +98,9 @@ type ThumbnailResource = {
   thumbnail: Thumbnail;
 };
 
+/**
+ * Object representing a user resource
+ */
 type UserResource = {
   lastModifiedBy?: {
     user?: {
@@ -110,7 +114,17 @@ type UserResource = {
  * Object representing a Search Resource
  */
 type SearchResource = Partial<
-  DriveItem & Site & List & Message & ListItem & Drive & DirectoryObject & Answer & ThumbnailResource & UserResource
+  DriveItem &
+    Site &
+    List &
+    Message &
+    ListItem &
+    Drive &
+    DirectoryObject &
+    Answer &
+    ThumbnailResource &
+    UserResource &
+    ExternalConnectors.ExternalItem
 >;
 
 /**
@@ -212,7 +226,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'scopes',
-    converter: (value, type) => {
+    converter: value => {
       return value ? value.toLowerCase().split(',') : null;
     }
   })
@@ -226,7 +240,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'content-sources',
-    converter: (value, type) => {
+    converter: value => {
       return value ? value.toLowerCase().split(',') : null;
     }
   })
@@ -1166,8 +1180,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    *
    * @param resource
    */
-  private getResourceUrl(resource: SearchResource) {
-    return resource.webUrl || /* resource.url ||*/ resource.webLink || null;
+  private getResourceUrl(resource: SearchResource): string {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+    return resource.webUrl || resource.webLink || (resource.properties && (resource.properties as any).url) || null;
   }
 
   /**
@@ -1176,7 +1191,13 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @param resource
    */
   private getResourceName(resource: SearchResource) {
-    return resource.displayName || resource.subject || trimFileExtension(resource.name);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+    return (
+      resource.displayName ||
+      resource.subject ||
+      (resource.properties && (resource.properties as any).title) ||
+      trimFileExtension(resource.name)
+    );
   }
 
   /**
@@ -1185,7 +1206,18 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @param resource
    */
   private getResultSummary(result: SearchHit) {
-    return sanitizeSummary(result.summary || (result.resource as SearchResource)?.description || null);
+    return sanitizeSummary(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      result.summary ||
+        (result.resource as SearchResource)?.description ||
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        ((result.resource as SearchResource).properties &&
+          ((result.resource as SearchResource).properties as any).body) ||
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        ((result.resource as SearchResource).properties &&
+          ((result.resource as SearchResource).properties as any).description) ||
+        null
+    );
   }
 
   /**
