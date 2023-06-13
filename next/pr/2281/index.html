@@ -326,14 +326,14 @@
     display: none !important;
   }
 
-  @media (forced-colors: active) {
-    a[class*="sto-"][data-selected="true"]{
-      background: SelectedItem;
-      color: SelectedItemText;
-    }
+  @media (forced-colors: active){
+    a[class*="sto-"][data-selected="true"],
+    a[class*="sto-"][data-selected="true"]:focus,
     a[class*="sto-"][data-selected="false"]:focus,
+    a[class*="sto-"][data-selected="true"]:hover,
     a[class*="sto-"][data-selected="false"]:hover{
       background: Highlight;
+      color: LinkText;
     }
   }</style><script>let attempts = 0;
   // Uses setInterval to wait for the sidebar to be rendered into the page
@@ -369,4 +369,4 @@
           
       
           
-            window['DOCS_MODE'] = false;</script><script src="runtime~main.7ad6a32cb7c2331b439b.manager.bundle.js"></script><script src="vendors~main.b8688b5d6aa1696807be.manager.bundle.js"></script><script src="main.9823a3659bf7f730ad07.manager.bundle.js"></script></body></html>
+            window['DOCS_MODE'] = false;</script><script src="runtime~main.7ad6a32cb7c2331b439b.manager.bundle.js"></script><script src="vendors~main.b8688b5d6aa1696807be.manager.bundle.js"></script><script src="main.fa6a6d13b5a8d3d830b6.manager.bundle.js"></script></body></html>
