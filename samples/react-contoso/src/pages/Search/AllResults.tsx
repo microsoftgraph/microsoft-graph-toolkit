@@ -1,10 +1,8 @@
 import { SearchResults } from '@microsoft/mgt-react/dist/es6/generated/react-preview';
 import * as React from 'react';
-export interface IAllResultsProps {
-  searchTerm: string;
-}
+import { IResultsProps } from './IResultsProps';
 
-export const AllResults: React.FunctionComponent<IAllResultsProps> = (props: IAllResultsProps) => {
+export const AllResults: React.FunctionComponent<IResultsProps> = (props: IResultsProps) => {
   return (
     <>
       {props.searchTerm && (

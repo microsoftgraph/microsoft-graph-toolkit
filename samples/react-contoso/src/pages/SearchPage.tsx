@@ -11,6 +11,7 @@ import {
   shorthands
 } from '@fluentui/react-components';
 import { useAppContext } from '../AppContext';
+import { ExternalItems } from './Search/ExternalItems';
 
 const useStyles = makeStyles({
   panels: {
@@ -42,10 +43,12 @@ export const SearchPage: React.FunctionComponent = () => {
       <div className={styles.container}>
         <TabList selectedValue={selectedTab} onTabSelect={onTabSelect}>
           <Tab value="allResults">All Results</Tab>
+          <Tab value="externalItems">External Items</Tab>
           <Tab value="people">People</Tab>
         </TabList>
         <div className={styles.panels}>
           {selectedTab === 'allResults' && <AllResults searchTerm={appContext.state.searchTerm}></AllResults>}
+          {selectedTab === 'externalItems' && <ExternalItems searchTerm={appContext.state.searchTerm}></ExternalItems>}
           {selectedTab === 'people' && <PeopleResults searchTerm={appContext.state.searchTerm}></PeopleResults>}
         </div>
       </div>

@@ -47,9 +47,10 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
     setShowAddMembers(false);
     setIsPopoverOpen(false);
   }, [setShowAddMembers]);
-  const handleOpenChange = useCallback((_, data: OnOpenChangeData) => setIsPopoverOpen(data.open || false), [
-    setIsPopoverOpen
-  ]);
+  const handleOpenChange = useCallback(
+    (_, data: OnOpenChangeData) => setIsPopoverOpen(data.open || false),
+    [setIsPopoverOpen]
+  );
 
   const leaveChat = useCallback(() => {
     const me = members.find(member => member.userId === currentUserId);
@@ -96,7 +97,7 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
               <DialogSurface>
                 <DialogBody>
                   <DialogTitle>Leave the conversation?</DialogTitle>
-                  <DialogContent>You'll still have access to the chat history.</DialogContent>
+                  <DialogContent>You&apos;ll still have access to the chat history.</DialogContent>
                   <DialogActions>
                     <DialogTrigger disableButtonEnhancement>
                       <Button appearance="secondary" onClick={closeCallout}>
