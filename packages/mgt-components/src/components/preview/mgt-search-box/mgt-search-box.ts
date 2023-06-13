@@ -17,7 +17,8 @@ import { debounce } from '../../../utils/Utils';
 registerFluentComponents(fluentSearch);
 
 /**
- * Web component used to enter a search value to power search scenarios
+ * **Preview component** Web component used to enter a search value to power search scenarios.
+ * Component may change before general availability release.
  *
  * @fires {CustomEvent<string>} searchTermChanged - Fired when the search term is changed
  *
@@ -92,8 +93,10 @@ export class MgtSearchBox extends MgtBaseComponent {
 
   constructor() {
     super();
+    console.warn('🦒: <mgt-search-box> is a preview component and may change prior to becoming generally available.');
     this.debounceDelay = 300;
   }
+
   /**
    * Renders the component
    *

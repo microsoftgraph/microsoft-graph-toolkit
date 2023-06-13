@@ -529,7 +529,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           .avatarSize=${displayConfig.avatarSize}
           line2-property="email"
           class="signed-in-person"
-        ></mgt-person`
+        ></mgt-person>`
     );
   }
 
@@ -562,9 +562,9 @@ export class MgtLogin extends MgtTemplatedComponent {
                 .map(account => {
                   const details = localStorage.getItem(account.id + this._userDetailsKey);
                   return mgtHtml`
-                    <li 
-                      tabindex="-1" 
-                      part="account-item" 
+                    <li
+                      tabindex="-1"
+                      part="account-item"
                       class="account-item"
                       @click=${() => this.setActiveAccount(account)}
                       @keyup=${(e: KeyboardEvent) => {
