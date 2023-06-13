@@ -100,7 +100,7 @@ configuration:
     # Restrict who can dismiss pull request reviews. boolean
     restrictsReviewDismissals: false
 
-  - branchNamePattern: [Rr]elease/*
+  - branchNamePattern: '[Rr]elease/*'
     # This branch pattern applies to the following branches as of 06/09/2023 14:08:40:
     # release/latest
     # release/merge
