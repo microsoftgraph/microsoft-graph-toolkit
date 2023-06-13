@@ -41,7 +41,7 @@ const equalsInternal = (o1: any, o2: any, refs: Set<any>) => {
       }
     }
     for (const k in o2) {
-      if (!(o1 as object).hasOwnProperty(k)) {
+      if (!Object.prototype.hasOwnProperty.call(o1, k)) {
         return false;
       }
     }

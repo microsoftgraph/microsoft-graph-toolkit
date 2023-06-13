@@ -7,11 +7,18 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { defaultDocsPage } from '../../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Preview / mgt-search-box',
   component: 'search-box',
-  decorators: [withCodeEditor]
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: { code: '<mgt-search-box></mgt-search-box>' }
+    }
+  }
 };
 
 export const searchBox = () => html`

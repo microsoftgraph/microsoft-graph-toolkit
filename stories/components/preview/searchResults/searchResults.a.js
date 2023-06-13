@@ -7,16 +7,23 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { defaultDocsPage } from '../../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Preview / mgt-search-results',
   component: 'search-results',
-  decorators: [withCodeEditor]
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: { code: '<mgt-search-results></mgt-search-results>' }
+    }
+  }
 };
 
 export const searchResults = () => html`
-  <mgt-search-results 
-    entity-types="driveItem" 
+  <mgt-search-results
+    entity-types="driveItem"
     fetch-thumbnail="true"
     query-string="contoso">
   </mgt-search-results>

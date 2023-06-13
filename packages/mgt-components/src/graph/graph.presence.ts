@@ -130,8 +130,7 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
         people
           .filter(
             person =>
-              person &&
-              person.id &&
+              person?.id &&
               !peoplePresence[person.id] &&
               'personType' in person &&
               (person as Person).personType.subclass === 'OrganizationUser'

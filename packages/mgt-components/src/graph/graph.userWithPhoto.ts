@@ -67,7 +67,7 @@ export const getUserWithPhoto = async (
     } else if (cachedPhoto) {
       try {
         const response: Photo = (await graph.api(`${resource}/photo`).get()) as Photo;
-        if (response && response['@odata.mediaEtag'] && response['@odata.mediaEtag'] === cachedPhoto.eTag) {
+        if (response?.['@odata.mediaEtag'] && response['@odata.mediaEtag'] === cachedPhoto.eTag) {
           // put current image into the cache to update the timestamp since etag is the same
           await storePhotoInCache(userId || 'me', schemas.photos.stores.users, cachedPhoto);
           photo = cachedPhoto.photo;

@@ -15,6 +15,7 @@ import { registerFluentComponents } from '../../utils/FluentComponents';
 import '../../styles/style-helper';
 import { Entity } from '@microsoft/microsoft-graph-types';
 import { DataChangedDetail } from '../mgt-get/mgt-get';
+import { styles } from './mgt-picker-css';
 
 registerFluentComponents(fluentCombobox, fluentOption);
 
@@ -27,11 +28,16 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * @extends {MgtTemplatedComponent}
  *
  * @cssprop --picker-background-color - {Color} Picker component background color
+ * @cssprop --picker-list-max-height - {String} max height for options list. Default value is 380px.
  */
 @customElement('picker')
 export class MgtPicker extends MgtTemplatedComponent {
   protected get strings() {
     return strings;
+  }
+
+  public static get styles() {
+    return styles;
   }
 
   /**
@@ -299,7 +305,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    *
    * @param {KeyboardEvent} e
    */
-  private handleComboboxKeydown = (e: KeyboardEvent) => {
+  private readonly handleComboboxKeydown = (e: KeyboardEvent) => {
     let value: string;
     let item: any;
     const keyName: string = e.key;

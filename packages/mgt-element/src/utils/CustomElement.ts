@@ -7,7 +7,6 @@
 
 import { customElement as litElement } from 'lit/decorators.js';
 import { customElementHelper } from '../components/customElementHelper';
-import { MgtBaseComponent } from '../components/baseComponent';
 
 /**
  * This is a wrapper decorator for `customElement` from `lit`
