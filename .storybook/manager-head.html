@@ -308,14 +308,14 @@
     display: none !important;
   }
 
-  @media (forced-colors: active) {
-    a[class*="sto-"][data-selected="true"]{
-      background: SelectedItem;
-      color: SelectedItemText;
-    }
+  @media (forced-colors: active){
+    a[class*="sto-"][data-selected="true"],
+    a[class*="sto-"][data-selected="true"]:focus,
     a[class*="sto-"][data-selected="false"]:focus,
+    a[class*="sto-"][data-selected="true"]:hover,
     a[class*="sto-"][data-selected="false"]:hover{
       background: Highlight;
+      color: LinkText;
     }
   }
 </style>
