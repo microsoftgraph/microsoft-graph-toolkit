@@ -8,7 +8,7 @@
 import { GraphPageIterator, Providers, ProviderState, customElement, mgtHtml } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, PropertyValueMap, TemplateResult } from 'lit';
-import { state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
   clearFilesCache,
@@ -419,18 +419,18 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
    *
    * @returns void
    */
-  private onFocusFirstItem = () => (this._focusedItemIndex = 0);
+  private readonly onFocusFirstItem = () => (this._focusedItemIndex = 0);
 
   /**
    * Handle accessibility keyboard keydown events (arrow up, arrow down, enter, tab) on file list
    *
    * @param event
    */
-  private onFileListKeyDown = (event: KeyboardEvent): void => {
+  private readonly onFileListKeyDown = (event: KeyboardEvent): void => {
     const fileList = this.renderRoot.querySelector('.file-list');
     let focusedItem: HTMLElement;
 
-    if (!fileList || !fileList.children.length) {
+    if (!fileList?.children.length) {
       return;
     }
 
@@ -562,7 +562,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
       let filteredByFileExtension: DriveItem[];
       if (this.fileExtensions && this.fileExtensions !== null) {
         // retrive all pages before filtering
-        if (this.pageIterator && this.pageIterator.value) {
+        if (this.pageIterator?.value) {
           while (this.pageIterator.hasNext) {
             await fetchNextAndCacheForFilesPageIterator(this.pageIterator);
           }
@@ -578,7 +578,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
         });
       }
 
-      if (filteredByFileExtension && filteredByFileExtension.length >= 0) {
+      if (filteredByFileExtension?.length >= 0) {
         this.files = filteredByFileExtension;
         if (this.pageSize) {
           files = this.files.splice(0, this.pageSize);
@@ -632,7 +632,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
       if (this.pageIterator.hasNext) {
         this._isLoadingMore = true;
         const root = this.renderRoot.querySelector('file-list-wrapper');
-        if (root && root.animate) {
+        if (root?.animate) {
           // play back
           root.animate(
             [
@@ -662,7 +662,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
   };
 
   private handleFileClick(file: DriveItem) {
-    if (file && file.webUrl) {
+    if (file?.webUrl) {
       window.open(file.webUrl, '_blank', 'noreferrer');
     }
   }

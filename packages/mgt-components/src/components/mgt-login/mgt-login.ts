@@ -182,7 +182,9 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtLogin
    */
-  private _userDetailsKey = '-userDetails';
+  private get _userDetailsKey() {
+    return '-userDetails';
+  }
 
   @state() private _arrowKeyLocation = -1;
 
@@ -212,7 +214,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     if (!provider.isMultiAccountSupportedAndEnabled && (this.userDetails || !this.fireCustomEvent('loginInitiated'))) {
       return;
     }
-    if (provider && provider.login) {
+    if (provider?.login) {
       await provider.login();
 
       if (provider.state === ProviderState.SignedIn) {
@@ -235,10 +237,10 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
 
     const provider = Providers.globalProvider;
-    if (provider && provider.isMultiAccountSupportedAndEnabled) {
+    if (provider?.isMultiAccountSupportedAndEnabled) {
       localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
     }
-    if (provider && provider.logout) {
+    if (provider?.logout) {
       await provider.logout();
       this.userDetails = null;
       if (provider.isMultiAccountSupportedAndEnabled) {
@@ -334,10 +336,10 @@ export class MgtLogin extends MgtTemplatedComponent {
       </fluent-button>`;
   }
 
-  private flyoutOpened = () => {
+  private readonly flyoutOpened = () => {
     this._isFlyoutOpen = true;
   };
-  private flyoutClosed = () => {
+  private readonly flyoutClosed = () => {
     this._isFlyoutOpen = false;
   };
 
@@ -584,7 +586,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
-  private handleAccountListKeyDown = (event: KeyboardEvent) => {
+  private readonly handleAccountListKeyDown = (event: KeyboardEvent) => {
     const list: HTMLUListElement = this.renderRoot.querySelector('ul.account-list');
     let item: HTMLLIElement;
     const listItems: HTMLCollection = list?.children;
@@ -687,7 +689,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @private
    * @memberof MgtLogin
    */
-  private onClick = (): void => {
+  private readonly onClick = (): void => {
     if (this.userDetails && this._isFlyoutOpen) {
       this.hideFlyout();
     } else if (this.userDetails) {

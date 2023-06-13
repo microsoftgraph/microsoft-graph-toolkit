@@ -8,7 +8,6 @@
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import {
-  CacheItem,
   CacheService,
   CacheStore,
   equals,
@@ -30,14 +29,6 @@ import { Entity } from '@microsoft/microsoft-graph-types';
  * Simple holder type for an image
  */
 type ImageValue = { image: string };
-
-/**
- * Type guard to check if a value is an entity
- *
- * @param entity value to be type checked
- * @returns {boolean} true if the value is an entity
- */
-const isEntity = (entity: any): entity is Entity => Boolean((entity as Entity).id);
 
 /**
  * A type guard to check if a value is a collection response
@@ -368,7 +359,7 @@ export class MgtGet extends MgtTemplatedComponent {
           const graph = provider.graph.forComponent(this);
           let request = graph.api(uri).version(this.version);
 
-          if (this.scopes && this.scopes.length) {
+          if (this.scopes?.length) {
             request = request.middlewareOptions(prepScopes(...this.scopes));
           }
 
@@ -397,7 +388,7 @@ export class MgtGet extends MgtTemplatedComponent {
                 pageCount++;
                 const nextResource = (page['@odata.nextLink'] as string).split(this.version)[1];
                 page = (await graph.client.api(nextResource).version(this.version).get()) as CollectionResponse<Entity>;
-                if (page && page.value && page.value.length) {
+                if (page?.value?.length) {
                   page.value = response.value.concat(page.value);
                   response = page;
                   if (!this.isPolling) {

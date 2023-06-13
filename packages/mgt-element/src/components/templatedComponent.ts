@@ -16,8 +16,9 @@ import { TemplateHelper } from '../utils/TemplateHelper';
 /**
  * Lookup for rendered component templates and contexts by slot name.
  */
-interface RenderedTemplates {
-  [name: string]: {
+type RenderedTemplates = Record<
+  string,
+  {
     /**
      * Reference to the data context used to render the slot.
      */
@@ -26,8 +27,8 @@ interface RenderedTemplates {
      * Reference to the rendered DOM element corresponding to the slot.
      */
     slot: HTMLElement;
-  };
-}
+  }
+>;
 
 export interface TemplateRenderedData {
   templateType: string;
@@ -134,7 +135,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
 
     const dataContext = { ...context, ...this.templateContext };
 
-    if (this._renderedTemplates.hasOwnProperty(slotName)) {
+    if (Object.prototype.hasOwnProperty.call(this._renderedTemplates, slotName)) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const { context: existingContext, slot } = this._renderedTemplates[slotName];
       if (equals(existingContext, dataContext)) {
@@ -212,7 +213,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     if (this._renderedSlots) {
       for (let i = 0; i < this.children.length; i++) {
         const child = this.children[i] as HTMLElement;
-        if (child.dataset && child.dataset.generated && !this._slotNamesAddedDuringRender.includes(child.slot)) {
+        if (child.dataset?.generated && !this._slotNamesAddedDuringRender.includes(child.slot)) {
           this.removeChild(child);
           delete this._renderedTemplates[child.slot];
           i--;

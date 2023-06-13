@@ -371,8 +371,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   @state() private response: SearchResponseCollection;
 
   private isRefreshing = false;
-  private readonly searchEndpoint: string = '/search/query';
-  private readonly maxPageSize: number = 1000;
+  private get searchEndpoint() {
+    return '/search/query';
+  }
+  private get maxPageSize() {
+    return 1000;
+  }
   private readonly defaultFields: string[] = [
     'webUrl',
     'lastModifiedBy',
@@ -452,7 +456,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       renderedTemplate = this.renderLoading();
     } else if (this.error) {
       renderedTemplate = this.renderError();
-    } else if (this.response && this.response?.value[0]?.hitsContainers[0]) {
+    } else if (this.response?.value[0]?.hitsContainers[0]) {
       renderedTemplate = html`${this.response?.value[0]?.hitsContainers[0]?.hits?.map(result =>
         this.renderResult(result)
       )}`;
@@ -511,7 +515,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           const graph = provider.graph.forComponent(this);
           let request = graph.api(this.searchEndpoint).version(this.version);
 
-          if (this.scopes && this.scopes.length) {
+          if (this.scopes?.length) {
             request = request.middlewareOptions(prepScopes(...this.scopes));
           }
 
@@ -852,7 +856,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * Triggers a first page click
    *
    */
-  private onFirstPageClick = () => {
+  private readonly onFirstPageClick = () => {
     this.currentPage = 1;
     this.scrollToFirstResult();
   };
@@ -860,7 +864,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Triggers a previous page click
    */
-  private onPageBackClick = () => {
+  private readonly onPageBackClick = () => {
     this.currentPage--;
     this.scrollToFirstResult();
   };
@@ -868,7 +872,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Triggers a next page click
    */
-  private onPageNextClick = () => {
+  private readonly onPageNextClick = () => {
     this.currentPage++;
     this.scrollToFirstResult();
   };

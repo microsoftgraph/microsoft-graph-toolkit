@@ -577,7 +577,7 @@ const getDriveItemsByInsights = async (
 
     for (const item of insightItems) {
       const driveItemResponse = driveItemResponses.get(item.resourceReference.id);
-      if (driveItemResponse && driveItemResponse.content) {
+      if (driveItemResponse?.content) {
         driveItems.push(driveItemResponse.content as DriveItem);
       }
     }
