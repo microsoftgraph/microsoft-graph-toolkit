@@ -401,7 +401,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   constructor() {
     super();
     console.warn(
-      '🦒: <mgt-search-results> is a preview component and may change prior to becoming generally available.'
+      '🦒: <mgt-search-results> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
     );
   }
 

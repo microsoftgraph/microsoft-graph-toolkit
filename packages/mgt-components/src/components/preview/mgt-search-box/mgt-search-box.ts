@@ -93,7 +93,7 @@ export class MgtSearchBox extends MgtBaseComponent {
 
   constructor() {
     super();
-    console.warn('🦒: <mgt-search-box> is a preview component and may change prior to becoming generally available.');
+    console.warn('🦒: <mgt-search-box> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components');
     this.debounceDelay = 300;
   }
 
