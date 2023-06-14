@@ -140,7 +140,9 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     }
 
     .details-wrapper {
-      display: inline-block;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
       min-width: var(--person-details-wrapper-width, 168px);
       margin-inline-start: $person-details-left-spacing;
       margin-block-end: $person-details-bottom-spacing;
