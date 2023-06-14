@@ -112,7 +112,7 @@ export class MgtOrganization extends BasePersonCardSection {
   protected renderCompactView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (!this._state || !this._state.person) {
+    if (!this._state?.person) {
       return null;
     }
 
@@ -122,7 +122,7 @@ export class MgtOrganization extends BasePersonCardSection {
       return null;
     } else if (person.manager) {
       contentTemplate = this.renderCoworker(person.manager);
-    } else if (directReports && directReports.length) {
+    } else if (directReports?.length) {
       contentTemplate = this.renderCompactDirectReports();
     }
 
@@ -143,7 +143,7 @@ export class MgtOrganization extends BasePersonCardSection {
   protected renderFullView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (!this._state || !this._state.person) {
+    if (!this._state?.person) {
       return null;
     }
 
@@ -211,7 +211,7 @@ export class MgtOrganization extends BasePersonCardSection {
    */
   protected renderManagers(): TemplateResult[] {
     const { person } = this._state;
-    if (!person || !person.manager) {
+    if (!person?.manager) {
       return null;
     }
 
@@ -239,7 +239,7 @@ export class MgtOrganization extends BasePersonCardSection {
    */
   protected renderDirectReports(): TemplateResult {
     const { directReports } = this._state;
-    if (!directReports || !directReports.length) {
+    if (!directReports?.length) {
       return null;
     }
 
@@ -371,7 +371,7 @@ export class MgtOrganization extends BasePersonCardSection {
    */
   protected renderCoworkers(): TemplateResult {
     const { people } = this._state;
-    if (!people || !people.length) {
+    if (!people?.length) {
       return null;
     }
 

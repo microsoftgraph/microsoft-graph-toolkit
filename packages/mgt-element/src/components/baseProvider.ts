@@ -119,7 +119,7 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   protected initializeProvider() {}
 
-  private stateChangedHandler = () => {
+  private readonly stateChangedHandler = () => {
     this.fireCustomEvent('onStateChanged', this.provider.state);
   };
 }

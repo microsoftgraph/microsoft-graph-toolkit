@@ -659,7 +659,7 @@ export class MgtFile extends MgtTemplatedComponent {
     while (!text && i < propertyList.length) {
       const current = propertyList[i].trim();
       switch (current) {
-        case 'size':
+        case 'size': {
           // convert size to kb, mb, gb
           let size = '0';
           if (driveItem.size) {
@@ -667,7 +667,8 @@ export class MgtFile extends MgtTemplatedComponent {
           }
           text = `${this.strings.sizeSubtitle}: ${size}`;
           break;
-        case 'lastModifiedDateTime':
+        }
+        case 'lastModifiedDateTime': {
           // convert date time
           let relativeDateString: string;
           let lastModifiedString: string;
@@ -680,6 +681,7 @@ export class MgtFile extends MgtTemplatedComponent {
           }
           text = lastModifiedString;
           break;
+        }
         default:
           text = driveItem[current] as string;
       }

@@ -240,14 +240,12 @@ export class MgtPicker extends MgtTemplatedComponent {
         id="combobox"
         autocomplete="list"
         placeholder=${this.placeholder}>
-        ${this.response.map(
-          item => html`
-          <fluent-option
-            value=${item.id}
-            @click=${(e: MouseEvent) => this.handleClick(e, item)}>
-              ${item[this.keyName]}
-          </fluent-option>`
-        )}
+          ${this.response.map(
+            item => html`
+            <fluent-option value=${item.id} @click=${(e: MouseEvent) => this.handleClick(e, item)}> ${
+              item[this.keyName]
+            } </fluent-option>`
+          )}
       </fluent-combobox>
      `;
   }
@@ -305,7 +303,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    *
    * @param {KeyboardEvent} e
    */
-  private handleComboboxKeydown = (e: KeyboardEvent) => {
+  private readonly handleComboboxKeydown = (e: KeyboardEvent) => {
     let value: string;
     let item: any;
     const keyName: string = e.key;
