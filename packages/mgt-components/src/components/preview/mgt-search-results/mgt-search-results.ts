@@ -525,7 +525,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             const thumbnailBatch = graph.createBatch<BinaryThumbnail>();
             const thumbnailBatchBeta = BetaGraph.fromGraph(graph).createBatch<BinaryThumbnail>();
 
-            for (let i = 0; i < response.value[0].hitsContainers[0].hits.length; i++) {
+            for (let i = 0; i < response.value[0].hitsContainers[0].hits?.length; i++) {
               const element = response.value[0].hitsContainers[0].hits[i];
               const resource = element.resource as SearchResource;
               if (
