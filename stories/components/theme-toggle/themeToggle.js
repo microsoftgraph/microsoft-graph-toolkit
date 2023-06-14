@@ -59,13 +59,24 @@ body {
 
 export const themingWithoutToggle = () => html`
   <h2>Style the background of a component</h2>
+  <p>The login components are in the default light theme on a light
+  background. We are setting the background of the component with id "login-two"
+  to the <code>aquamarine</code> color using CSS. Check the CSS tab.</p>
   <mgt-login id="login-one"></mgt-login>
   <mgt-login id="login-two"></mgt-login>
   <mgt-login id="login-three"></mgt-login>
 
-  <!-- The login components are in the default light theme on a light
-  background. We are setting the component with id "login-two" to the dark
-  theme colors using JavaScript. -->
+
+  <h2>Style using <code>applyTheme</code> function </h2>
+  <p>The picker components are in the default light theme on a light
+  background. We are setting the background of the component with id "picker-two"
+  to the dark theme using JavaScript. Check the JS tab.</p>
+  <mgt-people-picker id="picker-one"></mgt-people-picker>
+  <br>
+  <mgt-people-picker id="picker-two"></mgt-people-picker>
+  <br>
+  <mgt-people-picker id="picker-three"></mgt-people-picker>
+  <br>
 
   <style>
     #login-two {
@@ -75,11 +86,11 @@ export const themingWithoutToggle = () => html`
 
   <script>
     import { applyTheme } from '@microsoft/mgt';
-    const loginTwo = document.querySelector("#login-two");
+    const pickerTwo = document.querySelector("#picker-two");
 
-    if(loginTwo){
-      // apply the dark theme on the second login component only.
-      applyTheme('dark', loginTwo)
+    if(pickerTwo){
+      // apply the dark theme on the second picker component only.
+      applyTheme('dark', pickerTwo)
     }
   </script>
 `;
