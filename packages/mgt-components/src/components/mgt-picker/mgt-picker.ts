@@ -240,14 +240,12 @@ export class MgtPicker extends MgtTemplatedComponent {
         id="combobox"
         autocomplete="list"
         placeholder=${this.placeholder}>
-        ${this.response.map(
-          item => html`
-          <fluent-option
-            value=${item.id}
-            @click=${(e: MouseEvent) => this.handleClick(e, item)}>
-              ${item[this.keyName]}
-          </fluent-option>`
-        )}
+          ${this.response.map(
+            item => html`
+            <fluent-option value=${item.id} @click=${(e: MouseEvent) => this.handleClick(e, item)}> ${
+              item[this.keyName]
+            } </fluent-option>`
+          )}
       </fluent-combobox>
      `;
   }
