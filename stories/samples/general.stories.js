@@ -163,10 +163,10 @@ export const cache = () => html`
 `;
 export const theme = () => html`
   <div>
-    <header id="dark">
-      <p>I should be dark, regional class</p>
+    <header>
+      <p>I should be light, regional class</p>
       <mgt-teams-channel-picker></mgt-teams-channel-picker>
-      <div id="light">
+      <div>
         <p>I should be light, second level regional class</p>
         <mgt-teams-channel-picker></mgt-teams-channel-picker>
       </div>
@@ -177,32 +177,13 @@ export const theme = () => html`
     </article>
     <p>I am custom themed</p>
     <mgt-teams-channel-picker class="custom1"></mgt-teams-channel-picker>
-    <div id="custom-dark">
-      <p>I have both the custom input background color and dark theme</p>
+    <div>
+      <p>I have the custom input background color</p>
       <mgt-teams-channel-picker class="custom2"></mgt-teams-channel-picker>
     </div>
     <p>I should be light, with unknown class mgt-foo</p>
     <mgt-teams-channel-picker class="mgt-foo"></mgt-teams-channel-picker>
   </div>
-
-  <script>
-    import { applyTheme } from '@microsoft/mgt';
-    const dark = document.querySelector("#dark");
-    const customDark = document.querySelector("#custom-dark");
-    const light = document.querySelector("#light");
-
-    if (dark && customDark) {
-        // apply the dark theme on the id=dark and id=custom-dark only
-        applyTheme('dark', dark)
-        applyTheme('dark', customDark)
-    }
-
-    if (light) {
-        // apply the light theme on the id=light component only
-        applyTheme('light', light)
-    }
-
-  </script>
   <style>
     .root {
       --focus-ring-color: red;
