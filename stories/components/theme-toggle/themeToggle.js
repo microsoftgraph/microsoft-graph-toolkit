@@ -58,6 +58,7 @@ body {
 `;
 
 export const themingWithoutToggle = () => html`
+  <h2>Style the background of a component</h2>
   <mgt-login id="login-one"></mgt-login>
   <mgt-login id="login-two"></mgt-login>
   <mgt-login id="login-three"></mgt-login>
@@ -65,6 +66,12 @@ export const themingWithoutToggle = () => html`
   <!-- The login components are in the default light theme on a light
   background. We are setting the component with id "login-two" to the dark
   theme colors using JavaScript. -->
+
+  <style>
+    #login-two {
+      background-color: aquamarine;
+    }
+  </style>
 
   <script>
     import { applyTheme } from '@microsoft/mgt';
