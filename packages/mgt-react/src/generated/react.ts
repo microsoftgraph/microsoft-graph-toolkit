@@ -1,4 +1,3 @@
-
 import { OfficeGraphInsightString,ViewType,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
@@ -208,6 +207,36 @@ export type PickerProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type SearchBoxProps = {
+	placeholder?: string;
+	searchTerm?: string;
+	debounceDelay?: number;
+	mediaQuery?: ComponentMediaQuery;
+	searchTermChanged?: (e: CustomEvent<string>) => void;
+}
+
+export type SearchResultsProps = {
+	queryString?: string;
+	queryTemplate?: string;
+	entityTypes?: string[];
+	scopes?: string[];
+	contentSources?: string[];
+	version?: string;
+	from?: number;
+	size?: number;
+	pagingMax?: number;
+	fetchThumbnail?: boolean;
+	fields?: string[];
+	enableTopResults?: boolean;
+	cacheEnabled?: boolean;
+	cacheInvalidationPeriod?: number;
+	currentPage?: number;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
 export type TasksProps = {
 	res?: TasksStringResource;
 	isNewTaskVisible?: boolean;
@@ -275,6 +304,10 @@ export const Person = wrapMgt<PersonProps>('person');
 export const PersonCard = wrapMgt<PersonCardProps>('person-card');
 
 export const Picker = wrapMgt<PickerProps>('picker');
+
+export const SearchBox = wrapMgt<SearchBoxProps>('search-box');
+
+export const SearchResults = wrapMgt<SearchResultsProps>('search-results');
 
 export const Tasks = wrapMgt<TasksProps>('tasks');
 

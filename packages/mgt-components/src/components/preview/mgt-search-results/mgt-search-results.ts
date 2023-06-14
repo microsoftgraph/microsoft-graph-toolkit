@@ -119,7 +119,8 @@ type SearchResource = Partial<
 type SearchResponseCollection = CollectionResponse<SearchResponse>;
 
 /**
- * Custom element for making Microsoft Graph get queries
+ * **Preview component** Custom element for making Microsoft Graph get queries.
+ * Component may change before general availability release.
  *
  * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes
  *
@@ -395,6 +396,13 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       this._currentPage = value;
       void this.requestStateUpdate(true);
     }
+  }
+
+  constructor() {
+    super();
+    console.warn(
+      '🦒: <mgt-search-results> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
+    );
   }
 
   /**
