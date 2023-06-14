@@ -10,5 +10,7 @@ export const strings = {
   back: 'Back',
   next: 'Next',
   pages: 'pages',
-  page: 'Page'
+  page: 'Page',
+  noResult: "We couldn't find any results",
+  for: 'for'
 };

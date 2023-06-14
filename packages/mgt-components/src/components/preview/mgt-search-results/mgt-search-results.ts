@@ -470,14 +470,14 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       renderedTemplate = this.renderLoading();
     } else if (this.error) {
       renderedTemplate = this.renderError();
-    } else if (this.response?.value[0]?.hitsContainers[0]) {
+    } else if (!this.response?.value[0]?.hitsContainers[0].hits) {
+      renderedTemplate = this.renderNoData(this.response) || html``;
+    } else if (this.response?.value[0]?.hitsContainers[0].hits?.length > 0 && this.hasTemplate('default')) {
+      renderedTemplate = this.renderTemplate('default', this.response) || html``;
+    } else if (this.response?.value[0]?.hitsContainers[0].hits?.length > 0) {
       renderedTemplate = html`${this.response?.value[0]?.hitsContainers[0]?.hits?.map(result =>
         this.renderResult(result)
       )}`;
-    } else if (this.response) {
-      renderedTemplate = this.renderTemplate('default', this.response) || html``;
-    } else if (this.hasTemplate('no-data')) {
-      renderedTemplate = this.renderTemplate('no-data', null);
     } else {
       renderedTemplate = html``;
     }
@@ -659,6 +659,28 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         })}
        `
     );
+  }
+
+  /**
+   * Render the loading state.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtSearchResults
+   */
+  protected renderNoData(response: SearchResponseCollection): TemplateResult {
+    if (this.hasTemplate(`no-data`)) {
+      return this.renderTemplate(`no-data`, response);
+    } else {
+      const searchTerms = response.value[0].searchTerms;
+      return html`
+        <div class="search-result">
+          ${strings.noResult} ${
+        searchTerms && html` ${strings.for} <span class="search-result__no-data">${searchTerms.join(' ')}</span>`
+      }
+        </div>
+      `;
+    }
   }
 
   /**

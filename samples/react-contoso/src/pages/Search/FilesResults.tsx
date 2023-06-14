@@ -1,44 +1,79 @@
 import { SearchResults } from '@microsoft/mgt-react/dist/es6/generated/react-preview';
 import * as React from 'react';
 import { IResultsProps } from './IResultsProps';
-import { MgtTemplateProps, Person, PersonCardInteraction, ViewType } from '@microsoft/mgt-react';
 import {
-  Text,
-  Button,
-  Caption1,
-  Card,
-  CardFooter,
-  CardHeader,
-  CardPreview,
+  MgtTemplateProps,
+  Person,
+  File,
+  PersonCardInteraction,
+  Spinner,
+  ViewType,
+  getRelativeDisplayDate
+} from '@microsoft/mgt-react';
+import {
+  DataGrid,
+  DataGridBody,
+  DataGridCell,
+  DataGridHeader,
+  DataGridHeaderCell,
+  DataGridRow,
+  TableCellLayout,
+  TableColumnDefinition,
+  createTableColumn,
   makeStyles,
   shorthands,
   tokens
 } from '@fluentui/react-components';
-import { ArrowReplyRegular, ShareRegular } from '@fluentui/react-icons';
+import { SlideSearchRegular } from '@fluentui/react-icons';
+
+import { SkeletonItem } from '@fluentui/react-components/unstable';
 
 const useStyles = makeStyles({
   container: {
     ...shorthands.gap('16px'),
     display: 'flex',
+    flexDirection: 'row',
     flexWrap: 'wrap'
   },
   card: {
-    width: '280px',
-    height: 'fit-content'
+    width: '300px',
+    height: 'fit-content',
+    maxWidth: '100%'
   },
   caption: {
     color: tokens.colorNeutralForeground3
   },
-  grid: {
-    ...shorthands.gap('16px'),
+  noDataSearchTerm: {
+    fontWeight: tokens.fontWeightSemibold
+  },
+  emptyContainer: {
     display: 'flex',
-    flexDirection: 'column'
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    height: 'calc(100vh - 300px)'
+  },
+  fileContainer: {
+    display: 'flex'
+  },
+  fileTitle: {
+    paddingLeft: '10px',
+    alignSelf: 'center'
+  },
+  noDataMessage: {
+    paddingLeft: '10px'
+  },
+  noDataIcon: {
+    fontSize: '128px'
+  },
+  row: {
+    cursor: 'pointer'
   }
 });
 
-export const FilesResults: React.FunctionComponent<IResultsProps> = (props: IResultsProps) => {
-  const styles = useStyles();
+const pageSize = 30;
 
+export const FilesResults: React.FunctionComponent<IResultsProps> = (props: IResultsProps) => {
   return (
     <>
       {props.searchTerm && (
@@ -47,52 +82,150 @@ export const FilesResults: React.FunctionComponent<IResultsProps> = (props: IRes
           queryString={props.searchTerm}
           fetchThumbnail={true}
           queryTemplate="({searchTerms}) ContentTypeId:0x0101*"
-          fields={['ContentTypeId']}
           version="beta"
+          fields={['createdBy', 'lastModifiedDateTime', 'Title', 'DefaultEncodingURL']}
+          size={pageSize}
         >
           <FileTemplate template="default"></FileTemplate>
+          <FileTemplate template="loading"></FileTemplate>
+          <FileNoDataTemplate template="no-data"></FileNoDataTemplate>
         </SearchResults>
       )}
     </>
   );
 };
 
+const getColumns = (shimmered: boolean, styles): TableColumnDefinition<any>[] => {
+  const columns: TableColumnDefinition<any>[] = [
+    createTableColumn<any>({
+      columnId: 'name',
+      renderHeaderCell: () => {
+        return 'Name';
+      },
+      renderCell: item => {
+        return (
+          <TableCellLayout>
+            {shimmered ? (
+              <SkeletonItem shape="rectangle" style={{ width: '120px' }} />
+            ) : (
+              <div className={styles.fileContainer}>
+                <File fileDetails={item.resource} view={ViewType.image} />
+                <span className={styles.fileTitle}>{item.resource.listItem.fields.title}</span>
+              </div>
+            )}
+          </TableCellLayout>
+        );
+      }
+    }),
+    createTableColumn<any>({
+      columnId: 'modified',
+      renderHeaderCell: () => {
+        return 'Modified';
+      },
+      renderCell: item => {
+        return (
+          <TableCellLayout>
+            {shimmered ? (
+              <SkeletonItem shape="rectangle" style={{ width: '120px' }} />
+            ) : (
+              getRelativeDisplayDate(new Date(item.resource.lastModifiedDateTime))
+            )}
+          </TableCellLayout>
+        );
+      }
+    }),
+    createTableColumn<any>({
+      columnId: 'owner',
+      renderHeaderCell: () => {
+        return 'Owner';
+      },
+      renderCell: item => {
+        return (
+          <TableCellLayout>
+            {shimmered ? (
+              <div
+                style={{
+                  display: 'grid',
+                  alignItems: 'center',
+                  position: 'relative',
+                  gridTemplateColumns: 'min-content 80%',
+                  gap: '10px'
+                }}
+              >
+                <SkeletonItem shape="circle" size={32} />
+                <SkeletonItem style={{ width: '120px' }} />
+              </div>
+            ) : (
+              <Person
+                personQuery={item.resource.createdBy.user.email}
+                view={ViewType.oneline}
+                personCardInteraction={PersonCardInteraction.hover}
+              />
+            )}
+          </TableCellLayout>
+        );
+      }
+    })
+  ];
+
+  return columns;
+};
+
 const FileTemplate = (props: MgtTemplateProps) => {
   const styles = useStyles();
-  const [driveItems] = React.useState<any>(props.dataContext.value);
+  const [driveItems] = React.useState<any>(props.dataContext.value?.[0]?.hitsContainers[0]?.hits);
+
+  const onRowClick = (item: any) => {
+    const url = new URL(item.resource.listItem.fields.defaultEncodingURL);
+    url.searchParams.append('Web', '1');
+    window.open(url.toString(), '_blank');
+  };
 
   return (
-    /*
-    <Card className={styles.card}>
-      <Person
-        personQuery={driveItem.resource.lastModifiedBy.user.email}
-        view={ViewType.twolines}
-        personCardInteraction={PersonCardInteraction.hover}
-        showPresence={true}
-      ></Person>
+    <div>
+      <DataGrid
+        columns={getColumns(props.template === 'loading', styles)}
+        items={props.template === 'loading' ? [...Array<number>(pageSize)] : driveItems}
+      >
+        <DataGridHeader>
+          <DataGridRow>
+            {({ renderHeaderCell }) => <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>}
+          </DataGridRow>
+        </DataGridHeader>
+        <DataGridBody<any>>
+          {({ item, rowId }) => (
+            <DataGridRow<any> key={rowId} className={styles.row} onClick={() => onRowClick(item)}>
+              {({ renderCell }) => <DataGridCell>{renderCell(item)}</DataGridCell>}
+            </DataGridRow>
+          )}
+        </DataGridBody>
+      </DataGrid>
+    </div>
+  );
+};
 
-      <CardPreview logo={<img src={''} alt="Microsoft Word document" />}>
-        <img src={driveItem.resource.thumbnail?.url} alt={driveItem.resource.name} />
-      </CardPreview>
+const FileLoadingTemplate = (props: MgtTemplateProps) => {
+  const styles = useStyles();
+  return (
+    <div className={styles.emptyContainer}>
+      <div>
+        <Spinner />
+      </div>
+    </div>
+  );
+};
 
-      <CardFooter>
-        <Button icon={<ArrowReplyRegular fontSize={16} />}>Reply</Button>
-        <Button icon={<ShareRegular fontSize={16} />}>Share</Button>
-      </CardFooter>
-    </Card>
-  */
+const FileNoDataTemplate = (props: MgtTemplateProps) => {
+  const styles = useStyles();
+  const [searchTerms] = React.useState<string[]>(props.dataContext.value[0]?.searchTerms);
 
-    <div className={styles.container}>
-      <div className={styles.grid}>
-        {driveItems.map((driveItem: any) => (
-          <Card className={styles.card} size="small" role="listitem">
-            <CardHeader
-              image={{ as: 'img', alt: 'Word app logo' }}
-              header={<Text weight="semibold">{driveItem.resource.name}</Text>}
-              description={<Caption1 className={styles.caption}>OneDrive &gt; Documents</Caption1>}
-            />
-          </Card>
-        ))}
+  return (
+    <div className={styles.emptyContainer}>
+      <div>
+        <SlideSearchRegular className={styles.noDataIcon} />
+      </div>
+      <div className={styles.noDataMessage}>
+        We couldn't find any results for <span className={styles.noDataSearchTerm}>{searchTerms.join(' ')}</span>
       </div>
     </div>
   );

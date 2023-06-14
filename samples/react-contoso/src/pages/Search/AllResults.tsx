@@ -7,13 +7,15 @@ export const AllResults: React.FunctionComponent<IResultsProps> = (props: IResul
     <>
       {props.searchTerm && (
         <>
-          <SearchResults
-            entityTypes={['bookmark']}
-            queryString={props.searchTerm}
-            version="beta"
-            size={1}
-            scopes={['Bookmark.Read.All']}
-          ></SearchResults>
+          {props.searchTerm !== '*' && (
+            <SearchResults
+              entityTypes={['bookmark']}
+              queryString={props.searchTerm}
+              version="beta"
+              size={1}
+              scopes={['Bookmark.Read.All']}
+            ></SearchResults>
+          )}
           <SearchResults
             entityTypes={['driveItem', 'listItem', 'site']}
             queryString={props.searchTerm}

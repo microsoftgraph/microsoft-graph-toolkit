@@ -11,6 +11,7 @@ import { ThemeSwitcher } from '../ThemeSwitcher/ThemeSwitcher';
 import { useAppContext } from '../../AppContext';
 import { Label, makeStyles, shorthands, tokens } from '@fluentui/react-components';
 import { GridDotsRegular } from '@fluentui/react-icons';
+import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles({
   name: {
@@ -76,9 +77,10 @@ const HeaderComponent: React.FunctionComponent = () => {
   const [isSignedIn] = useIsSignedIn();
   const appContext = useAppContext();
   const history = useHistory();
+  const { query } = useParams();
 
   const onSearchTermChanged = (e: CustomEvent) => {
-    appContext.setState({ ...appContext.state, searchTerm: e.detail ?? '*' });
+    appContext.setState({ ...appContext.state, searchTerm: query ?? e.detail ?? '*' });
 
     if (e.detail === '') {
       history.push('/search');
@@ -102,7 +104,11 @@ const HeaderComponent: React.FunctionComponent = () => {
         </div>
       </div>
       <div className={styles.search}>
-        <SearchBox className={styles.searchBox} searchTermChanged={onSearchTermChanged}></SearchBox>
+        <SearchBox
+          className={styles.searchBox}
+          searchTermChanged={onSearchTermChanged}
+          defaultValue={appContext.state.searchTerm}
+        ></SearchBox>
       </div>
 
       <div className="login">
