@@ -8,7 +8,7 @@
 @import '../../styles/shared-sass-variables';
 
 $signed-out-text-color: #{var(--login-signed-out-button-text-color, var(--neutral-fill-foreground-rest))};
-$signed-in-background-color: var(--login-signed-in-background, var(--neutral-layer-floating));
+$signed-in-background-color: var(--login-signed-in-background, transparent);
 $signed-in-hover-background-color: #{var(--login-signed-in-hover-background, var(--neutral-fill-stealth-hover))};
 $login-command-btn-text-color: #{var(--login-command-button-text-color, var(--neutral-fill-foreground-rest))};
 $login-command-btn-bg-color: #{var(--login-command-button-background-color, var(--neutral-fill-stealth-rest))};
