@@ -456,12 +456,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       renderedTemplate = this.renderLoading();
     } else if (this.error) {
       renderedTemplate = this.renderError();
+    } else if (this.response && this.hasTemplate('default')) {
+      renderedTemplate = this.renderTemplate('default', this.response) || html``;
     } else if (this.response?.value[0]?.hitsContainers[0]) {
       renderedTemplate = html`${this.response?.value[0]?.hitsContainers[0]?.hits?.map(result =>
         this.renderResult(result)
       )}`;
-    } else if (this.response) {
-      renderedTemplate = this.renderTemplate('default', this.response) || html``;
     } else if (this.hasTemplate('no-data')) {
       renderedTemplate = this.renderTemplate('no-data', null);
     } else {
