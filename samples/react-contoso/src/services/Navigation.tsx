@@ -23,7 +23,8 @@ export const getNavigation = (isSignedIn: boolean) => {
     icon: <HomeRegular />,
     key: 'home',
     requiresLogin: false,
-    component: <HomePage />
+    component: <HomePage />,
+    exact: true
   });
 
   if (isSignedIn) {
@@ -33,7 +34,8 @@ export const getNavigation = (isSignedIn: boolean) => {
       icon: <TextBulletListSquareRegular />,
       key: 'dashboard',
       requiresLogin: true,
-      component: <DashboardPage />
+      component: <DashboardPage />,
+      exact: true
     });
 
     navItems.push({
@@ -42,7 +44,8 @@ export const getNavigation = (isSignedIn: boolean) => {
       icon: <CalendarMailRegular />,
       key: 'outlook',
       requiresLogin: true,
-      component: <OutlookPage />
+      component: <OutlookPage />,
+      exact: true
     });
 
     navItems.push({
@@ -51,7 +54,8 @@ export const getNavigation = (isSignedIn: boolean) => {
       icon: <DocumentRegular />,
       key: 'files',
       requiresLogin: true,
-      component: <FilesPage />
+      component: <FilesPage />,
+      exact: true
     });
 
     navItems.push({
@@ -60,16 +64,19 @@ export const getNavigation = (isSignedIn: boolean) => {
       icon: <ChatRegular />,
       key: 'chat',
       requiresLogin: true,
-      component: <ChatPage />
+      component: <ChatPage />,
+      exact: true
     });
 
     navItems.push({
       name: 'Search',
       url: '/search',
+      pattern: '/search/:query',
       icon: <SearchRegular />,
       key: 'search',
       requiresLogin: true,
-      component: <SearchPage />
+      component: <SearchPage />,
+      exact: false
     });
   }
   return navItems;

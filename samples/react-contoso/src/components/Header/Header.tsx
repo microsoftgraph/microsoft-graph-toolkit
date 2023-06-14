@@ -78,12 +78,12 @@ const HeaderComponent: React.FunctionComponent = () => {
   const history = useHistory();
 
   const onSearchTermChanged = (e: CustomEvent) => {
-    appContext.setState({ ...appContext.state, searchTerm: e.detail });
+    appContext.setState({ ...appContext.state, searchTerm: e.detail ?? '*' });
 
     if (e.detail === '') {
-      history.push('/home');
-    } else {
       history.push('/search');
+    } else {
+      history.push('/search/' + e.detail);
     }
   };
 

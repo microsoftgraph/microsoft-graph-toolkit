@@ -11,7 +11,9 @@ import {
   shorthands
 } from '@fluentui/react-components';
 import { useAppContext } from '../AppContext';
-import { ExternalItems } from './Search/ExternalItems';
+import { ExternalItemsResults } from './Search/ExternalItemsResults';
+import { FilesResults } from './Search/FilesResults';
+import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles({
   panels: {
@@ -26,6 +28,7 @@ const useStyles = makeStyles({
 export const SearchPage: React.FunctionComponent = () => {
   const styles = useStyles();
   const appContext = useAppContext();
+  const { query } = useParams();
 
   const [selectedTab, setSelectedTab] = React.useState<TabValue>('allResults');
 
@@ -43,13 +46,21 @@ export const SearchPage: React.FunctionComponent = () => {
       <div className={styles.container}>
         <TabList selectedValue={selectedTab} onTabSelect={onTabSelect}>
           <Tab value="allResults">All Results</Tab>
+          <Tab value="driveItems">Files</Tab>
           <Tab value="externalItems">External Items</Tab>
           <Tab value="people">People</Tab>
         </TabList>
         <div className={styles.panels}>
-          {selectedTab === 'allResults' && <AllResults searchTerm={appContext.state.searchTerm}></AllResults>}
-          {selectedTab === 'externalItems' && <ExternalItems searchTerm={appContext.state.searchTerm}></ExternalItems>}
-          {selectedTab === 'people' && <PeopleResults searchTerm={appContext.state.searchTerm}></PeopleResults>}
+          {selectedTab === 'allResults' && <AllResults searchTerm={query ?? appContext.state.searchTerm}></AllResults>}
+          {selectedTab === 'driveItems' && (
+            <FilesResults searchTerm={query ?? appContext.state.searchTerm}></FilesResults>
+          )}
+          {selectedTab === 'externalItems' && (
+            <ExternalItemsResults searchTerm={query ?? appContext.state.searchTerm}></ExternalItemsResults>
+          )}
+          {selectedTab === 'people' && (
+            <PeopleResults searchTerm={query ?? appContext.state.searchTerm}></PeopleResults>
+          )}
         </div>
       </div>
     </>

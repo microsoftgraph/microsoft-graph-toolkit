@@ -7,7 +7,7 @@ import { lightTheme } from '@microsoft/mgt-chat';
 
 export const App: React.FunctionComponent = theme => {
   const [state, setState] = React.useState({
-    searchTerm: '',
+    searchTerm: '*',
     sidebar: {
       isMinimized: false
     },
