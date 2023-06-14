@@ -11,7 +11,7 @@ import { ThemeSwitcher } from '../ThemeSwitcher/ThemeSwitcher';
 import { useAppContext } from '../../AppContext';
 import { Label, makeStyles, shorthands, tokens } from '@fluentui/react-components';
 import { GridDotsRegular } from '@fluentui/react-icons';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles({
   name: {
@@ -76,18 +76,27 @@ const HeaderComponent: React.FunctionComponent = () => {
   const styles = useStyles();
   const [isSignedIn] = useIsSignedIn();
   const appContext = useAppContext();
+  const location = useLocation();
   const history = useHistory();
-  const { query } = useParams();
 
   const onSearchTermChanged = (e: CustomEvent) => {
-    appContext.setState({ ...appContext.state, searchTerm: query ?? e.detail ?? '*' });
+    if (!(e.detail === '' && appContext.state.searchTerm === '*') && e.detail !== appContext.state.searchTerm) {
+      appContext.setState({ ...appContext.state, searchTerm: e.detail === '' ? '*' : e.detail });
 
-    if (e.detail === '') {
-      history.push('/search');
-    } else {
-      history.push('/search/' + e.detail);
+      if (e.detail === '') {
+        history.push('/search');
+      } else {
+        history.push('/search?q=' + e.detail);
+      }
     }
   };
+
+  React.useLayoutEffect(() => {
+    if (location.pathname === '/search') {
+      const searchTerm = decodeURI(location.search.replace('?q=', ''));
+      appContext.setState({ ...appContext.state, searchTerm: searchTerm === '' ? '*' : searchTerm });
+    }
+  }, [location]);
 
   return (
     <div className="header">
@@ -107,7 +116,7 @@ const HeaderComponent: React.FunctionComponent = () => {
         <SearchBox
           className={styles.searchBox}
           searchTermChanged={onSearchTermChanged}
-          defaultValue={appContext.state.searchTerm}
+          searchTerm={appContext.state.searchTerm !== '*' ? appContext.state.searchTerm : ''}
         ></SearchBox>
       </div>
 

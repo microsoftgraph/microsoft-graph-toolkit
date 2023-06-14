@@ -108,6 +108,7 @@ export class MgtSearchBox extends MgtBaseComponent {
         value=${this.searchTerm ?? ''}
         placeholder=${this.placeholder ? this.placeholder : strings.placeholder}
         title=${this.title ? this.title : strings.title}
+        autocomplete="off"
         @input=${this.onInputChanged}
         @change=${this.onInputChanged}
       >

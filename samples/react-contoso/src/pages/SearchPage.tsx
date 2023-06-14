@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 export const SearchPage: React.FunctionComponent = () => {
   const styles = useStyles();
   const appContext = useAppContext();
-  const { query } = useParams();
+  const [query] = React.useState(new URLSearchParams(window.location.search).get('q'));
 
   const [selectedTab, setSelectedTab] = React.useState<TabValue>('allResults');
 
