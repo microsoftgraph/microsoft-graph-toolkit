@@ -204,17 +204,6 @@ const FileTemplate = (props: MgtTemplateProps) => {
   );
 };
 
-const FileLoadingTemplate = (props: MgtTemplateProps) => {
-  const styles = useStyles();
-  return (
-    <div className={styles.emptyContainer}>
-      <div>
-        <Spinner />
-      </div>
-    </div>
-  );
-};
-
 const FileNoDataTemplate = (props: MgtTemplateProps) => {
   const styles = useStyles();
   const [searchTerms] = React.useState<string[]>(props.dataContext.value[0]?.searchTerms);

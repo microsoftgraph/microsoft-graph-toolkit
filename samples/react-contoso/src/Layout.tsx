@@ -5,10 +5,9 @@ import { SideNavigation } from './components/SideNavigation/SideNavigation';
 import { HomePage } from './pages/HomePage';
 import { useIsSignedIn } from './hooks/useIsSignedIn';
 import { Incident } from './pages/Incident/Incident';
-import './App.css';
 import { NavigationItem } from './models/NavigationItem';
 import { getNavigation } from './services/Navigation';
-import { FluentProvider, makeStyles, mergeClasses } from '@fluentui/react-components';
+import { FluentProvider, makeStyles, mergeClasses, shorthands } from '@fluentui/react-components';
 import { tokens } from '@fluentui/react-theme';
 import { applyTheme } from '@microsoft/mgt-react';
 import { useAppContext } from './AppContext';
@@ -23,19 +22,31 @@ const useStyles = makeStyles({
     boxSizing: 'border-box',
     backgroundColor: tokens.colorNeutralBackground6
   },
+  main: {
+    backgroundColor: tokens.colorNeutralBackground1,
+    display: 'flex',
+    flexDirection: 'row',
+    width: 'auto',
+    height: 'calc(100vh - 50px)',
+    boxSizing: 'border-box'
+  },
   minimized: {
     minWidth: 'auto'
   },
-  mgtFluent: {
-    /*'--accent-fill-rest': tokens.colorCompoundBrandForeground1,
-    '--accent-fill-active': tokens.colorCompoundBrandForeground1Pressed,
-    '--accent-fill-hover': tokens.colorCompoundBrandForeground1Hover,
-    '--accent-foreground-rest': tokens.colorCompoundBrandForeground1,
-    '--accent-foreground-hover': tokens.colorCompoundBrandForeground1Hover,
-    '--accent-stroke-control-rest': tokens.colorCompoundBrandStroke,
-    '--accent-stroke-control-active': tokens.colorCompoundBrandStrokePressed,
-    '--accent-base-color': tokens.colorNeutralForeground1,
-    '--input-background-color': tokens.colorNeutralBackground1*/
+  page: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexWrap: 'nowrap'
+  },
+  content: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexWrap: 'nowrap',
+    width: '100%',
+    height: 'auto',
+    boxSizing: 'border-box',
+    ...shorthands.margin('10px'),
+    ...shorthands.overflow('auto')
   }
 });
 
@@ -56,10 +67,10 @@ export const Layout: React.FunctionComponent = theme => {
 
   return (
     <FluentProvider theme={appContext.state.theme.fluentTheme}>
-      <div className={mergeClasses('page', appContext.state.theme.key === 'dark' ? styles.mgtFluent : '')}>
+      <div className={styles.page}>
         <HashRouter>
           <Header></Header>
-          <div className="main">
+          <div className={styles.main}>
             <div
               className={mergeClasses(
                 styles.sidebar,
@@ -68,7 +79,7 @@ export const Layout: React.FunctionComponent = theme => {
             >
               <SideNavigation items={navigationItems}></SideNavigation>
             </div>
-            <div className="content">
+            <div className={styles.content}>
               <Switch>
                 {navigationItems.map(
                   item =>

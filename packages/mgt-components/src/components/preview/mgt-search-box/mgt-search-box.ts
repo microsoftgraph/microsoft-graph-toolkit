@@ -72,6 +72,7 @@ export class MgtSearchBox extends MgtBaseComponent {
   }
   public set searchTerm(value) {
     this._searchTerm = value;
+    this.requestUpdate('searchTerm');
     this.fireSearchTermChanged();
   }
 

@@ -5,27 +5,44 @@ import { PACKAGE_VERSION } from '@microsoft/mgt-element';
 import { InfoButton } from '@fluentui/react-components/unstable';
 import { SimpleLogin } from '../SimpleLogin/SimpleLogin';
 import { useIsSignedIn } from '../../hooks/useIsSignedIn';
-import './Header.css';
 import { useHistory } from 'react-router-dom';
 import { ThemeSwitcher } from '../ThemeSwitcher/ThemeSwitcher';
 import { useAppContext } from '../../AppContext';
-import { Label, makeStyles, shorthands, tokens } from '@fluentui/react-components';
+import { Label, makeStyles, mergeClasses, shorthands, tokens } from '@fluentui/react-components';
 import { GridDotsRegular } from '@fluentui/react-icons';
 import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles({
+  root: {
+    '--login-signed-in-hover-background': 'transparent'
+  },
+
+  header: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    width: '100%',
+    height: 'auto',
+    boxSizing: 'border-box',
+    alignItems: 'center',
+    backgroundColor: tokens.colorNeutralForeground1Static,
+    zIndex: '1',
+    minHeight: '50px'
+  },
+
   name: {
     color: tokens.colorNeutralForegroundOnBrand,
     fontWeight: tokens.fontWeightSemibold,
     fontSize: tokens.fontSizeBase400,
-    paddingLeft: '8px'
+    paddingLeft: '12px'
   },
+
   wafffleIcon: {
     fontSize: tokens.fontSizeBase600,
-    ...shorthands.margin('0 10px'),
     paddingTop: '5px',
     color: tokens.colorNeutralForegroundOnBrand
   },
+
   waffle: {
     display: 'flex',
     width: 'auto',
@@ -36,14 +53,17 @@ const useStyles = makeStyles({
     minWidth: 'max-content',
     paddingLeft: '8px'
   },
+
   waffleLogo: {
     ...shorthands.flex('none')
   },
+
   waffleTitle: {
     ...shorthands.flex('auto'),
     display: 'flex',
     alignItems: 'center'
   },
+
   search: {
     display: 'flex',
     width: '100%',
@@ -69,6 +89,24 @@ const useStyles = makeStyles({
         color: tokens.colorNeutralForegroundOnBrand
       }
     }
+  },
+
+  login: {
+    display: 'flex',
+    width: 'auto',
+    height: 'auto',
+    boxSizing: 'border-box',
+    flexGrow: '1',
+    alignItems: 'center',
+    minWidth: 'max-content'
+  },
+
+  signedOut: {
+    ...shorthands.padding('4px', '8px')
+  },
+
+  signedIn: {
+    ...shorthands.padding('0px', '10px')
   }
 });
 
@@ -76,6 +114,7 @@ const HeaderComponent: React.FunctionComponent = () => {
   const styles = useStyles();
   const [isSignedIn] = useIsSignedIn();
   const appContext = useAppContext();
+  const setAppContext = appContext.setState;
   const location = useLocation();
   const history = useHistory();
 
@@ -94,15 +133,17 @@ const HeaderComponent: React.FunctionComponent = () => {
   React.useLayoutEffect(() => {
     if (location.pathname === '/search') {
       const searchTerm = decodeURI(location.search.replace('?q=', ''));
-      appContext.setState({ ...appContext.state, searchTerm: searchTerm === '' ? '*' : searchTerm });
+      setAppContext(previous => {
+        return { ...previous, searchTerm: searchTerm === '' ? '*' : searchTerm };
+      });
     }
-  }, [location]);
+  }, [location, setAppContext]);
 
   return (
-    <div className="header">
+    <div className={styles.header}>
       <div className={styles.waffle}>
         <div className={styles.waffleLogo}>
-          <a href={'https://myapps.microsoft.com'} target="_blank" rel="noreferrer">
+          <a href={'https://www.office.com/apps?auth=2'} target="_blank" rel="noreferrer">
             <GridDotsRegular className={styles.wafffleIcon} />
           </a>
         </div>
@@ -120,11 +161,13 @@ const HeaderComponent: React.FunctionComponent = () => {
         ></SearchBox>
       </div>
 
-      <div className="login">
+      <div className={styles.login}>
         <ThemeSwitcher />
-        <Login className={!isSignedIn ? 'signed-out' : 'signed-in'}>
-          <SimpleLogin template="signed-in-button-content" />
-        </Login>
+        <div className={mergeClasses(!isSignedIn ? styles.signedOut : styles.signedIn, styles.root)}>
+          <Login>
+            <SimpleLogin template="signed-in-button-content" />
+          </Login>
+        </div>
       </div>
     </div>
   );

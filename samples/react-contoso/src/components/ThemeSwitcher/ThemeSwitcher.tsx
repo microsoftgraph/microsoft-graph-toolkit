@@ -7,22 +7,34 @@ import {
   MenuPopover,
   MenuTrigger,
   webDarkTheme,
-  webLightTheme
+  webLightTheme,
+  teamsLightTheme,
+  teamsDarkTheme
 } from '@fluentui/react-components';
-import { BrightnessHighRegular, WeatherMoonRegular } from '@fluentui/react-icons';
+import { BrightnessHighRegular, WeatherMoonFilled, PeopleTeamRegular, PeopleTeamFilled } from '@fluentui/react-icons';
 import { useAppContext } from '../../AppContext';
 import { darkTheme, lightTheme } from '@microsoft/mgt-chat';
 
 const availableThemes = [
   {
     key: 'light',
-    displayName: 'Light',
+    displayName: 'Web Light',
     icon: <BrightnessHighRegular />
   },
   {
     key: 'dark',
-    displayName: 'Dark',
-    icon: <WeatherMoonRegular />
+    displayName: 'Web Dark',
+    icon: <WeatherMoonFilled />
+  },
+  {
+    key: 'teamsLight',
+    displayName: 'Teams Light',
+    icon: <PeopleTeamRegular />
+  },
+  {
+    key: 'teamsDark',
+    displayName: 'Teams Dark',
+    icon: <PeopleTeamFilled />
   }
 ];
 
@@ -34,18 +46,30 @@ export const ThemeSwitcher = () => {
     setSelectedTheme(theme);
     // Applies the theme to the Fluent UI components
     switch (theme.key) {
+      case 'teamsLight':
+        appContext.setState({
+          ...appContext.state,
+          theme: { key: 'light', fluentTheme: teamsLightTheme, chatTheme: lightTheme }
+        });
+        break;
+      case 'teamsDark':
+        appContext.setState({
+          ...appContext.state,
+          theme: { key: 'dark', fluentTheme: teamsDarkTheme, chatTheme: darkTheme }
+        });
+        break;
+      case 'light':
+        appContext.setState({
+          ...appContext.state,
+          theme: { key: theme.key, fluentTheme: webLightTheme, chatTheme: lightTheme }
+        });
+        break;
       case 'dark':
         appContext.setState({
           ...appContext.state,
           theme: { key: theme.key, fluentTheme: webDarkTheme, chatTheme: darkTheme }
         });
         break;
-      case 'light':
-      default:
-        appContext.setState({
-          ...appContext.state,
-          theme: { key: theme.key, fluentTheme: webLightTheme, chatTheme: lightTheme }
-        });
     }
   };
 
