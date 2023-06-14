@@ -162,47 +162,44 @@ export const cache = () => html`
   </script>
 `;
 export const theme = () => html`
-  <div>
-    <header>
-      <p>I should be light, regional class</p>
-      <mgt-teams-channel-picker></mgt-teams-channel-picker>
-      <div>
-        <p>I should be light, second level regional class</p>
-        <mgt-teams-channel-picker></mgt-teams-channel-picker>
-      </div>
-    </header>
-    <article>
-      <p>I should be light, global class</p>
-      <mgt-teams-channel-picker></mgt-teams-channel-picker>
-    </article>
-    <p>I am custom themed</p>
-    <mgt-teams-channel-picker class="custom1"></mgt-teams-channel-picker>
-    <div>
-      <p>I have the custom input background color</p>
-      <mgt-teams-channel-picker class="custom2"></mgt-teams-channel-picker>
-    </div>
-    <p>I should be light, with unknown class mgt-foo</p>
-    <mgt-teams-channel-picker class="mgt-foo"></mgt-teams-channel-picker>
+<div>
+  <p>This demonstrates how to set the theme globally without using a theme toggle and customize styling within specific scopes</p>
+  <p>Please refer to the JS and CSS tabs in the editor for implentation details</p>
+  <mgt-login></mgt-login>
+  <p>This picker shows the custom focus ring color</p>
+  <div class="custom-focus">
+    <mgt-people-picker></mgt-people-picker>
   </div>
-  <style>
-    .root {
-      --focus-ring-color: red;
-      --focus-ring-style: solid;
-    }
-    .custom1 {
-      --channel-picker-input-border: 2px solid teal;
-      --channel-picker-input-background-color: #33c2c2;
-      --channel-picker-dropdown-background-color: #33c2c2;
-      --channel-picker-dropdown-item-hover-background: #2a7d88;
-      --channel-picker-input-hover-color: #b911b1;
-      --channel-picker-input-focus-color: #441540;
-      --channel-picker-font-color: white;
-      --channel-picker-placeholder-default-color: white;
-      --channel-picker-placeholder-focus-color: #441540;
-    }
-
-    .custom2 {
-      --channel-picker-input-background-color: #e47c4d;
-    }
-  </style>
+  <article>
+    <p>I use the theme set on the body</p>
+    <mgt-teams-channel-picker></mgt-teams-channel-picker>
+  </article>
+  <p>I am custom themed, take care to ensure that your customizations maintain accessibility standards</p>
+  <mgt-teams-channel-picker class="custom1"></mgt-teams-channel-picker>
+</div>
+<script>
+import { applyTheme } from '@microsoft/mgt';
+const body = document.querySelector('body');
+if(body) applyTheme('dark', body);
+</script>
+<style>
+.body {
+  background-color: var(--fill-color);
+}
+.custom-focus {
+  --focus-ring-color: red;
+  --focus-ring-style: solid;
+}
+.custom1 {
+  --channel-picker-input-border: 2px solid teal;
+  --channel-picker-input-background-color: black;
+  --channel-picker-dropdown-background-color: #33c2c2;
+  --channel-picker-dropdown-item-hover-background: #2a7d88;
+  --channel-picker-input-hover-color: #b911b1;
+  --channel-picker-input-focus-color: #441540;
+  --channel-picker-font-color: white;
+  --channel-picker-placeholder-default-color: white;
+  --channel-picker-placeholder-focus-color: #441540;
+}
+</style>
 `;
