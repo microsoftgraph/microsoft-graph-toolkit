@@ -193,7 +193,7 @@
       margin-right: 8px;
 
       svg {
-        stroke: var(--channel-picker-arrow-fill, var(--neutral-foreground-rest));
+        stroke: $channel-picker-arrow-fill-color;
       }
     }
   }

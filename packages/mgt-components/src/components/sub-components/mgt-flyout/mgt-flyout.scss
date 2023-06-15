@@ -9,6 +9,7 @@
 @import '../../../styles/shared-sass-variables';
 
 $mgt-flyout-border-radius: var(--mgt-flyout-border-radius, 0);
+$mgt-flyout-box-shadow: var(--mgt-flyout-box-shadow, var(--elevation-shadow-card-rest));
 
 .root {
   .scout-top {
@@ -28,7 +29,7 @@ $mgt-flyout-border-radius: var(--mgt-flyout-border-radius, 0);
     position: fixed;
     z-index: 9999999;
     opacity: 0;
-    box-shadow: set-var(box-shadow, $theme-default, $common);
+    box-shadow: $mgt-flyout-box-shadow;
     border-radius: 8px;
 
     &.small {
