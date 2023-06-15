@@ -79,7 +79,6 @@ registerFluentComponents(fluentProgressRing);
  */
 
 @customElement('file-list')
-// @customElement('mgt-file-list')
 export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   private _isCompact = false;
   /**
