@@ -11,7 +11,7 @@
  * their structure and members.
  */
 export abstract class AuthCodeListener {
-  private hostName: string;
+  private readonly hostName: string;
 
   /**
    * Constructor

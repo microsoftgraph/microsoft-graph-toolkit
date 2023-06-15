@@ -47,8 +47,8 @@ export abstract class IProvider implements AuthenticationProvider {
     return false;
   }
   private _state: ProviderState;
-  private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
-  private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
+  private readonly _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
+  private readonly _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
   private _baseURL: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
 
   /**
@@ -326,12 +326,8 @@ export enum ProviderState {
  * @export
  */
 export type IProviderAccount = {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   id: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   mail?: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   name?: string;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   tenantId?: string;
 };

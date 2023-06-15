@@ -81,21 +81,13 @@ export interface MgtPersonCardConfig {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 export type UserWithManager = User & { manager?: UserWithManager };
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 export interface MgtPersonCardState {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   directReports?: User[];
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   files?: SharedInsight[];
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   messages?: Message[];
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   people?: Person[];
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   person?: UserWithManager;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   profile?: Profile;
 }
