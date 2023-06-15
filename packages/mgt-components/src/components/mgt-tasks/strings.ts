@@ -12,5 +12,4 @@ export const strings = {
   due: 'Due ',
   addTaskDate: 'Add the task date',
   assign: 'Assign'
-``
 };
