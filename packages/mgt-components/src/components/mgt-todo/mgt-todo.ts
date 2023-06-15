@@ -21,6 +21,7 @@ import {
   createTodoTask,
   deleteTodoTask,
   getTodoTaskList,
+  getTodoTaskLists,
   getTodoTasks,
   TaskStatus,
   TodoTask,
@@ -417,6 +418,12 @@ export class MgtTodo extends MgtTasksBase {
     if (!this._graph) {
       const graph = provider.graph.forComponent(this);
       this._graph = graph;
+    }
+
+    if (!this.currentList && !this.initialId) {
+      const lists = await getTodoTaskLists(this._graph);
+      this.currentList = lists[0];
+      void this.loadTasks(this.currentList);
     }
 
     if (this.targetId) {
