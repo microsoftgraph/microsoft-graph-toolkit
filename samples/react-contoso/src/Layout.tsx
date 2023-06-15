@@ -1,7 +1,7 @@
 import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import { Header } from './components/Header';
-import { SideNavigation } from './components/SideNavigation/SideNavigation';
+import { SideNavigation } from './components/SideNavigation';
 import { HomePage } from './pages/HomePage';
 import { useIsSignedIn } from './hooks/useIsSignedIn';
 import { Incident } from './pages/Incident/Incident';

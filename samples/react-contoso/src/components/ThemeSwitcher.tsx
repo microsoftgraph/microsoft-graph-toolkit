@@ -12,7 +12,7 @@ import {
   teamsDarkTheme
 } from '@fluentui/react-components';
 import { BrightnessHighRegular, WeatherMoonFilled, PeopleTeamRegular, PeopleTeamFilled } from '@fluentui/react-icons';
-import { useAppContext } from '../../AppContext';
+import { useAppContext } from '../AppContext';
 import { darkTheme, lightTheme } from '@microsoft/mgt-chat';
 
 const availableThemes = [

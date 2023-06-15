@@ -2,8 +2,8 @@ import { Tab, TabList, makeStyles, mergeClasses, tokens } from '@fluentui/react-
 import * as React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { NavigationRegular } from '@fluentui/react-icons';
-import { useAppContext } from '../../AppContext';
-import { NavigationItem } from '../../models/NavigationItem';
+import { useAppContext } from '../AppContext';
+import { NavigationItem } from '../models/NavigationItem';
 
 export interface ISideNavigationProps {
   items: any[];

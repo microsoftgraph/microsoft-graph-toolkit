@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
-import { PageHeader } from '../../components/PageHeader/PageHeader';
+import { PageHeader } from '../../components/PageHeader';
 import { Loading } from '../../components/Loading';
 import {
   SelectTabData,

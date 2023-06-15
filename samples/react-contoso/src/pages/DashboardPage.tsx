@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { PageHeader } from '../components/PageHeader/PageHeader';
+import { PageHeader } from '../components/PageHeader';
 import { Providers, Todo } from '@microsoft/mgt-react';
-import { Incidents } from '../components/Incidents/Incidents';
+import { Incidents } from '../components/Incidents';
 import {
   SelectTabData,
   SelectTabEvent,

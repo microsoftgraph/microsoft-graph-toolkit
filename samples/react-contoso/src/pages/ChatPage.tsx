@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PageHeader } from '../components/PageHeader/PageHeader';
+import { PageHeader } from '../components/PageHeader';
 import { Get } from '@microsoft/mgt-react';
 import { Loading } from '../components/Loading';
 import {

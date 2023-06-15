@@ -25,7 +25,6 @@ import {
 import { Skeleton, SkeletonItem } from '@fluentui/react-components/unstable';
 import { AddRegular, ContentViewRegular, CheckmarkRegular, ListRegular } from '@fluentui/react-icons';
 import { Get, MgtTemplateProps, Person, PersonCardInteraction, Providers, ViewType } from '@microsoft/mgt-react';
-import './Incidents.css';
 import React, { useRef } from 'react';
 
 export interface IIndicentsProps {}

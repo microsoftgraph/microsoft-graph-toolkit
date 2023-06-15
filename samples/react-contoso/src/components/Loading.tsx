@@ -1,5 +1,4 @@
 import * as React from 'react';
-import './Loading.css';
 import { MgtTemplateProps } from '@microsoft/mgt-react';
 import { Spinner } from '@microsoft/mgt-react';
 import { makeStyles } from '@fluentui/react-components';
