@@ -7,15 +7,6 @@ export default {
   decorators: [withCodeEditor]
 };
 
-export const darkTheme = () => html`
-  <mgt-teams-channel-picker class="mgt-dark"></mgt-teams-channel-picker>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
-`;
-
 export const customCSSProperties = () => html`
   <style>
     .teams-channel-picker {

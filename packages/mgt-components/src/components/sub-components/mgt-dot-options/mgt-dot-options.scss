@@ -23,13 +23,12 @@ $dot-options-translatex: var(--dot-options-translatex, translateX(-50px));
 
   .menu {
     position: absolute;
-    box-shadow: set-var(box-shadow__color, $theme-default, $common) 0 0 40px 5px;
-    background: set-var(background-color, $theme-default, $common);
+    box-shadow: var(--neutral-fill-rest) 0 0 40px 5px;
+    background: var(--neutral-fill-rest);
     z-index: 1;
     display: none;
-    color: set-var(color, $theme-default, $common);
     white-space: nowrap;
-    transform: var(--dot-options-translatex, translateX(-50px));
+    transform: $dot-options-translatex;
   }
 
   .dot-menu {
@@ -45,11 +44,11 @@ $dot-options-translatex: var(--dot-options-translatex, translateX(-50px));
       padding: 10px 10px 8px;
 
       &:hover {
-        background: set-var(background-color--hover, $theme-default, $common);
+        background: var(--neutral-fill-hover);
       }
 
       &:active {
-        background: set-var(background-color--active, $theme-default, $common);
+        background: var(--neutral-fill-active);
       }
 
       .dot-item-name {

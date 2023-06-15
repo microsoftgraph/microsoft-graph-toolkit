@@ -17,6 +17,7 @@ $task-icon-border-completed: var(--task-icon-border-completed, solid 1px white);
 $task-icon-border-radius: var(--task-icon-border-radius, 50%);
 $task-icon-color-completed: var(--task-icon-color-completed, white);
 $task-border-completed: var(--task-complete-border, 2px dotted inherit);
+$task-icon-color: var(--task-icon-color, $ms-color-gray120);
 
 :host {
   font-family: $font-family;
@@ -317,7 +318,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         span,
         select {
           vertical-align: middle;
-          color: $task-color;
+          color: $task-detail-color;
         }
 
         .task-icon {
@@ -373,7 +374,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
         .task-content .task-details-container .task-title {
           text-decoration: line-through;
-          color: $task-color;
+          color: $task-detail-color;
         }
       }
 
@@ -415,7 +416,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
       .task-content .task-details-container .task-title {
         text-decoration: line-through;
-        color: $task-color;
+        color: $task-detail-color;
       }
     }
 

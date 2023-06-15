@@ -14,10 +14,6 @@ export default {
   decorators: [withCodeEditor]
 };
 
-export const darkTheme = () => html`
-    <mgt-file-list class="mgt-dark" enable-file-upload></mgt-file-list>
-  `;
-
 export const customCSSProperties = () => html`
     <style>
       .file-list {
