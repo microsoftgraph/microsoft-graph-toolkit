@@ -421,8 +421,7 @@ export class MgtTodo extends MgtTasksBase {
 
     if (!this.currentList && !this.initialId) {
       const lists = await getTodoTaskLists(this._graph);
-      this.currentList = lists[0];
-      void this.loadTasks(this.currentList);
+      void this.loadTasks(lists[0]);
     }
 
     if (this.targetId) {
