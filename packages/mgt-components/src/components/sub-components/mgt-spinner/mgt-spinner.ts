@@ -17,7 +17,6 @@ import { styles } from './mgt-spinner-css';
  * @extends {MgtBaseComponent}
  */
 @customElement('spinner')
-// @customElement('mgt-spinner')
 export class MgtSpinner extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

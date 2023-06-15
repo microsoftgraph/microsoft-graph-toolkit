@@ -14,17 +14,8 @@ export default {
   decorators: [withCodeEditor]
 };
 
-export const darkTheme = () => html`
- <mgt-people class="mgt-dark"></mgt-people>
- <style>
-   body {
-     background-color: black;
-   }
- </style>
-`;
-
 export const customCSSProperties = () => html`
-<mgt-people class="people"></mgt-people>
+<mgt-people></mgt-people>
 <style>
   .people {
     --people-list-margin: 12px;

@@ -167,7 +167,7 @@ export interface MgtTeamsChannelPickerConfig {
  *
  * @fires {CustomEvent<SelectedChannel | null>} selectionChanged - Fired when the selection changes
  *
- * @cssprop --color - {font} Default font color
+ * @cssprop --channel-picker-color - {font} Default font color
  *
  * @cssprop --channel-picker-input-border - {String} Input section entire border
  * @cssprop --channel-picker-input-border-top - {String} Input section border top only
@@ -185,8 +185,9 @@ export interface MgtTeamsChannelPickerConfig {
  * @cssprop --channel-picker-dropdown-item-text-color-selected - {Color} Text color of channel or team during after selection
  *
  * @cssprop --channel-picker-arrow-fill - {Color} Color of arrow svg
- * @cssprop --placeholder-color-focus - {Color} Color of placeholder text during focus state
- * @cssprop --placeholder-color - {Color} Color of placeholder text
+ * @cssprop --channel-picker-input-placeholder-text-color - {Color} Color of placeholder text
+ * @cssprop --channel-picker-input-placeholder-text-color-focus - {Color} Color of placeholder text during focus state
+ * @cssprop --channel-picker-input-placeholder-text-color-hover - {Color} Color of placeholder text during hover state
  *
  * @cssprop --channel-picker-search-icon-color - {Color} the search icon color.
  * @cssprop --channel-picker-down-chevron-color - {Color} the down chevron icon color.
