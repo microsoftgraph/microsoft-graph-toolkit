@@ -53,6 +53,10 @@ export const customCSSProperties = () => html`
       --person-details-spacing: 30px;
       --person-details-bottom-spacing: 20px;
     }
+
+    .vertical {
+      --person-avatar-size: 80px;
+    }
   </style>
 
   <script>
@@ -75,5 +79,5 @@ export const customCSSProperties = () => html`
 
   <mgt-person class="person" person-query="me" view="fourlines" id="online" show-presence></mgt-person>
   <br>
-  <mgt-person class="person" person-query="me" view="fourlines" avatar-type="initials" id="dnd" show-presence vertical-layout></mgt-person>
+  <mgt-person class="person vertical" person-query="me" view="fourlines" avatar-type="initials" id="dnd" show-presence vertical-layout></mgt-person>
 `;
