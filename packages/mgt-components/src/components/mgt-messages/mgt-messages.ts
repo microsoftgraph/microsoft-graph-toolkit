@@ -23,7 +23,6 @@ import { customElement } from '@microsoft/mgt-element';
  * @extends {MgtTemplatedComponent}
  */
 @customElement('messages')
-// @customElement('mgt-messages')
 export class MgtMessages extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined

@@ -59,7 +59,6 @@ export type TodoFilter = (task: TodoTask) => boolean;
  * @cssprop --task-radio-background-color - {Color} - Task radio background color
  */
 @customElement('todo')
-// @customElement('mgt-todo')
 export class MgtTodo extends MgtTasksBase {
   /**
    * Array of styles to apply to the element. The styles should be defined

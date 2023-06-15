@@ -299,7 +299,7 @@ export class MgtContact extends BasePersonCardSection {
       window.open(`${protocol}${resource}`, '_blank', 'noreferrer');
     } else {
       // eslint-disable-next-line no-console
-      console.error(`Target resource for ${protocol} link was not provided: resource: ${resource}`);
+      console.error(`🦒: Target resource for ${protocol} link was not provided: resource: ${resource}`);
     }
   }
 
@@ -312,7 +312,7 @@ export class MgtContact extends BasePersonCardSection {
   protected sendChat(upn: string): void {
     if (!upn) {
       // eslint-disable-next-line no-console
-      console.error("Can't send chat when upn is not provided");
+      console.error("🦒: Can't send chat when upn is not provided");
       return;
     }
 

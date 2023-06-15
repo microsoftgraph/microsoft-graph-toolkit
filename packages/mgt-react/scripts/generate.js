@@ -18,14 +18,13 @@ const gaTags = new Set([
   'file',
   'file-list',
   'picker',
-  'theme-toggle'
+  'theme-toggle',
+  'search-box',
+  'search-results'
 ]);
 const outputFileName = 'react';
 
-const previewTags = new Set(['search-box', 'search-results']);
-const previewOutputFileName = 'react-preview';
-
-const generateTags = (tags, fileName, importPreviewBarrel) => {
+const generateTags = (tags, fileName) => {
   const mgtComponentImports = new Set();
   const mgtElementImports = new Set();
   let output = '';
@@ -144,8 +143,7 @@ const generateTags = (tags, fileName, importPreviewBarrel) => {
     output += `\nexport const ${wrapper.className} = wrapMgt<${wrapper.propsType}>('${wrapper.tag}');\n`;
   }
 
-  output = `${importPreviewBarrel ? `import '@microsoft/mgt-components/dist/es6/components/preview';` : ''}
-import { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components';
+  output = `import { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components';
 import { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -160,5 +158,4 @@ ${output}
   fs.writeFileSync(`${__dirname}/../src/generated/${fileName}.ts`, output);
 };
 
-generateTags(gaTags, outputFileName, false);
-generateTags(previewTags, previewOutputFileName, true);
+generateTags(gaTags, outputFileName);
