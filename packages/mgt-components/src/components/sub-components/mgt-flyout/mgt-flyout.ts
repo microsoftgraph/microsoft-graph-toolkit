@@ -20,7 +20,6 @@ import { MgtBaseComponent, customElement } from '@microsoft/mgt-element/';
  * @extends {LitElement}
  */
 @customElement('flyout')
-// @customElement('mgt-flyout')
 export class MgtFlyout extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

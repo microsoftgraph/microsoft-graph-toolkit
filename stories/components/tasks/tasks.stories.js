@@ -32,12 +32,3 @@ export const tasksWithGroupId = () => html`
     Group.ReadWrite.All permissions. Test this component in your tenant.
   -->
 `;
-
-export const darkTheme = () => html`
-  <mgt-tasks class="mgt-dark"></mgt-tasks>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
-`;
