@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import { AppContext } from './AppContext';
 import { Layout } from './Layout';
 import { webLightTheme } from '@fluentui/react-components';

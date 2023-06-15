@@ -150,7 +150,11 @@ const HeaderComponent: React.FunctionComponent = () => {
 
         <div className={styles.waffleTitle}>
           <Label className={styles.name}>{process.env.REACT_APP_SITE_NAME} </Label>
-          <InfoButton className={styles.infoIcon} size="medium" info={<>{PACKAGE_VERSION}</>} />
+          <InfoButton
+            className={styles.infoIcon}
+            size="medium"
+            info={<>Using the Graph Toolkit v{PACKAGE_VERSION}</>}
+          />
         </div>
       </div>
       <div className={styles.search}>

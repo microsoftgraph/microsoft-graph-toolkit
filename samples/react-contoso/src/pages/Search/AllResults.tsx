@@ -1,6 +1,7 @@
 import { SearchResults } from '@microsoft/mgt-react/dist/es6/generated/react-preview';
 import * as React from 'react';
 import { IResultsProps } from './IResultsProps';
+import { MgtTemplateProps } from '@microsoft/mgt-react';
 
 export const AllResults: React.FunctionComponent<IResultsProps> = (props: IResultsProps) => {
   return (
@@ -14,7 +15,9 @@ export const AllResults: React.FunctionComponent<IResultsProps> = (props: IResul
               version="beta"
               size={1}
               scopes={['Bookmark.Read.All']}
-            ></SearchResults>
+            >
+              <NoDataTemplate template="no-data"></NoDataTemplate>
+            </SearchResults>
           )}
           <SearchResults
             entityTypes={['driveItem', 'listItem', 'site']}
@@ -26,4 +29,8 @@ export const AllResults: React.FunctionComponent<IResultsProps> = (props: IResul
       )}
     </>
   );
+};
+
+const NoDataTemplate = (props: MgtTemplateProps) => {
+  return <></>;
 };

@@ -85,6 +85,7 @@ export const FilesResults: React.FunctionComponent<IResultsProps> = (props: IRes
           version="beta"
           fields={['createdBy', 'lastModifiedDateTime', 'Title', 'DefaultEncodingURL']}
           size={pageSize}
+          cacheEnabled={true}
         >
           <FileTemplate template="default"></FileTemplate>
           <FileTemplate template="loading"></FileTemplate>

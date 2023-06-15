@@ -365,6 +365,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   /**
    * Invalidation period of the cache for the responses in milliseconds
+   * Default is 10 minutes
    *
    * @type {number}
    * @memberof MgtSearchResults
@@ -374,7 +375,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     reflect: true,
     type: Number
   })
-  public cacheInvalidationPeriod = 30000;
+  public cacheInvalidationPeriod = 600000;
 
   /**
    * Gets or sets the response of the request
