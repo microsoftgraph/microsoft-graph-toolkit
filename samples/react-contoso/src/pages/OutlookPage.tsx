@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { PageHeader } from '../components/PageHeader/PageHeader';
+import { PageHeader } from '../components/PageHeader';
 import { Agenda, Get } from '@microsoft/mgt-react';
-import { Messages } from '../components/Messages/Messages';
+import { Messages } from '../components/Messages';
 import { Loading } from '../components/Loading';
 import {
   SelectTabData,
