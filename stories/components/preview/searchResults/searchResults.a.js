@@ -27,16 +27,12 @@ export const searchResults = () => html`
     fetch-thumbnail="true"
     query-string="contoso">
   </mgt-search-results>
-  <script type="module">
-  import '@microsoft/mgt-components/dist/es6/components/preview';
-  </script>
 `;
 
 export const localization = () => html`
   <mgt-search-results entity-types="driveItem" query-string="contoso">
   </mgt-search-results>
   <script>
-  import '@microsoft/mgt-components/dist/es6/components/preview';
   import { LocalizationHelper } from '@microsoft/mgt';
   LocalizationHelper.strings = {
     _components: {
