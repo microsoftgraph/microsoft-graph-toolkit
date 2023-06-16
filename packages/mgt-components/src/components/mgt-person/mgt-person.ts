@@ -5,7 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { MgtTemplatedComponent, ProviderState, Providers, customElement, mgtHtml } from '@microsoft/mgt-element';
+import {
+  MgtTemplatedComponent,
+  ProviderState,
+  Providers,
+  customElement,
+  customElementHelper,
+  mgtHtml
+} from '@microsoft/mgt-element';
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -1015,6 +1022,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
       mgtHtml`
         <mgt-person-card
+          class="mgt-person-card"
           lock-tab-navigation
           .personDetails=${personDetails}
           .personImage=${image}
@@ -1257,7 +1265,11 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private readonly handleMouseClick = (e: MouseEvent) => {
     const element = e.target as HTMLElement;
-    if (this.personCardInteraction === PersonCardInteraction.click && element.tagName !== 'MGT-PERSON-CARD') {
+    // todo: fix for disambiguation
+    if (
+      this.personCardInteraction === PersonCardInteraction.click &&
+      element.tagName !== `${customElementHelper.prefix}-PERSON-CARD`.toUpperCase()
+    ) {
       this.showPersonCard();
     }
   };
@@ -1297,7 +1309,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       flyout.close();
     }
     const personCard =
-      this.querySelector<MgtPersonCard>('mgt-person-card') || this.renderRoot.querySelector('mgt-person-card');
+      this.querySelector<MgtPersonCard>('.mgt-person-card') || this.renderRoot.querySelector('.mgt-person-card');
     if (personCard) {
       personCard.isExpanded = false;
       personCard.clearHistory();
