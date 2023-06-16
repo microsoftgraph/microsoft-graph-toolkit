@@ -400,7 +400,8 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     resource += '?$select=id,labels,descriptions,properties';
 
     return mgtHtml`
-      <mgt-get 
+      <mgt-get
+        class="mgt-get"
         resource=${resource}
         version=${this.version} 
         scopes=${['TermStore.Read.All']}  
@@ -418,7 +419,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    */
   protected async loadState() {
     if (!this.terms) {
-      const parent = this.renderRoot.querySelector('mgt-get');
+      const parent = this.renderRoot.querySelector('.mgt-get');
       parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
     }
     this.isRefreshing = false;
