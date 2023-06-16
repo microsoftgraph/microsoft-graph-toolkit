@@ -251,6 +251,7 @@ export class MgtTodo extends MgtTasksBase {
     const dateClass = { dark: this._isDarkMode, date: true };
     const calendarTemplate = html`
       <fluent-text-field
+        autocomplete="off"
         type="date"
         id="new-taskDate-input"
         class="${classMap(dateClass)}"
@@ -262,6 +263,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const newTaskDetails = html`
       <fluent-text-field
+        autocomplete="off"
         appearance="outline"
         class="new-task"
         id="new-task-name-input"
