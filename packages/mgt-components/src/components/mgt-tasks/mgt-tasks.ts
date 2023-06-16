@@ -1475,6 +1475,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private isTaskInSelectedGroupFilter(task: ITask) {
     return (
+      !this._currentGroup ||
       task.topParentId === this._currentGroup ||
       (!this._currentGroup && this.getTaskSource().isAssignedToMe(task, this._me?.id))
     );
