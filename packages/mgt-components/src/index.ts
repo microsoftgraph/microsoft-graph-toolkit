@@ -6,5 +6,6 @@
  */
 
 export * from './components/components';
+export * from './components/preview';
 export * from './graph/types';
 export * from './styles/theme-manager';

@@ -15,25 +15,13 @@ export default {
 };
 
 export const setSearchBoxSearchTerm = () => html`
-  <mgt-search-box search-term="contoso">
-  </mgt-search-box>
-  <script type="module">
-  import '@microsoft/mgt-components/dist/es6/components/preview';
-  </script>
+  <mgt-search-box search-term="contoso"></mgt-search-box>
 `;
 
 export const setSearchBoxDebounceDelay = () => html`
-  <mgt-search-box debounce-delay="1000">
-  </mgt-search-box>
-  <script type="module">
-  import '@microsoft/mgt-components/dist/es6/components/preview';
-  </script>
+  <mgt-search-box debounce-delay="1000"></mgt-search-box>
 `;
 
 export const setPlaceholder = () => html`
-  <mgt-search-box placeholder="Search for content...">
-  </mgt-search-box>
-  <script type="module">
-  import '@microsoft/mgt-components/dist/es6/components/preview';
-  </script>
+  <mgt-search-box placeholder="Search for content..."></mgt-search-box>
 `;

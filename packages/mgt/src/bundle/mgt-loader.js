@@ -15,7 +15,7 @@
     loaderScript.src.indexOf('/mgt@') === -1
   ) {
     console.warn(
-      'You have loaded the mgt-loader script from unpkg without using a semver range or tag.\n',
+      '🦒: You have loaded the mgt-loader script from unpkg without using a semver range or tag.\n',
       'This could break your application when new major versions are released\n',
       'Please update your application to use a mgt-loader with a semver range tag e.g. https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js'
     );

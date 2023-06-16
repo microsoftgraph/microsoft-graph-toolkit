@@ -79,7 +79,6 @@ registerFluentComponents(fluentProgressRing);
  */
 
 @customElement('file-list')
-// @customElement('mgt-file-list')
 export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   private _isCompact = false;
   /**
@@ -646,7 +645,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       this.renderTemplate('no-data', null) ||
       (this.enableFileUpload === true && Providers.globalProvider !== undefined
         ? html`
-            <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+            <div class="file-list-wrapper" dir=${this.direction}>
               ${this.renderFileUpload()}
             </div>`
         : html``)
@@ -980,7 +979,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     } else {
       if (this.pageIterator.hasNext) {
         this._isLoadingMore = true;
-        const root = this.renderRoot.querySelector('file-list-wrapper');
+        const root = this.renderRoot.querySelector('#file-list-wrapper');
         if (root?.animate) {
           // play back
           root.animate(

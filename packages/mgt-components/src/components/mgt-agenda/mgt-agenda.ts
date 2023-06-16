@@ -54,7 +54,6 @@ registerFluentComponents(fluentCard, fluentTooltip);
  * @cssprop --event-attendees-color - {Color} Event attendees color
  */
 @customElement('agenda')
-// @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

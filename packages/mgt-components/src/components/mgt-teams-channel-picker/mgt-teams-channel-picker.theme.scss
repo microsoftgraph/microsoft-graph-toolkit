@@ -26,3 +26,4 @@ $dropdown-background-color: var(--channel-picker-dropdown-background-color, var(
 $dropdown-item-text-color: var(--channel-picker-dropdown-item-text-color, currentColor);
 $dropdown-item-background-color-hover: var(--channel-picker-dropdown-item-background-color-hover, var(--neutral-fill-stealth-hover));
 $dropdown-item-selected-text-color: var(--channel-picker-dropdown-item-text-color-selected, var(--neutral-foreground-rest));
+$channel-picker-arrow-fill-color: var(--channel-picker-arrow-fill, var(--neutral-foreground-rest));

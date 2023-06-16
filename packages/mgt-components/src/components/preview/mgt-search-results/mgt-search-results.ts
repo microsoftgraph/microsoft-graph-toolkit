@@ -119,7 +119,8 @@ type SearchResource = Partial<
 type SearchResponseCollection = CollectionResponse<SearchResponse>;
 
 /**
- * Custom element for making Microsoft Graph get queries
+ * **Preview component** Custom element for making Microsoft Graph get queries.
+ * Component may change before general availability release.
  *
  * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes
  *
@@ -397,6 +398,13 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     }
   }
 
+  constructor() {
+    super();
+    console.warn(
+      '🦒: <mgt-search-results> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
+    );
+  }
+
   /**
    * Synchronizes property values when attributes change.
    *
@@ -456,12 +464,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       renderedTemplate = this.renderLoading();
     } else if (this.error) {
       renderedTemplate = this.renderError();
+    } else if (this.response && this.hasTemplate('default')) {
+      renderedTemplate = this.renderTemplate('default', this.response) || html``;
     } else if (this.response?.value[0]?.hitsContainers[0]) {
       renderedTemplate = html`${this.response?.value[0]?.hitsContainers[0]?.hits?.map(result =>
         this.renderResult(result)
       )}`;
-    } else if (this.response) {
-      renderedTemplate = this.renderTemplate('default', this.response) || html``;
     } else if (this.hasTemplate('no-data')) {
       renderedTemplate = this.renderTemplate('no-data', null);
     } else {
