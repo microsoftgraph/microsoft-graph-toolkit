@@ -260,6 +260,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   protected renderGet(): TemplateResult {
     return mgtHtml`
       <mgt-get
+        class="mgt-get"
         resource=${this.resource}
         version=${this.version}
         .scopes=${this.scopes}
@@ -278,8 +279,14 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected async loadState() {
     if (!this.response) {
-      const parent = this.renderRoot.querySelector('mgt-get');
-      parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
+      const parent = this.renderRoot.querySelector('.mgt-get');
+      if (parent) {
+        parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
+      } else {
+        console.error(
+          '🦒: mgt-picker component requires a child mgt-get component. Something has gone horribly wrong.'
+        );
+      }
     }
     this.isRefreshing = false;
     // hack to maintain method signature contract
