@@ -32,7 +32,7 @@ import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentCheckbox, fluentRadioGroup, fluentButton } from '@fluentui/web-components';
 import { isElementDark } from '../../utils/isDark';
-import { ifDefined } from 'lit/directives/if-defined';
+import { ifDefined } from 'lit/directives/if-defined.js';
 
 registerFluentComponents(fluentCheckbox, fluentRadioGroup, fluentButton);
 
