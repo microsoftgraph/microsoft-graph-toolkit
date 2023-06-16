@@ -23,9 +23,6 @@ import {
   getTodoTaskList,
   getTodoTaskLists,
   getTodoTasks,
-  TaskStatus,
-  TodoTask,
-  TodoTaskList,
   updateTodoTask
 } from './graph.todo';
 import { styles } from './mgt-todo-css';
@@ -34,6 +31,8 @@ import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentCheckbox, fluentRadioGroup, fluentButton } from '@fluentui/web-components';
 import { isElementDark } from '../../utils/isDark';
 import { ifDefined } from 'lit/directives/if-defined.js';
+
+import { TodoTaskList, TodoTask, TaskStatus } from '@microsoft/microsoft-graph-types';
 
 registerFluentComponents(fluentCheckbox, fluentRadioGroup, fluentButton);
 

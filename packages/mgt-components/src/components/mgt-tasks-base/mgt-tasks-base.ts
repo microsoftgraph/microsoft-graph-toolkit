@@ -11,7 +11,7 @@ import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } 
 import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentTextField, fluentButton, fluentCalendar } from '@fluentui/web-components';
-import { TodoTask } from '../mgt-todo/graph.todo';
+import { TodoTask } from '@microsoft/microsoft-graph-types';
 
 registerFluentComponents(fluentTextField, fluentButton, fluentCalendar);
 
