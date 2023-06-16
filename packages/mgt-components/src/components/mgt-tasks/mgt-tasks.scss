@@ -438,7 +438,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
     }
   }
 
-  mgt-people {
+  .people {
     [slot='no-data'] {
       margin-top: 8px;
       color: $task-new-person-icon-text-color;
