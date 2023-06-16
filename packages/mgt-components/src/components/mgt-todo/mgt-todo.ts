@@ -422,7 +422,7 @@ export class MgtTodo extends MgtTasksBase {
     if (!this.currentList && !this.initialId) {
       const lists = await getTodoTaskLists(this._graph);
       const defaultList = lists?.find(l => l.wellknownListName === 'defaultList');
-      if (defaultList)  await this.loadTasks(defaultList);
+      if (defaultList) await this.loadTasks(defaultList);
     }
 
     if (this.targetId) {
