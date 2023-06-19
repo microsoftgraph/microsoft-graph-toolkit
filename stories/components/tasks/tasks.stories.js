@@ -32,3 +32,8 @@ export const tasksWithGroupId = () => html`
     Group.ReadWrite.All permissions. Test this component in your tenant.
   -->
 `;
+
+
+export const useToDoAsDataSource = () => html`
+  <mgt-tasks data-source="todo"></mgt-tasks>
+`;
