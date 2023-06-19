@@ -5039,7 +5039,10 @@ const l=t=>null!=t?t:ue,Bc={comboboxPlaceholder:"Select an item"},Hc=[i$4`
          ${this.sections[0].asFullView()}
        `}renderMessagingSection(){const t=this.personDetails,o=this._me.userPrincipalName,n=this._chatInput;return(null==t?void 0:t.userPrincipalName)===o?void 0:Ne`
       <div class="message-section">
-        <fluent-text-field appearance="outline" placeholder="${this.strings.quickMessage}"
+        <fluent-text-field
+          autocomplete="off"
+          appearance="outline"
+          placeholder="${this.strings.quickMessage}"
           .value=${n}
           @input=${t=>{this._chatInput=t.target.value,this.requestUpdate()}}
           @keydown="${t=>this.sendQuickMessageOnEnter(t)}">
@@ -5124,6 +5127,7 @@ const l=t=>null!=t?t:ue,Bc={comboboxPlaceholder:"Select an item"},Hc=[i$4`
         ${n}
       `}}renderNewTask(){const t="var(--neutral-foreground-hint)",o=Ne`
       <fluent-text-field
+        autocomplete="off"
         placeholder=${this.strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
         class="new-task"
@@ -5150,6 +5154,7 @@ const l=t=>null!=t?t:ue,Bc={comboboxPlaceholder:"Select an item"},Hc=[i$4`
           ${a.length>0?c:Ne`<fluent-option selected>No folders found</fluent-option>`}
         </fluent-select>`,g={dark:this._isDarkMode,"new-task":!0},f=Ne`
       <fluent-text-field
+        autocomplete="off"
         type="date"
         class=${ut(g)}
         aria-label="${this.strings.addTaskDate}"
@@ -5311,6 +5316,7 @@ const l=t=>null!=t?t:ue,Bc={comboboxPlaceholder:"Select an item"},Hc=[i$4`
 `];var __awaiter$9=function(t,o,n,s){return new(n||(n=Promise))((function(a,c){function fulfilled(t){try{step(s.next(t))}catch(t){c(t)}}function rejected(t){try{step(s.throw(t))}catch(t){c(t)}}function step(t){t.done?a(t.value):function adopt(t){return t instanceof n?t:new n((function(o){o(t)}))}(t.value).then(fulfilled,rejected)}step((s=s.apply(t,o||[])).next())}))};const Ld={inputPlaceholderText:"Select a channel",noResultsFound:"We didn't find any matches.",loadingMessage:"Loading..."};var Fd,__decorate$8=function(t,o,n,s){var a,c=arguments.length,h=c<3?o:null===s?s=Object.getOwnPropertyDescriptor(o,n):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)h=Reflect.decorate(t,o,n,s);else for(var g=t.length-1;g>=0;g--)(a=t[g])&&(h=(c<3?a(h):c>3?a(o,n,h):a(o,n))||h);return c>3&&h&&Object.defineProperty(o,n,h),h},__metadata$8=function(t,o){if("object"==typeof Reflect&&"function"==typeof Reflect.metadata)return Reflect.metadata(t,o)},__awaiter$8=function(t,o,n,s){return new(n||(n=Promise))((function(a,c){function fulfilled(t){try{step(s.next(t))}catch(t){c(t)}}function rejected(t){try{step(s.throw(t))}catch(t){c(t)}}function step(t){t.done?a(t.value):function adopt(t){return t instanceof n?t:new n((function(o){o(t)}))}(t.value).then(fulfilled,rejected)}step((s=s.apply(t,o||[])).next())}))};registerFluentComponents(Dl,Nl,zl,bc,xc,vc);let Bd=Fd=class MgtTeamsChannelPicker extends MgtTemplatedComponent{static get styles(){return Nd}get strings(){return Ld}static get config(){return this._config}get selectedItem(){return this._selectedItemState?{channel:this._selectedItemState.item,team:this._selectedItemState.parent.item}:null}static get requiredScopes(){return this.config.useTeamsBasedScopes?["team.readbasic.all","channel.readbasic.all"]:["user.read.all","group.read.all"]}set items(t){this._items!==t&&(this._items=t,this._treeViewState=t?this.generateTreeViewState(t):[],this.resetFocusState())}get items(){return this._items}get _input(){return this.renderRoot.querySelector("fluent-text-field").shadowRoot.querySelector("input")}constructor(){super(),this.teamsPhotos={},this._inputValue="",this._treeViewState=[],this._focusList=[],this.handleWindowClick=t=>{t.target!==this&&this.lostFocus()},this.gainedFocus=()=>{this._isFocused=!0;const t=this._input;t&&t.focus(),this._isDropdownVisible=!0,this.toggleChevron(),this.resetFocusState()},this.lostFocus=()=>{const t=this._input;t&&(t.value=this._inputValue="",t.textContent=""),this._isFocused=!1,this._isDropdownVisible=!1,this.filterList(),this.toggleChevron(),this.requestUpdate(),void 0!==this._selectedItemState&&this.showCloseIcon()},this.addEventListener("focus",(()=>this.loadTeamsIfNotLoaded())),this.addEventListener("mouseover",(()=>this.loadTeamsIfNotLoaded())),this.addEventListener("blur",(()=>this.lostFocus())),this.clearState()}connectedCallback(){super.connectedCallback(),window.addEventListener("click",this.handleWindowClick);const t=this.renderRoot.ownerDocument;t&&t.documentElement.setAttribute("dir",this.direction)}disconnectedCallback(){window.removeEventListener("click",this.handleWindowClick),super.disconnectedCallback()}selectChannelById(t){return __awaiter$8(this,void 0,void 0,(function*(){const o=Providers.globalProvider;if(o&&o.state===b.SignedIn){this.items||(yield this.requestStateUpdate());for(const o of this._treeViewState)for(const n of o.channels)if(n.item.id===t)return o.isExpanded=!0,this.selectChannel(n),this.markSelectedChannelInDropdown(t),!0}return!1}))}markSelectedChannelInDropdown(t){const o=this.renderRoot.querySelector(`[id='${t}']`);o&&(o.setAttribute("selected","true"),o.parentElement&&o.parentElement.setAttribute("expanded","true"))}render(){const t={dropdown:!0,visible:this._isDropdownVisible};return this.renderTemplate("default",{teams:this.items})||Ne`
         <div class="container" @blur=${this.lostFocus}>
           <fluent-text-field
+            autocomplete="off"
             appearance="outline"
             id="teams-channel-picker-input"
             aria-label="Select a channel"
@@ -5427,6 +5433,7 @@ const l=t=>null!=t?t:ue,Bc={comboboxPlaceholder:"Select an item"},Hc=[i$4`
       </fluent-button>
     `,n={dark:this._isDarkMode,date:!0},s=Ne`
       <fluent-text-field
+        autocomplete="off"
         type="date"
         id="new-taskDate-input"
         class="${ut(n)}"
@@ -5436,6 +5443,7 @@ const l=t=>null!=t?t:ue,Bc={comboboxPlaceholder:"Select an item"},Hc=[i$4`
       </fluent-text-field>
     `,a=Ne`
       <fluent-text-field
+        autocomplete="off"
         appearance="outline"
         class="new-task"
         id="new-task-name-input"
@@ -5501,6 +5509,7 @@ const l=t=>null!=t?t:ue,Bc={comboboxPlaceholder:"Select an item"},Hc=[i$4`
 :host([hidden]){display:none}:host{display:block;--default-font-family:"Segoe UI","Segoe UI Web (West European)","Segoe UI",-apple-system,"BlinkMacSystemFont","Roboto","Helvetica Neue",sans-serif;--default-font-size:14px;--theme-primary-color:#0078d7;--theme-dark-color:#005a9e}:focus-visible{outline-color:var(--focus-ring-color,Highlight);outline-color:var(--focus-ring-color,-webkit-focus-ring-color);outline-style:var(--focus-ring-style,auto)}.ms-icon{display:inline-block;font-family:FabricMDL2Icons;font-style:normal;font-weight:400;font-size:16px;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;margin:4px 0}.error{background-color:#fde7e9;padding-block:8px;padding-inline:8px 12px}.ms-icon-chevron-down::before{content:"\\\e70d"}.ms-icon-chevron-up::before{content:"\\\e70e"}.ms-icon-contact::before{content:"\\\e77b"}.ms-icon-add-friend::before{content:"\\\e8fa"}.ms-icon-outlook-logo-inverser::before{content:"\\\eb6d"}:host fluent-search{width:100%}
 `];var __decorate$4=function(t,o,n,s){var a,c=arguments.length,h=c<3?o:null===s?s=Object.getOwnPropertyDescriptor(o,n):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)h=Reflect.decorate(t,o,n,s);else for(var g=t.length-1;g>=0;g--)(a=t[g])&&(h=(c<3?a(h):c>3?a(o,n,h):a(o,n))||h);return c>3&&h&&Object.defineProperty(o,n,h),h},__metadata$4=function(t,o){if("object"==typeof Reflect&&"function"==typeof Reflect.metadata)return Reflect.metadata(t,o)};registerFluentComponents(cc);let Qd=class MgtSearchBox extends MgtBaseComponent{static get styles(){return Kd}get strings(){return Gd}get searchTerm(){return this._searchTerm}set searchTerm(t){this._searchTerm=t,this.fireSearchTermChanged()}constructor(){super(),this._searchTerm="",this.onInputChanged=t=>{this.searchTerm=t.target.value},console.warn("🦒: <mgt-search-box> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components"),this.debounceDelay=300}render(){var t;return Ne`
       <fluent-search
+        autocomplete="off"
         class="search-term-input"
         appearance="outline"
         value=${null!==(t=this.searchTerm)&&void 0!==t?t:""}
