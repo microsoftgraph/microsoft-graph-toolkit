@@ -71,7 +71,7 @@ const copyRequiredHeaders = async (incomingHeaders: IncomingHttpHeaders): Promis
  * @param {Response} res - The outgoing response
  * @returns {Promise<void>}
  */
-export default const proxyRequest = async (req: Request, res: Response): Promise<void> => {
+const proxyRequest = async (req: Request, res: Response): Promise<void> => {
   console.log(`${req.method} ${req.url}`);
 
   // Keep required headers from incoming request
@@ -108,3 +108,5 @@ export default const proxyRequest = async (req: Request, res: Response): Promise
     })
     .send(bodyData);
 }
+
+export default proxyRequest;
