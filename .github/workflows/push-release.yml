@@ -58,7 +58,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install -g yarn lerna@6.4.1
+          npm install -g yarn lerna
           yarn
 
       - name: Update package version
