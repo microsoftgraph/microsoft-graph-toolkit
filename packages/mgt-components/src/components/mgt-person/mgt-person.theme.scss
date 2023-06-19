@@ -12,5 +12,5 @@ $person-line1-text-color: var(--person-line1-text-color, var(--neutral-foregroun
 $person-line2-text-color: var(--person-line2-text-color, var(--neutral-foreground-hint));
 $person-line3-text-color: var(--person-line3-text-color, var(--neutral-foreground-hint));
 $person-line4-text-color: var(--person-line4-text-color, var(--neutral-foreground-hint));
-$person-initials-text-color: var(--person-initials-text-color, var(--neutral-foreground-active));
-$person-initials-background-color: var(--person-initials-background-color, var(--neutral-fill-input-alt-rest));
+$person-initials-text-color: var(--person-initials-text-color, var(--neutral-fill-strong-hover));
+$person-initials-background-color: var(--person-initials-background-color, var(--neutral-fill-secondary-rest));
