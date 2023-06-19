@@ -9,8 +9,7 @@
 @import '../../styles/shared-styles';
 @import './mgt-teams-channel-picker.theme';
 
-:host,
-:host mgt-teams-channel-picker {
+:host {
   font-family: $font-family;
 
   .container {
@@ -66,9 +65,7 @@
       margin: auto;
     }
   }
-}
 
-:host {
   fluent-card {
     background: $dropdown-background-color;
 
