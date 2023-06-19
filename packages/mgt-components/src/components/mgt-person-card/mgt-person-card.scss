@@ -439,9 +439,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 }
 
 :host .person-root.large,
-:host .person-root.threelines,
-:host mgt-person.person-root.large,
-:host mgt-person.person-root.threelines {
+:host .person-root.threelines {
   --person-avatar-size-3-lines: 75px;
 }
 
