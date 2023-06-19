@@ -36,8 +36,7 @@ $line3-text-transform: var(--file-line3-text-transform, initial);
   background-color: $file-background-color;
 }
 
-:host .item,
-mgt-file .item {
+:host .item {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
