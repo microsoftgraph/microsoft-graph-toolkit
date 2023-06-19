@@ -1236,7 +1236,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     return html`
       <div
-        id="task-${task.id}"
+        data-id="task-${task.id}"
         class=${taskClasses}
         @click=${() => this.handleTaskClick(task)}>
         <div class="task-details-container">
@@ -1274,7 +1274,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private async checkTask(e: MouseEvent, task: ITask) {
     if (!this.readOnly) {
-      const target = this.shadowRoot.querySelector(`#task-${task.id}`);
+      const target = this.shadowRoot.querySelector(`[data-id='task-${task.id}'`);
       if (target) target.classList.add('updating');
       if (!task.completed) {
         await this.completeTask(task);
@@ -1477,6 +1477,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private isTaskInSelectedGroupFilter(task: ITask) {
     return (
+      !this._currentGroup ||
       task.topParentId === this._currentGroup ||
       (!this._currentGroup && this.getTaskSource().isAssignedToMe(task, this._me?.id))
     );

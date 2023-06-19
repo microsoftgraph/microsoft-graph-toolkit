@@ -90,7 +90,7 @@ export class MgtDotOptions extends MgtBaseComponent {
         @click=${this.onDotClick}
         @keydown=${this.onDotKeydown}
         class="dot-icon">\uE712</fluent-button>
-      <fluent-menu class=${classMap({ Menu: true, Open: this.open })}>
+      <fluent-menu class=${classMap({ menu: true, open: this.open })}>
         ${menuOptions.map(opt => this.getMenuOption(opt, this.options[opt]))}
       </fluent-menu>`;
   }
