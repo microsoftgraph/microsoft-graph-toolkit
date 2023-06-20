@@ -108,6 +108,7 @@ export class MgtSearchBox extends MgtBaseComponent {
   render(): TemplateResult {
     return html`
       <fluent-search
+        autocomplete="off"
         class="search-term-input"
         appearance="outline"
         value=${this.searchTerm ?? ''}

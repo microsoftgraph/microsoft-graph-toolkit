@@ -394,6 +394,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       html`
         <div class="container" @blur=${this.lostFocus}>
           <fluent-text-field
+            autocomplete="off"
             appearance="outline"
             id="teams-channel-picker-input"
             aria-label="Select a channel"
