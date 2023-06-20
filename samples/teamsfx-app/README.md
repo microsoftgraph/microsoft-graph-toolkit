@@ -16,6 +16,17 @@ Personal tabs provide a great way to enhance the Microsoft Teams experience with
 
 Follow below instructions to get started with this application template for local debugging.
 
+### Project setup
+```bash
+# Run these commands at the repo root directory to build the local mgt packages
+# and install dependencies in node_modules folders.
+npm i -g yarn
+yarn
+yarn build
+cd ./samples/teamsfx-app
+code .
+```
+
 ### Test your application with Visual Studio Code
 
 1. Press `F5` or use the `Run and Debug Activity Panel` in Visual Studio Code.
