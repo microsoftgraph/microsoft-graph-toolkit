@@ -67,6 +67,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     &.small {
       .avatar-wrapper {
         min-width: $person-avatar-size;
+        width: $person-avatar-size;
         height: $person-avatar-size;
       }
     }
@@ -83,6 +84,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     &.twolines {
       .avatar-wrapper {
         min-width: $person-avatar-size-40;
+        width: $person-avatar-size-40;
         height: $person-avatar-size-40;
 
         .initials,
@@ -103,6 +105,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     &.large {
       .avatar-wrapper {
         min-width: $person-avatar-size-56;
+        width: $person-avatar-size-56;
         height: $person-avatar-size-56;
 
         .initials,
@@ -121,6 +124,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
     &.fourlines {
       .avatar-wrapper {
+        min-width: $person-avatar-size-72;
         width: $person-avatar-size-72;
         height: $person-avatar-size-72;
 
@@ -145,6 +149,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
       .avatar-wrapper {
         min-width: $person-avatar-size-72;
+        width: $person-avatar-size-72;
         height: $person-avatar-size-72;
 
         .initials,
@@ -163,6 +168,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
     .avatar-wrapper {
       min-width: $person-avatar-size;
+      width: $person-avatar-size;
       height: $person-avatar-size;
       position: relative;
       box-sizing: border-box;
