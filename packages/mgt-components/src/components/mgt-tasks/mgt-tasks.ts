@@ -1008,6 +1008,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const taskTitle = html`
       <fluent-text-field
+        autocomplete="off"
         placeholder=${this.strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
         class="new-task"
@@ -1074,6 +1075,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const taskDue = html`
       <fluent-text-field
+        autocomplete="off"
         type="date"
         class=${classMap(dateField)}
         aria-label="${this.strings.addTaskDate}"

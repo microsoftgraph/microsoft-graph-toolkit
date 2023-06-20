@@ -940,7 +940,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     } else {
       return html`
       <div class="message-section">
-        <fluent-text-field appearance="outline" placeholder="${this.strings.quickMessage}"
+        <fluent-text-field
+          autocomplete="off"
+          appearance="outline"
+          placeholder="${this.strings.quickMessage}"
           .value=${chatInput}
           @input=${(e: Event) => {
             this._chatInput = (e.target as HTMLInputElement).value;
