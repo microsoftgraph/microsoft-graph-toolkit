@@ -20,13 +20,17 @@
       <mgt-person person-query="me" person-card="hover" show-presence="true" view="twolines"></mgt-person>
       <h2>Tasks component</h2>
       <mgt-tasks data-source="todo"></mgt-tasks>
+      <h2>ToDo component</h2>
+      <mgt-todo></mgt-todo>
     </main>
 
     <!-- MSAL -->
     <script src="https://alcdn.msauth.net/browser/2.16.1/js/msal-browser.min.js"></script>
 
     <!-- Graph Toolkit -->
-    <script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
+    <script src="https://unpkg.com/@microsoft/mgt@3/dist/bundle/mgt-loader.js"></script>
+    <!-- NB: until the next version of the Graph Toolkit is released, use the following line instead of the one above -->
+    <!-- <script src="https://unpkg.com/@microsoft/mgt@next.fluentui/dist/bundle/mgt-loader.js"></script> -->
 
     <!-- Configuration -->
     <script src="config.js"></script>
