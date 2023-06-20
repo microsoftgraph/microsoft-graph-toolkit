@@ -14,7 +14,7 @@ const keyClient = jwksClient({
  * @param {JwtHeader} header - The JWT header
  * @param {SigningKeyCallback} callback - Callback function
  */
-const getSigningKey = async (header: JwtHeader, callback: SigningKeyCallback): void => {
+const getSigningKey = async (header: JwtHeader, callback: SigningKeyCallback): Promise<void> => {
   if (header) {
     keyClient.getSigningKey(header.kid!, (err, key) => {
       if (err) {
