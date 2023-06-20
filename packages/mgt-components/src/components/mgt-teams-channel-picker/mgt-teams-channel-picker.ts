@@ -167,13 +167,6 @@ export interface MgtTeamsChannelPickerConfig {
  *
  * @fires {CustomEvent<SelectedChannel | null>} selectionChanged - Fired when the selection changes
  *
- * @cssprop --channel-picker-color - {font} Default font color
- *
- * @cssprop --channel-picker-input-border - {String} Input section entire border
- * @cssprop --channel-picker-input-border-top - {String} Input section border top only
- * @cssprop --channel-picker-input-border-right - {String} Input section border right only
- * @cssprop --channel-picker-input-border-bottom - {String} Input section border bottom only
- * @cssprop --channel-picker-input-border-left - {String} Input section border left only
  * @cssprop --channel-picker-input-border-color - {Color} Input border color
  * @cssprop --channel-picker-input-background-color - {Color} Input section background color
  * @cssprop --channel-picker-input-background-color-hover - {Color} Input background hover color

@@ -10,7 +10,7 @@ export default {
 export const customCSSProperties = () => html`
   <style>
     .teams-channel-picker {
-      --channel-picker-input-border: 2px rgba(255, 255, 255, 0.5) solid; /* sets all input area border */
+      --channel-picker-input-border-color: pink; /* sets input border color */
 
       --channel-picker-input-background-color: #1f1f1f; /* input area background color */
       --channel-picker-input-background-color-hover: #008394; /* input area border hover color */
@@ -26,7 +26,7 @@ export const customCSSProperties = () => html`
       --channel-picker-input-placeholder-text-color: #f1f1f1; /* placeholder text color */
       --channel-picker-input-placeholder-text-color-hover: rgba(255, 255, 255, 0.8); /* place holder text focus color */
       --channel-picker-input-placeholder-text-color-focus: rgba(255, 255, 255, 0.8); /* place holder text focus color */
-      
+
       --channel-picker-search-icon-color: yellow;
       --channel-picker-close-icon-color: yellow;
       --channel-picker-down-chevron-color: yellow;
