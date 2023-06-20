@@ -18,7 +18,7 @@ export const customCSSProperties = () => html`
   <mgt-agenda class="agenda" group-by-day></mgt-agenda>
   <style>
     .agenda {
-      --agenda-background-color: aquamarine;
+      --agenda-background-color: #fcefef;
       --agenda-event-box-shadow: 0px 2px 30px pink;
       --agenda-event-margin: 0px 10px 40px 10px;
       --agenda-event-padding: 8px 0px;
