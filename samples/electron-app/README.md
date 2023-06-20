@@ -5,6 +5,8 @@ The `@microsoft/mgt-electron-provider` package exposes the `ElectronAuthenticato
 
 This sample shows how the ElectronProvider works in a simple Electron application.
 
+This sample shows how the ElectronProvider works in a simple Electron application. This sample does not work when using WSL, it has been tested and validated using Windows due to the challenges running applications with a GUI from WSL.
+
 # To Use
 
 ## In root of repo install all dependencies and build all packages
