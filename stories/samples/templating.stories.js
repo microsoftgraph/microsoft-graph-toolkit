@@ -318,59 +318,59 @@ export const GroupedEmail = () => html`
 export const TeamsMessages = () => html`
 <mgt-teams-channel-picker></mgt-teams-channel-picker>
 <mgt-get id="messagesGet" version="beta">
-  <template data-type="value">
-    <div data-if="!deletedDateTime" class="teams-message">
-      <mgt-person user-id="{{from.user.id}}" view="oneLine" person-card="hover"></mgt-person>
-      <div data-props="@click: messageClick, innerHTML: body.content"></div>
-      <div class="reply hidden">
-        <input></input>
-        <button>reply</button>
-      </div>
+<template data-type="value">
+  <div data-if="!deletedDateTime" class="teams-message">
+    <mgt-person user-id="{{from.user.id}}" view="oneLine" person-card="hover"></mgt-person>
+    <div data-props="@click: messageClick, innerHTML: body.content"></div>
+    <div class="reply hidden">
+      <input></input>
+      <button>reply</button>
     </div>
-  </template>
-  <template data-type="loading">
-    loading
-  </template>
+  </div>
+</template>
+<template data-type="loading">
+  loading
+</template>
 </mgt-get>
 <script type="module">
-  const channelPicker = document.querySelector('mgt-teams-channel-picker');
-  const messagesGet = document.getElementById('messagesGet');
+const channelPicker = document.querySelector('mgt-teams-channel-picker');
+const messagesGet = document.getElementById('messagesGet');
 
-  channelPicker.addEventListener('selectionChanged', e => {
-    if (e.detail.length) {
-      let channelId = e.detail[0].channel.id;
-      let teamId = e.detail[0].team.id;
-      messagesGet.resource = \`teams/\${teamId}/channels/\${channelId}/messages/delta\`;
-    }
-  });
+channelPicker.addEventListener('selectionChanged', e => {
+  if (e.detail?.channel?.id && e.detail?.team?.id) {
+    let channelId = e.detail.channel.id;
+    let teamId = e.detail.team.id;
+    messagesGet.resource = \`teams/\${teamId}/channels/\${channelId}/messages/delta\`;
+  }
+});
 
-  messagesGet.templateContext = {
-    messageClick: (e, message, root) => {
-      const reply = root.querySelector('.reply');
-      reply.classList.toggle('hidden');
-    }
-  };
+messagesGet.templateContext = {
+  messageClick: (e, message, root) => {
+    const reply = root.querySelector('.reply');
+    reply.classList.toggle('hidden');
+  }
+};
 </script>
 <style>
-  .teams-message {
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    padding: 10px;
-    margin: 8px 4px;
-    font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
-  }
+.teams-message {
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  margin: 8px 4px;
+  font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
+}
 
-  .teams-message:hover {
-    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.3);
-  }
+.teams-message:hover {
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.3);
+}
 
-  .hidden {
-    display: none;
-  }
+.hidden {
+  display: none;
+}
 
-  #messagesGet {
-    overflow: auto;
-    display: block;
-  }
+#messagesGet {
+  overflow: auto;
+  display: block;
+}
 </style>
 `;
 
