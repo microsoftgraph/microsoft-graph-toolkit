@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import type * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Position } from '../../graph/types';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
