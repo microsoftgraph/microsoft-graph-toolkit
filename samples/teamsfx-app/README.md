@@ -17,6 +17,7 @@ Personal tabs provide a great way to enhance the Microsoft Teams experience with
 Follow below instructions to get started with this application template for local debugging.
 
 ### Project setup
+
 ```bash
 # Run these commands at the repo root directory to build the local mgt packages
 # and install dependencies in node_modules folders.
@@ -31,6 +32,12 @@ code .
 
 1. Press `F5` or use the `Run and Debug Activity Panel` in Visual Studio Code.
 1. Select a target Microsoft 365 application where the personal tabs can run: `Debug in Teams`, `Debug in Outlook` or `Debug in the Microsoft 365 app` and click the `Run and Debug` green arrow button.
+
+> **Note**
+> If you receive an https error when running your tab `It looks like the webpage at **https://localhost:53000/index.html#/tab** might be having issues, or it may have moved permanently to a new web address`, please see these articles :
+>
+> - On Windows : https://github.com/OfficeDev/TeamsFx/blob/dev/docs/fx-core/localdebug-help.md#what-to-do-if-i-do-not-want-to-install-the-development-certificate
+> - On WSL : https://github.com/OfficeDev/TeamsFx/blob/dev/docs/fx-core/localdebug-help.md#how-to-manually-install-the-development-certificate-for-windows-subsystem-for-linux-wsl-users
 
 ### Test your application with TeamsFx CLI
 
