@@ -15,4 +15,4 @@ $agenda-background-color: var(--agenda-background-color, transparent);
 $agenda-header-background-color: var(--agenda-header-background-color, var(--neutral-layer-floating));
 $agenda-header-border-color: var(--agenda-header-border-color, var(--neutral-foreground-rest));
 $agenda-event-border-color: var(--agenda-event-border-color, var(--neutral-layer-floating));
-$agenda-event-background-color: var(--agenda-event-background-color, transparent);
+$agenda-event-background-color: var(--agenda-event-background-color, var(--fill-color));
