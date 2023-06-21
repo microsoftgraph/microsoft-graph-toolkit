@@ -4,13 +4,15 @@ import {
   SearchRegular,
   TextBulletListSquareRegular,
   CalendarMailRegular,
-  DocumentRegular
+  DocumentRegular,
+  TagMultipleRegular
 } from '@fluentui/react-icons';
 import { DashboardPage } from '../pages/DashboardPage';
 import { OutlookPage } from '../pages/OutlookPage';
 import { SearchPage } from '../pages/SearchPage';
 import { HomePage } from '../pages/HomePage';
 import { FilesPage } from '../pages/FilesPage';
+import { TaxonomyPage } from '../pages/TaxonomyPage';
 
 export const getNavigation = (isSignedIn: boolean) => {
   let navItems: NavigationItem[] = [];
@@ -53,6 +55,16 @@ export const getNavigation = (isSignedIn: boolean) => {
       key: 'files',
       requiresLogin: true,
       component: <FilesPage />,
+      exact: true
+    });
+
+    navItems.push({
+      name: 'Taxonomy',
+      url: '/taxonomy',
+      icon: <TagMultipleRegular />,
+      key: 'files',
+      requiresLogin: true,
+      component: <TaxonomyPage />,
       exact: true
     });
 

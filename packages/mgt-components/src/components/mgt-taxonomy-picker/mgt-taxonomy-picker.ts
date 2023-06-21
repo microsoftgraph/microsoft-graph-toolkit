@@ -14,6 +14,7 @@ import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import '../../styles/style-helper';
+import { styles } from './mgt-taxonomy-picker-css';
 import { DataChangedDetail } from '../mgt-get/mgt-get';
 
 registerFluentComponents(fluentCombobox, fluentOption);
@@ -41,6 +42,10 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    */
   protected get strings() {
     return strings;
+  }
+
+  public static get styles() {
+    return styles;
   }
 
   /**
