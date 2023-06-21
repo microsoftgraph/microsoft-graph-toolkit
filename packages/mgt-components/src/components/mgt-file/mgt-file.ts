@@ -65,7 +65,7 @@ import { MgtFileBase } from './mgt-file-base';
  */
 
 @customElement('file')
-export class MgtFile extends MgtTemplatedComponent {
+export class MgtFile extends MgtFileBase {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.

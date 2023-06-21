@@ -93,7 +93,7 @@ registerFluentComponents(
 
 // tslint:disable-next-line: max-classes-per-file
 @customElement('file-list')
-export class MgtFileList extends MgtTemplatedComponent implements CardSection {
+export class MgtFileList extends MgtFileListBase implements CardSection {
   private _isCompact = false;
   /**
    * Array of styles to apply to the element. The styles should be defined
