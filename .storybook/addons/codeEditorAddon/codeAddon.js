@@ -165,7 +165,7 @@ export const withCodeEditor = makeDecorator({
       ? ''
       : `
       body {
-        background-color: var(--neutral-fill-rest);
+        background-color: var(--fill-color);
         color: var(--neutral-foreground-rest);
         font-family: var(--body-font);
         padding: 0 12px;
@@ -232,9 +232,6 @@ export const withCodeEditor = makeDecorator({
                 ${providerInitCode}
               </script>
               <style>
-                html, body {
-                  height: 100%;
-                }
                 ${themeToggleCss}
                 ${css}
               </style>
