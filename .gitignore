@@ -45,3 +45,5 @@ package-lock.json
 storybook-static/
 custom-elements.json
 workbench.html
+
+!/samples/teamsfx-app/.vscode
