@@ -259,6 +259,25 @@ export type TasksProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type TaxonomyPickerProps = {
+	termsetId?: string;
+	termId?: string;
+	siteId?: string;
+	locale?: string;
+	version?: string;
+	placeholder?: string;
+	position?: string;
+	defaultSelectedTermId?: string;
+	selectedTerm?: MicrosoftGraph.TermStore.Term;
+	disabled?: boolean;
+	cacheEnabled?: boolean;
+	cacheInvalidationPeriod?: number;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	selectionChanged?: (e: CustomEvent<MicrosoftGraph.TermStore.Term>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
 export type TeamsChannelPickerProps = {
 	selectedItem?: SelectedChannel;
 	templateContext?: TemplateContext;
@@ -310,6 +329,8 @@ export const SearchBox = wrapMgt<SearchBoxProps>('search-box');
 export const SearchResults = wrapMgt<SearchResultsProps>('search-results');
 
 export const Tasks = wrapMgt<TasksProps>('tasks');
+
+export const TaxonomyPicker = wrapMgt<TaxonomyPickerProps>('taxonomy-picker');
 
 export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('teams-channel-picker');
 

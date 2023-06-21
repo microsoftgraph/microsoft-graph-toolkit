@@ -297,12 +297,6 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
-  private buildAriaLabel(isSignedIn: boolean, defaultLabel: string): string {
-    if (!isSignedIn) return defaultLabel;
-
-    return (defaultLabel = this.userDetails ? this.userDetails.displayName : this.strings.signInLinkSubtitle);
-  }
-
   /**
    * Render the sign in or sign out button.
    *
@@ -312,7 +306,6 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected renderButton(): TemplateResult {
     const isSignedIn = Providers.globalProvider?.state === ProviderState.SignedIn;
-    const ariaLabel = this.buildAriaLabel(isSignedIn, this.strings.signInLinkSubtitle);
     const loginClasses = classMap({
       'signed-in': isSignedIn && Boolean(this.userDetails),
       'signed-out': !isSignedIn,
@@ -328,7 +321,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       <fluent-button
         aria-expanded="${ifDefined(expandedState)}"
         appearance=${appearance}
-        aria-label=${ariaLabel}
+        aria-label="${ifDefined(isSignedIn ? undefined : this.strings.signInLinkSubtitle)}"
         ?disabled=${this.isLoadingState}
         @click=${this.onClick}
         class=${loginClasses}>
