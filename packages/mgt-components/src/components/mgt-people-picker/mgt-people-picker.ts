@@ -928,20 +928,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
          ${repeat(
            filteredPeople,
            person => person.id,
-           person => {
-             const lineTwo = person.jobTitle || (person as User).mail;
-             const ariaLabel = `${person.displayName} ${lineTwo ?? ''}`;
-             return html`
-               <li
-                id="${person.id}"
-                aria-label="${ariaLabel}"
-                class="searched-people-list-result"
-                role="option"
-                @click="${() => this.handleSuggestionClick(person)}">
-                  ${this.renderPersonResult(person)}
-               </li>
-             `;
-           }
+           person => html`
+            <li
+              id="${person.id}"
+              class="searched-people-list-result"
+              role="option"
+              @click="${() => this.handleSuggestionClick(person)}">
+                ${this.renderPersonResult(person)}
+            </li>
+          `
          )}
        </ul>
      `;

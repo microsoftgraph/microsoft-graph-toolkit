@@ -271,7 +271,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._treeViewState = value ? this.generateTreeViewState(value) : [];
     this.resetFocusState();
   }
-  private get items(): DropdownItem[] {
+  private get items(): DropdownItem[] | undefined {
     return this._items;
   }
 
@@ -284,7 +284,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private _inputValue = '';
 
   @state() private _selectedItemState: ChannelPickerItemState;
-  private _items: DropdownItem[];
+  private _items: DropdownItem[] | undefined;
   private _treeViewState: ChannelPickerItemState[] = [];
   private _focusList: ChannelPickerItemState[] = [];
 
@@ -300,7 +300,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.addEventListener('focus', () => this.loadTeamsIfNotLoaded());
     this.addEventListener('mouseover', () => this.loadTeamsIfNotLoaded());
     this.addEventListener('blur', () => this.lostFocus());
-    this.clearState();
+    this._inputValue = '';
+    this._treeViewState = [];
+    this._focusList = [];
+    this._isDropdownVisible = false;
   }
 
   /**
@@ -387,7 +390,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     };
 
     return (
-      this.renderTemplate('default', { teams: this.items }) ||
+      this.renderTemplate('default', { teams: this.items ?? [] }) ||
       html`
         <div class="container" @blur=${this.lostFocus}>
           <fluent-text-field
@@ -452,7 +455,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @memberof MgtTeamsChannelPicker
    */
   protected clearState(): void {
-    this._items = [];
     this._inputValue = '';
     this._treeViewState = [];
     this._focusList = [];

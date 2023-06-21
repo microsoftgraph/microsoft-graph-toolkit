@@ -33,7 +33,7 @@ export class ProxyProvider extends IProvider {
     return 'MgtProxyProvider';
   }
 
-  constructor(graphProxyUrl: string, getCustomHeaders: () => Promise<object> = null) {
+  constructor(graphProxyUrl: string, getCustomHeaders?: () => Promise<object>) {
     super();
     this.graph = new ProxyGraph(graphProxyUrl, getCustomHeaders);
 
@@ -62,6 +62,6 @@ export class ProxyProvider extends IProvider {
    * @memberof ProxyProvider
    */
   public getAccessToken(): Promise<string> {
-    return null;
+    return Promise.resolve('');
   }
 }
