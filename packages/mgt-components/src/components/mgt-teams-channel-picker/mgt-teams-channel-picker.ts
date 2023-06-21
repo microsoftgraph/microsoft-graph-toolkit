@@ -34,7 +34,6 @@ import {
   fluentCard,
   fluentTextField
 } from '@fluentui/web-components';
-import { cachedWrappers } from '@open-wc/testing-helpers';
 
 registerFluentComponents(
   fluentBreadcrumb,
@@ -504,17 +503,17 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   protected renderCloseButton() {
     return html`
-      <div
+      <fluent-button
+        appearance="stealth"
         class="close-icon"
         style="display:none"
-        role="button"
         aria-label=${this.strings.closeButtonAriaLabel}
         @click=${this.onClickCloseButton}
         @keydown=${this.onKeydownCloseButton}>
         <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0.0885911 0.215694L0.146447 0.146447C0.320013 -0.0271197 0.589437 -0.046405 0.784306 0.0885911L0.853553 0.146447L4 3.293L7.14645 0.146447C7.34171 -0.0488154 7.65829 -0.0488154 7.85355 0.146447C8.04882 0.341709 8.04882 0.658291 7.85355 0.853553L4.707 4L7.85355 7.14645C8.02712 7.32001 8.0464 7.58944 7.91141 7.78431L7.85355 7.85355C7.67999 8.02712 7.41056 8.0464 7.21569 7.91141L7.14645 7.85355L4 4.707L0.853553 7.85355C0.658291 8.04882 0.341709 8.04882 0.146447 7.85355C-0.0488154 7.65829 -0.0488154 7.34171 0.146447 7.14645L3.293 4L0.146447 0.853553C-0.0271197 0.679987 -0.046405 0.410563 0.0885911 0.215694L0.146447 0.146447L0.0885911 0.215694Z" fill="#212121"/>
         </svg>
-      </div>
+      </fluent-button>
     `;
   }
 
@@ -523,8 +522,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    *
    * @param e {UIEvent}
    */
-  onClickCloseButton = (e: UIEvent) => {
-    e.stopPropagation();
+  onClickCloseButton = () => {
     this.removeSelectedChannel(null);
   };
 
@@ -534,9 +532,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @param e {KeyboardEvent}
    */
   onKeydownCloseButton = (e: KeyboardEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    this.removeSelectedChannel(null);
+    if (e.key === 'Enter') this.removeSelectedChannel(null);
   };
 
   /**
@@ -567,11 +563,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   protected renderDownChevron() {
     return html`
-      <div class="down-chevron" @click=${this.gainedFocus}>
+      <fluent-button appearance="stealth" class="down-chevron" @click=${this.gainedFocus}>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2.21967 4.46967C2.51256 4.17678 2.98744 4.17678 3.28033 4.46967L6 7.18934L8.71967 4.46967C9.01256 4.17678 9.48744 4.17678 9.78033 4.46967C10.0732 4.76256 10.0732 5.23744 9.78033 5.53033L6.53033 8.78033C6.23744 9.07322 5.76256 9.07322 5.46967 8.78033L2.21967 5.53033C1.92678 5.23744 1.92678 4.76256 2.21967 4.46967Z" fill="#212121" />
         </svg>
-      </div>`;
+      </fluent-button>`;
   }
 
   /**
@@ -583,11 +579,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   protected renderUpChevron() {
     return html`
-      <div style="display:none" class="up-chevron" @click=${this.handleUpChevronClick}>
+      <fluent-button appearance="stealth" style="display:none" class="up-chevron" @click=${this.handleUpChevronClick}>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2.21967 7.53033C2.51256 7.82322 2.98744 7.82322 3.28033 7.53033L6 4.81066L8.71967 7.53033C9.01256 7.82322 9.48744 7.82322 9.78033 7.53033C10.0732 7.23744 10.0732 6.76256 9.78033 6.46967L6.53033 3.21967C6.23744 2.92678 5.76256 2.92678 5.46967 3.21967L2.21967 6.46967C1.92678 6.76256 1.92678 7.23744 2.21967 7.53033Z" fill="#212121" />
         </svg>
-      </div>`;
+      </fluent-button>`;
   }
 
   /**
@@ -1044,8 +1040,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.hideCloseIcon();
   }
 
-  private handleUpChevronClick(e: Event) {
+  handleUpChevronClick = (e: Event) => {
     e.stopPropagation();
     this.lostFocus();
-  }
+  };
 }
