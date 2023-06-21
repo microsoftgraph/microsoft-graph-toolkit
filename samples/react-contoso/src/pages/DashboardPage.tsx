@@ -49,7 +49,7 @@ export const DashboardPage: React.FunctionComponent = () => {
           <Tab value="incidents">My Incidents</Tab>
         </TabList>
         <div className={styles.panels}>
-          {selectedTab === 'tasks' && taskListId && <Todo targetId={taskListId}></Todo>}
+          {selectedTab === 'tasks' && taskListId && <Todo initialId={taskListId}></Todo>}
           {selectedTab === 'incidents' && <Incidents />}
         </div>
       </div>

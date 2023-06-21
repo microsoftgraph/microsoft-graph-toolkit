@@ -9,7 +9,6 @@ const useStyles = makeStyles({
     alignItems: 'center',
     height: 'calc(100vh - 300px)'
   },
-  spinner: {},
   message: {
     paddingLeft: '10px'
   }
@@ -23,9 +22,7 @@ export const Loading: React.FunctionComponent<ILoadingProps> = (props: ILoadingP
   const styles = useStyles();
   return (
     <div className={styles.root}>
-      <div className={styles.spinner}>
-        <Spinner />
-      </div>
+      <Spinner />
       <div className={styles.message}>
         <span>{props.message || 'Loading...'}</span>
       </div>

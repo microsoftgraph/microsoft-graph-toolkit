@@ -13,7 +13,6 @@ import {
 } from '@fluentui/react-components';
 import { FileList, Providers } from '@microsoft/mgt-react';
 import { Tasks } from '@microsoft/mgt-react';
-import { useAppContext } from '../../AppContext';
 
 const useStyles = makeStyles({
   panels: {
@@ -36,7 +35,6 @@ export const Incident: React.FunctionComponent = () => {
   const [driveId, setDriveId] = React.useState<string>();
   const [planId, setPlanId] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  const appContext = useAppContext();
 
   const onTabSelect = (event: SelectTabEvent, data: SelectTabData) => {
     setSelectedTab(data.value);
