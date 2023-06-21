@@ -13,7 +13,7 @@
       "samples/electron-app",
       "samples/sp-webpart",
       "samples/sp-mgt",
-      "samples/teamsfx-app/tabs"
+      "samples/teamsfx-app"
     ],
     "nohoist": [
       "**/@microsoft/sp*",
@@ -37,15 +37,12 @@
     "package:sp-webpart": "lerna run package --scope mgt-demo",
     "package:sp-mgt": "lerna run package --scope sp-mgt-no-framework",
     "bundle": "cd ./packages/mgt && npm run bundle",
-    "bootstrap": "lerna bootstrap --useWorkspaces",
     "clean": "lerna run --parallel --stream --scope @microsoft/* clean",
-    "link": "lerna link --force-local",
     "lint:eslint": "eslint -c .eslintrc.js --quiet 'packages/*/src/**/*.ts'",
     "lint:styles": "stylelint './packages/mgt-components/**/*.{css,scss}'",
     "lint:fix": "npm run lint:styles -- --fix",
     "lint": "npm run lint:eslint && npm run lint:styles",
     "pack": "shx rm -rf artifacts/*.tgz && lerna exec --stream --scope @microsoft/* -- npm pack",
-    "prepare": "lerna bootstrap --force-local",
     "sass": "lerna run sass --scope @microsoft/*",
     "serve": "web-dev-server --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "serve:https": "web-dev-server --http2 --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
@@ -131,7 +128,7 @@
     "jest-environment-jsdom": "^29.3.1",
     "jest-fetch-mock": "^3.0.3",
     "jest-junit": "^15.0.0",
-    "lerna": "^3.22.1",
+    "lerna": "^7.0.0",
     "lit": "^2.3.1",
     "monaco-editor": "^0.30.0",
     "monaco-editor-webpack-plugin": "^6.0.0",

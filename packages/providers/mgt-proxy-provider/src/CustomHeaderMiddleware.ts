@@ -17,9 +17,9 @@ import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/src/m
  */
 export class CustomHeaderMiddleware implements Middleware {
   private _nextMiddleware: Middleware;
-  private readonly _getCustomHeaders: () => Promise<object>;
+  private readonly _getCustomHeaders?: () => Promise<object>;
 
-  constructor(getCustomHeaders: () => Promise<object>) {
+  constructor(getCustomHeaders?: () => Promise<object>) {
     this._getCustomHeaders = getCustomHeaders;
   }
 
