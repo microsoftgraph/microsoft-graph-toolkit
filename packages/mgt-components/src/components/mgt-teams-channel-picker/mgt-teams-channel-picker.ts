@@ -167,13 +167,6 @@ export interface MgtTeamsChannelPickerConfig {
  *
  * @fires {CustomEvent<SelectedChannel | null>} selectionChanged - Fired when the selection changes
  *
- * @cssprop --color - {font} Default font color
- *
- * @cssprop --channel-picker-input-border - {String} Input section entire border
- * @cssprop --channel-picker-input-border-top - {String} Input section border top only
- * @cssprop --channel-picker-input-border-right - {String} Input section border right only
- * @cssprop --channel-picker-input-border-bottom - {String} Input section border bottom only
- * @cssprop --channel-picker-input-border-left - {String} Input section border left only
  * @cssprop --channel-picker-input-border-color - {Color} Input border color
  * @cssprop --channel-picker-input-background-color - {Color} Input section background color
  * @cssprop --channel-picker-input-background-color-hover - {Color} Input background hover color
@@ -185,8 +178,9 @@ export interface MgtTeamsChannelPickerConfig {
  * @cssprop --channel-picker-dropdown-item-text-color-selected - {Color} Text color of channel or team during after selection
  *
  * @cssprop --channel-picker-arrow-fill - {Color} Color of arrow svg
- * @cssprop --placeholder-color-focus - {Color} Color of placeholder text during focus state
- * @cssprop --placeholder-color - {Color} Color of placeholder text
+ * @cssprop --channel-picker-input-placeholder-text-color - {Color} Color of placeholder text
+ * @cssprop --channel-picker-input-placeholder-text-color-focus - {Color} Color of placeholder text during focus state
+ * @cssprop --channel-picker-input-placeholder-text-color-hover - {Color} Color of placeholder text during hover state
  *
  * @cssprop --channel-picker-search-icon-color - {Color} the search icon color.
  * @cssprop --channel-picker-down-chevron-color - {Color} the down chevron icon color.
@@ -270,7 +264,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._treeViewState = value ? this.generateTreeViewState(value) : [];
     this.resetFocusState();
   }
-  private get items(): DropdownItem[] {
+  private get items(): DropdownItem[] | undefined {
     return this._items;
   }
 
@@ -283,7 +277,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private _inputValue = '';
 
   @state() private _selectedItemState: ChannelPickerItemState;
-  private _items: DropdownItem[];
+  private _items: DropdownItem[] | undefined;
   private _treeViewState: ChannelPickerItemState[] = [];
   private _focusList: ChannelPickerItemState[] = [];
 
@@ -299,7 +293,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.addEventListener('focus', () => this.loadTeamsIfNotLoaded());
     this.addEventListener('mouseover', () => this.loadTeamsIfNotLoaded());
     this.addEventListener('blur', () => this.lostFocus());
-    this.clearState();
+    this._inputValue = '';
+    this._treeViewState = [];
+    this._focusList = [];
+    this._isDropdownVisible = false;
   }
 
   /**
@@ -386,10 +383,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     };
 
     return (
-      this.renderTemplate('default', { teams: this.items }) ||
+      this.renderTemplate('default', { teams: this.items ?? [] }) ||
       html`
         <div class="container" @blur=${this.lostFocus}>
           <fluent-text-field
+            autocomplete="off"
             appearance="outline"
             id="teams-channel-picker-input"
             aria-label="Select a channel"
@@ -450,7 +448,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @memberof MgtTeamsChannelPicker
    */
   protected clearState(): void {
-    this._items = [];
     this._inputValue = '';
     this._treeViewState = [];
     this._focusList = [];

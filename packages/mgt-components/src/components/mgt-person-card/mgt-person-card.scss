@@ -32,7 +32,7 @@ $person-card-details-bottom-spacing: var(--person-card-details-bottom-spacing, 0
 $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing, 83px);
 
 :host {
-  box-shadow: set-var(box-shadow, $theme-default, $common);
+  box-shadow: $person-card-box-shadow;
   width: var(--mgt-flyout-set-width, 375px);
   font-family: $font-family;
   overflow: hidden;
@@ -401,7 +401,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   }
 
   .message-section {
-    border-bottom: 1px solid set-var(tab-line__color, $theme-default, $common);
+    border-bottom: 1px solid $person-card-chat-input-border-color;
     display: flex;
 
     fluent-text-field {
@@ -439,9 +439,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 }
 
 :host .person-root.large,
-:host .person-root.threelines,
-:host mgt-person.person-root.large,
-:host mgt-person.person-root.threelines {
+:host .person-root.threelines {
   --person-avatar-size-3-lines: 75px;
 }
 

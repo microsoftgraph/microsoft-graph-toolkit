@@ -240,14 +240,12 @@ export class MgtPicker extends MgtTemplatedComponent {
         id="combobox"
         autocomplete="list"
         placeholder=${this.placeholder}>
-        ${this.response.map(
-          item => html`
-          <fluent-option
-            value=${item.id}
-            @click=${(e: MouseEvent) => this.handleClick(e, item)}>
-              ${item[this.keyName]}
-          </fluent-option>`
-        )}
+          ${this.response.map(
+            item => html`
+            <fluent-option value=${item.id} @click=${(e: MouseEvent) => this.handleClick(e, item)}> ${
+              item[this.keyName]
+            } </fluent-option>`
+          )}
       </fluent-combobox>
      `;
   }
@@ -262,6 +260,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   protected renderGet(): TemplateResult {
     return mgtHtml`
       <mgt-get
+        class="mgt-get"
         resource=${this.resource}
         version=${this.version}
         .scopes=${this.scopes}
@@ -280,8 +279,14 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected async loadState() {
     if (!this.response) {
-      const parent = this.renderRoot.querySelector('mgt-get');
-      parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
+      const parent = this.renderRoot.querySelector('.mgt-get');
+      if (parent) {
+        parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
+      } else {
+        console.error(
+          '🦒: mgt-picker component requires a child mgt-get component. Something has gone horribly wrong.'
+        );
+      }
     }
     this.isRefreshing = false;
     // hack to maintain method signature contract

@@ -35,7 +35,8 @@ export default class Main {
         'presence.read',
         'user.read.all',
         'group.read.all',
-        'tasks.read'
+        'tasks.read',
+        'team.readbasic.all'
       ],
       //SimpleCachePlugin is used here as an example. It stores unencrypted tokens directly on your machine, so please only use it for testing purposes
       cachePlugin: SimpleCachePlugin

@@ -10,6 +10,7 @@ import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { strings } from './strings';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { styles } from './mgt-dot-options-css';
 
@@ -36,6 +37,18 @@ export class MgtDotOptions extends MgtBaseComponent {
   public static get styles() {
     return styles;
   }
+
+  /**
+   * Strings for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtDotOptions
+   */
+  protected get strings() {
+    return strings;
+  }
+
   /**
    * Determines if header menu is rendered or hidden.
    *
@@ -73,10 +86,11 @@ export class MgtDotOptions extends MgtBaseComponent {
     return html`
       <fluent-button
         appearance="stealth"
+        aria-label=${this.strings.dotOptionsTitle}
         @click=${this.onDotClick}
         @keydown=${this.onDotKeydown}
         class="dot-icon">\uE712</fluent-button>
-      <fluent-menu class=${classMap({ Menu: true, Open: this.open })}>
+      <fluent-menu class=${classMap({ menu: true, open: this.open })}>
         ${menuOptions.map(opt => this.getMenuOption(opt, this.options[opt]))}
       </fluent-menu>`;
   }

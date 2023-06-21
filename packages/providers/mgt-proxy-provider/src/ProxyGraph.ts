@@ -26,7 +26,7 @@ import { CustomHeaderMiddleware } from './CustomHeaderMiddleware';
  * @extends {Graph}
  */
 export class ProxyGraph extends Graph {
-  constructor(baseUrl: string, getCustomHeaders: () => Promise<object>) {
+  constructor(baseUrl: string, getCustomHeaders?: () => Promise<object>) {
     const middleware: Middleware[] = [
       new RetryHandler(new RetryHandlerOptions()),
       new TelemetryHandler(),

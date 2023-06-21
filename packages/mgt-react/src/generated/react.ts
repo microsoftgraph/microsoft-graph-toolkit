@@ -1,4 +1,3 @@
-
 import { ViewType,OfficeGraphInsightString,MenuCommand,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
@@ -266,6 +265,36 @@ export type PickerProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type SearchBoxProps = {
+	placeholder?: string;
+	searchTerm?: string;
+	debounceDelay?: number;
+	mediaQuery?: ComponentMediaQuery;
+	searchTermChanged?: (e: CustomEvent<string>) => void;
+}
+
+export type SearchResultsProps = {
+	queryString?: string;
+	queryTemplate?: string;
+	entityTypes?: string[];
+	scopes?: string[];
+	contentSources?: string[];
+	version?: string;
+	from?: number;
+	size?: number;
+	pagingMax?: number;
+	fetchThumbnail?: boolean;
+	fields?: string[];
+	enableTopResults?: boolean;
+	cacheEnabled?: boolean;
+	cacheInvalidationPeriod?: number;
+	currentPage?: number;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
 export type SpinnerProps = {
 	mediaQuery?: ComponentMediaQuery;
 }
@@ -289,6 +318,25 @@ export type TasksProps = {
 	taskChanged?: (e: CustomEvent<ITask>) => void;
 	taskClick?: (e: CustomEvent<ITask>) => void;
 	taskRemoved?: (e: CustomEvent<ITask>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
+export type TaxonomyPickerProps = {
+	termsetId?: string;
+	termId?: string;
+	siteId?: string;
+	locale?: string;
+	version?: string;
+	placeholder?: string;
+	position?: string;
+	defaultSelectedTermId?: string;
+	selectedTerm?: MicrosoftGraph.TermStore.Term;
+	disabled?: boolean;
+	cacheEnabled?: boolean;
+	cacheInvalidationPeriod?: number;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	selectionChanged?: (e: CustomEvent<MicrosoftGraph.TermStore.Term>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
@@ -342,9 +390,15 @@ export const PersonCard = wrapMgt<PersonCardProps>('person-card');
 
 export const Picker = wrapMgt<PickerProps>('picker');
 
+export const SearchBox = wrapMgt<SearchBoxProps>('search-box');
+
+export const SearchResults = wrapMgt<SearchResultsProps>('search-results');
+
 export const Spinner = wrapMgt<SpinnerProps>('spinner');
 
 export const Tasks = wrapMgt<TasksProps>('tasks');
+
+export const TaxonomyPicker = wrapMgt<TaxonomyPickerProps>('taxonomy-picker');
 
 export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('teams-channel-picker');
 

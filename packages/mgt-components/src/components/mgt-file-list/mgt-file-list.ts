@@ -5,7 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { GraphPageIterator, Providers, ProviderState, customElement, mgtHtml } from '@microsoft/mgt-element';
+import {
+  GraphPageIterator,
+  Providers,
+  ProviderState,
+  customElement,
+  mgtHtml,
+  MgtTemplatedComponent
+} from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, PropertyValueMap, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -86,7 +93,7 @@ registerFluentComponents(
 
 // tslint:disable-next-line: max-classes-per-file
 @customElement('file-list')
-export class MgtFileList extends MgtFileListBase implements CardSection {
+export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   private _isCompact = false;
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -287,7 +294,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
       this.renderTemplate('no-data', null) ||
       (this.enableFileUpload === true && Providers.globalProvider !== undefined
         ? html`
-            <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+            <div class="file-list-wrapper" dir=${this.direction}>
               ${this.renderFileUpload()}
             </div>`
         : html``)
@@ -631,7 +638,7 @@ export class MgtFileList extends MgtFileListBase implements CardSection {
     } else {
       if (this.pageIterator.hasNext) {
         this._isLoadingMore = true;
-        const root = this.renderRoot.querySelector('file-list-wrapper');
+        const root = this.renderRoot.querySelector('#file-list-wrapper');
         if (root?.animate) {
           // play back
           root.animate(

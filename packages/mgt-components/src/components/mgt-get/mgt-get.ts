@@ -37,7 +37,7 @@ type ImageValue = { image: string };
  * @returns {boolean} true if the value is a collection response
  */
 export const isCollectionResponse = (value: unknown): value is CollectionResponse<unknown> =>
-  Array.isArray((value as CollectionResponse<unknown>).value);
+  Array.isArray((value as CollectionResponse<unknown>)?.value);
 
 /**
  * Enumeration to define what types of query are available
@@ -89,7 +89,6 @@ export type DataChangedDetail = {
  * @extends {MgtTemplatedComponent}
  */
 @customElement('get')
-// @customElement('mgt-get')
 export class MgtGet extends MgtTemplatedComponent {
   /**
    * The resource to get

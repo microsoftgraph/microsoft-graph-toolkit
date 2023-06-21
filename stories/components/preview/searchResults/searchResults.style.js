@@ -24,7 +24,4 @@ export const customCSSProperties = () => html`
     }
   </style>
   <mgt-search-results class="search-results" query-string="yammer" entity-types="bookmark" version="beta"></mgt-search-results>
-  <script type="module">
-  import '@microsoft/mgt-components/dist/es6/components/preview';
-  </script>
 `;

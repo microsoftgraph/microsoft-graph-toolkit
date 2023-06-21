@@ -12,6 +12,5 @@
     "samples/sp-mgt"
   ],
   "npmClient": "yarn",
-  "useWorkspaces": true,
   "version": "independent"
 }

@@ -14,12 +14,8 @@ export default {
   decorators: [withCodeEditor]
 };
 
-export const darkTheme = () => html`
-  <mgt-login class="mgt-dark"></mgt-login>
-`;
-
 export const customCSSProperties = () => html`
-<mgt-login class="login"></mgt-login>
+<mgt-login></mgt-login>
 <style>
   .login {
     --login-signed-out-button-background: red;
