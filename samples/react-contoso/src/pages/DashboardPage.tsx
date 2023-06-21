@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { PageHeader } from '../components/PageHeader';
 import { Providers, Todo } from '@microsoft/mgt-react';
-import { Incidents } from '../components/Incidents';
+import { DirectReports } from '../components/DirectReports';
 import {
   SelectTabData,
   SelectTabEvent,
@@ -46,11 +46,11 @@ export const DashboardPage: React.FunctionComponent = () => {
       <div>
         <TabList selectedValue={selectedTab} onTabSelect={onTabSelect}>
           <Tab value="tasks">My Tasks</Tab>
-          <Tab value="incidents">My Incidents</Tab>
+          <Tab value="directReports">My Direct Reports</Tab>
         </TabList>
         <div className={styles.panels}>
           {selectedTab === 'tasks' && taskListId && <Todo initialId={taskListId}></Todo>}
-          {selectedTab === 'incidents' && <Incidents />}
+          {selectedTab === 'directReports' && <DirectReports />}
         </div>
       </div>
     </>
