@@ -1,8 +1,0 @@
-name: Advanced Security Settings
-description: Temporary override to unblock checkins for mgt.  Supply chain issue https://github.com/advisories/GHSA-29mw-wpgm-hmr9. Issue reported to MSRC.
-
-resource: repository
-configuration:
-    advancedSecurity:
-        allowGhasVulnerability:
-        - GHSA-29mw-wpgm-hmr9
