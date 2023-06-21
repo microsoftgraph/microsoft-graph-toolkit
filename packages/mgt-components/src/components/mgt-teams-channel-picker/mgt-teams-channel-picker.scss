@@ -9,8 +9,7 @@
 @import '../../styles/shared-styles';
 @import './mgt-teams-channel-picker.theme';
 
-:host,
-:host mgt-teams-channel-picker {
+:host {
   font-family: $font-family;
 
   .container {
@@ -66,9 +65,7 @@
       margin: auto;
     }
   }
-}
 
-:host {
   fluent-card {
     background: $dropdown-background-color;
 
@@ -79,7 +76,7 @@
   fluent-text-field {
     width: 100%;
 
-    &::part(root){
+    &::part(root) {
       background: $input-background;
 
       &:hover {
@@ -93,6 +90,10 @@
     }
 
     &::part(control) {
+      word-spacing: inherit;
+      text-indent: inherit;
+      letter-spacing: inherit;
+
       &::placeholder {
         color: $placeholder-text-color;
       }
@@ -152,18 +153,18 @@
 
   fluent-tree-item {
     width: 100%;
-    
+
     --tree-item-nested-width: 2em;
-    
+
     &::part(content-region),
     &::part(positioning-region),
     &::part(expand-collapse-button) {
       color: $dropdown-item-text-color;
       background: $dropdown-background-color;
-      
+
       &:hover {
         background: $dropdown-item-background-color-hover;
-        
+
         &::part(expand-collapse-button) {
           background: $dropdown-item-background-color-hover;
         }
@@ -189,11 +190,10 @@
       margin-right: 8px;
 
       svg {
-        stroke: var(--channel-picker-arrow-fill, var(--neutral-foreground-rest));
+        stroke: $channel-picker-arrow-fill-color;
       }
     }
   }
-
 }
 
 [dir='rtl'] {

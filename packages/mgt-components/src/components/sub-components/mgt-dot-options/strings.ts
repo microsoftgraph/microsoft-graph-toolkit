@@ -4,9 +4,6 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
-import 'whatwg-fetch';
-import '@webcomponents/webcomponentsjs/webcomponents-bundle';
-export * from '../preview';
+export const strings = {
+  dotOptionsTitle: 'More options'
+};

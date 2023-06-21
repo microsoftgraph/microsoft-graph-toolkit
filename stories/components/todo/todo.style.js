@@ -10,30 +10,31 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
-  title: 'Components / mgt-tasks',
-  component: 'tasks',
+  title: 'Components / mgt-todo',
+  component: 'todo',
   decorators: [withCodeEditor],
   parameters: {
     docs: {
       page: defaultDocsPage,
-      source: { code: '<mgt-tasks></mgt-tasks>' }
+      source: { code: '<mgt-todo></mgt-todo>' }
     }
   }
 };
 
-export const tasks = () => html`
-  <mgt-tasks></mgt-tasks>
-`;
-
-export const tasksWithGroupId = () => html`
-  <mgt-tasks group-id="45327068-6785-4073-8553-a750d6c16a45"></mgt-tasks>
-  <!--
-    NOTE: the default sandbox tenant doesn't have the required Tasks.ReadWrite and
-    Group.ReadWrite.All permissions. Test this component in your tenant.
-  -->
-`;
-
-
-export const useToDoAsDataSource = () => html`
-  <mgt-tasks data-source="todo"></mgt-tasks>
+export const customCSSProperties = () => html`
+  <style>
+    .todo {
+        --task-color: black;
+        --task-background-color: white;
+        --task-complete-background-color: grey;
+        --task-date-input-active-color: blue;
+        --task-date-input-hover-color: green;
+        --task-background-color-hover: grey;
+        --task-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+        --task-border: 1px solid black;
+        --task-border-completed: 1px solid grey;
+        --task-radio-background-color: green;
+    }
+  </style>
+  <mgt-todo class="todo"></mgt-todo>
 `;

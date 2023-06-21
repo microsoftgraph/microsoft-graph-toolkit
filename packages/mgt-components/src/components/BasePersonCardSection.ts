@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
+import { MgtTemplatedComponent, customElementHelper, mgtHtml } from '@microsoft/mgt-element';
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 
@@ -210,7 +210,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent implem
       parent = parent.parentNode;
 
       const shadowRoot = parent as ShadowRoot;
-      if (shadowRoot?.host?.tagName === 'MGT-PERSON-CARD') {
+      if (shadowRoot?.host?.tagName === `${customElementHelper.prefix}-PERSON-CARD`.toUpperCase()) {
         parent = shadowRoot.host;
         break;
       }

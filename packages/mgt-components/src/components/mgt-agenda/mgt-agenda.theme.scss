@@ -11,8 +11,8 @@ $agenda-event-subject-color: var(--agenda-event-subject-color, var(--neutral-for
 $agenda-event-location-color: var(--agenda-event-location-color, var(--neutral-foreground-rest));
 $agenda-event-attendees-color: var(--agenda-event-attendees-color, var(--neutral-foreground-rest));
 $agenda-header-color: var(--agenda-header-color, var(--neutral-foreground-rest));
-$agenda-background-color: var(--agenda-background-color, var(--neutral-layer-floating));
+$agenda-background-color: var(--agenda-background-color, transparent);
 $agenda-header-background-color: var(--agenda-header-background-color, var(--neutral-layer-floating));
 $agenda-header-border-color: var(--agenda-header-border-color, var(--neutral-foreground-rest));
-$agenda-event-background-color: var(--agenda-event-border-color, var(--neutral-layer-floating));
-$agenda-event-background-color: var(--agenda-event-background-color, var(--neutral-layer-floating));
+$agenda-event-border-color: var(--agenda-event-border-color, var(--neutral-layer-floating));
+$agenda-event-background-color: var(--agenda-event-background-color, transparent);

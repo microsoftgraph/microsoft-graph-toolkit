@@ -106,7 +106,8 @@ export class Providers {
       return null;
     }
 
-    if (!Boolean(this._mePromise)) {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    if (!this._mePromise) {
       this._mePromise = this.getMe();
     }
 
@@ -124,7 +125,7 @@ export class Providers {
   private static async getMe(): Promise<User> {
     try {
       const response: User = (await this.client.api('me').get()) as User;
-      if (response && response.id) {
+      if (response?.id) {
         return response;
       }
     } catch {
@@ -198,7 +199,7 @@ export class Providers {
    */
   private static async createCacheIdWithUserDetails(): Promise<string> {
     const response: User = await this.me();
-    if (response && response.id) {
+    if (response?.id) {
       return response.id + '-' + response.userPrincipalName;
     } else return null;
   }
@@ -233,15 +234,15 @@ export class Providers {
     return null;
   }
 
-  private static _eventDispatcher: EventDispatcher<ProvidersChangedState> = new EventDispatcher<ProvidersChangedState>();
+  private static readonly _eventDispatcher = new EventDispatcher<ProvidersChangedState>();
 
-  private static _activeAccountChangedDispatcher: EventDispatcher<any> = new EventDispatcher<any>();
+  private static readonly _activeAccountChangedDispatcher = new EventDispatcher<any>();
 
   private static _globalProvider: IProvider;
   private static _cacheId: string;
   private static _mePromise: Promise<User>;
 
-  private static handleProviderStateChanged = () => {
+  private static readonly handleProviderStateChanged = () => {
     if (!Providers.globalProvider || Providers.globalProvider.state !== ProviderState.SignedIn) {
       // clear current signed in user info
       Providers._mePromise = null;
@@ -250,7 +251,7 @@ export class Providers {
     Providers._eventDispatcher.fire(ProvidersChangedState.ProviderStateChanged);
   };
 
-  private static handleActiveAccountChanged = () => {
+  private static readonly handleActiveAccountChanged = () => {
     Providers.unsetCacheId();
     Providers._activeAccountChangedDispatcher.fire(null);
   };

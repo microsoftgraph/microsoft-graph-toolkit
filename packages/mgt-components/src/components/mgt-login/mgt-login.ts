@@ -8,6 +8,7 @@
 import { CSSResult, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import {
   Providers,
   ProviderState,
@@ -40,11 +41,8 @@ registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluent
  */
 export type LoginViewType = 'avatar' | 'compact' | 'full';
 
-// eslint-disable-next-line @typescript-eslint/tslint/config
 type PersonViewConfig = {
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   view: ViewType;
-  // eslint-disable-next-line @typescript-eslint/tslint/config
   avatarSize: AvatarSize;
 };
 
@@ -166,7 +164,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @private
    * @type {boolean}
    */
-  @property({ attribute: false }) private _isFlyoutOpen: boolean;
+  @state() private _isFlyoutOpen: boolean;
 
   /**
    * The image blob string
@@ -184,7 +182,9 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtLogin
    */
-  private _userDetailsKey = '-userDetails';
+  private get _userDetailsKey() {
+    return '-userDetails';
+  }
 
   @state() private _arrowKeyLocation = -1;
 
@@ -214,7 +214,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     if (!provider.isMultiAccountSupportedAndEnabled && (this.userDetails || !this.fireCustomEvent('loginInitiated'))) {
       return;
     }
-    if (provider && provider.login) {
+    if (provider?.login) {
       await provider.login();
 
       if (provider.state === ProviderState.SignedIn) {
@@ -237,10 +237,10 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
 
     const provider = Providers.globalProvider;
-    if (provider && provider.isMultiAccountSupportedAndEnabled) {
+    if (provider?.isMultiAccountSupportedAndEnabled) {
       localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
     }
-    if (provider && provider.logout) {
+    if (provider?.logout) {
       await provider.logout();
       this.userDetails = null;
       if (provider.isMultiAccountSupportedAndEnabled) {
@@ -297,12 +297,6 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
-  private buildAriaLabel(isSignedIn: boolean, defaultLabel: string): string {
-    if (!isSignedIn) return defaultLabel;
-
-    return (defaultLabel = this.userDetails ? this.userDetails.displayName : this.strings.signInLinkSubtitle);
-  }
-
   /**
    * Render the sign in or sign out button.
    *
@@ -312,22 +306,22 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected renderButton(): TemplateResult {
     const isSignedIn = Providers.globalProvider?.state === ProviderState.SignedIn;
-    const ariaLabel = this.buildAriaLabel(isSignedIn, this.strings.signInLinkSubtitle);
     const loginClasses = classMap({
       'signed-in': isSignedIn && Boolean(this.userDetails),
       'signed-out': !isSignedIn,
       small: this.loginView === 'avatar'
     });
     const appearance = isSignedIn ? 'stealth' : 'neutral';
-    const buttonContentTemplate =
-      isSignedIn && this.userDetails
-        ? this.renderSignedInButtonContent(this.userDetails, this._image)
-        : this.renderSignedOutButtonContent();
-
+    const showSignedInState = isSignedIn && this.userDetails;
+    const buttonContentTemplate = showSignedInState
+      ? this.renderSignedInButtonContent(this.userDetails, this._image)
+      : this.renderSignedOutButtonContent();
+    const expandedState: boolean | undefined = showSignedInState ? this._isFlyoutOpen : undefined;
     return html`
       <fluent-button
+        aria-expanded="${ifDefined(expandedState)}"
         appearance=${appearance}
-        aria-label=${ariaLabel}
+        aria-label="${ifDefined(isSignedIn ? undefined : this.strings.signInLinkSubtitle)}"
         ?disabled=${this.isLoadingState}
         @click=${this.onClick}
         class=${loginClasses}>
@@ -335,10 +329,10 @@ export class MgtLogin extends MgtTemplatedComponent {
       </fluent-button>`;
   }
 
-  private flyoutOpened = () => {
+  private readonly flyoutOpened = () => {
     this._isFlyoutOpen = true;
   };
-  private flyoutClosed = () => {
+  private readonly flyoutClosed = () => {
     this._isFlyoutOpen = false;
   };
 
@@ -528,7 +522,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           .avatarSize=${displayConfig.avatarSize}
           line2-property="email"
           class="signed-in-person"
-        ></mgt-person`
+        ></mgt-person>`
     );
   }
 
@@ -561,9 +555,9 @@ export class MgtLogin extends MgtTemplatedComponent {
                 .map(account => {
                   const details = localStorage.getItem(account.id + this._userDetailsKey);
                   return mgtHtml`
-                    <li 
-                      tabindex="-1" 
-                      part="account-item" 
+                    <li
+                      tabindex="-1"
+                      part="account-item"
                       class="account-item"
                       @click=${() => this.setActiveAccount(account)}
                       @keyup=${(e: KeyboardEvent) => {
@@ -585,7 +579,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
-  private handleAccountListKeyDown = (event: KeyboardEvent) => {
+  private readonly handleAccountListKeyDown = (event: KeyboardEvent) => {
     const list: HTMLUListElement = this.renderRoot.querySelector('ul.account-list');
     let item: HTMLLIElement;
     const listItems: HTMLCollection = list?.children;
@@ -688,7 +682,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @private
    * @memberof MgtLogin
    */
-  private onClick = (): void => {
+  private readonly onClick = (): void => {
     if (this.userDetails && this._isFlyoutOpen) {
       this.hideFlyout();
     } else if (this.userDetails) {

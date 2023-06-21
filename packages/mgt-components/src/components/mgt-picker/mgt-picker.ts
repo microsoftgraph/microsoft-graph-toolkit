@@ -15,6 +15,7 @@ import { registerFluentComponents } from '../../utils/FluentComponents';
 import '../../styles/style-helper';
 import { Entity } from '@microsoft/microsoft-graph-types';
 import { DataChangedDetail } from '../mgt-get/mgt-get';
+import { styles } from './mgt-picker-css';
 
 registerFluentComponents(fluentCombobox, fluentOption);
 
@@ -27,11 +28,16 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * @extends {MgtTemplatedComponent}
  *
  * @cssprop --picker-background-color - {Color} Picker component background color
+ * @cssprop --picker-list-max-height - {String} max height for options list. Default value is 380px.
  */
 @customElement('picker')
 export class MgtPicker extends MgtTemplatedComponent {
   protected get strings() {
     return strings;
+  }
+
+  public static get styles() {
+    return styles;
   }
 
   /**
@@ -226,21 +232,26 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected renderPicker(): TemplateResult {
     return mgtHtml`
-      <fluent-combobox current-value=${ifDefined(
-        this.selectedValue
-      )} part="picker" class="picker" id="combobox" autocomplete="list" placeholder=${this.placeholder}>
-        ${this.response.map(
-          item => html`
-          <fluent-option value=${item.id} @click=${(e: MouseEvent) => this.handleClick(e, item)}> ${
-            item[this.keyName]
-          } </fluent-option>`
-        )}
+      <fluent-combobox
+        @keydown=${this.handleComboboxKeydown}
+        current-value=${ifDefined(this.selectedValue)}
+        part="picker"
+        class="picker"
+        id="combobox"
+        autocomplete="list"
+        placeholder=${this.placeholder}>
+          ${this.response.map(
+            item => html`
+            <fluent-option value=${item.id} @click=${(e: MouseEvent) => this.handleClick(e, item)}> ${
+              item[this.keyName]
+            } </fluent-option>`
+          )}
       </fluent-combobox>
      `;
   }
 
   /**
-   * Render picker.
+   * Renders mgt-get which does a GET request to the resource.
    *
    * @protected
    * @returns {TemplateResult}
@@ -249,6 +260,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   protected renderGet(): TemplateResult {
     return mgtHtml`
       <mgt-get
+        class="mgt-get"
         resource=${this.resource}
         version=${this.version}
         .scopes=${this.scopes}
@@ -267,8 +279,14 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected async loadState() {
     if (!this.response) {
-      const parent = this.renderRoot.querySelector('mgt-get');
-      parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
+      const parent = this.renderRoot.querySelector('.mgt-get');
+      if (parent) {
+        parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
+      } else {
+        console.error(
+          '🦒: mgt-picker component requires a child mgt-get component. Something has gone horribly wrong.'
+        );
+      }
     }
     this.isRefreshing = false;
     // hack to maintain method signature contract
@@ -285,4 +303,28 @@ export class MgtPicker extends MgtTemplatedComponent {
   private handleClick(e: MouseEvent, item: any) {
     this.fireCustomEvent('selectionChanged', item, true, false, true);
   }
+
+  /**
+   * Handles getting the fluent option item in the dropdown and fires a custom
+   * event with it when you press Enter or Backspace keys.
+   *
+   * @param {KeyboardEvent} e
+   */
+  private readonly handleComboboxKeydown = (e: KeyboardEvent) => {
+    let value: string;
+    let item: any;
+    const keyName: string = e.key;
+    const comboBox: HTMLElement = e.target as HTMLElement;
+    const fluentOptionEl = comboBox.querySelector('.selected');
+    if (fluentOptionEl) {
+      value = fluentOptionEl.getAttribute('value');
+    }
+
+    if (['Enter'].includes(keyName)) {
+      if (value) {
+        item = this.response.filter(res => res.id === value).pop();
+        this.fireCustomEvent('selectionChanged', item, true, false, true);
+      }
+    }
+  };
 }

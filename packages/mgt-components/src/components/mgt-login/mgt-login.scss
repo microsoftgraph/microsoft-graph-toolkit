@@ -17,17 +17,15 @@ $login-popup-background-color: #{var(--login-popup-background-color, var(--neutr
 $button-padding: var(--login-button-padding, 0);
 
 :host {
-  mgt-person {
-    &.signed-in-person {
-      --person-background-color: $signed-in-background-color;
+  .signed-in-person {
+    --person-background-color: $signed-in-background-color;
 
-      padding: var(--login-button-padding, 10px 16px);
-    }
+    padding: var(--login-button-padding, 10px 16px);
+  }
 
-    &.account {
-      padding: 0;
-      margin: 7px 0;
-    }
+  .account {
+    padding: 0;
+    margin: 7px 0;
   }
 
   fluent-button {
@@ -40,6 +38,9 @@ $button-padding: var(--login-button-padding, 0);
         height: 100%;
         padding: $button-padding;
         background: $signed-in-background-color;
+        word-spacing: inherit;
+        text-indent: inherit;
+        letter-spacing: inherit;
 
         &:hover,
         &:focus-within {
@@ -81,7 +82,7 @@ $button-padding: var(--login-button-padding, 0);
 
   .login-root {
     .small {
-      mgt-person {
+      .signed-in-person {
         padding: 0;
         background: transparent;
 
@@ -109,7 +110,6 @@ $button-padding: var(--login-button-padding, 0);
       }
     }
 
-    mgt-flyout,
     .flyout {
       .flyout-command {
         color: var(--accent-foreground-rest);
@@ -126,6 +126,9 @@ $button-padding: var(--login-button-padding, 0);
               &::part(control) {
                 color: $login-command-btn-text-color;
                 background: $login-command-btn-bg-color;
+                word-spacing: inherit;
+                text-indent: inherit;
+                letter-spacing: inherit;
 
                 &:hover {
                   background: $login-command-btn-bg-hover-color;
@@ -148,6 +151,9 @@ $button-padding: var(--login-button-padding, 0);
               &::part(control) {
                 color: $login-add-account-btn-text-color;
                 background: $login-add-account-btn-bg-color;
+                word-spacing: inherit;
+                text-indent: inherit;
+                letter-spacing: inherit;
 
                 &:hover {
                   background: $login-add-account-btn-hover-bg-color;

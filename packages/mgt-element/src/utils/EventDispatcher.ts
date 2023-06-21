@@ -18,7 +18,7 @@ export type EventHandler<E> = (event: E) => void;
  * @template E
  */
 export class EventDispatcher<E> {
-  private eventHandlers: EventHandler<E>[] = [];
+  private readonly eventHandlers: EventHandler<E>[] = [];
   /**
    * fires event handler
    *

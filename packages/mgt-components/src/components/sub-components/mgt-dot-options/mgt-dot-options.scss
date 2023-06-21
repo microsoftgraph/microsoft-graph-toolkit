@@ -9,11 +9,14 @@
 @import '../../../styles/shared-sass-variables';
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
-$dot-options-translatex: var(--dot-options-translatex, translateX(-50px));
+$dot-options-translatey: var(--dot-options-translatey, translateY(32px));
 
 :host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
   .dot-icon {
-    display: inline-block;
     font-family: $font-icon;
     min-width: 40px;
     min-height: 30px;
@@ -23,38 +26,21 @@ $dot-options-translatex: var(--dot-options-translatex, translateX(-50px));
 
   .menu {
     position: absolute;
-    box-shadow: set-var(box-shadow__color, $theme-default, $common) 0 0 40px 5px;
-    background: set-var(background-color, $theme-default, $common);
+    box-shadow: var(--neutral-fill-rest) 0 0 40px 5px;
+    background: var(--neutral-fill-rest);
     z-index: 1;
     display: none;
-    color: set-var(color, $theme-default, $common);
     white-space: nowrap;
-    transform: var(--dot-options-translatex, translateX(-50px));
+    transform: $dot-options-translatey;
+
+    &.open {
+      display: block;
+    }
   }
 
-  .dot-menu {
-    &.open{
-      .menu {
-        display: block;
-      }
-    }
-
-    .dot-item {
-      direction: ltr;
-      text-align: left;
-      padding: 10px 10px 8px;
-
-      &:hover {
-        background: set-var(background-color--hover, $theme-default, $common);
-      }
-
-      &:active {
-        background: set-var(background-color--active, $theme-default, $common);
-      }
-
-      .dot-item-name {
-        direction: rtl;
-      }
+  fluent-button {
+    &::part(control) {
+      background: inherit;
     }
   }
 }

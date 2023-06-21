@@ -54,7 +54,6 @@ registerFluentComponents(fluentCard, fluentTooltip);
  * @cssprop --event-attendees-color - {Color} Event attendees color
  */
 @customElement('agenda')
-// @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -228,10 +227,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
   private _groupId: string;
   private _date: string;
   private _preferredTimezone: string;
-
-  constructor() {
-    super();
-  }
 
   /**
    * Determines width available if resize is necessary, adds onResize event listener to window
@@ -575,7 +570,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     const events = await this.loadEvents();
-    if (events && events.length > 0) {
+    if (events?.length > 0) {
       this.events = events;
     }
   }
@@ -585,7 +580,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     await this.requestStateUpdate(true);
   }
 
-  private onResize = () => {
+  private readonly onResize = () => {
     this._isNarrow = this.offsetWidth < 600;
   };
 
@@ -620,7 +615,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     const p = Providers.globalProvider;
     let events: MicrosoftGraph.Event[] = [];
 
-    if (p && p.state === ProviderState.SignedIn) {
+    if (p?.state === ProviderState.SignedIn) {
       const graph = p.graph.forComponent(this);
 
       if (this.eventQuery) {
@@ -643,7 +638,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
           const results = (await request.get()) as CollectionResponse<MicrosoftGraph.Event>;
 
-          if (results && results.value) {
+          if (results?.value) {
             events = results.value;
           }
           // eslint-disable-next-line no-empty
@@ -655,7 +650,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
         try {
           const iterator = await getEventsPageIterator(graph, start, end, this.groupId);
-          if (iterator && iterator.value) {
+          if (iterator?.value) {
             events = iterator.value;
 
             while (iterator.hasNext) {

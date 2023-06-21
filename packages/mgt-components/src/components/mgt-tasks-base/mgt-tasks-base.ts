@@ -11,7 +11,7 @@ import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } 
 import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentTextField, fluentButton, fluentCalendar } from '@fluentui/web-components';
-import { TodoTask } from '../mgt-todo/graph.todo';
+import { TodoTask } from '@microsoft/microsoft-graph-types';
 
 registerFluentComponents(fluentTextField, fluentButton, fluentCalendar);
 
@@ -68,7 +68,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
   private _previousMediaQuery: ComponentMediaQuery;
 
-  protected get strings(): { [x: string]: string } {
+  protected get strings(): Record<string, string> {
     return strings;
   }
 
@@ -182,14 +182,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   protected abstract renderPicker(): TemplateResult;
 
   /**
-   * Render the generic picker.
-   *
-   * @protected
-   * @memberof MgtTasksBase
-   */
-  protected abstract renderPicker(): TemplateResult;
-
-  /**
    * Render the list of todo tasks
    *
    * @protected
@@ -255,7 +247,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     return null;
   }
 
-  private onResize = () => {
+  private readonly onResize = () => {
     if (this.mediaQuery !== this._previousMediaQuery) {
       this._previousMediaQuery = this.mediaQuery;
       this.requestUpdate();
