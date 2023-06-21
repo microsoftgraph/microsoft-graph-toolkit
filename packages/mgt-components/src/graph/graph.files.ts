@@ -413,6 +413,7 @@ export const getMyInsightsFiles = async (graph: IGraph, insightType: string): Pr
   const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
   const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
   if (fileList) {
+    // fileList.files is string[] so JSON.parse to get proper objects
     return fileList.files.map((file: string) => JSON.parse(file) as DriveItem);
   }
 
