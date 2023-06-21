@@ -13,7 +13,6 @@ import {
 import { useAppContext } from '../AppContext';
 import { ExternalItemsResults } from './Search/ExternalItemsResults';
 import { FilesResults } from './Search/FilesResults';
-import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles({
   panels: {

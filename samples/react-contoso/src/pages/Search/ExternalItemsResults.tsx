@@ -1,4 +1,4 @@
-import { SearchResults } from '@microsoft/mgt-react/dist/es6/generated/react-preview';
+import { SearchResults } from '@microsoft/mgt-react';
 import * as React from 'react';
 import { IResultsProps } from './IResultsProps';
 

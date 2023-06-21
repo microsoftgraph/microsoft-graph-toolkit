@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Login } from '@microsoft/mgt-react';
-import { SearchBox } from '@microsoft/mgt-react/dist/es6/generated/react-preview';
+import { Login, SearchBox } from '@microsoft/mgt-react';
 import { PACKAGE_VERSION } from '@microsoft/mgt-element';
 import { InfoButton } from '@fluentui/react-components/unstable';
 import { SimpleLogin } from './SimpleLogin';

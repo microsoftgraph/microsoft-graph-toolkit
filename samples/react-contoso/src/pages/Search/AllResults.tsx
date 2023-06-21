@@ -1,7 +1,6 @@
-import { SearchResults } from '@microsoft/mgt-react/dist/es6/generated/react-preview';
 import * as React from 'react';
 import { IResultsProps } from './IResultsProps';
-import { MgtTemplateProps } from '@microsoft/mgt-react';
+import { MgtTemplateProps, SearchResults } from '@microsoft/mgt-react';
 
 export const AllResults: React.FunctionComponent<IResultsProps> = (props: IResultsProps) => {
   return (
