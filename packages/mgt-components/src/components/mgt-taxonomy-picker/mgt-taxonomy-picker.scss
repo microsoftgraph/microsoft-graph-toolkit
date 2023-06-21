@@ -1,0 +1,26 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles';
+@import './mgt-taxonomy-picker.theme';
+
+:host {
+  --max-height: var(--taxonomy-picker-max-height, 380px);
+
+  font-family: $font-family;
+
+  .picker {
+    background-color: $taxonomy-picker-background-color;
+  }
+}
+
+[dir='rtl'] {
+  .picker {
+    direction: rtl;
+  }
+}

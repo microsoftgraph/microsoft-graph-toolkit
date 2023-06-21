@@ -19,7 +19,7 @@
 @import '../../components/mgt-messages/mgt-messages.theme';
 @import '../../components/mgt-file-list/mgt-file-list.theme';
 
-$person-card-background-color: var(--person-card-background-color, var(--neutral-layer-floating));
+$person-card-background-color: var(--person-card-background-color, transparent);
 $person-card-expanded-background-color-hover: var(
   --person-card-expanded-background-color-hover,
   var(--neutral-fill-hover)

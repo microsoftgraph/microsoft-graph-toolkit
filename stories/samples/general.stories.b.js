@@ -43,7 +43,7 @@ if(body) applyTheme('dark', body);
 </script>
 <style>
 body {
-  background-color: var(--neutral-fill-rest);
+  background-color: var(--fill-color);
   color: var(--neutral-foreground-rest);
   font-family: var(--body-font);
 }

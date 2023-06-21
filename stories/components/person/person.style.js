@@ -28,7 +28,7 @@ export const customCSSProperties = () => html`
 
       --person-line1-font-size: 20px;
       --person-line1-font-weight: 600;
-      --person-line1-text-color: #f9b1b1;
+      --person-line1-text-color: #ffd5d5;
       --person-line1-text-transform: capitalize;
       --person-line1-text-line-height: 22px;
 

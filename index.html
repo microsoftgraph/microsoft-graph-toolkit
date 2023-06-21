@@ -21,7 +21,7 @@
         justify-content: flex-end;
       }
       body {
-        background-color: var(--neutral-fill-rest);
+        background-color: var(--fill-color);
         color: var(--neutral-foreground-rest);
         font-family: var(--body-font);
         padding: 24px 12px;
@@ -54,12 +54,12 @@
       </div>
       <!-- <mgt-login></mgt-login> -->
       <!-- <h2>mgt-person me query two lines card on click with presence</h2> -->
-      <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
+      <!-- <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person> -->
       <!-- <mgt-person-card person-query="me"></mgt-person-card> -->
       <h2>mgt-people-picker</h2>
-      <mgt-people-picker></mgt-people-picker>
-      <h2>mgt-teams-channel-picker</h2>
-      <mgt-teams-channel-picker></mgt-teams-channel-picker>
+      <mgt-people-picker show-max="6"></mgt-people-picker>
+      <!-- <h2>mgt-teams-channel-picker</h2>
+      <mgt-teams-channel-picker></mgt-teams-channel-picker> -->
       <!-- <h2>mgt-tasks</h2>
       <mgt-tasks></mgt-tasks> -->
       <!-- <h2>mgt-agenda group-by-day</h2>
@@ -76,7 +76,7 @@
       <!-- <h2>mgt-search-box</h2>
       <mgt-search-box search-term="contoso"></mgt-search-box>
       <h2>mgt-search-results</h2>
-      <mgt-search-results query-string="contoso"></mgt-search-results> -->
+      <mgt-search-results query-string="contoso"></mgt-search-results>
     </main>
   </body>
 </html>
