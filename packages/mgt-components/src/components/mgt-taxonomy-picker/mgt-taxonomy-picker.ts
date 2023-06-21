@@ -30,6 +30,9 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * @export
  * @class MgtTaxonomyPicker
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --taxonomy-picker-background-color - {Color} Picker component background color
+ * @cssprop --taxonomy-picker-list-max-height - {String} max height for options list. Default value is 380px.
  */
 @customElement('taxonomy-picker')
 export class MgtTaxonomyPicker extends MgtTemplatedComponent {

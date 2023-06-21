@@ -10,12 +10,12 @@
 @import './mgt-taxonomy-picker.theme';
 
 :host {
-  --max-height: var(--picker-max-height, 380px);
+  --max-height: var(--taxonomy-picker-max-height, 380px);
 
   font-family: $font-family;
 
   .picker {
-    background-color: $picker-background-color;
+    background-color: $taxonomy-picker-background-color;
   }
 }
 
