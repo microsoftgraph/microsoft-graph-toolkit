@@ -1549,9 +1549,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     if (keyName === 'ArrowUp' || keyName === 'ArrowDown') {
       this.handleArrowSelection(event);
-      if (this.input.value?.length > 0) {
-        event.preventDefault();
-      }
+      event.preventDefault();
     }
 
     if (keyName === 'Enter') {
