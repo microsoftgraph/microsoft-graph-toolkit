@@ -41,11 +41,18 @@ import '../sub-components/mgt-spinner/mgt-spinner';
 
 export * from './mgt-person-card.types';
 
-import { fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField } from '@fluentui/web-components';
+import {
+  fluentTabs,
+  fluentTab,
+  fluentTabPanel,
+  fluentButton,
+  fluentTextField,
+  fluentCard
+} from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { BasePersonCardSection, CardSection } from '../BasePersonCardSection';
 
-registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+registerFluentComponents(fluentCard, fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
 
 interface MgtPersonCardStateHistory {
   state: MgtPersonCardState;
@@ -557,7 +564,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       ? html`<div @keydown=${this.handleEndOfCard} aria-label=${this.strings.endOfCard} tabindex="0" id="end-of-container"></div>`
       : html``;
     return html`
-      <div class="root" dir=${this.direction}>
+      <fluent-card class="root" dir=${this.direction}>
         <div class=${classMap({ small: this._smallView })}>
           ${navigationTemplate}
           ${closeCardTemplate}
@@ -565,7 +572,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           <div class="expanded-details-container">${expandedDetailsTemplate}</div>
           ${tabLocker}
         </div>
-      </div>
+      </fluent-card>
      `;
   }
 
