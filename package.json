@@ -13,7 +13,7 @@
       "samples/electron-app",
       "samples/sp-webpart",
       "samples/sp-mgt",
-      "samples/teamsfx-app/tabs"
+      "samples/teamsfx-app"
     ],
     "nohoist": [
       "**/@microsoft/sp*",
