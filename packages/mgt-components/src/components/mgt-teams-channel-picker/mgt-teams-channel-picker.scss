@@ -121,6 +121,9 @@
     }
 
     .down-chevron {
+      height: auto;
+      min-width: auto;
+
       svg {
         path {
           fill: var(--channel-picker-down-chevron-color, currentColor);
@@ -129,6 +132,9 @@
     }
 
     .up-chevron {
+      height: auto;
+      min-width: auto;
+
       svg {
         path {
           fill: var(--channel-picker-up-chevron-color, currentColor);
@@ -137,6 +143,9 @@
     }
 
     .close-icon {
+      height: auto;
+      min-width: auto;
+
       svg {
         path {
           fill: var(--channel-picker-close-icon-color, currentColor);
