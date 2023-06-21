@@ -12,7 +12,6 @@
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-msal2-provider": "*",
     "@microsoft/mgt-react": "*",
-    "@microsoft/mgt-chat": "*",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

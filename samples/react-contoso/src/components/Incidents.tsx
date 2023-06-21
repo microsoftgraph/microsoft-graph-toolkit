@@ -22,7 +22,7 @@ import {
   webLightTheme
 } from '@fluentui/react-components';
 
-import { Skeleton, SkeletonItem } from '@fluentui/react-components/unstable';
+import { Skeleton, SkeletonItem } from '@fluentui/react-components';
 import { AddRegular, ContentViewRegular, CheckmarkRegular, ListRegular } from '@fluentui/react-icons';
 import { Get, MgtTemplateProps, Person, PersonCardInteraction, Providers, ViewType } from '@microsoft/mgt-react';
 import React, { useRef } from 'react';

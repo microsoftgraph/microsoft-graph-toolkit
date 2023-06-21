@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FileListComposite, Picker, Providers } from '@microsoft/mgt-react';
+import { FileList, Picker, Providers } from '@microsoft/mgt-react';
 import { makeStyles } from '@fluentui/react-components';
 
 const useStyles = makeStyles({
@@ -38,17 +38,7 @@ export const SiteFiles: React.FunctionComponent = () => {
         className={styles.picker}
       ></Picker>
 
-      {selectedList && driveId && (
-        <FileListComposite
-          breadcrumbRootName={selectedList.displayName}
-          enableCommandBar={true}
-          enableFileUpload={true}
-          useGridView={true}
-          itemPath="/"
-          driveId={driveId}
-          pageSize={100}
-        ></FileListComposite>
-      )}
+      {selectedList && driveId && <FileList itemPath="/" driveId={driveId} pageSize={100}></FileList>}
 
       {error && <div>{error}</div>}
     </div>

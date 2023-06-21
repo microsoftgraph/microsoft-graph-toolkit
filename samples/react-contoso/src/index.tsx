@@ -21,12 +21,6 @@ Providers.globalProvider = new Msal2Provider({
   scopes: [
     'Bookmark.Read.All',
     'Calendars.Read',
-    'Chat.Create',
-    'Chat.ReadBasic',
-    'Chat.Read',
-    'Chat.ReadWrite',
-    'ChatMember.ReadWrite',
-    'ChatMessage.Send',
     'ExternalItem.Read.All',
     'Files.Read',
     'Files.Read.All',

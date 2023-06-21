@@ -11,10 +11,8 @@ import {
   shorthands,
   makeStyles
 } from '@fluentui/react-components';
-import { FileListComposite, Providers } from '@microsoft/mgt-react';
-import { Chat, allChatScopes } from '@microsoft/mgt-chat';
+import { FileList, Providers } from '@microsoft/mgt-react';
 import { Tasks } from '@microsoft/mgt-react';
-import { createNewChat } from '@microsoft/mgt-chat';
 import { useAppContext } from '../../AppContext';
 
 const useStyles = makeStyles({
@@ -29,32 +27,12 @@ const useStyles = makeStyles({
   }
 });
 
-/**
- * Object mapping chat operations to the scopes required to perform them
- */
-const incidentOperationScopes: Record<string, string[]> = {
-  conversation: [...allChatScopes, 'sites.readwrite.all'],
-  tasks: ['group.readwrite.all'],
-  files: ['files.readwrite.all']
-};
-
-/**
- * Provides an array of the distinct scopes required for all chat operations
- */
-export const allIncidentScopes = Array.from(
-  Object.values(incidentOperationScopes).reduce((acc, scopes) => {
-    scopes.forEach(s => acc.add(s));
-    return acc;
-  }, new Set<string>())
-);
-
 export const Incident: React.FunctionComponent = () => {
   const styles = useStyles();
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
   const [selectedTab, setSelectedTab] = React.useState<TabValue>('files');
   const [incident, setIncident] = React.useState<any>();
-  const [chatId, setChatId] = React.useState<string>();
   const [driveId, setDriveId] = React.useState<string>();
   const [planId, setPlanId] = React.useState<string>();
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
@@ -71,47 +49,6 @@ export const Incident: React.FunctionComponent = () => {
         .get();
       setIncident(incident);
       return incident;
-    };
-
-    const initializeChat = async (incident: any) => {
-      if (!incident.fields.ChatId) {
-        const me = await Providers.me();
-        let chat: any = null;
-
-        const requestedBy = await Providers.globalProvider.graph.client
-          .api(
-            `sites/root/lists//${process.env.REACT_APP_USER_INFORMATION_LIST_ID!}/items/${
-              incident.fields.IssueloggedbyLookupId
-            }`
-          )
-          .get();
-
-        const chats = await Providers.globalProvider.graph.client
-          .api(`me/chats?$expand=members,lastMessagePreview&$filter=topic eq '${incident.fields.Title}'`)
-          .get();
-
-        if (!chats.value.length) {
-          chat = await createNewChat(
-            [me.id!, requestedBy.fields.EMail],
-            true,
-            `Hello ${requestedBy.fields.Title},\n\nI am reaching out to you regarding the incident: ${incident.fields.Title}.\n\nWe will be using this thread for effective communication regarding this incident.\n\nThanks,\n${me.displayName}`,
-            incident.fields.Title
-          );
-        } else {
-          chat = chats.value[0];
-        }
-
-        setChatId(chat.id);
-        await Providers.globalProvider.graph.client
-          .api(`sites/root/lists//${process.env.REACT_APP_INCIDENTS_LIST_ID!}/items/${id}`)
-          .patch({
-            fields: {
-              ChatId: chat.id
-            }
-          });
-      } else {
-        setChatId(incident.fields.ChatId);
-      }
     };
 
     const initializeDrive = async () => {
@@ -197,7 +134,6 @@ export const Incident: React.FunctionComponent = () => {
       await initializeDrive();
       await initializeChannel(currentIncident);
       await initializeTasks(currentIncident);
-      await initializeChat(currentIncident);
 
       setIsLoading(false);
     };
@@ -214,29 +150,13 @@ export const Incident: React.FunctionComponent = () => {
           <TabList selectedValue={selectedTab} onTabSelect={onTabSelect}>
             <Tab value="files">Files</Tab>
             <Tab value="tasks">Tasks</Tab>
-            <Tab value="conversation">Conversation</Tab>
           </TabList>
 
           <div className={styles.panels}>
             {selectedTab === 'files' && driveId && (
-              <FileListComposite
-                enableCommandBar={true}
-                breadcrumbRootName="Relevant Documents"
-                enableFileUpload={true}
-                useGridView={true}
-                driveId={driveId}
-                itemPath={incident.fields.Title}
-                pageSize={100}
-              />
+              <FileList driveId={driveId} itemPath={incident.fields.Title} pageSize={100} />
             )}
             {selectedTab === 'tasks' && planId && <Tasks targetId={planId} />}
-            {selectedTab === 'conversation' && chatId && (
-              <Chat
-                chatId={chatId}
-                chatTheme={appContext.state.theme.chatTheme}
-                fluentTheme={appContext.state.theme.fluentTheme}
-              />
-            )}
           </div>
         </>
       )}
