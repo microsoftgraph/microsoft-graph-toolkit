@@ -18,6 +18,7 @@ const gaTags = new Set([
   'file',
   'file-list',
   'picker',
+  'taxonomy-picker',
   'theme-toggle',
   'search-box',
   'search-results'
