@@ -319,7 +319,7 @@ export const TeamsMessages = () => html`
 <mgt-teams-channel-picker></mgt-teams-channel-picker>
 <mgt-get id="messagesGet" version="beta">
 <template data-type="value">
-  <div data-if="!deletedDateTime" class="teams-message">
+  <div data-if="!deletedDateTime && messageType == 'message'" class="teams-message">
     <mgt-person user-id="{{from.user.id}}" view="oneLine" person-card="hover"></mgt-person>
     <div data-props="@click: messageClick, innerHTML: body.content"></div>
     <div class="reply hidden">
