@@ -78,7 +78,6 @@ export const themingWithoutToggle = () => html`
 <mgt-login id="login-two"></mgt-login>
 <mgt-login id="login-three"></mgt-login>
 
-
 <h2>Style using <code>applyTheme</code> function </h2>
 <p>
   The first picker component is in the default light theme on a light
@@ -105,7 +104,10 @@ body {
 <script>
 import { applyTheme } from '@microsoft/mgt';
 applyTheme('light');
-const darkElements = [document.querySelector("#picker-two"), document.querySelector("#login-three")];
+const darkElements = [
+  document.querySelector("#picker-two"),
+  document.querySelector("#login-three")
+];
 for (const element of darkElements) {
   if(element){
     // apply the dark theme on the second picker component only.

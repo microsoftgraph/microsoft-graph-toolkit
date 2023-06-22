@@ -37,8 +37,11 @@ import { parseColorHexRGB } from '@microsoft/fast-colors';
  */
 type Theme = 'light' | 'dark' | 'default' | 'contrast';
 
-const secondaryTextColor = DesignToken.create<string>('secondary-text-color').withDefault('#717171');
-const secondaryTextHoverColor = DesignToken.create<string>('secondary-text-hover-color').withDefault('#1a1a1a');
+const secondaryTextDefault = '#717171';
+const secondaryTextColor = DesignToken.create<string>('secondary-text-color').withDefault(secondaryTextDefault);
+const secondaryTextHoverDefault = '#1a1a1a';
+const secondaryTextHoverColor =
+  DesignToken.create<string>('secondary-text-hover-color').withDefault(secondaryTextHoverDefault);
 
 /**
  * Helper function to apply fluent ui theme to an element
@@ -148,8 +151,8 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
         neutralBaseColor: '#616161',
         baseLayerLuminance: StandardLuminance.LightMode,
         designTokenOverrides: element => {
-          secondaryTextColor.setValueFor(element, secondaryTextColor);
-          secondaryTextHoverColor.setValueFor(element, secondaryTextHoverColor);
+          secondaryTextColor.setValueFor(element, secondaryTextDefault);
+          secondaryTextHoverColor.setValueFor(element, secondaryTextHoverDefault);
         }
       };
   }
