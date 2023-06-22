@@ -436,8 +436,9 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
 
   .people {
     [slot='no-data'] {
-      margin-top: 8px;
-      color: $task-new-person-icon-text-color;
+      fluent-button::part(control) {
+        color: $task-new-person-icon-text-color;
+      }
 
       svg {
         fill: $task-new-person-icon-color;
