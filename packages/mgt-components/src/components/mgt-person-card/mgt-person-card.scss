@@ -31,7 +31,7 @@ $person-card-avatar-top-spacing: var(--person-card-avatar-top-spacing, 15px);
 $person-card-details-bottom-spacing: var(--person-card-details-bottom-spacing, 0);
 $person-card-base-icons-left-spacing: var(
   --person-card-base-icons-left-spacing,
-  calc(#{$person-card-avatar-size} * 0.85)
+  calc(#{$person-card-avatar-size} + #{$person-card-details-left-spacing} - 8px)
 );
 
 :host {
@@ -130,7 +130,7 @@ $person-card-base-icons-left-spacing: var(
       --person-line3-font-weight: #{$person-card-line3-font-weight};
       --person-line3-text-line-height: #{$person-card-line3-line-height};
       --person-line3-text-color: #{$person-card-line3-text-color};
-      --person-avatar-size-3-lines: #{$person-card-avatar-size};
+      --person-avatar-size: #{$person-card-avatar-size};
       --person-presence-wrapper-bottom: -15px;
     }
 
