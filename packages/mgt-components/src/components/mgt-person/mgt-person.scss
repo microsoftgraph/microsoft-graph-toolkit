@@ -42,7 +42,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
   font-size: var(--default-font-size);
   font-family: var(--default-font-family);
 
-  mgt-flyout {
+  .flyout {
     [slot='anchor'] {
       display: flex;
 
@@ -57,8 +57,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     }
   }
 
-  .person-root,
-  mgt-person .person-root {
+  .person-root {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -68,6 +67,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     &.small {
       .avatar-wrapper {
         min-width: $person-avatar-size;
+        width: $person-avatar-size;
         height: $person-avatar-size;
       }
     }
@@ -84,6 +84,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     &.twolines {
       .avatar-wrapper {
         min-width: $person-avatar-size-40;
+        width: $person-avatar-size-40;
         height: $person-avatar-size-40;
 
         .initials,
@@ -104,6 +105,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     &.large {
       .avatar-wrapper {
         min-width: $person-avatar-size-56;
+        width: $person-avatar-size-56;
         height: $person-avatar-size-56;
 
         .initials,
@@ -122,6 +124,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
     &.fourlines {
       .avatar-wrapper {
+        min-width: $person-avatar-size-72;
         width: $person-avatar-size-72;
         height: $person-avatar-size-72;
 
@@ -146,6 +149,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
       .avatar-wrapper {
         min-width: $person-avatar-size-72;
+        width: $person-avatar-size-72;
         height: $person-avatar-size-72;
 
         .initials,
@@ -164,6 +168,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
     .avatar-wrapper {
       min-width: $person-avatar-size;
+      width: $person-avatar-size;
       height: $person-avatar-size;
       position: relative;
       box-sizing: border-box;
@@ -258,9 +263,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
   :host svg,
-  :host svg > path,
-  mgt-person svg,
-  mgt-person svg > path {
+  :host svg > path {
     fill: rgb(255 255 255) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
@@ -269,9 +272,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
   :host svg,
-  :host svg > path,
-  mgt-person svg,
-  mgt-person svg > path {
+  :host svg > path {
     fill: rgb(0 0 0) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;

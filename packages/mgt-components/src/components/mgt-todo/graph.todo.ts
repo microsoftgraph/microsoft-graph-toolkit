@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { DateTimeTimeZone, ItemBody, PatternedRecurrence } from '@microsoft/microsoft-graph-types';
+import { TodoTaskList, TodoTask } from '@microsoft/microsoft-graph-types';
 import { IGraph, prepScopes } from '@microsoft/mgt-element';
 import { CollectionResponse } from '@microsoft/mgt-element';
 
@@ -15,47 +15,6 @@ export interface LinkedResource {
   applicationName: string;
   displayName: string;
   externalId: string;
-}
-
-export type TaskStatus = 'notStarted' | 'inProgress' | 'completed' | 'deferred' | 'waitingOnOthers';
-
-export enum TaskImportance {
-  low,
-  normal,
-  high
-}
-
-export enum WellknownListName {
-  none,
-  default,
-  flaggedEmails,
-  unknownFutureValue
-}
-
-export interface TodoTask {
-  id: string;
-  title: string;
-  body: ItemBody;
-  importance: TaskImportance;
-  status: TaskStatus;
-  createdDateTime: Date;
-  completedDateTime: DateTimeTimeZone;
-  lastModifiedDateTime: Date;
-  bodyLastModifiedDateTime: Date;
-  dueDateTime: DateTimeTimeZone;
-  isReminderOn: boolean;
-  reminderDateTime: DateTimeTimeZone;
-  recurrence: PatternedRecurrence;
-  linkedResources: LinkedResource[];
-}
-
-export interface TodoTaskList {
-  id: string;
-  displayName: string;
-  tasks: TodoTask[];
-  isOwner: boolean;
-  isShared: boolean;
-  wellknownName: WellknownListName;
 }
 
 /**

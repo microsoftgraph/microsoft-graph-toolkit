@@ -173,12 +173,13 @@ export const findPeople = async (
 export const getPeople = async (
   graph: IGraph,
   userType: UserType = UserType.any,
-  peopleFilters = ''
+  peopleFilters = '',
+  top = 10
 ): Promise<Person[]> => {
   const scopes = 'people.read';
 
   let cache: CacheStore<CachePeopleQuery>;
-  const cacheKey = peopleFilters ? peopleFilters : `*:${userType}`;
+  const cacheKey = `${peopleFilters ? peopleFilters : `*:${userType}`}:${top}`;
 
   if (getIsPeopleCacheEnabled()) {
     cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
@@ -205,7 +206,7 @@ export const getPeople = async (
 
   let people: CollectionResponse<Person>;
   try {
-    let graphRequest = graph.api(uri).middlewareOptions(prepScopes(scopes)).filter(filter);
+    let graphRequest = graph.api(uri).middlewareOptions(prepScopes(scopes)).top(top).filter(filter);
 
     if (userType !== UserType.contact) {
       // for any type other than Contact, user a wider search

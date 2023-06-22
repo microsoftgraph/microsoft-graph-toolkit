@@ -32,7 +32,7 @@ export const userPreferenceDriven = () => html`
   </p>
   <style>
 body {
-    background-color: var(--neutral-fill-rest);
+    background-color: var(--fill-color);
     color: var(--neutral-foreground-rest);
     font-family: var(--body-font);
 }
@@ -43,7 +43,7 @@ export const darkModeOn = () => html`
   <mgt-theme-toggle mode="dark"></mgt-theme-toggle>
   <style>
 body {
-    background-color: var(--neutral-fill-rest);
+    background-color: var(--fill-color);
 }
   </style>
 `;
@@ -52,7 +52,7 @@ export const lightModeOn = () => html`
   <mgt-theme-toggle mode="light"></mgt-theme-toggle>
   <style>
 body {
-    background-color: var(--neutral-fill-rest);
+    background-color: var(--fill-color);
 }
   </style>
 `;
@@ -99,7 +99,7 @@ export const localization = () => html`
 <mgt-theme-toggle></mgt-theme-toggle>
   <style>
 body {
-    background-color: var(--neutral-fill-rest);
+    background-color: var(--fill-color);
 }
   </style>
   <script>

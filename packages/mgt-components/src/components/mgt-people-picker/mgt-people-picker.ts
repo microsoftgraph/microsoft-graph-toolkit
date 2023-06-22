@@ -928,20 +928,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
          ${repeat(
            filteredPeople,
            person => person.id,
-           person => {
-             const lineTwo = person.jobTitle || (person as User).mail;
-             const ariaLabel = `${person.displayName} ${lineTwo ?? ''}`;
-             return html`
-               <li
-                id="${person.id}"
-                aria-label="${ariaLabel}"
-                class="searched-people-list-result"
-                role="option"
-                @click="${() => this.handleSuggestionClick(person)}">
-                  ${this.renderPersonResult(person)}
-               </li>
-             `;
-           }
+           person => html`
+            <li
+              id="${person.id}"
+              class="searched-people-list-result"
+              role="option"
+              @click="${() => this.handleSuggestionClick(person)}">
+                ${this.renderPersonResult(person)}
+            </li>
+          `
          )}
        </ul>
      `;
@@ -1076,7 +1071,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               if (this._userFilters && isUserOrContactType) {
                 people = await getUsers(graph, this._userFilters, this.showMax);
               } else {
-                people = await getPeople(graph, this.userType, this._peopleFilters);
+                people = await getPeople(graph, this.userType, this._peopleFilters, this.showMax);
               }
             }
           } else if (this.type === PersonType.group) {
@@ -1554,9 +1549,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     if (keyName === 'ArrowUp' || keyName === 'ArrowDown') {
       this.handleArrowSelection(event);
-      if (this.input.value?.length > 0) {
-        event.preventDefault();
-      }
+      event.preventDefault();
     }
 
     if (keyName === 'Enter') {

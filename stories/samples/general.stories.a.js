@@ -16,7 +16,6 @@ export default {
   }
 };
 
-
 export const LoginToShowAgenda = () => html`
   <mgt-login></mgt-login>
   <mgt-agenda></mgt-agenda>
@@ -95,70 +94,81 @@ export const Localization = () => html`
 `;
 
 export const cache = () => html`
-  <button id="ClearCacheButton" type="button">Clear Cache</button>
-  <span class="notes"
-    >*Note* Please refer to your browser Developer Tools -> Applications -> Storage -> IndexedDB for cached
-    objects</span
-  >
+<button id="ClearCacheButton" type="button">Clear Cache</button>
+<div id="status" class="notes"></div>
+<span class="notes"
+  >*Note* Please refer to your browser Developer Tools -> Applications -> Storage -> IndexedDB for cached
+  objects</span
+>
 
-  <mgt-login></mgt-login>
-  <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
-  <mgt-person user-id="4782e723-f4f4-4af3-a76e-25e3bab0d896" view="twoLines"></mgt-person>
-  <mgt-people-picker></mgt-people-picker>
-  <mgt-people-picker type="group"></mgt-people-picker>
-  <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
-  <mgt-teams-channel-picker></mgt-teams-channel-picker>
-  <mgt-tasks data-source="todo"></mgt-tasks>
-  <mgt-agenda group-by-day></mgt-agenda>
-  <mgt-people show-presence show-max="10"></mgt-people>
-  <mgt-people group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people>
-  <mgt-people user-ids="4782e723-f4f4-4af3-a76e-25e3bab0d896, f5289423-7233-4d60-831a-fe107a8551cc"></mgt-people>
+<mgt-login></mgt-login>
+<mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
+<mgt-person user-id="4782e723-f4f4-4af3-a76e-25e3bab0d896" view="twoLines"></mgt-person>
+<mgt-people-picker></mgt-people-picker>
+<mgt-people-picker type="group"></mgt-people-picker>
+<mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
+<mgt-teams-channel-picker></mgt-teams-channel-picker>
+<mgt-tasks data-source="todo"></mgt-tasks>
+<mgt-agenda group-by-day></mgt-agenda>
+<mgt-people show-presence show-max="10"></mgt-people>
+<mgt-people group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people>
+<mgt-people user-ids="4782e723-f4f4-4af3-a76e-25e3bab0d896, f5289423-7233-4d60-831a-fe107a8551cc"></mgt-people>
   <style>
-    .notes {
-      display: block;
-      font-size: 12px;
-      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
-        'Helvetica Neue', sans-serif;
-      margin-bottom: 5px;
-    }
+.notes {
+  display: block;
+  font-size: 12px;
+  font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+    'Helvetica Neue', sans-serif;
+  margin-bottom: 5px;
+}
   </style>
   <script>
-    import { CacheService } from '@microsoft/mgt';
-    CacheService.config.isEnabled = true;
+import { CacheService, Providers } from '@microsoft/mgt';
+CacheService.config.isEnabled = true;
 
-    let clearCacheButton = document.getElementById('ClearCacheButton');
-    clearCacheButton.addEventListener('click', clearCache);
-    function clearCache() {
-      CacheService.clearCaches();
-    }
+const status = document.getElementById('status');
+status.innerHTML = 'Cache is enabled: ' + CacheService.config.isEnabled;
 
-    // you can clear cache by:
-    // CacheService.clearCaches();
+const clearCache = async () => {
+  // get the id of the current cache
+  const id = await Providers.getCacheId();
+  status.innerHTML = 'Clearing cache ' + id + ', this may take a little while...';
+  // clear the current cache
+  await CacheService.clearCacheById(id);
+  status.innerHTML = 'Cache cleared.';
+}
 
-    // this is the config object
-    // {
-    //   defaultInvalidationPeriod: number,
-    //   isEnabled: boolean,
-    //   people: {
-    //     invalidationPeriod: number,
-    //     isEnabled: boolean
-    //   },
-    //   photos: {
-    //     invalidationPeriod: number,
-    //     isEnabled: boolean
-    //   },
-    //   users: {
-    //     invalidationPeriod: number,
-    //     isEnabled: boolean
-    //   },
-    //   presence: {
-    //     invalidationPeriod: number,
-    //     isEnabled: boolean
-    //   },
-    //   groups: {
-    //     invalidationPeriod: number,
-    //     isEnabled: boolean
-    //   }
-    // };
+const onClearCacheButtonClick = () => {
+  void clearCache();
+};
+
+let clearCacheButton = document.getElementById('ClearCacheButton');
+clearCacheButton.addEventListener('click', onClearCacheButtonClick);
+
+// this is the config object
+// {
+//   defaultInvalidationPeriod: number,
+//   isEnabled: boolean,
+//   people: {
+//     invalidationPeriod: number,
+//     isEnabled: boolean
+//   },
+//   photos: {
+//     invalidationPeriod: number,
+//     isEnabled: boolean
+//   },
+//   users: {
+//     invalidationPeriod: number,
+//     isEnabled: boolean
+//   },
+//   presence: {
+//     invalidationPeriod: number,
+//     isEnabled: boolean
+//   },
+//   groups: {
+//     invalidationPeriod: number,
+//     isEnabled: boolean
+//   }
+// };
   </script>
 `;
