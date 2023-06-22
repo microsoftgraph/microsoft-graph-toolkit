@@ -15,7 +15,8 @@ import {
   MgtTemplatedComponent,
   BetaGraph,
   customElement,
-  mgtHtml
+  mgtHtml,
+  CollectionResponse
 } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
@@ -143,22 +144,6 @@ interface ChannelPickerItemState {
 }
 
 /**
- * Configuration object for the TeamsChannelPicker component
- *
- * @export
- * @interface MgtTeamsChannelPickerConfig
- */
-export interface MgtTeamsChannelPickerConfig {
-  /**
-   * Sets or gets whether the teams channel picker component should use
-   * the Teams based scopes instead of the User and Group based scopes
-   *
-   * @type {boolean}
-   */
-  useTeamsBasedScopes: boolean;
-}
-
-/**
  * Web component used to select channels from a User's Microsoft Teams profile
  *
  *
@@ -209,21 +194,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return strings;
   }
 
-  /**
-   * Global Configuration object for all
-   * teams channel picker components
-   *
-   * @static
-   * @type {MgtTeamsChannelPickerConfig}
-   * @memberof MgtTeamsChannelPicker
-   */
-  public static get config(): MgtTeamsChannelPickerConfig {
-    return this._config;
-  }
-
-  private static readonly _config = {
-    useTeamsBasedScopes: false
-  };
   private teamsPhotos = {};
 
   /**
@@ -249,11 +219,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @memberof MgtTeamsChannelPicker
    */
   public static get requiredScopes(): string[] {
-    if (this.config.useTeamsBasedScopes) {
-      return ['team.readbasic.all', 'channel.readbasic.all'];
-    } else {
-      return ['user.read.all', 'group.read.all'];
-    }
+    return ['team.readbasic.all', 'channel.readbasic.all'];
   }
 
   private set items(value) {
@@ -695,49 +661,31 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
-      // make sure we have the needed scopes
-      if (!(await provider.getAccessTokenForScopes(...MgtTeamsChannelPicker.requiredScopes))) {
-        return;
-      }
-
-      teams = await getAllMyTeams(graph);
+      teams = await getAllMyTeams(graph, MgtTeamsChannelPicker.requiredScopes);
       teams = teams.filter(t => !t.isArchived);
-
-      const teamsIds = teams.map(t => t.id);
 
       const beta = BetaGraph.fromGraph(graph);
 
+      const teamsIds = teams.map(t => t.id);
       this.teamsPhotos = await getTeamsPhotosforPhotoIds(beta, teamsIds);
 
-      const batch = graph.createBatch();
-      const scopes = ['team.readbasic.all'];
+      const batch = graph.createBatch<CollectionResponse<MicrosoftGraph.Channel>>();
 
       for (const team of teams) {
-        batch.get(team.id, `teams/${team.id}/channels`, scopes);
+        batch.get(team.id, `teams/${team.id}/channels`, MgtTeamsChannelPicker.requiredScopes);
       }
 
       const responses = await batch.executeAll();
-
+      this._items = [];
       for (const team of teams) {
-        const response = responses.get(team.id);
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (response?.content?.value) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          team.channels = response.content.value.map((c: MicrosoftGraph.Team) => {
-            return {
-              item: c
-            };
-          });
-        }
+        const channelsForTeam = responses.get(team.id);
+        // skip over any teams that don't have channels
+        if (!channelsForTeam.content?.value?.length) continue;
+        this.items.push({
+          item: team,
+          channels: channelsForTeam.content.value.map(c => ({ item: c }))
+        });
       }
-
-      this.items = teams.map(t => {
-        return {
-          channels: t.channels as DropdownItem[],
-          item: t
-        };
-      });
     }
     this.filterList();
     this.resetFocusState();
