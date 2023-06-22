@@ -149,7 +149,7 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
         baseLayerLuminance: StandardLuminance.LightMode,
         designTokenOverrides: element => {
           secondaryTextColor.setValueFor(element, secondaryTextColor);
-          secondaryTextColor.setValueFor(element, secondaryTextHoverColor);
+          secondaryTextHoverColor.setValueFor(element, secondaryTextHoverColor);
         }
       };
   }
