@@ -360,6 +360,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             placeholder="${this._selectedItemState ? '' : this.strings.inputPlaceholderText} "
             label="teams-channel-picker-input"
             role="combobox"
+            aria-expanded="${this._isDropdownVisible}"
             @click=${this.gainedFocus}
             @keyup=${(e: KeyboardEvent) => this.handleInputChanged(e)}>
               <div slot="start" style="width: max-content;">${this.renderSelected()}</div>
