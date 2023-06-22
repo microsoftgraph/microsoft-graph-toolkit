@@ -237,6 +237,10 @@ export type SearchResultsProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type SpinnerProps = {
+	mediaQuery?: ComponentMediaQuery;
+}
+
 export type TasksProps = {
 	res?: TasksStringResource;
 	isNewTaskVisible?: boolean;
@@ -256,6 +260,25 @@ export type TasksProps = {
 	taskChanged?: (e: CustomEvent<ITask>) => void;
 	taskClick?: (e: CustomEvent<ITask>) => void;
 	taskRemoved?: (e: CustomEvent<ITask>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
+export type TaxonomyPickerProps = {
+	termsetId?: string;
+	termId?: string;
+	siteId?: string;
+	locale?: string;
+	version?: string;
+	placeholder?: string;
+	position?: string;
+	defaultSelectedTermId?: string;
+	selectedTerm?: MicrosoftGraph.TermStore.Term;
+	disabled?: boolean;
+	cacheEnabled?: boolean;
+	cacheInvalidationPeriod?: number;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	selectionChanged?: (e: CustomEvent<MicrosoftGraph.TermStore.Term>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
@@ -309,7 +332,11 @@ export const SearchBox = wrapMgt<SearchBoxProps>('search-box');
 
 export const SearchResults = wrapMgt<SearchResultsProps>('search-results');
 
+export const Spinner = wrapMgt<SpinnerProps>('spinner');
+
 export const Tasks = wrapMgt<TasksProps>('tasks');
+
+export const TaxonomyPicker = wrapMgt<TaxonomyPickerProps>('taxonomy-picker');
 
 export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('teams-channel-picker');
 

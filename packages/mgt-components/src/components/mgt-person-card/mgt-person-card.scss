@@ -43,6 +43,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   --file-list-background-color: transparent;
   --file-list-box-shadow: none;
   --file-item-background-color: transparent;
+  --card-height: auto;
 
   .small {
     max-height: 100vh;
@@ -445,7 +446,8 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 
 :host fluent-button {
   &.section__show-more.lightweight::part(control),
-  &.close-button.lightweight::part(control) {
+  &.close-button.lightweight::part(control),
+  &.expanded-details-button::part(control) {
     background: $person-card-fluent-background-color;
   }
 

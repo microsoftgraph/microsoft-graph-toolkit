@@ -109,7 +109,7 @@ export const findGroups = async (
   const scopes = 'Group.Read.All';
 
   let cache: CacheStore<CacheGroupQuery>;
-  const key = `${query ? query : '*'}*${groupTypes}*${groupFilters}`;
+  const key = `${query ? query : '*'}*${groupTypes}*${groupFilters}:${top}`;
 
   if (getIsGroupsCacheEnabled()) {
     cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery);
