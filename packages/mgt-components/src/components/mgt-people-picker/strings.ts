@@ -10,8 +10,7 @@ export const strings = {
   noResultsFound: "We didn't find any matches.",
   loadingMessage: 'Loading...',
   selected: 'selected',
-  removeSelectedItem: 'remove selected item',
   removeSelectedUser: 'Remove ',
   selectContact: 'select a contact',
-  suggestionsTitle: 'Suggested Contacts'
+  suggestionsTitle: 'Suggested contacts'
 };
