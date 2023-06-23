@@ -31,6 +31,7 @@ $placeholder-focus-text-color: var(
   --channel-picker-input-placeholder-text-color-focus,
   var(--input-placeholder-filled)
 );
+$dropdown-card-background-color: var(--channel-picker-dropdown-background-color, var(--fill-color));
 $dropdown-background-color: var(--channel-picker-dropdown-background-color, transparent);
 $dropdown-item-text-color: var(--channel-picker-dropdown-item-text-color, currentColor);
 $dropdown-item-background-color-hover: var(
