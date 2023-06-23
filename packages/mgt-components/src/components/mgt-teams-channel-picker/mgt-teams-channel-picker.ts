@@ -234,9 +234,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return this._items;
   }
 
+  private get _inputWrapper(): HTMLElement {
+    return this.renderRoot.querySelector<HTMLElement>('fluent-text-field');
+  }
   // User input in search
   private get _input(): HTMLInputElement {
-    const wrapper = this.renderRoot.querySelector<HTMLElement>('fluent-text-field');
+    const wrapper: HTMLElement = this._inputWrapper;
     const input = wrapper.shadowRoot.querySelector<HTMLInputElement>('input');
     return input;
   }
@@ -878,6 +881,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (input) {
       input.value = this._inputValue = '';
       input.textContent = '';
+      const wrapper = this._inputWrapper as HTMLInputElement;
+      wrapper.value = '';
     }
 
     this._isDropdownVisible = false;
