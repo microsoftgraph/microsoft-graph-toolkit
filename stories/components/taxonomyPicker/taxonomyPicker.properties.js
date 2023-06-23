@@ -14,14 +14,6 @@ export default {
   decorators: [withCodeEditor]
 };
 
-/* export const TermId = () => html`
-  <mgt-taxonomy-picker term-set-id="138a652e-7f23-46f6-b480-13da2308c235" term-id="a56caeb7-3b7d-4d22-93a9-0232e12905f6"></mgt-taxonomy-picker>
-`;
-
-export const SiteId = () => html`
-    <mgt-taxonomy-picker term-set-id="7889007a-fb0e-449f-b629-dedf63ae53de" site-id="contoso.sharepoint.com,0962bcef-48f1-4460-baa8-b7286dcb249b,ba412b3c-951a-4322-ac37-0fe6307b5987"></mgt-taxonomy-picker>
-`; */
-
 export const DefaultSelectedTermId = () => html`
   <mgt-taxonomy-picker term-set-id="f1c3d275-b202-41f0-83f3-80d63ffaa052" default-selected-term-id="71d47d57-479b-4a8c-80df-697da2d5a2e1"></mgt-taxonomy-picker>
 `;
