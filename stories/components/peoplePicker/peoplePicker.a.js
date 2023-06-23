@@ -65,6 +65,8 @@ export const localization = () => html`
      _components: {
        'people-picker': {
          inputPlaceholderText: 'Search for 🤼',
+          maxSelectionsPlaceHolder: 'Maxiumum reached',
+          maxSelectionsAriaLabel: 'You can only select 1 person',
          noResultsFound: '🤷‍♀️',
          loadingMessage: '🦔'
        }
