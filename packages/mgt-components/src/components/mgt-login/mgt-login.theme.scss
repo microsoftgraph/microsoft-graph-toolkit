@@ -12,7 +12,13 @@ $signed-in-background-color: var(--login-signed-in-background, transparent);
 $signed-in-hover-background-color: #{var(--login-signed-in-hover-background, var(--neutral-fill-stealth-hover))};
 $login-command-btn-text-color: #{var(--login-command-button-text-color, var(--neutral-fill-foreground-rest))};
 $login-command-btn-bg-color: #{var(--login-command-button-background-color, var(--neutral-fill-stealth-rest))};
-$login-command-btn-bg-hover-color: #{var(--login-command-button-hover-background-color, var(--neutral-fill-stealth-hover))};
+$login-command-btn-bg-hover-color: #{var(
+    --login-command-button-hover-background-color,
+    var(--neutral-fill-stealth-hover)
+  )};
 $login-add-account-btn-text-color: #{var(--login-add-account-button-text-color, var(--neutral-fill-foreground-rest))};
 $login-add-account-btn-bg-color: #{var(--login-add-account-button-background-color, var(--neutral-fill-stealth-rest))};
-$login-add-account-btn-hover-bg-color: #{var(--login-add-account-button-hover-background-color, var(--neutral-fill-stealth-hover))};
+$login-add-account-btn-hover-bg-color: #{var(
+    --login-add-account-button-hover-background-color,
+    var(--neutral-fill-stealth-hover)
+  )};
