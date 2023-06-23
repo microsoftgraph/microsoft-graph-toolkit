@@ -45,6 +45,8 @@ $button-padding: var(--login-button-padding, 0);
         &:hover,
         &:focus-within {
           background: $signed-in-hover-background-color;
+
+          --secondary-text-color: var(--secondary-text-hover-color);
         }
       }
     }
