@@ -877,13 +877,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   };
 
   private readonly lostFocus = () => {
-    const input = this._input;
-    if (input) {
-      input.value = this._inputValue = '';
-      input.textContent = '';
-      const wrapper = this._inputWrapper as HTMLInputElement;
-      wrapper.value = '';
-    }
+    this._input.value = this._inputValue = '';
+    this._input.textContent = '';
+    const wrapper = this._inputWrapper as HTMLInputElement;
+    wrapper.value = '';
 
     this._isDropdownVisible = false;
     this.filterList();
