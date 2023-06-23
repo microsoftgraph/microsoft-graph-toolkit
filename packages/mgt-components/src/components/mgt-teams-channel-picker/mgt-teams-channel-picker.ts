@@ -252,7 +252,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   // determines loading state
   @state() private _isDropdownVisible: boolean;
-  @state() private _isFocused: boolean;
 
   constructor() {
     super();
@@ -356,12 +355,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             autocomplete="off"
             appearance="outline"
             id="teams-channel-picker-input"
-            aria-label="Select a channel"
-            placeholder="${this._selectedItemState ? '' : this.strings.inputPlaceholderText} "
-            label="teams-channel-picker-input"
             role="combobox"
+            placeholder="${this._selectedItemState ? '' : this.strings.inputPlaceholderText} "
+            aria-label=${this.strings.inputPlaceholderText}
+            label="teams-channel-picker-input"
             @click=${this.gainedFocus}
-            @keyup=${(e: KeyboardEvent) => this.handleInputChanged(e)}>
+            @focus=${this.handleFocus}
+            @keyup=${this.handleInputChanged}>
               <div slot="start" style="width: max-content;">${this.renderSelected()}</div>
               <div slot="end">${this.renderChevrons()}${this.renderCloseButton()}</div>
           </fluent-text-field>
@@ -390,6 +390,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       icon = html`<img
         class="team-photo"
         alt="${this._selectedItemState.parent.item.displayName}"
+        role="img"
         src=${src} />`;
     }
 
@@ -499,7 +500,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   protected renderUpChevron() {
     return html`
-      <div style="display:none" class="up-chevron" @click=${(e: Event) => this.handleUpChevronClick(e)}>
+      <div style="display:none" class="up-chevron" @click=${this.handleUpChevronClick}>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2.21967 7.53033C2.51256 7.82322 2.98744 7.82322 3.28033 7.53033L6 4.81066L8.71967 7.53033C9.01256 7.82322 9.48744 7.82322 9.78033 7.53033C10.0732 7.23744 10.0732 6.76256 9.78033 6.46967L6.53033 3.21967C6.23744 2.92678 5.76256 2.92678 5.46967 3.21967L2.21967 6.46967C1.92678 6.76256 1.92678 7.23744 2.21967 7.53033Z" fill="#212121" />
         </svg>
@@ -550,7 +551,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       return html`
         <fluent-tree-view
           class="tree-view"
-          dir=${this.direction}>
+          dir=${this.direction}
+          aria-live="polite"
+          aria-label=${this.strings.teamsChannels}
+          aria-orientation="horizontal">
           ${repeat(
             items,
             (itemObj: ChannelPickerItemState) => itemObj?.item,
@@ -558,7 +562,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
               if (obj.channels) {
                 icon = html`<img
                   class="team-photo"
-                  alt="${obj.item.displayName}"
+                  alt="${this.strings.photoFor} ${obj.item.displayName}"
+                  role="img"
                   src=${
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                     this.teamsPhotos[obj.item.id]?.photo
@@ -567,8 +572,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
               return html`
                 <fluent-tree-item
                   ?expanded=${obj?.isExpanded}
-                  @click=${(e: Event) => this.handleTeamTreeItemClick(e)}>
-                    ${icon}${obj.item.displayName}
+                  aria-live="polite"
+                  @click=${this.handleTeamTreeItemClick}>
+                    <span slot="start">${icon}</span>${obj.item.displayName}
                     ${repeat(
                       obj?.channels,
                       (channels: ChannelPickerItemState) => channels.item,
@@ -617,7 +623,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="message-parent">
           <div
             label="search-error-text"
-            aria-label="We didn't find any matches."
+            aria-label=${this.strings.noResultsFound}
             class="search-error-text">
             ${this.strings.noResultsFound}
           </div>
@@ -717,7 +723,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
   }
 
-  private handleTeamTreeItemClick(event: Event) {
+  handleTeamTreeItemClick = (event: Event) => {
     event.preventDefault();
     event.stopImmediatePropagation();
     const element = event.target as HTMLElement;
@@ -735,9 +741,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         element.setAttribute('selected', 'true');
       }
     }
-  }
+  };
 
-  private handleInputChanged(e: KeyboardEvent) {
+  handleInputChanged = (e: KeyboardEvent) => {
     const target = e.target as HTMLInputElement;
     if (this._inputValue !== target?.value) {
       this._inputValue = target?.value;
@@ -755,7 +761,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
 
     this.debouncedSearch();
-  }
+  };
 
   private onUserKeyDown(e: KeyboardEvent, item?: ChannelPickerItemState) {
     const key = e.code;
@@ -856,7 +862,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   };
 
   private readonly gainedFocus = () => {
-    this._isFocused = true;
     const input = this._input;
     if (input) {
       input.focus();
@@ -865,6 +870,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._isDropdownVisible = true;
     this.toggleChevron();
     this.resetFocusState();
+    this.requestUpdate();
   };
 
   private readonly lostFocus = () => {
@@ -874,7 +880,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       input.textContent = '';
     }
 
-    this._isFocused = false;
     this._isDropdownVisible = false;
     this.filterList();
     this.toggleChevron();
@@ -883,6 +888,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (this._selectedItemState !== undefined) {
       this.showCloseIcon();
     }
+  };
+
+  handleFocus = () => {
+    this.lostFocus();
+    this.gainedFocus();
   };
 
   private selectChannel(item: ChannelPickerItemState) {
@@ -932,8 +942,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.hideCloseIcon();
   }
 
-  private handleUpChevronClick(e: Event) {
+  handleUpChevronClick = (e: Event) => {
     e.stopPropagation();
     this.lostFocus();
-  }
+  };
 }
