@@ -761,6 +761,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         slot="anchor"
         id="people-picker-input"
         role="combobox"
+        aria-expanded=${this.flyout?.isOpen ?? false}
         placeholder=${placeholder}
         aria-label=${this.ariaLabel || placeholder || this.strings.selectContact}
         @click="${this.handleInputClick}"
@@ -924,6 +925,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         class="searched-people-list"
         role="listbox"
         aria-live="polite"
+        title=${this.strings.suggestionsTitle}
       >
          ${repeat(
            filteredPeople,
@@ -1262,7 +1264,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       flyout.close();
     }
     if (this.input) {
-      this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
     }
     this._arrowSelectionCount = -1;
@@ -1278,9 +1279,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const flyout = this.flyout;
     if (flyout) {
       flyout.open();
-    }
-    if (this.input) {
-      this.input.setAttribute('aria-expanded', 'true');
     }
     this._arrowSelectionCount = -1;
   }
@@ -1371,7 +1369,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private readonly lostFocus = () => {
     this._isFocused = false;
     if (this.input) {
-      this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
     }
 
