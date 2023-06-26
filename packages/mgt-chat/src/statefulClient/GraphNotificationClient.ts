@@ -87,17 +87,17 @@ export class GraphNotificationClient {
     return token;
   }
 
-  private onRenewalIgnored = (subscriptionRecord: SubscriptionRecord) => {
+  private readonly onRenewalIgnored = (subscriptionRecord: SubscriptionRecord) => {
     console.log('subscription renewalIgnored for subscription ' + subscriptionRecord.SubscriptionId);
   };
 
-  private onRenewalFailed = async (subscriptionId: string) => {
+  private readonly onRenewalFailed = async (subscriptionId: string) => {
     console.log(`Renewal of subscription ${subscriptionId} failed.`);
     // Something failed to renew the subscription. Create a new one.
     await this.recreateSubscription(subscriptionId);
   };
 
-  private onSubscribeFailed = (subscriptionDefinition: SubscriptionDefinition) => {
+  private readonly onSubscribeFailed = (subscriptionDefinition: SubscriptionDefinition) => {
     // Something failed when creation the subscription.
     console.log(`Creation of subscription for resource ${subscriptionDefinition.resource} failed.`);
   };
@@ -112,12 +112,12 @@ export class GraphNotificationClient {
       .build();
   }
 
-  private onReconnect = (connectionId: string | undefined) => {
+  private readonly onReconnect = (connectionId: string | undefined) => {
     console.log(`Reconnected. ConnectionId: ${connectionId || 'undefined'}`);
     void this.renewChatSubscriptions();
   };
 
-  private receiveNotificationMessage = async (notification: Notification) => {
+  private readonly receiveNotificationMessage = async (notification: Notification) => {
     console.log('received notification message', notification);
     const emitter: ThreadEventEmitter | undefined = this.subscriptionEmitter[notification.subscriptionId];
     if (!notification.encryptedContent) throw new Error('Message did not contain encrypted content');
@@ -175,7 +175,7 @@ export class GraphNotificationClient {
     }
   }
 
-  private onSubscribed = (subscriptionRecord: SubscriptionRecord) => {
+  private readonly onSubscribed = (subscriptionRecord: SubscriptionRecord) => {
     console.log(`Subscription created. SubscriptionId: ${subscriptionRecord.SubscriptionId}`);
     this.cacheSubscription(subscriptionRecord);
     this.subscriptionEmitter[subscriptionRecord.SubscriptionId]?.notificationsSubscribedForResource(
@@ -183,12 +183,12 @@ export class GraphNotificationClient {
     );
   };
 
-  private onRenewed = (subscriptionRecord: SubscriptionRecord) => {
+  private readonly onRenewed = (subscriptionRecord: SubscriptionRecord) => {
     console.log(`Subscription renewed. SubscriptionId: ${subscriptionRecord.SubscriptionId}`);
     this.cacheSubscription(subscriptionRecord);
   };
 
-  private cacheSubscription = (subscriptionRecord: SubscriptionRecord) => {
+  private readonly cacheSubscription = (subscriptionRecord: SubscriptionRecord) => {
     console.log(subscriptionRecord);
 
     // move the event emitter from the temp map to the subscription map
@@ -217,9 +217,8 @@ export class GraphNotificationClient {
 
   private remapEmitter(subscriptionRecord: SubscriptionRecord) {
     if (this.tempThreadSubscriptionEmitterMap[subscriptionRecord.Resource]) {
-      this.subscriptionEmitter[subscriptionRecord.SubscriptionId] = this.tempThreadSubscriptionEmitterMap[
-        subscriptionRecord.Resource
-      ];
+      this.subscriptionEmitter[subscriptionRecord.SubscriptionId] =
+        this.tempThreadSubscriptionEmitterMap[subscriptionRecord.Resource];
       delete this.tempThreadSubscriptionEmitterMap[subscriptionRecord.Resource];
     }
   }
@@ -255,13 +254,13 @@ export class GraphNotificationClient {
     console.log('Invoked CreateSubscription');
   }
 
-  private startRenewalTimer = () => {
+  private readonly startRenewalTimer = () => {
     if (this.renewalInterval !== -1) clearInterval(this.renewalInterval);
     this.renewalInterval = window.setInterval(() => this.renewalTimer(), appSettings.timerInterval * 1000);
     console.log(`Start renewal timer . Id: ${this.renewalInterval}`);
   };
 
-  private renewalTimer = () => {
+  private readonly renewalTimer = () => {
     const subscriptions = loadCachedSubscriptions();
     if (subscriptions.length === 0) {
       console.log(`No subscriptions found in session state. Stop renewal timer ${this.renewalInterval}.`);
@@ -307,7 +306,7 @@ export class GraphNotificationClient {
     await Promise.all(awaits);
   };
 
-  private recreateSubscription = async (subscriptionId: string): Promise<void> => {
+  private readonly recreateSubscription = async (subscriptionId: string): Promise<void> => {
     console.log('Remove Subscription from session storage.');
     const subscriptionCache = loadCachedSubscriptions();
     if (subscriptionCache?.length > 0) {
@@ -323,7 +322,7 @@ export class GraphNotificationClient {
     }
   };
 
-  private decryptNotification = async <T extends ChatMessage | Chat | ConversationMember[]>(
+  private readonly decryptNotification = async <T extends ChatMessage | Chat | ConversationMember[]>(
     notification: Notification
   ): Promise<T> => {
     const token = await this.getToken();

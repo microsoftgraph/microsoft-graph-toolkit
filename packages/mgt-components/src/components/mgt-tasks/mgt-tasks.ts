@@ -607,14 +607,14 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._hasDoneInitialLoad = true;
   }
 
-  private onResize = () => {
+  private readonly onResize = () => {
     if (this.mediaQuery !== this.previousMediaQuery) {
       this.previousMediaQuery = this.mediaQuery;
       this.requestUpdate();
     }
   };
 
-  private onThemeChanged = () => {
+  private readonly onThemeChanged = () => {
     this._isDarkMode = isElementDark(this);
   };
 
@@ -817,13 +817,13 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   }
 
-  private onAddTaskClick = () => {
+  private readonly onAddTaskClick = () => {
     const picker = this.getPeoplePicker(null);
 
     const peopleObj: Record<string, unknown> = {};
 
     if (picker) {
-      for (const person of picker?.selectedPeople) {
+      for (const person of picker?.selectedPeople ?? []) {
         peopleObj[person.id] = plannerAssignment;
       }
     }
@@ -839,23 +839,23 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   };
 
-  private onAddTaskKeyDown = (e: KeyboardEvent) => {
+  private readonly onAddTaskKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       this.onAddTaskClick();
     }
   };
 
-  private newTaskButtonKeydown = (e: KeyboardEvent) => {
+  private readonly newTaskButtonKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       this.isNewTaskVisible = !this.isNewTaskVisible;
     }
   };
 
-  private addNewTaskButtonClick = () => {
+  private readonly addNewTaskButtonClick = () => {
     this.isNewTaskVisible = !this.isNewTaskVisible;
   };
 
-  private handleNewTaskDateChange = (e: Event) => {
+  private readonly handleNewTaskDateChange = (e: Event) => {
     const value = (e.target as HTMLInputElement).value;
     if (value) {
       this._newTaskDueDate = new Date(value + 'T17:00');
@@ -864,7 +864,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   };
 
-  private handleSelectedPlan = (e: Event) => {
+  private readonly handleSelectedPlan = (e: Event) => {
     this._newTaskGroupId = (e.target as HTMLInputElement).value;
     if (this.dataSource === TasksSource.planner) {
       const task = this._groups.filter(iTask => iTask.id === this._newTaskGroupId);
@@ -872,7 +872,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   };
 
-  private newTaskVisible = (e: KeyboardEvent) => {
+  private readonly newTaskVisible = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       this.isNewTaskVisible = false;
     }
@@ -945,7 +945,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       const folderSelect = this.targetBucketId
         ? html`
             <span class="plan-title">
-              ${this._folders[0] && this._folders[0].name}
+              ${this._folders[0]?.name || ''}
             </span>`
         : mgtHtml`
             <mgt-arrow-options class="arrow-options" .options="${folderOptions}" .value="${currentFolder.name}"></mgt-arrow-options>
@@ -994,7 +994,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   }
 
-  private handleDateChange = (e: UIEvent) => {
+  private readonly handleDateChange = (e: UIEvent) => {
     const value = (e.target as HTMLInputElement).value;
     if (value) {
       this._newTaskDueDate = new Date(value + 'T17:00');
@@ -1008,6 +1008,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const taskTitle = html`
       <fluent-text-field
+        autocomplete="off"
         placeholder=${this.strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
         class="new-task"
@@ -1074,6 +1075,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const taskDue = html`
       <fluent-text-field
+        autocomplete="off"
         type="date"
         class=${classMap(dateField)}
         aria-label="${this.strings.addTaskDate}"
@@ -1081,7 +1083,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         @change=${this.handleDateChange}>
       </fluent-text-field>`;
 
-    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null, iconColor);
+    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null);
 
     const newTaskActionButtons = this._newTaskBeingAdded
       ? html`<div class="task-add-button-container"></div>`
@@ -1136,6 +1138,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       } else {
         picker.selectedPeople = mgtPeople.people;
         flyout.open();
+        setTimeout(() => picker.focus(), 100);
       }
     }
   }
@@ -1209,7 +1212,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             </div>
           `;
 
-      const taskPeople = this.dataSource !== TasksSource.todo ? this.renderAssignedPeople(task, iconColor) : null;
+      const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(task);
 
       taskDetails = html`${group} ${folder} ${taskPeople} ${taskDue}`;
     }
@@ -1234,7 +1237,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     return html`
       <div
-        id="task-${task.id}"
+        data-id="task-${task.id}"
         class=${taskClasses}
         @click=${() => this.handleTaskClick(task)}>
         <div class="task-details-container">
@@ -1272,7 +1275,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private async checkTask(e: MouseEvent, task: ITask) {
     if (!this.readOnly) {
-      const target = this.shadowRoot.querySelector(`#task-${task.id}`);
+      const target = this.shadowRoot.querySelector(`[data-id='task-${task.id}'`);
       if (target) target.classList.add('updating');
       if (!task.completed) {
         await this.completeTask(task);
@@ -1285,32 +1288,33 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   }
 
-  private renderPlannerIcon = (iconColor: string) => {
+  private readonly renderPlannerIcon = (iconColor: string) => {
     return getSvg(SvgIcon.Planner, iconColor);
   };
-  private renderBucketIcon = (iconColor: string) => {
+  private readonly renderBucketIcon = (iconColor: string) => {
     return getSvg(SvgIcon.Milestone, iconColor);
   };
 
-  private handlePeopleClick = (e: MouseEvent, task: ITask) => {
+  private readonly handlePeopleClick = (e: MouseEvent, task: ITask) => {
     this.togglePeoplePicker(task);
     e.stopPropagation();
   };
 
-  private handlePeopleKeydown = (e: KeyboardEvent, task: ITask) => {
-    if (e.key === 'Enter') {
+  private readonly handlePeopleKeydown = (e: KeyboardEvent, task: ITask) => {
+    if (e.key === 'Enter' || e.key === ' ') {
       this.togglePeoplePicker(task);
       e.stopPropagation();
+      e.preventDefault();
     }
   };
 
-  private handlePeoplePickerKeydown = (e: KeyboardEvent) => {
+  private readonly handlePeoplePickerKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.stopPropagation();
     }
   };
 
-  private renderAssignedPeople(task: ITask, iconColor: string): TemplateResult {
+  private renderAssignedPeople(task: ITask): TemplateResult {
     let assignedGroupId: string;
     const taskAssigneeClasses = {
       'new-task-assignee': task === null,
@@ -1338,17 +1342,20 @@ export class MgtTasks extends MgtTemplatedComponent {
       <mgt-people
         class="people people-${taskId}"
         .userIds=${assignedPeople}
-        person-card=${PersonCardInteraction.none}
+        .personCardInteraction=${PersonCardInteraction.none}
         @click=${(e: MouseEvent) => this.handlePeopleClick(e, task)}
-        @keydown=${(e: KeyboardEvent) => this.handlePeopleKeydown(e, task)}>
-          <template data-type="no-data">
+        @keydown=${(e: KeyboardEvent) => this.handlePeopleKeydown(e, task)}
+      >
+        <template data-type="no-data">
+          <fluent-button>
             <span style="display:flex;place-content:start;gap:4px;padding-inline-start:4px">
               <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="svg" fill="currentColor">
                 <path d="M9 2a4 4 0 100 8 4 4 0 000-8zM6 6a3 3 0 116 0 3 3 0 01-6 0z"></path>
                 <path d="M4 11a2 2 0 00-2 2c0 1.7.83 2.97 2.13 3.8A9.14 9.14 0 009 18c.41 0 .82-.02 1.21-.06A5.5 5.5 0 019.6 17 12 12 0 019 17a8.16 8.16 0 01-4.33-1.05A3.36 3.36 0 013 13a1 1 0 011-1h5.6c.18-.36.4-.7.66-1H4z"></path>
                 <path d="M14.5 19a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm0-7c.28 0 .5.22.5.5V14h1.5a.5.5 0 010 1H15v1.5a.5.5 0 01-1 0V15h-1.5a.5.5 0 010-1H14v-1.5c0-.28.22-.5.5-.5z"></path>
               </svg> Assign</span>
-          </template>
+            </fluent-button>
+        </template>
       </mgt-people>`;
 
     const picker = mgtHtml`
@@ -1356,16 +1363,16 @@ export class MgtTasks extends MgtTemplatedComponent {
         class="people-picker picker-${taskId}"
         .groupId=${ifDefined(planGroupId)}
         @keydown=${this.handlePeoplePickerKeydown}>
-        .groupId=${ifDefined(planGroupId)}
-        ></mgt-people-picker>`;
+      ></mgt-people-picker>`;
 
     return mgtHtml`
       <mgt-flyout
         light-dismiss
         class=${classMap(taskAssigneeClasses)}
-        @closed=${() => this.updateAssignedPeople(task)}>
-          <div slot="anchor">${assignedPeopleTemplate}</div>
-          <div slot="flyout" part="picker" class="picker">${picker}</div>
+        @closed=${() => this.updateAssignedPeople(task)}
+      >
+        <div slot="anchor">${assignedPeopleTemplate}</div>
+        <div slot="flyout" part="picker" class="picker">${picker}</div>
       </mgt-flyout>
     `;
   }
@@ -1475,6 +1482,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private isTaskInSelectedGroupFilter(task: ITask) {
     return (
+      !this._currentGroup ||
       task.topParentId === this._currentGroup ||
       (!this._currentGroup && this.getTaskSource().isAssignedToMe(task, this._me?.id))
     );

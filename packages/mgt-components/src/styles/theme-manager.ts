@@ -23,13 +23,12 @@ import {
   foregroundOnAccentActive,
   foregroundOnAccentFocus,
   foregroundOnAccentHover,
-  foregroundOnAccentRecipe,
   foregroundOnAccentRest,
-  foregroundOnAccentRestLarge,
   neutralBaseColor,
   StandardLuminance,
   SwatchRGB
 } from '@fluentui/web-components';
+import { DesignToken } from '@microsoft/fast-foundation';
 // @microsoft/fast-colors is a transitive dependency of @fluentui/web-components, no need to explicitly add it to package.json
 import { parseColorHexRGB } from '@microsoft/fast-colors';
 
@@ -37,6 +36,12 @@ import { parseColorHexRGB } from '@microsoft/fast-colors';
  * Available predefined themes
  */
 type Theme = 'light' | 'dark' | 'default' | 'contrast';
+
+const secondaryTextDefault = '#717171';
+const secondaryTextColor = DesignToken.create<string>('secondary-text-color').withDefault(secondaryTextDefault);
+const secondaryTextHoverDefault = '#1a1a1a';
+const secondaryTextHoverColor =
+  DesignToken.create<string>('secondary-text-hover-color').withDefault(secondaryTextHoverDefault);
 
 /**
  * Helper function to apply fluent ui theme to an element
@@ -133,9 +138,10 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
           accentStrokeControlFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#0f548c')));
           foregroundOnAccentActive.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
           foregroundOnAccentRest.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
-          foregroundOnAccentRestLarge.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
           foregroundOnAccentHover.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
           foregroundOnAccentFocus.setValueFor(element, SwatchRGB.from(parseColorHexRGB('#ffffff')));
+          secondaryTextColor.setValueFor(element, '#8e8e8e');
+          secondaryTextHoverColor.setValueFor(element, '#ffffff');
         }
       };
     case 'light':
@@ -143,7 +149,11 @@ const getThemeSettings = (theme: Theme): ColorScheme => {
       return {
         accentBaseColor: '#0f6cbd',
         neutralBaseColor: '#616161',
-        baseLayerLuminance: StandardLuminance.LightMode
+        baseLayerLuminance: StandardLuminance.LightMode,
+        designTokenOverrides: element => {
+          secondaryTextColor.setValueFor(element, secondaryTextDefault);
+          secondaryTextHoverColor.setValueFor(element, secondaryTextHoverDefault);
+        }
       };
   }
 };

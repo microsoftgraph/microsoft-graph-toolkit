@@ -42,7 +42,7 @@ jobs:
     if: needs.version.outputs.latest-version != needs.version.outputs.package-version
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     environment:
       name: release
@@ -58,7 +58,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install -g yarn lerna@6.4.1
+          npm install -g yarn lerna
           yarn
 
       - name: Update package version
@@ -88,7 +88,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     steps:
       - uses: actions/checkout@v2

@@ -52,7 +52,7 @@ export const getIsUsersCacheEnabled = (): boolean =>
 export const getUsers = async (graph: IGraph, userFilters = '', top = 10): Promise<User[]> => {
   const apiString = '/users';
   let cache: CacheStore<CacheUserQuery>;
-  const cacheKey = userFilters === '' ? '*' : userFilters;
+  const cacheKey = `${userFilters === '' ? '*' : userFilters}:${top}`;
   const cacheItem = { maxResults: top, results: null };
 
   if (getIsUsersCacheEnabled()) {
@@ -205,7 +205,7 @@ export const getUsersForUserIds = async (
       if (searchInput) {
         if (user) {
           const displayName = user.displayName;
-          const searchMatches = displayName && displayName.toLowerCase().includes(searchInput);
+          const searchMatches = displayName?.toLowerCase().includes(searchInput);
           if (searchMatches) {
             peopleSearchMatches[id] = user;
           }
@@ -237,7 +237,7 @@ export const getUsersForUserIds = async (
       // iterate over userIds to ensure the order of ids
       for (const id of userIds) {
         const response = responses.get(id);
-        if (response && response.content) {
+        if (response?.content) {
           const user = response.content;
           if (searchInput) {
             const displayName = user?.displayName.toLowerCase() || '';
@@ -337,7 +337,7 @@ export const getUsersForPeopleQueries = async (
 
       for (const personQuery of peopleQueries) {
         const response = responses.get(personQuery);
-        if (response && response.content && response.content.value && response.content.value.length > 0) {
+        if (response?.content?.value && response.content.value.length > 0) {
           people.push(response.content.value[0]);
           if (getIsUsersCacheEnabled()) {
             await cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(response.content.value[0])] });
@@ -358,7 +358,7 @@ export const getUsersForPeopleQueries = async (
             .filter(personQuery => personQuery && personQuery !== '')
             .map(async personQuery => {
               const personArray = await findPeople(graph, personQuery, 1);
-              if (personArray && personArray.length) {
+              if (personArray?.length) {
                 if (getIsUsersCacheEnabled()) {
                   await cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(personArray[0])] });
                 }
@@ -386,11 +386,12 @@ export const getUsersForPeopleQueries = async (
 export const findUsers = async (graph: IGraph, query: string, top = 10, userFilters = ''): Promise<User[]> => {
   const scopes = 'User.ReadBasic.All';
   const item = { maxResults: top, results: null };
+  const cacheKey = `${query}:${top}:${userFilters}`;
   let cache: CacheStore<CacheUserQuery>;
 
   if (getIsUsersCacheEnabled()) {
     cache = CacheService.getCache<CacheUserQuery>(schemas.users, schemas.users.stores.usersQuery);
-    const result: CacheUserQuery = await cache.getValue(query);
+    const result: CacheUserQuery = await cache.getValue(cacheKey);
 
     if (result && getUserInvalidationTime() > Date.now() - result.timeCached) {
       return result.results.map(userStr => JSON.parse(userStr) as User);
@@ -444,7 +445,7 @@ export const findGroupMembers = async (
   const item = { maxResults: top, results: null };
 
   let cache: CacheStore<CacheUserQuery>;
-  const key = `${groupId || '*'}:${query || '*'}:${personType}:${transitive}:${userFilters}`;
+  const key = `${groupId || '*'}:${query || '*'}:${top}:${personType}:${transitive}:${userFilters}`;
 
   if (getIsUsersCacheEnabled()) {
     cache = CacheService.getCache<CacheUserQuery>(schemas.users, schemas.users.stores.usersQuery);

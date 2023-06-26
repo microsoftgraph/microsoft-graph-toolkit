@@ -168,10 +168,12 @@ const graphImageUrlRegex = /(<img[^>]+)src=(["']https:\/\/graph\.microsoft\.com[
 const emojiRegex = /(<emoji[^>]+)alt=["'](\w*[^"']*)["'](.*[^>])<\/emoji>/;
 
 class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
-  private _notificationClient: GraphNotificationClient;
-  private _eventEmitter: ThreadEventEmitter;
+  private readonly _notificationClient: GraphNotificationClient;
+  private readonly _eventEmitter: ThreadEventEmitter;
   private _subscribers: ((state: GraphChatClient) => void)[] = [];
-  private _messagesPerCall = 5;
+  private get _messagesPerCall() {
+    return 5;
+  }
   private _nextLink = '';
   private _chat?: Chat = undefined;
   private _userDisplayName = '';
@@ -237,7 +239,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
    * @param {LoginChangedEvent} e The event that triggered the change
    * @memberof StatefulGraphChatClient
    */
-  private onLoginStateChanged = (e: LoginChangedEvent) => {
+  private readonly onLoginStateChanged = (e: LoginChangedEvent) => {
     switch (Providers.globalProvider.state) {
       case ProviderState.SignedIn:
         // update userId and displayName
@@ -262,7 +264,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     }
   };
 
-  private onActiveAccountChanged = (e: ActiveAccountChanged) => {
+  private readonly onActiveAccountChanged = (e: ActiveAccountChanged) => {
     this.updateUserInfo();
   };
 
@@ -417,7 +419,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
    * @param eventType
    * @returns
    */
-  private resolveIcon = (eventType: MessageEventType): string => {
+  private readonly resolveIcon = (eventType: MessageEventType): string => {
     switch (eventType) {
       case '#microsoft.graph.membersAddedEventMessageDetail':
         return 'add-friend';
@@ -495,14 +497,14 @@ detail: ${JSON.stringify(eventDetail)}`);
    *
    * @returns true if there are no more messages to load
    */
-  private loadMoreMessages = async () => {
+  private readonly loadMoreMessages = async () => {
     if (!this._nextLink) {
       return true;
     }
     const messages: MessageCollection = await loadMoreChatMessages(this.graph, this._nextLink);
     await this.writeMessagesToState(messages);
     // return true when there are no more messages to load
-    return !Boolean(this._nextLink);
+    return !this._nextLink;
   };
 
   /**
@@ -555,7 +557,7 @@ detail: ${JSON.stringify(eventDetail)}`);
   /*
    * Helper method to set the content of a message to show deletion
    */
-  private setDeletedContent = (message: AcsChatMessage) => {
+  private readonly setDeletedContent = (message: AcsChatMessage) => {
     message.content = '<em>This message has been deleted.</em>';
     message.contentType = 'html';
   };
@@ -632,7 +634,7 @@ detail: ${JSON.stringify(eventDetail)}`);
   /*
    * Event handler to be called when a new message is received by the notification service
    */
-  private onMessageReceived = async (message: ChatMessage) => {
+  private readonly onMessageReceived = async (message: ChatMessage) => {
     const messageConversion = this.convertChatMessage(message);
     const acsMessage = messageConversion.currentValue;
     this.updateMessages(acsMessage);
@@ -646,7 +648,7 @@ detail: ${JSON.stringify(eventDetail)}`);
   /*
    * Event handler to be called when a message deletion is received by the notification service
    */
-  private onMessageDeleted = (message: ChatMessage) => {
+  private readonly onMessageDeleted = (message: ChatMessage) => {
     this.notifyStateChange((draft: GraphChatClient) => {
       const draftMessage = draft.messages.find(m => m.messageId === message.id) as AcsChatMessage;
       if (draftMessage) this.setDeletedContent(draftMessage);
@@ -656,7 +658,7 @@ detail: ${JSON.stringify(eventDetail)}`);
   /*
    * Event handler to be called when a message edit is received by the notification service
    */
-  private onMessageEdited = async (message: ChatMessage) => {
+  private readonly onMessageEdited = async (message: ChatMessage) => {
     const messageConversion = this.convertChatMessage(message);
     this.updateMessages(messageConversion.currentValue);
     if (messageConversion.futureValue) {
@@ -665,7 +667,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     }
   };
 
-  private checkForMissedMessages = async () => {
+  private readonly checkForMissedMessages = async () => {
     const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
     const messageConversions = messages.value
       // trying to filter out messages on the graph request causes a 400
@@ -703,7 +705,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     console.log('checked for missed messages');
   };
 
-  private onChatNotificationsSubscribed = (resource: string): void => {
+  private readonly onChatNotificationsSubscribed = (resource: string): void => {
     if (resource.includes(`/${this._chatId}/`) && resource.includes('/messages')) {
       void this.checkForMissedMessages();
     } else {
@@ -711,14 +713,14 @@ detail: ${JSON.stringify(eventDetail)}`);
     }
   };
 
-  private onChatPropertiesUpdated = (chat: Chat): void => {
+  private readonly onChatPropertiesUpdated = (chat: Chat): void => {
     this._chat = chat;
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.chat = chat;
     });
   };
 
-  private onParticipantAdded = (added: AadUserConversationMember): void => {
+  private readonly onParticipantAdded = (added: AadUserConversationMember): void => {
     this.notifyStateChange((draft: GraphChatClient) => {
       if (!draft.participants.find(p => p.id === added.id)) {
         draft.participants.push(added);
@@ -726,7 +728,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     });
   };
 
-  private onParticipantRemoved = (added: AadUserConversationMember): void => {
+  private readonly onParticipantRemoved = (added: AadUserConversationMember): void => {
     if (added.id) this.removeParticipantFromState(added.id);
   };
 
@@ -762,7 +764,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     });
   }
 
-  private addChatMembers = async (userIds: string[], history?: Date): Promise<void> => {
+  private readonly addChatMembers = async (userIds: string[], history?: Date): Promise<void> => {
     await addChatMembers(this.graph, this._chatId, userIds, history);
   };
 
@@ -773,7 +775,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * this is the id of the chat member resource in the graph, i.e. member.id, and NOT the user's id
    * @returns {Promise<void>}
    */
-  private removeChatMember = async (membershpId: string): Promise<void> => {
+  private readonly removeChatMember = async (membershpId: string): Promise<void> => {
     if (!membershpId) return;
     const isPresent = this._chat?.members?.findIndex(m => m.id === membershpId) ?? -1;
     if (isPresent === -1) return;
@@ -886,7 +888,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     };
   }
 
-  private renameChat = async (topic: string | null): Promise<void> => {
+  private readonly renameChat = async (topic: string | null): Promise<void> => {
     await updateChatTopic(this.graph, this._chatId, topic);
     this.notifyStateChange(() => void (this._chat = { ...this._chat, ...{ topic } }));
   };
@@ -918,7 +920,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     return graph('mgt-chat');
   }
 
-  private _initialState: GraphChatClient = {
+  private readonly _initialState: GraphChatClient = {
     status: 'initial',
     userId: '',
     messages: [],

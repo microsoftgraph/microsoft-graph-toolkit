@@ -13,6 +13,9 @@ $person-background-border-radius: var(--person-border-radius, 4px);
 
 // avatar sizes: 16,20,24,28,32,36,40,48,56,64,72,96,120,128
 $person-avatar-size: var(--person-avatar-size, 24px);
+$person-avatar-size-40: var(--person-avatar-size, 40px);
+$person-avatar-size-56: var(--person-avatar-size, 56px);
+$person-avatar-size-72: var(--person-avatar-size, 72px);
 $person-avatar-border: var(--person-avatar-border, none);
 $person-avatar-border-radius: var(--person-avatar-border-radius, 50%);
 $person-details-left-spacing: var(--person-details-left-spacing, 12px);
@@ -39,7 +42,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
   font-size: var(--default-font-size);
   font-family: var(--default-font-family);
 
-  mgt-flyout {
+  .flyout {
     [slot='anchor'] {
       display: flex;
 
@@ -54,8 +57,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     }
   }
 
-  .person-root,
-  mgt-person .person-root {
+  .person-root {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -63,7 +65,11 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     border-radius: $person-background-border-radius;
 
     &.small {
-      --person-avatar-size: 24px;
+      .avatar-wrapper {
+        min-width: $person-avatar-size;
+        width: $person-avatar-size;
+        height: $person-avatar-size;
+      }
     }
 
     &.noline,
@@ -76,16 +82,64 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     }
 
     &.twolines {
-      --person-avatar-size: 40px;
+      .avatar-wrapper {
+        min-width: $person-avatar-size-40;
+        width: $person-avatar-size-40;
+        height: $person-avatar-size-40;
+
+        .initials,
+        .contact-icon {
+          font-size: calc(#{$person-avatar-size-40} * 0.4);
+        }
+
+        .presence-wrapper {
+          svg {
+            width: calc(#{$person-avatar-size-40} * 0.28);
+            height: calc(#{$person-avatar-size-40} * 0.28);
+          }
+        }
+      }
     }
 
     &.threelines,
     &.large {
-      --person-avatar-size: var(--person-avatar-size-3-lines, 56px);
+      .avatar-wrapper {
+        min-width: $person-avatar-size-56;
+        width: $person-avatar-size-56;
+        height: $person-avatar-size-56;
+
+        .initials,
+        .contact-icon {
+          font-size: calc(#{$person-avatar-size-56} * 0.4);
+        }
+
+        .presence-wrapper {
+          svg {
+            width: calc(#{$person-avatar-size-56} * 0.28);
+            height: calc(#{$person-avatar-size-56} * 0.28);
+          }
+        }
+      }
     }
 
     &.fourlines {
-      --person-avatar-size: 72px;
+      .avatar-wrapper {
+        min-width: $person-avatar-size-72;
+        width: $person-avatar-size-72;
+        height: $person-avatar-size-72;
+
+        .initials,
+        .contact-icon {
+          font-size: calc(#{$person-avatar-size-72} * 0.4);
+        }
+
+        .presence-wrapper {
+          svg {
+            width: calc(#{$person-avatar-size-72} * 0.28);
+            height: calc(#{$person-avatar-size-72} * 0.28);
+          }
+        }
+      }
     }
 
     &.vertical {
@@ -93,11 +147,28 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       justify-content: center;
       align-items: center;
 
-      --person-avatar-size: 72px;
+      .avatar-wrapper {
+        min-width: $person-avatar-size-72;
+        width: $person-avatar-size-72;
+        height: $person-avatar-size-72;
+
+        .initials,
+        .contact-icon {
+          font-size: calc(#{$person-avatar-size-72} * 0.4);
+        }
+
+        .presence-wrapper {
+          svg {
+            width: calc(#{$person-avatar-size-72} * 0.28);
+            height: calc(#{$person-avatar-size-72} * 0.28);
+          }
+        }
+      }
     }
 
     .avatar-wrapper {
       min-width: $person-avatar-size;
+      width: $person-avatar-size;
       height: $person-avatar-size;
       position: relative;
       box-sizing: border-box;
@@ -140,7 +211,9 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     }
 
     .details-wrapper {
-      display: inline-block;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
       min-width: var(--person-details-wrapper-width, 168px);
       margin-inline-start: $person-details-left-spacing;
       margin-block-end: $person-details-bottom-spacing;
@@ -190,9 +263,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
   :host svg,
-  :host svg > path,
-  mgt-person svg,
-  mgt-person svg > path {
+  :host svg > path {
     fill: rgb(255 255 255) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
@@ -201,9 +272,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
   :host svg,
-  :host svg > path,
-  mgt-person svg,
-  mgt-person svg > path {
+  :host svg > path {
     fill: rgb(0 0 0) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;

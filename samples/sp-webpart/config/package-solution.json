@@ -3,7 +3,7 @@
   "solution": {
     "name": "mgt-demo-client-side-solution",
     "id": "b0ed193e-b333-4796-b249-e34916ef7a85",
-    "version": "1.3.0.0",
+    "version": "1.4.0.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,

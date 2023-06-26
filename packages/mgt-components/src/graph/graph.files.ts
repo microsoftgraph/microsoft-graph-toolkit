@@ -242,7 +242,7 @@ const getIterator = async (
 
   // get iterator from cached values
   const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, storeName);
-  const fileList = await getFileListFromCache(cache, storeName, endpoint);
+  const fileList = await getFileListFromCache(cache, storeName, `${endpoint}:${top}`);
   if (fileList) {
     filesPageIterator = getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -413,7 +413,8 @@ export const getMyInsightsFiles = async (graph: IGraph, insightType: string): Pr
   const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
   const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
   if (fileList) {
-    return fileList.files as DriveItem[];
+    // fileList.files is string[] so JSON.parse to get proper objects
+    return fileList.files.map((file: string) => JSON.parse(file) as DriveItem);
   }
 
   // get files from graph request
@@ -460,7 +461,7 @@ export const getUserInsightsFiles = async (
   const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
   const fileList = await getFileListFromCache(cache, cacheStore, key);
   if (fileList) {
-    return fileList.files as DriveItem[];
+    return fileList.files.map((file: string) => JSON.parse(file) as DriveItem);
   }
 
   // get files from graph request
@@ -569,7 +570,7 @@ const getDriveItemsByInsights = async (
 
     for (const item of insightItems) {
       const driveItemResponse = driveItemResponses.get(item.resourceReference.id);
-      if (driveItemResponse && driveItemResponse.content) {
+      if (driveItemResponse?.content) {
         driveItems.push(driveItemResponse.content as DriveItem);
       }
     }

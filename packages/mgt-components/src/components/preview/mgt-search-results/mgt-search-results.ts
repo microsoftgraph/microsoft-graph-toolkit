@@ -119,7 +119,8 @@ type SearchResource = Partial<
 type SearchResponseCollection = CollectionResponse<SearchResponse>;
 
 /**
- * Custom element for making Microsoft Graph get queries
+ * **Preview component** Custom element for making Microsoft Graph get queries.
+ * Component may change before general availability release.
  *
  * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes
  *
@@ -371,8 +372,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   @state() private response: SearchResponseCollection;
 
   private isRefreshing = false;
-  private readonly searchEndpoint: string = '/search/query';
-  private readonly maxPageSize: number = 1000;
+  private get searchEndpoint() {
+    return '/search/query';
+  }
+  private get maxPageSize() {
+    return 1000;
+  }
   private readonly defaultFields: string[] = [
     'webUrl',
     'lastModifiedBy',
@@ -391,6 +396,13 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       this._currentPage = value;
       void this.requestStateUpdate(true);
     }
+  }
+
+  constructor() {
+    super();
+    console.warn(
+      '🦒: <mgt-search-results> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
+    );
   }
 
   /**
@@ -452,12 +464,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       renderedTemplate = this.renderLoading();
     } else if (this.error) {
       renderedTemplate = this.renderError();
-    } else if (this.response && this.response?.value[0]?.hitsContainers[0]) {
+    } else if (this.response && this.hasTemplate('default')) {
+      renderedTemplate = this.renderTemplate('default', this.response) || html``;
+    } else if (this.response?.value[0]?.hitsContainers[0]) {
       renderedTemplate = html`${this.response?.value[0]?.hitsContainers[0]?.hits?.map(result =>
         this.renderResult(result)
       )}`;
-    } else if (this.response) {
-      renderedTemplate = this.renderTemplate('default', this.response) || html``;
     } else if (this.hasTemplate('no-data')) {
       renderedTemplate = this.renderTemplate('no-data', null);
     } else {
@@ -511,7 +523,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           const graph = provider.graph.forComponent(this);
           let request = graph.api(this.searchEndpoint).version(this.version);
 
-          if (this.scopes && this.scopes.length) {
+          if (this.scopes?.length) {
             request = request.middlewareOptions(prepScopes(...this.scopes));
           }
 
@@ -521,8 +533,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             const thumbnailBatch = graph.createBatch<BinaryThumbnail>();
             const thumbnailBatchBeta = BetaGraph.fromGraph(graph).createBatch<BinaryThumbnail>();
 
-            for (let i = 0; i < response.value[0].hitsContainers[0].hits.length; i++) {
-              const element = response.value[0].hitsContainers[0].hits[i];
+            const hits =
+              response.value?.length && response.value[0].hitsContainers?.length
+                ? response.value[0].hitsContainers[0]?.hits ?? []
+                : [];
+            for (const element of hits) {
               const resource = element.resource as SearchResource;
               if (
                 (resource.size > 0 || resource.webUrl?.endsWith('.aspx')) &&
@@ -531,12 +546,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
               ) {
                 if (resource['@odata.type'] === '#microsoft.graph.listItem') {
                   thumbnailBatchBeta.get(
-                    i.toString(),
+                    element.hitId.toString(),
                     `/sites/${resource.parentReference.siteId}/pages/${resource.id}`
                   );
                 } else {
                   thumbnailBatch.get(
-                    i.toString(),
+                    element.hitId.toString(),
                     `/drives/${resource.parentReference.driveId}/items/${resource.id}/thumbnails/0/medium`
                   );
                 }
@@ -852,7 +867,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * Triggers a first page click
    *
    */
-  private onFirstPageClick = () => {
+  private readonly onFirstPageClick = () => {
     this.currentPage = 1;
     this.scrollToFirstResult();
   };
@@ -860,7 +875,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Triggers a previous page click
    */
-  private onPageBackClick = () => {
+  private readonly onPageBackClick = () => {
     this.currentPage--;
     this.scrollToFirstResult();
   };
@@ -868,7 +883,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Triggers a next page click
    */
-  private onPageNextClick = () => {
+  private readonly onPageNextClick = () => {
     this.currentPage++;
     this.scrollToFirstResult();
   };

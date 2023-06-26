@@ -5,7 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { MgtTemplatedComponent, ProviderState, Providers, customElement, mgtHtml } from '@microsoft/mgt-element';
+import {
+  MgtTemplatedComponent,
+  ProviderState,
+  Providers,
+  customElement,
+  customElementHelper,
+  mgtHtml
+} from '@microsoft/mgt-element';
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -25,6 +32,7 @@ import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
 import { strings } from './strings';
+import { ifDefined } from 'lit/directives/if-defined.js';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -575,7 +583,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (!person && !image) {
       return this.renderNoData();
     }
-    if (!(person && person.personImage) && image) {
+    if (!person?.personImage && image) {
       person.personImage = image;
     }
 
@@ -616,7 +624,9 @@ export class MgtPerson extends MgtTemplatedComponent {
         @click=${this.handleMouseClick}
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
-        @keydown=${this.handleKeyDown}>
+        @keydown=${this.handleKeyDown}
+        tabindex="${ifDefined(this.personCardInteraction !== PersonCardInteraction.none ? '0' : undefined)}"
+      >
         ${personTemplate}
       </div>
     `;
@@ -705,7 +715,16 @@ export class MgtPerson extends MgtTemplatedComponent {
       'contact-icon': !hasInitials
     });
     const contactIconTemplate = html`<i>${this.renderPersonIcon()}</i>`;
-    const textTemplate = html`<span class="${textClasses}">${hasInitials ? initials : contactIconTemplate}</span>`;
+    // consider the image to presentational if the view is anything other than image.
+    // this reduces the redundant announcement of the user's name.
+    const textTemplate = html`
+      <span 
+        role="${ifDefined(this.view === ViewType.image ? undefined : 'presentation')}"
+        class="${textClasses}"
+      >
+        ${hasInitials ? initials : contactIconTemplate}
+      </span>
+`;
 
     return hasImage ? imageTemplate : textTemplate;
   }
@@ -1015,6 +1034,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
       mgtHtml`
         <mgt-person-card
+          class="mgt-person-card"
           lock-tab-navigation
           .personDetails=${personDetails}
           .personImage=${image}
@@ -1106,7 +1126,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         people = (await findUsers(graph, this.personQuery, 1)) || [];
       }
 
-      if (people && people.length) {
+      if (people?.length) {
         this.personDetailsInternal = people[0];
         this.personDetails = people[0];
         if (this._avatarType === 'photo' && !this.disableImageFetch) {
@@ -1191,7 +1211,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const person = this.personDetailsInternal || this.personDetails;
-    return person && person.personImage ? person.personImage : null;
+    return person?.personImage ? person.personImage : null;
   }
 
   private isLetter(char: string) {
@@ -1255,14 +1275,18 @@ export class MgtPerson extends MgtTemplatedComponent {
     return this.verticalLayout;
   }
 
-  private handleMouseClick = (e: MouseEvent) => {
+  private readonly handleMouseClick = (e: MouseEvent) => {
     const element = e.target as HTMLElement;
-    if (this.personCardInteraction === PersonCardInteraction.click && element.tagName !== 'MGT-PERSON-CARD') {
+    // todo: fix for disambiguation
+    if (
+      this.personCardInteraction === PersonCardInteraction.click &&
+      element.tagName !== `${customElementHelper.prefix}-PERSON-CARD`.toUpperCase()
+    ) {
       this.showPersonCard();
     }
   };
 
-  private handleKeyDown = (e: KeyboardEvent) => {
+  private readonly handleKeyDown = (e: KeyboardEvent) => {
     // enter activates person-card
     if (e) {
       if (e.key === 'Enter') {
@@ -1271,7 +1295,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   };
 
-  private handleMouseEnter = (e: MouseEvent) => {
+  private readonly handleMouseEnter = () => {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
     if (this.personCardInteraction !== PersonCardInteraction.hover) {
@@ -1280,7 +1304,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._mouseEnterTimeout = window.setTimeout(this.showPersonCard, 500);
   };
 
-  private handleMouseLeave = (e: MouseEvent) => {
+  private readonly handleMouseLeave = () => {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
     this._mouseLeaveTimeout = window.setTimeout(this.hidePersonCard, 500);
@@ -1297,7 +1321,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       flyout.close();
     }
     const personCard =
-      this.querySelector<MgtPersonCard>('mgt-person-card') || this.renderRoot.querySelector('mgt-person-card');
+      this.querySelector<MgtPersonCard>('.mgt-person-card') || this.renderRoot.querySelector('.mgt-person-card');
     if (personCard) {
       personCard.isExpanded = false;
       personCard.clearHistory();

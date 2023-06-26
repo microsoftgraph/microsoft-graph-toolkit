@@ -118,7 +118,7 @@ export const withCodeEditor = makeDecorator({
             content = await response.text();
           }
         } else {
-          console.warn(`Can't get content from '${url}'`);
+          console.warn(`🦒: Can't get content from '${url}'`);
         }
       }
 
@@ -166,7 +166,7 @@ export const withCodeEditor = makeDecorator({
       ? ''
       : `
       body {
-        background-color: var(--neutral-fill-rest);
+        background-color: var(--fill-color);
         color: var(--neutral-foreground-rest);
         font-family: var(--body-font);
         padding: 0 12px;
@@ -241,9 +241,6 @@ export const withCodeEditor = makeDecorator({
                 ${providerInitCode}
               </script>
               <style>
-                html, body {
-                  height: 100%;
-                }
                 ${themeToggleCss}
                 ${css}
               </style>

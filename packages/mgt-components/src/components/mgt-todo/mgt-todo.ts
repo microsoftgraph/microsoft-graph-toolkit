@@ -20,10 +20,9 @@ import '../sub-components/mgt-dot-options/mgt-dot-options';
 import {
   createTodoTask,
   deleteTodoTask,
+  getTodoTaskList,
+  getTodoTaskLists,
   getTodoTasks,
-  TaskStatus,
-  TodoTask,
-  TodoTaskList,
   updateTodoTask
 } from './graph.todo';
 import { styles } from './mgt-todo-css';
@@ -31,6 +30,9 @@ import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentCheckbox, fluentRadioGroup, fluentButton } from '@fluentui/web-components';
 import { isElementDark } from '../../utils/isDark';
+import { ifDefined } from 'lit/directives/if-defined.js';
+
+import { TodoTaskList, TodoTask, TaskStatus } from '@microsoft/microsoft-graph-types';
 
 registerFluentComponents(fluentCheckbox, fluentRadioGroup, fluentButton);
 
@@ -57,7 +59,6 @@ export type TodoFilter = (task: TodoTask) => boolean;
  * @cssprop --task-radio-background-color - {Color} - Task radio background color
  */
 @customElement('todo')
-// @customElement('mgt-todo')
 export class MgtTodo extends MgtTasksBase {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -138,7 +139,7 @@ export class MgtTodo extends MgtTasksBase {
     super.disconnectedCallback();
   }
 
-  private onThemeChanged = () => {
+  private readonly onThemeChanged = () => {
     this._isDarkMode = isElementDark(this);
   };
 
@@ -178,18 +179,22 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   /**
-   * Render the generic picker.
+   * Render the generic picker or the task list displayName.
    *
    */
   protected renderPicker() {
-    return mgtHtml`
-      <mgt-picker
-        resource="me/todo/lists"
-        scopes="tasks.read, tasks.readwrite"
-        key-name="displayName"
-        placeholder="Select a task list"
-      ></mgt-picker>
-        `;
+    if (this.targetId) {
+      return html`<p>${this.currentList?.displayName}</p>`;
+    } else {
+      return mgtHtml`
+        <mgt-picker
+          resource="me/todo/lists"
+          scopes="tasks.read, tasks.readwrite"
+          key-name="displayName"
+          selected-value="${ifDefined(this.currentList?.displayName)}"
+          placeholder="Select a task list">
+        </mgt-picker>`;
+    }
   }
 
   /**
@@ -246,6 +251,7 @@ export class MgtTodo extends MgtTasksBase {
     const dateClass = { dark: this._isDarkMode, date: true };
     const calendarTemplate = html`
       <fluent-text-field
+        autocomplete="off"
         type="date"
         id="new-taskDate-input"
         class="${classMap(dateClass)}"
@@ -257,6 +263,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const newTaskDetails = html`
       <fluent-text-field
+        autocomplete="off"
         appearance="outline"
         class="new-task"
         id="new-task-name-input"
@@ -300,9 +307,8 @@ export class MgtTodo extends MgtTasksBase {
    */
 
   protected handleSelectionChanged = (e: CustomEvent<TodoTaskList>) => {
-    const list: TodoTaskList = e.detail;
-    this.currentList = list;
-    void this.loadTasks(list);
+    this.currentList = e.detail;
+    void this.loadTasks(this.currentList);
   };
 
   /**
@@ -408,15 +414,28 @@ export class MgtTodo extends MgtTasksBase {
       return;
     }
 
+    this._isLoadingTasks = true;
     if (!this._graph) {
       const graph = provider.graph.forComponent(this);
       this._graph = graph;
     }
 
-    const currentList = this.currentList;
-    if (currentList) {
-      await this.loadTasks(currentList);
+    if (!this.currentList && !this.initialId) {
+      const lists = await getTodoTaskLists(this._graph);
+      const defaultList = lists?.find(l => l.wellknownListName === 'defaultList');
+      if (defaultList) await this.loadTasks(defaultList);
     }
+
+    if (this.targetId) {
+      // Call to get the displayName of the list
+      this.currentList = await getTodoTaskList(this._graph, this.targetId);
+      this._tasks = await getTodoTasks(this._graph, this.targetId);
+    } else if (this.initialId) {
+      // Call to get the displayName of the list
+      this.currentList = await getTodoTaskList(this._graph, this.initialId);
+      this._tasks = await getTodoTasks(this._graph, this.initialId);
+    }
+    this._isLoadingTasks = false;
   };
 
   /**
@@ -469,7 +488,7 @@ export class MgtTodo extends MgtTasksBase {
     this._isLoadingTasks = false;
   };
 
-  private loadTasks = async (list: TodoTaskList): Promise<void> => {
+  private readonly loadTasks = async (list: TodoTaskList): Promise<void> => {
     this._isLoadingTasks = true;
     this.currentList = list;
 
@@ -479,7 +498,7 @@ export class MgtTodo extends MgtTasksBase {
     this.requestUpdate();
   };
 
-  private updateTaskStatus = async (task: TodoTask, taskStatus: TaskStatus): Promise<void> => {
+  private readonly updateTaskStatus = async (task: TodoTask, taskStatus: TaskStatus): Promise<void> => {
     this._loadingTasks = [...this._loadingTasks, task.id];
     this.requestUpdate();
 
@@ -497,7 +516,7 @@ export class MgtTodo extends MgtTasksBase {
     this.requestUpdate();
   };
 
-  private removeTask = async (taskId: string): Promise<void> => {
+  private readonly removeTask = async (taskId: string): Promise<void> => {
     this._tasks = this._tasks.filter(t => t.id !== taskId);
     this.requestUpdate();
 
@@ -519,19 +538,19 @@ export class MgtTodo extends MgtTasksBase {
     }
   }
 
-  private handleInput = (e: MouseEvent) => {
+  private readonly handleInput = (e: MouseEvent) => {
     if ((e.target as HTMLInputElement).id === 'new-task-name-input') {
       this._newTaskName = (e.target as HTMLInputElement).value;
     }
   };
 
-  private handleKeyDown = async (e: KeyboardEvent) => {
+  private readonly handleKeyDown = async (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       await this.addTask();
     }
   };
 
-  private handleDateChange = (e: Event) => {
+  private readonly handleDateChange = (e: Event) => {
     const value = (e.target as HTMLInputElement).value;
     if (value) {
       this._newTaskDueDate = new Date(value + 'T17:00');

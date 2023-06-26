@@ -17,9 +17,9 @@ import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/src/m
  */
 export class CustomHeaderMiddleware implements Middleware {
   private _nextMiddleware: Middleware;
-  private _getCustomHeaders: () => Promise<object>;
+  private readonly _getCustomHeaders?: () => Promise<object>;
 
-  constructor(getCustomHeaders: () => Promise<object>) {
+  constructor(getCustomHeaders?: () => Promise<object>) {
     this._getCustomHeaders = getCustomHeaders;
   }
 
@@ -34,7 +34,7 @@ export class CustomHeaderMiddleware implements Middleware {
     if (this._getCustomHeaders) {
       const headers = await this._getCustomHeaders();
       for (const key in headers) {
-        if (headers.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(headers, key)) {
           setRequestHeader(context.request, context.options, key, headers[key] as string);
         }
       }

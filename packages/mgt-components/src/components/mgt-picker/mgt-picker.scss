@@ -10,12 +10,13 @@
 @import './mgt-picker.theme';
 
 :host {
+  --max-height: var(--picker-max-height, 380px);
+  
   font-family: $font-family;
-}
 
-:host .picker,
-mgt-picker .picker {
-  background-color: $picker-background-color;
+ .picker {
+    background-color: $picker-background-color;
+  }
 }
 
 [dir='rtl'] {

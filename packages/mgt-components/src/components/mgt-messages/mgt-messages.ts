@@ -23,7 +23,6 @@ import { customElement } from '@microsoft/mgt-element';
  * @extends {MgtTemplatedComponent}
  */
 @customElement('messages')
-// @customElement('mgt-messages')
 export class MgtMessages extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -98,7 +97,7 @@ export class MgtMessages extends BasePersonCardSection {
 
     if (this.isLoadingState) {
       contentTemplate = this.renderLoading();
-    } else if (!this._messages || !this._messages.length) {
+    } else if (!this._messages?.length) {
       contentTemplate = this.renderNoData();
     } else {
       const messageTemplates = this._messages
@@ -128,7 +127,7 @@ export class MgtMessages extends BasePersonCardSection {
 
     if (this.isLoadingState) {
       contentTemplate = this.renderLoading();
-    } else if (!this._messages || !this._messages.length) {
+    } else if (!this._messages?.length) {
       contentTemplate = this.renderNoData();
     } else {
       contentTemplate = html`

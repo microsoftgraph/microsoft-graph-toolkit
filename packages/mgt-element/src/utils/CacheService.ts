@@ -159,13 +159,23 @@ export class CacheService {
    * @param {string} id
    * @memberof CacheService
    */
-  public static clearCacheById(id: string) {
+  public static clearCacheById(id: string): Promise<unknown> {
+    const work: Promise<void>[] = [];
     const oldDbArray: string[] = JSON.parse(localStorage.getItem(dbListKey)) as string[];
     if (oldDbArray) {
       const newDbArray: string[] = [];
       oldDbArray.forEach(x => {
         if (x.includes(id)) {
-          indexedDB.deleteDatabase(x);
+          work.push(
+            new Promise<void>((resolve, reject) => {
+              const delReq = indexedDB.deleteDatabase(x);
+              delReq.onsuccess = () => resolve();
+              delReq.onerror = () => {
+                console.error(`🦒: ${delReq.error.name} occurred deleting cache: ${x}`, delReq.error.message);
+                reject();
+              };
+            })
+          );
         } else {
           newDbArray.push(x);
         }
@@ -176,12 +186,13 @@ export class CacheService {
         localStorage.removeItem(dbListKey);
       }
     }
+    return Promise.all(work);
   }
 
-  private static cacheStore: Map<string, CacheStore<CacheItem>> = new Map();
+  private static readonly cacheStore = new Map<string, CacheStore<CacheItem>>();
   private static isInitialized = false;
 
-  private static cacheConfig: CacheConfig = {
+  private static readonly cacheConfig: CacheConfig = {
     defaultInvalidationPeriod: 3600000,
     groups: {
       invalidationPeriod: null,
@@ -249,7 +260,7 @@ export class CacheService {
       if (previousState === ProviderState.SignedIn && Providers.globalProvider.state === ProviderState.SignedOut) {
         const id = await Providers.getCacheId();
         if (id !== null) {
-          this.clearCacheById(id);
+          await this.clearCacheById(id);
         }
       }
       previousState = Providers.globalProvider.state;
@@ -285,7 +296,7 @@ export interface CacheSchema {
    * @type {{ [name: string]: CacheSchemaStore }}
    * @memberof CacheSchema
    */
-  stores: { [name: string]: string };
+  stores: Record<string, string>;
 }
 
 /**

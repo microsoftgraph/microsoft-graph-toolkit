@@ -18,7 +18,7 @@ import { MockGraph } from './MockGraph';
 export class MockProvider extends IProvider {
   public provider: any;
 
-  private _mockGraphPromise: Promise<MockGraph>;
+  private readonly _mockGraphPromise: Promise<MockGraph>;
 
   /**
    * new instance of mock graph provider
@@ -49,7 +49,7 @@ export class MockProvider extends IProvider {
     return !this.isMultipleAccountDisabled && this.isMultipleAccountSupported;
   }
 
-  private _accounts: IProviderAccount[] = [];
+  private readonly _accounts: IProviderAccount[] = [];
   /**
    * Returns the array of accounts the MockProviders has been configured with
    *

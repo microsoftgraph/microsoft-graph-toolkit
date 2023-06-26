@@ -48,7 +48,7 @@ export class TeamsFxProvider extends IProvider {
    * @memberof TeamsFxProvider
    */
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  private scopes: string | string[] = [];
+  private readonly scopes: string | string[] = [];
 
   /**
    * TeamsFxUserCredential instance
@@ -132,7 +132,7 @@ export class TeamsFxProvider extends IProvider {
     } catch (error: unknown) {
       const err = error as object;
       // eslint-disable-next-line no-console
-      console.error(`Cannot get access token due to error: ${err.toString()}`);
+      console.error(`🦒: Cannot get access token due to error: ${err.toString()}`);
       this.setState(ProviderState.SignedOut);
       this._accessToken = '';
     }

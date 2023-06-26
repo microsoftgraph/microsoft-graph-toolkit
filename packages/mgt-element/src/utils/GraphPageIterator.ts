@@ -53,7 +53,7 @@ export class GraphPageIterator<T> {
    */
   public static async create<T>(graph: IGraph, request: GraphRequest, version?: string): Promise<GraphPageIterator<T>> {
     const response = (await request.get()) as CollectionResponse<T>;
-    if (response && response.value) {
+    if (response?.value) {
       const iterator = new GraphPageIterator<T>();
       iterator._graph = graph;
       iterator._value = response.value;
@@ -114,7 +114,7 @@ export class GraphPageIterator<T> {
     if (this._nextLink) {
       const nextResource = this._nextLink.split(this._version)[1];
       const response = (await this._graph.api(nextResource).version(this._version).get()) as CollectionResponse<T>;
-      if (response && response.value && response.value.length) {
+      if (response?.value?.length) {
         this._value = this._value.concat(response.value);
         this._nextLink = response['@odata.nextLink'] as string;
         return response.value;

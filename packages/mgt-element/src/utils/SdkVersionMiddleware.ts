@@ -26,8 +26,8 @@ export class SdkVersionMiddleware implements Middleware {
    * A member to hold next middleware in the middleware chain
    */
   private _nextMiddleware: Middleware;
-  private _packageVersion: string;
-  private _providerName: string;
+  private readonly _packageVersion: string;
+  private readonly _providerName: string;
 
   constructor(packageVersion: string, providerName?: string) {
     this._packageVersion = packageVersion;

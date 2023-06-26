@@ -22,16 +22,11 @@ export default {
 };
 
 export const searchBox = () => html`
-  <mgt-search-box>
-  </mgt-search-box>
-  <script type="module">
-  import '@microsoft/mgt-components/dist/es6/components/preview';
-  </script>
+  <mgt-search-box></mgt-search-box>
 `;
 
 export const localization = () => html`
-  <mgt-search-box>
-  </mgt-search-box>
+  <mgt-search-box></mgt-search-box>
   <script>
   import '@microsoft/mgt-components/dist/es6/components/preview';
   import { LocalizationHelper } from '@microsoft/mgt';

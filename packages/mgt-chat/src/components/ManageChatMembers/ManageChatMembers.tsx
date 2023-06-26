@@ -47,9 +47,10 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
     setShowAddMembers(false);
     setIsPopoverOpen(false);
   }, [setShowAddMembers]);
-  const handleOpenChange = useCallback((_, data: OnOpenChangeData) => setIsPopoverOpen(data.open || false), [
-    setIsPopoverOpen
-  ]);
+  const handleOpenChange = useCallback(
+    (_, data: OnOpenChangeData) => setIsPopoverOpen(data.open || false),
+    [setIsPopoverOpen]
+  );
 
   const leaveChat = useCallback(() => {
     const me = members.find(member => member.userId === currentUserId);

@@ -8,6 +8,4 @@
 /**
  * Template context object
  */
-export interface TemplateContext {
-  [prop: string]: any;
-}
+export type TemplateContext = Record<string, any>;
