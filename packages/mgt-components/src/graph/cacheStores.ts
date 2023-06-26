@@ -14,7 +14,7 @@ export const schemas = {
     stores: {
       presence: 'presence'
     },
-    version: 1
+    version: 2
   },
   users: {
     name: 'users',
@@ -23,7 +23,7 @@ export const schemas = {
       usersQuery: 'usersQuery',
       userFilters: 'userFilters'
     },
-    version: 2
+    version: 3
   },
   photos: {
     name: 'photos',
@@ -33,7 +33,7 @@ export const schemas = {
       groups: 'groups',
       teams: 'teams'
     },
-    version: 1
+    version: 2
   },
   people: {
     name: 'people',
@@ -42,7 +42,7 @@ export const schemas = {
       groupPeople: 'groupPeople',
       peopleQuery: 'peopleQuery'
     },
-    version: 2
+    version: 3
   },
   groups: {
     name: 'groups',
@@ -50,21 +50,21 @@ export const schemas = {
       groups: 'groups',
       groupsQuery: 'groupsQuery'
     },
-    version: 4
+    version: 5
   },
   get: {
     name: 'responses',
     stores: {
       responses: 'responses'
     },
-    version: 1
+    version: 2
   },
   search: {
     name: 'search',
     stores: {
       responses: 'responses'
     },
-    version: 1
+    version: 2
   },
   files: {
     name: 'files',
@@ -76,7 +76,7 @@ export const schemas = {
       insightFiles: 'insightFiles',
       fileQueries: 'fileQueries'
     },
-    version: 1
+    version: 2
   },
   fileLists: {
     name: 'file-lists',
@@ -84,6 +84,6 @@ export const schemas = {
       fileLists: 'fileLists',
       insightfileLists: 'insightfileLists'
     },
-    version: 1
+    version: 2
   }
 };
