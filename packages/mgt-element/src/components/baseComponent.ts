@@ -5,10 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { internalProperty, LitElement, PropertyValues } from 'lit-element';
+import { LitElement, PropertyValueMap, PropertyValues } from 'lit';
+import { state } from 'lit/decorators.js';
 import { ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
+import { PACKAGE_VERSION } from '../utils/version';
 
 /**
  * Defines media query based on component width
@@ -43,12 +45,23 @@ export enum ComponentMediaQuery {
  */
 export abstract class MgtBaseComponent extends LitElement {
   /**
+   * Exposes the semver of the library the component is part of
+   *
+   * @readonly
+   * @static
+   * @memberof MgtBaseComponent
+   */
+  public static get packageVersion() {
+    return PACKAGE_VERSION;
+  }
+
+  /**
    * Gets or sets the direction of the component
    *
    * @protected
    * @memberof MgtBaseComponent
    */
-  @internalProperty() protected direction = 'ltr';
+  @state() protected direction: 'ltr' | 'rtl' | 'auto' = 'ltr';
 
   /**
    * Gets the ComponentMediaQuery of the component
@@ -96,25 +109,22 @@ export abstract class MgtBaseComponent extends LitElement {
    * @protected
    * @memberof MgtBaseComponent
    */
-  protected get strings(): { [x: string]: string } {
+  protected get strings(): Record<string, string> {
     return {};
   }
 
   /**
    * determines if login component is in loading state
+   *
    * @type {boolean}
    */
-  private _isLoadingState: boolean = false;
+  private _isLoadingState = false;
 
   private _isFirstUpdated = false;
   private _currentLoadStatePromise: Promise<unknown>;
 
   constructor() {
     super();
-    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
-    this.handleDirectionChanged = this.handleDirectionChanged.bind(this);
-    this.handleProviderUpdates = this.handleProviderUpdates.bind(this);
-    this.handleActiveAccountUpdates = this.handleActiveAccountUpdates.bind(this);
     this.handleDirectionChanged();
     this.handleLocalizationChanged();
   }
@@ -152,12 +162,12 @@ export abstract class MgtBaseComponent extends LitElement {
    *
    * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated(changedProperties): void {
+  protected firstUpdated(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
     super.firstUpdated(changedProperties);
     this._isFirstUpdated = true;
     Providers.onProviderUpdated(this.handleProviderUpdates);
     Providers.onActiveAccountChanged(this.handleActiveAccountUpdates);
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -168,7 +178,12 @@ export abstract class MgtBaseComponent extends LitElement {
     return Promise.resolve();
   }
 
-  protected clearState(): void {}
+  /**
+   * Used to clear state in inherited components
+   */
+  protected clearState(): void {
+    // no-op
+  }
 
   /**
    * helps facilitate creation of events across components
@@ -178,18 +193,22 @@ export abstract class MgtBaseComponent extends LitElement {
    * @param {*} [detail]
    * @param {boolean} [bubbles=false]
    * @param {boolean} [cancelable=false]
+   * @param {boolean} [composed=false]
    * @return {*}  {boolean}
    * @memberof MgtBaseComponent
    */
   protected fireCustomEvent(
     eventName: string,
     detail?: any,
-    bubbles: boolean = false,
-    cancelable: boolean = false
+    bubbles = false,
+    cancelable = false,
+    composed = false
   ): boolean {
     const event = new CustomEvent(eventName, {
       bubbles,
       cancelable,
+      composed,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       detail
     });
     return this.dispatchEvent(event);
@@ -220,7 +239,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * @protected
    * @memberof MgtBaseComponent
    */
-  protected async requestStateUpdate(force: boolean = false): Promise<unknown> {
+  protected async requestStateUpdate(force = false): Promise<unknown> {
     // the component is still bootstraping - wait until first updated
     if (!this._isFirstUpdated) {
       return;
@@ -246,6 +265,7 @@ export abstract class MgtBaseComponent extends LitElement {
       return Promise.resolve();
     } else {
       // Signed in, load the internal component state
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-async-promise-executor
       const loadStatePromise = new Promise<void>(async (resolve, reject) => {
         try {
           this.setLoadingState(true);
@@ -268,38 +288,41 @@ export abstract class MgtBaseComponent extends LitElement {
         // Return the load state promise.
         // If loading + forced, chain the promises.
         // This is to account for the lack of a cancellation token concept.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment
         return (this._currentLoadStatePromise =
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           this.isLoadingState && !!this._currentLoadStatePromise && force
-            ? this._currentLoadStatePromise.then(() => loadStatePromise)
+            ? // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              this._currentLoadStatePromise.then(() => loadStatePromise)
             : loadStatePromise);
       });
     }
   }
 
-  private setLoadingState(value: boolean) {
+  protected setLoadingState = (value: boolean) => {
     if (this._isLoadingState === value) {
       return;
     }
 
     this._isLoadingState = value;
     this.requestUpdate('isLoadingState');
-  }
+  };
 
-  private handleProviderUpdates() {
-    this.requestStateUpdate();
-  }
+  private readonly handleProviderUpdates = () => {
+    void this.requestStateUpdate();
+  };
 
-  private async handleActiveAccountUpdates() {
+  private readonly handleActiveAccountUpdates = () => {
     this.clearState();
-    this.requestStateUpdate();
-  }
+    void this.requestStateUpdate();
+  };
 
-  private handleLocalizationChanged() {
+  private readonly handleLocalizationChanged = () => {
     LocalizationHelper.updateStringsForTag(this.tagName, this.strings);
     this.requestUpdate();
-  }
+  };
 
-  private handleDirectionChanged() {
+  private readonly handleDirectionChanged = () => {
     this.direction = LocalizationHelper.getDocumentDirection();
-  }
+  };
 }

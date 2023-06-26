@@ -5,6 +5,39 @@
  * -------------------------------------------------------------------------------------------
  */
 
+export interface loginContext {
+  loginHint: string;
+}
+
+export interface TeamsLib {
+  initialize(): void;
+  executeDeepLink(deeplink: string, onComplete?: (status: boolean, reason?: string) => void): void;
+  authentication: {
+    authenticate(authConfig: {
+      failureCallback: (reason) => void;
+      successCallback: (result) => void;
+      url: string;
+    }): void;
+    getAuthToken(authCallback: { failureCallback: (reason) => void; successCallback: (result) => void }): void;
+    notifySuccess(message?: string): void;
+    notifyFailure(message: string): void;
+  };
+  getContext(callback?: (context: loginContext) => void): Promise<loginContext>;
+}
+
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+type TeamsWindow = Window &
+  typeof globalThis & {
+    microsoftTeams: TeamsLib;
+    nativeInterface: unknown;
+  };
+
 /**
  * A helper class for interacting with the Teams Client SDK.
  *
@@ -18,14 +51,13 @@ export class TeamsHelper {
    * the microsoftTeams global variable.
    *
    * @static
-   * @type {*}
+   * @type {TeamsLib}
    * @memberof TeamsHelper
    */
-  public static get microsoftTeamsLib(): any {
-    // tslint:disable-next-line: no-string-literal
-    return this._microsoftTeamsLib || window['microsoftTeams'];
+  public static get microsoftTeamsLib(): TeamsLib {
+    return this._microsoftTeamsLib || (window as TeamsWindow).microsoftTeams;
   }
-  public static set microsoftTeamsLib(value: any) {
+  public static set microsoftTeamsLib(value: TeamsLib) {
     this._microsoftTeamsLib = value;
   }
 
@@ -41,7 +73,7 @@ export class TeamsHelper {
     if (!this.microsoftTeamsLib) {
       return false;
     }
-    if (window.parent === window.self && (window as any).nativeInterface) {
+    if (window.parent === window.self && (window as TeamsWindow).nativeInterface) {
       // In Teams mobile client
       return true;
     } else if (window.name === 'embedded-page-container' || window.name === 'extension-tab-frame') {
@@ -60,10 +92,10 @@ export class TeamsHelper {
    * @memberof TeamsHelper
    */
   public static executeDeepLink(deeplink: string, onComplete?: (status: boolean, reason?: string) => void): void {
-    const teams = this.microsoftTeamsLib;
+    const teams: TeamsLib = this.microsoftTeamsLib;
     teams.initialize();
     teams.executeDeepLink(deeplink, onComplete);
   }
 
-  private static _microsoftTeamsLib: any;
+  private static _microsoftTeamsLib: TeamsLib;
 }

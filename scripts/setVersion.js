@@ -40,11 +40,22 @@ const updateMgtDependencyVersion = (packages, version) => {
 };
 
 const updateSpfxSolutionVersion = (solutions, version) => {
+  const isPreview = version.indexOf('-preview') > 0;
+  if (isPreview) {
+    version = version.replace(/-preview\./, '.');
+  }
+  const isRC = version.indexOf('-rc') > 0;
+  if (isRC) {
+    version = version.replace(/-rc\./, '.');
+  }
   for (let solution of solutions) {
     console.log(`updating spfx solution ${solution} with version ${version}`);
     const data = fs.readFileSync(solution, 'utf8');
 
-    var result = data.replace(/"version": "(.*)"/g, `"version": "${version}.0"`);
+    const result =
+      isPreview || isRC
+        ? data.replace(/"version": "(.*)"/g, `"version": "${version}"`)
+        : data.replace(/"version": "(.*)"/g, `"version": "${version}.0"`);
 
     fs.writeFileSync(solution, result, 'utf8');
   }

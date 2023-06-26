@@ -8,6 +8,7 @@
 import { IGraph, prepScopes, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { Person, ProfilePhoto } from '@microsoft/microsoft-graph-types';
 
 import { blobToBase64 } from '../utils/Utils';
 import { schemas } from './cacheStores';
@@ -47,7 +48,7 @@ export const getIsPhotosCacheEnabled = () => CacheService.config.photos.isEnable
  * @param {string[]} scopes
  * @returns {Promise<string>}
  */
-export async function getPhotoForResource(graph: IGraph, resource: string, scopes: string[]): Promise<CachePhoto> {
+export const getPhotoForResource = async (graph: IGraph, resource: string, scopes: string[]): Promise<CachePhoto> => {
   try {
     const response = (await graph
       .api(`${resource}/photo/$value`)
@@ -64,21 +65,22 @@ export async function getPhotoForResource(graph: IGraph, resource: string, scope
       return null;
     }
 
-    const eTag = response.headers.get('eTag');
+    const eTag = response['@odata.mediaEtag'] as string;
     const blob = await blobToBase64(await response.blob());
     return { eTag, photo: blob };
   } catch (e) {
     return null;
   }
-}
+};
 
 /**
  * async promise, returns Graph photos associated with contacts of the logged in user
+ *
  * @param contactId
  * @returns {Promise<string>}
  * @memberof Graph
  */
-export async function getContactPhoto(graph: IGraph, contactId: string): Promise<string> {
+export const getContactPhoto = async (graph: IGraph, contactId: string): Promise<string> => {
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
   if (getIsPhotosCacheEnabled()) {
@@ -91,18 +93,19 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
 
   photoDetails = await getPhotoForResource(graph, `me/contacts/${contactId}`, ['contacts.read']);
   if (getIsPhotosCacheEnabled() && photoDetails) {
-    cache.putValue(contactId, photoDetails);
+    await cache.putValue(contactId, photoDetails);
   }
   return photoDetails ? photoDetails.photo : null;
-}
+};
 
 /**
  * async promise, returns Graph photo associated with provided userId
+ *
  * @param userId
  * @returns {Promise<string>}
  * @memberof Graph
  */
-export async function getUserPhoto(graph: IGraph, userId: string): Promise<string> {
+export const getUserPhoto = async (graph: IGraph, userId: string): Promise<string> => {
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
 
@@ -112,13 +115,13 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
     } else if (photoDetails) {
-      // there is a photo in the cache, but it's stale
+      // there is a photo in the cache, but it's staleS
       try {
-        const response = await graph.api(`users/${userId}/photo`).get();
+        const response = (await graph.api(`users/${userId}/photo`).get()) as ProfilePhoto;
         if (
           response &&
           (response['@odata.mediaEtag'] !== photoDetails.eTag ||
-            (response['@odata.mediaEtag'] === null && response.eTag === null))
+            (response['@odata.mediaEtag'] === null && photoDetails.eTag === null))
         ) {
           // set photoDetails to null so that photo gets pulled from the graph later
           photoDetails = null;
@@ -132,17 +135,18 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
   // if there is a photo in the cache, we got here because it was stale
   photoDetails = photoDetails || (await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']));
   if (getIsPhotosCacheEnabled() && photoDetails) {
-    cache.putValue(userId, photoDetails);
+    await cache.putValue(userId, photoDetails);
   }
   return photoDetails ? photoDetails.photo : null;
-}
+};
 
 /**
  * async promise, returns Graph photo associated with the logged in user
+ *
  * @returns {Promise<string>}
  * @memberof Graph
  */
-export async function myPhoto(graph: IGraph): Promise<string> {
+export const myPhoto = async (graph: IGraph): Promise<string> => {
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
   if (getIsPhotosCacheEnabled()) {
@@ -154,11 +158,11 @@ export async function myPhoto(graph: IGraph): Promise<string> {
   }
 
   try {
-    const response = await graph.api('me/photo').get();
+    const response = (await graph.api('me/photo').get()) as ProfilePhoto;
     if (
       response &&
       (response['@odata.mediaEtag'] !== photoDetails.eTag ||
-        (response['@odata.mediaEtag'] === null && response.eTag === null))
+        (response['@odata.mediaEtag'] === null && photoDetails.eTag === null))
     ) {
       photoDetails = null;
     }
@@ -168,25 +172,25 @@ export async function myPhoto(graph: IGraph): Promise<string> {
 
   photoDetails = photoDetails || (await getPhotoForResource(graph, 'me', ['user.read']));
   if (getIsPhotosCacheEnabled()) {
-    cache.putValue('me', photoDetails || {});
+    await cache.putValue('me', photoDetails || {});
   }
 
   return photoDetails ? photoDetails.photo : null;
-}
+};
 
 /**
  * async promise, loads image of user
  *
  * @export
  */
-export async function getPersonImage(graph: IGraph, person: IDynamicPerson, useContactsApis: boolean = true) {
+export const getPersonImage = async (graph: IGraph, person: IDynamicPerson, useContactsApis = true) => {
   // handle if person but not user
-  if ('personType' in person && (person as any).personType.subclass !== 'OrganizationUser') {
-    if ((person as any).personType.subclass === 'PersonalContact' && useContactsApis) {
+  if ('personType' in person && (person as Person).personType.subclass !== 'OrganizationUser') {
+    if ((person as Person).personType.subclass === 'PersonalContact' && useContactsApis) {
       // if person is a contact, look for them and their photo in contact api
-      const email = getEmailFromGraphEntity(person);
-      const contact = await findContactsByEmail(graph, email);
-      if (contact && contact.length && contact[0].id) {
+      const contactMail = getEmailFromGraphEntity(person);
+      const contact = await findContactsByEmail(graph, contactMail);
+      if (contact?.length && contact[0].id) {
         return await getContactPhoto(graph, contact[0].id);
       }
     }
@@ -215,27 +219,35 @@ export async function getPersonImage(graph: IGraph, person: IDynamicPerson, useC
   if (email) {
     // try to find user
     const users = await findUsers(graph, email, 1);
-    if (users && users.length) {
+    if (users?.length) {
       return await getUserPhoto(graph, users[0].id);
     }
 
     // if no user, try to find a contact
     if (useContactsApis) {
       const contacts = await findContactsByEmail(graph, email);
-      if (contacts && contacts.length) {
+      if (contacts?.length) {
         return await getContactPhoto(graph, contacts[0].id);
       }
     }
   }
 
   return null;
-}
+};
 
-export async function getGroupImage(graph: IGraph, group: any, useContactsApis: boolean = true) {
+/**
+ * Load the image for a group
+ *
+ * @param graph
+ * @param group
+ * @param useContactsApis
+ * @returns
+ */
+export const getGroupImage = async (graph: IGraph, group: IDynamicPerson, useContactsApis = true) => {
   let photoDetails: CachePhoto;
   let cache: CacheStore<CachePhoto>;
 
-  let groupId = group.id;
+  const groupId = group.id;
 
   if (getIsPhotosCacheEnabled()) {
     cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.groups);
@@ -245,11 +257,11 @@ export async function getGroupImage(graph: IGraph, group: any, useContactsApis: 
     } else if (photoDetails) {
       // there is a photo in the cache, but it's stale
       try {
-        const response = await graph.api(`groups/${groupId}/photo`).get();
+        const response = (await graph.api(`groups/${groupId}/photo`).get()) as ProfilePhoto;
         if (
           response &&
           (response['@odata.mediaEtag'] !== photoDetails.eTag ||
-            (response['@odata.mediaEtag'] === null && response.eTag === null))
+            (response['@odata.mediaEtag'] === null && photoDetails.eTag === null))
         ) {
           // set photoDetails to null so that photo gets pulled from the graph later
           photoDetails = null;
@@ -263,30 +275,32 @@ export async function getGroupImage(graph: IGraph, group: any, useContactsApis: 
   // if there is a photo in the cache, we got here because it was stale
   photoDetails = photoDetails || (await getPhotoForResource(graph, `groups/${groupId}`, ['user.readbasic.all']));
   if (getIsPhotosCacheEnabled() && photoDetails) {
-    cache.putValue(groupId, photoDetails);
+    await cache.putValue(groupId, photoDetails);
   }
   return photoDetails ? photoDetails.photo : null;
-}
+};
 
 /**
  * checks if user has a photo in the cache
+ *
  * @param userId
  * @returns {CachePhoto}
  * @memberof Graph
  */
-export async function getPhotoFromCache(userId: string, storeName: string): Promise<CachePhoto> {
+export const getPhotoFromCache = async (userId: string, storeName: string): Promise<CachePhoto> => {
   const cache = CacheService.getCache<CachePhoto>(schemas.photos, storeName);
   const item = await cache.getValue(userId);
   return item;
-}
+};
 
 /**
  * checks if user has a photo in the cache
+ *
  * @param userId
  * @returns {void}
  * @memberof Graph
  */
-export async function storePhotoInCache(userId: string, storeName: string, value: CachePhoto): Promise<void> {
+export const storePhotoInCache = async (userId: string, storeName: string, value: CachePhoto): Promise<void> => {
   const cache = CacheService.getCache<CachePhoto>(schemas.photos, storeName);
-  cache.putValue(userId, value);
-}
+  await cache.putValue(userId, value);
+};

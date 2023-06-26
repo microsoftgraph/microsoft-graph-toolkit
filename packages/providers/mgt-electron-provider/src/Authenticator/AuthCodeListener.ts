@@ -11,10 +11,11 @@
  * their structure and members.
  */
 export abstract class AuthCodeListener {
-  private hostName: string;
+  private readonly hostName: string;
 
   /**
    * Constructor
+   *
    * @param hostName - A string that represents the host name that should be listened on (i.e. 'msal' or '127.0.0.1')
    */
   constructor(hostName: string) {

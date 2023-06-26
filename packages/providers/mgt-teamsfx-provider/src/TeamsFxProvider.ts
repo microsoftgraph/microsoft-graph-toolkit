@@ -5,8 +5,21 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, ProviderState, createFromProvider } from '@microsoft/mgt-element';
-import { TeamsFx, TeamsUserCredential } from '@microsoft/teamsfx';
+import {
+  IProvider,
+  ProviderState,
+  createFromProvider,
+  GraphEndpoint,
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT
+} from '@microsoft/mgt-element';
+import { TokenCredential } from '@azure/core-auth';
+
+/**
+ * Interface represents TeamsUserCredential in TeamsFx library
+ */
+export interface TeamsFxUserCredential extends TokenCredential {
+  login(scopes: string | string[], resources?: string[]): Promise<void>;
+}
 
 /**
  * TeamsFx Provider handler
@@ -27,16 +40,6 @@ export class TeamsFxProvider extends IProvider {
   }
 
   /**
-   * returns teamsfx instance, if you construct TeamsFxProvider with TeamsUserCredential, this value should be null
-   *
-   * @readonly
-   * @memberof TeamsFxProvider
-   */
-  public get teamsfx(): TeamsFx {
-    return this._teamsfx;
-  }
-
-  /**
    * Privilege level for authentication
    *
    * Can use string array or space-separated string, such as ["User.Read", "Application.Read.All"] or "User.Read Application.Read.All"
@@ -44,23 +47,16 @@ export class TeamsFxProvider extends IProvider {
    * @type {string | string[]}
    * @memberof TeamsFxProvider
    */
-  private scopes: string | string[] = [];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  private readonly scopes: string | string[] = [];
 
   /**
-   * TeamsUserCredential instance
+   * TeamsFxUserCredential instance
    *
    * @type {TeamsFx}
    * @memberof TeamsFxProvider
    */
-  private readonly _credential: TeamsUserCredential;
-
-  /**
-   * TeamsFx instance
-   *
-   * @type {TeamsFx}
-   * @memberof TeamsFxProvider
-   */
-  private readonly _teamsfx: TeamsFx;
+  private readonly _credential: TeamsFxUserCredential;
 
   /**
    * Access token provided by TeamsFx
@@ -68,21 +64,42 @@ export class TeamsFxProvider extends IProvider {
    * @type {string}
    * @memberof TeamsFxProvider
    */
-  private _accessToken: string = '';
+  private _accessToken = '';
 
-  constructor(teamsfx: TeamsFx, scopes: string | string[]);
-  constructor(teamsUserCredential: TeamsUserCredential, scopes: string | string[]);
-  constructor(authConfig: TeamsFx | TeamsUserCredential, scopes: string | string[]) {
+  /**
+   * Constructor of TeamsFxProvider.
+   *
+   * @example
+   * ```typescript
+   * import {Providers} from '@microsoft/mgt-element';
+   * import {TeamsFxProvider} from '@microsoft/mgt-teamsfx-provider';
+   * import {TeamsUserCredential, TeamsUserCredentialAuthConfig} from "@microsoft/teamsfx";
+   *
+   * const authConfig: TeamsUserCredentialAuthConfig = {
+   *     clientId: process.env.REACT_APP_CLIENT_ID,
+   *     initiateLoginEndpoint: process.env.REACT_APP_START_LOGIN_PAGE_URL,
+   * };
+   * const scope = ["User.Read"];
+   *
+   * const credential = new TeamsUserCredential(authConfig);
+   * const provider = new TeamsFxProvider(credential, scope);
+   * Providers.globalProvider = provider;
+   * ```
+   *
+   * @param {TeamsFxUserCredential} credential - TeamsUserCredential instance in TeamsFx library.
+   * @param {string | string[]} scopes - The list of scopes for which the token will have access.
+   * @param {GraphEndpoint} baseURL - Graph endpoint.
+   *
+   */
+  constructor(
+    credential: TeamsFxUserCredential,
+    scopes: string | string[],
+    baseURL: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT
+  ) {
     super();
 
-    if (!this._teamsfx && !this._credential) {
-      if ((authConfig as TeamsFx).getCredential) {
-        this._teamsfx = authConfig as TeamsFx;
-        this._credential = null;
-      } else {
-        this._credential = authConfig as TeamsUserCredential;
-        this._teamsfx = null;
-      }
+    if (!this._credential) {
+      this._credential = credential;
     }
 
     this.validateScopesType(scopes);
@@ -95,6 +112,7 @@ export class TeamsFxProvider extends IProvider {
       this.scopes = scopesArr;
     }
 
+    this.baseURL = baseURL;
     this.graph = createFromProvider(this);
   }
 
@@ -106,18 +124,15 @@ export class TeamsFxProvider extends IProvider {
    */
   public async getAccessToken(): Promise<string> {
     try {
-      let accessToken;
-      if (this._teamsfx) {
-        accessToken = await this._teamsfx.getCredential().getToken(this.scopes);
-      } else {
-        accessToken = await this._credential.getToken(this.scopes);
-      }
+      const accessToken = await this._credential.getToken(this.scopes);
       this._accessToken = accessToken ? accessToken.token : '';
       if (!this._accessToken) {
         throw new Error('Access token is null');
       }
-    } catch (error) {
-      console.error('Cannot get access token due to error: ' + error.toString());
+    } catch (error: unknown) {
+      const err = error as object;
+      // eslint-disable-next-line no-console
+      console.error(`🦒: Cannot get access token due to error: ${err.toString()}`);
       this.setState(ProviderState.SignedOut);
       this._accessToken = '';
     }
@@ -134,11 +149,7 @@ export class TeamsFxProvider extends IProvider {
     const token: string = await this.getAccessToken();
 
     if (!token) {
-      if (this._teamsfx) {
-        await this._teamsfx.login(this.scopes);
-      } else {
-        await this._credential.login(this.scopes);
-      }
+      await this._credential.login(this.scopes);
     }
 
     this._accessToken = token ?? (await this.getAccessToken());

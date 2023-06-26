@@ -6,376 +6,154 @@
  */
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../../styles/shared-styles.scss';
-@import './mgt-people-picker.theme.scss';
+@import '../../styles/shared-styles';
+@import './mgt-people-picker.theme';
 
-$flyout-line1-text-font-size: var(--people-picker-flyout-line1-text-font-size, 14px);
-$flyout-line1-text-font-weight: var(--people-picker-flyout-line1-text-font-weight, normal);
-$flyout-line2-text-font-size: var(--people-picker-flyout-line2-text-font-size, 12px);
-$flyout-line2-text-font-weight: var(--people-picker-flyout-line1-text-font-weight, normal);
-
-// Main
 :host {
-  font-family: $font-family;
-  font-size: 14px;
-  height: 24px;
-  display: contents;
-  overflow: hidden;
-  position: absolute;
-  width: 135px;
-  left: 0px;
-  top: 0px;
-  border-radius: 12px;
-}
+  --person-details-wrapper-width: 0;
 
-:host .root,
-mgt-people-picker .root {
-  display: block;
-}
+  width: auto;
 
-.people-picker {
-  background-color: $input__background-color;
-  @include input__border($theme-default);
-  &:hover {
-    border-color: $input__border-color--hover;
+  fluent-text-field {
+    width: 100%;
+
+    &::part(root) {
+      display: flex;
+      flex-wrap: wrap;
+      height: auto;
+      background: $input-background;
+
+      &:hover {
+        background: $input-hover-background;
+      }
+
+      &:focus,
+      &:focus-within {
+        background: $input-focus-background;
+      }
+    }
+
+    &::part(start) {
+      margin: unset;
+    }
+
+    &::part(control) {
+      width: min-content;
+      height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
+      word-spacing: inherit;
+      text-indent: inherit;
+      letter-spacing: inherit;
+
+      &::placeholder {
+        color: $placeholder-text-color;
+      }
+
+      &:hover {
+        &::placeholder {
+          color: $placeholder-hover-text-color;
+        }
+      }
+
+      &:focus,
+      &:focus-within {
+        &::placeholder {
+          color: $placeholder-focus-text-color;
+        }
+      }
+    }
+
+    .search-icon {
+      display: flex;
+      padding-top: 10px;
+      padding-inline-start: 10px;
+
+      svg {
+        path {
+          fill: var(--people-picker-search-icon-color, currentColor);
+        }
+      }
+    }
   }
-  &.focused {
-    border-color: $input__border-color--focus;
-  }
-  &.disabled {
-    pointer-events: none;
-  }
 
-  padding: 6px 0 0;
-
-  .people-picker-inner {
-    flex: 1 1 auto;
+  .selected-list {
     display: flex;
     flex-wrap: wrap;
-    vertical-align: middle;
-    list-style-type: none;
-    font-style: normal;
-    font-weight: normal;
-    overflow: hidden;
-  }
+    column-gap: 5px;
+    padding: unset;
+    margin: 0 5px;
 
-  .flyout {
-    .search-box {
-      margin: 1px 2px 8px;
-
-      &.search-box-start {
-        line-height: normal;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-      }
-
-      &__input {
-        box-sizing: border-box;
-        border-width: 0;
-        border-style: none;
-        width: 100%;
-        display: flex;
-        flex: 1 0 auto;
-        font-family: $font-family;
-        position: relative;
-        outline: none;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 14px;
-        background-color: $input__background-color;
-        color: $color;
-        word-spacing: inherit;
-        text-indent: inherit;
-        letter-spacing: inherit;
-        &::placeholder {
-          color: $placeholder__color;
-        }
-      }
-    }
-
-    .flyout-root {
-      padding: 0;
-      border-radius: 2px;
-      min-width: 260px;
-      overflow-y: auto;
-      text-align: left;
-      list-style-type: none;
-      background-color: $dropdown__background-color;
-      max-height: var(--mgt-flyout-set-height, unset);
-      border-radius: 8px;
-      li {
-        cursor: pointer;
-      }
-
-      .people-list {
-        list-style: none;
-        padding: 0;
-        .list-person {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          padding: 12px;
-          font-style: normal;
-          font-weight: 600;
-          font-size: 14px;
-          margin: var(--file-item-margin, 4px);
-          border-radius: 4px;
-          &:hover {
-            background-color: $dropdown-item__background-color--hover;
-            .people-person-text-area {
-              color: $dropdown-item__text__color--hover;
-            }
-          }
-
-          &:focus,
-          &:focus-within {
-            background-color: $dropdown-item__background-color--hover;
-            .people-person-text-area {
-              color: $dropdown-item__text__color--hover;
-            }
-          }
-          .people-person-text-area {
-            margin-left: 13px;
-            flex: 1 1 0;
-            min-height: 40px;
-            overflow: hidden;
-            color: $dropdown-item__text__color;
-
-            .people-person-text {
-              font-size: $flyout-line1-text-font-size;
-              font-weight: $flyout-line1-text-font-weight;
-              margin: 0;
-              padding: 0;
-              &.highlight-search-text {
-                font-weight: bold;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .selected-list {
-    list-style: none;
-    padding: 0;
-    display: contents;
-
-    &__person-wrapper {
+    &-item {
       display: flex;
-      margin: 0 5px 6px 0;
-      align-items: center;
-      border-radius: 12px;
-      height: 24px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      position: relative;
-      background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
+      column-gap: 5px;
+      border-radius: 100px;
+      margin-top: 3px;
+      background-color: $selected-option-bg;
 
-      &__person {
-        overflow: hidden;
-        min-width: 100%;
-        --avatar-size-s: 24px;
-        margin-left: 0px;
-        --color: #{$color};
-        color: $color;
-        padding-bottom: 1px;
-        padding-right: 4px;
+      &.highlighted {
+        background-color: $selected-option-highlight-bg;
       }
 
-      &__overflow {
-        margin-left: 25px;
+      &-close-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-inline-end: 8px;
+        cursor: pointer;
 
-        &__gradient {
-          content: '';
-          position: absolute;
-          margin-right: 23px;
-          width: 10px;
-          height: 90%;
-          top: 0;
-          right: 0;
-          @include selected-person__overflow($theme-default);
-          background-image: none;
-        }
-
-        &__close-icon {
-          font-family: 'FabricMDL2Icons';
-          cursor: pointer;
-          background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
-          color: $color;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          position: absolute;
-          height: 24px;
-          width: 24px;
-          right: 0px;
-          top: 0px;
-          border-radius: 12px;
-          line-height: 24px;
-
-          &:focus,
-          &:focus-visible {
-            outline-offset: -4px;
-            outline-width: 1px;
-            outline-style: solid;
+        svg {
+          path {
+            fill: var(--people-picker-remove-selected-close-icon-color, currentColor);
           }
         }
       }
-    }
 
-    &__person-wrapper-highlighted {
-      @extend .selected-list__person-wrapper;
-      background: #005393;
-
-      &__person {
-        @extend .selected-list__person-wrapper__person;
-        color: white;
-        --color: white;
-      }
-
-      &__overflow {
-        @extend .selected-list__person-wrapper__overflow;
-        &__gradient {
-          @extend .selected-list__person-wrapper__overflow__gradient;
-          background-image: none;
-        }
-
-        &__close-icon {
-          @extend .selected-list__person-wrapper__overflow__close-icon;
-          background: #005393;
-          color: white;
-          line-height: 24px;
-        }
-      }
-    }
-
-    &__person-wrapper-highlighted:hover {
-      @extend .selected-list__person-wrapper-highlighted;
-      background-color: #006cbe;
-    }
-  }
-}
-
-mgt-person {
-  --avatar-size-s: 32px;
-  margin-left: 12px;
-  cursor: default;
-}
-
-:host .search-error-text,
-:host .loading-text,
-mgt-people-picker .search-error-text,
-mgt-people-picker .loading-text {
-  font-family: $font-family;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 19px;
-  text-align: center;
-  margin-left: 50px;
-  margin-right: 50px;
-  color: $commblue_primary;
-}
-
-:host .message-parent,
-mgt-people-picker .message-parent {
-  padding: 2px;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-}
-
-:host .people-person-job-title,
-mgt-people-picker .people-person-job-title {
-  flex: 100%;
-  order: 3;
-  font-size: $flyout-line2-text-font-size;
-  font-weight: $flyout-line2-text-font-weight;
-  &.uppercase {
-    text-transform: uppercase;
-  }
-}
-
-mgt-flyout {
-  flex: 1 0 auto;
-}
-
-[dir='rtl'] {
-  mgt-person {
-    margin: 0px 12px 0px 0px;
-  }
-  .selected-list {
-    margin-right: 8px !important;
-    &__person-wrapper {
-      margin-left: 6px !important;
-      &__person {
-        margin-right: 0px !important;
-        margin-left: 4px !important;
-      }
-      &__overflow {
-        &__gradient {
-          right: auto !important;
-          position: absolute !important;
-          margin-right: 0px !important;
-          width: 10px !important;
-          height: 90%;
-          top: 0;
-        }
-        &__close-icon {
-          right: auto !important;
-          margin-left: 5px !important;
-          left: 0px !important;
-        }
+      &-person {
+        width: max-content;
       }
     }
   }
-  .people-person-text-area {
-    margin-right: 13px;
-    margin-left: 0px !important;
+
+  fluent-card {
+    margin-top: 4px;
+    background-color: $dropdown-card-color;
   }
 
-  .flyout-root {
-    text-align: right !important;
-  }
-}
+  .searched-people-list {
+    list-style: none;
+    padding: 4px;
+    margin: auto;
 
-@media (forced-colors: active) and (prefers-color-scheme: dark) {
-  svg,
-  svg > path {
-    fill: rgb(255, 255, 255) !important;
-    fill-rule: nonzero !important;
-    clip-rule: nonzero !important;
-    color: rgb(255, 255, 255) !important;
-  }
+    &-result {
+      padding: 4px;
+      border-radius: 4px;
+      background: $dropdown-result-bg-color;
 
-  .flyout-root {
-    border: 1px solid rgb(255, 255, 255);
-  }
+      &:hover {
+        background: $dropdown-result-hover-bg-color;
+      }
 
-  .people-list .list-person {
-    border: solid 1px rgb(255, 255, 255);
-  }
-}
-@media (forced-colors: active) and (prefers-color-scheme: light) {
-  svg,
-  svg > path {
-    fill: rgb(0, 0, 0) !important;
-    fill-rule: nonzero !important;
-    clip-rule: nonzero !important;
-    color: rgb(0, 0, 0) !important;
+      &:focus,
+      &:focus-within {
+        background: $dropdown-result-focus-bg-color;
+      }
+    }
   }
 
-  .flyout-root {
-    border: 1px solid rgb(0, 0, 0);
-  }
+  .message-parent {
+    display: flex;
+    place-content: center;
+    flex-direction: row;
+    padding: 10px 15px;
+    column-gap: 5px;
 
-  .people-list .list-person {
-    border: solid 1px rgb(0, 0, 0);
+    .search-error-text,
+    .loading-text {
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 19px;
+      text-align: center;
+      color: $no-results-color;
+    }
   }
 }

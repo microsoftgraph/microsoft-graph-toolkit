@@ -11,13 +11,9 @@
  * @interface IWindowSegment
  */
 export interface IWindowSegment {
-  // tslint:disable-next-line: completed-docs
   top: number;
-  // tslint:disable-next-line: completed-docs
   left: number;
-  // tslint:disable-next-line: completed-docs
   width: number;
-  // tslint:disable-next-line: completed-docs
   height: number;
 }
 
@@ -42,9 +38,9 @@ export interface ISegmentAwareWindow extends Window {
  * @export
  * @returns {boolean}
  */
-export function isWindowSegmentAware(): boolean {
-  return ((window as unknown) as ISegmentAwareWindow).getWindowSegments !== undefined;
-}
+export const isWindowSegmentAware = (): boolean => {
+  return (window as unknown as ISegmentAwareWindow).getWindowSegments !== undefined;
+};
 
 /**
  * Returns an ISegmentAwareWindow instance of the Window object, or null if the API is not supported.
@@ -52,6 +48,6 @@ export function isWindowSegmentAware(): boolean {
  * @export
  * @returns {ISegmentAwareWindow}
  */
-export function getSegmentAwareWindow(): ISegmentAwareWindow {
-  return isWindowSegmentAware() ? ((window as unknown) as ISegmentAwareWindow) : null;
-}
+export const getSegmentAwareWindow = (): ISegmentAwareWindow => {
+  return isWindowSegmentAware() ? (window as unknown as ISegmentAwareWindow) : null;
+};

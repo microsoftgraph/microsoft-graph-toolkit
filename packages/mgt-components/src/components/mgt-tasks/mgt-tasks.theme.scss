@@ -1,0 +1,63 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables';
+
+$tasks-header-text-color: var(--tasks-header-text-color, var(--neutral-foreground-hint));
+$tasks-header-text-hover-color: var(--tasks-header-text-hover-color, var(--neutral-foreground-hover));
+$tasks-new-button-bg: padding-box linear-gradient(var(--accent-fill-rest), var(--accent-fill-rest)),
+  border-box var(--accent-stroke-control-rest);
+$tasks-new-button-text-color: var(--tasks-new-button-text-color, var(--foreground-on-accent-rest));
+$tasks-new-button-background: var(--tasks-new-button-background, $tasks-new-button-bg);
+$tasks-new-button-background-hover: var(--tasks-new-button-background-hover, var(--accent-fill-hover));
+$tasks-new-button-background-active: var(--tasks-new-button-background-active, var(--accent-fill-active));
+$neutral-btn-bg: padding-box linear-gradient(var(--neutral-fill-active), var(--neutral-fill-active)),
+  border-box var(--neutral-stroke-control-active);
+$neutral-btn-hover-bg: padding-box linear-gradient(var(--neutral-fill-hover), var(--neutral-fill-hover)),
+  border-box var(--neutral-stroke-control-hover);
+$neutral-btn-active-bg: padding-box linear-gradient(var(--neutral-fill-active), var(--neutral-fill-active)),
+  border-box var(--neutral-stroke-control-active);
+$task-add-new-button-text-color: var(--task-add-new-button-text-color, var(--neutral-foreground-rest));
+$task-add-new-button-background: var(--task-add-new-button-background, $neutral-btn-bg);
+$task-add-new-button-background-hover: var(--task-add-new-button-background-hover, $neutral-btn-hover-bg);
+$task-add-new-button-background-active: var(--task-add-new-button-background-active, $neutral-btn-active-bg);
+$task-cancel-new-button-text-color: var(--task-cancel-new-button-text-color, var(--neutral-foreground-rest));
+$task-cancel-new-button-background: var(--task-cancel-new-button-background, $neutral-btn-bg);
+$task-cancel-new-button-background-hover: var(--task-cancel-new-button-background-hover, $neutral-btn-hover-bg);
+$task-cancel-new-button-background-active: var(--task-cancel-new-button-background-active, $neutral-btn-active-bg);
+$task-icons-bg-color: var(--task-icons-background-color, var(--neutral-foreground-hint));
+$task-icons-text-color: var(--task-icons-text-font-color, var(--neutral-foreground-hint));
+$task-complete-title-text-color: var(--task-complete-title-text-color, var(--neutral-foreground-hint));
+$task-incomplete-title-text-color: var(--task-incomplete-title-text-color, var(var(--neutral-foreground-rest)));
+$task-complete-checkbox-bg: var(--task-complete-checkbox-background-color, var(--accent-fill-rest));
+$task-complete-checkbox-check-bg: var(--task-complete-checkbox-text-color, currentColor);
+$task-incomplete-checkbox-bg: var(--task-incomplete-checkbox-background-color, var(--neutral-fill-input-alt-rest));
+$task-incomplete-checkbox-hover-bg: var(
+  --task-incomplete-checkbox-background-hover-color,
+  var(--neutral-fill-input-alt-hover)
+);
+$task-complete-bg-color: var(--task-complete-background-color, transparent);
+$task-incomplete-bg-color: var(--task-incomplete-background-color, var(--neutral-layer-1));
+$tasks-background-color: var(--tasks-background-color, transparent);
+$input-bg: padding-box linear-gradient(var(--neutral-fill-input-rest), var(--neutral-fill-input-rest)),
+  border-box var(--neutral-stroke-input-rest);
+$input-hover-bg: padding-box linear-gradient(var(--neutral-fill-input-hover), var(--neutral-fill-input-hover)),
+  border-box var(--neutral-stroke-input-hover);
+$task-new-input-background-color: var(--task-new-input-background-color, $input-bg);
+$task-new-input-hover-background-color: var(--task-new-input-hover-background-color, $input-hover-bg);
+$task-new-input-placeholder-color: var(--task-new-input-placeholder-color, var(--input-placeholder-rest));
+$task-new-dropdown-background-color: var(--task-new-dropdown-background-color, $input-bg);
+$task-new-dropdown-hover-background-color: var(--task-new-dropdown-hover-background-color, $input-hover-bg);
+$task-new-dropdown-placeholder-color: var(--task-new-dropdown-placeholder-color, var(--input-placeholder-rest));
+$task-new-dropdown-list-background-color: var(--task-new-dropdown-list-background-color, var(--fill-color));
+$task-new-dropdown-option-text-color: var(--task-new-dropdown-option-text-color, var(--neutral-foreground-rest));
+$task-new-dropdown-option-hover-bg-color: var(
+  --task-new-dropdown-option-hover-background-color,
+  var(--neutral-fill-stealth-hover)
+);
+$task-new-person-icon-color: var(--task-new-person-icon-color, var(--neutral-foreground-hint));
+$task-new-person-icon-text-color: var(--task-new-person-icon-text-color, var(--neutral-foreground-hint));

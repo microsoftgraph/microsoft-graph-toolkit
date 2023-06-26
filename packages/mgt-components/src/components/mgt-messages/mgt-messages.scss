@@ -1,0 +1,85 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../base-person-card-section';
+@import '../../styles/shared-styles';
+@import '../../styles/shared-sass-variables';
+@import './mgt-messages.theme';
+
+$message-subject-font-size: var(--message-subject-font-size, 14px);
+$message-subject-font-weight: var(--message-subject-font-weight, 600);
+$message-subject-line-height: var(--message-subject-line-height, 20px);
+$message-from-font-size: var(--message-subject-font-size, 12px);
+$message-from-font-weight: var(--message-subject-font-weight, 400);
+$message-from-line-height: var(--message-subject-line-height, 16px);
+
+:host {
+  position: relative;
+  user-select: none;
+
+  .root {
+    &.compact {
+      padding: 0;
+    }
+
+    .message {
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      &:hover {
+        background-color: $message-hover-color;
+        cursor: pointer;
+      }
+
+      &:last-child {
+        margin-bottom: unset;
+      }
+
+      .message__detail {
+        min-width: 0;
+        line-height: normal;
+
+        .message__subject {
+          color: $message-subject-color;
+          font-size: $message-subject-font-size;
+          font-weight: $message-subject-font-weight;
+          line-height: $message-subject-line-height;
+        }
+
+        .message__from {
+          font-size: $message-from-font-size;
+          color: $message-from-color;
+          line-height: $message-from-line-height;
+          font-weight: $message-from-font-weight;
+        }
+
+        .message__message {
+          font-size: $message-from-font-size;
+          color: $message-color;
+          line-height: $message-from-line-height;
+          font-weight: $message-from-font-weight;
+        }
+
+        > div {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .message__date {
+        margin-top: 8px;
+        font-size: 12px;
+        color: $message-date;
+        margin-left: 10px;
+        white-space: nowrap;
+      }
+    }
+  }
+}

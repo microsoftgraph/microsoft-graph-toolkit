@@ -6,137 +6,164 @@
  */
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../../styles/shared-styles.scss';
-@import './mgt-login.theme.scss';
+@import '../../styles/shared-styles';
+@import './mgt-login.theme';
 
-:host,
-mgt-login {
-  --font-size: #{$ms-font-size-m};
-  --font-weight: #{$ms-font-weight-semibold};
-  --width: '100%';
-  --height: '100%';
-  --margin: 0;
-  --padding: 12px 20px;
-  --popup-command-font-size: #{$ms-font-size-s};
-  --popup-command-margin: 16px 0 0;
-  --popup-padding: 24px 48px 16px 24px;
-}
+$signed-out-bg: padding-box linear-gradient(var(--neutral-fill-rest), var(--neutral-fill-rest)),
+  border-box var(--neutral-stroke-control-rest);
+$signed-out-background: #{var(--login-signed-out-button-background, $signed-out-bg)};
+$signed-out-hover-background: #{var(--login-signed-out-button-hover-background, var(--neutral-fill-stealth-hover))};
+$login-popup-background-color: #{var(--login-popup-background-color, var(--neutral-layer-1))};
+$button-padding: var(--login-button-padding, 0);
 
-:host .root,
-mgt-login .root {
-  position: relative;
-  display: inline-block;
-}
+:host {
+  .signed-in-person {
+    --person-background-color: $signed-in-background-color;
 
-:host .login-button,
-mgt-login .login-button {
-  display: flex;
-  align-items: center;
-  font-family: $font-family;
-  font-size: var(--font-size);
-  font-weight: var(--font-weight);
-  width: var(--width);
-  height: var(--height);
-  margin: var(--margin);
-  padding: var(--padding);
-  color: set-var(button__color, $theme-default, $login);
-  background-color: var(--button-background-color, transparent);
-  border: none;
-  cursor: pointer;
-  transition: color 0.3s, background-color 0.3s;
-  word-spacing: inherit;
-  text-indent: inherit;
-  letter-spacing: inherit;
-
-  mgt-person {
-    --color-sub1: set-var(button__color, $theme-default, $login);
+    padding: var(--login-button-padding, 10px 16px);
   }
 
-  &:hover {
-    color: $button__color--hover;
-    --color: #{$button__color--hover};
-    background-color: $button__background-color--hover;
-    --color-sub1: #{$button__color--hover};
-    border-radius: 4px;
+  .account {
+    padding: 0;
+    margin: 7px 0;
   }
 
-  &:disabled {
-    opacity: 0.4;
-    pointer-events: none;
+  fluent-button {
+    &.signed-in {
+      height: auto;
+      min-width: auto;
+
+      &::part(control) {
+        width: 100%;
+        height: 100%;
+        padding: $button-padding;
+        background: $signed-in-background-color;
+        word-spacing: inherit;
+        text-indent: inherit;
+        letter-spacing: inherit;
+
+        &:hover,
+        &:focus-within {
+          background: $signed-in-hover-background-color;
+
+          --secondary-text-color: var(--secondary-text-hover-color);
+        }
+      }
+    }
+
+    &.signed-out {
+      &::part(control) {
+        color: $signed-out-text-color;
+        background: $signed-out-background;
+
+        &:hover,
+        &:focus-within {
+          background: $signed-out-hover-background;
+        }
+      }
+    }
+
+    &.small {
+      &::part(control) {
+        &:hover {
+          background: transparent;
+        }
+      }
+    }
+
+    &:focus-visible {
+      outline-style: $focus-ring-style;
+    }
   }
 
-  &.no-click {
-    pointer-events: none;
+  fluent-card {
+    --fill-color: #{var(--login-popup-background-color, var(--neutral-layer-1))};
+
+    padding: var(--login-popup-padding, 16px);
   }
 
-  &:focus-visible {
-    outline-style: $focus-ring-style;
-  }
-}
+  .login-root {
+    .small {
+      .signed-in-person {
+        padding: 0;
+        background: transparent;
 
-:host .login-icon,
-mgt-login .login-icon {
-  & + span {
-    margin-left: 6px;
-  }
-}
+        &:hover,
+        &:focus-within {
+          background: transparent;
+        }
+      }
+    }
 
-:host .popup,
-mgt-login .popup {
-  font-family: $font-family;
-  background-color: $popup__background-color;
-  min-width: 240px;
-  z-index: 1;
-  color: set-var(popup__color, $theme-default, $login);
-  border-radius: 8px;
+    .account-list {
+      padding: calc(var(--design-unit) * 1px) 0;
+      margin: 0;
+    }
 
-  mgt-person {
-    --color-sub1: set-var(popup__color, $theme-default, $login);
-  }
-}
+    .account-item {
+      height: auto;
+      min-width: auto;
+      margin-top: 4px;
+      background: $login-popup-background-color;
+      list-style-type: none;
 
-:host .popup-content,
-mgt-login .popup-content {
-  display: flex;
-  flex-direction: column;
-  padding: var(--popup-padding);
-  border-radius: 8px;
-}
+      &:hover {
+        background: var(--neutral-fill-stealth-hover);
+      }
+    }
 
-:host .popup-commands ul,
-mgt-login .popup-commands ul {
-  list-style-type: none;
-  margin: var(--popup-command-margin);
-  padding: 0;
-}
+    .flyout {
+      .flyout-command {
+        color: var(--accent-foreground-rest);
+      }
 
-:host .popup-command,
-mgt-login .popup-command {
-  font-family: $font-family;
-  font-size: var(--popup-command-font-size);
-  font-weight: var(--font-weight);
-  color: #{$commblue_primary};
-  background-color: $popup__background-color;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: color 0.3s;
-  word-spacing: inherit;
-  text-indent: inherit;
-  letter-spacing: inherit;
+      .popup {
+        &-content {
+          .commands {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
 
-  &:hover {
-    color: #{$commblue_shade20};
-  }
-}
+            fluent-button {
+              &::part(control) {
+                color: $login-command-btn-text-color;
+                background: $login-command-btn-bg-color;
+                word-spacing: inherit;
+                text-indent: inherit;
+                letter-spacing: inherit;
 
-[dir='rtl'] {
-  --popup-padding: 24px 24px 16px 48px;
-  mgt-person {
-    .details {
-      --details-spacing: 0px 12px 0px 0px;
-      &.small {
-        --details-spacing: 0px 6px 0px 0px;
+                &:hover {
+                  background: $login-command-btn-bg-hover-color;
+                }
+              }
+            }
+          }
+
+          .content {
+            .main-profile {
+              margin-bottom: 56px;
+              margin-top: 27px;
+            }
+          }
+
+          .add-account {
+            padding-top: 16px;
+
+            fluent-button {
+              &::part(control) {
+                color: $login-add-account-btn-text-color;
+                background: $login-add-account-btn-bg-color;
+                word-spacing: inherit;
+                text-indent: inherit;
+                letter-spacing: inherit;
+
+                &:hover {
+                  background: $login-add-account-btn-hover-bg-color;
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

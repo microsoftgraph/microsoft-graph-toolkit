@@ -7,10 +7,12 @@
 
 export const strings = {
   inputPlaceholderText: 'Start typing a name',
-  noResultsFound: `We didn't find any matches.`,
+  maxSelectionsPlaceHolder: 'Max contacts added',
+  maxSelectionsAriaLabel: 'Maximum contact selections reached',
+  noResultsFound: "We didn't find any matches.",
   loadingMessage: 'Loading...',
-  suggestedContact: 'suggested contact',
-  suggestedContacts: 'suggested contacts',
   selected: 'selected',
-  removeSelectedItem: 'remove selected item'
+  removeSelectedUser: 'Remove ',
+  selectContact: 'select a contact',
+  suggestionsTitle: 'Suggested contacts'
 };

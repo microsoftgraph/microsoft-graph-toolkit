@@ -1,9 +1,11 @@
+name: PR Quality Reporting
+
 on:
   workflow_run:
     workflows: [Build pr]
     types:
       - completed
-    branches: [main, release/**, next/**, feat/add-jest-tests]
+    branches: [main, release/**, next/**]
 
 jobs:
   pr_report:

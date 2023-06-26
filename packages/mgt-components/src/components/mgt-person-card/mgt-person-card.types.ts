@@ -24,15 +24,22 @@ export interface MgtPersonCardConfig {
   useContactApis: boolean;
 
   /**
+   * Sets whether the person card component can directly send messages
+   *
+   * @type {boolean}
+   */
+  isSendMessageVisible: boolean;
+
+  /**
    * Gets or sets whether each subsection should be shown
    *
    * @type {{
-   *     contact: boolean;
-   *     organization: boolean;
-   *     mailMessages: boolean;
-   *     files: boolean;
-   *     profile: boolean;
-   *   }}
+   * contact: boolean;
+   * organization: boolean;
+   * mailMessages: boolean;
+   * files: boolean;
+   * profile: boolean;
+   * }}
    * @memberof MgtPersonCardConfig
    */
   sections: {
@@ -74,21 +81,13 @@ export interface MgtPersonCardConfig {
   };
 }
 
-// tslint:disable-next-line:completed-docs
-type UserWithManager = User & { manager?: UserWithManager };
+export type UserWithManager = User & { manager?: UserWithManager };
 
-// tslint:disable-next-line:completed-docs
 export interface MgtPersonCardState {
-  // tslint:disable-next-line:completed-docs
   directReports?: User[];
-  // tslint:disable-next-line:completed-docs
   files?: SharedInsight[];
-  // tslint:disable-next-line:completed-docs
   messages?: Message[];
-  // tslint:disable-next-line:completed-docs
   people?: Person[];
-  // tslint:disable-next-line:completed-docs
   person?: UserWithManager;
-  // tslint:disable-next-line:completed-docs
   profile?: Profile;
 }

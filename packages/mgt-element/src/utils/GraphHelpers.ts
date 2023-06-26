@@ -6,8 +6,8 @@
  */
 
 import { AuthenticationHandlerOptions, Middleware } from '@microsoft/microsoft-graph-client';
-import { Providers } from '../providers/Providers';
 import { GraphEndpoint, MICROSOFT_GRAPH_ENDPOINTS } from '../IGraph';
+import { Providers } from '../providers/Providers';
 
 /**
  * creates an AuthenticationHandlerOptions from scopes array that
@@ -17,7 +17,7 @@ import { GraphEndpoint, MICROSOFT_GRAPH_ENDPOINTS } from '../IGraph';
  * @param {...string[]} scopes
  * @returns
  */
-export function prepScopes(...scopes: string[]) {
+export const prepScopes = (...scopes: string[]) => {
   const authProviderOptions = {
     scopes
   };
@@ -27,7 +27,7 @@ export function prepScopes(...scopes: string[]) {
   } else {
     return [];
   }
-}
+};
 
 /**
  * Helper method to chain Middleware when instantiating new Client
@@ -35,7 +35,7 @@ export function prepScopes(...scopes: string[]) {
  * @param {...Middleware[]} middleware
  * @returns {Middleware}
  */
-export function chainMiddleware(...middleware: Middleware[]): Middleware {
+export const chainMiddleware = (...middleware: Middleware[]): Middleware => {
   const rootMiddleware = middleware[0];
   let current = rootMiddleware;
   for (let i = 1; i < middleware.length; ++i) {
@@ -46,14 +46,15 @@ export function chainMiddleware(...middleware: Middleware[]): Middleware {
     current = next;
   }
   return rootMiddleware;
-}
+};
 
 /**
  * Helper method to validate a base URL string
+ *
  * @param url a URL string
  * @returns GraphEndpoint
  */
-export function validateBaseURL(url: string): GraphEndpoint {
+export const validateBaseURL = (url: string): GraphEndpoint => {
   try {
     const urlObj = new URL(url);
     const originAsEndpoint = urlObj.origin as GraphEndpoint;
@@ -63,4 +64,4 @@ export function validateBaseURL(url: string): GraphEndpoint {
   } catch (error) {
     return;
   }
-}
+};

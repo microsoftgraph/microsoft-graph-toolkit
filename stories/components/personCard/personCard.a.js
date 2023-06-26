@@ -5,21 +5,36 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-person-card',
-  component: 'mgt-person-card',
-  decorators: [withCodeEditor]
+  component: 'person-card',
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: { code: '<mgt-person-card person-query="me" id="online" show-presence></mgt-person-card>' }
+    }
+  }
 };
 
 export const personCard = () => html`
-  <mgt-person-card person-query="me"></mgt-person-card>
+  <mgt-person-card person-query="me" id="online" show-presence></mgt-person-card>
+
+  <!-- Person Card without Presence -->
+  <!-- <mgt-person-card person-query="me"></mgt-person-card> -->
+  <script>
+    const online = {
+      activity: 'Available',
+      availability: 'Available',
+      id: null
+    };
+    const onlinePerson = document.getElementById('online');
+    onlinePerson.personPresence = online;
+  </script>
 `;
 
 export const events = () => html`
@@ -52,8 +67,6 @@ export const localization = () => html`
         signOutLinkSubtitle: 'خروج'
       },
       'person-card': {
-        sendEmailLinkSubtitle: 'ارسل بريد الكتروني',
-        startChatLinkSubtitle: 'ابدأ الدردشة',
         showMoreSectionButton: 'أظهر المزيد' // global declaration
       },
       'person-card-contact': {

@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, property, PropertyValues } from 'lit-element';
+import { property, state } from 'lit/decorators.js';
+import { html, PropertyValueMap, PropertyValues, TemplateResult } from 'lit';
 
 import { equals } from '../utils/equals';
 import { MgtBaseComponent } from './baseComponent';
@@ -15,8 +16,9 @@ import { TemplateHelper } from '../utils/TemplateHelper';
 /**
  * Lookup for rendered component templates and contexts by slot name.
  */
-interface RenderedTemplates {
-  [name: string]: {
+type RenderedTemplates = Record<
+  string,
+  {
     /**
      * Reference to the data context used to render the slot.
      */
@@ -25,8 +27,16 @@ interface RenderedTemplates {
      * Reference to the rendered DOM element corresponding to the slot.
      */
     slot: HTMLElement;
-  };
+  }
+>;
+
+export interface TemplateRenderedData {
+  templateType: string;
+  context: Record<string, unknown>;
+  element: HTMLElement;
 }
+
+type OrderedHtmlTemplate = HTMLTemplateElement & { templateOrder: number };
 
 /**
  * An abstract class that defines a templatable web component
@@ -36,7 +46,7 @@ interface RenderedTemplates {
  * @class MgtTemplatedComponent
  * @extends {MgtBaseComponent}
  *
- * @fires templateRendered - fires when a template is rendered
+ * @fires {CustomEvent<MgtElement.TemplateRenderedData>} templateRendered - fires when a template is rendered
  */
 export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   /**
@@ -49,12 +59,21 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   @property({ attribute: false }) public templateContext: TemplateContext;
 
   /**
+   *
+   * Gets or sets the error (if any) of the request
+   *
+   * @type object
+   * @memberof MgtSearchResults
+   */
+  @state() protected error: object;
+
+  /**
    * Holds all templates defined by developer
    *
    * @protected
    * @memberof MgtTemplatedComponent
    */
-  protected templates = {};
+  protected templates: Record<string, OrderedHtmlTemplate> = {};
 
   private _renderedSlots = false;
   private _renderedTemplates: RenderedTemplates = {};
@@ -74,7 +93,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    *
    * * @param _changedProperties Map of changed properties with old values
    */
-  protected update(changedProperties) {
+  protected update(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>) {
     this.templates = this.getTemplates();
     this._slotNamesAddedDuringRender = [];
     super.update(changedProperties);
@@ -101,7 +120,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * @param context the data context that should be expanded in template
    * @param slotName the slot name that will be used to host the new rendered template. set to a unique value if multiple templates of this type will be rendered. default is templateType
    */
-  protected renderTemplate(templateType: string, context: object, slotName?: string) {
+  protected renderTemplate(templateType: string, context: object, slotName?: string): TemplateResult {
     if (!this.hasTemplate(templateType)) {
       return null;
     }
@@ -116,7 +135,8 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
 
     const dataContext = { ...context, ...this.templateContext };
 
-    if (this._renderedTemplates.hasOwnProperty(slotName)) {
+    if (Object.prototype.hasOwnProperty.call(this._renderedTemplates, slotName)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const { context: existingContext, slot } = this._renderedTemplates[slotName];
       if (equals(existingContext, dataContext)) {
         return template;
@@ -134,7 +154,8 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
 
     this._renderedTemplates[slotName] = { context: dataContext, slot: div };
 
-    this.fireCustomEvent('templateRendered', { templateType, context: dataContext, element: div });
+    const templateRenderedData: TemplateRenderedData = { templateType, context: dataContext, element: div };
+    this.fireCustomEvent('templateRendered', templateRenderedData);
 
     return template;
   }
@@ -148,35 +169,51 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * @memberof MgtTemplatedComponent
    */
   protected hasTemplate(templateName: string): boolean {
-    return this.templates && this.templates[templateName];
+    return Boolean(this.templates?.[templateName]);
   }
 
   private getTemplates() {
-    const templates: any = {};
+    const templates: Record<string, OrderedHtmlTemplate> = {};
 
-    // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i];
       if (child.nodeName === 'TEMPLATE') {
-        const template = child as HTMLElement;
+        const template = child as OrderedHtmlTemplate;
         if (template.dataset.type) {
           templates[template.dataset.type] = template;
         } else {
           templates.default = template;
         }
 
-        (template as any).templateOrder = i;
+        template.templateOrder = i;
       }
     }
 
     return templates;
   }
 
+  /**
+   * Renders an error
+   *
+   * @returns
+   */
+  protected renderError(): TemplateResult {
+    if (this.hasTemplate('error')) {
+      return this.renderTemplate('error', this.error);
+    }
+
+    return html`
+      <div class="error">
+        ${this.error}
+      </div>
+    `;
+  }
+
   private removeUnusedSlottedElements() {
     if (this._renderedSlots) {
       for (let i = 0; i < this.children.length; i++) {
         const child = this.children[i] as HTMLElement;
-        if (child.dataset && child.dataset.generated && !this._slotNamesAddedDuringRender.includes(child.slot)) {
+        if (child.dataset?.generated && !this._slotNamesAddedDuringRender.includes(child.slot)) {
           this.removeChild(child);
           delete this._renderedTemplates[child.slot];
           i--;

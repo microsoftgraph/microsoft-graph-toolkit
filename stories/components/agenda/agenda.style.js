@@ -5,50 +5,40 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-agenda / Style',
-  component: 'mgt-agenda',
+  component: 'agenda',
   decorators: [withCodeEditor]
 };
 
-export const darkTheme = () => html`
-  <mgt-agenda class="mgt-dark"></mgt-agenda>
+export const customCSSProperties = () => html`
+  <mgt-agenda class="agenda" group-by-day></mgt-agenda>
   <style>
-    body {
-      background-color: black;
-    }
-  </style>
-`;
-
-export const customProperties = () => html`
-  <mgt-agenda group-by-day></mgt-agenda>
-  <style>
-    mgt-agenda {
-      --event-box-shadow: 0px 2px 30px pink;
-      --event-margin: 0px 10px 40px 10px;
-      --event-padding: 8px 0px;
-      --event-background-color: #8d696f;
-      --event-border: dotted 2px white;
+    .agenda {
+      --agenda-background-color: aquamarine;
+      --agenda-event-box-shadow: 0px 2px 30px pink;
+      --agenda-event-margin: 0px 10px 40px 10px;
+      --agenda-event-padding: 8px 0px;
+      --agenda-event-background-color: #8d696f;
+      --agenda-event-border: dotted 2px white;
 
       --agenda-header-margin: 3px;
       --agenda-header-font-size: 20px;
       --agenda-header-color: #8d696f;
 
-      --event-time-font-size: 20px;
-      --event-time-color: white;
+      --agenda-event-time-font-size: 20px;
+      --agenda-event-time-color: white;
 
-      --event-subject-font-size: 12px;
-      --event-subject-color: white;
+      --agenda-event-subject-font-size: 12px;
+      --agenda-event-subject-color: white;
 
-      --event-location-font-size: 20px;
-      --event-location-color: white;
+      --agenda-event-location-font-size: 20px;
+      --agenda-event-location-color: white;
+
+      --agenda-event-attendees-color: gold;
     }
   </style>
 `;

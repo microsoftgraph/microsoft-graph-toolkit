@@ -14,14 +14,16 @@
   "requiresCustomScript": false,
   "supportedHosts": ["SharePointWebPart"],
 
-  "preconfiguredEntries": [{
-    "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
-    "group": { "default": "Other" },
-    "title": { "default": "mgt-demo" },
-    "description": { "default": "demo of the Microsoft Graph Toolkit running in SharePoint" },
-    "officeFabricIconFontName": "Page",
-    "properties": {
-      "description": "mgt-demo"
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
+      "group": { "default": "Other" },
+      "title": { "default": "mgt-demo" },
+      "description": { "default": "demo of the Microsoft Graph Toolkit running in SharePoint using React" },
+      "officeFabricIconFontName": "Page",
+      "properties": {
+        "description": "mgt-demo"
+      }
     }
-  }]
+  ]
 }

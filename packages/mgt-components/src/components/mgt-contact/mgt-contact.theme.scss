@@ -1,0 +1,15 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables';
+
+$contact-title-color: var(--contact-title-color, var(--neutral-foreground-hint));
+$contact-value-color: var(--contact-value-color, var(--neutral-foreground-rest));
+$contact-link-color: var(--contact-link-color, var(--accent-foreground-rest));
+$contact-link-hover-color: var(--contact-link-hover-color, var(--accent-foreground-hover));
+$contact-background-color: var(--contact-background-color, transparent);
+$contact-copy-icon-color: var(--contact-copy-icon-color, var(--neutral-foreground-hint));

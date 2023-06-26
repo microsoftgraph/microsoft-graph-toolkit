@@ -6,33 +6,23 @@
  */
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../../styles/shared-styles.scss';
-@import './mgt-people.theme.scss';
+@import '../../styles/shared-styles';
+@import './mgt-people.theme';
 
-$list-margin: var(--list-margin, 8px 4px 8px 8px);
-$avatar-margin: var(--avatar-margin, 0 4px 0 0);
-
-:host .people-list,
-mgt-people .people-list {
-  list-style-type: none;
-  margin: $list-margin;
-  padding: 0;
-  font-family: $font-family;
-  color: set-var(color, $theme-default, $common);
-  font-style: normal;
-  font-weight: normal;
+:host .people-list {
+  list-style: none;
+  margin: var(--people-list-margin, 8px 4px 8px 8px);
+  padding: unset;
   display: flex;
   align-items: center;
+  gap: var(--people-avatar-gap, 4px);
 }
 
-:host .people-person,
-mgt-people .people-person {
-  margin: $avatar-margin;
-  display: flex;
-}
-:host .overflow,
-mgt-people .overflow {
+:host .overflow {
   span {
     vertical-align: middle;
+    color: var(--people-overflow-font-color, currentColor);
+    font-size: var(--people-overflow-font-size, 12px);
+    font-weight: var(--people-overflow-font-weight, 400);
   }
 }

@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph, prepScopes, BetaGraph, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
-import { Presence } from '@microsoft/microsoft-graph-types';
+import { IGraph, prepScopes, CacheItem, CacheService, CacheStore, CollectionResponse } from '@microsoft/mgt-element';
+import { Person, Presence } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
 import { IDynamicPerson } from './types';
 
@@ -40,30 +40,30 @@ const getIsPresenceCacheEnabled = (): boolean =>
  * @param {string} userId - id for the user or null for current signed in user
  * @memberof BetaGraph
  */
-export async function getUserPresence(graph: IGraph, userId?: string): Promise<Presence> {
+export const getUserPresence = async (graph: IGraph, userId?: string): Promise<Presence> => {
   let cache: CacheStore<CachePresence>;
 
   if (getIsPresenceCacheEnabled()) {
     cache = CacheService.getCache(schemas.presence, schemas.presence.stores.presence);
     const presence = await cache.getValue(userId || 'me');
     if (presence && getPresenceInvalidationTime() > Date.now() - presence.timeCached) {
-      return JSON.parse(presence.presence);
+      return JSON.parse(presence.presence) as Presence;
     }
   }
 
   const scopes = userId ? ['presence.read.all'] : ['presence.read'];
   const resource = userId ? `/users/${userId}/presence` : '/me/presence';
 
-  const result = await graph
+  const result = (await graph
     .api(resource)
     .middlewareOptions(prepScopes(...scopes))
-    .get();
+    .get()) as Presence;
   if (getIsPresenceCacheEnabled()) {
-    cache.putValue(userId || 'me', { presence: JSON.stringify(result) });
+    await cache.putValue(userId || 'me', { presence: JSON.stringify(result) });
   }
 
   return result;
-}
+};
 
 /**
  * async promise, allows developer to get person presense by providing array of IDynamicPerson
@@ -71,12 +71,12 @@ export async function getUserPresence(graph: IGraph, userId?: string): Promise<P
  * @returns {}
  * @memberof BetaGraph
  */
-export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicPerson[]) {
+export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicPerson[]) => {
   if (!people || people.length === 0) {
     return {};
   }
 
-  const peoplePresence = {};
+  const peoplePresence: Record<string, Presence> = {};
   const peoplePresenceToQuery: string[] = [];
   const scopes = ['presence.read.all'];
   let cache: CacheStore<CachePresence>;
@@ -93,12 +93,8 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
       if (getIsPresenceCacheEnabled()) {
         presence = await cache.getValue(id);
       }
-      if (
-        getIsPresenceCacheEnabled() &&
-        presence &&
-        getPresenceInvalidationTime() > Date.now() - (await presence).timeCached
-      ) {
-        peoplePresence[id] = JSON.parse(presence.presence);
+      if (getIsPresenceCacheEnabled() && presence && getPresenceInvalidationTime() > Date.now() - presence.timeCached) {
+        peoplePresence[id] = JSON.parse(presence.presence) as Presence;
       } else {
         peoplePresenceToQuery.push(id);
       }
@@ -107,17 +103,17 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
 
   try {
     if (peoplePresenceToQuery.length > 0) {
-      const presenceResult = await graph
+      const presenceResult = (await graph
         .api('/communications/getPresencesByUserId')
         .middlewareOptions(prepScopes(...scopes))
         .post({
           ids: peoplePresenceToQuery
-        });
+        })) as CollectionResponse<Presence>;
 
       for (const r of presenceResult.value) {
         peoplePresence[r.id] = r;
         if (getIsPresenceCacheEnabled()) {
-          cache.putValue(r.id, { presence: JSON.stringify(r) });
+          await cache.putValue(r.id, { presence: JSON.stringify(r) });
         }
       }
     }
@@ -134,11 +130,10 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
         people
           .filter(
             person =>
-              person &&
-              person.id &&
+              person?.id &&
               !peoplePresence[person.id] &&
               'personType' in person &&
-              (person as any).personType.subclass === 'OrganizationUser'
+              (person as Person).personType.subclass === 'OrganizationUser'
           )
           .map(person => getUserPresence(graph, person.id))
       );
@@ -147,8 +142,8 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
         peoplePresence[r.id] = r;
       }
       return peoplePresence;
-    } catch (_) {
+    } catch (e) {
       return null;
     }
   }
-}
+};

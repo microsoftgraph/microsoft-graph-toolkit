@@ -5,16 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-file-list / Properties',
-  component: 'mgt-file-list',
+  component: 'file-list',
   decorators: [withCodeEditor]
 };
 
@@ -127,3 +123,9 @@ export const clearCacheAndReload = () => html`
     })
   </script>
 `;
+
+export const fileListUpload = () => html`
+    <mgt-file-list enable-file-upload></mgt-file-list>
+    <!-- Include a maximun file size -->
+    <mgt-file-list max-file-size="10000" enable-file-upload></mgt-file-list>
+  `;

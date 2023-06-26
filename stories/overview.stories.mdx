@@ -1,6 +1,7 @@
 import { Meta, Source } from '@storybook/addon-docs';
 import { PACKAGE_VERSION } from '@microsoft/mgt';
-import { versionInfo } from './versionInfo';
+import { versionInfo } from '../.storybook/versionInfo';
+import { TableNamer } from '../.storybook/components/TableNamer';
 
 <Meta title="Overview" />
 
@@ -48,12 +49,23 @@ The components are also available as [React components](https://learn.microsoft.
 | [Agenda](?path=/story/components-mgt-agenda--simple)                                           | Displays events in a user or group's calendar.                                                                                                   |
 | [People picker](?path=/story/components-mgt-people-picker--people-picker)                      | Provides the ability to search for people and renders the list of results.                                                                       |
 | [Person card](?path=/story/components-mgt-person-card--person-card)                            | A flyout used on the person component to display more profile information about a user.                                                          |
+| [Picker](?path=/story/components-mgt-picker--picker)                                           | Displays a generic picker that allows for picking of Microsoft Graph entities.                                                                   |
 | [File](?path=/story/components-mgt-file--file)                                                 | Represents a file or folder with icon, filename, author, and more.                                                                               |
 | [File list](?path=/story/components-mgt-file-list--file-list)                                  | Displays a list of multiple files or folders.                                                                                                    |
 | [Get](?path=/story/components-mgt-get--get-email)                                              | Make a GET query to any Microsoft Graph API directly in your HTML.                                                                               |
 | [Teams Channel picker](?path=/story/components-mgt-teams-channel-picker--teams-channel-picker) | Provides the ability to search for Microsoft Teams channels to select a channel from a rendered list of results.                                 |
-| [To Do](?path=/story/components-mgt-todo--tasks)                                               | Displays and enables adding, removing, completing, or editing of tasks from Microsoft To Do.                                                     |
+| [Theme toggle](?path=/story/components-mgt-theme-toggle--user-preference-driven)               | Provides the ability to toggle between light and dark themes.                                                                                    |
+| [To Do](?path=/story/components-mgt-todo--todos)                                               | Displays and enables adding, removing, completing, or editing of tasks from Microsoft To Do.                                                     |
 | [Tasks](?path=/story/components-mgt-tasks--tasks)                                              | Displays and enables adding, removing, completing, or editing of tasks from Microsoft Planner or Microsoft To Do.                                |
+
+##### Preview components
+
+Additionaly the following components are available as preview components. These components are not yet ready for production use and are subject to change.
+
+| Preview Component                                                                | Description                                                                                                                                      |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [Search Box](?path=/story/preview-mgt-search-box--search-box)                    | An input box for search scenarios.                                                                                                               |
+| [Seach Results](?path=/story/preview-mgt-search-results--search-results)         | A component for executing search queries and displaying search results.                                                                          |
 
 #### Providers
 
@@ -94,3 +106,5 @@ The Microsoft Graph Toolkit is supported in the following browsers.
 - Read our [documentation](https://aka.ms/mgt/docs).
 - [Get started](https://learn.microsoft.com/graph/toolkit/get-started/overview) with the Microsoft Graph Toolkit.
 - Check out the Microsoft Graph Toolkit on [GitHub](https://aka.ms/mgt).
+
+<TableNamer names={['Microsoft Graph Toolkit Components', 'Components in preview', 'Microsoft Graph Toolkit Providers', 'Supported browsers']}/>

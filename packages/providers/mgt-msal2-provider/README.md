@@ -2,9 +2,9 @@
 
 [![npm](https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-msal2-provider)
 
-The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
+The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph.
 
-The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class which uses [msal-browser](https://www.npmjs.com/package/@azure/msal-browser) to sign in users and acquire tokens to use with Microsoft Graph.
+The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class which uses [msal-browser](https://www.npmjs.com/package/@azure/msal-browser) to sign in users and acquire tokens to use with Microsoft Graph. This provider also supports multiple account logins.
 
 
 ## Usage
@@ -32,6 +32,9 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       sid?: string, // Session ID
       loginHint?: string,
       domainHint?: string,
+      isMultiAccountEnabled?: boolean, // True by default, disables multiple account login if false
+      isIncrementalConsentDisabled?: boolean, //Disable incremental consent, true by default
+      isMultiAccountEnabled?: boolean // True by default, disables multiple account login if false
       isIncrementalConsentDisabled?: boolean, //Disable incremental consent, true by default
       options?: Configuration // msal js Configuration object
     });
@@ -55,10 +58,9 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       sid?: string, // Session ID
       loginHint?: string,
       domainHint?: string,
+      isMultiAccountEnabled?: boolean, // True by default, disables multiple account login if false
       isIncrementalConsentDisabled?: boolean, //Disable incremental consent, true by default
-      options?: Configuration // msal js Configuration object
     });
-    ```
 
 4. Alternatively, initialize the provider in html (only `client-id` is required):
 
@@ -66,13 +68,43 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
     <script type="module" src="../node_modules/@microsoft/mgt-msal2-provider/dist/es6/index.js" />
 
     <mgt-msal2-provider client-id="<YOUR_CLIENT_ID>"
-                      login-type="redirect/popup" 
-                      scopes="user.read,people.read" 
-                      redirect-uri="https://my.redirect/uri" 
-                      authority=""> 
-    </mgt-msal2-provider> 
+                      login-type="redirect/popup"
+                      scopes="user.read,people.read"
+                      redirect-uri="https://my.redirect/uri"
+                      authority=""
+                      login-hint=""
+                      domain-hint="">
+    </mgt-msal2-provider>
     ```
-Add the `incremental-consent-disabled` boolean attribute if you wish to disable incremental consent.
+  Add the `incremental-consent-disabled` boolean attribute if you wish to disable incremental consent.
+
+5. Multi account login functionality is enabled by default. It can be disabled by adding the boolean attribute `multi-account-disabled` in the html:
+
+    ```html
+    <script type="module" src="../node_modules/@microsoft/mgt-msal2-provider/dist/es6/index.js" />
+
+    <mgt-msal2-provider client-id="<YOUR_CLIENT_ID>"
+                      login-type="redirect/popup"
+                      scopes="user.read,people.read"
+                      redirect-uri="https://my.redirect/uri"
+                      authority=""
+                      multi-account-disabled>
+    </mgt-msal2-provider>
+    ```
+
+    It can also be enabled/disabled in the `Msal2Config` object:
+
+    ```ts
+    import {Providers, LoginType} from '@microsoft/mgt-element';
+    import {Msal2Provider, PromptType} from '@microsoft/mgt-msal2-provider';
+
+    // initialize the auth provider globally
+    Providers.globalProvider = new Msal2Provider({
+      clientId: 'clientId',
+      isMultiAccountEnabled?: false
+    });
+    ```
+This feature allows multiple accounts to be signed in at the same time, and the user has the ability to switch between the signed in accounts.
 
 See [provider usage documentation](https://learn.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
 

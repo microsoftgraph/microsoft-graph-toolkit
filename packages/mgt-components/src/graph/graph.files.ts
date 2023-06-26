@@ -5,11 +5,31 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { CacheItem, CacheService, CacheStore, GraphPageIterator, IGraph, prepScopes } from '@microsoft/mgt-element';
-import { DriveItem, UploadSession } from '@microsoft/microsoft-graph-types';
+import {
+  CacheItem,
+  CacheService,
+  CacheStore,
+  CollectionResponse,
+  GraphPageIterator,
+  IGraph,
+  prepScopes
+} from '@microsoft/mgt-element';
+import { DriveItem, SharedInsight, Trending, UploadSession, UsedInsight } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
-import { ResponseType } from '@microsoft/microsoft-graph-client';
+import { GraphRequest, ResponseType } from '@microsoft/microsoft-graph-client';
 import { blobToBase64 } from '../utils/Utils';
+
+/**
+ * Simple type guard to check if a response is an UploadSession
+ *
+ * @param session
+ * @returns
+ */
+export const isUploadSession = (session: any): session is UploadSession => {
+  return Array.isArray((session as UploadSession).nextExpectedRanges);
+};
+
+type Insight = SharedInsight | UsedInsight | Trending;
 
 /**
  * Object to be stored in cache
@@ -52,11 +72,13 @@ export interface CacheThumbnail extends CacheItem {
 /**
  * Clear Cache of FileList
  */
-export function clearFilesCache() {
-  let cache: CacheStore<CacheFileList>;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, schemas.fileLists.stores.fileLists);
-  cache.clearStore();
-}
+export const clearFilesCache = async (): Promise<void> => {
+  const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(
+    schemas.fileLists,
+    schemas.fileLists.stores.fileLists
+  );
+  await cache.clearStore();
+};
 
 /**
  * Defines the time it takes for objects in the cache to expire
@@ -82,897 +104,394 @@ export const getFileListInvalidationTime = (): number =>
 export const getIsFileListsCacheEnabled = (): boolean =>
   CacheService.config.fileLists.isEnabled && CacheService.config.isEnabled;
 
-export async function getDriveItemByQuery(graph: IGraph, resource: string): Promise<DriveItem> {
+/**
+ * Load a DriveItem give and arbitrary query
+ *
+ * @param graph
+ * @param resource
+ * @returns
+ */
+export const getDriveItemByQuery = async (
+  graph: IGraph,
+  resource: string,
+  storeName: string = schemas.files.stores.fileQueries,
+  scopes = 'files.read'
+): Promise<DriveItem> => {
   // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.fileQueries);
+  const cache: CacheStore<CacheFile> = CacheService.getCache<CacheFile>(schemas.files, storeName);
   const cachedFile = await getFileFromCache(cache, resource);
   if (cachedFile) {
     return cachedFile;
   }
 
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
+  let response: DriveItem;
   try {
-    response = await graph.api(resource).middlewareOptions(prepScopes(scopes)).get();
+    response = (await graph.api(resource).middlewareOptions(prepScopes(scopes)).get()) as DriveItem;
 
     if (getIsFilesCacheEnabled()) {
-      cache.putValue(resource, { file: JSON.stringify(response) });
+      await cache.putValue(resource, { file: JSON.stringify(response) });
     }
+    // eslint-disable-next-line no-empty
   } catch {}
 
   return response || null;
-}
+};
 
 // GET /drives/{drive-id}/items/{item-id}
-export async function getDriveItemById(graph: IGraph, driveId: string, itemId: string): Promise<DriveItem> {
+export const getDriveItemById = async (graph: IGraph, driveId: string, itemId: string): Promise<DriveItem> => {
   const endpoint = `/drives/${driveId}/items/${itemId}`;
-
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.driveFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.driveFiles);
+};
 
 // GET /drives/{drive-id}/root:/{item-path}
-export async function getDriveItemByPath(graph: IGraph, driveId: string, itemPath: string): Promise<DriveItem> {
+export const getDriveItemByPath = async (graph: IGraph, driveId: string, itemPath: string): Promise<DriveItem> => {
   const endpoint = `/drives/${driveId}/root:/${itemPath}`;
-
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.driveFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.driveFiles);
+};
 
 // GET /groups/{group-id}/drive/items/{item-id}
-export async function getGroupDriveItemById(graph: IGraph, groupId: string, itemId: string): Promise<DriveItem> {
+export const getGroupDriveItemById = async (graph: IGraph, groupId: string, itemId: string): Promise<DriveItem> => {
   const endpoint = `/groups/${groupId}/drive/items/${itemId}`;
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.groupFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.groupFiles);
+};
 
 // GET /groups/{group-id}/drive/root:/{item-path}
-export async function getGroupDriveItemByPath(graph: IGraph, groupId: string, itemPath: string): Promise<DriveItem> {
+export const getGroupDriveItemByPath = async (graph: IGraph, groupId: string, itemPath: string): Promise<DriveItem> => {
   const endpoint = `/groups/${groupId}/drive/root:/${itemPath}`;
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.groupFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.groupFiles);
+};
 
 // GET /me/drive/items/{item-id}
-export async function getMyDriveItemById(graph: IGraph, itemId: string): Promise<DriveItem> {
+export const getMyDriveItemById = async (graph: IGraph, itemId: string): Promise<DriveItem> => {
   const endpoint = `/me/drive/items/${itemId}`;
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.userFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.userFiles);
+};
 
 // GET /me/drive/root:/{item-path}
-export async function getMyDriveItemByPath(graph: IGraph, itemPath: string): Promise<DriveItem> {
+export const getMyDriveItemByPath = async (graph: IGraph, itemPath: string): Promise<DriveItem> => {
   const endpoint = `/me/drive/root:/${itemPath}`;
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.userFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.userFiles);
+};
 
 // GET /sites/{site-id}/drive/items/{item-id}
-export async function getSiteDriveItemById(graph: IGraph, siteId: string, itemId: string): Promise<DriveItem> {
+export const getSiteDriveItemById = async (graph: IGraph, siteId: string, itemId: string): Promise<DriveItem> => {
   const endpoint = `/sites/${siteId}/drive/items/${itemId}`;
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.siteFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.siteFiles);
+};
 
 // GET /sites/{site-id}/drive/root:/{item-path}
-export async function getSiteDriveItemByPath(graph: IGraph, siteId: string, itemPath: string): Promise<DriveItem> {
+export const getSiteDriveItemByPath = async (graph: IGraph, siteId: string, itemPath: string): Promise<DriveItem> => {
   const endpoint = `/sites/${siteId}/drive/root:/${itemPath}`;
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.siteFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.siteFiles);
+};
 
 // GET /sites/{site-id}/lists/{list-id}/items/{item-id}/driveItem
-export async function getListDriveItemById(
+export const getListDriveItemById = async (
   graph: IGraph,
   siteId: string,
   listId: string,
   itemId: string
-): Promise<DriveItem> {
+): Promise<DriveItem> => {
   const endpoint = `/sites/${siteId}/lists/${listId}/items/${itemId}/driveItem`;
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.siteFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.siteFiles);
+};
 
 // GET /users/{user-id}/drive/items/{item-id}
-export async function getUserDriveItemById(graph: IGraph, userId: string, itemId: string): Promise<DriveItem> {
+export const getUserDriveItemById = async (graph: IGraph, userId: string, itemId: string): Promise<DriveItem> => {
   const endpoint = `/users/${userId}/drive/items/${itemId}`;
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.userFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.userFiles);
+};
 
 // GET /users/{user-id}/drive/root:/{item-path}
-export async function getUserDriveItemByPath(graph: IGraph, userId: string, itemPath: string): Promise<DriveItem> {
+export const getUserDriveItemByPath = async (graph: IGraph, userId: string, itemPath: string): Promise<DriveItem> => {
   const endpoint = `/users/${userId}/drive/root:/${itemPath}`;
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.userFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'files.read';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.userFiles);
+};
 
 // GET /me/insights/trending/{id}/resource
 // GET /me/insights/used/{id}/resource
 // GET /me/insights/shared/{id}/resource
-export async function getMyInsightsDriveItemById(graph: IGraph, insightType: string, id: string): Promise<DriveItem> {
+export const getMyInsightsDriveItemById = async (
+  graph: IGraph,
+  insightType: string,
+  id: string
+): Promise<DriveItem> => {
   const endpoint = `/me/insights/${insightType}/${id}/resource`;
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.insightFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
-  }
-
-  // get from graph request
-  const scopes = 'sites.read.all';
-  let response;
-  try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
-    }
-  } catch {}
-  return response || null;
-}
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.insightFiles, 'sites.read.all');
+};
 
 // GET /users/{id or userPrincipalName}/insights/{trending or used or shared}/{id}/resource
-export async function getUserInsightsDriveItemById(
+export const getUserInsightsDriveItemById = async (
   graph: IGraph,
   userId: string,
   insightType: string,
   id: string
-): Promise<DriveItem> {
+): Promise<DriveItem> => {
   const endpoint = `/users/${userId}/insights/${insightType}/${id}/resource`;
-  // get from cache
-  let cache: CacheStore<CacheFile>;
-  cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.insightFiles);
-  const cachedFile = await getFileFromCache(cache, endpoint);
-  if (cachedFile) {
-    return cachedFile;
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.insightFiles, 'sites.read.all');
+};
+
+const getIterator = async (
+  graph: IGraph,
+  endpoint: string,
+  storeName: string,
+  scopes: string[],
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> => {
+  let filesPageIterator: GraphPageIterator<DriveItem>;
+
+  // get iterator from cached values
+  const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, storeName);
+  const fileList = await getFileListFromCache(cache, storeName, `${endpoint}:${top}`);
+  if (fileList) {
+    filesPageIterator = getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
+
+    return filesPageIterator;
   }
 
-  // get from graph request
-  const scopes = 'sites.read.all';
-  let response;
+  // get iterator from graph request
+  let request: GraphRequest;
   try {
-    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
-
-    if (getIsFilesCacheEnabled()) {
-      cache.putValue(endpoint, { file: JSON.stringify(response) });
+    request = graph.api(endpoint).middlewareOptions(prepScopes(...scopes));
+    if (top) {
+      request.top(top);
     }
+    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
+
+    if (getIsFileListsCacheEnabled()) {
+      const nextLink = filesPageIterator.nextLink;
+      await cache.putValue(endpoint, {
+        files: filesPageIterator.value.map(v => JSON.stringify(v)),
+        nextLink
+      });
+    }
+    // eslint-disable-next-line no-empty
   } catch {}
-  return response || null;
-}
+  return filesPageIterator || null;
+};
 
 // GET /me/drive/root/children
-export async function getFilesIterator(graph: IGraph, top?: number): Promise<GraphPageIterator<DriveItem>> {
+export const getFilesIterator = async (graph: IGraph, top?: number): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = '/me/drive/root/children';
-  const cacheKey = `${endpoint}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
-
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = 'files.read';
-  let request;
-  try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
+  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+};
 
 // GET /drives/{drive-id}/items/{item-id}/children
-export async function getDriveFilesByIdIterator(
+export const getDriveFilesByIdIterator = async (
   graph: IGraph,
   driveId: string,
   itemId: string,
   top?: number
-): Promise<GraphPageIterator<DriveItem>> {
+): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/drives/${driveId}/items/${itemId}/children`;
-  const cacheKey = `${endpoint}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
-
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = 'files.read';
-  let request;
-  try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
+  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+};
 
 // GET /drives/{drive-id}/root:/{item-path}:/children
-export async function getDriveFilesByPathIterator(
+export const getDriveFilesByPathIterator = async (
   graph: IGraph,
   driveId: string,
   itemPath: string,
   top?: number
-): Promise<GraphPageIterator<DriveItem>> {
+): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/drives/${driveId}/root:/${itemPath}:/children`;
-  const cacheKey = `${endpoint}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
-
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = 'files.read';
-  let request;
-  try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
+  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+};
 
 // GET /groups/{group-id}/drive/items/{item-id}/children
-export async function getGroupFilesByIdIterator(
+export const getGroupFilesByIdIterator = async (
   graph: IGraph,
   groupId: string,
   itemId: string,
   top?: number
-): Promise<GraphPageIterator<DriveItem>> {
+): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/groups/${groupId}/drive/items/${itemId}/children`;
-  const cacheKey = `${endpoint}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
-
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = 'files.read';
-  let request;
-  try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
+  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+};
 
 // GET /groups/{group-id}/drive/root:/{item-path}:/children
-export async function getGroupFilesByPathIterator(
+export const getGroupFilesByPathIterator = async (
   graph: IGraph,
   groupId: string,
   itemPath: string,
   top?: number
-): Promise<GraphPageIterator<DriveItem>> {
+): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/groups/${groupId}/drive/root:/${itemPath}:/children`;
-  const cacheKey = `${endpoint}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
-
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = 'files.read';
-  let request;
-  try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
+  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+};
 
 // GET /me/drive/items/{item-id}/children
-export async function getFilesByIdIterator(
+export const getFilesByIdIterator = async (
   graph: IGraph,
   itemId: string,
   top?: number
-): Promise<GraphPageIterator<DriveItem>> {
+): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/me/drive/items/${itemId}/children`;
-  const cacheKey = `${endpoint}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
-
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = 'files.read';
-  let request;
-  try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
+  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+};
 
 // GET /me/drive/root:/{item-path}:/children
-export async function getFilesByPathIterator(
+export const getFilesByPathIterator = async (
   graph: IGraph,
   itemPath: string,
   top?: number
-): Promise<GraphPageIterator<DriveItem>> {
+): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/me/drive/root:/${itemPath}:/children`;
-  const cacheKey = `${endpoint}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
-
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = 'files.read';
-  let request;
-  try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
+  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+};
 
 // GET /sites/{site-id}/drive/items/{item-id}/children
-export async function getSiteFilesByIdIterator(
+export const getSiteFilesByIdIterator = async (
   graph: IGraph,
   siteId: string,
   itemId: string,
   top?: number
-): Promise<GraphPageIterator<DriveItem>> {
+): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/sites/${siteId}/drive/items/${itemId}/children`;
-  const cacheKey = `${endpoint}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
-
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = 'files.read';
-  let request;
-  try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
+  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+};
 
 // GET /sites/{site-id}/drive/root:/{item-path}:/children
-export async function getSiteFilesByPathIterator(
+export const getSiteFilesByPathIterator = async (
   graph: IGraph,
   siteId: string,
   itemPath: string,
   top?: number
-): Promise<GraphPageIterator<DriveItem>> {
+): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/sites/${siteId}/drive/root:/${itemPath}:/children`;
-  const cacheKey = `${endpoint}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
-
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = 'files.read';
-  let request;
-  try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
+  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+};
 
 // GET /users/{user-id}/drive/items/{item-id}/children
-export async function getUserFilesByIdIterator(
+export const getUserFilesByIdIterator = async (
   graph: IGraph,
   userId: string,
   itemId: string,
   top?: number
-): Promise<GraphPageIterator<DriveItem>> {
+): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/users/${userId}/drive/items/${itemId}/children`;
-  const cacheKey = `${endpoint}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
-
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = 'files.read';
-  let request;
-  try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
+  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+};
 
 // GET /users/{user-id}/drive/root:/{item-path}:/children
-export async function getUserFilesByPathIterator(
+export const getUserFilesByPathIterator = async (
   graph: IGraph,
   userId: string,
   itemPath: string,
   top?: number
-): Promise<GraphPageIterator<DriveItem>> {
+): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/users/${userId}/drive/root:/${itemPath}:/children`;
-  const cacheKey = `${endpoint}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
+  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+};
 
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = 'files.read';
-  let request;
-  try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
-
-export async function getFilesByListQueryIterator(
+export const getFilesByListQueryIterator = async (
   graph: IGraph,
   listQuery: string,
   top?: number
-): Promise<GraphPageIterator<DriveItem>> {
-  const cacheKey = `${listQuery}?top=${top}`;
-  let filesPageIterator;
-
-  // get iterator from cached values
-  let cache: CacheStore<CacheFileList>;
+): Promise<GraphPageIterator<DriveItem>> => {
   const cacheStore = schemas.fileLists.stores.fileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, cacheKey);
-  if (fileList) {
-    filesPageIterator = await getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
-
-    return filesPageIterator;
-  }
-
-  // get iterator from graph request
-  const scopes = ['files.read', 'sites.read.all'];
-  let request;
-
-  try {
-    request = await graph.api(listQuery).middlewareOptions(prepScopes(...scopes));
-    if (top) {
-      request.top(top);
-    }
-    filesPageIterator = await getFilesPageIteratorFromRequest(graph, request);
-
-    if (getIsFileListsCacheEnabled()) {
-      cache.putValue(cacheKey, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
-    }
-  } catch {}
-  return filesPageIterator || null;
-}
+  return getIterator(graph, listQuery, cacheStore, ['files.read', 'sites.read.all'], top);
+};
 
 // GET /me/insights/{trending	| used | shared}
-export async function getMyInsightsFiles(graph: IGraph, insightType: string): Promise<DriveItem[]> {
+export const getMyInsightsFiles = async (graph: IGraph, insightType: string): Promise<DriveItem[]> => {
   const endpoint = `/me/insights/${insightType}`;
+  const cacheStore = schemas.fileLists.stores.insightfileLists;
 
   // get files from cached values
-  let cache: CacheStore<CacheFileList>;
-  const cacheStore = schemas.fileLists.stores.insightfileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
+  const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
   const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
   if (fileList) {
-    return fileList.files as DriveItem[];
+    // fileList.files is string[] so JSON.parse to get proper objects
+    return fileList.files.map((file: string) => JSON.parse(file) as DriveItem);
   }
 
   // get files from graph request
   const scopes = ['sites.read.all'];
-  let insightResponse;
+  let insightResponse: CollectionResponse<Insight>;
   try {
-    insightResponse = await graph
+    insightResponse = (await graph
       .api(endpoint)
-      .filter(`resourceReference/type eq 'microsoft.graph.driveItem'`)
+      .filter("resourceReference/type eq 'microsoft.graph.driveItem'")
       .middlewareOptions(prepScopes(...scopes))
-      .get();
+      .get()) as CollectionResponse<Insight>;
+    // eslint-disable-next-line no-empty
   } catch {}
 
   const result = await getDriveItemsByInsights(graph, insightResponse, scopes);
   if (getIsFileListsCacheEnabled()) {
-    cache.putValue(endpoint, { files: result });
+    await cache.putValue(endpoint, { files: result.map(file => JSON.stringify(file)) });
   }
 
   return result || null;
-}
+};
 
 // GET /users/{id | userPrincipalName}/insights/{trending	| used | shared}
-export async function getUserInsightsFiles(graph: IGraph, userId: string, insightType: string): Promise<DriveItem[]> {
-  let endpoint;
-  let filter;
+export const getUserInsightsFiles = async (
+  graph: IGraph,
+  userId: string,
+  insightType: string
+): Promise<DriveItem[]> => {
+  let endpoint: string;
+  let filter: string;
 
   if (insightType === 'shared') {
-    endpoint = `/me/insights/shared`;
+    endpoint = '/me/insights/shared';
     filter = `((lastshared/sharedby/id eq '${userId}') and (resourceReference/type eq 'microsoft.graph.driveItem'))`;
   } else {
     endpoint = `/users/${userId}/insights/${insightType}`;
-    filter = `resourceReference/type eq 'microsoft.graph.driveItem'`;
+    filter = "resourceReference/type eq 'microsoft.graph.driveItem'";
   }
 
   const key = `${endpoint}?$filter=${filter}`;
 
   // get files from cached values
-  let cache: CacheStore<CacheFileList>;
   const cacheStore = schemas.fileLists.stores.insightfileLists;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
+  const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
   const fileList = await getFileListFromCache(cache, cacheStore, key);
   if (fileList) {
-    return fileList.files as DriveItem[];
+    return fileList.files.map((file: string) => JSON.parse(file) as DriveItem);
   }
 
   // get files from graph request
   const scopes = ['sites.read.all'];
-  let insightResponse;
+  let insightResponse: CollectionResponse<Insight>;
 
   try {
-    insightResponse = await graph
+    insightResponse = (await graph
       .api(endpoint)
       .filter(filter)
       .middlewareOptions(prepScopes(...scopes))
-      .get();
+      .get()) as CollectionResponse<Insight>;
+    // eslint-disable-next-line no-empty
   } catch {}
 
   const result = await getDriveItemsByInsights(graph, insightResponse, scopes);
   if (getIsFileListsCacheEnabled()) {
-    cache.putValue(endpoint, { files: result });
+    await cache.putValue(endpoint, { files: result.map(file => JSON.stringify(file)) });
   }
 
   return result || null;
-}
+};
 
-export async function getFilesByQueries(graph: IGraph, fileQueries: string[]): Promise<DriveItem[]> {
+export const getFilesByQueries = async (graph: IGraph, fileQueries: string[]): Promise<DriveItem[]> => {
   if (!fileQueries || fileQueries.length === 0) {
     return [];
   }
 
   const batch = graph.createBatch();
-  const files = [];
+  const files: DriveItem[] = [];
   const scopes = ['files.read'];
   let cache: CacheStore<CacheFile>;
   let cachedFile: CacheFile;
@@ -986,7 +505,7 @@ export async function getFilesByQueries(graph: IGraph, fileQueries: string[]): P
     }
 
     if (getIsFilesCacheEnabled() && cachedFile && getFileInvalidationTime() > Date.now() - cachedFile.timeCached) {
-      files.push(JSON.parse(cachedFile.file));
+      files.push(JSON.parse(cachedFile.file) as DriveItem);
     } else if (fileQuery !== '') {
       batch.get(fileQuery, fileQuery, scopes);
     }
@@ -997,10 +516,10 @@ export async function getFilesByQueries(graph: IGraph, fileQueries: string[]): P
 
     for (const fileQuery of fileQueries) {
       const response = responses.get(fileQuery);
-      if (response && response.content) {
-        files.push(response.content);
+      if (response?.content) {
+        files.push(response.content as DriveItem);
         if (getIsFilesCacheEnabled()) {
-          cache.putValue(fileQuery, { file: JSON.stringify(response.content) });
+          await cache.putValue(fileQuery, { file: JSON.stringify(response.content) });
         }
       }
     }
@@ -1015,26 +534,30 @@ export async function getFilesByQueries(graph: IGraph, fileQueries: string[]): P
             const file = await getDriveItemByQuery(graph, fileQuery);
             if (file) {
               if (getIsFilesCacheEnabled()) {
-                cache.putValue(fileQuery, { file: JSON.stringify(file) });
+                await cache.putValue(fileQuery, { file: JSON.stringify(file) });
               }
               return file;
             }
           })
       );
-    } catch (_) {
+    } catch (e) {
       return [];
     }
   }
-}
+};
 
-async function getDriveItemsByInsights(graph: IGraph, insightResponse, scopes) {
+const getDriveItemsByInsights = async (
+  graph: IGraph,
+  insightResponse: CollectionResponse<Insight>,
+  scopes: string[]
+): Promise<DriveItem[]> => {
   if (!insightResponse) {
     return [];
   }
 
   const insightItems = insightResponse.value;
   const batch = graph.createBatch();
-  const driveItems = [];
+  const driveItems: DriveItem[] = [];
   for (const item of insightItems) {
     const driveItemId = item.resourceReference.id;
     if (driveItemId !== '') {
@@ -1047,54 +570,65 @@ async function getDriveItemsByInsights(graph: IGraph, insightResponse, scopes) {
 
     for (const item of insightItems) {
       const driveItemResponse = driveItemResponses.get(item.resourceReference.id);
-      if (driveItemResponse && driveItemResponse.content) {
-        driveItems.push(driveItemResponse.content);
+      if (driveItemResponse?.content) {
+        driveItems.push(driveItemResponse.content as DriveItem);
       }
     }
     return driveItems;
   } catch (_) {
     try {
+      // we're filtering the insights calls that feed this to ensure that only
+      // drive items are returned, but we still need to check for nulls
       return Promise.all(
         insightItems
-          .filter(insightItem => insightItem.resourceReference.id && insightItem.resourceReference.id !== '')
-          .map(async insightItem => {
-            const driveItemResponses = await graph
-              .api(insightItem.resourceReference.id)
-              .middlewareOptions(prepScopes(...scopes))
-              .get();
-            if (driveItemResponses && driveItemResponses.length) {
-              return driveItemResponses[0].content;
-            }
-          })
+          .filter(insightItem => Boolean(insightItem.resourceReference.id))
+          .map(
+            async insightItem =>
+              (await graph
+                .api(insightItem.resourceReference.id)
+                .middlewareOptions(prepScopes(...scopes))
+                .get()) as DriveItem
+          )
       );
-    } catch (_) {
+    } catch (e) {
       return [];
     }
   }
-}
+};
 
-async function getFilesPageIteratorFromRequest(graph: IGraph, request) {
+const getFilesPageIteratorFromRequest = async (graph: IGraph, request: GraphRequest) => {
   return GraphPageIterator.create<DriveItem>(graph, request);
-}
+};
 
-async function getFilesPageIteratorFromCache(graph: IGraph, value, nextLink) {
-  return GraphPageIterator.createFromValue<DriveItem>(graph, value, nextLink);
-}
+const getFilesPageIteratorFromCache = (graph: IGraph, value: string[], nextLink: string) => {
+  return GraphPageIterator.createFromValue<DriveItem>(
+    graph,
+    value.map(v => JSON.parse(v) as DriveItem),
+    nextLink
+  );
+};
 
-async function getFileFromCache(cache: CacheStore<CacheFile>, key: string) {
+/**
+ * Load a file from the cache
+ *
+ * @param {CacheStore<CacheFile>} cache
+ * @param {string} key
+ * @return {*}
+ */
+const getFileFromCache = async <TResult = DriveItem>(cache: CacheStore<CacheFile>, key: string): Promise<TResult> => {
   if (getIsFilesCacheEnabled()) {
     const file = await cache.getValue(key);
 
     if (file && getFileInvalidationTime() > Date.now() - file.timeCached) {
-      const cachedFile = JSON.parse(file.file);
-      return cachedFile;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return JSON.parse(file.file) as TResult;
     }
   }
 
   return null;
-}
+};
 
-export async function getFileListFromCache(cache: CacheStore<CacheFileList>, store: string, key: string) {
+export const getFileListFromCache = async (cache: CacheStore<CacheFileList>, store: string, key: string) => {
   if (!cache) {
     cache = CacheService.getCache<CacheFileList>(schemas.fileLists, store);
   }
@@ -1108,27 +642,29 @@ export async function getFileListFromCache(cache: CacheStore<CacheFileList>, sto
   }
 
   return null;
-}
+};
 
 // refresh filesPageIterator to its next iteration and save current page to cache
-export async function fetchNextAndCacheForFilesPageIterator(filesPageIterator) {
-  const nextLink = filesPageIterator._nextLink;
+export const fetchNextAndCacheForFilesPageIterator = async (filesPageIterator: GraphPageIterator<DriveItem>) => {
+  const nextLink = filesPageIterator.nextLink;
 
   if (filesPageIterator.hasNext) {
     await filesPageIterator.next();
   }
   if (getIsFileListsCacheEnabled()) {
-    let cache: CacheStore<CacheFileList>;
-    cache = CacheService.getCache<CacheFileList>(schemas.fileLists, schemas.fileLists.stores.fileLists);
+    const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(
+      schemas.fileLists,
+      schemas.fileLists.stores.fileLists
+    );
 
     // match only the endpoint (after version number and before OData query params) e.g. /me/drive/root/children
     const reg = /(graph.microsoft.com\/(v1.0|beta))(.*?)(?=\?)/gi;
     const matches = reg.exec(nextLink);
     const key = matches[3];
 
-    cache.putValue(key, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+    await cache.putValue(key, { files: filesPageIterator.value.map(v => JSON.stringify(v)), nextLink });
   }
-}
+};
 
 /**
  * retrieves the specified document thumbnail
@@ -1137,7 +673,11 @@ export async function fetchNextAndCacheForFilesPageIterator(filesPageIterator) {
  * @param {string[]} scopes
  * @returns {Promise<string>}
  */
-export async function getDocumentThumbnail(graph: IGraph, resource: string, scopes: string[]): Promise<CacheThumbnail> {
+export const getDocumentThumbnail = async (
+  graph: IGraph,
+  resource: string,
+  scopes: string[]
+): Promise<CacheThumbnail> => {
   try {
     const response = (await graph
       .api(resource)
@@ -1160,7 +700,7 @@ export async function getDocumentThumbnail(graph: IGraph, resource: string, scop
   } catch (e) {
     return null;
   }
-}
+};
 
 /**
  * retrieve file properties based on Graph query
@@ -1169,26 +709,17 @@ export async function getDocumentThumbnail(graph: IGraph, resource: string, scop
  * @param resource
  * @returns
  */
-export async function getGraphfile(graph: IGraph, resource: string): Promise<DriveItem> {
+export const getGraphfile = async (graph: IGraph, resource: string): Promise<DriveItem> => {
+  // get from graph request
+  const scopes = 'files.read';
   try {
-    // get from graph request
-    const scopes = 'files.read';
-    let response;
-    try {
-      response = await graph
-        .api(resource)
-        .middlewareOptions(prepScopes(scopes))
-        .get()
-        .catch(error => {
-          return null;
-        });
-    } catch {}
-
+    const response = (await graph.api(resource).middlewareOptions(prepScopes(scopes)).get()) as DriveItem;
     return response || null;
-  } catch (e) {
-    return null;
-  }
-}
+    // eslint-disable-next-line no-empty
+  } catch {}
+
+  return null;
+};
 
 /**
  * retrieve UploadSession Url for large file and send by chuncks
@@ -1197,11 +728,11 @@ export async function getGraphfile(graph: IGraph, resource: string): Promise<Dri
  * @param resource
  * @returns
  */
-export async function getUploadSession(
+export const getUploadSession = async (
   graph: IGraph,
   resource: string,
   conflictBehavior: number
-): Promise<UploadSession> {
+): Promise<UploadSession> => {
   try {
     // get from graph request
     const scopes = 'files.readwrite';
@@ -1210,16 +741,20 @@ export async function getUploadSession(
         '@microsoft.graph.conflictBehavior': conflictBehavior === 0 || conflictBehavior === null ? 'rename' : 'replace'
       }
     };
-    let response;
+    let response: UploadSession;
     try {
-      response = await graph.api(resource).middlewareOptions(prepScopes(scopes)).post(JSON.stringify(sessionOptions));
+      response = (await graph
+        .api(resource)
+        .middlewareOptions(prepScopes(scopes))
+        .post(JSON.stringify(sessionOptions))) as UploadSession;
+      // eslint-disable-next-line no-empty
     } catch {}
 
     return response || null;
   } catch (e) {
     return null;
   }
-}
+};
 
 /**
  * send file chunck to OneDrive, SharePoint Site
@@ -1229,13 +764,13 @@ export async function getUploadSession(
  * @param file
  * @returns
  */
-export async function sendFileChunck(
+export const sendFileChunk = async (
   graph: IGraph,
   resource: string,
   contentLength: string,
   contentRange: string,
   file: Blob
-): Promise<any> {
+): Promise<UploadSession | DriveItem> => {
   try {
     // get from graph request
     const scopes = 'files.readwrite';
@@ -1243,16 +778,19 @@ export async function sendFileChunck(
       'Content-Length': contentLength,
       'Content-Range': contentRange
     };
-    let response;
+    let response: UploadSession | DriveItem;
     try {
-      response = await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).headers(header).put(file);
+      response = (await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).headers(header).put(file)) as
+        | UploadSession
+        | DriveItem;
+      // eslint-disable-next-line no-empty
     } catch {}
 
     return response || null;
   } catch (e) {
     return null;
   }
-}
+};
 
 /**
  * send file to OneDrive, SharePoint Site
@@ -1262,20 +800,21 @@ export async function sendFileChunck(
  * @param file
  * @returns
  */
-export async function sendFileContent(graph: IGraph, resource: string, file: File): Promise<DriveItem> {
+export const sendFileContent = async (graph: IGraph, resource: string, file: File): Promise<DriveItem> => {
   try {
     // get from graph request
     const scopes = 'files.readwrite';
-    let response;
+    let response: DriveItem;
     try {
-      response = await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).put(file);
+      response = (await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).put(file)) as DriveItem;
+      // eslint-disable-next-line no-empty
     } catch {}
 
     return response || null;
   } catch (e) {
     return null;
   }
-}
+};
 
 /**
  * delete upload session
@@ -1284,22 +823,14 @@ export async function sendFileContent(graph: IGraph, resource: string, file: Fil
  * @param resource
  * @returns
  */
-export async function deleteSessionFile(graph: IGraph, resource: string): Promise<any> {
+export const deleteSessionFile = async (graph: IGraph, resource: string): Promise<void> => {
+  const scopes = 'files.readwrite';
   try {
-    // get from graph request
-    const scopes = 'files.readwrite';
-    let response;
-    try {
-      response = await graph.client
-        .api(resource)
-        .middlewareOptions(prepScopes(scopes))
-        .delete(response => {
-          return response;
-        });
-    } catch {}
-
-    return response || null;
-  } catch (e) {
+    await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).delete();
+  } catch {
+    // TODO: re-examine the error handling here
+    // DELETE returns a 204 on success so void makes sense to return on the happy path
+    // but we should probably throw on error
     return null;
   }
-}
+};

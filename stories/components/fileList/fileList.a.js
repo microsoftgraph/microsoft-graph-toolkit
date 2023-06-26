@@ -5,17 +5,20 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-file-list',
-  component: 'mgt-file-list',
-  decorators: [withCodeEditor]
+  component: 'file-list',
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: { code: '<mgt-file-list></mgt-file-list>' }
+    }
+  }
 };
 
 export const fileList = () => html`
@@ -78,7 +81,7 @@ export const openFolderBreadcrumbs = () => html`
         margin: 0;
         padding: 10px 16px;
         list-style: none;
-        background-color: #ffffff;
+        background-color: var(--neutral-layer-1);
         font-size: 12px;
       }
 
@@ -88,17 +91,17 @@ export const openFolderBreadcrumbs = () => html`
 
       ul.breadcrumb li + li:before {
         padding: 8px;
-        color: black;
+        color: var(--foreground-on-accent-fill);
         content: '\/';
       }
 
       ul.breadcrumb li a {
-        color: #0275d8;
+        color: var(--accent-fill-rest);
         text-decoration: none;
       }
 
       ul.breadcrumb li a:hover {
-        color: #01447e;
+        color: var(--accent-fill-hover);
         text-decoration: underline;
       }
     </style>
