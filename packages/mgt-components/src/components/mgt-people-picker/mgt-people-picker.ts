@@ -1290,10 +1290,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       return p.id !== person.id;
     });
+    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+    if (this.hasMaxSelections && inputControl) {
+      inputControl.removeAttribute('disabled');
+    }
     this.selectedPeople = filteredPersonArr;
     void this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
-    this.input?.focus();
+    inputControl?.focus();
   }
 
   /**
@@ -1467,6 +1471,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // handle suggestion list item click
   private handleSuggestionClick(person: IDynamicPerson): void {
     this.addPerson(person);
+    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+    if (this.hasMaxSelections && inputControl) {
+      inputControl.setAttribute('disabled', 'true');
+    }
     this.hideFlyout();
   }
 
