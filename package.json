@@ -180,6 +180,7 @@
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
-    "responselike": "2.0.0"
+    "responselike": "2.0.0",
+    "semver": ">=7.5.2"
   }
 }
