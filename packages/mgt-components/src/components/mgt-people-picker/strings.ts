@@ -7,7 +7,7 @@
 
 export const strings = {
   inputPlaceholderText: 'Start typing a name',
-  maxSelectionsPlaceHolder: 'Maximum contact selections added',
+  maxSelectionsPlaceHolder: 'Max contacts added',
   maxSelectionsAriaLabel: 'Maximum contact selections reached',
   noResultsFound: "We didn't find any matches.",
   loadingMessage: 'Loading...',
