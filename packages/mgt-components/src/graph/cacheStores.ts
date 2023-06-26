@@ -33,7 +33,7 @@ export const schemas = {
       groups: 'groups',
       teams: 'teams'
     },
-    version: 3
+    version: 2
   },
   people: {
     name: 'people',
