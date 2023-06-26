@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "2.11.1",
+  "version": "2.11.2",
   "workspaces": [
     "packages/*",
     "packages/providers/*",
@@ -135,6 +135,7 @@
     "embeddedLanguageFormatting": "off"
   },
   "resolutions": {
+    "commander": "^10.0.0",
     "responselike": "2.0.0"
   }
 }
