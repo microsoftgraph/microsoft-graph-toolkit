@@ -1562,6 +1562,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this.addPerson(foundPerson);
           this.hideFlyout();
           this.input.value = '';
+          const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+          if (this.hasMaxSelections && inputControl) {
+            inputControl.setAttribute('disabled', 'true');
+          }
         }
       } else if (this.allowAnyEmail) {
         this.handleAnyEmail();
