@@ -58,23 +58,63 @@ body {
 `;
 
 export const themingWithoutToggle = () => html`
-  <mgt-login id="login-one"></mgt-login>
-  <mgt-login id="login-two"></mgt-login>
-  <mgt-login id="login-three"></mgt-login>
+<h2>Style the page</h2>
+<p>
+  This page has the provided light theme applied by calling <code>applyTheme('light')</code>.
+  and applying some basic css rules to the body tag<br/>
+  This function uses a default value of document for the second optional element parameter, 
+  which is used below to set the dark theme.<br/>
+  Refer to the CSS and JS tabs for details.
+</p>
 
-  <!-- The login components are in the default light theme on a light
-  background. We are setting the component with id "login-two" to the dark
-  theme colors using JavaScript. -->
+<h2>Style the background of a component</h2>
+<p>
+  The first login component is in the default light theme on a light
+  background. We are setting the background of the component with id "login-two"
+  to the <code>aliceblue</code> color using CSS.<br/>
+  Check the CSS tab.
+</p>
+<mgt-login id="login-one"></mgt-login>
+<mgt-login id="login-two"></mgt-login>
+<mgt-login id="login-three"></mgt-login>
 
-  <script>
-    import { applyTheme } from '@microsoft/mgt';
-    const loginTwo = document.querySelector("#login-two");
+<h2>Style using <code>applyTheme</code> function </h2>
+<p>
+  The first picker component is in the default light theme on a light
+  background. We are setting the "picker-two" and "login-three" components to the dark theme using JavaScript.
+  Because the login component is transparent it is necessary to set the background color using CSS.<br/>
+  Refer to the CSS and JS tabs for details.
+</p>
+<mgt-people-picker id="picker-one"></mgt-people-picker>
+<br>
+<mgt-people-picker id="picker-two"></mgt-people-picker>
+<style>
+body {
+  background-color: var(--fill-color);
+  font-family: var(--body-font);
+}
+#login-two {
+  background-color: aliceblue;
+}
+#login-three {
+  background-color: var(--fill-color);
+}
+</style>
 
-    if(loginTwo){
-      // apply the dark theme on the second login component only.
-      applyTheme('dark', loginTwo)
-    }
-  </script>
+<script>
+import { applyTheme } from '@microsoft/mgt';
+applyTheme('light');
+const darkElements = [
+  document.querySelector("#picker-two"),
+  document.querySelector("#login-three")
+];
+for (const element of darkElements) {
+  if(element){
+    // apply the dark theme on the second picker component only.
+    applyTheme('dark', element)
+  }
+}
+</script>
 `;
 
 export const localization = () => html`

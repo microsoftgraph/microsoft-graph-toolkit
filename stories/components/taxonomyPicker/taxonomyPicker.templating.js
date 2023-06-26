@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 
 export default {
   title: 'Components / mgt-taxonomy-picker / Templating',
-  component: 'mgt-taxonomy-picker',
+  component: 'taxonomy-picker',
   decorators: [withCodeEditor]
 };
 

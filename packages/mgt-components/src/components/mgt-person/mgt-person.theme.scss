@@ -9,8 +9,8 @@
 
 $person-background-color: var(--person-background-color, transparent);
 $person-line1-text-color: var(--person-line1-text-color, var(--neutral-foreground-rest));
-$person-line2-text-color: var(--person-line2-text-color, var(--neutral-foreground-hint));
-$person-line3-text-color: var(--person-line3-text-color, var(--neutral-foreground-hint));
-$person-line4-text-color: var(--person-line4-text-color, var(--neutral-foreground-hint));
+$person-line2-text-color: var(--person-line2-text-color, var(--secondary-text-color));
+$person-line3-text-color: var(--person-line3-text-color, var(--secondary-text-color));
+$person-line4-text-color: var(--person-line4-text-color, var(--secondary-text-color));
 $person-initials-text-color: var(--person-initials-text-color, var(--neutral-fill-strong-hover));
 $person-initials-background-color: var(--person-initials-background-color, var(--neutral-fill-secondary-rest));
