@@ -757,10 +757,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         role="combobox"
         placeholder=${this.hasMaxSelections ? this.strings.maxSelectionsPlaceHolder : placeholder}
         aria-label=${this.ariaLabel || maxSelectionsAriaLabel || placeholder || this.strings.selectContact}
+        aria-expanded=${this.flyout?.isOpen ?? false}
         @click="${this.hasMaxSelections ? undefined : this.handleInputClick}"
         @focus="${this.hasMaxSelections ? undefined : this.gainedFocus}"
         @keydown="${this.hasMaxSelections ? undefined : this.onUserKeyDown}"
-        @keyup="${this.onUserKeyUp}"
         @input="${this.hasMaxSelections ? undefined : this.onUserInput}"
         @blur="${this.lostFocus}"
         ?disabled=${this.disabled}
@@ -919,6 +919,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         class="searched-people-list"
         role="listbox"
         aria-live="polite"
+        title=${this.strings.suggestionsTitle}
       >
          ${repeat(
            filteredPeople,
@@ -1257,7 +1258,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       flyout.close();
     }
     if (this.input) {
-      this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
     }
     this._arrowSelectionCount = -1;
@@ -1273,9 +1273,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const flyout = this.flyout;
     if (flyout) {
       flyout.open();
-    }
-    if (this.input) {
-      this.input.setAttribute('aria-expanded', 'true');
     }
     this._arrowSelectionCount = -1;
   }
@@ -1366,7 +1363,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private readonly lostFocus = () => {
     this._isFocused = false;
     if (this.input) {
-      this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
     }
 

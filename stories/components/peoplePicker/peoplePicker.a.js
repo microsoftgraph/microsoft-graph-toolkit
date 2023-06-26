@@ -64,12 +64,14 @@ export const localization = () => html`
    LocalizationHelper.strings = {
      _components: {
        'people-picker': {
-         inputPlaceholderText: 'Search for 🤼',
-          maxSelectionsPlaceHolder: 'Maxiumum reached',
-          maxSelectionsAriaLabel: 'You can only select 1 person',
-         noResultsFound: '🤷‍♀️',
-         loadingMessage: '🦔'
-       }
+          inputPlaceholderText: 'Search for 🤼',
+          noResultsFound: '🤷‍♀️',
+          loadingMessage: '🦔',
+          selected: '👉',
+          removeSelectedUser: '❌ ',
+          selectContact: 'Select 🤼',
+          suggestionsTitle: '📃 Suggested 🤼'
+        }
      }
    }
    </script>

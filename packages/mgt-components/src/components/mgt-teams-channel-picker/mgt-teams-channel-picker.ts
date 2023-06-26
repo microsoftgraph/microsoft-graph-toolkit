@@ -360,11 +360,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             placeholder="${this._selectedItemState ? '' : this.strings.inputPlaceholderText} "
             label="teams-channel-picker-input"
             role="combobox"
+            aria-expanded="${this._isDropdownVisible}"
             @click=${this.handleInputClick}
             @keydown=${this.handleInputKeydown}
-            @keyup=${this.handleInputChanged}>
-              <div tabindex="0" slot="start" style="width: max-content;">${this.renderSelected()}</div>
-              <div tabindex="0" slot="end">${this.renderChevrons()}${this.renderCloseButton()}</div>
+            @keyup=${this.handleInputChanged}
+          >
+            <div tabindex="0" slot="start" style="width: max-content;">${this.renderSelected()}</div>
+            <div tabindex="0" slot="end">${this.renderChevrons()}${this.renderCloseButton()}</div>
           </fluent-text-field>
           <fluent-card class=${classMap(dropdownClasses)}>
             ${this.renderDropdown()}
