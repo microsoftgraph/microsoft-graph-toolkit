@@ -5,17 +5,20 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-agenda',
-  component: 'mgt-agenda',
-  decorators: [withCodeEditor]
+  component: 'agenda',
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: { code: '<mgt-agenda></mgt-agenda>' }
+    }
+  }
 };
 
 export const simple = () => html`
@@ -30,7 +33,7 @@ export const events = () => html`
   <script>
     const agenda = document.querySelector('mgt-agenda');
     agenda.addEventListener('eventClick', (e) => {
-      console.log(e.detail.event);
+      console.log(e.detail);
     })
   </script>
 `;
@@ -40,3 +43,14 @@ export const RTL = () => html`
    <mgt-agenda></mgt-agenda>
   </body>
 `;
+RTL.parameters = {
+  docs: {
+    source: {
+      code: `
+<body dir="rtl">
+  <mgt-agenda></mgt-agenda>
+</body>
+`
+    }
+  }
+};

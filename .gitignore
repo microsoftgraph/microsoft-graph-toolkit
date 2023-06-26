@@ -2,11 +2,14 @@ dist/
 www/
 lib/
 assets/mgt.storybook.js
+assets/mgt.preview.storybook.js
 
 *~
 *.sw[mnpcod]
 *.log
 *.lock
+# explicitly allow yarn lock to facilitate pipeline caching of node_modules
+!yarn.lock
 *.tmp
 *.tmp.*
 log.txt
@@ -32,7 +35,7 @@ UserInterfaceState.xcuserstate
 # testing
 coverage/
 *.tgz
-testResults/junit.xml
+testResults/
 
 *-css.ts
 *.tsbuildinfo
@@ -41,3 +44,6 @@ package-lock.json
 # storybook
 storybook-static/
 custom-elements.json
+workbench.html
+
+!/samples/teamsfx-app/.vscode

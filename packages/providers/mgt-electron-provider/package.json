@@ -35,13 +35,15 @@
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.authenticator.tsbuildinfo  && shx rm -rf ./tsconfig.provider.tsbuildinfo",
     "compile": "tsc -p ./tsconfig.provider.json && tsc -p ./tsconfig.authenticator.json",
     "compile:watch": "tsc -w -p ./tsconfig.provider.json && tsc -w -p ./tsconfig.authenticator.json",
-    "lint": "tslint -c ../../../tslint.json 'src/**/*.ts'",
+    "lint": "npm run lint:auth && npm run lint:provider",
+    "lint:auth": "eslint -c .eslintrc.auth.js 'src/Authenticator/**/*.ts'",
+    "lint:provider": "eslint -c .eslintrc.provider.js 'src/Provider/**/*.ts'",
     "postpack": "cpx *.tgz ../../../artifacts"
   },
   "dependencies": {
     "@azure/msal-node": "^1.0.3",
     "@microsoft/mgt-element": "*",
-    "@microsoft/microsoft-graph-client": "^2.2.1",
+    "@microsoft/microsoft-graph-client": "3.0.2",
     "electron": "^11.0.2"
   },
   "publishConfig": {

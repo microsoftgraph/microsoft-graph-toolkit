@@ -6,7 +6,10 @@
  */
 
 import { Context, Middleware } from '@microsoft/microsoft-graph-client';
-import { getRequestHeader, setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
+import {
+  getRequestHeader,
+  setRequestHeader
+} from '@microsoft/microsoft-graph-client/lib/es/src/middleware/MiddlewareUtil';
 import { ComponentMiddlewareOptions } from './ComponentMiddlewareOptions';
 import { validateBaseURL } from './GraphHelpers';
 
@@ -23,15 +26,14 @@ export class SdkVersionMiddleware implements Middleware {
    * A member to hold next middleware in the middleware chain
    */
   private _nextMiddleware: Middleware;
-  private _packageVersion: string;
-  private _providerName: string;
+  private readonly _packageVersion: string;
+  private readonly _providerName: string;
 
   constructor(packageVersion: string, providerName?: string) {
     this._packageVersion = packageVersion;
     this._providerName = providerName;
   }
 
-  // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
       if (typeof context.request === 'string') {
@@ -44,17 +46,17 @@ export class SdkVersionMiddleware implements Middleware {
           ) as ComponentMiddlewareOptions;
 
           if (componentOptions) {
-            const componentVersion: string = `${componentOptions.componentName}/${this._packageVersion}`;
+            const componentVersion = `${componentOptions.componentName}/${this._packageVersion}`;
             headerParts.push(componentVersion);
           }
 
           if (this._providerName) {
-            const providerVersion: string = `${this._providerName}/${this._packageVersion}`;
+            const providerVersion = `${this._providerName}/${this._packageVersion}`;
             headerParts.push(providerVersion);
           }
 
           // Package version
-          const packageVersion: string = `mgt/${this._packageVersion}`;
+          const packageVersion = `mgt/${this._packageVersion}`;
           headerParts.push(packageVersion);
 
           // Existing SdkVersion header value
@@ -64,6 +66,7 @@ export class SdkVersionMiddleware implements Middleware {
           const sdkVersionHeaderValue = headerParts.join(', ');
           setRequestHeader(context.request, context.options, 'SdkVersion', sdkVersionHeaderValue);
         } else {
+          // eslint-disable-next-line @typescript-eslint/dot-notation
           delete context?.options?.headers['SdkVersion'];
         }
       }

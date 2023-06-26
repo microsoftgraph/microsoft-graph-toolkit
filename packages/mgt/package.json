@@ -34,7 +34,7 @@
     "compile:watch": "tsc -w",
     "copy:loader": "cpx src/bundle/mgt-loader.js dist/bundle",
     "copy:wc": "cpx ../../node_modules/@webcomponents/webcomponentsjs/bundles/**/* dist/bundle/wc/bundles && cpx ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist/bundle/wc",
-    "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
+    "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts",
     "rollup": "rollup -c",
     "sass": "gulp sass --cwd .",
@@ -45,12 +45,10 @@
   "dependencies": {
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-components": "*",
-    "@microsoft/mgt-msal-provider": "*",
-    "@microsoft/mgt-teams-provider": "*",
     "@microsoft/mgt-proxy-provider": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
     "@microsoft/mgt-msal2-provider": "*",
-    "@microsoft/mgt-teams-msal2-provider": "*"
+    "@microsoft/mgt-mock-provider": "*"
   },
   "devDependencies": {
     "@webcomponents/webcomponentsjs": "^2.5.0"

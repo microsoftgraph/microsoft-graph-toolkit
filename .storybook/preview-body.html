@@ -6,6 +6,7 @@
     width: 100%;
     font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
       'Helvetica Neue', sans-serif;
+    padding: 0!important;
   }
 
   .docs-img-centered {
@@ -24,6 +25,7 @@
     width: 100%;
     position: relative;
     display: flex;
+    overflow: hidden;
   }
 
   .story-mgt-preview {
@@ -98,6 +100,7 @@
   @media (max-width: 768px) {
     .story-mgt-root {
       flex-direction: column;
+      overflow-y: auto;
     }
 
     .story-mgt-preview-wrapper {

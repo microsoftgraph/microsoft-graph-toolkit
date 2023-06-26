@@ -5,17 +5,22 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-teams-channel-picker',
-  component: 'mgt-teams-channel-picker',
-  decorators: [withCodeEditor]
+  component: 'teams-channel-picker',
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: {
+        code: '<mgt-teams-channel-picker></mgt-teams-channel-picker>'
+      }
+    }
+  }
 };
 
 export const teamsChannelPicker = () => html`
@@ -54,9 +59,9 @@ export const selectionChangedEvent = () => html`
     picker.addEventListener('selectionChanged', e => {
       const output = document.querySelector('.output');
 
-      if (e.detail.length) {
-        output.innerHTML = '<b>channel:</b> ' + e.detail[0].channel.displayName;
-        output.innerHTML += '<br/><b>team:</b> ' + e.detail[0].team.displayName;
+      if (e.detail) {
+        output.innerHTML = '<b>channel:</b> ' + e.detail.channel.displayName;
+        output.innerHTML += '<br/><b>team:</b> ' + e.detail.team.displayName;
       } else {
         output.innerText = 'no channel selected';
       }

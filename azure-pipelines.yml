@@ -17,16 +17,17 @@ steps:
       command: custom
       verbose: false
       customCommand: '--no-git-tag-version version $(baseVersionNumber).$(Build.BuildId)'
-      
+
   - script: |
       npm install -g yarn lerna
       yarn
     displayName: Install dependencies
+    retryCountOnTaskFailure: 5
 
   - script: |
       yarn build
     displayName: Build
-    
+
   #- task: Npm@1
   #  displayName: 'npm test'
   #  inputs:

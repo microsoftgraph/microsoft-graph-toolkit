@@ -6,7 +6,7 @@
  */
 
 import { Context, Middleware } from '@microsoft/microsoft-graph-client';
-import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
+import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/src/middleware/MiddlewareUtil';
 
 /**
  * Custom Middleware to add custom headers when making calls
@@ -15,12 +15,11 @@ import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middl
  * @class CustomHeaderMiddleware
  * @implements {Middleware}
  */
-// tslint:disable-next-line: max-classes-per-file
 export class CustomHeaderMiddleware implements Middleware {
-  private nextMiddleware: Middleware;
-  private _getCustomHeaders: () => Promise<object>;
+  private _nextMiddleware: Middleware;
+  private readonly _getCustomHeaders?: () => Promise<object>;
 
-  constructor(getCustomHeaders: () => Promise<object>) {
+  constructor(getCustomHeaders?: () => Promise<object>) {
     this._getCustomHeaders = getCustomHeaders;
   }
 
@@ -35,12 +34,12 @@ export class CustomHeaderMiddleware implements Middleware {
     if (this._getCustomHeaders) {
       const headers = await this._getCustomHeaders();
       for (const key in headers) {
-        if (headers.hasOwnProperty(key)) {
-          setRequestHeader(context.request, context.options, key, headers[key]);
+        if (Object.prototype.hasOwnProperty.call(headers, key)) {
+          setRequestHeader(context.request, context.options, key, headers[key] as string);
         }
       }
     }
-    return await this.nextMiddleware.execute(context);
+    return await this._nextMiddleware.execute(context);
   }
 
   /**
@@ -50,6 +49,6 @@ export class CustomHeaderMiddleware implements Middleware {
    * @memberof SdkVersionMiddleware
    */
   public setNext(next: Middleware): void {
-    this.nextMiddleware = next;
+    this._nextMiddleware = next;
   }
 }

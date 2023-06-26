@@ -8,38 +8,40 @@
 import React, { ReactNode, ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 import { Wc, WcProps, WcTypeProps } from 'wc-react';
+import { customElementHelper, TemplateRenderedData } from '@microsoft/mgt-element';
 
 export class Mgt extends Wc {
   private _templates: Record<string, ReactElement>;
 
   constructor(props: WcTypeProps) {
     super(props);
-
-    this.handleTemplateRendered = this.handleTemplateRendered.bind(this);
   }
 
-  protected getTag() {
-    let tag = super.getTag();
-    if (!tag.startsWith('mgt-')) {
-      tag = 'mgt-' + tag;
+  protected getTag(): string {
+    let tag: string = super.getTag() as string;
+    const tagPrefix = `${customElementHelper.prefix}-`;
+    if (!tag.startsWith(tagPrefix)) {
+      tag = tagPrefix + tag;
     }
 
     return tag;
   }
 
-  public render() {
+  // type mismatch due to version drift
+  // @ts-expect-error - TS2416: Property 'render' in type 'Mgt' is not assignable to the same property in base type 'Wc'
+  public render(): React.DOMElement<React.DOMAttributes<HTMLElement>, HTMLElement> {
     const tag = this.getTag();
     if (!tag) {
-      throw '"wcType" must be set!';
+      throw new Error('"wcType" must be set!');
     }
 
     this.processTemplates(this.props.children);
 
-    let templateElements = [];
+    const templateElements = [];
 
     if (this._templates) {
-      for (let t in this._templates) {
-        if (this._templates.hasOwnProperty(t)) {
+      for (const t in this._templates) {
+        if (Object.prototype.hasOwnProperty.call(this._templates, t)) {
           const element = React.createElement('template', { key: t, 'data-type': t }, null);
           templateElements.push(element);
         }
@@ -88,14 +90,14 @@ export class Mgt extends Wc {
    * @returns
    * @memberof Mgt
    */
-  protected handleTemplateRendered(e) {
+  protected handleTemplateRendered = (e: CustomEvent<TemplateRenderedData>) => {
     if (!this._templates) {
       return;
     }
 
-    let templateType = e.detail.templateType;
-    let dataContext = e.detail.context;
-    let element = e.detail.element;
+    const templateType = e.detail.templateType;
+    const dataContext = e.detail.context;
+    const element = e.detail.element;
 
     let template = this._templates[templateType];
 
@@ -103,7 +105,7 @@ export class Mgt extends Wc {
       template = React.cloneElement(template, { dataContext });
       ReactDOM.render(template, element);
     }
-  }
+  };
 
   /**
    * Prepares templates for rendering
@@ -118,13 +120,15 @@ export class Mgt extends Wc {
       return;
     }
 
-    let templates = {};
+    const templates: Record<string, ReactElement> = {};
 
     React.Children.forEach(children, child => {
-      let element = child as ReactElement;
-      if (element && element.props && element.props.template) {
-        templates[element.props.template] = element;
+      const element = child as ReactElement<{ template: string }>;
+      const template = element?.props?.template;
+      if (template) {
+        templates[template] = element;
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
         templates['default'] = element;
       }
     });
@@ -142,8 +146,10 @@ export class Mgt extends Wc {
  * @returns React component
  */
 export const wrapMgt = <T = WcProps>(tag: string) => {
+  const WrapMgt = (props: T, ref: React.ForwardedRef<unknown>): React.CElement<WcTypeProps, Mgt> =>
+    React.createElement(Mgt, { wcType: tag, innerRef: ref, ...props });
   const component: React.ForwardRefExoticComponent<
     React.PropsWithoutRef<T & React.HTMLAttributes<any>> & React.RefAttributes<unknown>
-  > = React.forwardRef((props: T, ref) => React.createElement(Mgt, { wcType: tag, innerRef: ref, ...props }));
+  > = React.forwardRef(WrapMgt);
   return component;
 };

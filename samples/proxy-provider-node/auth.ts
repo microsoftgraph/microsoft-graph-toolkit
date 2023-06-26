@@ -14,7 +14,7 @@ const keyClient = jwksClient({
  * @param {JwtHeader} header - The JWT header
  * @param {SigningKeyCallback} callback - Callback function
  */
-function getSigningKey(header: JwtHeader, callback: SigningKeyCallback): void {
+const getSigningKey = async (header: JwtHeader, callback: SigningKeyCallback): Promise<void> => {
   if (header) {
     keyClient.getSigningKey(header.kid!, (err, key) => {
       if (err) {
@@ -24,7 +24,7 @@ function getSigningKey(header: JwtHeader, callback: SigningKeyCallback): void {
       }
     });
   }
-}
+};
 
 /**
  * Validates a JWT
@@ -36,9 +36,9 @@ async function validateJwt(authHeader: string): Promise<string | null> {
     const token = authHeader.split(' ')[1];
 
     const validationOptions = {
-      audience: process.env.PROXY_APP_ID,
+      audience: process.env.PROXY_APP_ID
       // uncomment to validate tenant in single tenant scenarios
-      // issuer: `https://login.microsoftonline.com/${process.env.PROXY_APP_TENANT_ID}/v2.0` 
+      // issuer: `https://login.microsoftonline.com/${process.env.PROXY_APP_TENANT_ID}/v2.0`
     };
 
     jwt.verify(token, getSigningKey, validationOptions, (err, payload) => {
@@ -84,7 +84,6 @@ export default async function getAccessTokenOnBehalfOf(authHeader: string): Prom
       console.log(`Token error: ${error}`);
       return null;
     }
-
   } else {
     return null;
   }

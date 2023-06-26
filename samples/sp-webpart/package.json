@@ -4,18 +4,22 @@
   "private": true,
   "main": "lib/index.js",
   "scripts": {
+    "serve": "gulp serve",
     "build": "gulp bundle",
     "clean": "gulp clean",
-    "test": "gulp test"
+    "test": "gulp test",
+    "package": "gulp build --ship && gulp bundle --ship && gulp package-solution --ship"
   },
   "dependencies": {
+    "@microsoft/mgt-element": "*",
     "@microsoft/mgt-react": "*",
-    "@microsoft/mgt-spfx": "*",
-    "@microsoft/sp-core-library": "1.15.2",
-    "@microsoft/sp-lodash-subset": "1.15.2",
-    "@microsoft/sp-office-ui-fabric-core": "1.15.2",
-    "@microsoft/sp-property-pane": "1.15.2",
-    "@microsoft/sp-webpart-base": "1.15.2",
+    "@microsoft/mgt-spfx-utils": "*",
+    "@microsoft/mgt-sharepoint-provider": "*",
+    "@microsoft/sp-core-library": "1.16.1",
+    "@microsoft/sp-lodash-subset": "1.16.1",
+    "@microsoft/sp-office-ui-fabric-core": "1.16.1",
+    "@microsoft/sp-property-pane": "1.16.1",
+    "@microsoft/sp-webpart-base": "1.16.1",
     "office-ui-fabric-react": "7.185.7",
     "react": "16.9.0",
     "react-dom": "16.9.0"
@@ -24,11 +28,11 @@
     "@types/react": "16.9.36"
   },
   "devDependencies": {
-    "@microsoft/eslint-config-spfx": "1.15.2",
-    "@microsoft/eslint-plugin-spfx": "1.15.2",
+    "@microsoft/eslint-config-spfx": "1.16.1",
+    "@microsoft/eslint-plugin-spfx": "1.16.1",
     "@microsoft/rush-stack-compiler-4.5": "0.2.2",
-    "@microsoft/sp-build-web": "1.15.2",
-    "@microsoft/sp-module-interfaces": "1.15.2",
+    "@microsoft/sp-build-web": "1.16.1",
+    "@microsoft/sp-module-interfaces": "1.16.1",
     "@types/react": "16.9.36",
     "@types/react-dom": "16.9.8",
     "@types/webpack-env": "1.13.1",

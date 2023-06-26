@@ -1,0 +1,167 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../base-person-card-section';
+@import '../../styles/shared-styles';
+@import '../../styles/shared-sass-variables';
+@import './mgt-organization.theme';
+
+:host {
+  position: relative;
+  user-select: none;
+
+  .root {
+    &.compact {
+      padding: 0;
+
+      .coworker {
+        .coworker__image {
+          height: 40px;
+          width: 40px;
+          border-radius: 40px;
+
+          --avatar-size: 40px;
+          --avatar-size-s: 40px;
+
+          margin-right: 12px;
+        }
+
+        .coworker__name {
+          font-size: 14px;
+        }
+
+        .coworker__title {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .subtitle {
+      color: $organization-sub-title-color;
+      font-size: 14px;
+      margin: 0 20px 8px;
+    }
+
+    .divider {
+      display: flex;
+      background: $organization-coworker-border-color;
+      height: 1px;
+      margin: 26px 20px 18px;
+    }
+
+    .org-member {
+      height: 74px;
+      box-sizing: border-box;
+      border-radius: 2px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+      margin-right: 20px;
+
+      &.org-member--target {
+        background-color: $organization-active-org-member-target-background-color;
+        border: 1px solid $organization-active-org-member-border-color;
+      }
+
+      &:not(.org-member--target) {
+        border: 1px solid $organization-coworker-border-color;
+
+        &:hover {
+          cursor: pointer;
+          background-color: $organization-hover-color;
+        }
+      }
+
+      .org-member__person {
+        flex-grow: 1;
+      }
+
+      .org-member__details {
+        flex-grow: 1;
+
+        .org-member__name {
+          font-size: 16px;
+          color: $organization-title-color;
+          font-weight: 600;
+        }
+
+        .org-member__title,
+        .org-member__department {
+          font-weight: 14px;
+          color: $organization-sub-title-color;
+        }
+      }
+    }
+
+    .org-member__separator:not(:last-child) {
+      border: 1px solid $organization-coworker-border-color;
+      box-sizing: border-box;
+      width: 0;
+      margin: 0 50%;
+      height: 14px;
+    }
+
+    .coworker {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+
+      &:hover {
+        cursor: pointer;
+        background-color: $organization-coworker-hover-color;
+      }
+
+      .coworker__person {
+        height: 46px;
+        border-radius: 46px;
+        margin-right: 8px;
+      }
+    }
+
+    .direct-report__compact {
+      padding: 12px 20px;
+
+      .direct-report {
+        cursor: pointer;
+        width: 38px;
+        margin-right: 4px;
+        display: inline;
+
+        --avatar-size: 38px;
+      }
+    }
+  }
+}
+
+[dir='rtl'] {
+  .org-member {
+    .org-member__more {
+      transform: scaleX(-1);
+      filter: fliph;
+      filter: 'FlipH';
+    }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  :host svg,
+  :host svg > path {
+    fill: rgb(255 255 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  :host svg,
+  :host svg > path {
+    fill: rgb(0 0 0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+  }
+}

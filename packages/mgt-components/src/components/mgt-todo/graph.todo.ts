@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { DateTimeTimeZone, ItemBody, PatternedRecurrence } from '@microsoft/microsoft-graph-types';
+import { TodoTaskList, TodoTask } from '@microsoft/microsoft-graph-types';
 import { IGraph, prepScopes } from '@microsoft/mgt-element';
+import { CollectionResponse } from '@microsoft/mgt-element';
 
-// tslint:disable
 export interface LinkedResource {
   id: string;
   webUrl: string;
@@ -16,54 +16,6 @@ export interface LinkedResource {
   displayName: string;
   externalId: string;
 }
-
-export enum TaskStatus {
-  notStarted,
-  inProgress,
-  completed,
-  deferred,
-  waitingOnOthers
-}
-
-export enum TaskImportance {
-  low,
-  normal,
-  high
-}
-
-export enum WellknownListName {
-  none,
-  default,
-  flaggedEmails,
-  unknownFutureValue
-}
-
-export interface TodoTask {
-  id: string;
-  title: string;
-  body: ItemBody;
-  importance: TaskImportance;
-  status: TaskStatus;
-  createdDateTime: Date;
-  completedDateTime: DateTimeTimeZone;
-  lastModifiedDate: Date;
-  bodyLastModifiedDateTime: Date;
-  dueDateTime: DateTimeTimeZone;
-  isReminderOn: boolean;
-  reminderDateTime: DateTimeTimeZone;
-  recurrence: PatternedRecurrence;
-  linkedResources: LinkedResource[];
-}
-
-export interface TodoTaskList {
-  id: string;
-  displayName: string;
-  tasks: TodoTask[];
-  isOwner: boolean;
-  isShared: boolean;
-  wellknownName: WellknownListName;
-}
-// tslint:enable
 
 /**
  * Get all todo tasks for a specific task list.
@@ -73,15 +25,15 @@ export interface TodoTaskList {
  * @param {string} listId
  * @returns {Promise<TodoTask[]>}
  */
-export async function getTodoTasks(graph: IGraph, listId: string): Promise<TodoTask[]> {
-  const tasks = await graph
+export const getTodoTasks = async (graph: IGraph, listId: string): Promise<TodoTask[]> => {
+  const tasks = (await graph
     .api(`/me/todo/lists/${listId}/tasks`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.Read'))
-    .get();
+    .get()) as CollectionResponse<TodoTask>;
 
-  return tasks && tasks.value;
-}
+  return tasks?.value;
+};
 
 /**
  * Get a specific todo task.
@@ -92,15 +44,12 @@ export async function getTodoTasks(graph: IGraph, listId: string): Promise<TodoT
  * @param {string} taskId
  * @returns {Promise<TodoTask>}
  */
-export async function getTodoTask(graph: IGraph, listId: string, taskId: string): Promise<TodoTask> {
-  const task = await graph
+export const getTodoTask = async (graph: IGraph, listId: string, taskId: string): Promise<TodoTask> =>
+  (await graph
     .api(`/me/todo/lists/${listId}/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.Read'))
-    .get();
-
-  return task;
-}
+    .get()) as TodoTask;
 
 /**
  * get all todo task lists
@@ -109,15 +58,15 @@ export async function getTodoTask(graph: IGraph, listId: string, taskId: string)
  * @param {IGraph} graph
  * @returns {Promise<TodoTaskList[]>}
  */
-export async function getTodoTaskLists(graph: IGraph): Promise<TodoTaskList[]> {
-  const taskLists = await graph
+export const getTodoTaskLists = async (graph: IGraph): Promise<TodoTaskList[]> => {
+  const taskLists = (await graph
     .api('/me/todo/lists')
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.Read'))
-    .get();
+    .get()) as CollectionResponse<TodoTaskList>;
 
-  return taskLists && taskLists.value;
-}
+  return taskLists?.value;
+};
 
 /**
  * Get a specific todo task list.
@@ -127,15 +76,12 @@ export async function getTodoTaskLists(graph: IGraph): Promise<TodoTaskList[]> {
  * @param {string} listId
  * @returns {Promise<TodoTaskList>}
  */
-export async function getTodoTaskList(graph: IGraph, listId: string): Promise<TodoTaskList> {
-  const taskList = await graph
+export const getTodoTaskList = async (graph: IGraph, listId: string): Promise<TodoTaskList> =>
+  (await graph
     .api(`/me/todo/lists/${listId}`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.Read'))
-    .get();
-
-  return taskList;
-}
+    .get()) as TodoTaskList;
 
 /**
  * Create a new todo task.
@@ -146,20 +92,16 @@ export async function getTodoTaskList(graph: IGraph, listId: string): Promise<To
  * @param {{ title: string; dueDateTime: { dateTime: string; timeZone: string } }} taskData
  * @returns {Promise<TodoTask>}
  */
-export async function createTodoTask(
+export const createTodoTask = async (
   graph: IGraph,
   listId: string,
-  // tslint:disable-next-line: completed-docs
   taskData: { title: string; dueDateTime?: { dateTime: string; timeZone: string } }
-): Promise<TodoTask> {
-  const task: TodoTask = await graph
+): Promise<TodoTask> =>
+  (await graph
     .api(`/me/todo/lists/${listId}/tasks`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.ReadWrite'))
-    .post(taskData);
-
-  return task;
-}
+    .post(taskData)) as TodoTask;
 
 /**
  * Create a new todo task list.
@@ -169,16 +111,12 @@ export async function createTodoTask(
  * @param {{ displayName: string }} list
  * @returns {Promise<TodoTaskList>}
  */
-// tslint:disable-next-line: completed-docs
-export async function createTodoTaskList(graph: IGraph, listData: { displayName: string }): Promise<TodoTaskList> {
-  const list: TodoTaskList = await graph
+export const createTodoTaskList = async (graph: IGraph, listData: { displayName: string }): Promise<TodoTaskList> =>
+  (await graph
     .api('/me/todo/lists')
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.ReadWrite'))
-    .post(listData);
-
-  return list;
-}
+    .post(listData)) as TodoTaskList;
 
 /**
  * Delete a todo task.
@@ -189,13 +127,13 @@ export async function createTodoTaskList(graph: IGraph, listData: { displayName:
  * @param {string} taskId
  * @returns {Promise<void>}
  */
-export async function deleteTodoTask(graph: IGraph, listId: string, taskId: string): Promise<void> {
+export const deleteTodoTask = async (graph: IGraph, listId: string, taskId: string): Promise<void> => {
   await graph
     .api(`/me/todo/lists/${listId}/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.ReadWrite'))
     .delete();
-}
+};
 
 /**
  * Delete a todo task list.
@@ -205,13 +143,13 @@ export async function deleteTodoTask(graph: IGraph, listId: string, taskId: stri
  * @param {string} listId
  * @returns {Promise<void>}
  */
-export async function deleteTodoTaskList(graph: IGraph, listId: string): Promise<void> {
+export const deleteTodoTaskList = async (graph: IGraph, listId: string): Promise<void> => {
   await graph
     .api(`/me/todo/lists/${listId}`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.ReadWrite'))
     .delete();
-}
+};
 
 /**
  * Update a todo task.
@@ -223,20 +161,17 @@ export async function deleteTodoTaskList(graph: IGraph, listId: string): Promise
  * @param {TodoTask} taskData
  * @returns {Promise<TodoTask>}
  */
-export async function updateTodoTask(
+export const updateTodoTask = async (
   graph: IGraph,
   listId: string,
   taskId: string,
   taskData: TodoTask
-): Promise<TodoTask> {
-  const task = await graph
+): Promise<TodoTask> =>
+  (await graph
     .api(`/me/todo/lists/${listId}/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.ReadWrite'))
-    .patch(taskData);
-
-  return task;
-}
+    .patch(taskData)) as TodoTask;
 
 /**
  * Update a todo task list.
@@ -247,16 +182,13 @@ export async function updateTodoTask(
  * @param {TodoTaskList} taskListData
  * @returns {Promise<TodoTaskList>}
  */
-export async function updateTodoTaskList(
+export const updateTodoTaskList = async (
   graph: IGraph,
   listId: string,
   taskListData: TodoTaskList
-): Promise<TodoTaskList> {
-  const task = await graph
+): Promise<TodoTaskList> =>
+  (await graph
     .api(`/me/todo/lists/${listId}`)
     .header('Cache-Control', 'no-store')
     .middlewareOptions(prepScopes('Tasks.ReadWrite'))
-    .patch(taskListData);
-
-  return task;
-}
+    .patch(taskListData)) as TodoTaskList;

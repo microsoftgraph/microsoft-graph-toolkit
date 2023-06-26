@@ -5,62 +5,41 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-sass-variables';
 
-$channel-picker: (
-  dropdown-item__background-color--selected: (
-    _var: --dropdown-item-selected-background,
-    dark: #333d47,
-    light: #deecf9
-  ),
-  arrow: (
-    _var: --arrow-fill,
-    dark: $icon__main--dark,
-    light: $icon__main--light
-  )
+$input-background: padding-box
+    linear-gradient(
+      var(--channel-picker-input-background-color, var(--neutral-fill-input-rest)),
+      var(--channel-picker-input-background-color, var(--neutral-fill-input-rest))
+    ),
+  border-box var(--channel-picker-input-border-color, var(--neutral-stroke-input-rest));
+$input-hover-background: padding-box
+    linear-gradient(
+      var(--channel-picker-input-background-color-hover, var(--neutral-fill-input-hover)),
+      var(--channel-picker-input-background-color-hover, var(--neutral-fill-input-hover))
+    ),
+  border-box var(--channel-picker-input-hover-border-color, var(--neutral-stroke-input-hover));
+$input-focus-background: padding-box
+    linear-gradient(
+      var(--channel-picker-input-background-color-focus, var(--neutral-fill-input-focus)),
+      var(--channel-picker-input-background-color-focus, var(--neutral-fill-input-focus))
+    ),
+  border-box var(--channel-picker-input-focus-border-color, var(--neutral-stroke-input-focus));
+$placeholder-text-color: var(--channel-picker-input-placeholder-text-color, var(--input-placeholder-rest));
+$placeholder-hover-text-color: var(--channel-picker-input-placeholder-text-color-hover, var(--input-placeholder-hover));
+$placeholder-focus-text-color: var(
+  --channel-picker-input-placeholder-text-color-focus,
+  var(--input-placeholder-filled)
 );
-
-// mixins
-
-@mixin selected-team__overflow($theme-default) {
-  background-image: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 80%,
-    $input__background-color 100%
-  );
-  background-image: -moz-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 80%,
-    $input__background-color 100%
-  );
-  background-image: -o-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 80%,
-    $input__background-color 100%
-  );
-  background-image: -ms-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 80%,
-    $input__background-color 100%
-  );
-  background-image: -webkit-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 80%,
-    $input__background-color 100%
-  );
-}
-
-@mixin dropdown-item__overflow($theme-default) {
-  background-image: -webkit-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
-  background-image: -moz-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
-  background-image: -ms-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
-  background-image: -o-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
-  background-image: linear-gradient(to left, $dropdown__background-color, rgba($dropdown__background-color, 0));
-}
-
-@include create-themes($channel-picker);
+$dropdown-card-background-color: var(--channel-picker-dropdown-background-color, var(--fill-color));
+$dropdown-background-color: var(--channel-picker-dropdown-background-color, transparent);
+$dropdown-item-text-color: var(--channel-picker-dropdown-item-text-color, currentColor);
+$dropdown-item-background-color-hover: var(
+  --channel-picker-dropdown-item-background-color-hover,
+  var(--neutral-fill-stealth-hover)
+);
+$dropdown-item-selected-text-color: var(
+  --channel-picker-dropdown-item-text-color-selected,
+  var(--neutral-foreground-rest)
+);
+$channel-picker-arrow-fill-color: var(--channel-picker-arrow-fill, var(--neutral-foreground-rest));
