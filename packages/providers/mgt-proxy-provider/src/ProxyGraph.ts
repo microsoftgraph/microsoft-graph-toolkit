@@ -25,9 +25,8 @@ import { CustomHeaderMiddleware } from './CustomHeaderMiddleware';
  * @class ProxyGraph
  * @extends {Graph}
  */
-// tslint:disable-next-line: max-classes-per-file
 export class ProxyGraph extends Graph {
-  constructor(baseUrl: string, getCustomHeaders: () => Promise<object>) {
+  constructor(baseUrl: string, getCustomHeaders?: () => Promise<object>) {
     const middleware: Middleware[] = [
       new RetryHandler(new RetryHandlerOptions()),
       new TelemetryHandler(),
@@ -39,7 +38,8 @@ export class ProxyGraph extends Graph {
     super(
       Client.initWithMiddleware({
         baseUrl,
-        middleware: chainMiddleware(...middleware)
+        middleware: chainMiddleware(...middleware),
+        customHosts: new Set<string>([new URL(baseUrl).hostname])
       })
     );
   }

@@ -1,0 +1,167 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../base-person-card-section';
+@import '../../styles/shared-styles';
+@import '../../styles/shared-sass-variables';
+@import './mgt-profile.theme';
+
+:host {
+  position: relative;
+  user-select: none;
+  background-color: $profile-background-color;
+
+  .root {
+    padding: 20px 0;
+
+    &.compact {
+      padding: 0;
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: $profile-title-color;
+      margin: 0 20px 12px;
+    }
+
+    section {
+      margin-bottom: 24px;
+      padding: 0 20px;
+
+      &:last-child {
+        margin: 0;
+      }
+
+      .section__title {
+        font-size: 14px;
+        color: $profile-section-title-color;
+      }
+
+      .section__content {
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+      }
+    }
+
+    .token-list {
+      display: flex;
+      flex-flow: row wrap;
+      margin-top: -10px;
+
+      .token-list__item {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+        overflow: hidden;
+        font-size: 14px;
+        align-items: center;
+        background: $profile-token-item-background-color;
+        border-radius: 2px;
+        max-height: 28px;
+        padding: 4px 8px;
+        margin-right: 10px;
+        margin-top: 10px;
+        color: $profile-token-item-color;
+
+        &:last-child {
+          margin-right: initial;
+        }
+
+        &.overflow {
+          display: none;
+        }
+
+        &.token-list__item--show-overflow {
+          cursor: pointer;
+          user-select: unset;
+          background: none;
+          color: $profile-token-overflow-color;
+        }
+      }
+    }
+
+    .data-list__item {
+      margin-bottom: 20px;
+
+      &:last-child {
+        margin-bottom: initial;
+      }
+
+      .data-list__item__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .data-list__item__content {
+        font-size: 12px;
+        line-height: 16px;
+        color: $profile-section-title-color;
+        margin-top: 4px;
+      }
+
+      .data-list__item__title {
+        font-size: 14px;
+        line-height: 16px;
+        color: $profile-title-color;
+      }
+
+      .data-list__item__date-range {
+        color: $profile-section-title-color;
+        font-size: 10px;
+        line-height: 12px;
+      }
+    }
+
+    .language__proficiency {
+      opacity: 0.77;
+    }
+
+    .work-position {
+      .work-position__company {
+        color: $comm-blue-primary;
+      }
+
+      .work-position__location {
+        font-size: 10px;
+        color: $profile-section-title-color;
+        line-height: 16px;
+      }
+    }
+
+    .educational-activity {
+      .educational-activity__degree {
+        font-size: 12px;
+        line-height: 14px;
+        color: $profile-section-title-color;
+      }
+    }
+
+    .birthday {
+      display: flex;
+      align-items: center;
+      margin-top: -6px;
+
+      .birthday__icon {
+        margin-right: 8px;
+      }
+
+      .birthday__date {
+        font-size: 12px;
+        color: $profile-title-color;
+      }
+    }
+  }
+}
+
+[dir='rtl'] {
+  .token-list__item {
+    margin-right: 0 !important;
+  }
+}

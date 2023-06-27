@@ -7,6 +7,5 @@
     "composite": true
   },
   "references": [{ "path": "../mgt-element" }],
-  "include": ["src"],
-  "exclude": ["src/bundle"]
+  "include": ["src"]
 }

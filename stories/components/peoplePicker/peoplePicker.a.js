@@ -5,17 +5,20 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-people-picker',
-  component: 'mgt-people-picker',
-  decorators: [withCodeEditor]
+  component: 'people-picker',
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: { code: '<mgt-people-picker></mgt-people-picker>' }
+    }
+  }
 };
 
 export const peoplePicker = () => html`
@@ -61,10 +64,14 @@ export const localization = () => html`
    LocalizationHelper.strings = {
      _components: {
        'people-picker': {
-         inputPlaceholderText: 'Search for 🤼',
-         noResultsFound: '🤷‍♀️',
-         loadingMessage: '🦔'
-       }
+          inputPlaceholderText: 'Search for 🤼',
+          noResultsFound: '🤷‍♀️',
+          loadingMessage: '🦔',
+          selected: '👉',
+          removeSelectedUser: '❌ ',
+          selectContact: 'Select 🤼',
+          suggestionsTitle: '📃 Suggested 🤼'
+        }
      }
    }
    </script>

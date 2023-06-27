@@ -5,35 +5,24 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-people / Styles',
-  component: 'mgt-people',
+  component: 'people',
   decorators: [withCodeEditor]
 };
 
-export const darkTheme = () => html`
- <mgt-people class="mgt-dark"></mgt-people>
- <style>
-   body {
-     background-color: black;
-   }
- </style>
-`;
-
-export const customCssProperties = () => html`
+export const customCSSProperties = () => html`
 <mgt-people></mgt-people>
 <style>
-  mgt-people {
-    --list-margin: 10px 4px 10px 10px; /* Margin for component */
-    --avatar-margin: 20px; /* Margin for each person */
-    --color: pink /* Text color */
+  .people {
+    --people-list-margin: 12px;
+    --people-avatar-gap: 8px;
+    --people-overflow-font-color: orange;
+    --people-overflow-font-size: 16px;
+    --people-overflow-font-weight: 600;
   }
 </style>
 `;

@@ -6,9 +6,10 @@
  */
 
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { html, TemplateResult } from 'lit';
+import { property } from 'lit/decorators.js';
 import { styles } from './mgt-file-css';
-import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
+import { MgtTemplatedComponent, Providers, ProviderState, customElement } from '@microsoft/mgt-element';
 import {
   getDriveItemById,
   getDriveItemByPath,
@@ -25,7 +26,7 @@ import {
   getUserDriveItemByPath,
   getUserInsightsDriveItemById
 } from '../../graph/graph.files';
-import { getRelativeDisplayDate } from '../../utils/Utils';
+import { formatBytes, getRelativeDisplayDate } from '../../utils/Utils';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { getFileTypeIconUriByExtension } from '../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -38,26 +39,31 @@ import { strings } from './strings';
  * @class MgtFile
  * @extends {MgtTemplatedComponent}
  *
- * @cssprop --file-type-icon-size - {Length} file type icon size
- * @cssprop --file-border - {String} file item border style
- * @cssprop --file-box-shadow - {String} file item box shadow style
- * @cssprop --file-background-color - {Color} file background color
- * @cssprop --font-family - {String} Font family
- * @cssprop --font-size - {Length} Font size
- * @cssprop --font-weight - {Length} Font weight
- * @cssprop --text-transform - {String} text transform
- * @cssprop --color -{Color} text color
- * @cssprop --line2-font-size - {Length} Line 2 font size
- * @cssprop --line2-font-weight - {Length} Line 2 font weight
- * @cssprop --line2-color - {Color} Line 2 color
- * @cssprop --line2-text-transform - {String} Line 2 text transform
- * @cssprop --line3-font-size - {Length} Line 2 font size
- * @cssprop --line3-font-weight - {Length} Line 2 font weight
- * @cssprop --line3-color - {Color} Line 2 color
- * @cssprop --line3-text-transform - {String} Line 2 text transform
+ * @cssprop --file-type-icon-height - {Length} file type icon height. Default value is 28px.
+ * @cssprop --file-border - {String} file item border style. Default value is "1px solid transparent".
+ * @cssprop --file-border-radius - {String} the border radius of the file component. Default value is 4px.
+ * @cssprop --file-box-shadow - {String} the box-shadow of the component. Default value is none.
+ * @cssprop --file-background-color - {Color} the background-color of the component.
+ * @cssprop --file-background-color-focus - {Color} the background-color of the component on focus.
+ * @cssprop --file-background-color-hover - {Color} the background-color of the component on hover.
+ * @cssprop --file-padding - {String} the padding around the file component. Default value is 0px.
+ * @cssprop --file-padding-inline-start - {Length} the padding between file icon and file details. Default value is 14px.
+ * @cssprop --file-margin - {String} the margin around the file component. Default value is 0px.
+ * @cssprop --file-line1-font-size - {Length} the first line text font size. Default value is 12px.
+ * @cssprop --file-line1-font-weight - {Length} the first line text font weight. Default value is 400.
+ * @cssprop --file-line1-color - {Color} the first line text color.
+ * @cssprop --file-line1-text-transform - {String} the first line text text transform. Default value is initial.
+ * @cssprop --file-line2-font-size - {Length} the second line text font size. Default value is 12px.
+ * @cssprop --file-line2-font-weight - {Length} the second line text font weight. Default value is 400.
+ * @cssprop --file-line2-color - {Color} the second line text color.
+ * @cssprop --file-line2-text-transform - {String} the second line text text transform. Default value is initial.
+ * @cssprop --file-line3-font-size - {Length} the third line text font size. Default value is 12px.
+ * @cssprop --file-line3-font-weight - {Length} the third line text font weight. Default value is 400.
+ * @cssprop --file-line3-color - {Color} the third line text color.
+ * @cssprop --file-line3-text-transform - {String} the third line text text transform. Default value is 400.
  */
 
-@customElement('mgt-file')
+@customElement('file')
 export class MgtFile extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -88,7 +94,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._fileQuery = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -109,7 +115,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._siteId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -130,7 +136,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._driveId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -151,7 +157,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._groupId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -172,7 +178,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._listId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -193,7 +199,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._userId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -214,7 +220,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._itemId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -235,7 +241,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._itemPath = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -257,7 +263,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._insightType = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -278,7 +284,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._insightId = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -299,7 +305,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._fileDetails = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -320,7 +326,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._fileIcon = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -378,7 +384,7 @@ export class MgtFile extends MgtTemplatedComponent {
       if (typeof ViewType[value] === 'undefined') {
         return ViewType.threelines;
       } else {
-        return ViewType[value];
+        return ViewType[value] as ViewType;
       }
     }
   })
@@ -426,7 +432,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     const file = this.driveItem;
-    let fileTemplate;
+    let fileTemplate: TemplateResult;
 
     fileTemplate = this.renderTemplate('default', { file });
     if (!fileTemplate) {
@@ -436,15 +442,10 @@ export class MgtFile extends MgtTemplatedComponent {
       fileTemplate = html`
         <div class="item">
           ${fileTypeIconTemplate} ${fileDetailsTemplate}
-        </div>
-      `;
+        </div>`;
     }
 
-    return html`
-      <span dir=${this.direction}>
-        ${fileTemplate}
-      </span>
-    `;
+    return fileTemplate;
   }
 
   /**
@@ -492,7 +493,9 @@ export class MgtFile extends MgtTemplatedComponent {
         this.driveItem.package === undefined && this.driveItem.folder === undefined
           ? re.exec(this.driveItem.name)[1]
             ? re.exec(this.driveItem.name)[1].toLowerCase()
-            : 'null'
+            : this.driveItem.size
+            ? 'null'
+            : 'folder'
           : this.driveItem.package !== undefined
           ? this.driveItem.package.type === 'oneNote'
             ? 'onetoc'
@@ -588,7 +591,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     const graph = provider.graph.forComponent(this);
-    let driveItem;
+    let driveItem: DriveItem;
 
     // evaluate to true when only item-id or item-path is provided
     const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
@@ -644,32 +647,31 @@ export class MgtFile extends MgtTemplatedComponent {
     this.driveItem = driveItem;
   }
 
-  private getTextFromProperty(driveItem: DriveItem, properties: string) {
+  private getTextFromProperty(driveItem: DriveItem, properties: string): string {
     if (!properties || properties.length === 0) {
       return null;
     }
 
     const propertyList = properties.trim().split(',');
-    let text;
+    let text: string;
     let i = 0;
 
     while (!text && i < propertyList.length) {
       const current = propertyList[i].trim();
       switch (current) {
-        case 'size':
+        case 'size': {
           // convert size to kb, mb, gb
-          let size;
+          let size = '0';
           if (driveItem.size) {
-            size = this.formatBytes(driveItem.size);
-          } else {
-            size = '0';
+            size = formatBytes(driveItem.size);
           }
           text = `${this.strings.sizeSubtitle}: ${size}`;
           break;
-        case 'lastModifiedDateTime':
+        }
+        case 'lastModifiedDateTime': {
           // convert date time
-          let relativeDateString;
-          let lastModifiedString;
+          let relativeDateString: string;
+          let lastModifiedString: string;
           if (driveItem.lastModifiedDateTime) {
             const lastModifiedDateTime = new Date(driveItem.lastModifiedDateTime);
             relativeDateString = getRelativeDisplayDate(lastModifiedDateTime);
@@ -679,22 +681,13 @@ export class MgtFile extends MgtTemplatedComponent {
           }
           text = lastModifiedString;
           break;
+        }
         default:
-          text = driveItem[current];
+          text = driveItem[current] as string;
       }
       i++;
     }
 
     return text;
-  }
-
-  private formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 }

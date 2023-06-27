@@ -4,19 +4,15 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-@import '../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-sass-variables';
 
-$event__time__color: var(--event-time-color, set-var(color, $theme-default, $common));
-$event__subject__color: var(--event-subject-color, set-var(color__sub1, $theme-default, $common));
-$event__location__color: var(--event-location-color, set-var(color, $theme-default, $common));
-$header__color: var(--agenda-header-color, set-var(color__sub1, $theme-default, $common));
-
-$agenda: (
-  event__background-color: (
-    _var: --event-background-color,
-    light: $background-color__main--light,
-    dark: $background-color__sub1--dark
-  )
-);
-
-@include create-themes($agenda);
+$agenda-event-time-color: var(--agenda-event-time-color, var(--neutral-foreground-rest));
+$agenda-event-subject-color: var(--agenda-event-subject-color, var(--neutral-foreground-rest));
+$agenda-event-location-color: var(--agenda-event-location-color, var(--neutral-foreground-rest));
+$agenda-event-attendees-color: var(--agenda-event-attendees-color, var(--neutral-foreground-rest));
+$agenda-header-color: var(--agenda-header-color, var(--neutral-foreground-rest));
+$agenda-background-color: var(--agenda-background-color, transparent);
+$agenda-header-background-color: var(--agenda-header-background-color, var(--neutral-layer-floating));
+$agenda-header-border-color: var(--agenda-header-border-color, var(--neutral-foreground-rest));
+$agenda-event-border-color: var(--agenda-event-border-color, var(--neutral-layer-floating));
+$agenda-event-background-color: var(--agenda-event-background-color, var(--fill-color));

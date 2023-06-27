@@ -5,18 +5,17 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BatchResponse, IBatch, IGraph } from '@microsoft/mgt-element';
+import { BatchResponse, IBatch, IGraph, prepScopes } from '@microsoft/mgt-element';
+import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { Profile } from '@microsoft/microsoft-graph-types-beta';
 
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { IDynamicPerson } from '../../graph/types';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 
-// tslint:disable-next-line:completed-docs
 const userProperties =
   'businessPhones,companyName,department,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,accountEnabled';
 
-// tslint:disable-next-line:completed-docs
 const batchKeys = {
   directReports: 'directReports',
   files: 'files',
@@ -35,12 +34,12 @@ const batchKeys = {
  * @param {MgtPersonCardConfig} config
  * @return {*}  {Promise<MgtPersonCardState>}
  */
-export async function getPersonCardGraphData(
+export const getPersonCardGraphData = async (
   graph: IGraph,
   personDetails: IDynamicPerson,
   isMe: boolean,
   config: MgtPersonCardConfig
-): Promise<MgtPersonCardState> {
+): Promise<MgtPersonCardState> => {
   const userId = personDetails.id;
   const email = getEmailFromGraphEntity(personDetails);
 
@@ -79,7 +78,8 @@ export async function getPersonCardGraphData(
 
   if (response) {
     for (const [key, value] of response) {
-      data[key] = value.content.value || value.content;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      data[key] = value.content?.value || value.content;
     }
   }
 
@@ -100,10 +100,9 @@ export async function getPersonCardGraphData(
   }
 
   return data;
-}
+};
 
-// tslint:disable-next-line:completed-docs
-function buildOrgStructureRequest(batch: IBatch, userId: string) {
+const buildOrgStructureRequest = (batch: IBatch, userId: string) => {
   const expandManagers = `manager($levels=max;$select=${userProperties})`;
 
   batch.get(
@@ -116,20 +115,17 @@ function buildOrgStructureRequest(batch: IBatch, userId: string) {
   );
 
   batch.get(batchKeys.directReports, `users/${userId}/directReports?$select=${userProperties}`);
-}
+};
 
-// tslint:disable-next-line:completed-docs
-function buildWorksWithRequest(batch: IBatch, userId: string) {
+const buildWorksWithRequest = (batch: IBatch, userId: string) => {
   batch.get(batchKeys.people, `users/${userId}/people?$filter=personType/class eq 'Person'`, ['People.Read.All']);
-}
+};
 
-// tslint:disable-next-line:completed-docs
-function buildMessagesWithUserRequest(batch: IBatch, emailAddress: string) {
+const buildMessagesWithUserRequest = (batch: IBatch, emailAddress: string) => {
   batch.get(batchKeys.messages, `me/messages?$search="from:${emailAddress}"`, ['Mail.ReadBasic']);
-}
+};
 
-// tslint:disable-next-line:completed-docs
-function buildFilesRequest(batch: IBatch, emailAddress?: string) {
+const buildFilesRequest = (batch: IBatch, emailAddress?: string) => {
   let request: string;
 
   if (emailAddress) {
@@ -139,7 +135,7 @@ function buildFilesRequest(batch: IBatch, emailAddress?: string) {
   }
 
   batch.get(batchKeys.files, request, ['Sites.Read.All']);
-}
+};
 
 /**
  * Get the profile for a user
@@ -148,7 +144,55 @@ function buildFilesRequest(batch: IBatch, emailAddress?: string) {
  * @param {string} userId
  * @return {*}  {Promise<Profile>}
  */
-async function getProfile(graph: IGraph, userId: string): Promise<Profile> {
-  const profile = await graph.api(`/users/${userId}/profile`).version('beta').get();
-  return profile;
-}
+const getProfile = async (graph: IGraph, userId: string): Promise<Profile> =>
+  (await graph.api(`/users/${userId}/profile`).version('beta').get()) as Profile;
+
+/**
+ * Initiate a chat to a user
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {{ chatType: string; members: [{"@odata.type": string,"roles": ["owner"],"user@odata.bind": string},{"@odata.type": string,"roles": ["owner"],"user@odata.bind": string}]  }} chatData
+ * @return {*}  {Promise<Chat>}
+ */
+export const createChat = async (graph: IGraph, person: string, user: string): Promise<Chat> => {
+  const chatData = {
+    chatType: 'oneonOne',
+    members: [
+      {
+        '@odata.type': '#microsoft.graph.aadUserConversationMember',
+        roles: ['owner'],
+        'user@odata.bind': `https://graph.microsoft.com/v1.0/users('${user}')`
+      },
+      {
+        '@odata.type': '#microsoft.graph.aadUserConversationMember',
+        roles: ['owner'],
+        'user@odata.bind': `https://graph.microsoft.com/v1.0/users('${person}')`
+      }
+    ]
+  };
+  return (await graph
+    .api('/chats')
+    .header('Cache-Control', 'no-store')
+    .middlewareOptions(prepScopes('Chat.Create', 'Chat.ReadWrite'))
+    .post(chatData)) as Chat;
+};
+
+/**
+ * Send a chat message to a user
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {{ body: {"content": string}  }} messageData
+ * @return {*}  {Promise<ChatMessage>}
+ */
+export const sendMessage = async (
+  graph: IGraph,
+  chatId: string,
+  messageData: Pick<ChatMessage, 'body'>
+): Promise<ChatMessage> =>
+  (await graph
+    .api(`/chats/${chatId}/messages`)
+    .header('Cache-Control', 'no-store')
+    .middlewareOptions(prepScopes('Chat.ReadWrite', 'ChatMessage.Send'))
+    .post(messageData)) as ChatMessage;

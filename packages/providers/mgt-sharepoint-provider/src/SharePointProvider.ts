@@ -5,7 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, ProviderState, createFromProvider } from '@microsoft/mgt-element';
+import {
+  IProvider,
+  ProviderState,
+  createFromProvider,
+  GraphEndpoint,
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT
+} from '@microsoft/mgt-element';
 
 /**
  * AadTokenProvider
@@ -19,7 +25,7 @@ declare interface AadTokenProvider {
    * @param {string} x
    * @memberof AadTokenProvider
    */
-  getToken(x: string);
+  getToken(x: string): Promise<string>;
 }
 
 /**
@@ -29,8 +35,7 @@ declare interface AadTokenProvider {
  * @interface WebPartContext
  */
 declare interface WebPartContext {
-  // tslint:disable-next-line: completed-docs
-  aadTokenProviderFactory: any;
+  aadTokenProviderFactory: { getTokenProvider(): Promise<AadTokenProvider> };
 }
 
 /**
@@ -47,7 +52,7 @@ export class SharePointProvider extends IProvider {
    * @readonly
    * @memberof SharePointProvider
    */
-  get provider() {
+  get provider(): AadTokenProvider {
     return this._provider;
   }
 
@@ -91,13 +96,14 @@ export class SharePointProvider extends IProvider {
 
   private _provider: AadTokenProvider;
 
-  constructor(context: WebPartContext) {
+  constructor(context: WebPartContext, baseUrl: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     super();
 
-    context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
+    void context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
       this._provider = tokenProvider;
+      this.baseURL = baseUrl;
       this.graph = createFromProvider(this);
-      this.internalLogin();
+      void this.internalLogin();
     });
   }
 
@@ -108,13 +114,8 @@ export class SharePointProvider extends IProvider {
    * @memberof SharePointProvider
    */
   public async getAccessToken(): Promise<string> {
-    let accessToken: string;
-    try {
-      accessToken = await this.provider.getToken('https://graph.microsoft.com');
-    } catch (e) {
-      throw e;
-    }
-    return accessToken;
+    const baseUrl = this.baseURL ? this.baseURL : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
+    return await this.provider.getToken(baseUrl);
   }
   /**
    * update scopes

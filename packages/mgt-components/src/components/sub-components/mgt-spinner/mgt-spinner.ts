@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html } from 'lit-element';
-import { MgtBaseComponent } from '@microsoft/mgt-element';
+import { html } from 'lit';
+import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { styles } from './mgt-spinner-css';
 
 /**
@@ -16,7 +16,7 @@ import { styles } from './mgt-spinner-css';
  * @class MgtSpinner
  * @extends {MgtBaseComponent}
  */
-@customElement('mgt-spinner')
+@customElement('spinner')
 export class MgtSpinner extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -33,8 +33,6 @@ export class MgtSpinner extends MgtBaseComponent {
    * @memberof MgtSpinner
    */
   public render() {
-    return html`
-      <div class="spinner"></div>
-    `;
+    return html`<fluent-progress-ring title="spinner"></fluent-progress-ring>`;
   }
 }

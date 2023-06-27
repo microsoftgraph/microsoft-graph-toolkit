@@ -7,7 +7,9 @@ import {
   PersonViewType,
   PersonType,
   MgtTemplateProps,
-  Get
+  Get,
+  Todo,
+  TeamsChannelPicker
 } from '@microsoft/mgt-react';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { MgtPerson } from '@microsoft/mgt-components';
@@ -19,6 +21,7 @@ const personDetails = {
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
 const App = () => {
   const [userIds, setUserIds] = useState<any[]>([]);
 
@@ -66,6 +69,10 @@ const App = () => {
         defaultSelectedUserIds={userIds}
         selectionChanged={handleSelectionChanged}
       />
+
+      <Todo />
+
+      <TeamsChannelPicker />
 
       <Get resource='/me'>
         <MyTemplate />

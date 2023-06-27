@@ -5,99 +5,57 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-person / Style',
-  component: 'mgt-person',
+  component: 'person',
   decorators: [withCodeEditor]
 };
 
-export const darkTheme = () => html`
-  <div class="mgt-dark">
-    <div class="title"><span>Transparent presence badge background:</span></div>
-    <mgt-person person-query="me" view="twoLines" show-presence></mgt-person>
-    <div class="title"><span>Light presence icon:</span></div>
-    <mgt-person id="online" person-query="Isaiah Langer" show-presence view="twoLines"></mgt-person>
-    <div class="title"><span>Dark presence icon:</span></div>
-    <mgt-person id="dnd" person-query="Lynne Robbins" show-presence view="twoLines"></mgt-person>
-  </div>
-  <script>
-    const online = {
-      activity: 'Available',
-      availability: 'Available',
-      id: null
-    };
-    const dnd = {
-      activity: 'DoNotDisturb',
-      availability: 'DoNotDisturb',
-      id: null
-    };
-    const onlinePerson = document.getElementById('online');
-    const dndPerson = document.getElementById('dnd');
-
-    onlinePerson.personPresence = online;
-    dndPerson.personPresence = dnd;
-  </script>
-
-  <style>
-    body {
-      background-color: black;
-    }
-    .title {
-      color: white;
-      display: block;
-      padding: 5px;
-      font-size: 20px;
-      margin: 10px 0 10px 0;
-      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
-        'Helvetica Neue', sans-serif;
-    }
-    .title span {
-      border-bottom: 1px solid #8a8886;
-      padding-bottom: 5px;
-    }
-    #online {
-      --presence-icon-color: white;
-    }
-  </style>
-`;
-
 export const customCSSProperties = () => html`
   <style>
-    mgt-person {
-      --avatar-size: 90px;
-      --avatar-border: 3px dotted red;
-      --avatar-border-radius: 20% 40%;
+    .person {
+      --person-background-color: #616161;
+      --person-background-border-radius: 30%;
 
-      --initials-color: green;
-      --initials-background-color: magenta;
+      --person-avatar-size: 40px;
+      --person-avatar-border: 3px solid yellow;
+      --person-avatar-border-radius: 54%;
+      --person-initials-text-color: white;
+      --person-initials-background-color: blue;
 
-      --presence-background-color: blue;
-      --presence-icon-color: blue;
+      --person-line1-font-size: 20px;
+      --person-line1-font-weight: 600;
+      --person-line1-text-color: #ffd5d5;
+      --person-line1-text-transform: capitalize;
+      --person-line1-text-line-height: 22px;
 
-      --font-family: 'Segoe UI';
-      --font-size: 25px;
-      --font-weight: 700;
-      --color-sub1: red;
-      --text-transform: capitalize;
+      --person-line2-font-size: 18px;
+      --person-line2-font-weight: 500;
+      --person-line2-text-color: #ffeac4;
+      --person-line2-text-transform: full-width;
+      --person-line2-text-line-height: 20px;
 
-      --line2-font-size: 16px;
-      --line2-font-weight: 400;
-      --line2-color: green;
-      --line2-text-transform: lowercase;
+      --person-line3-font-size: 16px;
+      --person-line3-font-weight: 400;
+      --person-line3-text-color: #e4e4e6;
+      --person-line3-text-transform: uppercase;
+      --person-line3-text-line-height: 18px;
 
-      --line3-font-size: 8px;
-      --line3-font-weight: 400;
-      --line3-color: pink;
-      --line3-text-transform: none;
+      --person-line4-font-size: 14px;
+      --person-line4-font-weight: 300;
+      --person-line4-text-color: #ffd6d6;
+      --person-line4-text-transform: lowercase;
+      --person-line4-text-line-height: 16px;
 
-      --details-spacing: 30px;
+      --person-details-spacing: 30px;
+      --person-details-bottom-spacing: 20px;
+    }
+
+    .vertical {
+      --person-avatar-size: 80px;
     }
   </style>
 
@@ -119,6 +77,7 @@ export const customCSSProperties = () => html`
     dndPerson.personPresence = dnd;
   </script>
 
-  <mgt-person person-query="me" view="threeLines" id="online" show-presence></mgt-person>
-  <mgt-person person-query="me" view="threeLines" avatar-type="initials" id="dnd" show-presence></mgt-person>
+  <mgt-person class="person" person-query="me" view="fourlines" id="online" show-presence></mgt-person>
+  <br>
+  <mgt-person class="person vertical" person-query="me" view="fourlines" avatar-type="initials" id="dnd" show-presence vertical-layout></mgt-person>
 `;

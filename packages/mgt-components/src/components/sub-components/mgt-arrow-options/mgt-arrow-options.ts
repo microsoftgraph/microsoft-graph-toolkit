@@ -5,10 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
-import { MgtBaseComponent } from '@microsoft/mgt-element';
+import { html } from 'lit';
+import { property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { styles } from './mgt-arrow-options-css';
+import { registerFluentComponents } from '../../../utils/FluentComponents';
+import { fluentMenu, fluentMenuItem, fluentButton } from '@fluentui/web-components';
+registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
 
 /*
   Ok, the name here deserves a bit of explanation,
@@ -21,11 +25,17 @@ import { styles } from './mgt-arrow-options-css';
 /**
  * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.
  *
+ * @cssprop --arrow-options-left {Length} The distance of the dropdown menu from the left in absolute position. Default is 0.
+ * @cssprop --arrow-options-button-background-color {Color} The background color of the arrow options button.
+ * @cssprop --arrow-options-button-font-size {Length} The font size of the button text. Default is large.
+ * @cssprop --arrow-options-button-font-weight {Length} The font weight of the button text. Default is 600.
+ * @cssprop --arrow-options-button-font-color {Color} The font color of the text in the button.
+ *
  * @export MgtArrowOptions
  * @class MgtArrowOptions
  * @extends {MgtBaseComponent}
  */
-@customElement('mgt-arrow-options')
+@customElement('arrow-options')
 export class MgtArrowOptions extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -52,29 +62,28 @@ export class MgtArrowOptions extends MgtBaseComponent {
   @property({ type: String }) public value: string;
 
   /**
-   * Menu options to be rendered with an attached MouseEvent handler for expansion of details
+   * Menu options to be rendered with an attached UIEvent handler for expansion of details
    *
    * @type {object}
    * @memberof MgtArrowOptions
    */
-  @property({ type: Object }) public options: { [name: string]: (e: MouseEvent) => any | void };
+  @property({ type: Object }) public options: Record<string, (e: UIEvent) => any | void>;
 
-  private _clickHandler: (e: MouseEvent) => void | any;
+  private readonly _clickHandler: (e: UIEvent) => void | any;
 
   constructor() {
     super();
     this.value = '';
     this.options = {};
-    this._clickHandler = (e: MouseEvent) => (this.open = false);
+    this._clickHandler = () => (this.open = false);
+    window.addEventListener('onblur', () => (this.open = false));
   }
 
-  // tslint:disable-next-line: completed-docs
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this._clickHandler);
   }
 
-  // tslint:disable-next-line: completed-docs
   public disconnectedCallback() {
     window.removeEventListener('click', this._clickHandler);
     super.disconnectedCallback();
@@ -86,14 +95,46 @@ export class MgtArrowOptions extends MgtBaseComponent {
    * @param {MouseEvent} e attaches to Header to open menu
    * @memberof MgtArrowOptions
    */
-  public onHeaderClick(e: MouseEvent) {
+  public onHeaderClick = (e: MouseEvent) => {
     const keys = Object.keys(this.options);
     if (keys.length > 1) {
       e.preventDefault();
       e.stopPropagation();
       this.open = !this.open;
     }
-  }
+  };
+
+  /**
+   * Handles key down presses done on the header element.
+   *
+   * @param {KeyboardEvent} e
+   */
+  private readonly onHeaderKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      this.open = !this.open;
+
+      // Manually adding the 'open' class to display the menu because
+      // by the time I set the first element's focus, the classes are not
+      // updated and that has no effect. You can't set focus on elements
+      // that have no display.
+      const fluentMenuEl: HTMLElement = this.renderRoot.querySelector('fluent-menu');
+      if (fluentMenuEl) {
+        fluentMenuEl.classList.remove('closed');
+        fluentMenuEl.classList.add('open');
+      }
+
+      const header: HTMLButtonElement = e.target as HTMLButtonElement;
+      if (header) {
+        const firstMenuItem: HTMLElement = this.renderRoot.querySelector("fluent-menu-item[tabindex='0']");
+        if (firstMenuItem) {
+          header.blur();
+          firstMenuItem.focus();
+        }
+      }
+    }
+  };
 
   /**
    * Invoked on each update to perform rendering tasks. This method must return
@@ -102,34 +143,51 @@ export class MgtArrowOptions extends MgtBaseComponent {
    */
   public render() {
     return html`
-      <span class="Header" @click=${e => this.onHeaderClick(e)}>
-        <span class="CurrentValue">${this.value}</span>
-      </span>
-      <div class=${classMap({ Menu: true, Open: this.open, Closed: !this.open })}>
-        ${this.getMenuOptions()}
-      </div>
-    `;
+      <fluent-button
+        class="header"
+        @click=${this.onHeaderClick}
+        @keydown=${this.onHeaderKeyDown}
+        appearance="lightweight">
+          ${this.value}
+      </fluent-button>
+      <fluent-menu
+        class=${classMap({ menu: true, open: this.open, closed: !this.open })}>
+          ${this.getMenuOptions()}
+      </fluent-menu>`;
   }
 
   private getMenuOptions() {
     const keys = Object.keys(this.options);
-    const funcs = this.options;
 
-    return keys.map(
-      opt => html`
-        <div
-          class="MenuOption"
-          @click="${(e: MouseEvent) => {
-            this.open = false;
-            funcs[opt](e);
-          }}"
-        >
-          <span class=${classMap({ MenuOptionCheck: true, CurrentValue: this.value === opt })}>
-            \uE73E
-          </span>
-          <span class="MenuOptionName">${opt}</span>
-        </div>
-      `
-    );
+    return keys.map((opt: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      const clickFn = (e: MouseEvent) => {
+        this.open = false;
+        this.options[opt](e);
+      };
+
+      const keyDownFn = (e: KeyboardEvent) => {
+        const header: HTMLButtonElement = this.renderRoot.querySelector<HTMLButtonElement>('.header');
+        if (e.key === 'Enter') {
+          this.open = false;
+          this.options[opt](e);
+          header.focus();
+        } else if (e.key === 'Tab') {
+          this.open = false;
+        } else if (e.key === 'Escape') {
+          this.open = false;
+          if (header) {
+            header.focus();
+          }
+        }
+      };
+
+      return html`
+          <fluent-menu-item
+            @click=${clickFn}
+            @keydown=${keyDownFn}>
+              ${opt}
+          </fluent-menu-item>`;
+    });
   }
 }

@@ -1,5 +1,8 @@
-import { makeDecorator } from '@storybook/addons';
+import addons, { makeDecorator } from '@storybook/addons';
+
+import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/IProvider';
 import { EditorElement } from './editor';
+import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from '../../env';
 
 const mgtScriptName = './mgt.storybook.js';
 
@@ -65,7 +68,11 @@ export const withCodeEditor = makeDecorator({
   name: `withCodeEditor`,
   parameterName: 'myParameter',
   skipIfNoParametersOrOptions: false,
-  wrapper: (getStory, context, { parameters }) => {
+  wrapper: (getStory, context, { options }) => {
+    const forOptions = options ? options.disableThemeToggle : false;
+    const forContext =
+      context && (context.name === 'Custom CSS Properties' || context.title.toLowerCase().includes('templating'));
+    const disableThemeToggle = forOptions || forContext;
     let story = getStory(context);
 
     let storyHtml;
@@ -110,7 +117,7 @@ export const withCodeEditor = makeDecorator({
             content = await response.text();
           }
         } else {
-          console.warn(`Can't get content from '${url}'`);
+          console.warn(`🦒: Can't get content from '${url}'`);
         }
       }
 
@@ -154,39 +161,83 @@ export const withCodeEditor = makeDecorator({
       }
     }
 
-    const loadEditorContent = () => {
-      let providerInitCode = `
-        import {Providers, MockProvider} from "${mgtScriptName}";
-        Providers.globalProvider = new MockProvider(true);
-      `;
+    const themeToggleCss = disableThemeToggle
+      ? ''
+      : `
+      body {
+        background-color: var(--fill-color);
+        color: var(--neutral-foreground-rest);
+        font-family: var(--body-font);
+        padding: 0 12px;
+      }
+      header {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        padding: 0 0 12px 0;
+      }
+`;
+    const themeToggle = disableThemeToggle
+      ? ''
+      : `
+      <header>
+        <mgt-theme-toggle mode="light"></mgt-theme-toggle>
+      </header>
+`;
 
+    let providerInitCode = `
+      import {Providers, MockProvider} from "${mgtScriptName}";
+      Providers.globalProvider = new MockProvider(true);
+    `;
+
+    const channel = addons.getChannel();
+    channel.on(SETPROVIDER_EVENT, params => {
+      if (params.state === ProviderState.SignedIn && params.name === 'MgtMockProvider') {
+        providerInitCode = `
+          import { Providers, MockProvider } from "${mgtScriptName}";
+          Providers.globalProvider = new MockProvider(true);
+        `;
+      } else if (params.state === ProviderState.SignedIn && params.name === 'MgtMsal2Provider') {
+        providerInitCode = `
+          import { Providers, Msal2Provider, LoginType } from "${mgtScriptName}";
+          Providers.globalProvider = new Msal2Provider({
+            clientId: "${CLIENTID}",
+            loginType: LoginType.Popup,
+            redirectUri: "${window.location.origin}/${AUTH_PAGE}"
+          });`;
+      }
+
+      loadEditorContent();
+    });
+
+    const loadEditorContent = () => {
       const storyElement = document.createElement('iframe');
 
-      storyElement.addEventListener('load', () => {
-        let doc = storyElement.contentDocument;
+      storyElement.addEventListener(
+        'load',
+        () => {
+          let doc = storyElement.contentDocument;
 
-        let { html, css, js } = editor.files;
-        js = js.replace(
-          /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
-          `import {$1} from '${mgtScriptName}';`
-        );
+          let { html, css, js } = editor.files;
+          js = js.replace(
+            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
+            `import {$1} from '${mgtScriptName}';`
+          );
 
-        const docContent = `
+          const docContent = `
           <html>
             <head>
               <script type="module" src="${mgtScriptName}"></script>
               <script type="module">
-                import {Providers, MockProvider} from "${mgtScriptName}";
-                Providers.globalProvider = new MockProvider(true);
+                ${providerInitCode}
               </script>
               <style>
-                html, body {
-                  height: 100%;
-                }
+                ${themeToggleCss}
                 ${css}
               </style>
             </head>
             <body>
+              ${themeToggle}
               ${html}
               <script type="module">
                 ${js}
@@ -195,10 +246,12 @@ export const withCodeEditor = makeDecorator({
           </html>
         `;
 
-        doc.open();
-        doc.write(docContent);
-        doc.close();
-      }, {once:true});
+          doc.open();
+          doc.write(docContent);
+          doc.close();
+        },
+        { once: true }
+      );
 
       storyElement.className = 'story-mgt-preview';
       storyElement.setAttribute('title', 'preview');

@@ -1,0 +1,50 @@
+{
+  "name": "@microsoft/mgt-spfx-utils",
+  "version": "3.0.0",
+  "description": "Helper utilities for loading MGT based libraries and web parts in a SPFx context",
+  "main": "./dist/es6/index.js",
+  "types": "./dist/es6/index.d.ts",
+  "module": "./dist/es6/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "microsoft graph",
+    "microsoft graph toolkit",
+    "sharepoint framework",
+    "sharepoint"
+  ],
+  "scripts": {
+    "build": "npm-run-all clean build:compile",
+    "build:compile": "npm-run-all compile",
+    "build:watch": "npm-run-all compile:watch",
+    "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
+    "compile": "tsc -b",
+    "compile:watch": "tsc -w",
+    "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
+    "postpack": "cpx *.tgz ../../artifacts"
+  },
+  "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
+  "bugs": {
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit"
+  },
+  "author": "Microsoft",
+  "license": "MIT",
+  "dependencies": {
+    "@microsoft/mgt-components": "*",
+    "@types/react": "^17.0.00",
+    "react": "^17.0.1"
+  },
+  "devDependencies": {},
+  "resolutions": {
+    "react": "16.13.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

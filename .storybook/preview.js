@@ -8,11 +8,30 @@
 /* global window */
 
 import { addParameters, setCustomElements } from '@storybook/web-components';
-
 import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import customElements from '../custom-elements.json';
+import { versionInfo } from './versionInfo';
+import { noArgsDocsPage } from './story-elements/noArgsDocsPage.js';
 
-setCustomElements(customElements);
+const setCustomElementsManifestWithOptions = (customElements, options) => {
+  let { privateFields = true } = options;
+  if (!privateFields) {
+    customElements?.modules?.forEach(module => {
+      module?.declarations?.forEach(declaration => {
+        Object.keys(declaration).forEach(key => {
+          if (Array.isArray(declaration[key])) {
+            declaration[key] = declaration[key].filter(
+              member => !member.privacy?.includes('private') && !member.privacy?.includes('protected')
+            );
+          }
+        });
+      });
+    });
+  }
+  return setCustomElements(customElements);
+};
+
+setCustomElementsManifestWithOptions(customElements, { privateFields: false });
 
 addParameters({
   previewTabs: {
@@ -25,8 +44,10 @@ addParameters({
   },
   docs: {
     iframeHeight: '400px',
-    inlineStories: false
-  }
+    inlineStories: false,
+    page: noArgsDocsPage
+  },
+  version: versionInfo
 });
 
 const req = require.context('../stories', true, /\.(js|mdx)$/);

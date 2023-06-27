@@ -18,6 +18,7 @@ import {
 import { CacheUser, getIsUsersCacheEnabled, getUserInvalidationTime } from './graph.user';
 import { IDynamicPerson } from './types';
 import { schemas } from './cacheStores';
+import { Photo } from '@microsoft/microsoft-graph-types';
 
 /**
  * async promise, returns IDynamicPerson
@@ -26,19 +27,19 @@ import { schemas } from './cacheStores';
  * @returns {(Promise<IDynamicPerson>)}
  * @memberof Graph
  */
-export async function getUserWithPhoto(
+export const getUserWithPhoto = async (
   graph: IGraph,
   userId?: string,
   requestedProps?: string[]
-): Promise<IDynamicPerson> {
-  let photo = null;
+): Promise<IDynamicPerson> => {
+  let photo: string;
   let user: IDynamicPerson = null;
 
   let cachedPhoto: CachePhoto;
   let cachedUser: CacheUser;
 
   const resource = userId ? `users/${userId}` : 'me';
-  let fullResource = resource + (requestedProps ? `?$select=${requestedProps.toString()}` : '');
+  const fullResource = resource + (requestedProps ? `?$select=${requestedProps.toString()}` : '');
 
   const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
 
@@ -46,8 +47,8 @@ export async function getUserWithPhoto(
   if (getIsUsersCacheEnabled()) {
     const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
     cachedUser = await cache.getValue(userId || 'me');
-    if (cachedUser !== undefined && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
-      user = cachedUser.user ? JSON.parse(cachedUser.user) : null;
+    if (cachedUser && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
+      user = cachedUser.user ? (JSON.parse(cachedUser.user) as IDynamicPerson) : null;
       if (user !== null && requestedProps) {
         const uniqueProps = requestedProps.filter(prop => !Object.keys(user).includes(prop));
         if (uniqueProps.length >= 1) {
@@ -65,18 +66,19 @@ export async function getUserWithPhoto(
       photo = cachedPhoto.photo;
     } else if (cachedPhoto) {
       try {
-        const response = await graph.api(`${resource}/photo`).get();
-        if (response && response['@odata.mediaEtag'] && response['@odata.mediaEtag'] === cachedPhoto.eTag) {
+        const response: Photo = (await graph.api(`${resource}/photo`).get()) as Photo;
+        if (response?.['@odata.mediaEtag'] && response['@odata.mediaEtag'] === cachedPhoto.eTag) {
           // put current image into the cache to update the timestamp since etag is the same
-          storePhotoInCache(userId || 'me', schemas.photos.stores.users, cachedPhoto);
+          await storePhotoInCache(userId || 'me', schemas.photos.stores.users, cachedPhoto);
           photo = cachedPhoto.photo;
         } else {
           cachedPhoto = null;
         }
-      } catch (e) {
-        //if 404 received (photo not found) but user already in cache, update timeCache value to prevent repeated 404 error / graph calls on each page refresh
+      } catch (e: any) {
+        // if 404 received (photo not found) but user already in cache, update timeCache value to prevent repeated 404 error / graph calls on each page refresh
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (e.code === 'ErrorItemNotFound' || e.code === 'ImageNotFound') {
-          storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag: null, photo: null });
+          await storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag: null, photo: null });
         }
       }
     }
@@ -101,22 +103,23 @@ export async function getUserWithPhoto(
 
     const photoResponse = response.get('photo');
     if (photoResponse) {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
       eTag = photoResponse.headers['ETag'];
-      photo = photoResponse.content;
+      photo = photoResponse.content as string;
     }
 
     const userResponse = response.get('user');
     if (userResponse) {
-      user = userResponse.content;
+      user = userResponse.content as IDynamicPerson;
     }
 
     // store user & photo in their respective cache
     if (getIsUsersCacheEnabled()) {
       const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
-      cache.putValue(userId || 'me', { user: JSON.stringify(user) });
+      await cache.putValue(userId || 'me', { user: JSON.stringify(user) });
     }
     if (getIsPhotosCacheEnabled()) {
-      storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag, photo: photo });
+      await storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag, photo });
     }
   } else if (!cachedPhoto) {
     try {
@@ -124,34 +127,38 @@ export async function getUserWithPhoto(
       const response = await getPhotoForResource(graph, resource, scopes);
       if (response) {
         if (getIsPhotosCacheEnabled()) {
-          storePhotoInCache(userId || 'me', schemas.photos.stores.users, {
+          await storePhotoInCache(userId || 'me', schemas.photos.stores.users, {
             eTag: response.eTag,
             photo: response.photo
           });
         }
         photo = response.photo;
       }
-    } catch (_) {}
+    } catch (_) {
+      // intentionally left empty...
+    }
   } else if (!cachedUser) {
     // get user from graph
     try {
-      const response = await graph
+      const response: IDynamicPerson = (await graph
         .api(fullResource)
         .middlewareOptions(prepScopes(...scopes))
-        .get();
+        .get()) as IDynamicPerson;
 
       if (response) {
         if (getIsUsersCacheEnabled()) {
           const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
-          cache.putValue(userId || 'me', { user: JSON.stringify(response) });
+          await cache.putValue(userId || 'me', { user: JSON.stringify(response) });
         }
         user = response;
       }
-    } catch (_) {}
+    } catch (_) {
+      // intentionally left empty...
+    }
   }
 
   if (user) {
     user.personImage = photo;
   }
   return user;
-}
+};

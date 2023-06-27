@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationProvider } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProvider';
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { IGraph } from '../IGraph';
+import { AuthenticationProvider, AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
+import { validateBaseURL } from '../utils/GraphHelpers';
+import { GraphEndpoint, IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from '../IGraph';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 
 /**
@@ -26,17 +26,46 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public graph: IGraph;
+
   /**
-   * Enable/Disable multi account functionality
+   * Specifies if the provider has enabled support for multiple accounts
    *
    * @protected
    * @type {boolean}
    * @memberof IProvider
    */
-  protected isMultipleAccountDisabled: boolean = true;
+  protected isMultipleAccountDisabled = true;
+
+  /**
+   * Specifies if Multi account functionality is supported by the provider and enabled.
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  public get isMultiAccountSupportedAndEnabled(): boolean {
+    return false;
+  }
   private _state: ProviderState;
-  private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
-  private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
+  private readonly _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
+  private readonly _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
+  private _baseURL: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
+
+  /**
+   * The base URL to be used in the graph client config.
+   */
+  public set baseURL(url: GraphEndpoint) {
+    if (validateBaseURL(url)) {
+      this._baseURL = url;
+      return;
+    } else {
+      throw new Error(`${url} is not a valid Graph URL endpoint.`);
+    }
+  }
+
+  public get baseURL(): GraphEndpoint {
+    return this._baseURL;
+  }
 
   /**
    * Enable/Disable incremental consent
@@ -45,8 +74,26 @@ export abstract class IProvider implements AuthenticationProvider {
    * @type {boolean}
    * @memberof IProvider
    */
-  private _isIncrementalConsentDisabled: boolean = false;
+  private _isIncrementalConsentDisabled = false;
 
+  /**
+   * Backing field for isMultiAccountSupported
+   *
+   * @protected
+   * @memberof IProvider
+   */
+  protected isMultipleAccountSupported = false;
+
+  /**
+   * Does the provider support multiple accounts?
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  public get isMultiAccountSupported(): boolean {
+    return this.isMultipleAccountSupported;
+  }
   /**
    * returns state of Provider
    *
@@ -149,11 +196,20 @@ export abstract class IProvider implements AuthenticationProvider {
   public getAllAccounts?(): IProviderAccount[];
 
   /**
+   * Returns active account in case of multi-account sign in
+   *
+   * @return {*}  {any[]}
+   * @memberof IProvider
+   */
+  public getActiveAccount?(): IProviderAccount;
+
+  /**
    * Switch between two signed in accounts
    *
    * @param {*} user
    * @memberof IProvider
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public setActiveAccount?(user: IProviderAccount) {
     this.fireActiveAccountChanged();
   }
@@ -215,6 +271,7 @@ export abstract class IProvider implements AuthenticationProvider {
  * @export
  * @interface ActiveAccountChanged
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ActiveAccountChanged {}
 /**
  * loginChangedEvent
@@ -222,7 +279,7 @@ export interface ActiveAccountChanged {}
  * @export
  * @interface LoginChangedEvent
  */
-// tslint:disable-next-line: no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface LoginChangedEvent {}
 
 /**
@@ -269,6 +326,8 @@ export enum ProviderState {
  * @export
  */
 export type IProviderAccount = {
-  username?: string;
   id: string;
+  mail?: string;
+  name?: string;
+  tenantId?: string;
 };

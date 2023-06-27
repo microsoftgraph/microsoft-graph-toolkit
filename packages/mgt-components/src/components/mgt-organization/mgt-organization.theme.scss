@@ -1,0 +1,22 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables';
+
+$organization-active-org-member-border-color: var(
+  --organization-active-org-member-border-color,
+  var(--accent-foreground-rest)
+);
+$organization-active-org-member-target-background-color: var(
+  --organization-active-org-member-target-background-color,
+  var(--neutral-fill-active)
+);
+$organization-coworker-hover-color: var(--organization-coworker-hover-color, var(--neutral-fill-hover));
+$organization-coworker-border-color: var(--organization-coworker-border-color, var(--neutral-stroke-rest));
+$organization-title-color: var(--organization-title-color, var(--neutral-foreground-rest));
+$organization-sub-title-color: var(--organization-sub-title-color, var(--neutral-foreground-hint));
+$organization-hover-color: var(--organization-hover-color, var(--neutral-fill-hover));

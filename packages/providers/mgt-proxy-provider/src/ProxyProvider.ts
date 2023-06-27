@@ -33,7 +33,7 @@ export class ProxyProvider extends IProvider {
     return 'MgtProxyProvider';
   }
 
-  constructor(graphProxyUrl: string, getCustomHeaders: () => Promise<object> = null) {
+  constructor(graphProxyUrl: string, getCustomHeaders?: () => Promise<object>) {
     super();
     this.graph = new ProxyGraph(graphProxyUrl, getCustomHeaders);
 
@@ -48,7 +48,8 @@ export class ProxyProvider extends IProvider {
             this.setState(ProviderState.SignedOut);
           }
         },
-        err => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        _err => {
           this.setState(ProviderState.SignedOut);
         }
       );
@@ -61,6 +62,6 @@ export class ProxyProvider extends IProvider {
    * @memberof ProxyProvider
    */
   public getAccessToken(): Promise<string> {
-    return null;
+    return Promise.resolve('');
   }
 }

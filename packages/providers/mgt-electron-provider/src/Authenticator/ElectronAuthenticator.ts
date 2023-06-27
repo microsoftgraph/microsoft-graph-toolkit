@@ -14,9 +14,11 @@ import {
   Configuration,
   ICachePlugin,
   LogLevel,
-  PublicClientApplication
+  PublicClientApplication,
+  SilentFlowRequest
 } from '@azure/msal-node';
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
+import { GraphEndpoint } from '@microsoft/mgt-element';
 import { BrowserWindow, ipcMain } from 'electron';
 import { CustomFileProtocolListener } from './CustomFileProtocol';
 import { REDIRECT_URI, COMMON_AUTHORITY_URL } from './Constants';
@@ -65,6 +67,10 @@ export interface MsalElectronConfig {
    * @memberof MsalElectronConfig
    */
   cachePlugin?: ICachePlugin;
+  /**
+   * The base URL for the graph client
+   */
+  baseURL?: GraphEndpoint;
 }
 
 /**
@@ -73,6 +79,9 @@ export interface MsalElectronConfig {
  * @enum {number}
  */
 enum promptType {
+  /**
+   * Select account prompt
+   */
   SELECT_ACCOUNT = 'select_account'
 }
 
@@ -82,9 +91,20 @@ enum promptType {
  * @enum {number}
  */
 enum AuthState {
+  /**
+   * Logged in state
+   */
   LOGGED_IN = 'logged_in',
+  /**
+   * Logged out state
+   */
   LOGGED_OUT = 'logged_out'
 }
+
+/**
+ * AccountDetails defines the available AccountInfo or undefined.
+ */
+type AccountDetails = AccountInfo | undefined;
 
 /**
  * ElectronAuthenticator class to be instantiated in the main process.
@@ -101,6 +121,7 @@ export class ElectronAuthenticator {
    * @type {Configuration}
    * @memberof ElectronAuthenticator
    */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   private ms_config: Configuration;
 
   /**
@@ -119,10 +140,10 @@ export class ElectronAuthenticator {
    */
   public mainWindow: BrowserWindow;
 
-  //Popup which will take the user through the login/consent process
+  // Popup which will take the user through the login/consent process
 
   /**
-   *
+   * Auth window instance
    *
    * @type {BrowserWindow}
    * @memberof ElectronAuthenticator
@@ -133,10 +154,10 @@ export class ElectronAuthenticator {
    * Logged in account
    *
    * @private
-   * @type {AccountInfo}
+   * @type {AccountDetails}
    * @memberof ElectronAuthenticator
    */
-  private account: AccountInfo;
+  private account: AccountDetails;
 
   /**
    * Params to generate the URL for MSAL auth
@@ -177,12 +198,13 @@ export class ElectronAuthenticator {
 
   /**
    * Creates an instance of ElectronAuthenticator.
+   *
    * @param {MsalElectronConfig} config
    * @memberof ElectronAuthenticator
    */
   private constructor(config: MsalElectronConfig) {
     this.setConfig(config);
-    this.account = null;
+    this.account = undefined;
     this.mainWindow = config.mainWindow;
     this.setRequestObjects(config.scopes);
     this.setupProvider();
@@ -218,16 +240,17 @@ export class ElectronAuthenticator {
    * @param {MsalElectronConfig} config
    * @memberof ElectronAuthenticator
    */
-  private async setConfig(config: MsalElectronConfig) {
+  private setConfig(config: MsalElectronConfig) {
     this.ms_config = {
       auth: {
         clientId: config.clientId,
         authority: config.authority ? config.authority : COMMON_AUTHORITY_URL
       },
-      cache: config.cachePlugin ? { cachePlugin: config.cachePlugin } : null,
+      cache: config.cachePlugin ? { cachePlugin: config.cachePlugin } : undefined,
       system: {
         loggerOptions: {
-          loggerCallback(loglevel, message, containsPii) {},
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+          loggerCallback: (_loglevel, _message, _containsPii) => {},
           piiLoggingEnabled: false,
           logLevel: LogLevel.Warning
         }
@@ -243,19 +266,19 @@ export class ElectronAuthenticator {
    * @param {*} [scopes]
    * @memberof ElectronAuthenticator
    */
-  protected setRequestObjects(scopes?): void {
+  protected setRequestObjects(scopes?: string[]): void {
     const requestScopes = scopes ? scopes : [];
     const redirectUri = REDIRECT_URI;
 
     this.authCodeUrlParams = {
       scopes: requestScopes,
-      redirectUri: redirectUri
+      redirectUri
     };
 
     this.authCodeRequest = {
       scopes: requestScopes,
-      redirectUri: redirectUri,
-      code: null
+      redirectUri,
+      code: ''
     };
   }
 
@@ -272,12 +295,13 @@ export class ElectronAuthenticator {
 
   /**
    * Set up messaging between authenticator and provider
+   *
    * @protected
    * @memberof ElectronAuthenticator
    */
   protected setupProvider() {
-    this.mainWindow.webContents.on('did-finish-load', async () => {
-      await this.attemptSilentLogin();
+    this.mainWindow.webContents.on('did-finish-load', () => {
+      void this.attemptSilentLogin();
     });
 
     ipcMain.handle('login', async () => {
@@ -288,13 +312,9 @@ export class ElectronAuthenticator {
         this.mainWindow.webContents.send('mgtAuthState', AuthState.LOGGED_OUT);
       }
     });
-    ipcMain.handle('token', async (e, options: AuthenticationProviderOptions) => {
-      try {
-        const token = await this.getAccessToken(options);
-        return token;
-      } catch (e) {
-        throw e;
-      }
+    ipcMain.handle('token', async (_e, options: AuthenticationProviderOptions) => {
+      const token = await this.getAccessToken(options);
+      return token;
     });
 
     ipcMain.handle('logout', async () => {
@@ -311,9 +331,9 @@ export class ElectronAuthenticator {
    * @return {*}  {Promise<string>}
    * @memberof ElectronAuthenticator
    */
-  protected async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
-    let authResponse;
-    const scopes = options && options.scopes ? options.scopes : this.authCodeUrlParams.scopes;
+  protected async getAccessToken(options?: AuthenticationProviderOptions): Promise<string | undefined> {
+    let authResponse: AuthenticationResult | null = null;
+    const scopes = options?.scopes ? options.scopes : this.authCodeUrlParams.scopes;
     const account = this.account || (await this.getAccount());
     if (account) {
       const request = {
@@ -323,9 +343,10 @@ export class ElectronAuthenticator {
       };
       authResponse = await this.getTokenSilent(request, scopes);
     }
-    if (authResponse) {
+    if (authResponse && authResponse !== null) {
       return authResponse.accessToken;
     }
+    return undefined;
   }
 
   /**
@@ -333,11 +354,16 @@ export class ElectronAuthenticator {
    *
    * @protected
    * @param {*} tokenRequest
-   * @param {*} [scopes]
+   * @param {*} [_scopes]
    * @return {*}  {Promise<AuthenticationResult>}
    * @memberof ElectronAuthenticator
    */
-  protected async getTokenSilent(tokenRequest, scopes?): Promise<AuthenticationResult> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected async getTokenSilent(
+    tokenRequest: SilentFlowRequest,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _scopes?: string[]
+  ): Promise<AuthenticationResult | null> {
     try {
       return await this.clientApplication.acquireTokenSilent(tokenRequest);
     } catch (error) {
@@ -347,6 +373,7 @@ export class ElectronAuthenticator {
 
   /**
    * Login (open popup and allow user to select account/login)
+   *
    * @private
    * @return {*}
    * @memberof ElectronAuthenticator
@@ -366,7 +393,7 @@ export class ElectronAuthenticator {
   protected async logout(): Promise<void> {
     if (this.account) {
       await this.clientApplication.getTokenCache().removeAccount(this.account);
-      this.account = null;
+      this.account = undefined;
     }
   }
 
@@ -379,8 +406,8 @@ export class ElectronAuthenticator {
    * @memberof ElectronAuthenticator
    */
   private async setAccountFromResponse(response: AuthenticationResult) {
-    if (response !== null) {
-      this.account = response.account;
+    if (response) {
+      this.account = response?.account || undefined;
     } else {
       this.account = await this.getAccount();
     }
@@ -396,8 +423,7 @@ export class ElectronAuthenticator {
    * @return {*}  {Promise<AuthenticationResult>}
    * @memberof ElectronAuthenticator
    */
-  protected async getTokenInteractive(prompt_type: promptType, scopes?): Promise<AuthenticationResult> {
-    let authResult;
+  protected async getTokenInteractive(prompt_type: promptType, scopes?: string[]): Promise<AuthenticationResult> {
     const requestScopes = scopes ? scopes : this.authCodeUrlParams.scopes;
     const authCodeUrlParams = {
       ...this.authCodeUrlParams,
@@ -408,16 +434,15 @@ export class ElectronAuthenticator {
     this.authCodeListener = new CustomFileProtocolListener('msal');
     this.authCodeListener.start();
     const authCode = await this.listenForAuthCode(authCodeUrl, prompt_type);
-    authResult = await this.clientApplication
+    return await this.clientApplication
       .acquireTokenByCode({
         ...this.authCodeRequest,
         scopes: requestScopes,
-        code: authCode
+        code: authCode || ''
       })
       .catch((e: AuthError) => {
         throw e;
       });
-    return authResult;
   }
 
   /**
@@ -425,15 +450,16 @@ export class ElectronAuthenticator {
    *
    * @private
    * @param {string} navigateUrl
-   * @param {promptType} prompt_type
+   * @param {promptType} _prompt_type
    * @return {*}  {Promise<string>}
    * @memberof ElectronAuthenticator
    */
-  private async listenForAuthCode(navigateUrl: string, prompt_type: promptType): Promise<string> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private async listenForAuthCode(navigateUrl: string, _prompt_type: promptType): Promise<string | null> {
     this.setAuthWindow(true);
     await this.authWindow.loadURL(navigateUrl);
     return new Promise((resolve, reject) => {
-      this.authWindow.webContents.on('will-redirect', (event, responseUrl) => {
+      this.authWindow.webContents.on('will-redirect', (_event, responseUrl) => {
         try {
           const parsedUrl = new URL(responseUrl);
           const authCode = parsedUrl.searchParams.get('code');
@@ -474,20 +500,12 @@ export class ElectronAuthenticator {
    * @return {*}  {Promise<AccountInfo>}
    * @memberof ElectronAuthenticator
    */
-  private async getAccount(): Promise<AccountInfo> {
+  private async getAccount(): Promise<AccountDetails> {
     const cache = this.clientApplication.getTokenCache();
     const currentAccounts = await cache.getAllAccounts();
-
-    if (currentAccounts === null) {
-      return null;
-    }
-
-    if (currentAccounts.length > 1) {
+    if (currentAccounts?.length >= 1) {
       return currentAccounts[0];
-    } else if (currentAccounts.length === 1) {
-      return currentAccounts[0];
-    } else {
-      return null;
     }
+    return undefined;
   }
 }

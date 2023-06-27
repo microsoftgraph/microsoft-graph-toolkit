@@ -1,0 +1,14 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables';
+
+$message-subject-color: var(--message-subject-color, var(--neutral-foreground-color));
+$message-from-color: var(--message-from-color, var(--neutral-foreground-color));
+$message-color: var(--message-color, var(--neutral-foreground-hint));
+$message-hover-color: var(--message-hover-color, var(--neutral-fill-hover));
+$message-date: var(--message-date, var(--neutral-foreground-hint));

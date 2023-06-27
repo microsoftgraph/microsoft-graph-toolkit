@@ -5,16 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-agenda / Templating',
-  component: 'mgt-agenda',
+  component: 'agenda',
   decorators: [withCodeEditor]
 };
 
@@ -248,12 +244,12 @@ export const eventTemplate = () => html`
 
 export const eventOther = () => html`
   <mgt-agenda show-max="7" days="10">
-	<template data-type="event-other">
-		<div class="root">
-			<button>Click me</button>
-		</div>
-	</template>
-</mgt-agenda>
+    <template data-type="event-other">
+        <div class="root">
+            <button onclick='alert("{{ event.subject }}");'>Click me</button>
+        </div>
+    </template>
+  </mgt-agenda>
 `;
 
 export const header = () => html`

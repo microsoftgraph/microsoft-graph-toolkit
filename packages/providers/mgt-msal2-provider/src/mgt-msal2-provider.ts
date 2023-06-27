@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit-element';
-import { Providers, LoginType, MgtBaseProvider } from '@microsoft/mgt-element';
+import { property } from 'lit/decorators.js';
+import { Providers, LoginType, MgtBaseProvider, customElement } from '@microsoft/mgt-element';
 import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
@@ -15,7 +15,8 @@ import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
  * @class MgtMsalProvider
  * @extends {MgtBaseProvider}
  */
-@customElement('mgt-msal2-provider')
+@customElement('msal2-provider')
+// @customElement('mgt-msal2-provider')
 export class MgtMsal2Provider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user
@@ -29,6 +30,28 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public clientId = '';
 
   /**
+   * login hint string
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'login-hint',
+    type: String
+  })
+  public loginHint: string;
+
+  /**
+   * domain hint string
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'domain-hint',
+    type: String
+  })
+  public domainHint: string;
+
+  /**
    * The login type that should be used: popup or redirect
    *
    * @memberof MgtMsal2Provider
@@ -37,14 +60,15 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     attribute: 'login-type',
     type: String
   })
-  public loginType;
+  public loginType: string;
 
   /**
    * The authority to use.
    *
    * @memberof MgtMsal2Provider
    */
-  @property() public authority;
+  @property()
+  public authority: string;
 
   /**
    * Comma separated list of scopes
@@ -55,7 +79,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     attribute: 'scopes',
     type: String
   })
-  public scopes;
+  public scopes: string;
 
   /**
    * The redirect uri to use
@@ -66,7 +90,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     attribute: 'redirect-uri',
     type: String
   })
-  public redirectUri;
+  public redirectUri: string;
 
   /**
    * Type of prompt for login
@@ -89,6 +113,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     type: Boolean
   })
   public isIncrementalConsentDisabled: boolean;
+
+  /**
+   * Disables multiple account capability
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'multi-account-disabled',
+    type: Boolean
+  })
+  public isMultiAccountDisabled;
 
   /**
    * Gets whether this provider can be used in this environment
@@ -115,7 +150,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
       if (this.loginType && this.loginType.length > 1) {
         let loginType: string = this.loginType.toLowerCase();
         loginType = loginType[0].toUpperCase() + loginType.slice(1);
-        const loginTypeEnum = LoginType[loginType];
+        const loginTypeEnum = LoginType[loginType] as LoginType;
         config.loginType = loginTypeEnum;
       }
 
@@ -134,14 +169,30 @@ export class MgtMsal2Provider extends MgtBaseProvider {
         config.redirectUri = this.redirectUri;
       }
 
+      if (this.loginHint) {
+        config.loginHint = this.loginHint;
+      }
+
+      if (this.domainHint) {
+        config.domainHint = this.domainHint;
+      }
+
       if (this.prompt) {
-        let prompt: string = this.prompt.toUpperCase();
-        const promptEnum = PromptType[prompt];
+        const prompt: string = this.prompt.toUpperCase();
+        const promptEnum = PromptType[prompt] as PromptType;
         config.prompt = promptEnum;
       }
 
       if (this.isIncrementalConsentDisabled) {
         config.isIncrementalConsentDisabled = true;
+      }
+
+      if (this.isMultiAccountDisabled) {
+        config.isMultiAccountEnabled = false;
+      }
+
+      if (this.baseUrl) {
+        config.baseURL = this.baseUrl;
       }
 
       this.provider = new Msal2Provider(config);

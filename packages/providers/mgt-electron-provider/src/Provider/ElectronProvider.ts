@@ -5,8 +5,15 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, Providers, ProviderState, createFromProvider } from '@microsoft/mgt-element';
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import {
+  IProvider,
+  Providers,
+  ProviderState,
+  createFromProvider,
+  GraphEndpoint,
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT
+} from '@microsoft/mgt-element';
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { ipcRenderer } from 'electron';
 
 /**
@@ -28,8 +35,9 @@ export class ElectronProvider extends IProvider {
     return 'MgtElectronProvider';
   }
 
-  constructor() {
+  constructor(baseUrl: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     super();
+    this.baseURL = baseUrl;
     this.graph = createFromProvider(this);
     this.setupProvider();
   }
@@ -40,7 +48,7 @@ export class ElectronProvider extends IProvider {
    * @memberof ElectronProvider
    */
   setupProvider() {
-    ipcRenderer.on('mgtAuthState', async (event, authState) => {
+    ipcRenderer.on('mgtAuthState', (event, authState) => {
       if (authState === 'logged_in') {
         Providers.globalProvider.setState(ProviderState.SignedIn);
       } else if (authState === 'logged_out') {
@@ -57,7 +65,7 @@ export class ElectronProvider extends IProvider {
    * @memberof ElectronProvider
    */
   async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
-    const token = await ipcRenderer.invoke('token', options);
+    const token = (await ipcRenderer.invoke('token', options)) as string;
     return token;
   }
 

@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export const strings = {
+export const strings: Record<string, string> = {
   signInLinkSubtitle: 'Sign In',
-  signOutLinkSubtitle: 'Sign Out'
+  signOutLinkSubtitle: 'Sign Out',
+  signInWithADifferentAccount: 'Sign in with a different account'
 };

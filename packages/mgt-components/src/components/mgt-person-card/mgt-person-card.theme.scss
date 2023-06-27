@@ -5,21 +5,38 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-sass-variables';
 
-$display-name__color: var(--person-card-display-name-color, set-var(color__sub1, $theme-default, $common));
-$title__color: var(--person-card-title-color, set-var(color__sub2, $theme-default, $common));
-$subtitle__color: var(--person-card-subtitle-color, set-var(color__sub2, $theme-default, $common));
-$details-title__color: var(--person-card-details-title-color, set-var(color, $theme-default, $common));
-$background-color: var(--person-card-background-color, set-var(background-color, $theme-default, $common));
-$person-card-display-name-color: var(--person-card-display-name-color, set-var(color__sub1, $theme-default, $common));
+/**
+* Loading the themes of the components used within mgt-person-card to
+* allow theming specifications to propagate. Also it allows re-using already
+* declared theme values like $person-theme in the mgt-person-card.scss#L362,L363.
+*/
+@import '../../components/mgt-person/mgt-person.theme';
+@import '../../components/mgt-contact/mgt-contact.theme';
+@import '../../components/mgt-organization/mgt-organization.theme';
+@import '../../components/mgt-profile/mgt-profile.theme';
+@import '../../components/mgt-messages/mgt-messages.theme';
+@import '../../components/mgt-file-list/mgt-file-list.theme';
 
-$person-card: (
-  details-item__color: (
-    _var: --person-card-details-item-color,
-    light: $gray190,
-    dark: $gray10
-  )
+$person-card-background-color: var(--person-card-background-color, var(--neutral-layer-floating));
+$person-card-expanded-background-color-hover: var(
+  --person-card-expanded-background-color-hover,
+  var(--neutral-fill-hover)
 );
-
-@include create-themes($person-card);
+$person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-color, var(--neutral-foreground-rest));
+$person-card-icon-color: var(--person-card-icon-color, var(--accent-foreground-rest));
+$person-card-chat-input-hover-color: var(--person-card-chat-input-hover-color, var(--neutral-fill-input-active));
+$person-card-chat-input-border-color: var(--person-card-chat-input-border-color, var(--neutral-foreground-hint));
+$person-card-chat-input-focus-color: var(--person-card-chat-input-focus-color, var(--neutral-layer-2));
+$person-card-icon-hover-color: var(--person-card-icon-hover-color, var(--accent-foreground-hover));
+$person-card-show-more-color: var(--person-card-show-more-color, var(--accent-base-color));
+$person-card-show-more-hover-color: var(--person-card-show-more-hover-color, var(--accent-fill-hover));
+$person-card-fluent-background-color: var(--person-card-fluent-background-color, transparent);
+$person-card-line1-text-color: var(--person-card-line1-text-color, var(--neutral-foreground-rest));
+$person-card-line2-text-color: var(--person-card-line2-text-color, var(--neutral-foreground-hint));
+$person-card-line3-text-color: var(--person-card-line3-text-color, var(--neutral-foreground-hint));
+$person-card-fluent-background-color-hover: var(--person-card-fluent-background-color-hover, var(--neutral-fill-hover));
+$person-card-border-color: var(--person-card-border-color, var(--neutral-stroke-rest));
+$person-card-close-button-hover-color: var(--person-card-close-button-hover-color, var(--neutral-foreground-rest));
+$person-card-box-shadow: var(--person-card-box-shadow, var(--elevation-shadow-card-rest));

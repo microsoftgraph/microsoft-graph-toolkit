@@ -5,9 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { property } from 'lit-element';
+import { property } from 'lit/decorators.js';
 import { MgtBaseComponent } from './baseComponent';
 import { IProvider } from '../providers/IProvider';
+import { GraphEndpoint } from '../IGraph';
+import { PropertyValueMap } from 'lit';
 
 /**
  * Abstract implementation for provider component
@@ -65,6 +67,17 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
   })
   public dependsOn: MgtBaseProvider;
 
+  /**
+   * The base URL that should be used in the graph client config.
+   *
+   * @memberof MgtBaseProvider
+   */
+  @property({
+    attribute: 'base-url',
+    type: String
+  })
+  public baseUrl: GraphEndpoint;
+
   private _provider: IProvider;
 
   /**
@@ -76,7 +89,7 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
    *
    * * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated(changedProperties) {
+  protected firstUpdated(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>) {
     super.firstUpdated(changedProperties);
 
     let higherPriority = false;
@@ -103,10 +116,10 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
    * @protected
    * @memberof MgtBaseProvider
    */
-  // tslint:disable-next-line: no-empty
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   protected initializeProvider() {}
 
-  private stateChangedHandler() {
+  private readonly stateChangedHandler = () => {
     this.fireCustomEvent('onStateChanged', this.provider.state);
-  }
+  };
 }

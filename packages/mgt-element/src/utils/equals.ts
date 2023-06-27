@@ -12,9 +12,9 @@
  * are expected to be object literals with potentially nested structures and
  * where leaf values are primitives.
  */
-export function equals(o1: any, o2: any) {
+export const equals = (o1: any, o2: any) => {
   return equalsInternal(o1, o2, new Set());
-}
+};
 
 /**
  * Not exposed as it would undesirably leak implementation detail (`refs` argument).
@@ -23,24 +23,31 @@ export function equals(o1: any, o2: any) {
  *
  * @see equals
  */
-function equalsInternal(o1: any, o2: any, refs: Set<object>) {
-  const o1Label = Object.prototype.toString.call(o1);
-  const o2Label = Object.prototype.toString.call(o2);
-  if (o1Label === o2Label && o1Label === '[object Object]' && !refs.has(o1)) {
+const equalsInternal = (o1: any, o2: any, refs: Set<any>) => {
+  const o1Label = Object.prototype.toString.call(o1) as string;
+  const o2Label = Object.prototype.toString.call(o2) as string;
+  if (
+    typeof o1 === 'object' &&
+    typeof o2 === 'object' &&
+    o1Label === o2Label &&
+    o1Label === '[object Object]' &&
+    !refs.has(o1)
+  ) {
     refs.add(o1);
     for (const k in o1) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (!equalsInternal(o1[k], o2[k], refs)) {
         return false;
       }
     }
     for (const k in o2) {
-      if (!o1.hasOwnProperty(k)) {
+      if (!Object.prototype.hasOwnProperty.call(o1, k)) {
         return false;
       }
     }
     return true;
   }
-  if (o1Label === o2Label && o1Label === '[object Array]' && !refs.has(o1)) {
+  if (Array.isArray(o1) && Array.isArray(o2) && !refs.has(o1)) {
     refs.add(o1);
     if (o1.length !== o2.length) {
       return false;
@@ -54,7 +61,7 @@ function equalsInternal(o1: any, o2: any, refs: Set<object>) {
   }
   // Everything else requires strict equality (e.g. primitives, functions, dates)
   return o1 === o2;
-}
+};
 
 /**
  * Compares two arrays if the elements are equals
@@ -66,7 +73,7 @@ function equalsInternal(o1: any, o2: any, refs: Set<object>) {
  * @param {T[]} arr2
  * @returns true if both arrays contain the same items or if both arrays are null or empty
  */
-export function arraysAreEqual<T>(arr1: T[], arr2: T[]) {
+export const arraysAreEqual = <T>(arr1: T[], arr2: T[]) => {
   if (arr1 === arr2) {
     return true;
   }
@@ -92,4 +99,4 @@ export function arraysAreEqual<T>(arr1: T[], arr2: T[]) {
   }
 
   return true;
-}
+};

@@ -27,15 +27,22 @@
   "scripts": {
     "build": "npm run clean && npm run generate && tsc",
     "clean": "node ./scripts/clean.js",
+    "compile:watch": "tsc -w",
+    "build:watch": "npm run compile:watch",
     "postpack": "cpx *.tgz ../../artifacts",
-    "generate": "wca analyze ../mgt-components/src --format json --outFile temp/web-components.json && node ./scripts/generate.js"
+    "analyze": "custom-elements-manifest analyze --litelement --globs \"../*/src/**/*.ts\" --outdir temp",
+    "generate": "npm run analyze && node ./scripts/generate.js"
   },
   "dependencies": {
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-types": "^2.0.0",
-    "@microsoft/microsoft-graph-types-beta": "^0.16.0-preview",
+    "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
     "wc-react": "^0.5.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.1 || ^18.0.0",
+    "react-dom": "^17.0.1 || ^18.0.0"
   },
   "publishConfig": {
     "access": "public"

@@ -5,62 +5,42 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../../styles/shared-styles.scss';
-@import '../../../styles/shared-sass-variables.scss';
+@import '../../../styles/shared-styles';
+@import '../../../styles/shared-sass-variables';
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
-$dot-options-translateX: var(--dot-options-translateX, translateX(-50px));
+$dot-options-translatey: var(--dot-options-translatey, translateY(32px));
 
-:host,
-mgt-dot-options {
-  font-family: $font-family;
-}
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 
-:host .DotIcon,
-mgt-dot-options .DotIcon {
-  display: inline-block;
-  font-family: 'FabricMDL2Icons';
-  min-width: 40px;
-  min-height: 30px;
-  text-align: center;
-  line-height: 30px;
-}
+  .dot-icon {
+    font-family: $font-icon;
+    min-width: 40px;
+    min-height: 30px;
+    text-align: center;
+    line-height: 30px;
+  }
 
-:host .Menu,
-mgt-dot-options .Menu {
-  position: absolute;
-  box-shadow: set-var(box-shadow__color, $theme-default, $common) 0px 0px 40px 5px;
-  background: set-var(background-color, $theme-default, $common);
-  z-index: 1;
-  display: none;
-  color: set-var(color, $theme-default, $common);
-  white-space: nowrap;
-  transform: var(--dot-options-translateX, translateX(-50px));
-}
+  .menu {
+    position: absolute;
+    box-shadow: var(--neutral-fill-rest) 0 0 40px 5px;
+    background: var(--neutral-fill-rest);
+    z-index: 1;
+    display: none;
+    white-space: nowrap;
+    transform: $dot-options-translatey;
 
-:host .DotMenu.Open .Menu,
-mgt-dot-options .DotMenu.Open .Menu {
-  display: block;
-}
+    &.open {
+      display: block;
+    }
+  }
 
-:host .DotMenu .DotItem,
-mgt-dot-options .DotMenu .DotItem {
-  direction: ltr;
-  text-align: left;
-  padding: 10px 10px 8px 10px;
-}
-
-:host .DotMenu .DotItem:hover,
-mgt-dot-options .DotMenu .DotItem:hover {
-  background: set-var(background-color--hover, $theme-default, $common);
-}
-
-:host .DotMenu .DotItem:active,
-mgt-dot-options .DotMenu .DotItem:active {
-  background: set-var(background-color--active, $theme-default, $common);
-}
-
-:host .DotMenu .DotItemName,
-mgt-dot-options .DotMenu .DotItemName {
-  direction: rtl;
+  fluent-button {
+    &::part(control) {
+      background: inherit;
+    }
+  }
 }

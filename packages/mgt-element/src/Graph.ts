@@ -17,13 +17,14 @@ import {
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
 
-import { IGraph } from './IGraph';
+import { IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from './IGraph';
 import { IProvider } from './providers/IProvider';
 import { Batch } from './utils/Batch';
 import { ComponentMiddlewareOptions } from './utils/ComponentMiddlewareOptions';
 import { chainMiddleware } from './utils/GraphHelpers';
 import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
 import { PACKAGE_VERSION } from './utils/version';
+import { customElementHelper } from './components/customElementHelper';
 
 /**
  * The version of the Graph to use for making requests.
@@ -71,9 +72,9 @@ export class Graph implements IGraph {
     return this._version;
   }
 
-  private _client: Client;
+  private readonly _client: Client;
   private _componentName: string;
-  private _version: string;
+  private readonly _version: string;
 
   constructor(client: Client, version: string = GRAPH_VERSION) {
     this._client = client;
@@ -106,8 +107,8 @@ export class Graph implements IGraph {
 
     if (this._componentName) {
       request.middlewareOptions = (options: MiddlewareOptions[]): GraphRequest => {
-        const requestObj = request as any;
-        requestObj._middlewareOptions = requestObj._middlewareOptions.concat(options);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/dot-notation
+        request['_middlewareOptions'] = request['_middlewareOptions'].concat(options);
         return request;
       };
       request = request.middlewareOptions([new ComponentMiddlewareOptions(this._componentName)]);
@@ -122,8 +123,8 @@ export class Graph implements IGraph {
    * @returns {Batch}
    * @memberof Graph
    */
-  public createBatch(): Batch {
-    return new Batch(this);
+  public createBatch<T = any>(): Batch<T> {
+    return new Batch<T>(this);
   }
 
   /**
@@ -134,7 +135,7 @@ export class Graph implements IGraph {
    * @memberof Graph
    */
   protected setComponent(component: Element | string): void {
-    this._componentName = component instanceof Element ? component.tagName : component;
+    this._componentName = component instanceof Element ? customElementHelper.normalize(component.tagName) : component;
   }
 }
 
@@ -146,7 +147,7 @@ export class Graph implements IGraph {
  * @returns {Graph}
  * @memberof Graph
  */
-export function createFromProvider(provider: IProvider, version?: string, component?: Element): Graph {
+export const createFromProvider = (provider: IProvider, version?: string, component?: Element): Graph => {
   const middleware: Middleware[] = [
     new AuthenticationHandler(provider),
     new RetryHandler(new RetryHandlerOptions()),
@@ -155,10 +156,12 @@ export function createFromProvider(provider: IProvider, version?: string, compon
     new HTTPMessageHandler()
   ];
 
+  const baseURL = provider.baseURL ? provider.baseURL : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
   const client = Client.initWithMiddleware({
-    middleware: chainMiddleware(...middleware)
+    middleware: chainMiddleware(...middleware),
+    baseUrl: baseURL
   });
 
   const graph = new Graph(client, version);
   return component ? graph.forComponent(component) : graph;
-}
+};

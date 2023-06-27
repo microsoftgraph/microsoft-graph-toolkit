@@ -1,0 +1,15 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables';
+
+$profile-background-color: var(--profile-background-color, --neutral-layer-1);
+$profile-title-color: var(--profile-title-color, var(--neutral-foreground-rest));
+$profile-section-title-color: var(--profile-section-title-color, var(--neutral-foreground-hint));
+$profile-token-item-color: var(--profile-token-item-color, var(--neutral-foreground-rest));
+$profile-token-overflow-color: var(--profile-token-overflow-color, var(--accent-foreground-rest));
+$profile-token-item-background-color: var(--profile-token-item-background-color, var(--neutral-fill-secondary-rest));

@@ -30,18 +30,18 @@
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo && shx rm 'src/**/*-css.ts' || shx true",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
-    "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
+    "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts",
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd ."
   },
   "dependencies": {
     "@microsoft/mgt-element": "*",
-    "@microsoft/microsoft-graph-client": "^2.2.1",
+    "@microsoft/microsoft-graph-client": "3.0.2",
     "@microsoft/microsoft-graph-types": "^2.0.0",
-    "@microsoft/microsoft-graph-types-beta": "^0.16.0-preview",
-    "@fluentui/web-components": "0.22.1",
-    "office-ui-fabric-core": "11.0.0"
+    "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
+    "@fluentui/web-components": "^2.5.12",
+    "office-ui-fabric-core": "^11.0.0"
   },
   "publishConfig": {
     "directory": "dist"

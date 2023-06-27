@@ -5,21 +5,49 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-login',
-  component: 'mgt-login',
-  decorators: [withCodeEditor]
+  component: 'login',
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: { code: '<mgt-login></mgt-login>' }
+    }
+  }
 };
 
 export const Login = () => html`
   <mgt-login></mgt-login>
+`;
+
+export const CompactLogin = () => html`
+  <mgt-login login-view="compact"></mgt-login>
+`;
+
+export const AvatarLogin = () => html`
+  <mgt-login login-view="avatar"></mgt-login>
+`;
+
+export const ShowPresenceLogin = () => html`
+  <mgt-login show-presence login-view="full"></mgt-login>
+`;
+
+export const RightAligned = () => html`
+<div class="right">
+    <mgt-login login-view="compact"></mgt-login>
+</div>
+<style>
+.right {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+</style>
 `;
 
 export const Templates = () => html`
@@ -95,9 +123,43 @@ export const localization = () => html`
     _components: {
       login: {
         signInLinkSubtitle: 'Sign In 🤗',
-        signOutLinkSubtitle: 'Sign Out 🙋‍♀️'
+        signOutLinkSubtitle: 'Sign Out 🙋‍♀️',
+        signInWithADifferentAccount: 'Use another account'
       },
     }
   }
   </script>
+`;
+
+export const MultipleAccounts = () => html`
+<mgt-login></mgt-login>
+Note: this story configures the MockProvider with data to represent the case of multiple signed in accounts.
+It is not possible to sign in with additional accounts or switch the active account.
+Please refer to the JavaScript tab if you wish to change which accounts are being show here.
+<script>
+  import { Providers, MockProvider } from './mgt.storybook.js';
+  const signedInAccounts = [{
+      name: 'Megan Bowen',
+      mail: 'MeganB@M365x214355.onmicrosoft.com',
+      id: '48d31887-5fad-4d73-a9f5-3c356e68a038'
+    },
+    {
+      name: 'Emily Braun',
+      mail: 'EmilyB@M365x214355.onmicrosoft.com',
+      id: '2804bc07-1e1f-4938-9085-ce6d756a32d2'
+    },
+    {
+      name: 'Lynne Robbins',
+      mail: 'LynneR@M365x214355.onmicrosoft.com',
+      id: 'e8a02cc7-df4d-4778-956d-784cc9506e5a'
+    },
+    {
+      name: 'Henrietta Mueller',
+      mail: 'HenriettaM@M365x214355.onmicrosoft.com',
+      id: 'c8913c86-ceea-4d39-b1ea-f63a5b675166'
+    },
+  ];
+  // initialize the auth provider globally with pre-defined signed in users
+  Providers.globalProvider = new MockProvider(true, signedInAccounts);
+</script>
 `;
