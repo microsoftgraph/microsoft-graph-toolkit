@@ -4,7 +4,6 @@ import { Header } from './components/Header';
 import { SideNavigation } from './components/SideNavigation';
 import { HomePage } from './pages/HomePage';
 import { useIsSignedIn } from './hooks/useIsSignedIn';
-import { Incident } from './pages/Incident/Incident';
 import { NavigationItem } from './models/NavigationItem';
 import { getNavigation } from './services/Navigation';
 import { FluentProvider, makeStyles, mergeClasses, shorthands } from '@fluentui/react-components';
@@ -87,8 +86,6 @@ export const Layout: React.FunctionComponent = theme => {
                       <Route exact={item.exact} path={item.url} children={item.component} key={item.key} />
                     )
                 )}
-
-                {isSignedIn && <Route path="/incident/:id" component={Incident} />}
                 <Route path="*" component={HomePage} />
               </Switch>
             </div>

@@ -606,6 +606,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.addEventListener('paste', this.handlePaste);
   }
 
+  private get hasMaxSelections(): boolean {
+    return this.selectionMode === 'single' && this.selectedPeople.length >= 1;
+  }
+
   /**
    * Focuses the input element when focus is called
    *
@@ -739,18 +743,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderInput(selectedPeopleTemplate: TemplateResult): TemplateResult {
-    const placeholder = !this.disabled
-      ? this.placeholder
-        ? this.placeholder
-        : this.strings.inputPlaceholderText
-      : this.placeholder || '';
-
-    const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
-
-    if (selectionMode === 'single' && this.selectedPeople.length >= 1) {
-      this.lostFocus();
-      return html``;
-    }
+    const placeholder = this.disabled ? '' : this.placeholder || this.strings.inputPlaceholderText;
+    const maxSelectionsAriaLabel = this.hasMaxSelections ? this.strings.maxSelectionsAriaLabel : '';
 
     const searchIcon = html`<span class="search-icon">${getSvg(SvgIcon.Search)}</span>`;
     const startSlot = this.selectedPeople?.length > 0 ? selectedPeopleTemplate : searchIcon;
@@ -761,16 +755,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         slot="anchor"
         id="people-picker-input"
         role="combobox"
-        placeholder=${placeholder}
-        aria-label=${this.ariaLabel || placeholder || this.strings.selectContact}
-        @click="${this.handleInputClick}"
-        @focus="${this.gainedFocus}"
-        @keydown="${this.onUserKeyDown}"
-        @keyup="${this.onUserKeyUp}"
-        @input="${this.onUserInput}"
+        placeholder=${this.hasMaxSelections ? this.strings.maxSelectionsPlaceHolder : placeholder}
+        aria-label=${this.ariaLabel || maxSelectionsAriaLabel || placeholder || this.strings.selectContact}
+        aria-expanded=${this.flyout?.isOpen ?? false}
+        @click="${this.hasMaxSelections ? undefined : this.handleInputClick}"
+        @focus="${this.hasMaxSelections ? undefined : this.gainedFocus}"
+        @keydown="${this.hasMaxSelections ? undefined : this.onUserKeyDown}"
+        @input="${this.hasMaxSelections ? undefined : this.onUserInput}"
         @blur="${this.lostFocus}"
-        ?disabled=${this.disabled}>
-          <span slot="start">${startSlot}</span>
+        ?disabled=${this.disabled}
+      >
+        <span slot="start">${startSlot}</span>
       </fluent-text-field>
     `;
   }
@@ -924,6 +919,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         class="searched-people-list"
         role="listbox"
         aria-live="polite"
+        title=${this.strings.suggestionsTitle}
       >
          ${repeat(
            filteredPeople,
@@ -1071,7 +1067,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               if (this._userFilters && isUserOrContactType) {
                 people = await getUsers(graph, this._userFilters, this.showMax);
               } else {
-                people = await getPeople(graph, this.userType, this._peopleFilters);
+                people = await getPeople(graph, this.userType, this._peopleFilters, this.showMax);
               }
             }
           } else if (this.type === PersonType.group) {
@@ -1262,7 +1258,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       flyout.close();
     }
     if (this.input) {
-      this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
     }
     this._arrowSelectionCount = -1;
@@ -1278,9 +1273,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const flyout = this.flyout;
     if (flyout) {
       flyout.open();
-    }
-    if (this.input) {
-      this.input.setAttribute('aria-expanded', 'true');
     }
     this._arrowSelectionCount = -1;
   }
@@ -1298,10 +1290,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       return p.id !== person.id;
     });
+    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+    if (this.hasMaxSelections && inputControl) {
+      inputControl.removeAttribute('disabled');
+    }
     this.selectedPeople = filteredPersonArr;
     void this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
-    this.input?.focus();
+    inputControl?.focus();
   }
 
   /**
@@ -1371,7 +1367,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private readonly lostFocus = () => {
     this._isFocused = false;
     if (this.input) {
-      this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
     }
 
@@ -1476,6 +1471,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // handle suggestion list item click
   private handleSuggestionClick(person: IDynamicPerson): void {
     this.addPerson(person);
+    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+    if (this.hasMaxSelections && inputControl) {
+      inputControl.setAttribute('disabled', 'true');
+      this.input.value = inputControl.value = '';
+    }
     this.hideFlyout();
   }
 
@@ -1549,9 +1549,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     if (keyName === 'ArrowUp' || keyName === 'ArrowDown') {
       this.handleArrowSelection(event);
-      if (this.input.value?.length > 0) {
-        event.preventDefault();
-      }
+      event.preventDefault();
     }
 
     if (keyName === 'Enter') {
@@ -1564,6 +1562,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this.addPerson(foundPerson);
           this.hideFlyout();
           this.input.value = '';
+          const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+          if (this.hasMaxSelections && inputControl) {
+            inputControl.setAttribute('disabled', 'true');
+          }
         }
       } else if (this.allowAnyEmail) {
         this.handleAnyEmail();

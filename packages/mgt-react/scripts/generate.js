@@ -24,7 +24,8 @@ const gaTags = new Set([
   'taxonomy-picker',
   'theme-toggle',
   'search-box',
-  'search-results'
+  'search-results',
+  'spinner'
 ]);
 const outputFileName = 'react';
 

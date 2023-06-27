@@ -41,11 +41,18 @@ import '../sub-components/mgt-spinner/mgt-spinner';
 
 export * from './mgt-person-card.types';
 
-import { fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField } from '@fluentui/web-components';
+import {
+  fluentTabs,
+  fluentTab,
+  fluentTabPanel,
+  fluentButton,
+  fluentTextField,
+  fluentCard
+} from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { BasePersonCardSection, CardSection } from '../BasePersonCardSection';
 
-registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+registerFluentComponents(fluentCard, fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
 
 interface MgtPersonCardStateHistory {
   state: MgtPersonCardState;

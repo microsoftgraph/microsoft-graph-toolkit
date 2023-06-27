@@ -548,8 +548,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             const thumbnailBatch = graph.createBatch<BinaryThumbnail>();
             const thumbnailBatchBeta = BetaGraph.fromGraph(graph).createBatch<BinaryThumbnail>();
 
-            for (let i = 0; i < response.value[0].hitsContainers[0].hits?.length; i++) {
-              const element = response.value[0].hitsContainers[0].hits[i];
+            const hits =
+              response.value?.length && response.value[0].hitsContainers?.length
+                ? response.value[0].hitsContainers[0]?.hits ?? []
+                : [];
+            for (const element of hits) {
               const resource = element.resource as SearchResource;
               if (
                 (resource.size > 0 || resource.webUrl?.endsWith('.aspx')) &&
@@ -558,13 +561,13 @@ export class MgtSearchResults extends MgtTemplatedComponent {
               ) {
                 if (resource['@odata.type'] === '#microsoft.graph.listItem') {
                   thumbnailBatchBeta.get(
-                    i.toString(),
+                    element.hitId.toString(),
                     `/sites/${resource.parentReference.siteId}/pages/${resource.id}`
                   );
                 } else {
                   thumbnailBatch.get(
-                    i.toString(),
-                    `/drives/${resource.parentReference.driveId}/items/${resource.id}/thumbnails/0/large`
+                    element.hitId.toString(),
+                    `/drives/${resource.parentReference.driveId}/items/${resource.id}/thumbnails/0/medium`
                   );
                 }
               }

@@ -13,7 +13,6 @@ import {
 } from '@fluentui/react-components';
 import { BrightnessHighRegular, WeatherMoonFilled, PeopleTeamRegular, PeopleTeamFilled } from '@fluentui/react-icons';
 import { useAppContext } from '../AppContext';
-import { darkTheme, lightTheme } from '@microsoft/mgt-chat';
 
 const availableThemes = [
   {
@@ -49,25 +48,25 @@ export const ThemeSwitcher = () => {
       case 'teamsLight':
         appContext.setState({
           ...appContext.state,
-          theme: { key: 'light', fluentTheme: teamsLightTheme, chatTheme: lightTheme }
+          theme: { key: 'light', fluentTheme: teamsLightTheme }
         });
         break;
       case 'teamsDark':
         appContext.setState({
           ...appContext.state,
-          theme: { key: 'dark', fluentTheme: teamsDarkTheme, chatTheme: darkTheme }
+          theme: { key: 'dark', fluentTheme: teamsDarkTheme }
         });
         break;
       case 'light':
         appContext.setState({
           ...appContext.state,
-          theme: { key: theme.key, fluentTheme: webLightTheme, chatTheme: lightTheme }
+          theme: { key: theme.key, fluentTheme: webLightTheme }
         });
         break;
       case 'dark':
         appContext.setState({
           ...appContext.state,
-          theme: { key: theme.key, fluentTheme: webDarkTheme, chatTheme: darkTheme }
+          theme: { key: theme.key, fluentTheme: webDarkTheme }
         });
         break;
     }

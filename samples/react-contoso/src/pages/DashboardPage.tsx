@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { PageHeader } from '../components/PageHeader';
 import { Providers, Todo } from '@microsoft/mgt-react';
-import { Incidents } from '../components/Incidents';
+import { DirectReports } from '../components/DirectReports';
 import {
   SelectTabData,
   SelectTabEvent,
@@ -17,23 +17,6 @@ const useStyles = makeStyles({
     ...shorthands.padding('10px')
   }
 });
-
-/**
- * Object mapping chat operations to the scopes required to perform them
- */
-const dashboardOperationScopes: Record<string, string[]> = {
-  tasks: ['tasks.readwrite']
-};
-
-/**
- * Provides an array of the distinct scopes required for all chat operations
- */
-export const allDashboardScopes = Array.from(
-  Object.values(dashboardOperationScopes).reduce((acc, scopes) => {
-    scopes.forEach(s => acc.add(s));
-    return acc;
-  }, new Set<string>())
-);
 
 export const DashboardPage: React.FunctionComponent = () => {
   const styles = useStyles();
@@ -63,11 +46,11 @@ export const DashboardPage: React.FunctionComponent = () => {
       <div>
         <TabList selectedValue={selectedTab} onTabSelect={onTabSelect}>
           <Tab value="tasks">My Tasks</Tab>
-          <Tab value="incidents">My Incidents</Tab>
+          <Tab value="directReports">My Direct Reports</Tab>
         </TabList>
         <div className={styles.panels}>
-          {selectedTab === 'tasks' && taskListId && <Todo targetId={taskListId}></Todo>}
-          {selectedTab === 'incidents' && <Incidents />}
+          {selectedTab === 'tasks' && taskListId && <Todo initialId={taskListId}></Todo>}
+          {selectedTab === 'directReports' && <DirectReports />}
         </div>
       </div>
     </>

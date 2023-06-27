@@ -29,7 +29,10 @@ $person-card-avatar-size: var(--person-card-avatar-size, 75px);
 $person-card-details-left-spacing: var(--person-card-details-left-spacing, 15px);
 $person-card-avatar-top-spacing: var(--person-card-avatar-top-spacing, 15px);
 $person-card-details-bottom-spacing: var(--person-card-details-bottom-spacing, 0);
-$person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing, 83px);
+$person-card-base-icons-left-spacing: var(
+  --person-card-base-icons-left-spacing,
+  calc(#{$person-card-avatar-size} + #{$person-card-details-left-spacing} - 8px)
+);
 
 :host {
   box-shadow: $person-card-box-shadow;
@@ -126,7 +129,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       --person-line3-font-weight: #{$person-card-line3-font-weight};
       --person-line3-text-line-height: #{$person-card-line3-line-height};
       --person-line3-text-color: #{$person-card-line3-text-color};
-      --person-avatar-size-3-lines: #{$person-card-avatar-size};
+      --person-avatar-size: #{$person-card-avatar-size};
       --person-presence-wrapper-bottom: -15px;
     }
 
@@ -445,7 +448,8 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 
 :host fluent-button {
   &.section__show-more.lightweight::part(control),
-  &.close-button.lightweight::part(control) {
+  &.close-button.lightweight::part(control),
+  &.expanded-details-button::part(control) {
     background: $person-card-fluent-background-color;
   }
 

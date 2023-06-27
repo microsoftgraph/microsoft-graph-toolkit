@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PageHeader } from '../components/PageHeader';
-import { FileListComposite } from '@microsoft/mgt-react';
+import { FileList } from '@microsoft/mgt-react';
 import {
   SelectTabData,
   SelectTabEvent,
@@ -44,19 +44,8 @@ export const FilesPage: React.FunctionComponent = () => {
           <Tab value="channel">Channel Files</Tab>
         </TabList>
         <div className={styles.panels}>
-          {selectedTab === 'my' && (
-            <FileListComposite enableCommandBar={true} useGridView={true} pageSize={100}></FileListComposite>
-          )}
-          {selectedTab === 'recent' && (
-            <FileListComposite
-              enableBreadcrumb={false}
-              enableCommandBar={false}
-              useGridView={true}
-              insightType="used"
-              enableFileUpload={false}
-              pageSize={100}
-            ></FileListComposite>
-          )}
+          {selectedTab === 'my' && <FileList pageSize={100}></FileList>}
+          {selectedTab === 'recent' && <FileList insightType="used" enableFileUpload={false} pageSize={100}></FileList>}
           {selectedTab === 'site' && <SiteFiles />}
           {selectedTab === 'channel' && <ChannelFiles />}
         </div>

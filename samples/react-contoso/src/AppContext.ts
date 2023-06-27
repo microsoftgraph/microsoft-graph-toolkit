@@ -1,12 +1,11 @@
 import { Theme } from '@fluentui/react-components';
 import React from 'react';
 import { Dispatch, SetStateAction } from 'react';
-import { lightTheme } from '@microsoft/mgt-chat';
 
 type AppContextState = {
   searchTerm: string;
   sidebar: { isMinimized: boolean };
-  theme: { key: string; fluentTheme: Theme; chatTheme: typeof lightTheme };
+  theme: { key: string; fluentTheme: Theme };
 };
 
 type AppContextValue = {

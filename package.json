@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "3.0.0-rc.3",
+  "version": "3.0.0",
   "workspaces": {
     "packages": [
       "packages/*",
@@ -14,7 +14,7 @@
       "samples/electron-app",
       "samples/sp-webpart",
       "samples/sp-mgt",
-      "samples/teamsfx-app/tabs"
+      "samples/teamsfx-app"
     ],
     "nohoist": [
       "**/@microsoft/sp*",
