@@ -10,6 +10,7 @@ import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { strings } from './strings';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { styles } from './mgt-dot-options-css';
 
@@ -36,6 +37,18 @@ export class MgtDotOptions extends MgtBaseComponent {
   public static get styles() {
     return styles;
   }
+
+  /**
+   * Strings for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtDotOptions
+   */
+  protected get strings() {
+    return strings;
+  }
+
   /**
    * Determines if header menu is rendered or hidden.
    *
@@ -49,14 +62,9 @@ export class MgtDotOptions extends MgtBaseComponent {
    *
    * @memberof MgtDotOptions
    */
-  @property({ type: Object }) public options: { [option: string]: (e: Event) => void | any };
+  @property({ type: Object }) public options: Record<string, (e: Event) => void | any>;
 
-  private _clickHandler: (e: MouseEvent) => void | any = null;
-
-  constructor() {
-    super();
-    this._clickHandler = (e: MouseEvent) => (this.open = false);
-  }
+  private readonly _clickHandler = () => (this.open = false);
 
   public connectedCallback() {
     super.connectedCallback();
@@ -75,27 +83,26 @@ export class MgtDotOptions extends MgtBaseComponent {
    */
   public render() {
     const menuOptions = Object.keys(this.options);
-
     return html`
-      <div tabindex="0" class=${classMap({ 'dot-menu': true, open: this.open })}
+      <fluent-button
+        appearance="stealth"
+        aria-label=${this.strings.dotOptionsTitle}
         @click=${this.onDotClick}
-        @keydown=${this.onDotKeydown}>
-        <span class="dot-icon">\uE712</span>
-        <div tabindex="0" class="menu">
-          ${Object.keys(this.options).map(prop => this.getMenuOption(prop, this.options[prop]))}
-        </div>
-      </div>
-    `;
+        @keydown=${this.onDotKeydown}
+        class="dot-icon">\uE712</fluent-button>
+      <fluent-menu class=${classMap({ menu: true, open: this.open })}>
+        ${menuOptions.map(opt => this.getMenuOption(opt, this.options[opt]))}
+      </fluent-menu>`;
   }
 
-  private handleItemClick = (e: MouseEvent, fn: MenuOptionEventFunction) => {
+  private readonly handleItemClick = (e: MouseEvent, fn: MenuOptionEventFunction) => {
     e.preventDefault();
     e.stopPropagation();
     fn(e);
     this.open = false;
   };
 
-  private handleItemKeydown = (e: KeyboardEvent, fn: MenuOptionEventFunction) => {
+  private readonly handleItemKeydown = (e: KeyboardEvent, fn: MenuOptionEventFunction) => {
     this.handleKeydownMenuOption(e);
     fn(e);
     this.open = false;
@@ -133,14 +140,14 @@ export class MgtDotOptions extends MgtBaseComponent {
       </fluent-menu-item>`;
   }
 
-  private onDotClick = (e: MouseEvent) => {
+  private readonly onDotClick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     this.open = !this.open;
   };
 
-  private onDotKeydown = (e: KeyboardEvent) => {
+  private readonly onDotKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       e.stopPropagation();

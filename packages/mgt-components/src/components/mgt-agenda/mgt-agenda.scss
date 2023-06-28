@@ -19,7 +19,6 @@ $agenda-event-time-font-size: var(--agenda-event-time-font-size, 12px);
 $agenda-event-subject-font-size: var(--agenda-event-subject-font-size, 20px);
 $agenda-event-location-font-size: var(--agenda-event-location-font-size, 12px);
 
-mgt-agenda,
 :host {
   --card-height: auto;
   --card-width: 99%;
@@ -187,7 +186,7 @@ fluent-card.event {
   }
 }
 
-:host mgt-people {
+:host .event-attendees {
   --color: $agenda-event-attendees-color;
 }
 
@@ -211,8 +210,7 @@ fluent-card.event {
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
-  :host,
-  mgt-agenda {
+  :host {
     .agenda {
       .event {
         &-location-container {
@@ -232,8 +230,7 @@ fluent-card.event {
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: light) {
-  :host,
-  mgt-agenda {
+  :host {
     .agenda {
       .event {
         &-location-container {

@@ -67,9 +67,9 @@ export class MgtArrowOptions extends MgtBaseComponent {
    * @type {object}
    * @memberof MgtArrowOptions
    */
-  @property({ type: Object }) public options: { [name: string]: (e: UIEvent) => any | void };
+  @property({ type: Object }) public options: Record<string, (e: UIEvent) => any | void>;
 
-  private _clickHandler: (e: UIEvent) => void | any;
+  private readonly _clickHandler: (e: UIEvent) => void | any;
 
   constructor() {
     super();
@@ -109,7 +109,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
    *
    * @param {KeyboardEvent} e
    */
-  private onHeaderKeyDown = (e: KeyboardEvent) => {
+  private readonly onHeaderKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       e.stopPropagation();

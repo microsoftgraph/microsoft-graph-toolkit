@@ -72,26 +72,26 @@ export const setSearchResultsEntityTypes = () => html`
     <mgt-search-results query-string="marketing" entity-types="message">
     </mgt-search-results>
   </div>
-  
+
   <div class="example">
 	  <h3>Events</h3>
     <mgt-search-results query-string="marketing" entity-types="event">
     </mgt-search-results>
   </div>
 
-  
+
   <div class="example">
 	  <h3>Chat Messages</h3>
     <mgt-search-results query-string="marketing" entity-types="chatMessage">
     </mgt-search-results>
   </div>
-  
+
   <div class="example">
 	  <h3>Persons</h3>
     <mgt-search-results query-string="bowen" version="beta" entity-types="person">
     </mgt-search-results>
   </div>
-  
+
   <div class="example">
 	  <h3>External Items</h3>
     <mgt-search-results query-string="contoso" content-sources="contosoproducts" version="beta" entity-types="externalItem">
@@ -104,14 +104,14 @@ export const setSearchResultsEntityTypes = () => html`
     </mgt-search-results>
   </div>
 
-  
+
   <div class="example">
 	  <h3>Bookmarks</h3>
     <mgt-search-results query-string="contoso" version="beta" entity-types="bookmark">
     </mgt-search-results>
   </div>
 
-  
+
   <div class="example">
 	  <h3>Acronyms</h3>
     <mgt-search-results query-string="contoso" version="beta" entity-types="acronym">

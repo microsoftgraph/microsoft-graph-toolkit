@@ -109,7 +109,7 @@ export const findGroups = async (
   const scopes = 'Group.Read.All';
 
   let cache: CacheStore<CacheGroupQuery>;
-  const key = `${query ? query : '*'}*${groupTypes}*${groupFilters}`;
+  const key = `${query ? query : '*'}*${groupTypes}*${groupFilters}:${top}`;
 
   if (getIsGroupsCacheEnabled()) {
     cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery);
@@ -388,7 +388,7 @@ export const getGroupsForGroupIds = async (graph: IGraph, groupIds: string[], fi
     // iterate over groupIds to ensure the order of ids
     for (const id of groupIds) {
       const response = responses.get(id);
-      if (response && response.content) {
+      if (response?.content) {
         groupDict[id] = response.content as Group;
         if (getIsGroupsCacheEnabled()) {
           await cache.putValue(id, { group: JSON.stringify(response.content) });

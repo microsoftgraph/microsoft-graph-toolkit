@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph, BetaGraph, CacheService, CacheStore } from '@microsoft/mgt-element';
+import { IGraph, BetaGraph, CacheService, CacheStore, prepScopes } from '@microsoft/mgt-element';
 import { Team } from '@microsoft/microsoft-graph-types';
 import {
   getPhotoForResource,
@@ -22,19 +22,18 @@ import { CollectionResponse } from '@microsoft/mgt-element';
  * @returns {Promise<Team[]>}
  * @memberof Graph
  */
-export const getAllMyTeams = async (graph: IGraph): Promise<Team[]> => {
+export const getAllMyTeams = async (graph: IGraph, scopes: string[]): Promise<Team[]> => {
   const teams = (await graph
     .api('/me/joinedTeams')
     .select(['displayName', 'id', 'isArchived'])
+    .middlewareOptions(prepScopes(...scopes))
     .get()) as CollectionResponse<Team>;
 
   return teams?.value;
 };
 
 /** An object collection of cached photos. */
-type CachePhotos = {
-  [key: string]: CachePhoto;
-};
+type CachePhotos = Record<string, CachePhoto>;
 
 /**
  * Load the photos for a give set of teamIds

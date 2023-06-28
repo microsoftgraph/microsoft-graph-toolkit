@@ -53,16 +53,6 @@ export { GroupType } from '../../graph/graph.groups';
 export { PersonType, UserType } from '../../graph/graph.people';
 
 /**
- * An interface used to mark an object as 'focused',
- * so it can be rendered differently.
- *
- * @interface IFocusable
- */
-interface IFocusable {
-  isFocused: boolean;
-}
-
-/**
  * Web component used to search for people from the Microsoft Graph
  *
  * @export
@@ -616,6 +606,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.addEventListener('paste', this.handlePaste);
   }
 
+  private get hasMaxSelections(): boolean {
+    return this.selectionMode === 'single' && this.selectedPeople.length >= 1;
+  }
+
   /**
    * Focuses the input element when focus is called
    *
@@ -749,37 +743,29 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderInput(selectedPeopleTemplate: TemplateResult): TemplateResult {
-    const placeholder = !this.disabled
-      ? this.placeholder
-        ? this.placeholder
-        : this.strings.inputPlaceholderText
-      : this.placeholder || '';
-
-    const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
-
-    if (selectionMode === 'single' && this.selectedPeople.length >= 1) {
-      this.lostFocus();
-      return html``;
-    }
+    const placeholder = this.disabled ? '' : this.placeholder || this.strings.inputPlaceholderText;
+    const maxSelectionsAriaLabel = this.hasMaxSelections ? this.strings.maxSelectionsAriaLabel : '';
 
     const searchIcon = html`<span class="search-icon">${getSvg(SvgIcon.Search)}</span>`;
     const startSlot = this.selectedPeople?.length > 0 ? selectedPeopleTemplate : searchIcon;
     return html`
       <fluent-text-field
-        autocomplete="off
+        autocomplete="off"
         appearance="outline"
         slot="anchor"
         id="people-picker-input"
-        placeholder=${placeholder}
-        aria-label=${this.ariaLabel || placeholder}
-        @click="${this.handleInputClick}"
-        @focus="${this.gainedFocus}"
-        @keydown="${this.onUserKeyDown}"
-        @keyup="${this.onUserKeyUp}"
-        @input="${this.onUserInput}"
+        role="combobox"
+        placeholder=${this.hasMaxSelections ? this.strings.maxSelectionsPlaceHolder : placeholder}
+        aria-label=${this.ariaLabel || maxSelectionsAriaLabel || placeholder || this.strings.selectContact}
+        aria-expanded=${this.flyout?.isOpen ?? false}
+        @click="${this.hasMaxSelections ? undefined : this.handleInputClick}"
+        @focus="${this.hasMaxSelections ? undefined : this.gainedFocus}"
+        @keydown="${this.hasMaxSelections ? undefined : this.onUserKeyDown}"
+        @input="${this.hasMaxSelections ? undefined : this.onUserInput}"
         @blur="${this.lostFocus}"
-        ?disabled=${this.disabled}>
-          <span slot="start">${startSlot}</span>
+        ?disabled=${this.disabled}
+      >
+        <span slot="start">${startSlot}</span>
       </fluent-text-field>
     `;
   }
@@ -792,7 +778,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderSelectedPeople(selectedPeople?: IDynamicPerson[]): TemplateResult {
-    if (!selectedPeople || !selectedPeople.length) {
+    if (!selectedPeople?.length) {
       return html``;
     }
 
@@ -933,24 +919,20 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         class="searched-people-list"
         role="listbox"
         aria-live="polite"
+        title=${this.strings.suggestionsTitle}
       >
          ${repeat(
            filteredPeople,
            person => person.id,
-           person => {
-             const lineTwo = person.jobTitle || (person as User).mail;
-             const ariaLabel = `${person.displayName} ${lineTwo ?? ''}`;
-             return html`
-               <li
-                id="${person.id}"
-                aria-label="${ariaLabel}"
-                class="searched-people-list-result"
-                role="option"
-                @click="${_ => this.handleSuggestionClick(person)}">
-                  ${this.renderPersonResult(person)}
-               </li>
-             `;
-           }
+           person => html`
+            <li
+              id="${person.id}"
+              class="searched-people-list-result"
+              role="option"
+              @click="${() => this.handleSuggestionClick(person)}">
+                ${this.renderPersonResult(person)}
+            </li>
+          `
          )}
        </ul>
      `;
@@ -1085,7 +1067,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               if (this._userFilters && isUserOrContactType) {
                 people = await getUsers(graph, this._userFilters, this.showMax);
               } else {
-                people = await getPeople(graph, this.userType, this._peopleFilters);
+                people = await getPeople(graph, this.userType, this._peopleFilters, this.showMax);
               }
             }
           } else if (this.type === PersonType.group) {
@@ -1158,7 +1140,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               // Default UserType === any
               if (this.userType === UserType.contact || this.userType === UserType.user) {
                 // we might have a user-filters property set, search for users with it.
-                if (this.userIds && this.userIds.length) {
+                if (this.userIds?.length) {
                   // has the user-ids proerty set
                   people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
                 } else {
@@ -1166,7 +1148,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 }
               } else {
                 if (!this.groupIds) {
-                  if (this.userIds && this.userIds.length) {
+                  if (this.userIds?.length) {
                     // has the user-ids proerty set
                     people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
                   } else {
@@ -1276,7 +1258,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       flyout.close();
     }
     if (this.input) {
-      this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
     }
     this._arrowSelectionCount = -1;
@@ -1292,9 +1273,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const flyout = this.flyout;
     if (flyout) {
       flyout.open();
-    }
-    if (this.input) {
-      this.input.setAttribute('aria-expanded', 'true');
     }
     this._arrowSelectionCount = -1;
   }
@@ -1312,10 +1290,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       return p.id !== person.id;
     });
+    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+    if (this.hasMaxSelections && inputControl) {
+      inputControl.removeAttribute('disabled');
+    }
     this.selectedPeople = filteredPersonArr;
     void this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
-    this.input?.focus();
+    inputControl?.focus();
   }
 
   /**
@@ -1367,14 +1349,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   // handle input click
-  private handleInputClick = () => {
+  private readonly handleInputClick = () => {
     if (!this.flyout.isOpen) {
       this.handleUserSearch();
     }
   };
 
   // handle input focus
-  private gainedFocus = () => {
+  private readonly gainedFocus = () => {
     this.clearHighlighted();
     this._isFocused = true;
     void this.loadState();
@@ -1382,10 +1364,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   };
 
   // handle input blur
-  private lostFocus = () => {
+  private readonly lostFocus = () => {
     this._isFocused = false;
     if (this.input) {
-      this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
     }
 
@@ -1404,7 +1385,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Handles input from the key up events on the keyboard.
    */
-  private onUserKeyUp = (event: KeyboardEvent): void => {
+  private readonly onUserKeyUp = (event: KeyboardEvent): void => {
     const keyName = event.key;
     const isCmdOrCtrlKey = event.getModifierState('Control') || event.getModifierState('Meta');
     const isPaste = isCmdOrCtrlKey && keyName === 'v';
@@ -1454,7 +1435,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
   };
 
-  private onUserInput = (event: InputEvent) => {
+  private readonly onUserInput = (event: InputEvent) => {
     const input = event.target as HTMLInputElement;
     this.userInput = input.value;
     if (this.userInput) {
@@ -1490,6 +1471,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // handle suggestion list item click
   private handleSuggestionClick(person: IDynamicPerson): void {
     this.addPerson(person);
+    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+    if (this.hasMaxSelections && inputControl) {
+      inputControl.setAttribute('disabled', 'true');
+      this.input.value = inputControl.value = '';
+    }
     this.hideFlyout();
   }
 
@@ -1521,7 +1507,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    *
    * @param event - event tracked on user input (keydown)
    */
-  private onUserKeyDown = (event: KeyboardEvent): void => {
+  private readonly onUserKeyDown = (event: KeyboardEvent): void => {
     const keyName = event.key;
     const selectedList = this.renderRoot.querySelector('.selected-list');
     const isCmdOrCtrlKey = event.getModifierState('Control') || event.getModifierState('Meta');
@@ -1563,9 +1549,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     if (keyName === 'ArrowUp' || keyName === 'ArrowDown') {
       this.handleArrowSelection(event);
-      if (this.input.value?.length > 0) {
-        event.preventDefault();
-      }
+      event.preventDefault();
     }
 
     if (keyName === 'Enter') {
@@ -1578,6 +1562,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this.addPerson(foundPerson);
           this.hideFlyout();
           this.input.value = '';
+          const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+          if (this.hasMaxSelections && inputControl) {
+            inputControl.setAttribute('disabled', 'true');
+          }
         }
       } else if (this.allowAnyEmail) {
         this.handleAnyEmail();
@@ -1633,7 +1621,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Handles the cut event when it is fired
    */
-  private handleCut = () => {
+  private readonly handleCut = () => {
     this.writeHighlightedText().then(
       () => {
         this.removeHighlightedOnCut();
@@ -1647,14 +1635,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Handles the copy event when it is fired
    */
-  private handleCopy = () => {
+  private readonly handleCopy = () => {
     void this.writeHighlightedText();
   };
 
   /**
    * Parses the copied people text and adds them when you paste
    */
-  private handlePaste = () => {
+  private readonly handlePaste = () => {
     navigator.clipboard.readText().then(
       copiedText => {
         if (copiedText) {
@@ -1743,7 +1731,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private handleArrowSelection(event?: KeyboardEvent): void {
     const peopleList = this.renderRoot.querySelector('.searched-people-list');
 
-    if (peopleList && peopleList?.children?.length) {
+    if (peopleList?.children?.length) {
       if (event) {
         // update arrow count
         if (event.key === 'ArrowUp') {
@@ -1764,7 +1752,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
       }
 
-      for (const person of peopleList?.children) {
+      for (const person of peopleList?.children ?? []) {
         const p = person as HTMLElement;
         p.setAttribute('aria-selected', 'false');
         p.blur();
@@ -1811,7 +1799,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       });
 
       // remove duplicates
-      const dupsSet: Set<string> = new Set();
+      const dupsSet = new Set<string>();
       for (const d of filtered) {
         const person = JSON.stringify(d);
         dupsSet.add(person);

@@ -33,11 +33,7 @@ export const tasksWithGroupId = () => html`
   -->
 `;
 
-export const darkTheme = () => html`
-  <mgt-tasks class="mgt-dark"></mgt-tasks>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
+
+export const useToDoAsDataSource = () => html`
+  <mgt-tasks data-source="todo"></mgt-tasks>
 `;

@@ -14,7 +14,8 @@ import {
   ProviderState,
   TeamsHelper,
   mgtHtml,
-  customElement
+  customElement,
+  customElementHelper
 } from '@microsoft/mgt-element';
 import { IGraph } from '@microsoft/mgt-element';
 import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
@@ -40,19 +41,24 @@ import '../sub-components/mgt-spinner/mgt-spinner';
 
 export * from './mgt-person-card.types';
 
-import { fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField } from '@fluentui/web-components';
+import {
+  fluentTabs,
+  fluentTab,
+  fluentTabPanel,
+  fluentButton,
+  fluentTextField,
+  fluentCard
+} from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { BasePersonCardSection, CardSection } from '../BasePersonCardSection';
 
-registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+registerFluentComponents(fluentCard, fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
 
 interface MgtPersonCardStateHistory {
   state: MgtPersonCardState;
   personDetails: IDynamicPerson;
   personImage: string;
 }
-
-type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
 
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
@@ -93,7 +99,6 @@ type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
  * @cssprop --person-card-chat-input-focus-color - {Color} The chat input focus color
  */
 @customElement('person-card')
-// @customElement('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -193,7 +198,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return this._config;
   }
 
-  private static _config: MgtPersonCardConfig = {
+  private static readonly _config: MgtPersonCardConfig = {
     sections: {
       files: true,
       mailMessages: true,
@@ -371,7 +376,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   private get internalPersonDetails(): IDynamicPerson {
-    return (this._cardState && this._cardState.person) || this.personDetails;
+    return this._cardState?.person || this.personDetails;
   }
 
   constructor() {
@@ -436,7 +441,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   public goBack = (): void => {
-    if (!this._history || !this._history.length) {
+    if (!this._history?.length) {
       return;
     }
 
@@ -463,7 +468,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public clearHistory(): void {
     this._currentSection = null;
 
-    if (!this._history || !this._history.length) {
+    if (!this._history?.length) {
       return;
     }
 
@@ -518,9 +523,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       : null;
 
     ariaLabel = this.strings.goBackLabel;
-    const navigationTemplate =
-      this._history && this._history.length
-        ? html`
+    const navigationTemplate = this._history?.length
+      ? html`
             <div class="nav">
               <fluent-button 
                 appearance="lightweight"
@@ -531,7 +535,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
                </fluent-button>
             </div>
           `
-        : null;
+      : null;
 
     // Check for a person-details template
     let personDetailsTemplate = this.renderTemplate('person-details', {
@@ -572,7 +576,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
      `;
   }
 
-  private handleEndOfCard = (e: KeyboardEvent) => {
+  private readonly handleEndOfCard = (e: KeyboardEvent) => {
     if (e && e.code === 'Tab') {
       const endOfCardEl = this.renderRoot.querySelector<HTMLElement>('#end-of-container');
       if (endOfCardEl) {
@@ -809,7 +813,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       `;
     });
 
-    const additionalPanelTemplates = this.sections.map((section, i) => {
+    const additionalPanelTemplates = this.sections.map(section => {
       return html`
         <fluent-tab-panel slot="tabpanel">
           <div class="inserted">
@@ -908,7 +912,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderCurrentSection(): TemplateResult {
-    if ((!this.sections || !this.sections.length) && !this.hasTemplate('additional-details')) {
+    if (!this.sections?.length && !this.hasTemplate('additional-details')) {
       return;
     }
 
@@ -943,7 +947,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     } else {
       return html`
       <div class="message-section">
-        <fluent-text-field appearance="outline" placeholder="${this.strings.quickMessage}"
+        <fluent-text-field
+          autocomplete="off"
+          appearance="outline"
+          placeholder="${this.strings.quickMessage}"
           .value=${chatInput}
           @input=${(e: Event) => {
             this._chatInput = (e.target as HTMLInputElement).value;
@@ -977,7 +984,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (!this.personDetails && this.inheritDetails) {
       // User person details inherited from parent tree
       let parent = this.parentElement;
-      while (parent && parent.tagName !== 'MGT-PERSON') {
+      while (parent && parent.tagName !== `${customElementHelper.prefix}-PERSON`.toUpperCase()) {
         parent = parent.parentElement;
       }
 
@@ -1028,7 +1035,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       // Use the personQuery to find our person.
       const people = await findPeople(graph, this.personQuery, 1);
 
-      if (people && people.length) {
+      if (people?.length) {
         this.personDetails = people[0];
         await getPersonImage(graph, this.personDetails, MgtPersonCard.config.useContactApis).then(image => {
           if (image) {
@@ -1047,7 +1054,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     };
     if (!this.personPresence && this.showPresence) {
       try {
-        if (this.personDetails && this.personDetails.id) {
+        if (this.personDetails?.id) {
           this.personPresence = await getUserPresence(graph, this.personDetails.id);
         } else {
           this.personPresence = defaultPresence;
@@ -1082,7 +1089,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected sendQuickMessage = async (): Promise<void> => {
     const message = this._chatInput.trim();
-    if (!message || !message.length) {
+    if (!message?.length) {
       return;
     }
     const person = this.personDetails as User;
@@ -1133,12 +1140,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const user = this.personDetails as User;
     const person = this.personDetails as microsoftgraph.Person;
 
-    if (user && user.businessPhones && user.businessPhones.length) {
+    if (user?.businessPhones?.length) {
       const phone = user.businessPhones[0];
       if (phone) {
         window.open('tel:' + phone, '_blank', 'noreferrer');
       }
-    } else if (person && person.phones && person.phones.length) {
+    } else if (person?.phones?.length) {
       const businessPhones = this.getPersonBusinessPhones(person);
       const phone = businessPhones[0];
       if (phone) {
@@ -1155,11 +1162,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected chatUser = (message: string = null) => {
     const user = this.personDetails as User;
-    if (user && user.userPrincipalName) {
+    if (user?.userPrincipalName) {
       const users: string = user.userPrincipalName;
 
       let url = `https://teams.microsoft.com/l/chat/0/0?users=${users}`;
-      if (message && message.length) {
+      if (message?.length) {
         url += `&message=${message}`;
       }
 
@@ -1185,7 +1192,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected videoCallUser = () => {
     const user = this.personDetails as User;
-    if (user && user.userPrincipalName) {
+    if (user?.userPrincipalName) {
       const users: string = user.userPrincipalName;
 
       const url = `https://teams.microsoft.com/l/call/0/0?users=${users}&withVideo=true`;
@@ -1212,7 +1219,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected showExpandedDetails = () => {
     const root = this.renderRoot.querySelector('.root');
-    if (root && root.animate) {
+    if (root?.animate) {
       // play back
       root.animate(
         [
@@ -1255,10 +1262,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const { person, directReports, messages, files, profile } = this._cardState;
 
-    if (
-      MgtPersonCard.config.sections.organization &&
-      ((person && person.manager) || (directReports && directReports.length))
-    ) {
+    if (MgtPersonCard.config.sections.organization && (person?.manager || directReports?.length)) {
       this.sections.push(new MgtOrganization(this._cardState, this._me));
     }
 
@@ -1284,7 +1288,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     const person = this.personDetails;
-    return person && person.personImage ? person.personImage : null;
+    return person?.personImage ? person.personImage : null;
   }
 
   private clearInputData() {
@@ -1331,13 +1335,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
   }
 
-  private sendQuickMessageOnEnter = (e: KeyboardEvent) => {
+  private readonly sendQuickMessageOnEnter = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
       void this.sendQuickMessage();
     }
   };
 
-  private handleGoBack = (e: KeyboardEvent) => {
+  private readonly handleGoBack = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
       void this.goBack();
     }

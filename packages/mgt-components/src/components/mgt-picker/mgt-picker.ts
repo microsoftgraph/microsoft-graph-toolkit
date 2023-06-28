@@ -15,6 +15,7 @@ import { registerFluentComponents } from '../../utils/FluentComponents';
 import '../../styles/style-helper';
 import { Entity } from '@microsoft/microsoft-graph-types';
 import { DataChangedDetail } from '../mgt-get/mgt-get';
+import { styles } from './mgt-picker-css';
 
 registerFluentComponents(fluentCombobox, fluentOption);
 
@@ -27,11 +28,16 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * @extends {MgtTemplatedComponent}
  *
  * @cssprop --picker-background-color - {Color} Picker component background color
+ * @cssprop --picker-list-max-height - {String} max height for options list. Default value is 380px.
  */
 @customElement('picker')
 export class MgtPicker extends MgtTemplatedComponent {
   protected get strings() {
     return strings;
+  }
+
+  public static get styles() {
+    return styles;
   }
 
   /**
@@ -238,8 +244,9 @@ export class MgtPicker extends MgtTemplatedComponent {
           item => html`
           <fluent-option
             value=${item.id}
-            @click=${(e: MouseEvent) => this.handleClick(e, item)}>
-              ${item[this.keyName]}
+            @click=${(e: MouseEvent) => this.handleClick(e, item)}
+          >
+            ${item[this.keyName]}
           </fluent-option>`
         )}
       </fluent-combobox>
@@ -256,6 +263,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   protected renderGet(): TemplateResult {
     return mgtHtml`
       <mgt-get
+        class="mgt-get"
         resource=${this.resource}
         version=${this.version}
         .scopes=${this.scopes}
@@ -274,8 +282,14 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected async loadState() {
     if (!this.response) {
-      const parent = this.renderRoot.querySelector('mgt-get');
-      parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
+      const parent = this.renderRoot.querySelector('.mgt-get');
+      if (parent) {
+        parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
+      } else {
+        console.error(
+          '🦒: mgt-picker component requires a child mgt-get component. Something has gone horribly wrong.'
+        );
+      }
     }
     this.isRefreshing = false;
     // hack to maintain method signature contract
@@ -299,7 +313,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    *
    * @param {KeyboardEvent} e
    */
-  private handleComboboxKeydown = (e: KeyboardEvent) => {
+  private readonly handleComboboxKeydown = (e: KeyboardEvent) => {
     let value: string;
     let item: any;
     const keyName: string = e.key;

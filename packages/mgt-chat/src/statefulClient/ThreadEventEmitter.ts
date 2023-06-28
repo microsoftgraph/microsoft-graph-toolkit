@@ -25,7 +25,7 @@ export type ChatEvent =
   | 'notificationsSubscribedForResource';
 
 export class ThreadEventEmitter {
-  private emitter: EventEmitter = new EventEmitter();
+  private readonly emitter: EventEmitter = new EventEmitter();
 
   on(event: ChatEvent, listener: (...args: any[]) => void) {
     this.emitter.on(event, listener);

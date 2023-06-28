@@ -29,10 +29,13 @@ $person-card-avatar-size: var(--person-card-avatar-size, 75px);
 $person-card-details-left-spacing: var(--person-card-details-left-spacing, 15px);
 $person-card-avatar-top-spacing: var(--person-card-avatar-top-spacing, 15px);
 $person-card-details-bottom-spacing: var(--person-card-details-bottom-spacing, 0);
-$person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing, 83px);
+$person-card-base-icons-left-spacing: var(
+  --person-card-base-icons-left-spacing,
+  calc(#{$person-card-avatar-size} + #{$person-card-details-left-spacing} - 8px)
+);
 
 :host {
-  box-shadow: set-var(box-shadow, $theme-default, $common);
+  box-shadow: $person-card-box-shadow;
   width: var(--mgt-flyout-set-width, 375px);
   font-family: $font-family;
   overflow: hidden;
@@ -126,7 +129,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       --person-line3-font-weight: #{$person-card-line3-font-weight};
       --person-line3-text-line-height: #{$person-card-line3-line-height};
       --person-line3-text-color: #{$person-card-line3-text-color};
-      --person-avatar-size-3-lines: #{$person-card-avatar-size};
+      --person-avatar-size: #{$person-card-avatar-size};
       --person-presence-wrapper-bottom: -15px;
     }
 
@@ -401,7 +404,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
   }
 
   .message-section {
-    border-bottom: 1px solid set-var(tab-line__color, $theme-default, $common);
+    border-bottom: 1px solid $person-card-chat-input-border-color;
     display: flex;
 
     fluent-text-field {
@@ -439,15 +442,14 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 }
 
 :host .person-root.large,
-:host .person-root.threelines,
-:host mgt-person.person-root.large,
-:host mgt-person.person-root.threelines {
+:host .person-root.threelines {
   --person-avatar-size-3-lines: 75px;
 }
 
 :host fluent-button {
   &.section__show-more.lightweight::part(control),
-  &.close-button.lightweight::part(control) {
+  &.close-button.lightweight::part(control),
+  &.expanded-details-button::part(control) {
     background: $person-card-fluent-background-color;
   }
 
