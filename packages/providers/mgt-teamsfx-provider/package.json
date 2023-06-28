@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@azure/core-auth": "^1.3.0",
-    "@microsoft/mgt-element": "3.0.1"
+    "@microsoft/mgt-element": "*"
   },
   "publishConfig": {
     "directory": "dist"

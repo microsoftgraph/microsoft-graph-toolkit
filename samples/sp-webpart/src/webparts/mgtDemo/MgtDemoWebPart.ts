@@ -12,7 +12,7 @@ import { Providers } from '@microsoft/mgt-element/dist/es6/providers/Providers';
 import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider/dist/es6/SharePointProvider';
 // Async import of component that imports the React Components
-const MgtDemo = React.lazy(() => import('./components/MgtDemo'));
+const MgtDemo = React.lazy(() => import(/* webpackChunkName: 'mgt-demo-component' */'./components/MgtDemo'));
 export interface IMgtDemoWebPartProps {
   description: string;
 }
@@ -21,7 +21,7 @@ customElementHelper.withDisambiguation('mgt-demo-client-side-solution');
 
 export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPartProps> {
   // set the global provider
-  protected async onInit() {
+  protected async onInit(): Promise<void> {
     if (!Providers.globalProvider) {
       Providers.globalProvider = new SharePointProvider(this.context);
     }

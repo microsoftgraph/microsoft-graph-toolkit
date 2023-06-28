@@ -36,7 +36,7 @@
   "author": "Microsoft",
   "license": "MIT",
   "dependencies": {
-    "@microsoft/mgt-components": "3.0.1",
+    "@microsoft/mgt-components": "*",
     "@types/react": "^17.0.00",
     "react": "^17.0.1"
   },
