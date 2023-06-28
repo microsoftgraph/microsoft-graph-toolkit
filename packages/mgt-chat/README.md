@@ -10,7 +10,7 @@ The `@microsoft/mgt-chat` package contains all chat components that allow to bui
 
 [See docs for full documentation](https://aka.ms/mgt/docs)
 
-[See docs for chat components](https://aka.ms/mgt/docs/chat)
+[See docs for chat components](https://aka.ms/mgt/docs/chat/components)
 
 ## Getting started with the Graph Toolkit chat components
 
