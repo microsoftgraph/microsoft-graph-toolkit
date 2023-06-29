@@ -1,6 +1,6 @@
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
-import styles from './HelloWorldWebPart.module.scss';
+
 
 import { Providers } from '@microsoft/mgt-element';
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
@@ -12,19 +12,19 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<Record<stri
     if (!Providers.globalProvider) {
       Providers.globalProvider = new SharePointProvider(this.context);
     }
-    return import('@microsoft/mgt-components').then(() => super.onInit());
+    return import( /* webpackChunkName: 'mgt-components' */'@microsoft/mgt-components').then(() => super.onInit());
   }
 
   public render(): void {
     this.domElement.innerHTML = `
-    <section class="${styles.helloWorld} ${this.context.sdks.microsoftTeams ? styles.teams : ''}">
+    <section class="">
       ${this._renderMgtComponents()}
     </section>`;
   }
 
   private _renderMgtComponents(): string {
     return `
-      <div class="${styles.container}">
+      <div class="">
         <mgt-sp-mgt-no-framework-client-side-solution-person
           show-presence
           person-query="me"
