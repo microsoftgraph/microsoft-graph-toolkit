@@ -39,7 +39,7 @@
     "postpack": "cpx *.tgz ../../../artifacts"
   },
   "dependencies": {
-    "@microsoft/mgt-element": "3.0.1"
+    "@microsoft/mgt-element": "*"
   },
   "publishConfig": {
     "directory": "dist"
