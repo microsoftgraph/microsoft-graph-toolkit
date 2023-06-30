@@ -18,6 +18,10 @@ export const groupId = () => html`
   <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
 `;
 
+export const singleSelectMode = () => html`
+<mgt-people-picker selection-mode="single"></mgt-people-picker>
+`;
+
 export const dynamicGroupId = () => html`
   <mgt-people-picker id="picker"></mgt-people-picker>
   <div>
