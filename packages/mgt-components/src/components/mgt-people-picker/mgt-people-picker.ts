@@ -1097,7 +1097,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (
         (this.defaultSelectedUserIds?.length > 0 || this.defaultSelectedGroupIds?.length > 0) &&
         !this.selectedPeople.length &&
-        !this.defaultSelectedUsers
+        !this.defaultSelectedUsers.length &&
+        !this.defaultSelectedGroups.length
       ) {
         this.defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds, '', this.userFilters);
         this.defaultSelectedGroups = await getGroupsForGroupIds(
