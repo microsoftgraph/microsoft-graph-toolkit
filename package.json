@@ -69,15 +69,9 @@
     "storybook:bundle": "rollup -c ./.storybook/rollup.config.js",
     "storybook:bundle:watch": "rollup -c ./.storybook/rollup.config.js --watch",
     "storybook:build": "npm run storybook:bundle && npm run storybook:dev && build-storybook -s assets && cpx .storybook/CNAME storybook-static && node ./.storybook/fix-title.js 'Microsoft Graph Toolkit Playground' ../",
-    "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static",
     "setLicense": "gulp setLicense",
     "test": "jest",
     "version:tsc": "tsc -v"
-  },
-  "storybook-deployer": {
-    "gitUsername": "@microsoft/mgt",
-    "gitEmail": "noreply@microsoft.com",
-    "commitMessage": "Deploy Storybook [skip ci]"
   },
   "devDependencies": {
     "@babel/core": "^7.12.8",
@@ -98,7 +92,6 @@
     "@storybook/addon-links": "^6.4.4",
     "@storybook/addon-storysource": "^6.4.4",
     "@storybook/cli": "^6.4.4",
-    "@storybook/storybook-deployer": "^2.8.10",
     "@storybook/web-components": "^6.4.4",
     "@testing-library/dom": "^8.20.0",
     "@testing-library/jest-dom": "^5.16.5",
