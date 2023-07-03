@@ -3,3 +3,4 @@
 **/dist
 **/generated
 **/lib
+tailwind-styles.module.ts

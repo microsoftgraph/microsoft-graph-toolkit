@@ -39,7 +39,8 @@ const es6Bundle = {
     entryFileNames: 'mgt.es6.js',
     format: 'iife',
     name: 'mgt',
-    sourcemap: false
+    sourcemap: false,
+    inlineDynamicImports: true
   },
   plugins: [
     babel({
@@ -114,4 +115,4 @@ const cjsBundle = {
   ]
 };
 
-export default [es6Bundle, es5Bundle, cjsBundle];
+export default [es6Bundle];
