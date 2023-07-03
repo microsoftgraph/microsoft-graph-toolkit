@@ -1,4 +1,4 @@
-import { OfficeGraphInsightString,ViewType,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { OfficeGraphInsightString,ViewType,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,IMicrosoftSearchQuery,IMicrosoftSearchService,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -216,24 +216,10 @@ export type SearchBoxProps = {
 }
 
 export type SearchResultsProps = {
-	queryString?: string;
-	queryTemplate?: string;
-	entityTypes?: string[];
-	scopes?: string[];
-	contentSources?: string[];
-	version?: string;
-	from?: number;
-	size?: number;
-	pagingMax?: number;
-	fetchThumbnail?: boolean;
-	fields?: string[];
-	enableTopResults?: boolean;
-	cacheEnabled?: boolean;
-	cacheInvalidationPeriod?: number;
-	currentPage?: number;
+	searchQuery?: IMicrosoftSearchQuery;
+	msSearchService?: IMicrosoftSearchService;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 

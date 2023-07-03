@@ -1,7 +1,7 @@
-import { FileFormat, MgtConnectableComponent, MgtTemplatedComponent, TemplateService } from '@microsoft/mgt-element';
+import { FileFormat, MgtConnectableComponent, TemplateService } from '@microsoft/mgt-element';
 import { css, customElement, html, property, PropertyValues, state } from 'lit-element';
-import { unsafeHTML } from 'lit-html/directives/unsafe-html';
-import { styles as tailwindStyles } from '../../../styles/tailwind-styles-css';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import { styles as tailwindStyles } from '../../../../styles/tailwind-styles-css';
 
 /**
  * Process adaptive card content from an external file

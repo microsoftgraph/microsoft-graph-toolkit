@@ -1,10 +1,11 @@
-import { state, html, PropertyValues, customElement } from 'lit-element';
+import { html, PropertyValues } from 'lit';
 import { cloneDeep } from 'lodash-es';
-import { repeat } from 'lit-html/directives/repeat.js';
-import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
+import { repeat } from 'lit/directives/repeat.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { strings } from './strings';
 import { MgtBaseFilterComponent } from '../mgt-base-filter';
 import { IDataFilterResultValue, IDataFilterAggregation } from '@microsoft/mgt-element';
+import { state } from 'lit/decorators.js';
 
 export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
   @state()

@@ -2,15 +2,16 @@ import { html } from 'lit-element';
 import { EventConstants, customElement } from '@microsoft/mgt-element';
 import { IDataVerticalConfiguration } from '@microsoft/mgt-element/src/models/IDataVerticalConfiguration';
 import { ISearchVerticalEventData, MgtConnectableComponent, PageOpenBehavior } from '@microsoft/mgt-element';
-import { repeat } from 'lit-html/directives/repeat';
+
 import { isEmpty, isEqual } from 'lodash-es';
 import { styles } from './mgt-search-verticals-css';
-import { styles as tailwindStyles } from '../../styles/tailwind-styles-css';
+import { styles as tailwindStyles } from '../../../styles/tailwind-styles-css';
 import { fluentTab, fluentTabPanel, fluentTabs, provideFluentDesignSystem } from '@fluentui/web-components';
 import { UrlHelper } from '@microsoft/mgt-element';
 import { property } from 'lit/decorators.js';
+import { repeat } from 'lit/directives/repeat.js';
 
-@customElement('mgt-search-verticals')
+@customElement('search-verticals')
 export class MgtSearchVerticalsComponent extends MgtConnectableComponent {
   /**
    * The configured search verticals

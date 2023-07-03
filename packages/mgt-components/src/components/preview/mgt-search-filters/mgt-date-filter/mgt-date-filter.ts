@@ -1,6 +1,5 @@
 import { DateHelper, FilterComparisonOperator, IDataFilterValue, LocalizationHelper } from '@microsoft/mgt-element';
-import { customElement, html, PropertyValues } from 'lit-element';
-import { nothing } from 'lit-html';
+import { html, PropertyValues, nothing } from 'lit';
 import { MgtBaseFilterComponent, DateFilterKeys } from '../mgt-base-filter';
 import { strings } from './strings';
 

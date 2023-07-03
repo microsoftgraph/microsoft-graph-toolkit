@@ -1,10 +1,11 @@
 import { MgtConnectableComponent } from '@microsoft/mgt-element';
-import { property, state, html, PropertyValues, TemplateResult } from 'lit-element';
+import { html, PropertyValues, TemplateResult } from 'lit';
+import { state, property } from 'lit/decorators.js';
 import { isEqual, cloneDeep, sumBy, orderBy } from 'lodash-es';
 import { IDataFilterResult, IDataFilterValue, IDataFilterResultValue } from '@microsoft/mgt-element';
 import { IDataFilterConfiguration, FilterSortType, FilterSortDirection } from '@microsoft/mgt-element';
 import { fluentSelect, fluentOption, provideFluentDesignSystem, fluentListbox } from '@fluentui/web-components';
-import { styles as tailwindStyles } from '../../styles/tailwind-styles-css';
+import { styles as tailwindStyles } from '../../../styles/tailwind-styles-css';
 
 export enum DateFilterKeys {
   From = 'from',

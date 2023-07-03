@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import {
   BuiltinFilterTemplates,
   EventConstants,
@@ -14,22 +15,22 @@ import {
   ISearchSortEventData,
   ISearchSortProperty,
   MgtConnectableComponent,
-  MgtTemplatedComponent
+  customElement
 } from '@microsoft/mgt-element';
-import { customElement, property, state, html } from 'lit-element';
 import { isEmpty, cloneDeep, sortBy } from 'lodash-es';
-import { nothing } from 'lit-html';
-import { repeat } from 'lit-html/directives/repeat.js';
 import { strings } from './strings';
-import { styles as tailwindStyles } from '../../styles/tailwind-styles-css';
+import { styles as tailwindStyles } from '../../../styles/tailwind-styles-css';
 import { MgtBaseFilterComponent } from './mgt-base-filter';
 import { ScopedElementsMixin } from '@open-wc/scoped-elements';
 import { MgtCheckboxFilterComponent } from './mgt-checkbox-filter/mgt-checkbox-filter';
 import { MgtDateFilterComponent } from './mgt-date-filter/mgt-date-filter';
+import { property, state } from 'lit/decorators.js';
+import { nothing, html } from 'lit';
+import { repeat } from 'lit/directives/repeat.js';
 
 export class MgtSearchFiltersComponentBase extends MgtConnectableComponent {}
 
-@customElement('mgt-search-filters')
+@customElement('search-filters')
 export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFiltersComponentBase) {
   /**
    * The connected search results component ids

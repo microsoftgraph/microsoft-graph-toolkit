@@ -35,11 +35,20 @@
   </head>
 
   <body>
-    <mgt-msal2-provider
+    <!--<mgt-msal2-provider
       client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
       redirect-uri="http://localhost:3000"
       scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all,files.read,files.read.all,files.readwrite,files.readwrite.all"
-    ></mgt-msal2-provider>
+    ></mgt-msal2-provider>-->
+
+    <mgt-msal2-provider
+      client-id="3073e2a9-87cb-49f3-a69c-944e8a47c00d"
+      authority="https://login.microsoftonline.com/d7e957c6-c0d2-4ee3-88d5-bf5c0a56268b"
+      redirect-uri="http://localhost:3000"
+      login-type="popup"
+      scopes="ExternalItem.Read.All,Files.Read.All,Sites.Read.All"
+    >
+    </mgt-msal2-provider>
 
     <!-- <mgt-mock-provider></mgt-mock-provider> -->
     <header>
@@ -77,7 +86,39 @@
       <!-- <h2>mgt-search-box</h2>
       <mgt-search-box search-term="contoso"></mgt-search-box>
       <h2>mgt-search-results</h2>
-      <mgt-search-results query-string="contoso"></mgt-search-results>
+      <mgt-search-results query-string="contoso"></mgt-search-results>-->
+
+      <mgt-login></mgt-login>
+
+      <mgt-search-verticals
+        id="0fa619a7-442a-4255-8fca-f3ce36a01518"
+        settings='[{"key":"all","tabName":{"default":"All","fr-fr":"Tout le contenu","ro-ro":"Toate"},"tabValue":"","isLink":false,"linkUrl":null,"openBehavior":0},{"key":"profiles","tabName":{"default":"Profiles","fr-fr":"Profils","ro-ro":"Profiluri"},"tabValue":"","isLink":false,"linkUrl":null,"openBehavior":0}]'
+      >
+      </mgt-search-verticals>
+
+      <mgt-search-filters
+        id="99d3e914-2c8e-4f42-897e-53bb4d960e94"
+        search-results-ids="b359f3dc-6b6a-4575-90ed-e5942bcbb8a6"
+        operator="and"
+        settings='[{"filterName":"modifiedby","displayName":{"fr-fr":"Modifié par","ro-ro":"Modificat de","default":"Modified by"},"template":"checkbox","showCount":true,"operator":"or","isMulti":true,"type":"refiner","sortBy":"byCount","sortDirection":"descending","maxBuckets":10000,"sortIdx":10},{"filterName":"FileType","displayName":{"fr-fr":"Type de fichier","ro-ro":"Tip fișier","default":"File Type"},"template":"checkbox","showCount":true,"operator":"or","isMulti":true,"type":"refiner","sortBy":"byCount","sortDirection":"descending","maxBuckets":10000,"sortIdx":11,"aggregations":[{"aggregationName":{"fr-fr":"Document Word","default":"Word document"},"matchingValues":["docx","doc","docm"],"aggregationValue":"or(\"docx\",\"doc\",\"docm\")","aggregationValueIconUrl":"/dist/latest/assets/icons/word.svg"},{"aggregationName":{"fr-fr":"Modèle de fichier Word","default":"Word template"},"matchingValues":["dot","dotx","dotm"],"aggregationValue":"or(\"dot\",\"dotx\",\"dotm\")","aggregationValueIconUrl":"/dist/latest/assets/icons/word.svg"},{"aggregationName":{"fr-fr":"Fichier texte","default":"Text file"},"matchingValues":["txt","rtf"],"aggregationValue":"or(\"txt\",\"rtf\")","aggregationValueIconUrl":"/dist/latest/assets/icons/text.svg"},{"aggregationName":{"fr-fr":"Document Excel","default":"Excel document"},"matchingValues":["xlsx","xls","xlsm","xlsb","xlx","xml","csv"],"aggregationValue":"or(\"xlsx\",\"xls\",\"xlsm\",\"csv\",\"xlsb\",\"xlx\",\"xml\")","aggregationValueIconUrl":"/dist/latest/assets/icons/excel.svg"},{"aggregationName":{"fr-fr":"Modèle de fichier Excel","default":"Excel template"},"matchingValues":["xltm","xlt","xltx"],"aggregationValue":"or(\"xltm\",\"xlt\",\"xltx\")","aggregationValueIconUrl":"/dist/latest/assets/icons/excel.svg"},{"aggregationName":{"fr-fr":"Document PowerPoint","default":"PowerPoint document"},"matchingValues":["pptx","ppt","pptm","pps","ppsm","ppsx"],"aggregationValue":"or(\"pptx\",\"ppt\",\"pptm\",\"pps\",\"ppsm\",\"ppsx\")","aggregationValueIconUrl":"/dist/latest/assets/icons/powerpoint.svg"},{"aggregationName":{"fr-fr":"Modèle de fichier PowerPoint","default":"PowerPoint template"},"matchingValues":["potx","potm","pot"],"aggregationValue":"or(\"potx\",\"potm\",\"pot\")","aggregationValueIconUrl":"/dist/latest/assets/icons/powerpoint.svg"},{"aggregationName":{"fr-fr":"Page web","default":"Web page"},"matchingValues":["aspx","html"],"aggregationValue":"or(\"aspx\",\"html\")","aggregationValueIconUrl":"/dist/latest/assets/icons/webpage.svg"},{"aggregationName":{"fr-fr":"Archive compressée","default":"Compressed archive"},"matchingValues":["zip","7z","rar"],"aggregationValue":"or(\"zip\",\"7z\",\"rar\")","aggregationValueIconUrl":"/dist/latest/assets/icons/archive.svg"},{"aggregationName":"PDF","matchingValues":["pdf"],"aggregationValue":"pdf","aggregationValueIconUrl":"/dist/latest/assets/icons/pdf.svg"},{"aggregationName":{"fr-fr":"Document Visio","default":"Visio document"},"matchingValues":["vsdx","vsd","vsdm"],"aggregationValue":"or(\"vsdx\",\"vsd\",\"vsdm\")","aggregationValueIconUrl":"/dist/latest/assets/icons/visio.svg"},{"aggregationName":{"fr-fr":"Document OneNote","default":"OneNote document"},"matchingValues":["one"],"aggregationValue":"one","aggregationValueIconUrl":"/dist/latest/assets/icons/onenote.svg"}]},{"filterName":"LastModifiedTime","displayName":{"fr-fr":"Date de modification","ro-ro":"Ora ultima modificată","default":"Last modified date"},"template":"date","showCount":true,"operator":"and","isMulti":false,"type":"refiner","sortBy":"byCount","sortDirection":"descending","maxBuckets":10000,"sortIdx":12}]'
+      >
+      </mgt-search-filters>
+
+      <mgt-search-results
+        id="b359f3dc-6b6a-4575-90ed-e5942bcbb8a6"
+        entity-types="listItem"
+        query-text="*"
+        query-template="{searchTerms} -ParentLink:PreservationHoldLibrary (FileType:doc OR FileType:docx OR FileType:docm OR FileType:dot OR FileType:dotx OR FileType:dotm OR FileType:txt OR FileType:rtf OR FileType:aspx OR FileType:xls OR FileType:xlsx OR FileType:xlsm OR FileType:xlsb OR FileType:xlx OR FileType:xlt OR FileType:xltx OR FileType:xltm OR FileType:xml OR FileType:csv OR FileType:ppt OR FileType:pptx OR FileType:pptm OR FileType:pps OR FileType:ppsm OR FileType:ppsx OR FileType:pot OR FileType:potx OR FileType:potm OR FileType:pdf OR FileType:zip OR FileType:vsd OR FileType:vsdx OR FileType:vsdm OR FileType:html OR FileType:7z OR FileType:rar OR FileType:one)"
+        fields="name,title,mssearchsitename,created,createdBy,filetype,lastModifiedTime,modifiedBy,path,hitHighlightedProperties,hitHighlightedSummary,SPSiteURL,SiteTitle,defaultEncodingURL,parentLink,serverRedirectedURL,filename,MSSearchSource,MSSearchSiteName,MSSearchSiteUrl,MSSearchFileType,MSSearchLastModifiedTime"
+        enable-suggestion
+        sort-properties='[{"sortField":"LastModifiedTime","sortDirection":"desc","isDefaultSort":false,"isUserSort":true,"sortFieldDisplayName":{"fr-fr":"Date de modification","default":"Last modified"}}]'
+        page-size="10"
+        pages-number="4"
+        search-filters-id="99d3e914-2c8e-4f42-897e-53bb4d960e94"
+        search-verticals-id="0fa619a7-442a-4255-8fca-f3ce36a01518"
+        verticals-keys="all"
+      >
+      </mgt-search-results>
     </main>
   </body>
 </html>
