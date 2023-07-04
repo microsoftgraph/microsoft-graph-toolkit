@@ -15,7 +15,7 @@ export default {
 };
 
 export const customCSSProperties = () => html`
-<mgt-login></mgt-login>
+<mgt-login class="login"></mgt-login>
 <style>
   .login {
     --login-signed-out-button-background: red;
