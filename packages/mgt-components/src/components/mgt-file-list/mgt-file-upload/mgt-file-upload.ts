@@ -1160,10 +1160,12 @@ export class MgtFileUpload extends MgtBaseComponent {
     let entry: FileSystemEntry;
     const collectFilesItems: File[] = [];
 
-    for (const uploadFileItem of filesItems as DataTransferItemList) {
-      if (uploadFileItem.kind === 'file') {
-        // Defensive code to validate if function exists in Browser
-        // Collect all Folders into Array
+    for (let uploadFileItem of filesItems) {
+      const dataTransferItemType = uploadFileItem instanceof DataTransferItem;
+      const fileType = uploadFileItem instanceof File;
+
+      if (dataTransferItemType) {
+        uploadFileItem = uploadFileItem as DataTransferItem;
         const futureUpload = uploadFileItem as FutureDataTransferItem;
         if (futureUpload.getAsEntry) {
           entry = futureUpload.getAsEntry();
@@ -1195,14 +1197,17 @@ export class MgtFileUpload extends MgtBaseComponent {
           }
         }
         continue;
-      } else {
-        const fileItem = uploadFileItem.getAsFile();
-        if (fileItem) {
-          this.writeFilePath(fileItem, '');
-          collectFilesItems.push(fileItem);
+      }
+
+      if (fileType) {
+        uploadFileItem = uploadFileItem as File;
+        if (uploadFileItem) {
+          this.writeFilePath(uploadFileItem, '');
+          collectFilesItems.push(uploadFileItem);
         }
       }
     }
+
     // Collect Files from folder
     if (folders.length > 0) {
       const folderFiles = await this.getFolderFiles(folders);
