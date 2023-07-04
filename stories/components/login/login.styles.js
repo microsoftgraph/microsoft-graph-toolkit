@@ -25,7 +25,6 @@ export const customCSSProperties = () => html`
     --login-signed-in-hover-background: green;
     --login-button-padding:5px;
     --login-popup-background-color: blue;
-    --login-popup-text-color: brown;
     --login-popup-command-button-background-color: orange;
     --login-popup-padding: 8px;
     --login-add-account-button-text-color: yellow;
@@ -34,6 +33,8 @@ export const customCSSProperties = () => html`
     --login-command-button-background-color: orange;
     --login-command-button-hover-background-color: purple;
     --login-command-button-text-color: black;
+    --login-account-item-hover-bg-color: white;
+    --login-flyout-command-text-color: maroon;
 
     /** person component tokens **/
     --person-line1-text-color: whitesmoke;
