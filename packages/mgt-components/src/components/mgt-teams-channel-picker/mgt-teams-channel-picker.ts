@@ -605,6 +605,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           class="tree-view"
           dir=${this.direction}
           aria-live="polite"
+          aria-relevant="all"
+          aria-atomic="true"
           aria-label=${this.strings.teamsChannels}
           aria-orientation="horizontal"
           @keydown=${this.onKeydownTreeView}>
@@ -626,6 +628,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
                 <fluent-tree-item
                   ?expanded=${obj?.isExpanded}
                   aria-live="polite"
+                  aria-relevant="all"
+                  aria-atomic="true"
                   @click=${this.handleTeamTreeItemClick}>
                     <span slot="start">${icon}</span>${obj.item.displayName}
                     ${repeat(
