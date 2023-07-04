@@ -758,6 +758,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         switch (activity) {
           case 'Busy':
           case 'InACall':
+          case 'InAConferenceCall':
           case 'InAMeeting':
             presenceIcon = getSvg(SvgIcon.PresenceBusy);
             break;
