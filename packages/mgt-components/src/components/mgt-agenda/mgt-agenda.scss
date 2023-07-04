@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles';
 @import './mgt-agenda.theme';
 
@@ -37,7 +37,7 @@ $agenda-event-location-font-size: var(--agenda-event-location-font-size, 12px);
   }
 
   .group,
-  .agenda{
+  .agenda {
     display: flex;
     flex-direction: column;
     row-gap: $agenda-event-row-gap;
