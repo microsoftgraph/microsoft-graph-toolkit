@@ -25,7 +25,7 @@ import { ScopedElementsMixin } from '@open-wc/scoped-elements';
 import { MgtCheckboxFilterComponent } from './mgt-checkbox-filter/mgt-checkbox-filter';
 import { MgtDateFilterComponent } from './mgt-date-filter/mgt-date-filter';
 import { property, state } from 'lit/decorators.js';
-import { nothing, html } from 'lit';
+import { html, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 
 export class MgtSearchFiltersComponentBase extends MgtConnectableComponent {}
@@ -110,7 +110,7 @@ export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFilt
   }
 
   public render() {
-    let renderSort = nothing;
+    let renderSort;
 
     const renderCheckbox = (availableFilter: IDataFilterResult) => {
       return html`<mgt-filter-checkbox
@@ -162,6 +162,8 @@ export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFilt
                 >
                 </ubisoft-search-sort>
             `;
+    } else {
+      renderSort = nothing;
     }
 
     let renderFilters = html`${repeat(

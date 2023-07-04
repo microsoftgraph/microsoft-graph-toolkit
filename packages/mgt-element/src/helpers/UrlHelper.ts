@@ -20,7 +20,7 @@ export class UrlHelper {
     const href = url ? url : window.location.href;
     const reg = new RegExp('[?&#]' + field + '=([^&#]*)', 'i');
     const qs = reg.exec(href);
-    return qs ? qs[1] : null;
+    return qs ? qs[1] : '';
   }
 
   /**

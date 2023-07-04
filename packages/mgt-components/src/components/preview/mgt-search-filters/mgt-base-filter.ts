@@ -119,11 +119,11 @@ export abstract class MgtBaseFilterComponent extends MgtConnectableComponent {
                     ${renderFilterName}
                   </div>
                  
-                <div @click=${(e: Event) => {
-                  e.stopPropagation();
-                }}>
-                            ${this.renderFilterContent()}
-                        </div>            
+                    <div @click=${(e: Event) => {
+                      e.stopPropagation();
+                    }}>
+                      ${this.renderFilterContent()}
+                    </div>            
                 </fluent-select>
                 `;
   }

@@ -132,7 +132,7 @@ type SearchResponseCollection = CollectionResponse<SearchResponse>;
  * @class mgt-search-results
  * @extends {MgtTemplatedComponent}
  */
-@customElement('search-results')
+@customElement('search-results-old')
 export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Default page size is 10
