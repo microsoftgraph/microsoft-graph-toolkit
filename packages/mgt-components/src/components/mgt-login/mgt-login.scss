@@ -111,6 +111,8 @@ $login-flyout-command-text-color: #{var(--login-flyout-command-text-color, var(-
 
       &:hover {
         background: $login-account-item-hover-bg-color;
+
+        --person-background-color: $login-account-item-hover-bg-color;
       }
     }
 

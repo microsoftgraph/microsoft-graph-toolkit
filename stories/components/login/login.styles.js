@@ -33,7 +33,7 @@ export const customCSSProperties = () => html`
     --login-command-button-background-color: orange;
     --login-command-button-hover-background-color: purple;
     --login-command-button-text-color: black;
-    --login-account-item-hover-bg-color: white;
+    --login-account-item-hover-bg-color: black;
     --login-flyout-command-text-color: maroon;
 
     /** person component tokens **/
