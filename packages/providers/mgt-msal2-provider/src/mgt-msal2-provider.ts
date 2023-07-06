@@ -125,6 +125,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   })
   public isMultiAccountDisabled;
 
+    /**
+   * Custom Hosts to pass to the graph client
+   *
+   * @memberof MgtMsal2Provider
+   */
+    @property({
+      attribute: 'custom-hosts',
+      type: Array<String>
+    })
+    public customHosts;
+
   /**
    * Gets whether this provider can be used in this environment
    *
@@ -193,6 +204,10 @@ export class MgtMsal2Provider extends MgtBaseProvider {
 
       if (this.baseUrl) {
         config.baseURL = this.baseUrl;
+      }
+
+      if (this.customHosts) {
+        config.customHosts = this.customHosts;
       }
 
       this.provider = new Msal2Provider(config);
