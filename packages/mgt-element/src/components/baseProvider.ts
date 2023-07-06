@@ -78,6 +78,17 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
   })
   public baseUrl: GraphEndpoint;
 
+  /**
+   * Custom Hosts to be passed through to the graph client
+   *
+   * @memberof MgtBaseProvider
+   */
+  @property({
+    attribute: 'custom-hosts',
+    type: Array<string>
+  })
+  public customHosts?: string[];
+
   private _provider: IProvider;
 
   /**

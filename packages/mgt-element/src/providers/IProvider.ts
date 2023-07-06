@@ -67,17 +67,16 @@ export abstract class IProvider implements AuthenticationProvider {
     return this._baseURL;
   }
 
-
   private _customHosts?: string[] = undefined;
 
   /**
    * Custom Hostnames to allow graph client to utilize
    */
-  public set customHosts(hosts: string[]|undefined) {
+  public set customHosts(hosts: string[] | undefined) {
     this._customHosts = hosts;
   }
 
-  public get customHosts(): string[]|undefined {
+  public get customHosts(): string[] | undefined {
     return this._customHosts;
   }
 

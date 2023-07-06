@@ -146,13 +146,14 @@ export interface Msal2Config extends Msal2ConfigBase {
    * The base URL for the graph client
    */
   baseURL?: GraphEndpoint;
-    /**
+
+  /**
    * CustomHosts
    *
-   * @type {boolean}
+   * @type {string[]}
    * @memberof Msal2Config
    */
-    customHosts?: string[];
+  customHosts?: string[];
 }
 
 /**
