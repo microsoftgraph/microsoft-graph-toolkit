@@ -746,25 +746,24 @@ export class MgtPerson extends MgtTemplatedComponent {
     switch (availability) {
       case 'Available':
         switch (activity) {
-          case 'Available':
-            presenceIcon = getSvg(SvgIcon.PresenceAvailable);
-            break;
           case 'OutOfOffice':
             presenceIcon = getSvg(SvgIcon.PresenceOofAvailable);
+            break;
+          // OutOfOffice and Uknowns
+          default:
+            presenceIcon = getSvg(SvgIcon.PresenceAvailable);
             break;
         }
         break;
       case 'Busy':
         switch (activity) {
-          case 'Busy':
-          case 'InACall':
-          case 'InAConferenceCall':
-          case 'InAMeeting':
-            presenceIcon = getSvg(SvgIcon.PresenceBusy);
-            break;
           case 'OutOfOffice':
           case 'OnACall':
             presenceIcon = getSvg(SvgIcon.PresenceOofBusy);
+            break;
+          // Busy,InACall,InAConferenceCall,InAMeeting, Unknown
+          default:
+            presenceIcon = getSvg(SvgIcon.PresenceBusy);
             break;
         }
         break;
