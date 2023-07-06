@@ -85,7 +85,8 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
    */
   @property({
     attribute: 'custom-hosts',
-    type: Array<string>
+    type: String,
+    converter: newValue => newValue.split(',').map(s => s.trim())
   })
   public customHosts?: string[];
 
