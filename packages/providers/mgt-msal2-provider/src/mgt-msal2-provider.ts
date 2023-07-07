@@ -195,6 +195,10 @@ export class MgtMsal2Provider extends MgtBaseProvider {
         config.baseURL = this.baseUrl;
       }
 
+      if (this.customHosts) {
+        config.customHosts = this.customHosts;
+      }
+
       this.provider = new Msal2Provider(config);
       Providers.globalProvider = this.provider;
     }
