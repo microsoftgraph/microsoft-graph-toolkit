@@ -6013,7 +6013,14 @@
   resolved "https://registry.npmjs.org/@lit-labs/ssr-dom-shim/-/ssr-dom-shim-1.1.0.tgz"
   integrity sha512-92uQ5ARf7UXYrzaFcAX3T2rTvaS9Z1//ukV+DqjACM4c8s0ZBQd7ayJU5Dh2AFLD/Ayuyz4uMmxQec8q3U4Ong==
 
-"@lit/reactive-element@^1.0.0", "@lit/reactive-element@^1.3.0", "@lit/reactive-element@^1.6.0":
+"@lit/reactive-element@^1.0.0":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@lit/reactive-element/-/reactive-element-1.6.3.tgz#25b4eece2592132845d303e091bad9b04cdcfe03"
+  integrity sha512-QuTgnG52Poic7uM1AN5yJ09QMe0O28e10XzSvWDz02TJiiKee4stsiownEIadWm8nYzyDAyT+gKzUoZmiWQtsQ==
+  dependencies:
+    "@lit-labs/ssr-dom-shim" "^1.0.0"
+
+"@lit/reactive-element@^1.3.0", "@lit/reactive-element@^1.6.0":
   version "1.6.1"
   resolved "https://registry.npmjs.org/@lit/reactive-element/-/reactive-element-1.6.1.tgz"
   integrity sha512-va15kYZr7KZNNPZdxONGQzpUr+4sxVu7V/VG7a8mRfPPXUyhEYj5RzXCQmGrlP3tAh0L3HHm5AjBMFYRqlM9SA==
@@ -6022,14 +6029,14 @@
 
 "@malept/cross-spawn-promise@^1.1.1":
   version "1.1.1"
-  resolved "https://registry.npmjs.org/@malept/cross-spawn-promise/-/cross-spawn-promise-1.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/@malept/cross-spawn-promise/-/cross-spawn-promise-1.1.1.tgz#504af200af6b98e198bce768bc1730c6936ae01d"
   integrity sha512-RTBGWL5FWQcg9orDOCcp4LvItNzUPcyEU9bwaeJX0rJ1IQxzucC48Y0/sQLp/g6t99IQgAlGIaesJS+gTn7tVQ==
   dependencies:
     cross-spawn "^7.0.1"
 
 "@mdx-js/mdx@^1.6.22":
   version "1.6.22"
-  resolved "https://registry.npmjs.org/@mdx-js/mdx/-/mdx-1.6.22.tgz"
+  resolved "https://registry.yarnpkg.com/@mdx-js/mdx/-/mdx-1.6.22.tgz#8a723157bf90e78f17dc0f27995398e6c731f1ba"
   integrity sha512-AMxuLxPz2j5/6TpF/XSdKpQP1NlG0z11dFOlq+2IP/lSgl11GY8ji6S/rgsViN/L0BDvHvUMruRb7ub+24LUYA==
   dependencies:
     "@babel/core" "7.12.9"
@@ -6054,18 +6061,18 @@
 
 "@mdx-js/react@^1.6.22":
   version "1.6.22"
-  resolved "https://registry.npmjs.org/@mdx-js/react/-/react-1.6.22.tgz"
+  resolved "https://registry.yarnpkg.com/@mdx-js/react/-/react-1.6.22.tgz#ae09b4744fddc74714ee9f9d6f17a66e77c43573"
   integrity sha512-TDoPum4SHdfPiGSAaRBw7ECyI8VaHpK8GJugbJIJuqyh6kzw9ZLJZW3HGL3NNrJGxcAixUvqROm+YuQOo5eXtg==
 
 "@mdx-js/util@1.6.22":
   version "1.6.22"
-  resolved "https://registry.npmjs.org/@mdx-js/util/-/util-1.6.22.tgz"
+  resolved "https://registry.yarnpkg.com/@mdx-js/util/-/util-1.6.22.tgz#219dfd89ae5b97a8801f015323ffa4b62f45718b"
   integrity sha512-H1rQc1ZOHANWBvPcW+JpGwr+juXSxM8Q8YCkm3GhZd8REu1fHR3z99CErO1p9pkcfcxZnMdIZdIsXkOHY0NilA==
 
 "@microsoft/adaptivecards-tools@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.npmjs.org/@microsoft/adaptivecards-tools/-/adaptivecards-tools-1.3.1.tgz"
-  integrity sha512-ziNya9e+KJ5zp/NwJ/QQX2r+L/WexCjvVH9PjHFl+ZfW99nqlYwXdnA9Ry1wBykND1/j0OCqmiA33f33sxt1ew==
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@microsoft/adaptivecards-tools/-/adaptivecards-tools-1.3.2.tgz#96fd2ec136d33e015dda6350704b7424d5d272f4"
+  integrity sha512-t30emqrvfDOa780r2d/+q5z9jhaN3WUAEePffRvjWxXxlw+llloWP6rjzANBXw50qSGk5uITSrN5ZELNwDwEIA==
   dependencies:
     adaptive-expressions "^4.15.0"
     adaptivecards "~2.10.0"
@@ -6075,7 +6082,7 @@
 
 "@microsoft/api-extractor-model@7.13.2":
   version "7.13.2"
-  resolved "https://registry.npmjs.org/@microsoft/api-extractor-model/-/api-extractor-model-7.13.2.tgz"
+  resolved "https://registry.yarnpkg.com/@microsoft/api-extractor-model/-/api-extractor-model-7.13.2.tgz#7e640dbd421cc95a28e03c5a949d8ebcc63c936d"
   integrity sha512-gA9Q8q5TPM2YYk7rLinAv9KqcodrmRC13BVmNzLswjtFxpz13lRh0BmrqD01/sddGpGMIuWFYlfUM4VSWxnggA==
   dependencies:
     "@microsoft/tsdoc" "0.13.2"
@@ -6084,7 +6091,7 @@
 
 "@microsoft/api-extractor@~7.15.2":
   version "7.15.2"
-  resolved "https://registry.npmjs.org/@microsoft/api-extractor/-/api-extractor-7.15.2.tgz"
+  resolved "https://registry.yarnpkg.com/@microsoft/api-extractor/-/api-extractor-7.15.2.tgz#7a06b857660e33d1cdc050d576eb6c6c05dc532a"
   integrity sha512-/Y/n+QOc1vM6Vg3OAUByT/wXdZciE7jV3ay33+vxl3aKva5cNsuOauL14T7XQWUiLko3ilPwrcnFcEjzXpLsuA==
   dependencies:
     "@microsoft/api-extractor-model" "7.13.2"
@@ -6101,9 +6108,9 @@
     typescript "~4.2.4"
 
 "@microsoft/eslint-config-msgraph@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@microsoft/eslint-config-msgraph/-/eslint-config-msgraph-1.0.0.tgz"
-  integrity sha512-sfBY7aByVR1ASMKHyhnEzTErmkL/+vShFFXkG8+mULrE3h8L4xVd/Hj1gGApcGKYZDG1/LZrUt2hPaKC8CtY0Q==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@microsoft/eslint-config-msgraph/-/eslint-config-msgraph-1.0.1.tgz#9fb226237b03f1e73bb9f87c1e81b1e2df301d5c"
+  integrity sha512-h+7mUQ8+mlHHikIP13sdcFdHbmK7cEioiBWVWQ+kXeNX+VQqC5QM9IuZ4gNBGU3lKQY4yfCnpXpVrxRxiqc3Xg==
 
 "@microsoft/eslint-config-spfx@1.17.4":
   version "1.17.4"
@@ -6123,18 +6130,18 @@
 
 "@microsoft/fast-colors@^5.3.0":
   version "5.3.1"
-  resolved "https://registry.npmjs.org/@microsoft/fast-colors/-/fast-colors-5.3.1.tgz"
+  resolved "https://registry.yarnpkg.com/@microsoft/fast-colors/-/fast-colors-5.3.1.tgz#defc59874176e42316be7e6d24c31885ead8ca56"
   integrity sha512-72RZXVfCbwQzvo5sXXkuLXLT7rMeYaSf5r/6ewQiv/trBtqpWRm4DEH2EilHw/iWTBKOXs1qZNQndgUMa5n4LA==
 
 "@microsoft/fast-element@^1.11.1", "@microsoft/fast-element@^1.12.0":
   version "1.12.0"
-  resolved "https://registry.npmjs.org/@microsoft/fast-element/-/fast-element-1.12.0.tgz"
+  resolved "https://registry.yarnpkg.com/@microsoft/fast-element/-/fast-element-1.12.0.tgz#aabfc75518c3a9000710cce5f66dfc677de8c254"
   integrity sha512-gQutuDHPKNxUEcQ4pypZT4Wmrbapus+P9s3bR/SEOLsMbNqNoXigGImITygI5zhb+aA5rzflM6O8YWkmRbGkPA==
 
 "@microsoft/fast-foundation@^2.48.1":
-  version "2.49.0"
-  resolved "https://registry.npmjs.org/@microsoft/fast-foundation/-/fast-foundation-2.49.0.tgz"
-  integrity sha512-Wk4e4QXFVtT5hPwhMfHyGY30kixM0td8aDs7bAD6NM2z2SCBNvpTTWp+FCjx0I0lpUMlMenb6wsw7pMWQreRkQ==
+  version "2.49.1"
+  resolved "https://registry.yarnpkg.com/@microsoft/fast-foundation/-/fast-foundation-2.49.1.tgz#f9cd36491d4d0080e694eaf0aece5672cdf7075a"
+  integrity sha512-dSajlZeX+lkqjg4108XbIIhVLECgJTCG32bE8P6rNgo8XCPHVJBDiBejrF34lv5pO9Z2uGORZjeip/N0fPib+g==
   dependencies:
     "@microsoft/fast-element" "^1.12.0"
     "@microsoft/fast-web-utilities" "^5.4.1"
@@ -6143,7 +6150,7 @@
 
 "@microsoft/fast-web-utilities@^5.4.0", "@microsoft/fast-web-utilities@^5.4.1":
   version "5.4.1"
-  resolved "https://registry.npmjs.org/@microsoft/fast-web-utilities/-/fast-web-utilities-5.4.1.tgz"
+  resolved "https://registry.yarnpkg.com/@microsoft/fast-web-utilities/-/fast-web-utilities-5.4.1.tgz#8e3082ee2ff2b5467f17e7cb1fb01b0e4906b71f"
   integrity sha512-ReWYncndjV3c8D8iq9tp7NcFNc1vbVHvcBFPME2nNFKNbS1XCesYZGlIlf3ot5EmuOXPlrzUHOWzQ2vFpIkqDg==
   dependencies:
     exenv-es6 "^1.1.1"
@@ -6209,7 +6216,7 @@
 
 "@microsoft/gulp-core-build@3.17.20":
   version "3.17.20"
-  resolved "https://registry.npmjs.org/@microsoft/gulp-core-build/-/gulp-core-build-3.17.20.tgz"
+  resolved "https://registry.yarnpkg.com/@microsoft/gulp-core-build/-/gulp-core-build-3.17.20.tgz#db69348d7ac2743f8142c28539e9c10afeff38ef"
   integrity sha512-VBZY08BhygVV9WeIY8lo9yUoe51+5mMjdfx8Bqle40k+/V7br0d93LXeUcMqaCJ5J6C3ribx2mrzaYhkj1l//g==
   dependencies:
     "@jest/core" "~25.4.0"
@@ -6299,12 +6306,12 @@
 
 "@microsoft/load-themed-styles@1.10.292":
   version "1.10.292"
-  resolved "https://registry.npmjs.org/@microsoft/load-themed-styles/-/load-themed-styles-1.10.292.tgz"
+  resolved "https://registry.yarnpkg.com/@microsoft/load-themed-styles/-/load-themed-styles-1.10.292.tgz#55875a7e8310c9dd49d26547d65bbd5baa21ac64"
   integrity sha512-LQWGImtpv2zHKIPySLalR1aFXumXfOq8UuJvR15mIZRKXIoM+KuN9wZq+ved2FyeuePjQSJGOxYynxtCLLwDBA==
 
 "@microsoft/load-themed-styles@^1.10.26", "@microsoft/load-themed-styles@~1.10.172":
   version "1.10.295"
-  resolved "https://registry.npmjs.org/@microsoft/load-themed-styles/-/load-themed-styles-1.10.295.tgz"
+  resolved "https://registry.yarnpkg.com/@microsoft/load-themed-styles/-/load-themed-styles-1.10.295.tgz#d3c8d7ab186f422727ba112d6ebe5fe8e41051d9"
   integrity sha512-W+IzEBw8a6LOOfRJM02dTT7BDZijxm+Z7lhtOAz1+y9vQm1Kdz9jlAO+qCEKsfxtUOmKilW8DIRqFw2aUgKeGg==
 
 "@microsoft/loader-load-themed-styles@2.0.27":
@@ -6314,10 +6321,18 @@
   dependencies:
     loader-utils "1.4.2"
 
-"@microsoft/microsoft-graph-client@3.0.2", "@microsoft/microsoft-graph-client@^3.0.1":
+"@microsoft/microsoft-graph-client@3.0.2":
   version "3.0.2"
   resolved "https://registry.npmjs.org/@microsoft/microsoft-graph-client/-/microsoft-graph-client-3.0.2.tgz"
   integrity sha512-eYDiApYmiGsm1s1jfAa/rhB2xQCsX4pWt0vCTd1LZmiApMQfT/c0hXj2hvpuGz5GrcLdugbu05xB79rIV57Pjw==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    tslib "^2.2.0"
+
+"@microsoft/microsoft-graph-client@^3.0.1":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@microsoft/microsoft-graph-client/-/microsoft-graph-client-3.0.5.tgz#c661b5bb271fd59d34391b0657b8a78c02af9ab8"
+  integrity sha512-xQADFNLUhE78RzYadFZtOmy/5wBZenSZhVK193m40MTDC5hl1aYMQO1QOJApnKga8WcvMCDCU10taRhuXTOz5w==
   dependencies:
     "@babel/runtime" "^7.12.5"
     tslib "^2.2.0"
@@ -25887,28 +25902,35 @@ lit-element@^3.3.0:
 
 lit-html@^1.0.0, lit-html@^1.1.1:
   version "1.4.1"
-  resolved "https://registry.npmjs.org/lit-html/-/lit-html-1.4.1.tgz"
+  resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.4.1.tgz#0c6f3ee4ad4eb610a49831787f0478ad8e9ae5e0"
   integrity sha512-B9btcSgPYb1q4oSOb/PrOT6Z/H+r6xuNzfH4lFli/AWhYwdtrgQkQWBbIc6mdnf6E2IL3gDXdkkqNktpU0OZQA==
 
-lit-html@^2.0.0, lit-html@^2.7.0:
+lit-html@^2.0.0, lit-html@^2.8.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-2.8.0.tgz#96456a4bb4ee717b9a7d2f94562a16509d39bffa"
+  integrity sha512-o9t+MQM3P4y7M7yNzqAyjp7z+mQGa4NS4CxiyLqFPyFWyc4O+nodLrkrxSaCTrla6M5YOLaT3RpbbqjszB5g3Q==
+  dependencies:
+    "@types/trusted-types" "^2.0.2"
+
+lit-html@^2.7.0:
   version "2.7.2"
   resolved "https://registry.npmjs.org/lit-html/-/lit-html-2.7.2.tgz"
   integrity sha512-ZJCfKlA2XELu5tn7XuzOziGFGvf1SeQm+ngLWoJ8bXtSkRrrR3ms6SWy+gsdxeYwySLij5xAhdd2C3EX0ftxdQ==
   dependencies:
     "@types/trusted-types" "^2.0.2"
 
-lit@^2.0.0, lit@^2.3.1:
-  version "2.7.2"
-  resolved "https://registry.npmjs.org/lit/-/lit-2.7.2.tgz"
-  integrity sha512-9QnZmG5mIKPRja96cpndMclLSi0Qrz2BXD6EbqNqCKMMjOWVm/BwAeXufFk2jqFsNmY07HOzU8X+8aTSVt3yrA==
+lit@^2.0.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/lit/-/lit-2.8.0.tgz#4d838ae03059bf9cafa06e5c61d8acc0081e974e"
+  integrity sha512-4Sc3OFX9QHOJaHbmTMk28SYgVxLN3ePDjg7hofEft2zWlehFL3LiAuapWc4U/kYwMYJSh2hTCPZ6/LIC7ii0MA==
   dependencies:
     "@lit/reactive-element" "^1.6.0"
     lit-element "^3.3.0"
-    lit-html "^2.7.0"
+    lit-html "^2.8.0"
 
-lit@^2.7.5:
+lit@^2.3.1, lit@^2.7.5:
   version "2.7.5"
-  resolved "https://registry.yarnpkg.com/lit/-/lit-2.7.5.tgz#60bc82990cfad169d42cd786999356dcf79b035f"
+  resolved "https://registry.npmjs.org/lit/-/lit-2.7.5.tgz"
   integrity sha512-i/cH7Ye6nBDUASMnfwcictBnsTN91+aBjXoTHF2xARghXScKxpD4F4WYI+VLXg9lqbMinDfvoI7VnZXjyHgdfQ==
   dependencies:
     "@lit/reactive-element" "^1.6.0"
@@ -28759,7 +28781,7 @@ p-queue@6.6.2, p-queue@^6.3.0:
     eventemitter3 "^4.0.4"
     p-timeout "^3.2.0"
 
-p-reduce@2.1.0, p-reduce@^2.0.0, p-reduce@^2.1.0:
+p-reduce@2.1.0, p-reduce@^2.0.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/p-reduce/-/p-reduce-2.1.0.tgz"
   integrity sha512-2USApvnsutq8uoxZBGbbWM0JIYLiEMJ9RlaN7fAzVNb9OZN0SHjjTTfIcb667XynS5Y1VhwDJVDa72TnPzAYWw==
@@ -35824,10 +35846,15 @@ tslib@^1.10.0, tslib@^1.11.1, tslib@^1.13.0, tslib@^1.8.0, tslib@^1.8.1, tslib@^
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4.0:
+tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4.0:
   version "2.5.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.5.0.tgz"
   integrity sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==
+
+tslib@^2.2.0:
+  version "2.6.0"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.0.tgz"
+  integrity sha512-7At1WUettjcSRHXCyYtTselblcHl9PJFFVKiCAy/bY97+BPZXSQ2wbq0P9s8tK2G7dFQfNnlJnPAiArVBVBsfA==
 
 tslint@^5.15.0:
   version "5.20.1"
