@@ -71,7 +71,6 @@ type PersonViewConfig = {
  * @cssprop --login-signed-out-button-text-color - {Color} the background color of the component when signed out.
  * @cssprop --login-button-padding - {Length} the padding of the button. Default is 0px.
  * @cssprop --login-popup-background-color - {Color} the background color of the popup.
- * @cssprop --login-popup-text-color - {Color} the color of the text in the popup.
  * @cssprop --login-popup-command-button-background-color - {Color} the color of the background to the popup command button.
  * @cssprop --login-popup-padding - {Length} the padding applied to the popup card. Default is 16px.
  * @cssprop --login-add-account-button-text-color - {Color} the color for the text and icon of the add account button.
@@ -80,6 +79,8 @@ type PersonViewConfig = {
  * @cssprop --login-command-button-text-color - {Color} the color for the text of the command button.
  * @cssprop --login-command-button-background-color - {Color} the color for the background of the command button.
  * @cssprop --login-command-button-hover-background-color - {Color} the color for the background of the command button on hovering.
+ * @cssprop --login-account-item-hover-bg-color - {Color} the background color of the account item on hover.
+ * @cssprop --login-flyout-command-text-color - {Color} the color for the text of the flyout command button.
  */
 @customElement('login')
 export class MgtLogin extends MgtTemplatedComponent {
