@@ -1,1280 +1,933 @@
-/**
- * -------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
- * See License in the project root for license information.
- * -------------------------------------------------------------------------------------------
- */
-
-import { html, HTMLTemplateResult, nothing, TemplateResult } from 'lit';
-import { property, state } from 'lit/decorators.js';
 import {
-  CacheService,
-  CacheStore,
-  equals,
-  MgtTemplatedComponent,
-  prepScopes,
+  LocalizationHelper,
   Providers,
   ProviderState,
-  customElement,
-  mgtHtml,
-  BetaGraph,
-  BatchResponse,
-  CollectionResponse
-} from '@microsoft/mgt-element';
-
-import { schemas } from '../../../graph/cacheStores';
-import { strings } from './strings';
-import { styles } from './mgt-search-results-css';
-import {
-  DirectoryObject,
-  Drive,
-  DriveItem,
+  MgtConnectableComponent,
+  BuiltinFilterTemplates,
+  BuiltinTokenNames,
+  DateHelper,
   EntityType,
-  List,
-  ListItem,
-  Message,
-  SearchHit,
-  SearchHitsContainer,
-  SearchRequest,
-  SearchResponse,
-  Site
-} from '@microsoft/microsoft-graph-types';
-import { SearchRequest as BetaSearchRequest } from '@microsoft/microsoft-graph-types-beta';
-import {
-  getIsResponseCacheEnabled,
-  getNameFromUrl,
-  getRelativeDisplayDate,
-  getResponseInvalidationTime,
-  sanitizeSummary,
-  trimFileExtension
-} from '../../../utils/Utils';
-import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
-import { fluentSkeleton, fluentButton, fluentTooltip, fluentDivider } from '@fluentui/web-components';
-import { registerFluentComponents } from '../../../utils/FluentComponents';
-import { CacheResponse } from '../../CacheResponse';
+  FilterSortDirection,
+  FilterSortType,
+  IDataSourceData,
+  ILocalizedString,
+  IMicrosoftSearchQuery,
+  IMicrosoftSearchService,
+  ISearchFiltersEventData,
+  ISearchInputEventData,
+  ISearchRequestAggregation,
+  ISearchResultsEventData,
+  ISearchSortEventData,
+  ISearchSortProperty,
+  ISearchVerticalEventData,
+  ISortFieldConfiguration,
+  ITemplateService,
+  ITokenService,
+  MicrosoftSearchService,
+  SearchAggregationSortBy,
+  SearchResultsHelper,
+  SortFieldDirection,
+  TemplateService,
+  TokenService,
+  UrlHelper,
+  DataFilterHelper,
+  customElement
+} from '@microsoft/mgt-element';
+import { isEmpty } from 'lodash-es';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import { property, state } from 'lit/decorators.js';
+import { html, nothing, css, PropertyValues } from 'lit';
+import { repeat } from 'lit/directives/repeat.js';
+import { MgtSearchResultsStrings as strings } from './loc/strings.default';
+import { styles as tailwindStyles } from '../../../styles/tailwind-styles-css';
+import { EventConstants } from '@microsoft/mgt-element';
 
-registerFluentComponents(fluentSkeleton, fluentButton, fluentTooltip, fluentDivider);
-
-/**
- * Object representing a thumbnail
- */
-interface Thumbnail {
-  /**
-   * The url of the Thumbnail
-   */
-  url?: string;
-}
-
-/**
- * Object representing a Binary Thumbnail
- */
-interface BinaryThumbnail {
-  /**
-   * The url of the Thumbnail
-   */
-  url?: string;
-
-  /**
-   * The web Url of the Thumbnail
-   */
-  thumbnailWebUrl?: string;
-}
-
-/**
- * Object representing a Search Answer
- */
-type Answer = {
-  '@odata.type': string;
-  displayName?: string;
-  description?: string;
-  webUrl?: string;
-};
-
-/**
- * Object representing a search resource supporting thumbnails
- */
-type ThumbnailResource = {
-  thumbnail: Thumbnail;
-};
-
-type UserResource = {
-  lastModifiedBy?: {
-    user?: {
-      email?: string;
-    };
-  };
-  userPrincipalName?: string;
-};
-
-/**
- * Object representing a Search Resource
- */
-type SearchResource = Partial<
-  DriveItem & Site & List & Message & ListItem & Drive & DirectoryObject & Answer & ThumbnailResource & UserResource
->;
-
-/**
- * Object representing a full Search Response
- */
-type SearchResponseCollection = CollectionResponse<SearchResponse>;
-
-/**
- * **Preview component** Custom element for making Microsoft Graph get queries.
- * Component may change before general availability release.
- *
- * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes
- *
- * @cssprop --answer-border-radius - {Length} Border radius of an answer
- * @cssprop --answer-box-shadow - {Length} Box shadow of an answer
- * @cssprop --answer-border - {Length} Border of an answer
- * @cssprop --answer-padding - {Length} Padding of an answer
- *
- * @class mgt-search-results
- * @extends {MgtTemplatedComponent}
- */
 @customElement('search-results')
-export class MgtSearchResults extends MgtTemplatedComponent {
-  /**
-   * Default page size is 10
-   */
-  private _size = 10;
+export class MgtSearchResultsComponent extends MgtConnectableComponent {
+  //#region Attributes
 
   /**
-   * Array of styles to apply to the element. The styles should be defined
-   * user the `css` tag function.
+   * Flag indicating if the beta endpoint for Microsoft Graph API should be used
    */
-  static get styles() {
-    return styles;
+  @property({ type: Boolean, attribute: 'use-beta' })
+  useBetaEndpoint = false;
+
+  /**
+   * The Microsoft Search entity types to query
+   */
+  @property({
+    type: String,
+    attribute: 'entity-types',
+    converter: {
+      fromAttribute: value => {
+        return value.split(',') as EntityType[];
+      }
+    }
+  })
+  entityTypes: EntityType[] = [EntityType.ListItem];
+
+  /**
+   * The default query text to apply.
+   * Query string parameter and search box have priority over this value during first load
+   */
+  @property({ type: String, attribute: 'query-text' })
+  defaultQueryText: string;
+
+  /**
+   * The search query template to use. Support tokens https://learn.microsoft.com/en-us/graph/search-concept-query-template
+   */
+  @property({ type: String, attribute: 'query-template' })
+  queryTemplate: string;
+
+  /**
+   * If specified, get the default query text from this query string parameter name
+   */
+  @property({ type: String, attribute: 'default-query-string-parameter' })
+  defaultQueryStringParameter: string;
+
+  /**
+   * Search managed properties to retrieve for results and usable in the results template.
+   * Comma separated. Refer to the [Microsoft Search API documentation](https://learn.microsoft.com/en-us/graph/api/resources/search-api-overview?view=graph-rest-1.0&preserve-view=true#scope-search-based-on-entity-types) to know what properties can be used according to entity types.
+   */
+  @property({
+    type: Array,
+    attribute: 'fields',
+    converter: {
+      fromAttribute: value => {
+        return value.split(',');
+      }
+    }
+  })
+  selectedFields: string[] = [
+    'name',
+    'title',
+    'summary',
+    'created',
+    'createdBy',
+    'filetype',
+    'defaultEncodingURL',
+    'lastModifiedTime',
+    'modifiedBy',
+    'path',
+    'hitHighlightedSummary',
+    'SPSiteURL',
+    'SiteTitle'
+  ];
+
+  /**
+   * Sort properties for the request
+   */
+  @property({
+    type: String,
+    attribute: 'sort-properties',
+    converter: {
+      fromAttribute: value => {
+        try {
+          return JSON.parse(value);
+        } catch {
+          return null;
+        }
+      }
+    }
+  })
+  sortFieldsConfiguration: ISortFieldConfiguration[] = [];
+
+  /**
+   * Flag indicating if the pagniation control should be displayed
+   */
+  @property({ type: Boolean, attribute: 'show-paging' })
+  showPaging: boolean;
+
+  /**
+   * The number of results to show per results page
+   */
+  @property({ type: Number, attribute: 'page-size' })
+  pageSize = 10;
+
+  /**
+   * The number of pages to display in the pagination control
+   */
+  @property({ type: Number, attribute: 'pages-number' })
+  numberOfPagesToDisplay = 5;
+
+  /**
+   * Flag indicating if Micrsoft Search result types should be applied in results
+   */
+  @property({ type: Boolean, attribute: 'enable-result-types' })
+  enableResultTypes: boolean;
+
+  /**
+   * If "entityTypes" contains "externalItem", specify the connection id of the external source
+   */
+  @property({
+    type: String,
+    attribute: 'connections',
+    converter: {
+      fromAttribute: value => {
+        return value.split(',').map(v => `/external/connections/${v}`) as string[];
+      }
+    }
+  })
+  connectionIds: string[];
+
+  /**
+   * Indicates whether spelling modifications are enabled. If enabled, the user will get the search results for the corrected query in case of no results for the original query with typos.
+   */
+  @property({ type: Boolean, attribute: 'enable-modification' })
+  enableModification = false;
+
+  /**
+   * Indicates whether spelling suggestions are enabled. If enabled, the user will get the search results for the original search query and suggestions for spelling correction
+   */
+  @property({ type: Boolean, attribute: 'enable-suggestion' })
+  enableSuggestion = false;
+
+  /**
+   * If specified, shows the title on top of the results
+   */
+  @property({
+    type: String,
+    attribute: 'comp-title',
+    converter: {
+      fromAttribute: value => {
+        try {
+          return JSON.parse(value);
+        } catch {
+          return value;
+        }
+      }
+    }
+  })
+  componentTitle: string | ILocalizedString;
+
+  /**
+   * If specified, shows a "See all" link at top top of the results
+   */
+  @property({ type: String, attribute: 'see-all-link' })
+  seeAllLink: string;
+
+  /**
+   * If specified, show the results count at the top of the results
+   */
+  @property({ type: Boolean, attribute: 'show-count' })
+  showCount: boolean;
+
+  /**
+   * The search filters component ID if connected to a search filters
+   */
+  @property({ type: String, attribute: 'search-filters-id' })
+  searchFiltersComponentId: string;
+
+  /**
+   * The search input component ID if connected to a search input
+   */
+  @property({ type: String, attribute: 'search-input-id' })
+  searchInputComponentId: string;
+
+  /**
+   * The search verticals component ID if connected to a search verticals
+   */
+  @property({ type: String, attribute: 'search-verticals-id' })
+  searchVerticalsComponentId: string;
+
+  /**
+   * The search sort component ID if connected to a search sort component
+   */
+  @property({ type: String, attribute: 'search-sort-id' })
+  searchSortComponentId: string;
+
+  /**
+   * If connected to a search verticals component on the same page, determines on which keys this component should be displayed
+   */
+  @property({
+    type: Array,
+    attribute: 'verticals-keys',
+    converter: {
+      fromAttribute: value => {
+        return value.split(',');
+      }
+    }
+  })
+  selectedVerticalKeys: string[];
+
+  /**
+   * Flag indicating if the loading indication (spinner/shimmers) should be displayed when fectching the data
+   */
+  @property({ type: Boolean, attribute: 'no-loading' })
+  noLoadingIndicator: boolean;
+
+  //#endregion
+
+  //#region State properties
+
+  @state()
+  data: IDataSourceData = { items: [] };
+
+  @state()
+  isLoading = true;
+
+  @state()
+  shouldRender: boolean;
+
+  @state()
+  error: Error = null;
+
+  //#endregion
+
+  //#region Class properties
+  public declare searchQuery: IMicrosoftSearchQuery;
+  public declare msSearchService: IMicrosoftSearchService;
+  private declare templateService: ITemplateService;
+  private declare tokenService: ITokenService;
+  private declare dateHelper: DateHelper;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private declare dayJs: any;
+  private declare currentLanguage: string;
+  declare sortProperties: ISearchSortProperty[];
+  //#endregion
+
+  //#region MGT/Lit Lifecycle methods
+
+  constructor() {
+    super();
+    this.msSearchService = new MicrosoftSearchService();
+    this.templateService = new TemplateService();
+    this.tokenService = new TokenService();
+
+    this.dateHelper = new DateHelper(LocalizationHelper.strings?.language);
+
+    this.searchQuery = {
+      requests: []
+    };
+
+    this.addEventListener('templateRendered', (e: CustomEvent) => {
+      const element = e.detail.element as HTMLElement;
+
+      if (this.enableResultTypes) {
+        // Process result types and replace part of HTML with item id
+        /*const newElement = this.templateService.processResultTypesFromHtml(this.data, element, this.getTheme());
+                element.replaceWith(newElement);*/
+      }
+    });
+
+    this.handleSearchVertical = this.handleSearchVertical.bind(this);
+    this.handleSearchFilters = this.handleSearchFilters.bind(this);
+    this.handleSearchInput = this.handleSearchInput.bind(this);
+    this.handleSearchSort = this.handleSearchSort.bind(this);
+
+    this.goToPage = this.goToPage.bind(this);
+  }
+
+  public render() {
+    if (this.shouldRender) {
+      let renderHeader;
+      let renderItems;
+      let renderOverlay;
+      let renderPagination;
+
+      // Render shimmers
+      if (this.hasTemplate('shimmers') && !this.noLoadingIndicator && !this.renderedOnce) {
+        renderItems = this.renderTemplate('shimmers', { items: Array(this.pageSize) });
+      } else {
+        // Render loading overlay
+        if (this.isLoading && !this.noLoadingIndicator) {
+          renderOverlay = html`
+                        <div class="absolute bg-white bg-opacity-60 h-full w-full flex items-center justify-center">
+                            <div class="flex items-center relative">
+                                <svg class="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+                    `;
+        }
+      }
+
+      // Render error
+      if (this.error) {
+        return html`<Mgt-error-message .error=${this.error}></Mgt-error-message>`;
+      }
+
+      // Render header
+      if (this.componentTitle || this.seeAllLink || this.showCount) {
+        renderHeader = html`
+                    <div class="font-Mgt flex items-end justify-between mb-4">
+                        <div class="space-x-2">
+                        ${
+                          this.componentTitle
+                            ? html`
+                                <div data-ref="component-title" class="text-3xl inline-block selection:tracking-[0.0012em] font-bold text-transparent bg-clip-text bg-gradient-to-r from-gradientFrom to-gradientTo">${this.getLocalizedString(
+                                  this.componentTitle
+                                )}</div>
+                            `
+                            : null
+                        }
+                        ${
+                          this.showCount && !this.isLoading
+                            ? html`
+                                <div data-ref="show-count" class="text-sm inline-block font-normal font-sans">${this.data.totalCount} ${strings.results}</div>
+                            `
+                            : null
+                        }                            
+                        </div>
+                        ${
+                          this.seeAllLink && this.data.totalCount > 0
+                            ? html`
+                            <div class="text-sm text-primary">
+                                <a data-ref="see-all-link" class="flex items-center rounded hover:text-primaryHover focus:outline focus:outline-2 focus-visible:outline focus-visible:outline-2" href="${this.tokenService.resolveTokens(
+                                  this.seeAllLink
+                                )}" title=${strings.seeAllLink}>
+                                    <span>${strings.seeAllLink}</span>
+                                    <svg width="18" height="15" viewBox="0 0 18 18" class="fill-current ml-4" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11.526 14.29C11.526 14.29 16.027 9.785 17.781 8.03C17.927 7.884 18 7.69199 18 7.49999C18 7.30799 17.927 7.11699 17.781 6.97C16.028 5.21599 11.526 0.711995 11.526 0.711995C11.382 0.566995 11.192 0.494995 11.002 0.494995C10.809 0.494995 10.617 0.568995 10.47 0.715995C10.177 1.00799 10.175 1.482 10.466 1.772L15.444 6.74999H0.751953C0.337953 6.74999 0.00195312 7.08599 0.00195312 7.49999C0.00195312 7.91399 0.337953 8.24999 0.751953 8.24999H15.444L10.465 13.229C10.176 13.518 10.179 13.991 10.471 14.283C10.619 14.431 10.812 14.505 11.004 14.505C11.194 14.505 11.382 14.433 11.526 14.29Z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        `
+                            : null
+                        }
+                    </div>
+                `;
+      }
+
+      if (this.renderedOnce) {
+        // Render items
+        if (this.hasTemplate('items')) {
+          renderItems = this.renderTemplate('items', this.data);
+        } else {
+          // Default template for all items
+          renderItems = html`
+                        <ul class="space-y-4">
+                            ${repeat(
+                              this.data.items,
+                              item => item.hitId,
+                              item => {
+                                return html`             
+                                        <li id=${item.hitId} data-ref="item" class="!mt-0 !mb-8 p-2">
+                                            <div class="flex items-center space-x-2 text-2xl mb-2">
+                                                <egg-icon icon-id="egg-global:file:doc"></egg-icon>
+                                                <a href=${
+                                                  item?.resource?.fields?.defaultEncodingURL
+                                                } class="hover:text-primary">
+                                                    <span class="font-Mgt font-bold">${SearchResultsHelper.getItemTitle(
+                                                      item
+                                                    )}</span>
+                                                </a>
+                                            </div>
+                                            <div class="font-sans text-sm text-black/[0.6] mb-2">
+                                                <span class="itemInfo">${this.dayJs(item.resource?.created).format(
+                                                  'DD/MM/YYYY'
+                                                )}</span>
+                                                <span class="itemInfo">By <a href="" class="font-bold hover:text-primary">${
+                                                  item.resource?.createdBy?.user?.displayName
+                                                }</a></span>
+                                                <a href="" class="bg-topicBackground py-1 px-4 rounded-[13px] text-xs font-Mgt text-textColor transition-all cursor-pointer hover:bg-topicHover focus:bg-topicFocus focus-visible:bg-topicFocus">${
+                                                  item.resource?.fields?.siteTitle
+                                                }</a>
+                                            </div>
+                                            <div class="font-sans">
+                                                <p class="itemInfo text-base color-textColor line-clamp-2 overflow-hidden" style="display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;">${unsafeHTML(
+                                                  SearchResultsHelper.getItemSummary(item.summary)
+                                                )}</p>
+                                            </div>
+                                        </li>
+                                    `;
+                              }
+                            )}
+                        </ul>
+                    `;
+        }
+
+        // Render pagination
+        if (this.showPaging && this.data.items.length > 0) {
+          renderPagination = html`<Mgt-pagination 
+                                                class="flex justify-center p-2 mt-6 mb-6 min-w-full" 
+                                                .totalItems=${this.data.totalCount} 
+                                                .itemsCountPerPage=${this.pageSize} 
+                                                .numberOfPagesToDisplay=${this.numberOfPagesToDisplay}
+                                                .onPageNumberUpdated=${this.goToPage}
+                                            >
+                                            </Mgt-pagination>
+                                        `;
+        }
+      }
+
+      return html`
+                ${renderHeader}            
+                <div class="relative flex justify-between flex-col">
+                    ${renderOverlay}
+                    ${renderItems}
+                    ${renderPagination}
+                </div>         
+            `;
+    }
+
+    return nothing;
+  }
+
+  public async connectedCallback(): Promise<void> {
+    // 'setTimeout' is used here to make sure the initialization logic for the search results components occurs after other component initialization routine.
+    // This way, we ensure other component properties will be accessible.
+    // connectedCallback events on other components will execute before according to the JS event loop
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop
+    setTimeout(async () => {
+      this.msSearchService.useBetaEndPoint = this.useBetaEndpoint;
+      this.dayJs = await this.dateHelper.dayJs();
+
+      // Bind connected components
+      const bindings = [
+        {
+          id: this.searchVerticalsComponentId,
+          eventName: EventConstants.SEARCH_VERTICAL_EVENT,
+          callbackFunction: this.handleSearchVertical
+        },
+        {
+          id: this.searchFiltersComponentId,
+          eventName: EventConstants.SEARCH_FILTER_EVENT,
+          callbackFunction: this.handleSearchFilters
+        },
+        {
+          id: this.searchInputComponentId,
+          eventName: EventConstants.SEARCH_INPUT_EVENT,
+          callbackFunction: this.handleSearchInput
+        },
+        {
+          id: this.searchSortComponentId,
+          eventName: EventConstants.SEARCH_SORT_EVENT,
+          callbackFunction: this.handleSearchSort
+        }
+      ];
+
+      this.bindComponents(bindings);
+
+      if (this.enableResultTypes) {
+        // Only load adaptive cards bundle if result types are enabled for performance purpose
+        await this.templateService.loadAdaptiveCardsResources();
+      }
+
+      if (this.searchVerticalsComponentId) {
+        // Check if the current component should be displayed at first
+        const verticalsComponent = document.getElementById(this.searchVerticalsComponentId) as any; // MgtSearchVerticalsComponent;
+        if (verticalsComponent) {
+          // Reead the default value directly from the attribute
+          const selectedVerticalKey = verticalsComponent.selectedVerticalKey;
+          if (selectedVerticalKey) {
+            this.shouldRender = this.selectedVerticalKeys.indexOf(selectedVerticalKey) !== -1;
+          }
+        }
+      } else {
+        this.shouldRender = true;
+      }
+
+      // Set default sort properties according to configuration
+      this.initSortProperties();
+
+      // Build the search query
+      this.buildSearchQuery();
+
+      // Set tokens
+      this.tokenService.setTokenValue(BuiltinTokenNames.searchTerms, this.getDefaultQueryText());
+
+      return super.connectedCallback();
+    });
+  }
+
+  public disconnectedCallback(): void {
+    super.disconnectedCallback();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public updated(changedProperties: PropertyValues<this>): void {
+    // Process result types on default Lit template of this component
+    if (this.enableResultTypes && !this.hasTemplate('items')) {
+      this.templateService.processResultTypesFromHtml(this.data, this.renderRoot as HTMLElement);
+    }
+
+    // Properties trigerring a new search
+    // Mainly use for Storybook demo scenario
+    if (
+      changedProperties.get('defaultQueryText') ||
+      changedProperties.get('selectedFields') ||
+      changedProperties.get('pageSize') ||
+      changedProperties.get('entityTypes') ||
+      changedProperties.get('enableResultTypes') ||
+      changedProperties.get('connectionIds') ||
+      changedProperties.get('numberOfPagesToDisplay')
+    ) {
+      // Update the search query
+      this.buildSearchQuery();
+      this._search(this.searchQuery);
+    }
+
+    this.currentLanguage = LocalizationHelper.strings?.language;
   }
 
   /**
-   * Gets all the localization strings for the component
+   * Only calls when the provider is in ProviderState.SignedIn state
+   * @returns
    */
+  public async loadState(): Promise<void> {
+    if (this.shouldRender && this.getDefaultQueryText()) {
+      await this._search(this.searchQuery);
+    } else {
+      this.isLoading = false;
+    }
+  }
+
+  //#endregion
+
+  //#region Static properties accessors
+  static get styles() {
+    return [
+      css`
+      :host  {
+  
+          .itemInfo + .itemInfo::before {
+              content: " • ";
+              font-size: 18px;
+              line-height: 1;
+              transform: translateY(2px);
+              display: inline-block;
+              margin: 0 5px;
+          }
+
+          .itemInfo + .itemInfo::after {
+              content: " • ";
+              font-size: 18px;
+              line-height: 1;
+              transform: translateY(2px);
+              display: inline-block;
+              margin: 0 5px;
+          }
+      }                 
+      `,
+      tailwindStyles
+    ];
+  }
+
   protected get strings() {
     return strings;
   }
 
-  private _queryString: string;
+  //#endregion
 
-  /**
-   * The query to send to Microsoft Search
-   *
-   * @type {string}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'query-string',
-    type: String
-  })
-  public get queryString(): string {
-    return this._queryString;
-  }
-  public set queryString(value: string) {
-    if (this._queryString !== value) {
-      this._queryString = value;
-      this._currentPage = 1;
-      this.setLoadingState(true);
-      void this.requestStateUpdate(true);
-    }
-  }
+  //#region Data related methods
 
-  /**
-   * Query template to use in complex search scenarios
-   * Query Templates are currently supported only on the beta endpoint
-   */
-  @property({
-    attribute: 'query-template',
-    type: String
-  })
-  public queryTemplate: string;
-
-  /**
-   * One or more types of resources expected in the response.
-   * Possible values are: list, site, listItem, message, event,
-   * drive, driveItem, externalItem.
-   *
-   * @type {string[]}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'entity-types',
-    converter: value => {
-      return value.split(',').map(v => v.trim());
-    },
-    type: String
-  })
-  public entityTypes: string[] = ['driveItem', 'listItem', 'site'];
-
-  /**
-   * The scopes to request
-   *
-   * @type {string[]}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'scopes',
-    converter: (value, type) => {
-      return value ? value.toLowerCase().split(',') : null;
-    }
-  })
-  public scopes: string[] = [];
-
-  /**
-   * Content sources to use with External Items
-   *
-   * @type {string[]}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'content-sources',
-    converter: (value, type) => {
-      return value ? value.toLowerCase().split(',') : null;
-    }
-  })
-  public contentSources: string[] = [];
-
-  /**
-   * Api version to use for request
-   *
-   * @type {string}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'version',
-    reflect: true,
-    type: String
-  })
-  public version = 'v1.0';
-
-  /**
-   * Specifies the offset for the search results.
-   * Offset 0 returns the very first result.
-   *
-   * @type {number}
-   * @memberof MgtSearchResults
-   */
-  public get from(): number {
-    return (this.currentPage - 1) * this.size;
-  }
-
-  /**
-   * The size of the page to be retrieved.
-   * The maximum value is 1000.
-   *
-   * @type {number}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'size',
-    reflect: true,
-    type: Number
-  })
-  public get size(): number {
-    return this._size;
-  }
-  public set size(value) {
-    if (value > this.maxPageSize) {
-      this._size = this.maxPageSize;
-    } else {
-      this._size = value;
-    }
-  }
-
-  /**
-   * The maximum number of pages to be clickable
-   * in the paging control
-   *
-   * @type {number}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'paging-max',
-    reflect: true,
-    type: Number
-  })
-  public pagingMax = 7;
-
-  /**
-   * Sets whether the result thumbnail should be fetched
-   * from the Microsoft Graph
-   *
-   * @type {boolean}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'fetch-thumbnail',
-    type: Boolean
-  })
-  public fetchThumbnail: boolean;
-
-  /**
-   * Contains the fields to be returned for each resource
-   *
-   * @type {string[]}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'fields',
-    converter: value => {
-      return value.split(',').map(v => v.trim());
-    },
-    type: String
-  })
-  public fields: string[];
-
-  /**
-   * This triggers hybrid sort for messages : the first 3 messages are the most relevant.
-   * This property is only applicable to entityType=message
-   *
-   * @type {boolean}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'enable-top-results',
-    reflect: true,
-    type: Boolean
-  })
-  public enableTopResults = false;
-
-  /**
-   * Enables cache on the response from the specified resource
-   * default = false
-   *
-   * @type {boolean}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'cache-enabled',
-    reflect: true,
-    type: Boolean
-  })
-  public cacheEnabled = false;
-
-  /**
-   * Invalidation period of the cache for the responses in milliseconds
-   *
-   * @type {number}
-   * @memberof MgtSearchResults
-   */
-  @property({
-    attribute: 'cache-invalidation-period',
-    reflect: true,
-    type: Number
-  })
-  public cacheInvalidationPeriod = 30000;
-
-  /**
-   * Gets or sets the response of the request
-   *
-   * @type any
-   * @memberof MgtSearchResults
-   */
-  @state() private response: SearchResponseCollection;
-
-  private isRefreshing = false;
-  private get searchEndpoint() {
-    return '/search/query';
-  }
-  private get maxPageSize() {
-    return 1000;
-  }
-  private readonly defaultFields: string[] = [
-    'webUrl',
-    'lastModifiedBy',
-    'lastModifiedDateTime',
-    'summary',
-    'displayName',
-    'name'
-  ];
-  private _currentPage = 1;
-  @state()
-  public get currentPage(): number {
-    return this._currentPage;
-  }
-  public set currentPage(value: number) {
-    if (this._currentPage !== value) {
-      this._currentPage = value;
-      void this.requestStateUpdate(true);
-    }
-  }
-
-  constructor() {
-    super();
-    console.warn(
-      '🦒: <mgt-search-results> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
-    );
-  }
-
-  /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {string} name
-   * @param {string} oldValue
-   * @param {string} newValue
-   * @memberof MgtSearchResults
-   */
-  public attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-    void this.requestStateUpdate();
-  }
-
-  /**
-   * Refresh the data
-   *
-   * @param {boolean} [hardRefresh=false]
-   * if false (default), the component will only update if the data changed
-   * if true, the data will be first cleared and reloaded completely
-   * @memberof MgtSearchResults
-   */
-  public refresh(hardRefresh = false) {
-    this.isRefreshing = true;
-    if (hardRefresh) {
-      this.clearState();
-    }
-    void this.requestStateUpdate(hardRefresh);
-  }
-
-  /**
-   * Clears state of the component
-   *
-   * @protected
-   * @memberof MgtSearchResults
-   */
-  protected clearState(): void {
-    this.response = null;
-  }
-
-  /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
-   */
-  protected render(): TemplateResult {
-    let renderedTemplate: TemplateResult = null;
-    let headerTemplate: TemplateResult = null;
-    let footerTemplate: TemplateResult = null;
-
-    if (this.hasTemplate('header')) {
-      headerTemplate = this.renderTemplate('header', this.response);
-    }
-
-    footerTemplate = this.renderFooter(this.response?.value[0]?.hitsContainers[0]);
-
-    if (this.isLoadingState) {
-      renderedTemplate = this.renderLoading();
-    } else if (this.error) {
-      renderedTemplate = this.renderError();
-    } else if (this.response && this.hasTemplate('default')) {
-      renderedTemplate = this.renderTemplate('default', this.response) || html``;
-    } else if (this.response?.value[0]?.hitsContainers[0]) {
-      renderedTemplate = html`${this.response?.value[0]?.hitsContainers[0]?.hits?.map(result =>
-        this.renderResult(result)
-      )}`;
-    } else if (this.hasTemplate('no-data')) {
-      renderedTemplate = this.renderTemplate('no-data', null);
-    } else {
-      renderedTemplate = html``;
-    }
-
-    return html`
-      ${headerTemplate}
-      <div class="search-results">
-        ${renderedTemplate}
-      </div>
-      ${footerTemplate}`;
-  }
-
-  /**
-   * load state into the component.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtSearchResults
-   */
-  protected async loadState() {
+  private async _search(searchQuery: IMicrosoftSearchQuery): Promise<void> {
     const provider = Providers.globalProvider;
-
-    this.error = null;
-
     if (!provider || provider.state !== ProviderState.SignedIn) {
       return;
     }
 
-    if (this.queryString) {
-      try {
-        const requestOptions = this.getRequestOptions();
+    try {
+      // Reset error
+      this.error = null;
 
-        let cache: CacheStore<CacheResponse>;
-        const key = JSON.stringify({
-          endpoint: `${this.version}${this.searchEndpoint}`,
-          requestOptions
-        });
-        let response: SearchResponseCollection = null;
+      this.isLoading = true;
+      const queryLanguage = LocalizationHelper.strings?.language;
 
-        if (this.shouldRetrieveCache()) {
-          cache = CacheService.getCache<CacheResponse>(schemas.search, schemas.search.stores.responses);
-          const result: CacheResponse = getIsResponseCacheEnabled() ? await cache.getValue(key) : null;
-          if (result && getResponseInvalidationTime(this.cacheInvalidationPeriod) > Date.now() - result.timeCached) {
-            response = JSON.parse(result.response) as SearchResponseCollection;
-          }
-        }
+      const results = await this.msSearchService.search(searchQuery, queryLanguage);
+      this.data = results;
 
-        if (!response) {
-          const graph = provider.graph.forComponent(this);
-          let request = graph.api(this.searchEndpoint).version(this.version);
+      // Enhance results
+      this.data.items = SearchResultsHelper.enhanceResults(this.data.items);
+      this.isLoading = false;
 
-          if (this.scopes?.length) {
-            request = request.middlewareOptions(prepScopes(...this.scopes));
-          }
+      this.renderedOnce = true;
 
-          response = (await request.post({ requests: [requestOptions] })) as SearchResponseCollection;
+      // Notify subscribers new filters are available
+      this.fireCustomEvent(EventConstants.SEARCH_RESULTS_EVENT, {
+        availableFilters: results.filters,
+        sortFieldsConfiguration: this.sortFieldsConfiguration.filter(s => s.isUserSort),
+        submittedQueryText: this.searchQuery.requests[0].query.queryString,
+        resultsCount: results.totalCount,
+        queryAlterationResponse: results.queryAlterationResponse,
+        from: this.searchQuery.requests[0].from
+      } as ISearchResultsEventData);
+    } catch (error) {
+      this.error = error;
+    }
+  }
 
-          if (this.fetchThumbnail) {
-            const thumbnailBatch = graph.createBatch<BinaryThumbnail>();
-            const thumbnailBatchBeta = BetaGraph.fromGraph(graph).createBatch<BinaryThumbnail>();
+  private buildAggregationsFromFiltersConfig(): ISearchRequestAggregation[] {
+    let aggregations: ISearchRequestAggregation[] = [];
+    const filterComponent = document.getElementById(this.searchFiltersComponentId) as any; //MgtSearchFiltersComponent;
+    if (filterComponent && filterComponent.filterConfiguration) {
+      // Build aggregations from filters configuration (i.e. refiners)
+      aggregations = filterComponent.filterConfiguration.map(filterConfiguration => {
+        const aggregation: ISearchRequestAggregation = {
+          field: filterConfiguration.filterName,
+          bucketDefinition: {
+            isDescending: filterConfiguration.sortDirection === FilterSortDirection.Ascending ? false : true,
+            minimumCount: 0,
+            sortBy:
+              filterConfiguration.sortBy === FilterSortType.ByCount
+                ? SearchAggregationSortBy.Count
+                : SearchAggregationSortBy.KeyAsString
+          },
+          size: filterConfiguration && filterConfiguration.maxBuckets ? filterConfiguration.maxBuckets : 10
+        };
 
-            const hits =
-              response.value?.length && response.value[0].hitsContainers?.length
-                ? response.value[0].hitsContainers[0]?.hits ?? []
-                : [];
-            for (const element of hits) {
-              const resource = element.resource as SearchResource;
-              if (
-                (resource.size > 0 || resource.webUrl?.endsWith('.aspx')) &&
-                (resource['@odata.type'] === '#microsoft.graph.driveItem' ||
-                  resource['@odata.type'] === '#microsoft.graph.listItem')
-              ) {
-                if (resource['@odata.type'] === '#microsoft.graph.listItem') {
-                  thumbnailBatchBeta.get(
-                    element.hitId.toString(),
-                    `/sites/${resource.parentReference.siteId}/pages/${resource.id}`
-                  );
-                } else {
-                  thumbnailBatch.get(
-                    element.hitId.toString(),
-                    `/drives/${resource.parentReference.driveId}/items/${resource.id}/thumbnails/0/medium`
-                  );
-                }
-              }
+        if (filterConfiguration.template === BuiltinFilterTemplates.Date) {
+          const pastYear = this.dayJs(new Date()).subtract(1, 'years').subtract(1, 'minutes').toISOString();
+          const past3Months = this.dayJs(new Date()).subtract(3, 'months').subtract(1, 'minutes').toISOString();
+          const pastMonth = this.dayJs(new Date()).subtract(1, 'months').subtract(1, 'minutes').toISOString();
+          const pastWeek = this.dayJs(new Date()).subtract(1, 'week').subtract(1, 'minutes').toISOString();
+          const past24hours = this.dayJs(new Date()).subtract(24, 'hours').subtract(1, 'minutes').toISOString();
+          const today = new Date().toISOString();
+
+          aggregation.bucketDefinition.ranges = [
+            {
+              to: pastYear
+            },
+            {
+              from: pastYear,
+              to: today
+            },
+            {
+              from: past3Months,
+              to: today
+            },
+            {
+              from: pastMonth,
+              to: today
+            },
+            {
+              from: pastWeek,
+              to: today
+            },
+            {
+              from: past24hours,
+              to: today
+            },
+            {
+              from: today
             }
-
-            /**
-             * Based on the batch response, augment the search result resource with the thumbnail url
-             *
-             * @param thumbnailResponse
-             */
-            const augmentResponse = (thumbnailResponse: Map<string, BatchResponse<BinaryThumbnail>>) => {
-              if (thumbnailResponse && thumbnailResponse.size > 0) {
-                for (const [k, value] of thumbnailResponse) {
-                  const result: SearchHit = response.value[0].hitsContainers[0].hits[k] as SearchHit;
-                  const thumbnail: Thumbnail =
-                    result.resource['@odata.type'] === '#microsoft.graph.listItem'
-                      ? { url: value.content.thumbnailWebUrl }
-                      : { url: value.content.url };
-                  (result.resource as SearchResource).thumbnail = thumbnail;
-                }
-              }
-            };
-
-            try {
-              augmentResponse(await thumbnailBatch.executeAll());
-              augmentResponse(await thumbnailBatchBeta.executeAll());
-            } catch {
-              // no-op
-            }
-          }
-
-          if (this.shouldUpdateCache() && response) {
-            cache = CacheService.getCache<CacheResponse>(schemas.search, schemas.search.stores.responses);
-            await cache.putValue(key, { response: JSON.stringify(response) });
-          }
+          ];
         }
 
-        if (!equals(this.response, response)) {
-          this.response = response;
+        return aggregation;
+      });
+    }
+
+    return aggregations;
+  }
+
+  /**
+   * Builds the search query according to the current componetn parameters and context
+   */
+  private buildSearchQuery() {
+    // Build base search query from parameters
+    this.searchQuery = {
+      requests: [
+        {
+          entityTypes: this.entityTypes,
+          contentSources: this.connectionIds,
+          fields: this.selectedFields,
+          query: {
+            queryString: this.getDefaultQueryText(),
+            queryTemplate: this.queryTemplate
+          },
+          from: 0,
+          size: this.pageSize,
+          queryAlterationOptions: {
+            enableModification: this.enableModification,
+            enableSuggestion: this.enableSuggestion
+          },
+          resultTemplateOptions: {
+            enableResultTemplate: this.enableResultTypes
+          }
         }
-      } catch (e: unknown) {
-        this.error = e as Error;
-      }
+      ]
+    };
 
-      if (this.response) {
-        this.error = null;
-      }
-    } else {
-      this.response = null;
+    // Sort properties
+    if (this.sortProperties && this.sortProperties.length > 0) {
+      this.searchQuery.requests[0].sortProperties = this.sortProperties;
     }
-    this.isRefreshing = false;
-    this.fireCustomEvent('dataChange', { response: this.response, error: this.error as Error });
-  }
 
-  /**
-   * Render the loading state.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtSearchResults
-   */
-  protected renderLoading(): TemplateResult {
-    return (
-      this.renderTemplate('loading', null) ||
-      // creates an array of n items where n is the current max number of results, this builds a shimmer for that many results
-      html`
-        ${[...Array<number>(this.size)].map(() => {
-          return html`
-            <div class="search-result">
-              <div class="search-result-grid">
-                <div class="search-result-icon">
-                  <fluent-skeleton class="search-result-icon__shimmer" shape="rect" shimmer></fluent-skeleton>
-                </div>
-                <div class="searc-result-content">
-                  <div class="search-result-name">
-                    <fluent-skeleton class="search-result-name__shimmer" shape="rect" shimmer></fluent-skeleton>
-                  </div>
-                  <div class="search-result-info">
-                    <div class="search-result-author">
-                      <fluent-skeleton class="search-result-author__shimmer" shape="circle" shimmer></fluent-skeleton>
-                    </div>
-                    <div class="search-result-date">
-                      <fluent-skeleton class="search-result-date__shimmer" shape="rect" shimmer></fluent-skeleton>
-                    </div>
-                  </div>
-                  <fluent-skeleton class="search-result-content__shimmer" shape="rect" shimmer></fluent-skeleton>
-                  <fluent-skeleton class="search-result-content__shimmer" shape="rect" shimmer></fluent-skeleton>
-                </div>
-                ${
-                  this.fetchThumbnail &&
-                  html`
-                    <div class="search-result-thumbnail">
-                      <fluent-skeleton class="search-result-thumbnail__shimmer" shape="rect" shimmer></fluent-skeleton>
-                    </div>
-                  `
-                }
-              </div>
-              <fluent-divider></fluent-divider>
-            </div>
-          `;
-        })}
-       `
-    );
-  }
-
-  /**
-   * Render the result item.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtSearchResults
-   */
-  protected renderResult(result: SearchHit): TemplateResult {
-    const type = this.getResourceType(result.resource);
-    if (this.hasTemplate(`result-${type}`)) {
-      return this.renderTemplate(`result-${type}`, result, result.hitId);
-    } else {
-      switch (result.resource['@odata.type']) {
-        case '#microsoft.graph.driveItem':
-          return this.renderDriveItem(result);
-        case '#microsoft.graph.site':
-          return this.renderSite(result);
-        case '#microsoft.graph.person':
-          return this.renderPerson(result);
-        case '#microsoft.graph.drive':
-        case '#microsoft.graph.list':
-          return this.renderList(result);
-        case '#microsoft.graph.listItem':
-          return this.renderListItem(result);
-        case '#microsoft.graph.search.bookmark':
-          return this.renderBookmark(result);
-        case '#microsoft.graph.search.acronym':
-          return this.renderAcronym(result);
-        case '#microsoft.graph.search.qna':
-          return this.renderQnA(result);
-        default:
-          return this.renderDefault(result);
-      }
+    // If a filter component is connected, get the configuration directly from connected component
+    if (this.searchFiltersComponentId) {
+      this.searchQuery.requests[0].aggregations = this.buildAggregationsFromFiltersConfig();
     }
   }
 
-  /**
-   * Renders the footer with pages if required
-   *
-   * @param hitsContainer Search results
-   */
-  private renderFooter(hitsContainer: SearchHitsContainer) {
-    if (this.pagingRequired(hitsContainer)) {
-      const pages = this.getActivePages(hitsContainer.total);
+  //#endregion
 
-      return html`
-        <div class="search-results-pages">
-          ${this.renderPreviousPage()}
-          ${this.renderFirstPage(pages)}
-          ${this.renderAllPages(pages)}
-          ${this.renderNextPage()}
-        </div>
-      `;
-    }
-  }
+  //#region Event handlers from connected components
 
-  /**
-   * Validates if paging is required based on the provided results
-   *
-   * @param hitsContainer
-   */
-  private pagingRequired(hitsContainer: SearchHitsContainer) {
-    return hitsContainer?.moreResultsAvailable || this.currentPage * this.size < hitsContainer?.total;
-  }
+  private async handleSearchFilters(e: CustomEvent<ISearchFiltersEventData>): Promise<void> {
+    if (this.shouldRender) {
+      let aggregationFilters: string[] = [];
 
-  /**
-   * Gets a list of active pages to render for paging purposes
-   *
-   * @param totalResults Total number of results of the search query
-   */
-  private getActivePages(totalResults: number) {
-    const getFirstPage = () => {
-      const medianPage = this.currentPage - Math.floor(this.pagingMax / 2) - 1;
+      const selectedFilters = e.detail.selectedFilters;
 
-      if (medianPage >= Math.floor(this.pagingMax / 2)) {
-        return medianPage;
+      // Build aggregation filters
+      if (selectedFilters.some(f => f.values.length > 0)) {
+        // Bind to current context to be able to refernce "dayJs"
+        const buildFqlRefinementString = DataFilterHelper.buildFqlRefinementString.bind(this);
+
+        // Make sure, if we have multiple filters, at least two filters have values to avoid apply an operator ("or","and") on only one condition failing the query.
+        if (
+          selectedFilters.length > 1 &&
+          selectedFilters.filter(selectedFilter => selectedFilter.values.length > 0).length > 1
+        ) {
+          const refinementString = buildFqlRefinementString(selectedFilters).join(',');
+          if (!isEmpty(refinementString)) {
+            aggregationFilters = aggregationFilters.concat([`${e.detail.filterOperator}(${refinementString})`]);
+          }
+        } else {
+          aggregationFilters = aggregationFilters.concat(buildFqlRefinementString(selectedFilters));
+        }
       } else {
-        return 0;
+        delete this.searchQuery.requests[0].aggregationFilters;
       }
-    };
 
-    const pages: number[] = [];
-    const firstPage = getFirstPage();
-
-    if (firstPage + 1 > this.pagingMax - this.currentPage || this.pagingMax === this.currentPage) {
-      for (
-        let i = firstPage + 1;
-        i < Math.ceil(totalResults / this.size) &&
-        i < this.pagingMax + (this.currentPage - 1) &&
-        pages.length < this.pagingMax - 2;
-        ++i
-      ) {
-        pages.push(i + 1);
+      if (aggregationFilters.length > 0) {
+        this.searchQuery.requests[0].aggregationFilters = aggregationFilters;
       }
+
+      this.resetPagination();
+
+      await this._search(this.searchQuery);
+    }
+  }
+
+  private async handleSearchInput(e: CustomEvent<ISearchInputEventData>): Promise<void> {
+    if (this.shouldRender) {
+      // Remove any query string parameter if used as default
+      if (this.defaultQueryStringParameter) {
+        const url = UrlHelper.removeQueryStringParam(this.defaultQueryStringParameter, window.location.href);
+        if (url !== window.location.href) {
+          window.history.pushState({}, '', url);
+        }
+      }
+
+      // If empty keywords, reset to the default state
+      const searchKeywords = !isEmpty(e.detail.keywords) ? e.detail.keywords : this.getDefaultQueryText();
+
+      if (searchKeywords && searchKeywords !== this.searchQuery.requests[0].query.queryString) {
+        // Update token
+        this.tokenService.setTokenValue(BuiltinTokenNames.searchTerms, searchKeywords);
+
+        this.searchQuery.requests[0].query.queryString = searchKeywords;
+
+        this.resetFilters();
+        this.resetPagination();
+
+        await this._search(this.searchQuery);
+      }
+    }
+  }
+
+  private async handleSearchVertical(e: CustomEvent<ISearchVerticalEventData>): Promise<void> {
+    this.shouldRender = this.selectedVerticalKeys.indexOf(e.detail.selectedVertical.key) !== -1;
+
+    if (this.shouldRender) {
+      // Reinitialize search context
+      this.resetQueryText();
+      this.resetFilters();
+      this.resetPagination();
+      this.initSortProperties();
+
+      // Update the query when the new tab is selected
+      await this._search(this.searchQuery);
     } else {
-      for (let i = firstPage; i < this.pagingMax; ++i) {
-        pages.push(i + 1);
+      // If a query is currently performed, we cancel it to avoid new filters getting populated once one an other tab
+      if (this.isLoading) {
+        this.msSearchService.abortRequest();
       }
+
+      // Reset available filters for connected search filter components
+      this.fireCustomEvent(EventConstants.SEARCH_RESULTS_EVENT, {
+        availableFilters: []
+      } as ISearchResultsEventData);
+    }
+  }
+
+  private async handleSearchSort(e: CustomEvent<ISearchSortEventData>): Promise<void> {
+    if (this.shouldRender) {
+      this.sortProperties = e.detail.sortProperties;
+
+      this.buildSearchQuery();
+
+      // Update the query when new sort is defined
+      await this._search(this.searchQuery);
+    }
+  }
+
+  //#endregion
+
+  //#region Utility methods
+
+  private getDefaultQueryText(): string {
+    // 1) Look connected search box if any
+    const inputComponent = document.getElementById(this.searchInputComponentId) as any; // MgtSearchInputComponent;
+    if (inputComponent && inputComponent.searchKeywords) {
+      return inputComponent.searchKeywords;
     }
 
-    return pages;
+    // 2) Look query string parameters if any
+    if (
+      this.defaultQueryStringParameter &&
+      !isEmpty(UrlHelper.getQueryStringParam(this.defaultQueryStringParameter, window.location.href))
+    ) {
+      return UrlHelper.getQueryStringParam(this.defaultQueryStringParameter, window.location.href);
+    }
+
+    // 3) Look default hard coded value if any
+    if (this.defaultQueryText) {
+      return this.defaultQueryText;
+    }
   }
 
-  /**
-   * Renders all sequential pages buttons
-   *
-   * @param pages
-   */
-  private renderAllPages(pages: number[]) {
-    return html`
-      ${pages.map(
-        page =>
-          html`
-            <fluent-button
-              title="${strings.page} ${page}"
-              appearance="stealth"
-              class="${page === this.currentPage ? 'search-results-page-active' : 'search-results-page'}"
-              @click="${() => this.onPageClick(page)}">
-                ${page}
-            </fluent-button>`
-      )}`;
+  private goToPage(pageNumber: number) {
+    if (pageNumber > 0) {
+      // "-1" is to calculate the correct index. Ex page "1" with page size "10" means items from start index 0 to index 10.
+      this.searchQuery.requests[0].from = (pageNumber - 1) * this.pageSize;
+      this._search(this.searchQuery);
+    }
   }
 
-  /**
-   * Renders the "First page" button
-   *
-   * @param pages
-   */
-  private renderFirstPage(pages: number[]) {
-    return html`
-      ${
-        pages.some(page => page === 1)
-          ? nothing
-          : html`
-              <fluent-button
-                 title="${strings.page} 1"
-                 appearance="stealth"
-                 class="search-results-page"
-                 @click="${this.onFirstPageClick}">
-                 1
-               </fluent-button>`
-          ? html`
-              <fluent-button
-                id="page-back-dot"
-                appearance="stealth"
-                class="search-results-page"
-                title="${this.getDotButtonTitle()}"
-                @click="${() => this.onPageClick(this.currentPage - Math.ceil(this.pagingMax / 2))}"
-              >
-                ...
-              </fluent-button>`
-          : nothing
-      }`;
+  private resetPagination() {
+    // Reset to first page
+    /* this.searchQuery.requests[0].from = 0;
+        const paginationComponent = this.renderRoot.querySelector<MgtPaginationComponent>(`[data-tag-name='${ComponentElements.MgtPaginationElement}']`);
+        if (paginationComponent) {
+            paginationComponent.initPagination();
+        }*/
   }
 
-  /**
-   * Constructs the "dot dot dot" button title
-   */
-  private getDotButtonTitle() {
-    return `${strings.back} ${Math.ceil(this.pagingMax / 2)} ${strings.pages}`;
-  }
-
-  /**
-   * Renders the "Previous page" button
-   */
-  private renderPreviousPage() {
-    return this.currentPage > 1
-      ? html`
-          <fluent-button
-            appearance="stealth"
-            class="search-results-page"
-            title="${strings.back}"
-            @click="${this.onPageBackClick}">
-              ${getSvg(SvgIcon.ChevronLeft)}
-            </fluent-button>`
-      : nothing;
-  }
-
-  /**
-   * Renders the "Next page" button
-   */
-  private renderNextPage() {
-    return !this.isLastPage()
-      ? html`
-          <fluent-button
-            appearance="stealth"
-            class="search-results-page"
-            title="${strings.next}"
-            aria-label="${strings.next}"
-            @click="${this.onPageNextClick}">
-              ${getSvg(SvgIcon.ChevronRight)}
-            </fluent-button>`
-      : nothing;
-  }
-
-  /**
-   * Triggers a specific page click
-   *
-   * @param pageNumber
-   */
-  private onPageClick(pageNumber: number) {
-    this.currentPage = pageNumber;
-    this.scrollToFirstResult();
-  }
-
-  /**
-   * Triggers a first page click
-   *
-   */
-  private readonly onFirstPageClick = () => {
-    this.currentPage = 1;
-    this.scrollToFirstResult();
-  };
-
-  /**
-   * Triggers a previous page click
-   */
-  private readonly onPageBackClick = () => {
-    this.currentPage--;
-    this.scrollToFirstResult();
-  };
-
-  /**
-   * Triggers a next page click
-   */
-  private readonly onPageNextClick = () => {
-    this.currentPage++;
-    this.scrollToFirstResult();
-  };
-
-  /**
-   * Validates if the current page is the last page of the collection
-   */
-  private isLastPage() {
-    return this.currentPage === Math.ceil(this.response.value[0].hitsContainers[0].total / this.size);
-  }
-
-  /**
-   * Scroll to the top of the search results
-   */
-  private scrollToFirstResult() {
-    const target = this.renderRoot.querySelector('.search-results');
-    target.scrollIntoView({
-      block: 'start',
-      behavior: 'smooth'
-    });
-  }
-
-  /**
-   * Gets the resource type (entity) of a search result
-   *
-   * @param resource
-   */
-  private getResourceType(resource: SearchResource) {
-    return resource['@odata.type'].split('.').pop();
-  }
-
-  /**
-   * Renders a driveItem entity
-   *
-   * @param result
-   */
-  private renderDriveItem(result: SearchHit) {
-    const resource = result.resource as SearchResource;
-    return mgtHtml`
-      <div class="search-result-grid">
-        <div class="search-result-icon">
-          <mgt-file
-            .fileDetails="${result.resource}"
-            view="image"
-            class="file-icon">
-          </mgt-file>
-        </div>
-        <div class="search-result-content">
-          <div class="search-result-name">
-            <a href="${resource.webUrl}?Web=1" target="_blank">${trimFileExtension(resource.name)}</a>
-          </div>
-          <div class="search-result-info">
-            <div class="search-result-author">
-              <mgt-person
-                person-query=${resource.lastModifiedBy.user.email}
-                view="oneLine"
-                person-card="hover"
-                show-presence="true">
-              </mgt-person>
-            </div>
-            <div class="search-result-date">
-              &nbsp; ${strings.modified} ${getRelativeDisplayDate(new Date(resource.lastModifiedDateTime))}
-            </div>
-          </div>
-          <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-        </div>
-        ${
-          resource.thumbnail?.url &&
-          html`
-          <div class="search-result-thumbnail">
-            <a href="${resource.webUrl}" target="_blank"><img alt="${resource.name}" src="${resource.thumbnail?.url}" /></a>
-          </div>`
-        }
-
-      </div>
-      <fluent-divider></fluent-divider>
-    `;
-  }
-
-  /**
-   * Renders a site entity
-   *
-   * @param result
-   * @returns
-   */
-  private renderSite(result: SearchHit): HTMLTemplateResult {
-    const resource = result.resource as SearchResource;
-    return html`
-      <div class="search-result-grid">
-        <div class="search-result-icon">
-          ${this.getResourceIcon(resource)}
-        </div>
-        <div class="searc-result-content">
-          <div class="search-result-name">
-            <a href="${resource.webUrl}" target="_blank">${resource.displayName}</a>
-          </div>
-          <div class="search-result-info">
-            <div class="search-result-url">
-              <a href="${resource.webUrl}" target="_blank">${resource.webUrl}</a>
-            </div>
-          </div>
-          <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-        </div>
-      </div>
-      <fluent-divider></fluent-divider>
-    `;
-  }
-
-  /**
-   * Renders a list entity
-   *
-   * @param result
-   * @returns
-   */
-  private renderList(result: SearchHit): HTMLTemplateResult {
-    const resource = result.resource as SearchResource;
-    return mgtHtml`
-      <div class="search-result-grid">
-        <div class="search-result-icon">
-          <mgt-file
-            .fileDetails="${result.resource}"
-            view="image">
-          </mgt-file>
-        </div>
-        <div class="search-result-content">
-          <div class="search-result-name">
-            <a href="${resource.webUrl}?Web=1" target="_blank">
-              ${trimFileExtension(resource.name || getNameFromUrl(resource.webUrl))}
-            </a>
-          </div>
-          <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-        </div>
-      </div>
-      <fluent-divider></fluent-divider>
-    `;
-  }
-
-  /**
-   * Renders a listItem entity
-   *
-   * @param result
-   * @returns
-   */
-  private renderListItem(result: SearchHit): HTMLTemplateResult {
-    const resource = result.resource as SearchResource;
-    return mgtHtml`
-      <div class="search-result-grid">
-        <div class="search-result-icon">
-          ${resource.webUrl.endsWith('.aspx') ? getSvg(SvgIcon.News) : getSvg(SvgIcon.FileOuter)}
-        </div>
-        <div class="search-result-content">
-          <div class="search-result-name">
-            <a href="${resource.webUrl}?Web=1" target="_blank">
-              ${trimFileExtension(resource.name || getNameFromUrl(resource.webUrl))}
-            </a>
-          </div>
-          <div class="search-result-info">
-            <div class="search-result-author">
-              <mgt-person
-                person-query=${resource.lastModifiedBy.user.email}
-                view="oneLine"
-                person-card="hover"
-                show-presence="true">
-              </mgt-person>
-            </div>
-            <div class="search-result-date">
-              &nbsp; ${strings.modified} ${getRelativeDisplayDate(new Date(resource.lastModifiedDateTime))}
-            </div>
-          </div>
-          <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
-        </div>
-        ${
-          resource.thumbnail?.url &&
-          html`
-          <div class="search-result-thumbnail">
-            <a href="${resource.webUrl}" target="_blank"><img alt="${trimFileExtension(
-            resource.name || getNameFromUrl(resource.webUrl)
-          )}" src="${resource.thumbnail?.url || nothing}" /></a>
-          </div>`
-        }
-      </div>
-      <fluent-divider></fluent-divider>
-    `;
-  }
-
-  /**
-   * Renders a person entity
-   *
-   * @param result
-   * @returns
-   */
-  private renderPerson(result: SearchHit): HTMLTemplateResult {
-    const resource = result.resource as SearchResource;
-    return mgtHtml`
-      <div class="search-result">
-        <mgt-person
-          view="fourLines"
-          person-query=${resource.userPrincipalName}
-          person-card="hover"
-          show-presence="true">
-        </mgt-person>
-      </div>
-      <fluent-divider></fluent-divider>
-    `;
-  }
-
-  /**
-   * Renders a bookmark entity
-   *
-   * @param result
-   */
-  private renderBookmark(result: SearchHit) {
-    return this.renderAnswer(result, SvgIcon.DoubleBookmark);
-  }
-
-  /**
-   * Renders an acronym entity
-   *
-   * @param result
-   */
-  private renderAcronym(result: SearchHit) {
-    return this.renderAnswer(result, SvgIcon.BookOpen);
-  }
-
-  /**
-   * Renders a qna entity
-   *
-   * @param result
-   */
-  private renderQnA(result: SearchHit) {
-    return this.renderAnswer(result, SvgIcon.BookQuestion);
-  }
-
-  /**
-   * Renders an answer entity
-   *
-   * @param result
-   */
-  private renderAnswer(result: SearchHit, icon: SvgIcon) {
-    const resource = result.resource as SearchResource;
-    return html`
-      <div class="search-result-grid search-result-answer">
-        <div class="search-result-icon">
-          ${getSvg(icon)}
-        </div>
-        <div class="search-result-content">
-          <div class="search-result-name">
-            <a href="${this.getResourceUrl(resource)}?Web=1" target="_blank">${resource.displayName}</a>
-          </div>
-          <div class="search-result-summary">${resource.description}</div>
-        </div>
-      </div>
-      <fluent-divider></fluent-divider>
-    `;
-  }
-
-  /**
-   * Renders any entity
-   *
-   * @param result
-   */
-  private renderDefault(result: SearchHit) {
-    const resource = result.resource as SearchResource;
-    const resourceUrl = this.getResourceUrl(resource);
-    return html`
-      <div class="search-result-grid">
-        <div class="search-result-icon">
-          ${this.getResourceIcon(resource)}
-        </div>
-        <div class="search-result-content">
-          <div class="search-result-name">
-            ${
-              resourceUrl
-                ? html`
-                  <a href="${resourceUrl}?Web=1" target="_blank">${this.getResourceName(resource)}</a>
-                `
-                : html`
-                  ${this.getResourceName(resource)}
-                `
+  private resetFilters() {
+    // Reset existing filters if any selected
+    /* if (this.searchFiltersComponentId) {
+            const filterComponent = document.getElementById(this.searchFiltersComponentId) as MgtSearchFiltersComponent;
+            if (filterComponent) {
+                filterComponent.clearAllSelectedValues(true);
             }
-          </div>
-          <div class="search-result-summary" .innerHTML="${this.getResultSummary(result)}"></div>
-        </div>
-      </div>
-      <fluent-divider></fluent-divider>
-    `;
+        }
+
+        delete this.searchQuery.requests[0].aggregationFilters;*/
   }
 
-  /**
-   * Gets default resource URLs
-   *
-   * @param resource
-   */
-  private getResourceUrl(resource: SearchResource) {
-    return resource.webUrl || /* resource.url ||*/ resource.webLink || null;
+  private initSortProperties() {
+    this.sortProperties = this.sortFieldsConfiguration
+      .filter(s => s.isDefaultSort)
+      .map(s => {
+        return {
+          isDescending: s.sortDirection === SortFieldDirection.Descending,
+          name: s.sortField
+        };
+      });
   }
 
-  /**
-   * Gets default resource Names
-   *
-   * @param resource
-   */
-  private getResourceName(resource: SearchResource) {
-    return resource.displayName || resource.subject || trimFileExtension(resource.name);
+  private resetQueryText() {
+    const queryText = this.getDefaultQueryText();
+    this.searchQuery.requests[0].query.queryString = queryText;
   }
-
-  /**
-   * Gets default result summary
-   *
-   * @param resource
-   */
-  private getResultSummary(result: SearchHit) {
-    return sanitizeSummary(result.summary || (result.resource as SearchResource)?.description || null);
-  }
-
-  /**
-   * Gets default resource icon
-   *
-   * @param resource
-   */
-  private getResourceIcon(resource: SearchResource) {
-    switch (resource['@odata.type']) {
-      case '#microsoft.graph.site':
-        return getSvg(SvgIcon.Globe);
-      case '#microsoft.graph.message':
-        return getSvg(SvgIcon.Email);
-      case '#microsoft.graph.event':
-        return getSvg(SvgIcon.Event);
-      case 'microsoft.graph.chatMessage':
-        return getSvg(SvgIcon.SmallChat);
-      default:
-        return getSvg(SvgIcon.FileOuter);
-    }
-  }
-
-  /**
-   * Validates if cache should be retrieved
-   *
-   * @returns
-   */
-  private shouldRetrieveCache(): boolean {
-    return getIsResponseCacheEnabled() && this.cacheEnabled && !this.isRefreshing;
-  }
-
-  /**
-   * Validates if cache should be updated
-   *
-   * @returns
-   */
-  private shouldUpdateCache(): boolean {
-    return getIsResponseCacheEnabled() && this.cacheEnabled;
-  }
-
-  /**
-   * Builds the appropriate RequestOption for the search query
-   *
-   * @returns
-   */
-  private getRequestOptions(): SearchRequest | BetaSearchRequest {
-    const requestOptions: SearchRequest = {
-      entityTypes: this.entityTypes as EntityType[],
-      query: {
-        queryString: this.queryString
-      },
-      from: this.from ? this.from : undefined,
-      size: this.size ? this.size : undefined,
-      fields: this.getFields(),
-      enableTopResults: this.enableTopResults ? this.enableTopResults : undefined
-    };
-
-    if (this.entityTypes.includes('externalItem')) {
-      requestOptions.contentSources = this.contentSources;
-    }
-
-    if (this.version === 'beta') {
-      (requestOptions as BetaSearchRequest).query.queryTemplate = this.queryTemplate ? this.queryTemplate : undefined;
-    }
-
-    return requestOptions;
-  }
-
-  /**
-   * Gets the fields and default fields for default render methods
-   *
-   * @returns
-   */
-  private getFields(): string[] {
-    if (this.fields) {
-      return this.defaultFields.concat(this.fields);
-    }
-
-    return undefined;
-  }
+  //#endregion
 }

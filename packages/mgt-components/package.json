@@ -41,6 +41,7 @@
     "@microsoft/microsoft-graph-types": "^2.0.0",
     "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
     "@fluentui/web-components": "^2.5.12",
+    "@open-wc/scoped-elements": "2.2.0",
     "office-ui-fabric-core": "^11.0.0"
   },
   "publishConfig": {

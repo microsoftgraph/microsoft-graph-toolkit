@@ -25,6 +25,9 @@ import './mgt-messages/mgt-messages';
 import './mgt-organization/mgt-organization';
 import './mgt-profile/mgt-profile';
 import './mgt-theme-toggle/mgt-theme-toggle';
+import './preview/mgt-search-results/mgt-search-results';
+import './preview/mgt-search-verticals/mgt-search-verticals';
+import './preview/mgt-search-filters/mgt-search-filters';
 
 export * from './mgt-agenda/mgt-agenda';
 export * from './mgt-file/mgt-file';
@@ -47,3 +50,6 @@ export * from './mgt-messages/mgt-messages';
 export * from './mgt-organization/mgt-organization';
 export * from './mgt-profile/mgt-profile';
 export * from './mgt-theme-toggle/mgt-theme-toggle';
+export * from './preview/mgt-search-results/mgt-search-results';
+export * from './preview/mgt-search-verticals/mgt-search-verticals';
+export * from './preview/mgt-search-filters/mgt-search-filters';

@@ -25,10 +25,12 @@
     "src"
   ],
   "scripts": {
-    "build": "npm-run-all clean build:compile build:bundle",
+    "build": "npm-run-all clean tailwindcss build:compile build:bundle",
     "build:bundle": "npm-run-all copy:loader copy:wc sass rollup",
     "build:compile": "npm-run-all sass compile",
-    "build:watch": "npm-run-all -p sass:watch compile:watch",
+    "build:watch": "npm-run-all -p tailwindcss:watch sass:watch compile:watch",
+    "tailwindcss": "tailwindcss --postcss -i ../mgt-components/src/styles/tailwind-styles.module.ts -o ../mgt-components/src/styles/tailwind-styles-css.ts --minify",
+    "tailwindcss:watch": "tailwindcss --postcss -i ../mgt-components/src/styles/tailwind-styles.module.ts -o ../mgt-components/src/styles/tailwind-styles-css.ts --watch --minify",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
