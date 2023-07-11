@@ -14,19 +14,11 @@ export default {
   decorators: [withCodeEditor]
 };
 
-export const darkTheme = () => html`
-  <mgt-agenda class="mgt-dark"></mgt-agenda>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
-`;
-
 export const customCSSProperties = () => html`
   <mgt-agenda class="agenda" group-by-day></mgt-agenda>
   <style>
     .agenda {
+      --agenda-background-color: #fcefef;
       --agenda-event-box-shadow: 0px 2px 30px pink;
       --agenda-event-margin: 0px 10px 40px 10px;
       --agenda-event-padding: 8px 0px;
@@ -35,7 +27,7 @@ export const customCSSProperties = () => html`
 
       --agenda-header-margin: 3px;
       --agenda-header-font-size: 20px;
-      --agenda-header-color: #8d696f;
+      --agenda-header-color: #7b575d;
 
       --agenda-event-time-font-size: 20px;
       --agenda-event-time-color: white;

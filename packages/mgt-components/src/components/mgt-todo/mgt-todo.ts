@@ -21,10 +21,8 @@ import {
   createTodoTask,
   deleteTodoTask,
   getTodoTaskList,
+  getTodoTaskLists,
   getTodoTasks,
-  TaskStatus,
-  TodoTask,
-  TodoTaskList,
   updateTodoTask
 } from './graph.todo';
 import { styles } from './mgt-todo-css';
@@ -32,7 +30,9 @@ import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentCheckbox, fluentRadioGroup, fluentButton } from '@fluentui/web-components';
 import { isElementDark } from '../../utils/isDark';
-import { ifDefined } from 'lit/directives/if-defined';
+import { ifDefined } from 'lit/directives/if-defined.js';
+
+import { TodoTaskList, TodoTask, TaskStatus } from '@microsoft/microsoft-graph-types';
 
 registerFluentComponents(fluentCheckbox, fluentRadioGroup, fluentButton);
 
@@ -59,7 +59,6 @@ export type TodoFilter = (task: TodoTask) => boolean;
  * @cssprop --task-radio-background-color - {Color} - Task radio background color
  */
 @customElement('todo')
-// @customElement('mgt-todo')
 export class MgtTodo extends MgtTasksBase {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -252,6 +251,7 @@ export class MgtTodo extends MgtTasksBase {
     const dateClass = { dark: this._isDarkMode, date: true };
     const calendarTemplate = html`
       <fluent-text-field
+        autocomplete="off"
         type="date"
         id="new-taskDate-input"
         class="${classMap(dateClass)}"
@@ -263,6 +263,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const newTaskDetails = html`
       <fluent-text-field
+        autocomplete="off"
         appearance="outline"
         class="new-task"
         id="new-task-name-input"
@@ -417,6 +418,12 @@ export class MgtTodo extends MgtTasksBase {
     if (!this._graph) {
       const graph = provider.graph.forComponent(this);
       this._graph = graph;
+    }
+
+    if (!this.currentList && !this.initialId) {
+      const lists = await getTodoTaskLists(this._graph);
+      const defaultList = lists?.find(l => l.wellknownListName === 'defaultList');
+      if (defaultList) await this.loadTasks(defaultList);
     }
 
     if (this.targetId) {

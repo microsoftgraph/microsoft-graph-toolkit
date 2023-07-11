@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import type * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Position } from '../../graph/types';
-import { TermStore } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
@@ -14,6 +14,7 @@ import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import '../../styles/style-helper';
+import { styles } from './mgt-taxonomy-picker-css';
 import { DataChangedDetail } from '../mgt-get/mgt-get';
 
 registerFluentComponents(fluentCombobox, fluentOption);
@@ -25,10 +26,13 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * the specified term set id or a combination of the specified term set id and the specified term id.
  * Uses mgt-get.
  *
- * @fires {CustomEvent<TermStore.Term>} selectionChanged - Fired when an option is clicked/selected
+ * @fires {CustomEvent<MicrosoftGraph.TermStore.Term>} selectionChanged - Fired when an option is clicked/selected
  * @export
  * @class MgtTaxonomyPicker
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --taxonomy-picker-background-color - {Color} Picker component background color
+ * @cssprop --taxonomy-picker-list-max-height - {String} max height for options list. Default value is 380px.
  */
 @customElement('taxonomy-picker')
 export class MgtTaxonomyPicker extends MgtTemplatedComponent {
@@ -41,6 +45,10 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    */
   protected get strings() {
     return strings;
+  }
+
+  public static get styles() {
+    return styles;
   }
 
   /**
@@ -158,17 +166,17 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   /**
    * The selected term.
    *
-   * @type {TermStore.Term}
+   * @type {MicrosoftGraph.TermStore.Term}
    * @memberof MgtTaxonomyPicker
    */
   @property({
     attribute: 'selected-term',
     type: Object
   })
-  public get selectedTerm(): TermStore.Term {
+  public get selectedTerm(): MicrosoftGraph.TermStore.Term {
     return this._selectedTerm;
   }
-  public set selectedTerm(value: TermStore.Term) {
+  public set selectedTerm(value: MicrosoftGraph.TermStore.Term) {
     this._selectedTerm = value;
   }
 
@@ -210,10 +218,10 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   public cacheInvalidationPeriod = 0;
 
   private isRefreshing: boolean;
-  private _selectedTerm: TermStore.Term;
+  private _selectedTerm: MicrosoftGraph.TermStore.Term;
   private _defaultSelectedTermId: string;
 
-  @state() private terms: TermStore.Term[];
+  @state() private terms: MicrosoftGraph.TermStore.Term[];
   @state() private noTerms: boolean;
   // @state() private error: object;
 
@@ -357,7 +365,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtTaxonomyPicker
    */
-  protected renderTaxonomyPickerItem(term: TermStore.Term): TemplateResult {
+  protected renderTaxonomyPickerItem(term: MicrosoftGraph.TermStore.Term): TemplateResult {
     const selected: boolean = this.defaultSelectedTermId && this.defaultSelectedTermId === term.id;
 
     return html`
@@ -400,10 +408,11 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     resource += '?$select=id,labels,descriptions,properties';
 
     return mgtHtml`
-      <mgt-get 
+      <mgt-get
+        class="mgt-get"
         resource=${resource}
-        version=${this.version} 
-        scopes=${['TermStore.Read.All']}  
+        version=${this.version}
+        scopes=${['TermStore.Read.All']}
         ?cache-enabled=${this.cacheEnabled}
         ?cache-invalidation-period=${this.cacheInvalidationPeriod}>
       </mgt-get>`;
@@ -418,7 +427,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    */
   protected async loadState() {
     if (!this.terms) {
-      const parent = this.renderRoot.querySelector('mgt-get');
+      const parent = this.renderRoot.querySelector('.mgt-get');
       parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
     }
     this.isRefreshing = false;
@@ -444,7 +453,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     // if response is not null and has values, if locale is specified, then
     // get the label in response that has languageTag equal to locale and make it the first label and append the rest of the labels
 
-    const terms = response.map((item: TermStore.Term) => {
+    const terms = response.map((item: MicrosoftGraph.TermStore.Term) => {
       const labels = item.labels;
       if (labels && labels.length > 0) {
         if (this.locale) {
@@ -465,7 +474,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     }
   }
 
-  private handleClick(e: MouseEvent, item: TermStore.Term) {
+  private handleClick(e: MouseEvent, item: MicrosoftGraph.TermStore.Term) {
     this.selectedTerm = item;
     this.fireCustomEvent('selectionChanged', item);
   }

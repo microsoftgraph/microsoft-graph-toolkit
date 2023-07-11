@@ -43,9 +43,8 @@ In addition to the `@next` preview packages, we also ship packages under several
 | Tag             | Description                                                              |
 | --------------- | ------------------------------------------------------------------------ |
 | `next`          | Next release - updated on each commit to `main`                          |
-| `next.fluentui` | Next major release (v3) with components based on FluentUI web components |
 
-To install these packages, use the tag as the version in your `npm i` command. Ex: `npm i @microsoft/mgt-element@next.fluentui`. Make sure to install the same version for all mgt packages to avoid any conflicts. Keep in mind, these are features in preview and are not recommended for production use.
+To install these packages, use the tag as the version in your `npm i` command. Ex: `npm i @microsoft/mgt-element@next`. Make sure to install the same version for all mgt packages to avoid any conflicts. Keep in mind, these are features in preview and are not recommended for production use.
 
 
 ## Components
@@ -54,18 +53,23 @@ You can explore components and samples with the [playground](https://mgt.dev) po
 
 The Toolkit currently includes the following components:
 
-* [mgt-login](https://learn.microsoft.com/graph/toolkit/components/login)
-* [mgt-person](https://learn.microsoft.com/graph/toolkit/components/person)
-* [mgt-person-card](https://learn.microsoft.com/graph/toolkit/components/person-card)
-* [mgt-people](https://learn.microsoft.com/graph/toolkit/components/people)
-* [mgt-people-picker](https://learn.microsoft.com/graph/toolkit/components/people-picker)
 * [mgt-agenda](https://learn.microsoft.com/graph/toolkit/components/agenda)
-* [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)
-* [mgt-todo](https://learn.microsoft.com/graph/toolkit/components/todo)
-* [mgt-teams-channel-picker](https://learn.microsoft.com/graph/toolkit/components/teams-channel-picker)
 * [mgt-file](https://learn.microsoft.com/graph/toolkit/components/file)
 * [mgt-file-list](https://learn.microsoft.com/graph/toolkit/components/file-list)
 * [mgt-get](https://learn.microsoft.com/graph/toolkit/components/get)
+* [mgt-login](https://learn.microsoft.com/graph/toolkit/components/login)
+* [mgt-people](https://learn.microsoft.com/graph/toolkit/components/people)
+* [mgt-people-picker](https://learn.microsoft.com/graph/toolkit/components/people-picker)
+* [mgt-person](https://learn.microsoft.com/graph/toolkit/components/person)
+* [mgt-person-card](https://learn.microsoft.com/graph/toolkit/components/person-card)
+* [mgt-search-box](https://learn.microsoft.com/graph/toolkit/components/person-box)
+* [mgt-search-results](https://learn.microsoft.com/graph/toolkit/components/search-results)
+* [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)
+* [mgt-taxonomy-picker](https://learn.microsoft.com/graph/toolkit/components/taxonomy-picker)
+* [mgt-teams-channel-picker](https://learn.microsoft.com/graph/toolkit/components/teams-channel-picker)
+* [mgt-theme-toggle](https://learn.microsoft.com/graph/toolkit/components/theme-toggle)
+* [mgt-todo](https://learn.microsoft.com/graph/toolkit/components/todo)
+
 
 All web components are also available as React component - see [@microsoft/mgt-react documentation](https://learn.microsoft.com/graph/toolkit/get-started/mgt-react).
 
@@ -90,7 +94,6 @@ The following guides are available to help you get started with the Toolkit:
 * [Build a web application (JavaScript)](https://learn.microsoft.com/graph/toolkit/get-started/build-a-web-app)
 * [Build a SharePoint web part Part](https://learn.microsoft.com/graph/toolkit/get-started/build-a-sharepoint-web-part)
 * [Build a Microsoft Teams tab](https://learn.microsoft.com/graph/toolkit/get-started/build-a-microsoft-teams-tab)
-* [Build a Microsoft Teams tab with SSO](https://learn.microsoft.com/en-us/graph/toolkit/get-started/build-a-microsoft-teams-sso-tab)
 * [Build an Electron app](https://learn.microsoft.com/en-us/graph/toolkit/get-started/build-an-electron-app)
 * [Use the Toolkit with React](https://learn.microsoft.com/graph/toolkit/get-started/use-toolkit-with-react)
 * [Use the Toolkit with Angular](https://learn.microsoft.com/graph/toolkit/get-started/use-toolkit-with-angular)
@@ -101,15 +104,15 @@ You can use the components by referencing the loader directly (via unpkg), or in
 ### Use via mgt-loader:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@3/dist/bundle/mgt-loader.js"></script>
 ```
 
-> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 2.0.0 < 3.0.0`, omitting the `@2` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
+> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 3.0.0 < 4.0.0`, omitting the `@3` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
 
-You can then start using the components in your html page. Here is a full working example with the Msal2 provider:
+You can then start using the components in your html page. Here is a full working example with the MSAL2 provider:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@3/dist/bundle/mgt-loader.js"></script>
 <mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 <mgt-login></mgt-login>
 

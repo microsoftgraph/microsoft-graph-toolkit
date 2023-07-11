@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt-element",
-  "version": "2.0.0",
+  "version": "3.0.1",
   "description": "Microsoft Graph Toolkit base classes",
   "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
   "bugs": {

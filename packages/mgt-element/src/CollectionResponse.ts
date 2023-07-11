@@ -16,5 +16,5 @@ export interface CollectionResponse<T> {
   /**
    * The collection of items
    */
-  value: T[];
+  value?: T[];
 }

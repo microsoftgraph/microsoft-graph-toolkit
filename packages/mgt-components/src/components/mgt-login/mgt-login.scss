@@ -14,20 +14,20 @@ $signed-out-bg: padding-box linear-gradient(var(--neutral-fill-rest), var(--neut
 $signed-out-background: #{var(--login-signed-out-button-background, $signed-out-bg)};
 $signed-out-hover-background: #{var(--login-signed-out-button-hover-background, var(--neutral-fill-stealth-hover))};
 $login-popup-background-color: #{var(--login-popup-background-color, var(--neutral-layer-1))};
+$login-account-item-hover-bg-color: #{var(--login-account-item-hover-bg-color, var(--neutral-fill-stealth-hover))};
 $button-padding: var(--login-button-padding, 0);
+$login-flyout-command-text-color: #{var(--login-flyout-command-text-color, var(--accent-foreground-rest))};
 
 :host {
-  mgt-person {
-    &.signed-in-person {
-      --person-background-color: $signed-in-background-color;
+  .signed-in-person {
+    --person-background-color: $signed-in-background-color;
 
-      padding: var(--login-button-padding, 10px 16px);
-    }
+    padding: var(--login-button-padding, 10px 16px);
+  }
 
-    &.account {
-      padding: 0;
-      margin: 7px 0;
-    }
+  .account {
+    padding: 0;
+    margin: 7px 0;
   }
 
   fluent-button {
@@ -47,6 +47,8 @@ $button-padding: var(--login-button-padding, 0);
         &:hover,
         &:focus-within {
           background: $signed-in-hover-background-color;
+
+          --secondary-text-color: var(--secondary-text-hover-color);
         }
       }
     }
@@ -84,7 +86,7 @@ $button-padding: var(--login-button-padding, 0);
 
   .login-root {
     .small {
-      mgt-person {
+      .signed-in-person {
         padding: 0;
         background: transparent;
 
@@ -108,14 +110,15 @@ $button-padding: var(--login-button-padding, 0);
       list-style-type: none;
 
       &:hover {
-        background: var(--neutral-fill-stealth-hover);
+        background: $login-account-item-hover-bg-color;
+
+        --person-background-color: $login-account-item-hover-bg-color;
       }
     }
 
-    mgt-flyout,
     .flyout {
       .flyout-command {
-        color: var(--accent-foreground-rest);
+        color: $login-flyout-command-text-color;
       }
 
       .popup {

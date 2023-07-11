@@ -14,7 +14,8 @@ import {
   ProviderState,
   TeamsHelper,
   mgtHtml,
-  customElement
+  customElement,
+  customElementHelper
 } from '@microsoft/mgt-element';
 import { IGraph } from '@microsoft/mgt-element';
 import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
@@ -40,11 +41,18 @@ import '../sub-components/mgt-spinner/mgt-spinner';
 
 export * from './mgt-person-card.types';
 
-import { fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField } from '@fluentui/web-components';
+import {
+  fluentTabs,
+  fluentTab,
+  fluentTabPanel,
+  fluentButton,
+  fluentTextField,
+  fluentCard
+} from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { BasePersonCardSection, CardSection } from '../BasePersonCardSection';
 
-registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+registerFluentComponents(fluentCard, fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
 
 interface MgtPersonCardStateHistory {
   state: MgtPersonCardState;
@@ -91,7 +99,6 @@ interface MgtPersonCardStateHistory {
  * @cssprop --person-card-chat-input-focus-color - {Color} The chat input focus color
  */
 @customElement('person-card')
-// @customElement('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -940,7 +947,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     } else {
       return html`
       <div class="message-section">
-        <fluent-text-field appearance="outline" placeholder="${this.strings.quickMessage}"
+        <fluent-text-field
+          autocomplete="off"
+          appearance="outline"
+          placeholder="${this.strings.quickMessage}"
           .value=${chatInput}
           @input=${(e: Event) => {
             this._chatInput = (e.target as HTMLInputElement).value;
@@ -974,7 +984,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (!this.personDetails && this.inheritDetails) {
       // User person details inherited from parent tree
       let parent = this.parentElement;
-      while (parent && parent.tagName !== 'MGT-PERSON') {
+      while (parent && parent.tagName !== `${customElementHelper.prefix}-PERSON`.toUpperCase()) {
         parent = parent.parentElement;
       }
 

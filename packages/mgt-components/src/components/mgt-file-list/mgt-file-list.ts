@@ -79,9 +79,8 @@ registerFluentComponents(fluentProgressRing);
  */
 
 @customElement('file-list')
-// @customElement('mgt-file-list')
 export class MgtFileList extends MgtTemplatedComponent implements CardSection {
-  private _isCompact = false;
+  @state() private _isCompact = false;
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -555,7 +554,6 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   protected clearState(): void {
     super.clearState();
-    this._isCompact = false;
     this.files = null;
   }
 
@@ -567,7 +565,6 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   public asCompactView() {
     this._isCompact = true;
-    this.requestUpdate();
     return this;
   }
 
@@ -579,7 +576,6 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   public asFullView() {
     this._isCompact = false;
-    this.requestUpdate();
     return this;
   }
 
@@ -646,7 +642,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       this.renderTemplate('no-data', null) ||
       (this.enableFileUpload === true && Providers.globalProvider !== undefined
         ? html`
-            <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+            <div class="file-list-wrapper" dir=${this.direction}>
               ${this.renderFileUpload()}
             </div>`
         : html``)
@@ -980,7 +976,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     } else {
       if (this.pageIterator.hasNext) {
         this._isLoadingMore = true;
-        const root = this.renderRoot.querySelector('file-list-wrapper');
+        const root = this.renderRoot.querySelector('#file-list-wrapper');
         if (root?.animate) {
           // play back
           root.animate(

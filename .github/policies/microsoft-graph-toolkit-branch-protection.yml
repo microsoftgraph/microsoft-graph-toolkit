@@ -1,0 +1,143 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+# File initially created using https://github.com/MIchaelMainer/policyservicetoolkit/blob/main/branch_protection_export.ps1.
+
+name: microsoft-graph-toolkit-branch-protection
+description: Branch protection policy for the microsoft-graph-toolkit repository
+resource: repository
+configuration:
+  branchProtectionRules:
+    - branchNamePattern: main
+      # This branch pattern applies to the following branches as of 06/09/2023 14:08:40:
+      # main
+
+      # Specifies whether this branch can be deleted. boolean
+      allowsDeletions: false
+      # Specifies whether forced pushes are allowed on this branch. boolean
+      allowsForcePushes: false
+      # Specifies whether new commits pushed to the matching branches dismiss pull request review approvals. boolean
+      dismissStaleReviews: true
+      # Specifies whether admins can overwrite branch protection. boolean
+      isAdminEnforced: false
+      # Indicates whether "Require a pull request before merging" is enabled. boolean
+      requiresPullRequestBeforeMerging: true
+      # Specifies the number of pull request reviews before merging. int (0-6). Should be null/empty if PRs are not required
+      requiredApprovingReviewsCount: 1
+      # Require review from Code Owners. Requires requiredApprovingReviewsCount. boolean
+      requireCodeOwnersReview: true
+      # Are commits required to be signed. boolean. TODO: all contributors must have commit signing on local machines.
+      requiresCommitSignatures: false
+      # Are conversations required to be resolved before merging? boolean
+      requiresConversationResolution: true
+      # Are merge commits prohibited from being pushed to this branch. boolean
+      requiresLinearHistory: false
+      # Require branches to be up to date before merging. Requires requiredStatusChecks. boolean
+      requiresStrictStatusChecks: true
+      # Required status checks to pass before merging. Values can be any string, but if the value does not correspond to any existing status check, the status check will be stuck on pending for status since nothing exists to push an actual status
+      requiredStatusChecks:
+        - GitOps/AdvancedSecurity
+        - license/cla
+        - check-build-matrix
+      # Indicates whether there are restrictions on who can push. boolean. Should be set with whoCanPush.
+      restrictsPushes: false
+      # Restrict who can dismiss pull request reviews. boolean
+      restrictsReviewDismissals: false
+
+    - branchNamePattern: '[Rr]elease/*'
+      # This branch pattern applies to the following branches as of 2023-06-28T14:32:00-07:00:
+      # release/latest
+      # release/merge
+      # release/v2.10.0
+      # release/v2.x
+      # release/1.x
+
+      # Specifies whether this branch can be deleted. boolean
+      allowsDeletions: false
+      # Specifies whether forced pushes are allowed on this branch. boolean
+      allowsForcePushes: false
+      # Specifies whether new commits pushed to the matching branches dismiss pull request review approvals. boolean
+      dismissStaleReviews: true
+      # Specifies whether admins can overwrite branch protection. boolean
+      isAdminEnforced: false
+      # Indicates whether "Require a pull request before merging" is enabled. boolean
+      requiresPullRequestBeforeMerging: true
+      # Specifies the number of pull request reviews before merging. int (0-6). Should be null/empty if PRs are not required
+      requiredApprovingReviewsCount: 1
+      # Require review from Code Owners. Requires requiredApprovingReviewsCount. boolean
+      requireCodeOwnersReview: true
+      # Are commits required to be signed. boolean. TODO: all contributors must have commit signing on local machines.
+      requiresCommitSignatures: false
+      # Are conversations required to be resolved before merging? boolean
+      requiresConversationResolution: true
+      # Are merge commits prohibited from being pushed to this branch. boolean
+      requiresLinearHistory: false
+      # Require branches to be up to date before merging. Requires requiredStatusChecks. boolean
+      requiresStrictStatusChecks: true
+      # Required status checks to pass before merging. Values can be any string, but if the value does not correspond to any existing status check, the status check will be stuck on pending for status since nothing exists to push an actual status
+      requiredStatusChecks:
+        - GitOps/AdvancedSecurity
+        - license/cla
+        - check-build-matrix
+      # Indicates whether there are restrictions on who can push. boolean. Should be set with whoCanPush.
+      restrictsPushes: false
+      # Restrict who can dismiss pull request reviews. boolean
+      restrictsReviewDismissals: false
+
+    - branchNamePattern: next/*
+      # This branch pattern applies to the following branches as of 06/09/2023 14:08:40:
+      # next/dark-toggle
+      # next/disambiguation-util-fixes
+      # next/docs-add-version-info
+      # next/enhanced-file-list
+      # next/file-picker
+      # next/fix-grid
+      # next/fix-msal2-provider
+      # next/fix-people-picker-flyout-a11y
+      # next/fluent-deps
+      # next/fluentui
+      # next/groupTypePhoto
+      # next/groupTypeTest
+      # next/lit-element-update
+      # next/login-design
+      # next/merge
+      # next/mgt-chat
+      # next/node16-support
+      # next/preview-pipeline
+      # next/teamsfx
+      # next/wc-registration
+      # next/wc-registration-samples
+      # next/wc-registration-utils
+      # next/wip
+
+      # Specifies whether this branch can be deleted. boolean
+      allowsDeletions: false
+      # Specifies whether forced pushes are allowed on this branch. boolean
+      allowsForcePushes: false
+      # Specifies whether new commits pushed to the matching branches dismiss pull request review approvals. boolean
+      dismissStaleReviews: true
+      # Specifies whether admins can overwrite branch protection. boolean
+      isAdminEnforced: false
+      # Indicates whether "Require a pull request before merging" is enabled. boolean
+      requiresPullRequestBeforeMerging: true
+      # Specifies the number of pull request reviews before merging. int (0-6). Should be null/empty if PRs are not required
+      requiredApprovingReviewsCount: 1
+      # Require review from Code Owners. Requires requiredApprovingReviewsCount. boolean
+      requireCodeOwnersReview: true
+      # Are commits required to be signed. boolean. TODO: all contributors must have commit signing on local machines.
+      requiresCommitSignatures: false
+      # Are conversations required to be resolved before merging? boolean
+      requiresConversationResolution: true
+      # Are merge commits prohibited from being pushed to this branch. boolean
+      requiresLinearHistory: false
+      # Required status checks to pass before merging. Values can be any string, but if the value does not correspond to any existing status check, the status check will be stuck on pending for status since nothing exists to push an actual status
+      requiredStatusChecks:
+        - GitOps/AdvancedSecurity
+        - license/cla
+        - check-build-matrix
+      # Require branches to be up to date before merging. Requires requiredStatusChecks. boolean
+      requiresStrictStatusChecks: true
+      # Indicates whether there are restrictions on who can push. boolean. Should be set with whoCanPush.
+      restrictsPushes: false
+      # Restrict who can dismiss pull request reviews. boolean
+      restrictsReviewDismissals: false
