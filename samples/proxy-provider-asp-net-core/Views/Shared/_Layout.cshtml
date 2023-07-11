@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 
-    <script src='https://unpkg.com/@Html.Raw("@")microsoft/mgt@3.0.0-rc.3-next.fluentui.d084665/dist/bundle/mgt-loader.js'></script>
+    <script src='https://unpkg.com/@Html.Raw("@")microsoft/mgt@3/dist/bundle/mgt-loader.js'></script>
 
     <script>
         const provider = new mgt.ProxyProvider(window.location.origin + "/api/Proxy");
@@ -47,7 +47,7 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Messages">Messages</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <mgt-login></mgt-login>
+                    <mgt-login class="login"></mgt-login>
                 </ul>
             </div>
         </div>
@@ -85,5 +85,9 @@
     </environment>
 
     @RenderSection("Scripts", required: false)
+    <script>
+        const navBar = document.querySelector('nav');
+        mgt.applyTheme('dark', navBar);
+    </script>
 </body>
 </html>
