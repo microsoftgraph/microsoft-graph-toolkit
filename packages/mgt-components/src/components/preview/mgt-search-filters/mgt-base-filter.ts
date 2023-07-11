@@ -1,10 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { MgtConnectableComponent } from '@microsoft/mgt-element';
-import { html, PropertyValues, TemplateResult } from 'lit';
+
+import { css, html, TemplateResult } from 'lit';
 import { state, property } from 'lit/decorators.js';
 import { isEqual, cloneDeep, sumBy, orderBy } from 'lodash-es';
 import { IDataFilterResult, IDataFilterValue, IDataFilterResultValue } from '@microsoft/mgt-element';
 import { IDataFilterConfiguration, FilterSortType, FilterSortDirection } from '@microsoft/mgt-element';
-import { fluentSelect, fluentOption, provideFluentDesignSystem, fluentListbox } from '@fluentui/web-components';
+import {
+  fluentSelect,
+  fluentOption,
+  provideFluentDesignSystem,
+  fluentListbox,
+  fluentSearch,
+  fluentButton,
+  fluentCombobox
+} from '@fluentui/web-components';
 import { styles as tailwindStyles } from '../../../styles/tailwind-styles-css';
 
 export enum DateFilterKeys {
@@ -83,7 +95,13 @@ export abstract class MgtBaseFilterComponent extends MgtConnectableComponent {
     this.closeMenu = this.closeMenu.bind(this);
 
     // Register fluent tabs (as scoped elements)
-    provideFluentDesignSystem().register(fluentSelect(), fluentOption(), fluentListbox());
+    provideFluentDesignSystem().register(
+      fluentSelect(),
+      fluentOption(),
+      fluentCombobox(),
+      fluentButton(),
+      fluentSearch()
+    );
   }
 
   public render() {
@@ -114,7 +132,13 @@ export abstract class MgtBaseFilterComponent extends MgtConnectableComponent {
 
     return html`
 
-                <fluent-select title=${this.localizedFilterName}>
+                <fluent-combobox 
+                  title=${this.localizedFilterName} 
+                  class="outline-0 p-2"
+                  .currentValue=${
+                    this.selectedValues.length > 0 ? this.selectedValues.map(s => s.name) : this.localizedFilterName
+                  }
+                >
                   <div slot="selected-value">
                     ${renderFilterName}
                   </div>
@@ -123,41 +147,10 @@ export abstract class MgtBaseFilterComponent extends MgtConnectableComponent {
                       e.stopPropagation();
                     }}>
                       ${this.renderFilterContent()}
-                    </div>            
-                </fluent-select>
+                    </div>       
+                         
+                </fluent-combobox>
                 `;
-  }
-
-  protected firstUpdated(changedProperties: PropertyValues<this>): void {
-    // Set the element id to uniquely identify it in the DOM
-    this.id = this.filter.filterName;
-
-    const filterButton = this.renderRoot.querySelector("[data-tag-name='egg-button']");
-
-    this.buttonObserver = new MutationObserver(_mutations => {
-      _mutations.forEach(mutation => {
-        switch (mutation.type) {
-          case 'attributes':
-            if (mutation.attributeName === 'aria-expanded') {
-              this.isExpanded = (mutation.target as HTMLElement).getAttribute('aria-expanded') === 'true';
-            }
-            break;
-          default:
-            break;
-        }
-      });
-    });
-
-    if (filterButton) {
-      this.buttonObserver.observe(filterButton, {
-        attributeFilter: ['aria-expanded'],
-        attributeOldValue: true,
-        childList: false,
-        subtree: false
-      });
-    }
-
-    super.firstUpdated(changedProperties);
   }
 
   public disconnectedCallback(): void {
@@ -249,7 +242,7 @@ export abstract class MgtBaseFilterComponent extends MgtConnectableComponent {
    * @returns the new aggregated filters values
    */
   protected processAggregations(values: IDataFilterResultValue[]): IDataFilterResultValue[] {
-    let filteredValues = cloneDeep(values);
+    let filteredValues: IDataFilterResultValue[] = cloneDeep(values);
 
     if (this.filterConfiguration.aggregations) {
       this.filterConfiguration.aggregations.forEach(aggregation => {
@@ -288,12 +281,29 @@ export abstract class MgtBaseFilterComponent extends MgtConnectableComponent {
     if (this.selectedValues.length > 0 && this.submittedFilterValues.length === 0) {
       this.resetSelectedValues();
     }
-
-    const eggMenu = this.renderRoot.querySelector("[data-tag-name='egg-menu']");
-    eggMenu.removeAttribute('opened');
   }
 
   static get styles() {
-    return [tailwindStyles];
+    return [
+      tailwindStyles,
+      css`
+        :host {
+          --neutral-fill-input-rest: transparent;
+
+          input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            bottom: 0;
+            color: transparent;
+            cursor: pointer;
+            height: auto;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: auto;
+          }
+        }
+      `
+    ];
   }
 }

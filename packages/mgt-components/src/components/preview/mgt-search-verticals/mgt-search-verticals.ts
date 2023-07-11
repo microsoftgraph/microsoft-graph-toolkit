@@ -1,8 +1,7 @@
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { EventConstants, customElement } from '@microsoft/mgt-element';
 import { IDataVerticalConfiguration } from '@microsoft/mgt-element/src/models/IDataVerticalConfiguration';
 import { ISearchVerticalEventData, MgtConnectableComponent, PageOpenBehavior } from '@microsoft/mgt-element';
-
 import { isEmpty, isEqual } from 'lodash-es';
 import { styles } from './mgt-search-verticals-css';
 import { styles as tailwindStyles } from '../../../styles/tailwind-styles-css';

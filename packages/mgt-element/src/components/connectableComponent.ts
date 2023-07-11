@@ -1,4 +1,4 @@
-import { state } from 'lit-element';
+import { state } from 'lit/decorators.js';
 import { MgtTemplatedComponent } from './templatedComponent';
 import { EventHandler } from '../utils/EventDispatcher';
 import { isObjectLike } from 'lodash-es';

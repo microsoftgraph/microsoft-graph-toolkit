@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 import { html, PropertyValues } from 'lit';
 import { cloneDeep } from 'lodash-es';
 import { repeat } from 'lit/directives/repeat.js';
@@ -6,6 +12,8 @@ import { strings } from './strings';
 import { MgtBaseFilterComponent } from '../mgt-base-filter';
 import { IDataFilterResultValue, IDataFilterAggregation } from '@microsoft/mgt-element';
 import { state } from 'lit/decorators.js';
+import { SvgIcon, getSvg } from '../../../../utils/SvgHelper';
+import { getFileTypeIconUriByExtension } from '../../../../styles/fluent-icons';
 
 export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
   @state()
@@ -44,32 +52,36 @@ export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
 
     const renderSearchBox = html`
             <div class="relative">
-                <egg-icon icon-id="egg-global:action:search" class="absolute top-[10px] left-[10px] text-black opacity-25"></egg-icon>
+                <div class="absolute top-[10px] left-[10px] text-black opacity-25">${getSvg(SvgIcon.Search)}</div>
+                
                 ${
                   this.searchKeyword
-                    ? html`<egg-icon icon-id="egg-global:alert:close" class="absolute top-[10px] right-[10px] text-black opacity-25" @click=${this.clearSearchKeywords}></egg-icon>`
+                    ? html`
+                      <div class="absolute top-[10px] right-[10px] text-black opacity-25" @click=${
+                        this.clearSearchKeywords
+                      }>${getSvg(SvgIcon.Close)}</div>`
                     : null
                 }
-                
-                <input  id="searchbox"
+
+                <fluent-text-field  id="searchbox"
                         autocomplete="off"
-                        class="bg-black/[0.02] text-sm border-black/[0.04] w-full pl-9 pr-9 rounded-lg" 
+                        class="w-full outline-none bg-transparent" 
                         type="text" 
                         placeholder=${strings.searchPlaceholder}
                         @input=${e => {
                           this.filterValues(e.target.value);
                         }}
-
-                />
+                ></fluent-text-field>
+                </fluent-text-field>
             </div>
         `;
 
     return html`
-                <div class="sticky top-0 flex flex-col space-y-2 bg-white z-10"
+                <div class="sticky top-0 flex flex-col space-y-2 z-10"
     
                           @mousedown=${(e: Event) => {
                             e.preventDefault();
-                            e.stopPropagation();
+                            // e.stopPropagation();
                           }} 
                 > 
                     <div class="border-b px-6 py-3 space-y-2">                  
@@ -82,16 +94,19 @@ export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
                         <div class="opacity-75"><label>${selectedValues.length} ${strings.selections}</label></div>
                         ${
                           this.selectedValues.length > 0 || this.submittedFilterValues.length > 0
-                            ? html`<button data-ref="reset" type="reset" class="flex cursor-pointer space-x-1 items-center hover:text-primary opacity-75" @click=${() =>
+                            ? html`
+                              <button data-ref="reset" type="reset" class="flex cursor-pointer space-x-1 items-center hover:text-primary opacity-75" @click=${() =>
                                 this.clearSelectedValues()}>
-                                    <egg-icon icon-id="egg-global:action:restore"></egg-icon>
+                                    <div>${getSvg(SvgIcon.Refresh)}</div>
                                     <span>${strings.reset}</span>
                                 </button>`
                             : null
                         }
                     </div>
                 </div>
-                <div class="p-1 flex-col flex space-y-1">
+                <div 
+                    id="filter-menu-content"
+                    class="p-1 flex-col flex space-y-1">
                     ${repeat(
                       this.filteredValues,
                       filterValue => filterValue.key,
@@ -115,9 +130,16 @@ export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
                                     <div class="flex items-center space-x-2">
                                         ${
                                           this.getFilterAggregation(filterValue.name)
-                                            ? html`<img data-ref="icon" class="w-[24px]" src=${
-                                                this.getFilterAggregation(filterValue.name).aggregationValueIconUrl
-                                              }>`
+                                            ? html`
+                                                <img  data-ref="icon" 
+                                                      class="w-[24px]" 
+                                                      src=${getFileTypeIconUriByExtension(
+                                                        this.getFilterAggregation(filterValue.name)
+                                                          .aggregationValueIconUrl,
+                                                        48,
+                                                        'svg'
+                                                      )}
+                                                />`
                                             : null
                                         }
                                         <div data-ref="value" class="font-medium ${
@@ -149,18 +171,18 @@ export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
                   this.filterConfiguration.isMulti
                     ? html`
                         <div 
-                          class="sticky bottom-0 flex justify-around py-2 px-2 space-x-4 bg-white border-t border-gray-400 w-full border-opacity-25"
+                          class="sticky bottom-0 flex justify-around py-2 px-2 space-x-4 w-full border-opacity-25"
                           @mousedown=${(e: Event) => {
                             e.preventDefault();
                             e.stopPropagation();
                           }} 
                         >
-                            <button data-ref="cancel" type="submit" class="flex items-center justify-center text-primary rounded-lg border-2 border-gray-400 px-4 py-1 min-w-[140px] font-medium" @click=${
+                            <fluent-button data-ref="cancel" type="submit" class="flex items-center justify-center text-primary font-medium w-24" @click=${
                               this.closeMenu
                             }>
                                 ${strings.cancel}
-                            </button>
-                            <button data-ref="apply" type="submit" class="flex items-center justify-center text-primary rounded-lg border-2 border-gray-400 px-4 py-1 min-w-[140px] font-medium ${
+                            </fluent-button>
+                            <fluent-button data-ref="apply" type="submit" appearance="accent" class="flex items-center justify-center text-primary font-medium w-24 ${
                               this.selectedValues.length === 0 || !this.canApplyValues
                                 ? 'opacity-50 cursor-not-allowed'
                                 : ''
@@ -169,7 +191,7 @@ export class MgtCheckboxFilterComponent extends MgtBaseFilterComponent {
                                     @click=${this.applyFilters}
                             >
                                 ${strings.apply}
-                            </button>
+                            </fluent-button>
                         </div>
                     `
                     : null

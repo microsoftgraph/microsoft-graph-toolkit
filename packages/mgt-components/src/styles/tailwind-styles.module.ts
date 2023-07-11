@@ -1,4 +1,4 @@
-import { css, CSSResult } from 'lit-element';
+import { css, CSSResult } from 'lit';
 /**
  * exports lit-element css
  * @export styles

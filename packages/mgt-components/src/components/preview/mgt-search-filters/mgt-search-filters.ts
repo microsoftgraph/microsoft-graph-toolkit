@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable max-classes-per-file */
 import {
   BuiltinFilterTemplates,
@@ -27,6 +30,7 @@ import { MgtDateFilterComponent } from './mgt-date-filter/mgt-date-filter';
 import { property, state } from 'lit/decorators.js';
 import { html, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
+import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 
 export class MgtSearchFiltersComponentBase extends MgtConnectableComponent {}
 
@@ -201,10 +205,10 @@ export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFilt
 
     return html`
             <div class="px-2.5">
-                <div class="max-w-7xl ml-auto mr-auto mb-8">
-                    <div class="font-sans text-sm flex py-[16px] px-[32px] rounded-lg shadow-filtersShadow bg-light300 justify-between">
+                <div class="">
+                    <div class="font-sans text-sm flex py-[16px] rounded-lg justify-between">
                         <div class="flex flex-wrap items-center space-x-2">
-                            <egg-icon icon-id="egg-global:action:filter-range"></egg-icon>
+                            <div>${getSvg(SvgIcon.Filter)}</div>
                             ${renderFilters}
                             ${
                               (this.availableFilters.length > 0 && this.allSelectedFilters.length > 0) ||
@@ -212,7 +216,7 @@ export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFilt
                                 ? html`<button data-ref="reset" class="flex cursor-pointer space-x-1 items-center hover:text-primary opacity-75" @click=${() => {
                                     this.clearAllSelectedValues();
                                   }}>
-                                        <egg-icon icon-id="egg-global:action:restore"></egg-icon>
+                                        <div>${getSvg(SvgIcon.Refresh)}</div>
                                         <span>${strings.resetAllFilters}</span>
                                     </button>`
                                 : null
@@ -527,8 +531,8 @@ export class MgtSearchFiltersComponent extends ScopedElementsMixin(MgtSearchFilt
     // Reset all values from sub components. List all valid sub filter components
     const filterComponents: MgtBaseFilterComponent[] = Array.prototype.slice.call(
       this.renderRoot.querySelectorAll<MgtBaseFilterComponent>(`
-            [data-tag-name='mgt-filter-date'],
-            [data-tag-name='mgt-filter-checkbox']
+          mgt-filter-date,
+          mgt-filter-checkbox
         `)
     );
 
