@@ -182,9 +182,9 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   /**
    * allows developer to specify preferred timezone that should be used for
-   * retrieving events from Graph, eg. `Pacific Standard Time`. The preferred timezone for
-   * the current user can be retrieved by calling `me/mailboxSettings` and
-   * retrieving the value of the `timeZone` property.
+   * rendering events retrieved from Graph, eg. `America/Los_Angeles`.
+   * By default events are rendered using the current timezone of the
+   * device being used.
    *
    * @type {string}
    */
