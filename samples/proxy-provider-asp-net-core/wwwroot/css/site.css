@@ -28,10 +28,21 @@ textarea {
     width: 100%;
 }
 
-mgt-login {
+.login {
     --button-color: #9d9d9d;
     --button-background-color--hover: transparent;
     --button-color--hover: white;
+}
+
+.navbar-collapse.collapse {
+    display: flex!important;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-collapse.collapse::after,
+.navbar-collapse.collapse::before {
+    display: none;
 }
 
 /* Hide/rearrange for smaller screens */
