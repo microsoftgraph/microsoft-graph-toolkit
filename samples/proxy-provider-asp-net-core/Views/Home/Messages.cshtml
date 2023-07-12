@@ -16,9 +16,9 @@
     const messagesGet = document.getElementById('messagesGet');
 
     channelPicker.addEventListener('selectionChanged', e => {
-        if (e.detail.length) {
-            let channelId = e.detail[0].channel.id;
-            let teamId = e.detail[0].team.id;
+        if (e.detail) {
+            let channelId = e.detail.channel.id;
+            let teamId = e.detail.team.id;
             messagesGet.resource = `teams/${teamId}/channels/${channelId}/messages/delta`;
         }
     });
