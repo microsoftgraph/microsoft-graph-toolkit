@@ -20,7 +20,7 @@ import {
 import '../../styles/style-helper';
 import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
-import { getEventsPageIterator } from './mgt-agenda.graph';
+import { getEventsPageIterator, getEventsQueryPageIterator } from './mgt-agenda.graph';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import { registerFluentComponents } from '../../utils/FluentComponents';
@@ -629,17 +629,14 @@ export class MgtAgenda extends MgtTemplatedComponent {
           } else {
             query = this.eventQuery;
           }
+          const iterator = await getEventsQueryPageIterator(graph, query, scope);
+          if (iterator?.value) {
+            events = iterator.value;
 
-          let request = graph.api(query);
-
-          if (scope) {
-            request = request.middlewareOptions(prepScopes(scope));
-          }
-
-          const results = (await request.get()) as CollectionResponse<MicrosoftGraph.Event>;
-
-          if (results?.value) {
-            events = results.value;
+            while (iterator.hasNext) {
+              await iterator.next();
+              events = iterator.value;
+            }
           }
           // eslint-disable-next-line no-empty
         } catch (e) {}
