@@ -15,7 +15,7 @@ export default {
 };
 
 export const getByEventQuery = () => html`
-  <mgt-agenda event-query="/me/events?orderby=start/dateTime"></mgt-agenda>
+  <mgt-agenda event-query="/me/calendarview?$orderby=start/dateTime&startdatetime=2023-07-12T00:00:00.000Z&enddatetime=2023-07-18T00:00:00.000Z"></mgt-agenda>
 `;
 
 export const groupByDay = () => html`
