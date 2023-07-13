@@ -763,6 +763,9 @@ export class MgtPerson extends MgtTemplatedComponent {
             presenceIcon = getSvg(SvgIcon.PresenceOofBusy);
             break;
           // Busy,InACall,InAConferenceCall,InAMeeting, Unknown
+          case 'Busy':
+          case 'InACall':
+          case 'InAMeeting':
           default:
             presenceIcon = getSvg(SvgIcon.PresenceBusy);
             break;
