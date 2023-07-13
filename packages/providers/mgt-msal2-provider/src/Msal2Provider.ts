@@ -146,6 +146,14 @@ export interface Msal2Config extends Msal2ConfigBase {
    * The base URL for the graph client
    */
   baseURL?: GraphEndpoint;
+
+  /**
+   * CustomHosts
+   *
+   * @type {string[]}
+   * @memberof Msal2Config
+   */
+  customHosts?: string[];
 }
 
 /**
@@ -394,6 +402,7 @@ export class Msal2Provider extends IProvider {
     this.isMultipleAccountEnabled =
       typeof msal2config.isMultiAccountEnabled !== 'undefined' ? msal2config.isMultiAccountEnabled : true;
     this.baseURL = typeof msal2config.baseURL !== 'undefined' ? msal2config.baseURL : this.baseURL;
+    this.customHosts = msal2config.customHosts;
 
     this.graph = createFromProvider(this);
     try {

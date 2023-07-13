@@ -75,7 +75,7 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         public IActionResult Messages()
         {
             return View();
