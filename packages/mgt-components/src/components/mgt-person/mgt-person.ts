@@ -750,6 +750,7 @@ export class MgtPerson extends MgtTemplatedComponent {
             presenceIcon = getSvg(SvgIcon.PresenceOofAvailable);
             break;
           // OutOfOffice and Uknowns
+          case 'Available':
           default:
             presenceIcon = getSvg(SvgIcon.PresenceAvailable);
             break;
