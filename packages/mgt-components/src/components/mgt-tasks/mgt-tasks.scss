@@ -52,6 +52,7 @@ $task-new-dropdown-border-radius: var(--task-new-dropdown-border-radius, calc(va
   padding: $tasks-padding;
   border: $tasks-border;
   border-radius: $tasks-border-radius;
+  font-family: $font-family;
 
   --skeleton-fill: var(--neutral-foreground-active);
 
