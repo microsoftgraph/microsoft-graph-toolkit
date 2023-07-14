@@ -371,7 +371,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             <div tabindex="0" slot="start" style="width: max-content;">${this.renderSelected()}</div>
             <div tabindex="0" slot="end">${this.renderChevrons()}${this.renderCloseButton()}</div>
           </fluent-text-field>
-          <fluent-card class=${classMap(dropdownClasses)}>
+          <fluent-card
+            class=${classMap(dropdownClasses)}
+          >
             ${this.renderDropdown()}
           </fluent-card>
         </div>`
@@ -676,8 +678,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="message-parent">
           <div
             label="search-error-text"
-            aria-label=${this.strings.noResultsFound}
-            class="search-error-text">
+            aria-live="polite"
+            aria-relevant="all"
+            aria-atomic="true"
+            class="search-error-text"
+          >
             ${this.strings.noResultsFound}
           </div>
         </div>
