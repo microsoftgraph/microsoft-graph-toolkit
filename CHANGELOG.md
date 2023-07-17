@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.1](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.0.0...v3.0.1) (2023-07-17)
+
+
+### Bug Fixes
+
+* **a11y:** unset custom color of storybook left chevrons ([#2595](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2595)) ([764bf12](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/764bf12429e0d69f7c4c0cfc305bfe7dbed1421f))
+* add `InAConferenceCall` activity when availability is `Busy` ([#2585](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2585)) ([bd17195](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/bd17195d22a90ab8a820528c91d8c7d6a89191ca))
+* add class to people-picker styles story to enable custom css ([#2605](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2605)) ([dcec953](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/dcec953ecdc2e721a280a3a11aca5be1596311dc))
+* add font family to tasks ([#2603](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2603)) ([e380b4a](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/e380b4ae98095069a260f459ec6fd6d156d97762))
+* add login custom styles, removes style not in use ([#2587](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2587)) ([7ba98e4](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/7ba98e4359854adb2658207be8c8e64bbeeda730))
+* adds customHosts support for non-graph domain requests ([#2592](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2592)) ([1f97215](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/1f97215f03324ebbc255ef57fe7658c6978ff0dc))
+* announce teams channel results when you type ([#2561](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2561)) ([5260ce0](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/5260ce05c125f59ee56a3cbac7eba18e10de523c))
+* aspnet proxy provider sample ([#2594](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2594)) ([362339a](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/362339a2a80be148c1e20602f3ae639682b43137))
+* correct sppkg upload script ([#2552](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2552)) ([8b20d84](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/8b20d8489c0043060714a1ca1401d0c7433a7c05))
+* files compact view in person card ([#2597](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2597)) ([6985717](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/69857170d87c37c1ce0c0f51baff34922f168e97))
+* people picker default selections ([#2579](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2579)) ([49b81bf](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/49b81bfeb342c00999408078a08a7b9b2ac557a4))
+* use iterator to load events from event-query ([#2600](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2600)) ([0ba37cc](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/0ba37cc78f0e1efe20e22247149218deb1066c68))
+
 ### [3.0.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v2.11.2...v3.0.0) (2023-06-26)
 
 
