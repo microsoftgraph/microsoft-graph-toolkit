@@ -22,6 +22,7 @@ jobs:
       - uses: google-github-actions/release-please-action@v2
         id: release
         with:
-          command: manifest
+          config-file: release-please-config.json
+          mainifest-file: .release-please-mainifest.json
           token: ${{secrets.RELEASE_PLEASE_TOKEN}}
           default-branch: main
