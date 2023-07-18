@@ -23,7 +23,7 @@ jobs:
         id: release
         with:
           config-file: release-please-config.json
-          mainfest-file: .release-please-mainifest.json
+          manifest-file: .release-please-manifest.json
           command: manifest
           token: ${{secrets.RELEASE_PLEASE_TOKEN}}
           default-branch: main
