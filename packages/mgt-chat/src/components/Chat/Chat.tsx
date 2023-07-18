@@ -7,6 +7,7 @@ import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
+import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
 
 registerAppIcons();
 
@@ -34,12 +35,18 @@ const useStyles = makeStyles({
   },
   fullHeight: {
     height: '100%'
+  },
+  spinner: {
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    height: '100%'
   }
 });
 
 export const Chat = ({ chatId }: IMgtChatProps) => {
   const styles = useStyles();
-  const chatClient = useGraphChatClient(chatId);
+  const chatClient: StatefulGraphChatClient = useGraphChatClient(chatId);
   const [chatState, setChatState] = useState(chatClient.getState());
   useEffect(() => {
     chatClient.onStateChange(setChatState);
@@ -47,11 +54,16 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
       chatClient.offStateChange(setChatState);
     };
   }, [chatClient]);
+
+  const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
+    chatState.status
+  );
+
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={teamsLightTheme} className={styles.fullHeight}>
         <div className={styles.chat}>
-          {chatState.userId && chatState.messages.length > 0 ? (
+          {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
               <ChatHeader
                 chat={chatState.chat}
@@ -66,7 +78,6 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   addChatMembers={chatState.onAddChatMembers}
                 />
               )}
-              asdfasdf
               <div className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}
@@ -97,8 +108,14 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
             </>
           ) : (
             <>
-              {chatState.status}
-              <Spinner />
+              {isLoading && (
+                <div className={styles.spinner}>
+                  <Spinner /> <br />
+                  {chatState.status}
+                </div>
+              )}
+              {chatState.status === 'initial' && <p>Select a chat to display messages.</p>}
+              {chatState.status === 'no messages' && <p>No messages to display.</p>}
             </>
           )}
         </div>
