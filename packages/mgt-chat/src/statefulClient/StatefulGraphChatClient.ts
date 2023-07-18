@@ -21,7 +21,7 @@ import {
   MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
-import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
+import { IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
 import { produce } from 'immer';
 import { v4 as uuid } from 'uuid';
 import {
@@ -43,7 +43,7 @@ import { ThreadEventEmitter } from './ThreadEventEmitter';
 import { IDynamicPerson } from '@microsoft/mgt-react';
 import { updateMessageContentWithImage } from './updateMessageContentWithImage';
 import { graph } from '../utils/graph';
-import { currentUserId } from '../utils/currentUser';
+import { currentUserId, getCurrentUser, currentUserName } from '../utils/currentUser';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -94,6 +94,7 @@ type GraphChatClient = Pick<
       | 'creating server connections'
       | 'subscribing to notifications'
       | 'loading messages'
+      | 'no messages'
       | 'ready'
       | 'error';
     chat?: Chat;
@@ -264,9 +265,35 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     }
   };
 
-  private readonly onActiveAccountChanged = (e: ActiveAccountChanged) => {
+  private readonly onActiveAccountChanged = () => {
+    this.unregisterNotifications();
+    this.clearCurrentUserMessages();
+    // void this.closeCurrentSignalRConnections();
+    // void this.reconnectSignalRConnection();
     this.updateUserInfo();
+    void this.updateFollowedChat();
   };
+
+  private unregisterNotifications() {
+    this._notificationClient.unsubscribeFromChatNotifications();
+  }
+
+  private async closeCurrentSignalRConnections() {
+    await this._notificationClient.closeSignalRConnection();
+  }
+
+  private async reconnectSignalRConnection() {
+    await this._notificationClient.reConnectSignalR();
+  }
+
+  private clearCurrentUserMessages() {
+    this.notifyStateChange((draft: GraphChatClient) => {
+      draft.messages = [];
+      draft.participants = [];
+      draft.chat = undefined;
+      draft.status = 'initial'; // no message?
+    });
+  }
 
   private updateUserInfo() {
     this.updateCurrentUserId();
@@ -274,7 +301,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   }
 
   private updateCurrentUserName() {
-    this._userDisplayName = Providers.globalProvider.getActiveAccount?.().name || '';
+    this._userDisplayName = currentUserName();
   }
 
   private updateCurrentUserId() {
@@ -321,27 +348,40 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.status = 'creating server connections';
     });
-    const promises: Promise<void>[] = [];
-    promises.push(this.loadChatData());
-    // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
-    // this client will then load the chat and messages when that event listener is called
-    promises.push(
-      this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, this._eventEmitter, () =>
-        this.notifyStateChange((draft: GraphChatClient) => {
-          draft.status = 'subscribing to notifications';
-        })
-      )
-    );
-    await Promise.all(promises);
+    // avoid subscribing to a resource with an empty chatId
+    if (this._chatId) {
+      const promises: Promise<void>[] = [];
+      promises.push(this.loadChatData());
+      // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
+      // this client will then load the chat and messages when that event listener is called
+      promises.push(
+        this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, this._eventEmitter, () =>
+          this.notifyStateChange((draft: GraphChatClient) => {
+            draft.status = 'subscribing to notifications';
+          })
+        )
+      );
+      await Promise.all(promises);
+    } else {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'no messages';
+      });
+    }
   }
 
   private async loadChatData() {
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.status = 'loading messages';
     });
-    this._chat = await loadChat(this.graph, this._chatId);
-    const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
-    await this.writeMessagesToState(messages);
+    if (this._chatId) {
+      this._chat = await loadChat(this.graph, this._chatId);
+      const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
+      await this.writeMessagesToState(messages);
+    } else {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'no messages';
+      });
+    }
   }
 
   /**
