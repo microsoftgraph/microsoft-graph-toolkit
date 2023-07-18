@@ -14,6 +14,11 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+          registry-url: 'https://registry.npmjs.org'
       - uses: google-github-actions/release-please-action@v2
         id: release
         with:
