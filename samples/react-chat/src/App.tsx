@@ -14,14 +14,14 @@ const ChatList = memo(({ chatSelected }: { chatSelected: (e: GraphChat) => void 
 });
 
 function App() {
-  const [chatId, setChatId] = useState<string>();
+  const [chatId, setChatId] = useState<string>('');
   const chatSelected = useCallback((e: GraphChat) => {
-    setChatId(e.id);
+    setChatId(e.id ?? '');
   }, []);
 
   const [showNewChat, setShowNewChat] = useState<boolean>(false);
   const onChatCreated = useCallback((chat: GraphChat) => {
-    setChatId(chat.id);
+    setChatId(chat.id ?? '');
     setShowNewChat(false);
   }, []);
 
@@ -50,7 +50,7 @@ function App() {
             </div>
           )}
         </div>
-        <div className="chat-pane">{chatId && <Chat chatId={chatId} />}</div>
+        <div className="chat-pane">{<Chat chatId={chatId} />}</div>
       </main>
     </div>
   );
