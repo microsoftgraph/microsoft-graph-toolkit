@@ -268,6 +268,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private readonly onActiveAccountChanged = () => {
     this.unregisterNotifications();
     this.clearCurrentUserMessages();
+    sessionStorage.removeItem('graph-subscriptions');
     // void this.closeCurrentSignalRConnections();
     // void this.reconnectSignalRConnection();
     this.updateUserInfo();
