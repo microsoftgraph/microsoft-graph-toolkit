@@ -66,7 +66,6 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   addChatMembers={chatState.onAddChatMembers}
                 />
               )}
-              asdfasdf
               <div className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}
