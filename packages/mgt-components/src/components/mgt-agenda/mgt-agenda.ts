@@ -421,14 +421,17 @@ export class MgtAgenda extends MgtTemplatedComponent {
       <div
         aria-describedby="tooltip-${event.id}"
         class="${classMap(eventSubjectClasses)}"
-        id=${event.id}>
-          ${event.subject}
+        tabindex="0"
+        id=${event.id}
+      >
+        ${event.subject}
       </div>
       <fluent-tooltip
         id="tooltip-${event.id}"
         position="right"
-        anchor="${event.id}">
-          ${eventDescription}
+        anchor="${event.id}"
+      >
+        ${eventDescription}
       </fluent-tooltip>
     `;
 
