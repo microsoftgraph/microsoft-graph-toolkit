@@ -29,7 +29,7 @@ export const CopyButtonNamer = ({ names }) => {
       for (let i = 0; i < buttons.length; i++) {
         buttons[i].setAttribute('aria-label', names[i]);
       }
-    });
+    };
     window.addEventListener('load', onWindowLoadHander);
     return () => window.removeEventListener('load', onWindowLoadHander);
   }, [names]);
