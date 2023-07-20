@@ -18,7 +18,7 @@ export const TableNamer = ({ names }) => {
 
 export const CopyButtonNamer = ({ names }) => {
   useEffect(() => {
-    window.addEventListener('load', () => {
+    const onWindowLoadHander = () => {
       const buttons = document.getElementsByClassName('css-3ltsna');
       if (buttons.length !== names.length) {
         console.error(
@@ -30,6 +30,8 @@ export const CopyButtonNamer = ({ names }) => {
         buttons[i].setAttribute('aria-label', names[i]);
       }
     });
+    window.addEventListener('load', onWindowLoadHander);
+    return () => window.removeEventListener('load', onWindowLoadHander);
   }, [names]);
   return <></>;
 };
