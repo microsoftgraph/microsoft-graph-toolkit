@@ -30,6 +30,6 @@ export const CopyButtonNamer = ({ names }) => {
         buttons[i].setAttribute('aria-label', names[i]);
       }
     });
-  }, []);
+  }, [names]);
   return <></>;
 };
