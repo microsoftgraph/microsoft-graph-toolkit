@@ -12,7 +12,7 @@ export const TableNamer = ({ names }) => {
     for (let i = 0; i < tables.length; i++) {
       tables[i].setAttribute('title', names[i]);
     }
-  }, []);
+  }, [names]);
   return <></>;
 };
 
