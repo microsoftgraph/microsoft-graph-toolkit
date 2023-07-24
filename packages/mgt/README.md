@@ -15,27 +15,33 @@ The Microsoft Graph Toolkit includes a collection of web components for the most
 
 The components are also available as [React components](https://learn.microsoft.com/graph/toolkit/get-started/mgt-react).
 
+* [mgt-agenda](https://learn.microsoft.com/graph/toolkit/components/agenda)
+* [mgt-file](https://learn.microsoft.com/graph/toolkit/components/file)
+* [mgt-file-list](https://learn.microsoft.com/graph/toolkit/components/file-list)
+* [mgt-get](https://learn.microsoft.com/graph/toolkit/components/get)
 * [mgt-login](https://learn.microsoft.com/graph/toolkit/components/login)
-* [mgt-person](https://learn.microsoft.com/graph/toolkit/components/person)
-* [mgt-person-card](https://learn.microsoft.com/graph/toolkit/components/person-card)
 * [mgt-people](https://learn.microsoft.com/graph/toolkit/components/people)
 * [mgt-people-picker](https://learn.microsoft.com/graph/toolkit/components/people-picker)
-* [mgt-agenda](https://learn.microsoft.com/graph/toolkit/components/agenda)
+* [mgt-person](https://learn.microsoft.com/graph/toolkit/components/person)
+* [mgt-person-card](https://learn.microsoft.com/graph/toolkit/components/person-card)
+* [mgt-search-box](https://learn.microsoft.com/graph/toolkit/components/person-box)
+* [mgt-search-results](https://learn.microsoft.com/graph/toolkit/components/search-results)
 * [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)
-* [mgt-todo](https://learn.microsoft.com/graph/toolkit/components/todo)
-* [mgt-get](https://learn.microsoft.com/graph/toolkit/components/get)
+* [mgt-taxonomy-picker](https://learn.microsoft.com/graph/toolkit/components/taxonomy-picker)
 * [mgt-teams-channel-picker](https://learn.microsoft.com/graph/toolkit/components/teams-channel-picker)
+* [mgt-theme-toggle](https://learn.microsoft.com/graph/toolkit/components/theme-toggle)
+* [mgt-todo](https://learn.microsoft.com/graph/toolkit/components/todo)
 
 ## Providers
 [Providers](https://learn.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms and expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own.
 
-* [Msal Provider](https://learn.microsoft.com/graph/toolkit/providers/msal)
-* [Msal2 Provider](https://learn.microsoft.com/graph/toolkit/providers/msal2)
-* [SharePoint Provider](https://learn.microsoft.com/graph/toolkit/providers/sharepoint)
-* [Teams Provider](https://learn.microsoft.com/graph/toolkit/providers/teams)
-* [Teams Msal2 Provider](https://learn.microsoft.com/graph/toolkit/providers/teams-msal2)
-* [Proxy Provider](https://learn.microsoft.com/graph/toolkit/providers/proxy)
-* [Simple Provider](https://learn.microsoft.com/graph/toolkit/providers/custom)
+* [Msal2Provider](https://learn.microsoft.com/graph/toolkit/providers/msal2)
+* [SharePointProvider](https://learn.microsoft.com/graph/toolkit/providers/sharepoint)
+* [TeamsFxProvider](https://learn.microsoft.com/graph/toolkit/providers/teamsfx)
+* [ProxyProvider](https://learn.microsoft.com/graph/toolkit/providers/proxy)
+* [SimpleProvider](https://learn.microsoft.com/graph/toolkit/providers/custom)
+* [ElectronProvider](https://learn.microsoft.com/graph/toolkit/providers/electron)
+
 
 ## Getting Started
 
@@ -46,15 +52,15 @@ You can use the components by referencing the loader directly (via unpkg), or in
 ### Use via mgt-loader:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@3/dist/bundle/mgt-loader.js"></script>
 ```
 
-> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 2.0.0 < 3.0.0`, omitting the `@2` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
+> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 3.0.0 < 4.0.0`, omitting the `@3` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
 
 You can then start using the components in your html page. Here is a full working example with the Msal2 provider:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@3/dist/bundle/mgt-loader.js"></script>
 
 <mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 
