@@ -705,8 +705,15 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   protected renderImage(personDetailsInternal: IDynamicPerson, imageSrc: string) {
     const altText = `${this.strings.photoFor} ${personDetailsInternal.displayName}`;
-    const hasImage = imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo';
-    const imageTemplate = html`<img alt=${altText} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />`;
+    const hasImage = imageSrc && !this._isInvalidImageSrc && this._avatarType === avatarType.photo;
+    const imageOnly = this.avatarType === avatarType.photo && this.view === ViewType.image;
+    const titleText =
+      (personDetailsInternal?.displayName || getEmailFromGraphEntity(personDetailsInternal)) ?? undefined;
+    const imageTemplate = html`<img
+      title="${ifDefined(imageOnly ? titleText : undefined)}"
+      alt=${altText}
+      src=${imageSrc}
+      @error=${() => (this._isInvalidImageSrc = true)} />`;
 
     const initials = personDetailsInternal ? this.getInitials(personDetailsInternal) : '';
     const hasInitials = initials?.length;
