@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
-import { FluentTheme } from '@fluentui/react';
+import { FluentTheme, MessageBarType } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import ChatHeader from '../ChatHeader/ChatHeader';
+import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
 import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
@@ -114,8 +115,18 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   {chatState.status}
                 </div>
               )}
-              {chatState.status === 'initial' && <p>Select a chat to display messages.</p>}
-              {chatState.status === 'no messages' && <p>No messages to display.</p>}
+              {chatState.status === 'initial' && (
+                <ChatMessageBar messageBarType={MessageBarType.info} message={'Select a chat to display messages.'} />
+              )}
+              {chatState.status === 'no messages' && (
+                <ChatMessageBar
+                  messageBarType={MessageBarType.error}
+                  message={`No messages were found for the id ${chatId}.`}
+                />
+              )}
+              {chatState.status === 'no chat id' && (
+                <ChatMessageBar messageBarType={MessageBarType.error} message={'A valid chat id is required.'} />
+              )}
             </>
           )}
         </div>
