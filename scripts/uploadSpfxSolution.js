@@ -12,7 +12,7 @@ if (process.argv.length < 4) {
 }
 
 const auth = process.argv[2];
-const version = process.argv[3];
+const version = 'v' + process.argv[3];
 const repo = 'microsoft-graph-toolkit';
 const owner = 'microsoftgraph';
 const assetPath = 'packages/mgt-spfx/sharepoint/solution/mgt-spfx.sppkg';
@@ -34,8 +34,8 @@ const octokit = new Octokit({ auth });
       await octokit.rest.repos.createRelease({
         owner,
         repo,
-        tag_name: 'v' + version,
-        name: 'v' + version,
+        tag_name: version,
+        name: version,
         draft: true
       })
     ).data;
