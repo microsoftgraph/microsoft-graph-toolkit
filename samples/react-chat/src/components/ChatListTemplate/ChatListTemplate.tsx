@@ -7,7 +7,7 @@ const ChatListTemplate = (props: MgtTemplateProps & ChatInteractionProps) => {
   const { value } = props.dataContext;
   const chats: Chat[] = value;
   // Select a default chat to display
-  props.onSelected(chats[0]);
+  // props.onSelected(chats[0]);
   return (
     <ul>
       {chats.map(c => (
