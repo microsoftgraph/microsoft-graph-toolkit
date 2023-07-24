@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="#packages">Packages</a> • <a href="#components">Components</a> • <a href="#providers">Providers</a> • <a href="#getting-started">Getting Started</a> • <a href="#running-the-samples">Running the Samples</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
+  <a href="#packages">Packages</a> • <a href="#components">Components</a> • <a href="#providers">Providers</a> • <a href="#getting-started">Getting Started</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
 </p>
 
 ## Packages
@@ -142,22 +142,6 @@ Now you can reference all components and providers at the page you are using:
 <mgt-login></mgt-login>
 <mgt-agenda></mgt-agenda>
 ```
-
-## Running the samples
-
-Some of our samples are coupled to use the locally built mgt packages instead of the published version from npm. Because of this, it's helpful to build the monorepo before attempting to run any of the samples.
-
-```bash
-# Starting at the root
-yarn
-yarn build
-# Now you can run the React sample using the local packages
-cd ./samples/react-app/
-yarn start
-```
-
-This also means that running the samples in isolation may fail if there are breaking changes between the published version of mgt and the local copy.
-To workaround this, use samples that are known to be compatible with a specific release by checking out the appropriate branch or tag first.
 
 ## Contribute
 
