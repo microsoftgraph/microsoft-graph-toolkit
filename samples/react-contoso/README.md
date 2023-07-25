@@ -7,7 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 In the root directory for the repository:
 
 ```
-yarn && yarn build && yarn watch:react`
+yarn && yarn build && yarn watch:react
 ```
 
 This will:
