@@ -1161,8 +1161,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     const collectFilesItems: File[] = [];
 
     for (let uploadFileItem of filesItems) {
-      const dataTransferItemType = uploadFileItem instanceof DataTransferItem;
-      const fileType = uploadFileItem instanceof File;
+      const dataTransferItemType = 'getAsFile' in uploadFileItem || 'webkitGetAsEntry' in uploadFileItem;
 
       if (dataTransferItemType) {
         uploadFileItem = uploadFileItem as DataTransferItem;
@@ -1197,14 +1196,10 @@ export class MgtFileUpload extends MgtBaseComponent {
           }
         }
         continue;
-      }
-
-      if (fileType) {
-        uploadFileItem = uploadFileItem as File;
-        if (uploadFileItem) {
-          this.writeFilePath(uploadFileItem, '');
-          collectFilesItems.push(uploadFileItem);
-        }
+      } else {
+        const file = uploadFileItem as File;
+        this.writeFilePath(file, '');
+        collectFilesItems.push(file);
       }
     }
 
