@@ -2,14 +2,7 @@
   "packages": [
     "packages/*",
     "packages/providers/*",
-    "samples/react-contoso",
-    "samples/react-app",
-    "samples/react-chat",
-    "samples/angular-app",
-    "samples/vue-app",
-    "samples/electron-app",
-    "samples/sp-webpart",
-    "samples/sp-mgt"
+    "samples/*"
   ],
   "npmClient": "yarn",
   "version": "independent"
