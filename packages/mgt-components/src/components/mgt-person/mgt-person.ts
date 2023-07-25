@@ -726,6 +726,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     // this reduces the redundant announcement of the user's name.
     const textTemplate = html`
       <span 
+        title="${ifDefined(imageOnly ? titleText : undefined)}"
         role="${ifDefined(this.view === ViewType.image ? undefined : 'presentation')}"
         class="${textClasses}"
       >
