@@ -32,7 +32,8 @@ import {
   IGraph,
   mgtHtml,
   customElement,
-  IProvider
+  IProvider,
+  Providers
 } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
@@ -46,6 +47,7 @@ import { fluentTextField, fluentCard } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { strings } from './strings';
 import { Person, User } from '@microsoft/microsoft-graph-types';
+import { ifDefined } from 'lit/directives/if-defined';
 
 registerFluentComponents(fluentTextField, fluentCard);
 
@@ -951,6 +953,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.renderTemplate('person', { person }, person.id) ||
       mgtHtml`
          <mgt-person
+         .provider=${this.provider}
           class="person"
           show-presence
           view="twoLines"
@@ -958,7 +961,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           .personDetails=${person}
           .fetchImage=${!this.disableImages}>
           .personCardInteraction=${PersonCardInteraction.none}
-        </mgt-person>`
+        ></mgt-person>`
     );
   }
 
@@ -973,6 +976,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
     return mgtHtml`
        <mgt-person
+         .provider=${this.provider}
          tabindex="-1"
          class="selected-list-item-person"
          .personDetails=${person}
