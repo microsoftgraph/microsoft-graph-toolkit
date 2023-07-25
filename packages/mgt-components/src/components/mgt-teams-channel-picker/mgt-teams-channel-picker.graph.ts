@@ -47,7 +47,7 @@ export const getTeamsPhotosforPhotoIds = async (graph: BetaGraph, teamIds: strin
   let photos: CachePhotos = {};
 
   if (getIsPhotosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.teams);
+    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.teams, graph.cacheId);
     for (const id of teamIds) {
       try {
         const photoDetail = await cache.getValue(id);

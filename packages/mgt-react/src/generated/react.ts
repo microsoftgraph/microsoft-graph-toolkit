@@ -1,5 +1,5 @@
 import { OfficeGraphInsightString,ViewType,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
-import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
+import { TemplateContext,IProvider,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
@@ -14,6 +14,7 @@ export type AgendaProps = {
 	groupByDay?: boolean;
 	preferredTimezone?: string;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	eventClick?: (e: CustomEvent<MicrosoftGraph.Event>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
@@ -38,6 +39,7 @@ export type FileProps = {
 	line3Property?: string;
 	view?: ViewType;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
@@ -64,6 +66,7 @@ export type FileListProps = {
 	maxUploadFile?: number;
 	excludedFileExtensions?: string[];
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	itemClick?: (e: CustomEvent<MicrosoftGraph.DriveItem>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
@@ -80,6 +83,7 @@ export type GetProps = {
 	cacheInvalidationPeriod?: number;
 	response?: any;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
@@ -90,6 +94,7 @@ export type LoginProps = {
 	showPresence?: boolean;
 	loginView?: LoginViewType;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	loginInitiated?: (e: CustomEvent<undefined>) => void;
 	loginCompleted?: (e: CustomEvent<undefined>) => void;
@@ -112,6 +117,7 @@ export type PeopleProps = {
 	scopes?: string[];
 	fallbackDetails?: IDynamicPerson[];
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
@@ -139,6 +145,7 @@ export type PeoplePickerProps = {
 	groupFilters?: string;
 	ariaLabel?: string;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: CustomEvent<IDynamicPerson[]>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
@@ -165,6 +172,7 @@ export type PersonProps = {
 	line4Property?: string;
 	view?: ViewType | PersonViewType;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	line1clicked?: (e: CustomEvent<IDynamicPerson>) => void;
 	line2clicked?: (e: CustomEvent<IDynamicPerson>) => void;
@@ -185,6 +193,7 @@ export type PersonCardProps = {
 	showPresence?: boolean;
 	personPresence?: MicrosoftGraph.Presence;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	expanded?: (e: CustomEvent<null>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
@@ -202,6 +211,7 @@ export type PickerProps = {
 	cacheInvalidationPeriod?: number;
 	selectedValue?: string;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: CustomEvent<any>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
@@ -211,6 +221,7 @@ export type SearchBoxProps = {
 	placeholder?: string;
 	searchTerm?: string;
 	debounceDelay?: number;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	searchTermChanged?: (e: CustomEvent<string>) => void;
 }
@@ -232,12 +243,14 @@ export type SearchResultsProps = {
 	cacheInvalidationPeriod?: number;
 	currentPage?: number;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type SpinnerProps = {
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 }
 
@@ -255,6 +268,7 @@ export type TasksProps = {
 	groupId?: string;
 	taskFilter?: TaskFilter;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	taskAdded?: (e: CustomEvent<ITask>) => void;
 	taskChanged?: (e: CustomEvent<ITask>) => void;
@@ -277,6 +291,7 @@ export type TaxonomyPickerProps = {
 	cacheEnabled?: boolean;
 	cacheInvalidationPeriod?: number;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: CustomEvent<MicrosoftGraph.TermStore.Term>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
@@ -285,6 +300,7 @@ export type TaxonomyPickerProps = {
 export type TeamsChannelPickerProps = {
 	selectedItem?: SelectedChannel;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: CustomEvent<SelectedChannel | null>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
@@ -292,6 +308,7 @@ export type TeamsChannelPickerProps = {
 
 export type ThemeToggleProps = {
 	darkModeActive?: boolean;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	darkmodechanged?: (e: CustomEvent<boolean>) => void;
 }
@@ -304,6 +321,7 @@ export type TodoProps = {
 	targetId?: string;
 	initialId?: string;
 	templateContext?: TemplateContext;
+	provider?: IProvider;
 	mediaQuery?: ComponentMediaQuery;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }

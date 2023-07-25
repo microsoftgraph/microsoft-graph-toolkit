@@ -35,7 +35,12 @@ export class ProxyProvider extends IProvider {
 
   constructor(graphProxyUrl: string, getCustomHeaders?: () => Promise<object>) {
     super();
-    this.graph = new ProxyGraph(graphProxyUrl, getCustomHeaders);
+    void this.initProvider(graphProxyUrl, getCustomHeaders);
+  }
+
+  private async initProvider(graphProxyUrl: string, getCustomHeaders?: () => Promise<object>): Promise<void> {
+    const cacheId = await this.getCacheId();
+    this.graph = new ProxyGraph(graphProxyUrl, cacheId, getCustomHeaders);
 
     this.graph
       .api('me')

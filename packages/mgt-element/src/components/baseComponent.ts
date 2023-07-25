@@ -6,8 +6,8 @@
  */
 
 import { LitElement, PropertyValueMap, PropertyValues } from 'lit';
-import { state } from 'lit/decorators.js';
-import { ProviderState } from '../providers/IProvider';
+import { property, state } from 'lit/decorators.js';
+import { IProvider, ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
 import { PACKAGE_VERSION } from '../utils/version';
@@ -53,6 +53,42 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   public static get packageVersion() {
     return PACKAGE_VERSION;
+  }
+
+  private _componentProvider: IProvider;
+
+  /**
+   * Gets and sets a provider at the component level.
+   * By default it uses the provider from Providers.globalProvider.
+   *
+   * @type {MgtElement.IProvider}
+   * @memberof MgtBaseComponent
+   */
+  @property({
+    attribute: null,
+    type: Object
+  })
+  public get provider(): IProvider {
+    return this._componentProvider || Providers.globalProvider;
+  }
+  public set provider(value: IProvider) {
+    if (this._componentProvider !== value) {
+      this._componentProvider = value;
+      this.updateProviderEventHandlers();
+      this.clearState();
+    }
+  }
+
+  private updateProviderEventHandlers() {
+    Providers.removeProviderUpdatedListener(this.handleProviderUpdates);
+    Providers.removeActiveAccountChangedListener(this.handleActiveAccountUpdates);
+    if (Providers.globalProvider === this._componentProvider) {
+      Providers.onProviderUpdated(this.handleProviderUpdates);
+      Providers.onActiveAccountChanged(this.handleActiveAccountUpdates);
+    } else {
+      this._componentProvider.onStateChanged(this.handleProviderUpdates);
+      this._componentProvider.onActiveAccountChanged(this.handleActiveAccountUpdates);
+    }
   }
 
   /**
@@ -162,7 +198,7 @@ export abstract class MgtBaseComponent extends LitElement {
    *
    * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
+  protected firstUpdated(changedProperties: PropertyValueMap<unknown> | Map<PropertyKey, unknown>): void {
     super.firstUpdated(changedProperties);
     this._isFirstUpdated = true;
     Providers.onProviderUpdated(this.handleProviderUpdates);
@@ -250,7 +286,7 @@ export abstract class MgtBaseComponent extends LitElement {
       await this._currentLoadStatePromise;
     }
 
-    const provider = Providers.globalProvider;
+    const provider = this.provider;
 
     if (!provider) {
       return Promise.resolve();

@@ -26,13 +26,13 @@ import {
 } from '../../graph/graph.user';
 import { IDynamicPerson, ViewType } from '../../graph/types';
 import {
-  Providers,
   ProviderState,
   MgtTemplatedComponent,
   arraysAreEqual,
   IGraph,
   mgtHtml,
-  customElement
+  customElement,
+  IProvider
 } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
@@ -632,8 +632,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   public async selectUsersById(userIds: readonly string[]): Promise<void> {
-    const provider = Providers.globalProvider;
-    const graph = Providers.globalProvider.graph;
+    const provider: IProvider = this.provider;
+    const graph = provider.graph;
     if (provider && provider.state === ProviderState.SignedIn) {
       // eslint-disable-next-line guard-for-in, @typescript-eslint/no-for-in-array
       for (const id in userIds) {
@@ -665,8 +665,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   public async selectGroupsById(groupIds: readonly string[]): Promise<void> {
-    const provider = Providers.globalProvider;
-    const graph = Providers.globalProvider.graph;
+    const provider: IProvider = this.provider;
+    const graph = provider.graph;
     if (provider && provider.state === ProviderState.SignedIn) {
       // eslint-disable-next-line guard-for-in, @typescript-eslint/no-for-in-array
       for (const id in groupIds) {
@@ -990,7 +990,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected async loadState(): Promise<void> {
     let people = this.people;
     const input = this.userInput.toLowerCase();
-    const provider = Providers.globalProvider;
+    const provider: IProvider = this.provider;
 
     if (people) {
       if (input) {
@@ -999,7 +999,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       this._showLoading = false;
     } else if (!people && provider && provider.state === ProviderState.SignedIn) {
-      const graph = provider.graph.forComponent(this);
+      const graph: IGraph = await provider.graph.forComponent(this);
 
       if (!input.length) {
         if (this.defaultPeople) {

@@ -8,6 +8,7 @@
 import { IGraph } from './IGraph';
 import { Client } from '@microsoft/microsoft-graph-client';
 import { Graph } from './Graph';
+import { IProvider } from './providers/IProvider';
 
 /**
  * The version of the Graph to use for making requests.
@@ -30,14 +31,15 @@ export class BetaGraph extends Graph {
    * @returns {BetaGraph}
    * @memberof BetaGraph
    */
-  public static fromGraph(graph: IGraph): BetaGraph {
-    const betaGraph = new BetaGraph(graph.client);
+  public static async fromGraph(graph: IGraph, provider: IProvider): Promise<BetaGraph> {
+    const cacheId = await provider.getCacheId();
+    const betaGraph = new BetaGraph(graph.client, cacheId, provider);
     betaGraph.setComponent(graph.componentName);
     return betaGraph;
   }
 
-  constructor(client: Client, version: string = GRAPH_VERSION) {
-    super(client, version);
+  constructor(client: Client, cacheId: string, provider: IProvider, version: string = GRAPH_VERSION) {
+    super(client, cacheId, version, provider);
   }
 
   /**
@@ -48,8 +50,9 @@ export class BetaGraph extends Graph {
    * @returns {BetaGraph}
    * @memberof BetaGraph
    */
-  public forComponent(component: Element | string): BetaGraph {
-    const graph = new BetaGraph(this.client);
+  public async forComponent(component: Element | string): Promise<BetaGraph> {
+    const cacheId = await this.provider.getCacheId();
+    const graph = new BetaGraph(this.client, cacheId, this.provider, this.version);
     this.setComponent(component);
     return graph;
   }

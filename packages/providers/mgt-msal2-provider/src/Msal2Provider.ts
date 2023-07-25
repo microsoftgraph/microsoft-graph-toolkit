@@ -404,7 +404,7 @@ export class Msal2Provider extends IProvider {
     this.baseURL = typeof msal2config.baseURL !== 'undefined' ? msal2config.baseURL : this.baseURL;
     this.customHosts = msal2config.customHosts;
 
-    this.graph = createFromProvider(this);
+    this.graph = await createFromProvider(this);
     try {
       const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
       if (tokenResponse !== null) {

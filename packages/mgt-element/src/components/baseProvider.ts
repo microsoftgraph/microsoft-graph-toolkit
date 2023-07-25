@@ -20,6 +20,7 @@ import { PropertyValueMap } from 'lit';
  * @extends {MgtBaseComponent}
  */
 export abstract class MgtBaseProvider extends MgtBaseComponent {
+  private _provider: IProvider;
   /**
    * The IProvider created by this component
    *
@@ -89,8 +90,6 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
     converter: newValue => newValue.split(',').map(s => s.trim())
   })
   public customHosts?: string[];
-
-  private _provider: IProvider;
 
   /**
    * Invoked when the element is first updated. Implement to perform one time

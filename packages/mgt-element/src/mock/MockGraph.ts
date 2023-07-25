@@ -45,12 +45,13 @@ export class MockGraph extends Graph {
       new MockMiddleware(),
       new HTTPMessageHandler()
     ];
-
+    const cacheId = await provider.getCacheId();
     return new MockGraph(
       Client.initWithMiddleware({
         middleware: chainMiddleware(...middleware),
         customHosts: new Set<string>([new URL(await MockMiddleware.getBaseUrl()).hostname])
-      })
+      }),
+      cacheId
     );
   }
 
@@ -62,9 +63,9 @@ export class MockGraph extends Graph {
    * @memberof Graph
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public forComponent(component: MgtBaseComponent): MockGraph {
+  public forComponent(component: MgtBaseComponent | string): Promise<MockGraph> {
     // The purpose of the forComponent pattern is to update the headers of any outgoing Graph requests.
     // The MockGraph isn't making real Graph requests, so we can simply no-op and return the same instance.
-    return this;
+    return Promise.resolve(this);
   }
 }

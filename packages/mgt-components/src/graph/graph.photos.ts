@@ -84,7 +84,7 @@ export const getContactPhoto = async (graph: IGraph, contactId: string): Promise
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
   if (getIsPhotosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.contacts);
+    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.contacts, graph.cacheId);
     photoDetails = await cache.getValue(contactId);
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
@@ -110,7 +110,7 @@ export const getUserPhoto = async (graph: IGraph, userId: string): Promise<strin
   let photoDetails: CachePhoto;
 
   if (getIsPhotosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.users);
+    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.users, graph.cacheId);
     photoDetails = await cache.getValue(userId);
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
@@ -150,7 +150,7 @@ export const myPhoto = async (graph: IGraph): Promise<string> => {
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
   if (getIsPhotosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.users);
+    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.users, graph.cacheId);
     photoDetails = await cache.getValue('me');
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
@@ -250,7 +250,7 @@ export const getGroupImage = async (graph: IGraph, group: IDynamicPerson, useCon
   const groupId = group.id;
 
   if (getIsPhotosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.groups);
+    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.groups, graph.cacheId);
     photoDetails = await cache.getValue(groupId);
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
@@ -287,8 +287,8 @@ export const getGroupImage = async (graph: IGraph, group: IDynamicPerson, useCon
  * @returns {CachePhoto}
  * @memberof Graph
  */
-export const getPhotoFromCache = async (userId: string, storeName: string): Promise<CachePhoto> => {
-  const cache = CacheService.getCache<CachePhoto>(schemas.photos, storeName);
+export const getPhotoFromCache = async (userId: string, storeName: string, cacheId: string): Promise<CachePhoto> => {
+  const cache = CacheService.getCache<CachePhoto>(schemas.photos, storeName, cacheId);
   const item = await cache.getValue(userId);
   return item;
 };
@@ -300,7 +300,12 @@ export const getPhotoFromCache = async (userId: string, storeName: string): Prom
  * @returns {void}
  * @memberof Graph
  */
-export const storePhotoInCache = async (userId: string, storeName: string, value: CachePhoto): Promise<void> => {
-  const cache = CacheService.getCache<CachePhoto>(schemas.photos, storeName);
+export const storePhotoInCache = async (
+  userId: string,
+  storeName: string,
+  cacheId: string,
+  value: CachePhoto
+): Promise<void> => {
+  const cache = CacheService.getCache<CachePhoto>(schemas.photos, storeName, cacheId);
   await cache.putValue(userId, value);
 };

@@ -723,12 +723,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     const provider = Providers.globalProvider;
     let teams: MicrosoftGraph.Team[];
     if (provider && provider.state === ProviderState.SignedIn) {
-      const graph = provider.graph.forComponent(this);
+      const graph = await provider.graph.forComponent(this);
 
       teams = await getAllMyTeams(graph, MgtTeamsChannelPicker.requiredScopes);
       teams = teams.filter(t => !t.isArchived);
 
-      const beta = BetaGraph.fromGraph(graph);
+      const beta = await BetaGraph.fromGraph(graph, provider);
 
       const teamsIds = teams.map(t => t.id);
       this.teamsPhotos = await getTeamsPhotosforPhotoIds(beta, teamsIds);

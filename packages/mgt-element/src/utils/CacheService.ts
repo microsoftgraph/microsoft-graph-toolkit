@@ -136,18 +136,19 @@ export class CacheService {
    * @template T
    * @param {CacheSchema} schema
    * @param {string} storeName
+   * @param {string} cacheId
    * @returns {CacheStore<T>}
    * @memberof CacheService
    */
-  public static getCache<T extends CacheItem>(schema: CacheSchema, storeName: string): CacheStore<T> {
-    const key = `${schema.name}/${storeName}`;
+  public static getCache<T extends CacheItem>(schema: CacheSchema, storeName: string, cacheId: string): CacheStore<T> {
+    const key = `${schema.name}/${storeName}/${cacheId}`;
 
     if (!this.isInitialized) {
       this.init();
     }
 
     if (!this.cacheStore.has(storeName)) {
-      this.cacheStore.set(key, new CacheStore<T>(schema, storeName));
+      this.cacheStore.set(key, new CacheStore<T>(schema, storeName, cacheId));
     }
     return this.cacheStore.get(key) as CacheStore<T>;
   }

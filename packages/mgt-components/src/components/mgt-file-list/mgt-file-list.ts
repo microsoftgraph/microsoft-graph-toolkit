@@ -747,7 +747,6 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   protected renderFileUpload(): TemplateResult {
     const fileUploadConfig: MgtFileUploadConfig = {
-      graph: Providers.globalProvider.graph.forComponent(this),
       driveId: this.driveId,
       excludedFileExtensions: this.excludedFileExtensions,
       groupId: this.groupId,
@@ -832,7 +831,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       this.files = null;
       return;
     }
-    const graph = provider.graph.forComponent(this);
+    const graph = await provider.graph.forComponent(this);
     let files: DriveItem[];
     let pageIterator: GraphPageIterator<DriveItem>;
 
@@ -910,7 +909,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
         // retrive all pages before filtering
         if (this.pageIterator?.value) {
           while (this.pageIterator.hasNext) {
-            await fetchNextAndCacheForFilesPageIterator(this.pageIterator);
+            await fetchNextAndCacheForFilesPageIterator(this.pageIterator, this.provider.graph.cacheId);
           }
           files = this.pageIterator.value;
           this._preloadedFiles = [];
@@ -997,7 +996,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
             }
           );
         }
-        await fetchNextAndCacheForFilesPageIterator(this.pageIterator);
+        await fetchNextAndCacheForFilesPageIterator(this.pageIterator, this.provider.graph.cacheId);
         this._isLoadingMore = false;
         this.files = this.pageIterator.value;
       }
@@ -1061,7 +1060,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   public reload(clearCache = false) {
     if (clearCache) {
       // clear cache File List
-      void clearFilesCache();
+      void clearFilesCache(this.provider.graph.cacheId);
     }
 
     void this.requestStateUpdate(true);

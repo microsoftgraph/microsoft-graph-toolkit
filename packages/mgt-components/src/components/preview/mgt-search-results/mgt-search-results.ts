@@ -512,7 +512,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         let response: SearchResponseCollection = null;
 
         if (this.shouldRetrieveCache()) {
-          cache = CacheService.getCache<CacheResponse>(schemas.search, schemas.search.stores.responses);
+          cache = CacheService.getCache<CacheResponse>(
+            schemas.search,
+            schemas.search.stores.responses,
+            this.provider.graph.cacheId
+          );
           const result: CacheResponse = getIsResponseCacheEnabled() ? await cache.getValue(key) : null;
           if (result && getResponseInvalidationTime(this.cacheInvalidationPeriod) > Date.now() - result.timeCached) {
             response = JSON.parse(result.response) as SearchResponseCollection;
@@ -520,7 +524,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         }
 
         if (!response) {
-          const graph = provider.graph.forComponent(this);
+          const graph = await provider.graph.forComponent(this);
           let request = graph.api(this.searchEndpoint).version(this.version);
 
           if (this.scopes?.length) {
@@ -531,7 +535,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
           if (this.fetchThumbnail) {
             const thumbnailBatch = graph.createBatch<BinaryThumbnail>();
-            const thumbnailBatchBeta = BetaGraph.fromGraph(graph).createBatch<BinaryThumbnail>();
+            const betaGraph = await BetaGraph.fromGraph(graph, provider);
+            const thumbnailBatchBeta = betaGraph.createBatch<BinaryThumbnail>();
 
             const hits =
               response.value?.length && response.value[0].hitsContainers?.length
@@ -585,7 +590,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           }
 
           if (this.shouldUpdateCache() && response) {
-            cache = CacheService.getCache<CacheResponse>(schemas.search, schemas.search.stores.responses);
+            cache = CacheService.getCache<CacheResponse>(
+              schemas.search,
+              schemas.search.stores.responses,
+              this.provider.graph.cacheId
+            );
             await cache.putValue(key, { response: JSON.stringify(response) });
           }
         }

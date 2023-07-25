@@ -99,12 +99,15 @@ export class SharePointProvider extends IProvider {
   constructor(context: WebPartContext, baseUrl: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     super();
 
-    void context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
-      this._provider = tokenProvider;
-      this.baseURL = baseUrl;
-      this.graph = createFromProvider(this);
-      void this.internalLogin();
-    });
+    void this.initProvider(context, baseUrl);
+  }
+
+  private async initProvider(context: WebPartContext, baseUrl: GraphEndpoint): Promise<void> {
+    const tokenProvider = await context.aadTokenProviderFactory.getTokenProvider();
+    this._provider = tokenProvider;
+    this.baseURL = baseUrl;
+    this.graph = await createFromProvider(this);
+    void this.internalLogin();
   }
 
   /**

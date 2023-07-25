@@ -416,7 +416,7 @@ export class MgtTodo extends MgtTasksBase {
 
     this._isLoadingTasks = true;
     if (!this._graph) {
-      const graph = provider.graph.forComponent(this);
+      const graph = await provider.graph.forComponent(this);
       this._graph = graph;
     }
 

@@ -26,7 +26,7 @@ import { CustomHeaderMiddleware } from './CustomHeaderMiddleware';
  * @extends {Graph}
  */
 export class ProxyGraph extends Graph {
-  constructor(baseUrl: string, getCustomHeaders?: () => Promise<object>) {
+  constructor(baseUrl: string, cacheId: string, getCustomHeaders?: () => Promise<object>) {
     const middleware: Middleware[] = [
       new RetryHandler(new RetryHandlerOptions()),
       new TelemetryHandler(),
@@ -40,7 +40,8 @@ export class ProxyGraph extends Graph {
         baseUrl,
         middleware: chainMiddleware(...middleware),
         customHosts: new Set<string>([new URL(baseUrl).hostname])
-      })
+      }),
+      cacheId
     );
   }
 }

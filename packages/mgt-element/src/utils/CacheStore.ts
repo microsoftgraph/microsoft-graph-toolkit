@@ -6,7 +6,6 @@
  */
 
 import { openDB } from 'idb';
-import { Providers } from '../providers/Providers';
 import { CacheItem, CacheSchema, dbListKey } from './CacheService';
 
 /**
@@ -19,14 +18,16 @@ import { CacheItem, CacheSchema, dbListKey } from './CacheService';
 export class CacheStore<T extends CacheItem> {
   private readonly schema: CacheSchema;
   private readonly store: string;
+  private readonly cacheId: string;
 
-  public constructor(schema: CacheSchema, store: string) {
+  public constructor(schema: CacheSchema, store: string, cacheId: string) {
     if (!(store in schema.stores)) {
       throw Error('"store" must be defined in the "schema"');
     }
 
     this.schema = schema;
     this.store = store;
+    this.cacheId = cacheId;
   }
 
   /**
@@ -87,15 +88,12 @@ export class CacheStore<T extends CacheItem> {
   /**
    * Returns the name of the parent DB that the cache store belongs to
    */
-  public async getDBName() {
-    const id = await Providers.getCacheId();
-    if (id) {
-      return `mgt-${this.schema.name}` + `-${id}`;
-    }
+  public getDBName() {
+    return `mgt-${this.schema.name}-${this.cacheId}`;
   }
 
   private async getDb() {
-    const dbName = await this.getDBName();
+    const dbName = this.getDBName();
     if (dbName) {
       return openDB(dbName, this.schema.version, {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

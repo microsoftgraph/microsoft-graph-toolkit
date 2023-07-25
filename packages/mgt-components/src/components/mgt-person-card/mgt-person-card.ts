@@ -1005,7 +1005,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return;
     }
 
-    const graph = provider.graph.forComponent(this);
+    const graph = await provider.graph.forComponent(this);
     this._graph = graph;
 
     this._isStateLoading = true;

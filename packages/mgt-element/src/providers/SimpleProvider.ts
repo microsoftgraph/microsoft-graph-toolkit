@@ -41,8 +41,11 @@ export class SimpleProvider extends IProvider {
     this._getAccessTokenHandler = getAccessTokenHandler;
     this._loginHandler = loginHandler;
     this._logoutHandler = logoutHandler;
+    void this.initProvider();
+  }
 
-    this.graph = createFromProvider(this);
+  private async initProvider(): Promise<void> {
+    this.graph = await createFromProvider(this);
   }
 
   /**

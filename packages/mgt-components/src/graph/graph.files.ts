@@ -72,10 +72,11 @@ export interface CacheThumbnail extends CacheItem {
 /**
  * Clear Cache of FileList
  */
-export const clearFilesCache = async (): Promise<void> => {
+export const clearFilesCache = async (cacheId: string): Promise<void> => {
   const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(
     schemas.fileLists,
-    schemas.fileLists.stores.fileLists
+    schemas.fileLists.stores.fileLists,
+    cacheId
   );
   await cache.clearStore();
 };
@@ -118,7 +119,7 @@ export const getDriveItemByQuery = async (
   scopes = 'files.read'
 ): Promise<DriveItem> => {
   // get from cache
-  const cache: CacheStore<CacheFile> = CacheService.getCache<CacheFile>(schemas.files, storeName);
+  const cache: CacheStore<CacheFile> = CacheService.getCache<CacheFile>(schemas.files, storeName, graph.cacheId);
   const cachedFile = await getFileFromCache(cache, resource);
   if (cachedFile) {
     return cachedFile;
@@ -241,8 +242,12 @@ const getIterator = async (
   let filesPageIterator: GraphPageIterator<DriveItem>;
 
   // get iterator from cached values
-  const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, storeName);
-  const fileList = await getFileListFromCache(cache, storeName, `${endpoint}:${top}`);
+  const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(
+    schemas.fileLists,
+    storeName,
+    graph.cacheId
+  );
+  const fileList = await getFileListFromCache(cache, storeName, graph.cacheId, `${endpoint}:${top}`);
   if (fileList) {
     filesPageIterator = getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -410,8 +415,12 @@ export const getMyInsightsFiles = async (graph: IGraph, insightType: string): Pr
   const cacheStore = schemas.fileLists.stores.insightfileLists;
 
   // get files from cached values
-  const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
+  const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(
+    schemas.fileLists,
+    cacheStore,
+    graph.cacheId
+  );
+  const fileList = await getFileListFromCache(cache, cacheStore, graph.cacheId, endpoint);
   if (fileList) {
     // fileList.files is string[] so JSON.parse to get proper objects
     return fileList.files.map((file: string) => JSON.parse(file) as DriveItem);
@@ -458,8 +467,12 @@ export const getUserInsightsFiles = async (
 
   // get files from cached values
   const cacheStore = schemas.fileLists.stores.insightfileLists;
-  const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
-  const fileList = await getFileListFromCache(cache, cacheStore, key);
+  const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(
+    schemas.fileLists,
+    cacheStore,
+    graph.cacheId
+  );
+  const fileList = await getFileListFromCache(cache, cacheStore, graph.cacheId, key);
   if (fileList) {
     return fileList.files.map((file: string) => JSON.parse(file) as DriveItem);
   }
@@ -496,7 +509,7 @@ export const getFilesByQueries = async (graph: IGraph, fileQueries: string[]): P
   let cache: CacheStore<CacheFile>;
   let cachedFile: CacheFile;
   if (getIsFilesCacheEnabled()) {
-    cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.fileQueries);
+    cache = CacheService.getCache<CacheFile>(schemas.files, schemas.files.stores.fileQueries, graph.cacheId);
   }
 
   for (const fileQuery of fileQueries) {
@@ -628,9 +641,14 @@ const getFileFromCache = async <TResult = DriveItem>(cache: CacheStore<CacheFile
   return null;
 };
 
-export const getFileListFromCache = async (cache: CacheStore<CacheFileList>, store: string, key: string) => {
+export const getFileListFromCache = async (
+  cache: CacheStore<CacheFileList>,
+  store: string,
+  cacheId: string,
+  key: string
+) => {
   if (!cache) {
-    cache = CacheService.getCache<CacheFileList>(schemas.fileLists, store);
+    cache = CacheService.getCache<CacheFileList>(schemas.fileLists, store, cacheId);
   }
 
   if (getIsFileListsCacheEnabled()) {
@@ -645,7 +663,10 @@ export const getFileListFromCache = async (cache: CacheStore<CacheFileList>, sto
 };
 
 // refresh filesPageIterator to its next iteration and save current page to cache
-export const fetchNextAndCacheForFilesPageIterator = async (filesPageIterator: GraphPageIterator<DriveItem>) => {
+export const fetchNextAndCacheForFilesPageIterator = async (
+  filesPageIterator: GraphPageIterator<DriveItem>,
+  cacheId: string
+) => {
   const nextLink = filesPageIterator.nextLink;
 
   if (filesPageIterator.hasNext) {
@@ -654,7 +675,8 @@ export const fetchNextAndCacheForFilesPageIterator = async (filesPageIterator: G
   if (getIsFileListsCacheEnabled()) {
     const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(
       schemas.fileLists,
-      schemas.fileLists.stores.fileLists
+      schemas.fileLists.stores.fileLists,
+      cacheId
     );
 
     // match only the endpoint (after version number and before OData query params) e.g. /me/drive/root/children

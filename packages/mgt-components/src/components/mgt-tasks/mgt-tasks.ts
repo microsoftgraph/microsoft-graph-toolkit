@@ -566,7 +566,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @memberof MgtTasks
    */
   protected async loadState() {
-    const ts = this.getTaskSource();
+    const ts = await this.getTaskSource();
     if (!ts) {
       return;
     }
@@ -578,7 +578,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this._inTaskLoad = true;
     if (!this._me) {
-      const graph = provider.graph.forComponent(this);
+      const graph = await provider.graph.forComponent(this);
       this._me = await getMe(graph);
     }
 
@@ -595,7 +595,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     this._tasks = this._tasks
-      .filter(task => this.isTaskInSelectedGroupFilter(task))
+      .filter(task => this.isTaskInSelectedGroupFilter(task, ts))
       .filter(task => this.isTaskInSelectedFolderFilter(task))
       .filter(task => !this._hiddenTasks.includes(task.id));
 
@@ -699,7 +699,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     immediateParentId: string,
     assignments: PlannerAssignments = {}
   ) {
-    const ts = this.getTaskSource();
+    const ts = await this.getTaskSource();
     if (!ts) {
       return;
     }
@@ -723,7 +723,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private async completeTask(task: ITask) {
-    const ts = this.getTaskSource();
+    const ts = await this.getTaskSource();
     if (!ts) {
       return;
     }
@@ -736,7 +736,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private async uncompleteTask(task: ITask) {
-    const ts = this.getTaskSource();
+    const ts = await this.getTaskSource();
     if (!ts) {
       return;
     }
@@ -750,7 +750,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private async removeTask(task: ITask) {
-    const ts = this.getTaskSource();
+    const ts = await this.getTaskSource();
     if (!ts) {
       return;
     }
@@ -764,7 +764,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private async assignPeople(task: ITask, people: (User | Person | Contact)[] = []) {
-    const ts = this.getTaskSource();
+    const ts = await this.getTaskSource();
     if (!ts) {
       return;
     }
@@ -1439,19 +1439,21 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private getTaskSource(): ITaskSource {
+  private async getTaskSource(): Promise<ITaskSource> {
     const p = Providers.globalProvider;
     if (!p || p.state !== ProviderState.SignedIn) {
       return null;
     }
 
-    const graph = p.graph.forComponent(this);
+    const graph = await p.graph.forComponent(this);
+    let result: ITaskSource | undefined;
     if (this.dataSource === TasksSource.planner) {
-      return new PlannerTaskSource(graph);
+      result = new PlannerTaskSource(graph, p);
     } else if (this.dataSource === TasksSource.todo) {
-      return new TodoTaskSource(graph);
-    } else {
-      return null;
+      result = new TodoTaskSource(graph, p);
+    }
+    if (typeof result !== 'undefined') {
+      await result.initialized;
     }
   }
 
@@ -1480,11 +1482,11 @@ export class MgtTasks extends MgtTemplatedComponent {
     ).name;
   }
 
-  private isTaskInSelectedGroupFilter(task: ITask) {
+  private isTaskInSelectedGroupFilter(task: ITask, ts: ITaskSource) {
     return (
       !this._currentGroup ||
       task.topParentId === this._currentGroup ||
-      (!this._currentGroup && this.getTaskSource().isAssignedToMe(task, this._me?.id))
+      (!this._currentGroup && ts.isAssignedToMe(task, this._me?.id))
     );
   }
 

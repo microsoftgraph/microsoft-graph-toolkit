@@ -6,7 +6,7 @@
  */
 /* eslint-disable max-classes-per-file */
 
-import { IGraph, BetaGraph } from '@microsoft/mgt-element';
+import { IGraph, BetaGraph, IProvider } from '@microsoft/mgt-element';
 import { PlannerAssignments } from '@microsoft/microsoft-graph-types';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup, PlannerTask } from '@microsoft/microsoft-graph-types-beta';
 import {
@@ -191,6 +191,7 @@ export interface ITaskGroup {
  * @interface ITaskSource
  */
 export interface ITaskSource {
+  initialized: Promise<unknown>;
   /**
    * Promise that returns task collections for the signed in user
    *
@@ -305,9 +306,15 @@ class TaskSourceBase {
    */
   public graph: IGraph;
 
-  constructor(graph: IGraph) {
+  constructor(graph: IGraph, provider: IProvider) {
+    void this.initGraph(graph, provider);
+  }
+
+  public initialized: Promise<BetaGraph>;
+  private async initGraph(graph: IGraph, provider: IProvider): Promise<void> {
     // Use an instance of BetaGraph since we know we need to call beta apis.
-    this.graph = BetaGraph.fromGraph(graph);
+    this.initialized = BetaGraph.fromGraph(graph, provider);
+    this.graph = await this.initialized;
   }
 }
 

@@ -590,7 +590,7 @@ export class MgtFile extends MgtTemplatedComponent {
       return;
     }
 
-    const graph = provider.graph.forComponent(this);
+    const graph = await provider.graph.forComponent(this);
     let driveItem: DriveItem;
 
     // evaluate to true when only item-id or item-path is provided

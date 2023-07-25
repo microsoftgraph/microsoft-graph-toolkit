@@ -39,6 +39,7 @@ const GRAPH_VERSION = 'v1.0';
  * @class Graph
  */
 export class Graph implements IGraph {
+  cacheId: string;
   /**
    * the internal client used to make graph calls
    *
@@ -75,10 +76,13 @@ export class Graph implements IGraph {
   private readonly _client: Client;
   private _componentName: string;
   private readonly _version: string;
+  protected readonly provider: IProvider;
 
-  constructor(client: Client, version: string = GRAPH_VERSION) {
+  constructor(client: Client, cacheId: string, version: string = GRAPH_VERSION, provider?: IProvider) {
     this._client = client;
     this._version = version;
+    this.cacheId = cacheId;
+    this.provider = provider;
   }
 
   /**
@@ -89,8 +93,11 @@ export class Graph implements IGraph {
    * @returns {IGraph}
    * @memberof Graph
    */
-  public forComponent(component: Element | string): Graph {
-    const graph = new Graph(this._client, this._version);
+  public async forComponent(component: Element | string): Promise<Graph> {
+    if (this.provider) {
+      this.cacheId = await this.provider.getCacheId();
+    }
+    const graph = new Graph(this._client, this.cacheId, this._version);
     graph.setComponent(component);
     return graph;
   }
@@ -147,7 +154,11 @@ export class Graph implements IGraph {
  * @returns {Graph}
  * @memberof Graph
  */
-export const createFromProvider = (provider: IProvider, version?: string, component?: Element): Graph => {
+export const createFromProvider = async (
+  provider: IProvider,
+  version?: string,
+  component?: Element
+): Promise<Graph> => {
   const middleware: Middleware[] = [
     new AuthenticationHandler(provider),
     new RetryHandler(new RetryHandlerOptions()),
@@ -163,6 +174,8 @@ export const createFromProvider = (provider: IProvider, version?: string, compon
     baseUrl: baseURL
   });
 
-  const graph = new Graph(client, version);
-  return component ? graph.forComponent(component) : graph;
+  const cacheId = await provider.getCacheId();
+
+  const graph = new Graph(client, cacheId, version);
+  return component ? await graph.forComponent(component) : graph;
 };

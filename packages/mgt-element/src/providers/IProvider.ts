@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationProvider, AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
+import { AuthenticationProvider, AuthenticationProviderOptions, Client } from '@microsoft/microsoft-graph-client';
+import { User } from '@microsoft/microsoft-graph-types';
 import { validateBaseURL } from '../utils/GraphHelpers';
 import { GraphEndpoint, IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from '../IGraph';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
@@ -276,6 +277,85 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
+
+  public get client(): Client {
+    if (this.state === ProviderState.SignedIn) {
+      return this.graph.client;
+    }
+    return null;
+  }
+  private async getMe(): Promise<User> {
+    try {
+      const response: User = (await this.client.api('me').get()) as User;
+      if (response?.id) {
+        return response;
+      }
+    } catch {
+      // no-op
+    }
+
+    return null;
+  }
+
+  private _cacheId: string;
+  public async getCacheId() {
+    const prefix = `${this.name}:`;
+    if (this._cacheId) {
+      return this._cacheId;
+    }
+    if (this.state === ProviderState.SignedIn) {
+      if (!this._cacheId) {
+        const client = this.client;
+        if (client) {
+          try {
+            const id = await this.createCacheId();
+            this._cacheId = `${prefix}${id}`;
+          } catch {
+            // no-op
+          }
+        }
+      }
+    }
+    return prefix;
+  }
+
+  private _mePromise: Promise<User> | null;
+  public me(): Promise<User> {
+    if (!this.client) {
+      this._mePromise = null;
+      return null;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    if (!this._mePromise) {
+      this._mePromise = this.getMe();
+    }
+
+    return this._mePromise;
+  }
+
+  private async createCacheIdWithUserDetails(): Promise<string> {
+    const response: User = await this.me();
+    if (response?.id) {
+      return response.id + '-' + response.userPrincipalName;
+    } else return null;
+  }
+  private createCacheIdWithAccountDetails(): string {
+    const user = this.getActiveAccount();
+    if (user.tenantId && user.id) {
+      return user.tenantId + user.id;
+    } else return null;
+  }
+
+  private async createCacheId(): Promise<string> {
+    if (this.isMultiAccountSupportedAndEnabled) {
+      const cacheId = this.createCacheIdWithAccountDetails();
+      if (cacheId) {
+        return cacheId;
+      }
+    }
+    return await this.createCacheIdWithUserDetails();
+  }
 }
 
 /**

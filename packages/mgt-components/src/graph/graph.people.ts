@@ -116,7 +116,7 @@ export const findPeople = async (
   if (getIsPeopleCacheEnabled()) {
     const people: CacheSchema = schemas.people;
     const peopleQuery: string = schemas.people.stores.peopleQuery;
-    cache = CacheService.getCache<CachePeopleQuery>(people, peopleQuery);
+    cache = CacheService.getCache<CachePeopleQuery>(people, peopleQuery, graph.cacheId);
     const result: CachePeopleQuery = getIsPeopleCacheEnabled() ? await cache.getValue(cacheKey) : null;
     if (result && getPeopleInvalidationTime() > Date.now() - result.timeCached) {
       return result.results.map(peopleStr => JSON.parse(peopleStr) as Person);
@@ -182,7 +182,7 @@ export const getPeople = async (
   const cacheKey = `${peopleFilters ? peopleFilters : `*:${userType}`}:${top}`;
 
   if (getIsPeopleCacheEnabled()) {
-    cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
+    cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery, graph.cacheId);
     const cacheRes = await cache.getValue(cacheKey);
 
     if (cacheRes && getPeopleInvalidationTime() > Date.now() - cacheRes.timeCached) {
@@ -254,7 +254,7 @@ export const findContactsByEmail = async (graph: IGraph, email: string): Promise
   const scopes = 'contacts.read';
   let cache: CacheStore<CachePerson>;
   if (getIsPeopleCacheEnabled()) {
-    cache = CacheService.getCache<CachePerson>(schemas.people, schemas.people.stores.contacts);
+    cache = CacheService.getCache<CachePerson>(schemas.people, schemas.people.stores.contacts, graph.cacheId);
     const contact = await cache.getValue(email);
 
     if (contact && getPeopleInvalidationTime() > Date.now() - contact.timeCached) {
@@ -294,7 +294,7 @@ export const getPeopleFromResource = async (
   let cache: CacheStore<CachePeopleQuery>;
   const key = `${version}${resource}`;
   if (getIsPeopleCacheEnabled()) {
-    cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
+    cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery, graph.cacheId);
     const result: CachePeopleQuery = await cache.getValue(key);
     if (result && getPeopleInvalidationTime() > Date.now() - result.timeCached) {
       return result.results.map(peopleStr => JSON.parse(peopleStr) as Person);

@@ -113,7 +113,11 @@ export class TeamsFxProvider extends IProvider {
     }
 
     this.baseURL = baseURL;
-    this.graph = createFromProvider(this);
+    void this.initProvider();
+  }
+
+  private async initProvider(): Promise<void> {
+    this.graph = await createFromProvider(this);
   }
 
   /**

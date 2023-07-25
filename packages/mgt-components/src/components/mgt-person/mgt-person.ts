@@ -1067,7 +1067,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    const graph = provider.graph.forComponent(this);
+    const graph = await provider.graph.forComponent(this);
 
     if (this.fallbackDetails) {
       this.line2Property = 'email';

@@ -9,14 +9,7 @@ import { CSSResult, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import {
-  Providers,
-  ProviderState,
-  MgtTemplatedComponent,
-  IProviderAccount,
-  mgtHtml,
-  customElement
-} from '@microsoft/mgt-element';
+import { ProviderState, MgtTemplatedComponent, IProviderAccount, mgtHtml, customElement } from '@microsoft/mgt-element';
 
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
@@ -211,7 +204,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   public async login(): Promise<void> {
-    const provider = Providers.globalProvider;
+    const provider = this.provider;
     if (!provider.isMultiAccountSupportedAndEnabled && (this.userDetails || !this.fireCustomEvent('loginInitiated'))) {
       return;
     }
@@ -237,7 +230,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       return;
     }
 
-    const provider = Providers.globalProvider;
+    const provider = this.provider;
     if (provider?.isMultiAccountSupportedAndEnabled) {
       localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
     }
@@ -276,10 +269,11 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected async loadState() {
-    const provider = Providers.globalProvider;
+    const provider = this.provider;
     if (provider && !this.userDetails) {
       if (provider.state === ProviderState.SignedIn) {
-        this.userDetails = await getUserWithPhoto(provider.graph.forComponent(this));
+        const graph = await provider.graph.forComponent(this);
+        this.userDetails = await getUserWithPhoto(graph);
 
         if (this.userDetails.personImage) {
           this._image = this.userDetails.personImage;
@@ -287,7 +281,7 @@ export class MgtLogin extends MgtTemplatedComponent {
 
         if (provider.isMultiAccountSupportedAndEnabled) {
           localStorage.setItem(
-            Providers.globalProvider.getActiveAccount().id + this._userDetailsKey,
+            this.provider.getActiveAccount().id + this._userDetailsKey,
             JSON.stringify(this.userDetails)
           );
         }
@@ -306,7 +300,8 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    */
   protected renderButton(): TemplateResult {
-    const isSignedIn = Providers.globalProvider?.state === ProviderState.SignedIn;
+    const provider = this.provider;
+    const isSignedIn = provider?.state === ProviderState.SignedIn;
     const loginClasses = classMap({
       'signed-in': isSignedIn && Boolean(this.userDetails),
       'signed-out': !isSignedIn,
@@ -389,10 +384,7 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   private get hasMultipleAccounts(): boolean {
-    return (
-      Providers.globalProvider?.isMultiAccountSupportedAndEnabled &&
-      Providers.globalProvider?.getAllAccounts?.()?.length > 1
-    );
+    return this.provider?.isMultiAccountSupportedAndEnabled && this.provider?.getAllAccounts?.()?.length > 1;
   }
 
   private get usesVerticalPersonCard(): boolean {
@@ -468,7 +460,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected renderAddAccountContent() {
-    if (Providers.globalProvider.isMultiAccountSupportedAndEnabled) {
+    if (this.provider.isMultiAccountSupportedAndEnabled) {
       return html`
         <div class="add-account">
           <fluent-button
@@ -534,11 +526,8 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   renderAccounts(): TemplateResult {
-    if (
-      Providers.globalProvider.state === ProviderState.SignedIn &&
-      Providers.globalProvider.isMultiAccountSupportedAndEnabled
-    ) {
-      const provider = Providers.globalProvider;
+    if (this.provider.state === ProviderState.SignedIn && this.provider.isMultiAccountSupportedAndEnabled) {
+      const provider = this.provider;
       const accounts = provider.getAllAccounts();
 
       if (accounts?.length > 1) {
@@ -621,7 +610,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   private setActiveAccount(account: IProviderAccount) {
-    Providers.globalProvider.setActiveAccount(account);
+    this.provider.setActiveAccount(account);
   }
 
   /**

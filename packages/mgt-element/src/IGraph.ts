@@ -39,6 +39,8 @@ export interface IGraph {
    */
   readonly version: string;
 
+  readonly cacheId: string;
+
   /**
    * returns a new instance of the Graph using the same
    * client within the context of the provider.
@@ -47,7 +49,7 @@ export interface IGraph {
    * @returns {IGraph}
    * @memberof IGraph
    */
-  forComponent(component: Element): IGraph;
+  forComponent(component: Element | string): Promise<IGraph>;
 
   /**
    * use this method to make calls directly to the Graph.

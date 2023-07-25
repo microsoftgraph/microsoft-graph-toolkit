@@ -486,7 +486,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       const provider = Providers.globalProvider;
 
       if (provider && provider.state === ProviderState.SignedIn) {
-        const graph = provider.graph.forComponent(this);
+        const graph = await provider.graph.forComponent(this);
 
         // populate people
         if (this.groupId) {

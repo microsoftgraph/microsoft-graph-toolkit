@@ -155,13 +155,6 @@ export interface MgtFileUploadItem {
  */
 export interface MgtFileUploadConfig {
   /**
-   * MS Graph APIs connector
-   *
-   * @type {IGraph}
-   */
-  graph: IGraph;
-
-  /**
    * allows developer to provide site id for a file
    *
    * @type {string}
@@ -319,9 +312,17 @@ export class MgtFileUpload extends MgtBaseComponent {
   private _maximumFileSize = false;
   private _excludedFileType = false;
 
+  private _graph: IGraph;
+
   constructor() {
     super();
     this.filesToUpload = [];
+    void this.initializeGraph();
+  }
+
+  private async initializeGraph() {
+    // total hack to maintain backwards compatibility wrt telemetry and component names
+    this._graph = await this.provider.graph.forComponent('MGT-FILE-LIST');
   }
 
   /**
@@ -554,7 +555,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         // Responses that confirm cancelation of session.
         // 404 means (The upload session was not found/The resource could not be found/)
         // 409 means The resource has changed since the caller last read it; usually an eTag mismatch
-        await deleteSessionFile(this.fileUploadList.graph, fileItem.uploadUrl);
+        await deleteSessionFile(this._graph, fileItem.uploadUrl);
         fileItem.uploadUrl = undefined;
         fileItem.completed = true;
         this.setUploadFail(fileItem, strings.cancelUploadFile);
@@ -786,7 +787,7 @@ export class MgtFileUpload extends MgtBaseComponent {
 
     switch (DialogStatus) {
       case 'Upload': {
-        const driveItem = await getGraphfile(this.fileUploadList.graph, `${this.getGrapQuery(fullPath)}?$select=id`);
+        const driveItem = await getGraphfile(this._graph, `${this.getGrapQuery(fullPath)}?$select=id`);
         if (driveItem !== null) {
           if (this._applyAll === true) {
             return [this._applyAll, this._applyAllConflictBehavior];
@@ -994,7 +995,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @returns
    */
   protected async sendFileItemGraph(fileItem: MgtFileUploadItem) {
-    const graph: IGraph = this.fileUploadList.graph;
+    const graph: IGraph = this._graph;
     let graphQuery = '';
     if (fileItem.file.size < this._maxChunkSize) {
       try {
@@ -1107,7 +1108,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       fileUpload.fieldUploadResponse = 'lastModifiedDateTime';
       fileUpload.completed = true;
       void super.requestStateUpdate(true);
-      void clearFilesCache();
+      void clearFilesCache(this.provider.graph.cacheId);
     }, 500);
   }
 

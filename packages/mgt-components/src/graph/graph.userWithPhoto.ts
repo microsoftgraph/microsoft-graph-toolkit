@@ -45,7 +45,7 @@ export const getUserWithPhoto = async (
 
   // attempt to get user and photo from cache if enabled
   if (getIsUsersCacheEnabled()) {
-    const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
+    const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users, graph.cacheId);
     cachedUser = await cache.getValue(userId || 'me');
     if (cachedUser && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
       user = cachedUser.user ? (JSON.parse(cachedUser.user) as IDynamicPerson) : null;
@@ -61,7 +61,7 @@ export const getUserWithPhoto = async (
     }
   }
   if (getIsPhotosCacheEnabled()) {
-    cachedPhoto = await getPhotoFromCache(userId || 'me', schemas.photos.stores.users);
+    cachedPhoto = await getPhotoFromCache(userId || 'me', schemas.photos.stores.users, graph.cacheId);
     if (cachedPhoto && getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached) {
       photo = cachedPhoto.photo;
     } else if (cachedPhoto) {
@@ -69,7 +69,7 @@ export const getUserWithPhoto = async (
         const response: Photo = (await graph.api(`${resource}/photo`).get()) as Photo;
         if (response?.['@odata.mediaEtag'] && response['@odata.mediaEtag'] === cachedPhoto.eTag) {
           // put current image into the cache to update the timestamp since etag is the same
-          await storePhotoInCache(userId || 'me', schemas.photos.stores.users, cachedPhoto);
+          await storePhotoInCache(userId || 'me', schemas.photos.stores.users, graph.cacheId, cachedPhoto);
           photo = cachedPhoto.photo;
         } else {
           cachedPhoto = null;
@@ -78,7 +78,10 @@ export const getUserWithPhoto = async (
         // if 404 received (photo not found) but user already in cache, update timeCache value to prevent repeated 404 error / graph calls on each page refresh
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (e.code === 'ErrorItemNotFound' || e.code === 'ImageNotFound') {
-          await storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag: null, photo: null });
+          await storePhotoInCache(userId || 'me', schemas.photos.stores.users, graph.cacheId, {
+            eTag: null,
+            photo: null
+          });
         }
       }
     }
@@ -115,11 +118,11 @@ export const getUserWithPhoto = async (
 
     // store user & photo in their respective cache
     if (getIsUsersCacheEnabled()) {
-      const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
+      const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users, graph.cacheId);
       await cache.putValue(userId || 'me', { user: JSON.stringify(user) });
     }
     if (getIsPhotosCacheEnabled()) {
-      await storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag, photo });
+      await storePhotoInCache(userId || 'me', schemas.photos.stores.users, graph.cacheId, { eTag, photo });
     }
   } else if (!cachedPhoto) {
     try {
@@ -127,7 +130,7 @@ export const getUserWithPhoto = async (
       const response = await getPhotoForResource(graph, resource, scopes);
       if (response) {
         if (getIsPhotosCacheEnabled()) {
-          await storePhotoInCache(userId || 'me', schemas.photos.stores.users, {
+          await storePhotoInCache(userId || 'me', schemas.photos.stores.users, graph.cacheId, {
             eTag: response.eTag,
             photo: response.photo
           });
@@ -147,7 +150,7 @@ export const getUserWithPhoto = async (
 
       if (response) {
         if (getIsUsersCacheEnabled()) {
-          const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
+          const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users, graph.cacheId);
           await cache.putValue(userId || 'me', { user: JSON.stringify(response) });
         }
         user = response;

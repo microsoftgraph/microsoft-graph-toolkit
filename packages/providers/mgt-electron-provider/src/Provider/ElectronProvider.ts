@@ -38,7 +38,11 @@ export class ElectronProvider extends IProvider {
   constructor(baseUrl: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     super();
     this.baseURL = baseUrl;
-    this.graph = createFromProvider(this);
+    void this.initProvider();
+  }
+
+  private async initProvider(): Promise<void> {
+    this.graph = await createFromProvider(this);
     this.setupProvider();
   }
 

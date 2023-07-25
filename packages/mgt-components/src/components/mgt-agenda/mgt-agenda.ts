@@ -619,7 +619,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     let events: MicrosoftGraph.Event[] = [];
 
     if (p?.state === ProviderState.SignedIn) {
-      const graph = p.graph.forComponent(this);
+      const graph = await p.graph.forComponent(this);
 
       if (this.eventQuery) {
         try {

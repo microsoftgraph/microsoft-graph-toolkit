@@ -44,7 +44,7 @@ export const getUserPresence = async (graph: IGraph, userId?: string): Promise<P
   let cache: CacheStore<CachePresence>;
 
   if (getIsPresenceCacheEnabled()) {
-    cache = CacheService.getCache(schemas.presence, schemas.presence.stores.presence);
+    cache = CacheService.getCache(schemas.presence, schemas.presence.stores.presence, graph.cacheId);
     const presence = await cache.getValue(userId || 'me');
     if (presence && getPresenceInvalidationTime() > Date.now() - presence.timeCached) {
       return JSON.parse(presence.presence) as Presence;
@@ -82,7 +82,7 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
   let cache: CacheStore<CachePresence>;
 
   if (getIsPresenceCacheEnabled()) {
-    cache = CacheService.getCache(schemas.presence, schemas.presence.stores.presence);
+    cache = CacheService.getCache(schemas.presence, schemas.presence.stores.presence, graph.cacheId);
   }
 
   for (const person of people) {

@@ -335,7 +335,11 @@ export class MgtGet extends MgtTemplatedComponent {
         let response: Entity | CollectionResponse<Entity> | ImageValue = null;
 
         if (this.shouldRetrieveCache()) {
-          cache = CacheService.getCache<CacheResponse>(schemas.get, schemas.get.stores.responses);
+          cache = CacheService.getCache<CacheResponse>(
+            schemas.get,
+            schemas.get.stores.responses,
+            this.provider.graph.cacheId
+          );
           const result: CacheResponse = getIsResponseCacheEnabled() ? await cache.getValue(key) : null;
           if (result && getResponseInvalidationTime(this.cacheInvalidationPeriod) > Date.now() - result.timeCached) {
             response = JSON.parse(result.response) as CollectionResponse<Entity>;
@@ -355,7 +359,7 @@ export class MgtGet extends MgtTemplatedComponent {
             isDeltaLink = new URL(uri, 'https://graph.microsoft.com').pathname.endsWith('delta');
           }
 
-          const graph = provider.graph.forComponent(this);
+          const graph = await provider.graph.forComponent(this);
           let request = graph.api(uri).version(this.version);
 
           if (this.scopes?.length) {
@@ -424,7 +428,11 @@ export class MgtGet extends MgtTemplatedComponent {
           }
 
           if (this.shouldUpdateCache() && response) {
-            cache = CacheService.getCache<CacheResponse>(schemas.get, schemas.get.stores.responses);
+            cache = CacheService.getCache<CacheResponse>(
+              schemas.get,
+              schemas.get.stores.responses,
+              this.provider.graph.cacheId
+            );
             await cache.putValue(key, { response: JSON.stringify(response) });
           }
         }

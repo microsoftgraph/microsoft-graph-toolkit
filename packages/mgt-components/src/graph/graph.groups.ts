@@ -112,7 +112,7 @@ export const findGroups = async (
   const key = `${query ? query : '*'}*${groupTypes}*${groupFilters}:${top}`;
 
   if (getIsGroupsCacheEnabled()) {
-    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery);
+    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery, graph.cacheId);
     const cacheGroupQuery = await cache.getValue(key);
     if (cacheGroupQuery && getGroupsInvalidationTime() > Date.now() - cacheGroupQuery.timeCached) {
       if (cacheGroupQuery.top >= top) {
@@ -244,7 +244,7 @@ export const findGroupsFromGroup = async (
   const key = `${groupId}:${query || '*'}:${groupTypes}:${transitive}`;
 
   if (getIsGroupsCacheEnabled()) {
-    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery);
+    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery, graph.cacheId);
     const cacheGroupQuery = await cache.getValue(key);
     if (cacheGroupQuery && getGroupsInvalidationTime() > Date.now() - cacheGroupQuery.timeCached) {
       if (cacheGroupQuery.top >= top) {
@@ -315,7 +315,7 @@ export const getGroup = async (graph: IGraph, id: string, requestedProps?: strin
   let cache: CacheStore<CacheGroup>;
 
   if (getIsGroupsCacheEnabled()) {
-    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groups);
+    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groups, graph.cacheId);
     // check cache
     const group = await cache.getValue(id);
 
@@ -363,7 +363,7 @@ export const getGroupsForGroupIds = async (graph: IGraph, groupIds: string[], fi
   let cache: CacheStore<CacheGroup>;
 
   if (getIsGroupsCacheEnabled()) {
-    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groups);
+    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groups, graph.cacheId);
   }
 
   for (const id of groupIds) {
