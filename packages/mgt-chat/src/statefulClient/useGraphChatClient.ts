@@ -10,7 +10,9 @@ import { StatefulGraphChatClient } from './StatefulGraphChatClient';
 
 export const useGraphChatClient = (chatId: string): StatefulGraphChatClient => {
   const [chatClient] = useState<StatefulGraphChatClient>(new StatefulGraphChatClient());
-  chatClient.chatId = chatId;
+  if (chatClient.chatId !== chatId) {
+    chatClient.chatId = chatId;
+  }
 
   return chatClient;
 };
