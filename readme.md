@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="#packages">Packages</a> • <a href="#components">Components</a> • <a href="#providers">Providers</a> • <a href="#getting-started">Getting Started</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
+  <a href="#packages">Packages</a> • <a href="#components">Components</a> • <a href="#providers">Providers</a> • <a href="#getting-started">Getting Started</a> • <a href="#using-our-samples">Using our samples</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
 </p>
 
 ## Packages
@@ -143,12 +143,13 @@ Now you can reference all components and providers at the page you are using:
 <mgt-agenda></mgt-agenda>
 ```
 
+## Using our samples
+
+We, in collaboration with the community, are providing different samples to help you with different scenarios to leverage the Microsoft Graph Toolkit. Our samples are hosted in another repo and is also fully open-source! Head over to the [Microsoft Graph Toolkit Samples Repository](https://aka.ms/mgt/samples) and you will find all sorts of samples to get you started quickly!
+
 ## Contribute
 
 We enthusiastically welcome contributions and feedback. Please read our [wiki](https://github.com/microsoftgraph/microsoft-graph-toolkit/wiki) and the [contributing guide](CONTRIBUTING.md) before you begin.
-
-### Code Contribution Challenge
-There are many exciting new features or interesting bugs that have been left behind because our team is small with limited capacity. We would love your help! We have tagged these issues with 'help wanted' and/or 'good first issue'. If you see anything you would like to contribute to, you can reach out to  mgt-help@microsoft.com or reply to the issue for help or further discussion.
 
 ## Feedback and Requests
 
