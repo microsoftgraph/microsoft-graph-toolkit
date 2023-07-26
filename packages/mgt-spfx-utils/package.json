@@ -25,6 +25,7 @@
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts"
   },
+  "sideEffects": false,
   "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
   "bugs": {
     "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"
