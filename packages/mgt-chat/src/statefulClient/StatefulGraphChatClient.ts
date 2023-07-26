@@ -269,19 +269,14 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
 
   private readonly onActiveAccountChanged = (e: ActiveAccountChanged) => {
     if (this.userId !== e.detail.id) {
-      this.unregisterNotifications();
       this.clearCurrentUserMessages();
+      void this.closeCurrentSignalRConnections();
       sessionStorage.removeItem('graph-subscriptions');
-      // void this.closeCurrentSignalRConnections();
-      // void this.reconnectSignalRConnection();
+      void this.reconnectSignalRConnection();
       this.updateUserInfo();
       void this.updateFollowedChat();
     }
   };
-
-  private unregisterNotifications() {
-    this._notificationClient.unsubscribeFromChatNotifications();
-  }
 
   private async closeCurrentSignalRConnections() {
     await this._notificationClient.closeSignalRConnection();
@@ -719,7 +714,6 @@ detail: ${JSON.stringify(eventDetail)}`);
    * Event handler to be called when a new message is received by the notification service
    */
   private readonly onMessageReceived = async (message: ChatMessage) => {
-    console.log('message received ', this._userDisplayName, message);
     const messageConversion = this.convertChatMessage(message);
     const acsMessage = messageConversion.currentValue;
     this.updateMessages(acsMessage);

@@ -224,8 +224,9 @@ export class GraphNotificationClient {
   }
 
   public async closeSignalRConnection() {
-    await this.connection?.stop();
-    // this.connection = undefined; // Necessary?
+    if (this.connection && this.connection?.state === signalR.HubConnectionState.Connected) {
+      await this.connection?.stop();
+    }
   }
 
   public async reConnectSignalR() {
@@ -392,9 +393,5 @@ export class GraphNotificationClient {
     promises.push(this.subscribeToResource(`/chats/${threadId}/members`, eventEmitter, ['created', 'deleted']));
     promises.push(this.subscribeToResource(`/chats/${threadId}`, eventEmitter, ['updated', 'deleted']));
     await Promise.all(promises);
-  }
-
-  public unsubscribeFromChatNotifications() {
-    this.connection?.off(SubscriptionMethods.Create);
   }
 }
