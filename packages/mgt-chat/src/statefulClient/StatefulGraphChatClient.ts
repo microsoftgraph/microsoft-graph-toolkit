@@ -396,8 +396,9 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
             draft.status = 'subscribing to notifications';
           })
         );
-      } catch (error) {
-        if (error instanceof GraphError) {
+      } catch (e) {
+        console.error(e);
+        if (e instanceof GraphError) {
           this.notifyStateChange((draft: GraphChatClient) => {
             draft.status = 'no messages';
           });
