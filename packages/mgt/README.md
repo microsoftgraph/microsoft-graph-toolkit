@@ -24,6 +24,7 @@ The components are also available as [React components](https://learn.microsoft.
 * [mgt-people-picker](https://learn.microsoft.com/graph/toolkit/components/people-picker)
 * [mgt-person](https://learn.microsoft.com/graph/toolkit/components/person)
 * [mgt-person-card](https://learn.microsoft.com/graph/toolkit/components/person-card)
+* [mgt-picker](https://learn.microsoft.com/en-us/graph/toolkit/components/picker)
 * [mgt-search-box](https://learn.microsoft.com/graph/toolkit/components/person-box)
 * [mgt-search-results](https://learn.microsoft.com/graph/toolkit/components/search-results)
 * [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)

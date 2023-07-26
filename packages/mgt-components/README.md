@@ -22,6 +22,7 @@ The Toolkit currently includes the following components:
 * [mgt-people-picker](https://learn.microsoft.com/graph/toolkit/components/people-picker)
 * [mgt-person](https://learn.microsoft.com/graph/toolkit/components/person)
 * [mgt-person-card](https://learn.microsoft.com/graph/toolkit/components/person-card)
+* [mgt-picker](https://learn.microsoft.com/en-us/graph/toolkit/components/picker)
 * [mgt-search-box](https://learn.microsoft.com/graph/toolkit/components/person-box)
 * [mgt-search-results](https://learn.microsoft.com/graph/toolkit/components/search-results)
 * [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)
@@ -29,7 +30,6 @@ The Toolkit currently includes the following components:
 * [mgt-teams-channel-picker](https://learn.microsoft.com/graph/toolkit/components/teams-channel-picker)
 * [mgt-theme-toggle](https://learn.microsoft.com/graph/toolkit/components/theme-toggle)
 * [mgt-todo](https://learn.microsoft.com/graph/toolkit/components/todo)
-
 
 The components work best when used with a [provider](https://learn.microsoft.com/graph/toolkit/providers). The provider handles authentication and the requests to the Microsoft Graph APIs used by the components.
 
