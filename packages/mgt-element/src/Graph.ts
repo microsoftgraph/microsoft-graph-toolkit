@@ -89,7 +89,7 @@ export class Graph implements IGraph {
    * Returns a new instance of the Graph using the same
    * client within the context of the provider.
    *
-   * @param {Element} component
+   * @param {Element | string} component
    * @returns {IGraph}
    * @memberof Graph
    */

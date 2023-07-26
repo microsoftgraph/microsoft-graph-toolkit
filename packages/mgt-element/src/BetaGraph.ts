@@ -28,6 +28,7 @@ export class BetaGraph extends Graph {
    *
    * @static
    * @param {Graph} graph
+   * @param {IProvider} provider
    * @returns {BetaGraph}
    * @memberof BetaGraph
    */
@@ -46,7 +47,7 @@ export class BetaGraph extends Graph {
    * Returns a new instance of the Graph using the same
    * client within the context of the provider.
    *
-   * @param {Element} component
+   * @param {Element | string} component
    * @returns {BetaGraph}
    * @memberof BetaGraph
    */
