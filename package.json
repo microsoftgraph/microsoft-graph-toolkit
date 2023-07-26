@@ -6,14 +6,7 @@
     "packages": [
       "packages/*",
       "packages/providers/*",
-      "samples/react-contoso",
-      "samples/react-app",
-      "samples/angular-app",
-      "samples/vue-app",
-      "samples/electron-app",
-      "samples/sp-webpart",
-      "samples/sp-mgt",
-      "samples/teamsfx-app"
+      "samples/react-contoso"
     ],
     "nohoist": [
       "**/@microsoft/sp-office-ui-fabric-core**",
@@ -31,11 +24,7 @@
     "build:mgt-components": "cd ./packages/mgt-components && npm run build",
     "build:mgt-react": "lerna run build --scope @microsoft/mgt-react",
     "build:mgt-spfx": "lerna run build --scope @microsoft/mgt-spfx",
-    "build:sp-webpart": "lerna run build --scope mgt-demo",
-    "build:sp-mgt": "lerna run build --scope sp-mgt-no-framework",
     "build:react-contoso": "lerna run build --scope react-contoso",
-    "package:sp-webpart": "lerna run package --scope mgt-demo",
-    "package:sp-mgt": "lerna run package --scope sp-mgt-no-framework",
     "bundle": "cd ./packages/mgt && npm run bundle",
     "clean": "lerna run --parallel --stream --scope @microsoft/* clean",
     "lint:eslint": "eslint -c .eslintrc.js --quiet 'packages/*/src/**/*.ts'",
