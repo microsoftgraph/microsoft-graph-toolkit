@@ -378,7 +378,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
    */
   private async updateFollowedChat() {
     // avoid subscribing to a resource with an empty chatId
-    if (this._chatId) {
+    if (this.chatId) {
       // reset state to initial
       this.notifyStateChange((draft: GraphChatClient) => {
         draft.status = 'initial';
@@ -396,14 +396,10 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         // TODO: in parallel promise resolving, find out how to trigger different
         // TODO: state for failed subscriptions in GraphChatClient.onSubscribeFailed
         await this.loadChatData();
-        await this._notificationClient.subscribeToChatNotifications(
-          this._userId,
-          this._chatId,
-          this._eventEmitter,
-          () =>
-            this.notifyStateChange((draft: GraphChatClient) => {
-              draft.status = 'subscribing to notifications';
-            })
+        await this._notificationClient.subscribeToChatNotifications(this.userId, this.chatId, this._eventEmitter, () =>
+          this.notifyStateChange((draft: GraphChatClient) => {
+            draft.status = 'subscribing to notifications';
+          })
         );
       } catch (error) {
         if (error instanceof GraphError) {
@@ -424,11 +420,11 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       draft.status = 'loading messages';
     });
     try {
-      this._chat = await loadChat(this.graph, this._chatId);
+      this._chat = await loadChat(this.graph, this.chatId);
     } catch (error) {
       return Promise.reject(error);
     }
-    const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
+    const messages: MessageCollection = await loadChatThread(this.graph, this.chatId, this._messagesPerCall);
     await this.writeMessagesToState(messages);
   }
 
@@ -493,7 +489,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private convertChatMessage(message: ChatMessage): MessageConversion {
     switch (message.messageType) {
       case 'message':
-        return this.graphChatMessageToAcsChatMessage(message, this._userId);
+        return this.graphChatMessageToAcsChatMessage(message, this.userId);
       case 'unknownFutureValue':
         return { futureValue: this.buildSystemContentMessage(message) };
       default:
@@ -616,7 +612,7 @@ detail: ${JSON.stringify(eventDetail)}`);
         content,
         senderDisplayName: this._userDisplayName,
         createdOn: new Date(),
-        senderId: this._userId,
+        senderId: this.userId,
         mine: true,
         status: 'sending'
       };
@@ -624,11 +620,11 @@ detail: ${JSON.stringify(eventDetail)}`);
     });
     try {
       // send message
-      const chat: ChatMessage = await sendChatMessage(this.graph, this._chatId, content);
+      const chat: ChatMessage = await sendChatMessage(this.graph, this.chatId, content);
       // emit new state
       this.notifyStateChange((draft: GraphChatClient) => {
         const draftIndex = draft.messages.findIndex(m => m.messageId === pendingId);
-        const message = this.graphChatMessageToAcsChatMessage(chat, this._userId).currentValue;
+        const message = this.graphChatMessageToAcsChatMessage(chat, this.userId).currentValue;
         // we only need use the current value of the message
         // this message can't have a future value as it's not been sent yet
         if (message) draft.messages.splice(draftIndex, 1, message);
@@ -667,7 +663,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       try {
         // uncommitted messages are not persisted to the graph, so don't call graph when deleting them
         if (!uncommitted) {
-          await deleteChatMessage(this.graph, this._chatId, messageId);
+          await deleteChatMessage(this.graph, this.chatId, messageId);
         }
         this.notifyStateChange((draft: GraphChatClient) => {
           const draftMessage = draft.messages.find(m => m.messageId === messageId) as AcsChatMessage;
@@ -704,7 +700,7 @@ detail: ${JSON.stringify(eventDetail)}`);
         }
       });
       try {
-        await updateChatMessage(this.graph, this._chatId, messageId, content);
+        await updateChatMessage(this.graph, this.chatId, messageId, content);
         this.notifyStateChange((draft: GraphChatClient) => {
           const updated = draft.messages.find(m => m.messageId === messageId) as AcsChatMessage;
           updated.status = 'delivered';
@@ -723,6 +719,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * Event handler to be called when a new message is received by the notification service
    */
   private readonly onMessageReceived = async (message: ChatMessage) => {
+    console.log('message received ', this._userDisplayName, message);
     const messageConversion = this.convertChatMessage(message);
     const acsMessage = messageConversion.currentValue;
     this.updateMessages(acsMessage);
@@ -756,7 +753,7 @@ detail: ${JSON.stringify(eventDetail)}`);
   };
 
   private readonly checkForMissedMessages = async () => {
-    const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
+    const messages: MessageCollection = await loadChatThread(this.graph, this.chatId, this._messagesPerCall);
     const messageConversions = messages.value
       // trying to filter out messages on the graph request causes a 400
       // deleted messages are returned as messages with no content, which we can't filter on the graph request
@@ -794,7 +791,7 @@ detail: ${JSON.stringify(eventDetail)}`);
   };
 
   private readonly onChatNotificationsSubscribed = (resource: string): void => {
-    if (resource.includes(`/${this._chatId}/`) && resource.includes('/messages')) {
+    if (resource.includes(`/${this.chatId}/`) && resource.includes('/messages')) {
       void this.checkForMissedMessages();
     } else {
       // better clean this up as we don't want to be listening to events for other chats
@@ -853,7 +850,7 @@ detail: ${JSON.stringify(eventDetail)}`);
   }
 
   private readonly addChatMembers = async (userIds: string[], history?: Date): Promise<void> => {
-    await addChatMembers(this.graph, this._chatId, userIds, history);
+    await addChatMembers(this.graph, this.chatId, userIds, history);
   };
 
   /**
@@ -867,7 +864,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     if (!membershpId) return;
     const isPresent = this._chat?.members?.findIndex(m => m.id === membershpId) ?? -1;
     if (isPresent === -1) return;
-    await removeChatMember(this.graph, this._chatId, membershpId);
+    await removeChatMember(this.graph, this.chatId, membershpId);
     this.removeParticipantFromState(membershpId);
   };
 
@@ -977,7 +974,7 @@ detail: ${JSON.stringify(eventDetail)}`);
   }
 
   private readonly renameChat = async (topic: string | null): Promise<void> => {
-    await updateChatTopic(this.graph, this._chatId, topic);
+    await updateChatTopic(this.graph, this.chatId, topic);
     this.notifyStateChange(() => void (this._chat = { ...this._chat, ...{ topic } }));
   };
 
