@@ -6,7 +6,6 @@
  */
 
 import { Client, GraphRequest } from '@microsoft/microsoft-graph-client';
-import { GRAPH_URLS } from '@microsoft/microsoft-graph-client/lib/es/src/Constants';
 import { IBatch } from './IBatch';
 
 /**
