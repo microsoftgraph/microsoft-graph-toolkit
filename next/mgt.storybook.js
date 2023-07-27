@@ -382,14 +382,19 @@ const ht=1,ut=2,e=t=>(...o)=>({_$litDirective$:t,values:o});class i{constructor(
       </div>
     `}renderLoading(){return this.renderTemplate("loading",null)||Le``}clearState(){this._personImage="",this._personDetailsInternal=null,this._fetchedImage=null,this._fetchedPresence=null}renderNoData(){const t=this.renderTemplate("no-data",null);if(t)return t;const o={"avatar-icon":!0,vertical:this.isVertical(),small:!this.isLargeAvatar(),threeLines:this.isThreeLines(),fourLines:this.isFourLines()};return Le`
        <i class=${pt(o)}></i>
-     `}renderPersonIcon(){return getSvg(Tt.Person)}renderImage(t,o){const n=`${this.strings.photoFor} ${t.displayName}`,s=o&&!this._isInvalidImageSrc&&"photo"===this._avatarType,a=Le`<img alt=${n} src=${o} @error=${()=>this._isInvalidImageSrc=!0} />`,l=t?this.getInitials(t):"",c=null==l?void 0:l.length,h=pt({initials:c&&!s,"contact-icon":!c}),g=Le`<i>${this.renderPersonIcon()}</i>`,f=Le`
+     `}renderPersonIcon(){return getSvg(Tt.Person)}renderImage(t,o){var n;const s=`${this.strings.photoFor} ${t.displayName}`,a=o&&!this._isInvalidImageSrc&&this._avatarType===Pt.photo,l=this.avatarType===Pt.photo&&this.view===xt.image,c=null!==(n=(null==t?void 0:t.displayName)||getEmailFromGraphEntity(t))&&void 0!==n?n:void 0,h=Le`<img
+      title="${l$1(l?c:void 0)}"
+      alt=${s}
+      src=${o}
+      @error=${()=>this._isInvalidImageSrc=!0} />`,g=t?this.getInitials(t):"",f=null==g?void 0:g.length,m=pt({initials:f&&!a,"contact-icon":!f}),v=Le`<i>${this.renderPersonIcon()}</i>`,y=Le`
       <span 
+        title="${l$1(this.view===xt.image?c:void 0)}"
         role="${l$1(this.view===xt.image?void 0:"presentation")}"
-        class="${h}"
+        class="${m}"
       >
-        ${c?l:g}
+        ${f?g:v}
       </span>
-`;return s?a:f}renderPresence(t){if(!this.showPresence||!t)return Le``;let o;const{activity:n,availability:s}=t;switch(s){case"Available":if("OutOfOffice"===n)o=getSvg(Tt.PresenceOofAvailable);else o=getSvg(Tt.PresenceAvailable);break;case"Busy":switch(n){case"OutOfOffice":case"OnACall":o=getSvg(Tt.PresenceOofBusy);break;default:o=getSvg(Tt.PresenceBusy)}break;case"DoNotDisturb":if("OutOfOffice"===n)o=getSvg(Tt.PresenceOofDnd);else o=getSvg(Tt.PresenceDnd);break;case"Away":if("OutOfOffice"===n)o=getSvg(Tt.PresenceOofAway);else o=getSvg(Tt.PresenceAway);break;case"Offline":switch(n){case"Offline":o=getSvg(Tt.PresenceOffline);break;case"OutOfOffice":o=getSvg(Tt.PresenceOofAway);break;default:o=getSvg(Tt.PresenceStatusUnknown)}break;default:o=getSvg(Tt.PresenceStatusUnknown)}const a=pt({"presence-wrapper":!0,noline:this.isNoLine(),oneline:this.isOneLine()});return Le`
+`;return a?h:y}renderPresence(t){if(!this.showPresence||!t)return Le``;let o;const{activity:n,availability:s}=t;switch(s){case"Available":if("OutOfOffice"===n)o=getSvg(Tt.PresenceOofAvailable);else o=getSvg(Tt.PresenceAvailable);break;case"Busy":switch(n){case"OutOfOffice":case"OnACall":o=getSvg(Tt.PresenceOofBusy);break;default:o=getSvg(Tt.PresenceBusy)}break;case"DoNotDisturb":if("OutOfOffice"===n)o=getSvg(Tt.PresenceOofDnd);else o=getSvg(Tt.PresenceDnd);break;case"Away":if("OutOfOffice"===n)o=getSvg(Tt.PresenceOofAway);else o=getSvg(Tt.PresenceAway);break;case"Offline":switch(n){case"Offline":o=getSvg(Tt.PresenceOffline);break;case"OutOfOffice":o=getSvg(Tt.PresenceOofAway);break;default:o=getSvg(Tt.PresenceStatusUnknown)}break;default:o=getSvg(Tt.PresenceStatusUnknown)}const a=pt({"presence-wrapper":!0,noline:this.isNoLine(),oneline:this.isOneLine()});return Le`
       <span
         class="${a}"
         title="${s}"

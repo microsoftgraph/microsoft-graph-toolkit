@@ -317,8 +317,13 @@
       </div>
     `}renderLoading(){return this.renderTemplate("loading",null)||lit.dy``}clearState(){this._personImage="",this._personDetailsInternal=null,this._fetchedImage=null,this._fetchedPresence=null}renderNoData(){const noDataTemplate=this.renderTemplate("no-data",null);if(noDataTemplate)return noDataTemplate;const avatarClasses={"avatar-icon":!0,vertical:this.isVertical(),small:!this.isLargeAvatar(),threeLines:this.isThreeLines(),fourLines:this.isFourLines()};return lit.dy`
        <i class=${(0,class_map.$)(avatarClasses)}></i>
-     `}renderPersonIcon(){return getSvg(SvgIcon.Person)}renderImage(personDetailsInternal,imageSrc){const altText=`${this.strings.photoFor} ${personDetailsInternal.displayName}`,hasImage=imageSrc&&!this._isInvalidImageSrc&&"photo"===this._avatarType,imageTemplate=lit.dy`<img alt=${altText} src=${imageSrc} @error=${()=>this._isInvalidImageSrc=!0} />`,initials=personDetailsInternal?this.getInitials(personDetailsInternal):"",hasInitials=null==initials?void 0:initials.length,textClasses=(0,class_map.$)({initials:hasInitials&&!hasImage,"contact-icon":!hasInitials}),contactIconTemplate=lit.dy`<i>${this.renderPersonIcon()}</i>`,textTemplate=lit.dy`
+     `}renderPersonIcon(){return getSvg(SvgIcon.Person)}renderImage(personDetailsInternal,imageSrc){var _a;const altText=`${this.strings.photoFor} ${personDetailsInternal.displayName}`,hasImage=imageSrc&&!this._isInvalidImageSrc&&this._avatarType===avatarType.photo,imageOnly=this.avatarType===avatarType.photo&&this.view===ViewType.image,titleText=null!==(_a=(null==personDetailsInternal?void 0:personDetailsInternal.displayName)||getEmailFromGraphEntity(personDetailsInternal))&&void 0!==_a?_a:void 0,imageTemplate=lit.dy`<img
+      title="${(0,if_defined.o)(imageOnly?titleText:void 0)}"
+      alt=${altText}
+      src=${imageSrc}
+      @error=${()=>this._isInvalidImageSrc=!0} />`,initials=personDetailsInternal?this.getInitials(personDetailsInternal):"",hasInitials=null==initials?void 0:initials.length,textClasses=(0,class_map.$)({initials:hasInitials&&!hasImage,"contact-icon":!hasInitials}),contactIconTemplate=lit.dy`<i>${this.renderPersonIcon()}</i>`,textTemplate=lit.dy`
       <span 
+        title="${(0,if_defined.o)(this.view===ViewType.image?titleText:void 0)}"
         role="${(0,if_defined.o)(this.view===ViewType.image?void 0:"presentation")}"
         class="${textClasses}"
       >
