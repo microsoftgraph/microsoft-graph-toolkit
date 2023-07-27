@@ -351,13 +351,42 @@ export class MgtLogin extends MgtTemplatedComponent {
         light-dismiss
         @opened=${this.flyoutOpened}
         @closed=${this.flyoutClosed}>
-        <div slot="flyout">
-          <fluent-card class="flyout-card">
-            ${this.renderFlyoutContent()}
-          </fluent-card>
-        </div>
+        <fluent-card 
+          slot="flyout" 
+          tabindex="0" 
+          class="flyout-card"
+          @keydown=${this.onUserKeyDown}
+          >
+          ${this.renderFlyoutContent()}
+        </fluent-card>
       </mgt-flyout>`;
   }
+
+  /**
+   * Tracks tabbing through the flyout (keydown)
+   */
+  private readonly onUserKeyDown = (): void => {
+    if (!this.flyout.isOpen) {
+      return;
+    }
+
+    const el = this.renderRoot.querySelector('.popup-content');
+    const focusableEls = el.querySelectorAll('li, fluent-button');
+    const lastFocusableEl = focusableEls[focusableEls.length - 1];
+
+    lastFocusableEl.addEventListener('keydown', this.closeFlyout);
+  };
+
+  /**
+   * Closes the login popup flyout on tab (keydown)
+   *
+   * @param event - event tracked on user input (keydown)
+   */
+  private readonly closeFlyout = (e: KeyboardEvent): void => {
+    if (e.key === 'Tab') {
+      this.hideFlyout();
+    }
+  };
 
   /**
    * Render the flyout menu content.
