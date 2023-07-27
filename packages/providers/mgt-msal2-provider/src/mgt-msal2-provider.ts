@@ -16,7 +16,6 @@ import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
  * @extends {MgtBaseProvider}
  */
 @customElement('msal2-provider')
-// @customElement('mgt-msal2-provider')
 export class MgtMsal2Provider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user

@@ -1,4 +1,5 @@
-import { OfficeGraphInsightString,ViewType,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { OfficeGraphInsightString,ViewType,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components/dist/es6/exports';
+import { registerMgtAgendaComponent,registerMgtFileListComponent,registerMgtGetComponent,registerMgtLoginComponent,registerMgtPeopleComponent,registerMgtPeoplePickerComponent,registerMgtPersonComponent,registerMgtPickerComponent,registerMgtSearchBoxComponent,registerMgtSearchResultsComponent,registerMgtSpinnerComponent,registerMgtTasksComponent,registerMgtTaxonomyPickerComponent,registerMgtTeamsChannelPickerComponent,registerMgtThemeToggleComponent,registerMgtTodoComponent } from '@microsoft/mgt-components/dist/es6/components/components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -13,30 +14,6 @@ export type AgendaProps = {
 	showMax?: number;
 	groupByDay?: boolean;
 	preferredTimezone?: string;
-	templateContext?: TemplateContext;
-	mediaQuery?: ComponentMediaQuery;
-	eventClick?: (e: CustomEvent<MicrosoftGraph.Event>) => void;
-	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
-}
-
-export type FileProps = {
-	fileQuery?: string;
-	siteId?: string;
-	driveId?: string;
-	groupId?: string;
-	listId?: string;
-	userId?: string;
-	itemId?: string;
-	itemPath?: string;
-	insightType?: OfficeGraphInsightString;
-	insightId?: string;
-	fileDetails?: MicrosoftGraph.DriveItem;
-	fileIcon?: string;
-	driveItem?: MicrosoftGraph.DriveItem;
-	line1Property?: string;
-	line2Property?: string;
-	line3Property?: string;
-	view?: ViewType;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
@@ -173,23 +150,6 @@ export type PersonProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
-export type PersonCardProps = {
-	personDetails?: IDynamicPerson;
-	personQuery?: string;
-	lockTabNavigation?: boolean;
-	userId?: string;
-	personImage?: string;
-	fetchImage?: boolean;
-	isExpanded?: boolean;
-	inheritDetails?: boolean;
-	showPresence?: boolean;
-	personPresence?: MicrosoftGraph.Presence;
-	templateContext?: TemplateContext;
-	mediaQuery?: ComponentMediaQuery;
-	expanded?: (e: CustomEvent<null>) => void;
-	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
-}
-
 export type PickerProps = {
 	resource?: string;
 	version?: string;
@@ -308,39 +268,35 @@ export type TodoProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
-export const Agenda = wrapMgt<AgendaProps>('agenda');
+export const Agenda = wrapMgt<AgendaProps>('agenda', registerMgtAgendaComponent);
 
-export const File = wrapMgt<FileProps>('file');
+export const FileList = wrapMgt<FileListProps>('file-list', registerMgtFileListComponent);
 
-export const FileList = wrapMgt<FileListProps>('file-list');
+export const Get = wrapMgt<GetProps>('get', registerMgtGetComponent);
 
-export const Get = wrapMgt<GetProps>('get');
+export const Login = wrapMgt<LoginProps>('login', registerMgtLoginComponent);
 
-export const Login = wrapMgt<LoginProps>('login');
+export const People = wrapMgt<PeopleProps>('people', registerMgtPeopleComponent);
 
-export const People = wrapMgt<PeopleProps>('people');
+export const PeoplePicker = wrapMgt<PeoplePickerProps>('people-picker', registerMgtPeoplePickerComponent);
 
-export const PeoplePicker = wrapMgt<PeoplePickerProps>('people-picker');
+export const Person = wrapMgt<PersonProps>('person', registerMgtPersonComponent);
 
-export const Person = wrapMgt<PersonProps>('person');
+export const Picker = wrapMgt<PickerProps>('picker', registerMgtPickerComponent);
 
-export const PersonCard = wrapMgt<PersonCardProps>('person-card');
+export const SearchBox = wrapMgt<SearchBoxProps>('search-box', registerMgtSearchBoxComponent);
 
-export const Picker = wrapMgt<PickerProps>('picker');
+export const SearchResults = wrapMgt<SearchResultsProps>('search-results', registerMgtSearchResultsComponent);
 
-export const SearchBox = wrapMgt<SearchBoxProps>('search-box');
+export const Spinner = wrapMgt<SpinnerProps>('spinner', registerMgtSpinnerComponent);
 
-export const SearchResults = wrapMgt<SearchResultsProps>('search-results');
+export const Tasks = wrapMgt<TasksProps>('tasks', registerMgtTasksComponent);
 
-export const Spinner = wrapMgt<SpinnerProps>('spinner');
+export const TaxonomyPicker = wrapMgt<TaxonomyPickerProps>('taxonomy-picker', registerMgtTaxonomyPickerComponent);
 
-export const Tasks = wrapMgt<TasksProps>('tasks');
+export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('teams-channel-picker', registerMgtTeamsChannelPickerComponent);
 
-export const TaxonomyPicker = wrapMgt<TaxonomyPickerProps>('taxonomy-picker');
+export const ThemeToggle = wrapMgt<ThemeToggleProps>('theme-toggle', registerMgtThemeToggleComponent);
 
-export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('teams-channel-picker');
-
-export const ThemeToggle = wrapMgt<ThemeToggleProps>('theme-toggle');
-
-export const Todo = wrapMgt<TodoProps>('todo');
+export const Todo = wrapMgt<TodoProps>('todo', registerMgtTodoComponent);
 

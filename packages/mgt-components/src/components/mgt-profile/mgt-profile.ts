@@ -11,7 +11,9 @@ import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { styles } from './mgt-profile-css';
 import { strings } from './strings';
-import { customElement } from '@microsoft/mgt-element';
+import { registerComponent } from '../registerComponent';
+
+export const registerMgtProfileComponent = () => registerComponent('profile', MgtProfile);
 
 /**
  * The user profile subsection of the person card
@@ -22,7 +24,6 @@ import { customElement } from '@microsoft/mgt-element';
  *
  * @cssprop --token-overflow-color - {Color} Color of the text showing more undisplayed values i.e. +3 more
  */
-@customElement('profile')
 export class MgtProfile extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined

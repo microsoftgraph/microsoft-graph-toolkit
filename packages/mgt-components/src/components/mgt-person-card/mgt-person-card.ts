@@ -27,7 +27,7 @@ import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getPersonCardGraphData, createChat, sendMessage } from './mgt-person-card.graph';
-import { MgtPerson } from '../mgt-person/mgt-person';
+import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-css';
 import { MgtContact } from '../mgt-contact/mgt-contact';
 import { MgtFileList } from '../mgt-file-list/mgt-file-list';
@@ -51,14 +51,24 @@ import {
 } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { BasePersonCardSection, CardSection } from '../BasePersonCardSection';
-
-registerFluentComponents(fluentCard, fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+import { buildComponentName, registerComponent } from '../registerComponent';
+import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 
 interface MgtPersonCardStateHistory {
   state: MgtPersonCardState;
   personDetails: IDynamicPerson;
   personImage: string;
 }
+
+export const registerMgtPersonCardComponent = () => {
+  registerFluentComponents(fluentCard, fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+
+  registerMgtSpinnerComponent();
+  // register self to avoid infinte loop due to circular ref between person and person card
+  registerComponent('person-card', MgtPerson);
+  // only register person if not already registered
+  if (!customElements.get(buildComponentName('person'))) registerMgtPersonComponent();
+};
 
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
@@ -98,7 +108,6 @@ interface MgtPersonCardStateHistory {
  * @cssprop --person-card-chat-input-hover-color - {Color} The chat input hover color
  * @cssprop --person-card-chat-input-focus-color - {Color} The chat input focus color
  */
-@customElement('person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

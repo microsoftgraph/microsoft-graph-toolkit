@@ -9,15 +9,23 @@ import type * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Position } from '../../graph/types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
+import { MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import '../../styles/style-helper';
 import { styles } from './mgt-taxonomy-picker-css';
-import { DataChangedDetail } from '../mgt-get/mgt-get';
+import { DataChangedDetail, registerMgtGetComponent } from '../mgt-get/mgt-get';
+import { registerComponent } from '../registerComponent';
+import { registerMgtSpinnerComponent } from '../components';
 
-registerFluentComponents(fluentCombobox, fluentOption);
+export const registerMgtTaxonomyPickerComponent = () => {
+  registerFluentComponents(fluentCombobox, fluentOption);
+
+  registerMgtSpinnerComponent();
+  registerMgtGetComponent();
+  registerComponent('taxonomy-picker', MgtTaxonomyPicker);
+};
 
 /**
  * Web component that can query the Microsoft Graph API for Taxonomy
@@ -34,7 +42,6 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * @cssprop --taxonomy-picker-background-color - {Color} Picker component background color
  * @cssprop --taxonomy-picker-list-max-height - {String} max height for options list. Default value is 380px.
  */
-@customElement('taxonomy-picker')
 export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   /**
    * The strings to be used for localizing the component.

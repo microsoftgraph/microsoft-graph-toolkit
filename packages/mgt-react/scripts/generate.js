@@ -73,6 +73,14 @@ const generateTags = (tags, fileName) => {
     }
   };
 
+  const registrationFunctions = new Set();
+
+  const generateRegisterFunctionName = type => `register${type}Component`;
+
+  const addComponentRegistrationImport = type => {
+    registrationFunctions.add(generateRegisterFunctionName(type));
+  };
+
   for (const tag of customTags.sort((a, b) => (a.tagName > b.tagName ? 1 : -1))) {
     const className = tag.tagName
       .split('-')
@@ -81,9 +89,12 @@ const generateTags = (tags, fileName) => {
 
     wrappers.push({
       tag: tag.tagName,
+      componentClass: tag.name,
       propsType: className + 'Props',
       className: className
     });
+
+    addComponentRegistrationImport(tag.name);
 
     const props = {};
 
@@ -142,10 +153,15 @@ const generateTags = (tags, fileName) => {
   }
 
   for (const wrapper of wrappers) {
-    output += `\nexport const ${wrapper.className} = wrapMgt<${wrapper.propsType}>('${wrapper.tag}');\n`;
+    output += `\nexport const ${wrapper.className} = wrapMgt<${wrapper.propsType}>('${
+      wrapper.tag
+    }', ${generateRegisterFunctionName(wrapper.componentClass)});\n`;
   }
 
-  output = `import { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components';
+  output = `import { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components/dist/es6/exports';
+import { ${Array.from(registrationFunctions).join(
+    ','
+  )} } from '@microsoft/mgt-components/dist/es6/components/components';
 import { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';

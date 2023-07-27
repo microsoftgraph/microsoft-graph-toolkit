@@ -5,14 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  MgtTemplatedComponent,
-  ProviderState,
-  Providers,
-  customElement,
-  customElementHelper,
-  mgtHtml
-} from '@microsoft/mgt-element';
+import { MgtTemplatedComponent, ProviderState, Providers, customElementHelper, mgtHtml } from '@microsoft/mgt-element';
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -25,14 +18,15 @@ import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import '../../styles/style-helper';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
-import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
+import { MgtPersonCard, registerMgtPersonCardComponent } from '../mgt-person-card/mgt-person-card';
 import '../sub-components/mgt-flyout/mgt-flyout';
-import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
 import { strings } from './strings';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { buildComponentName, registerComponent } from '../registerComponent';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -53,6 +47,15 @@ const defaultPersonProperties = [
   'userPrincipalName',
   'id'
 ];
+
+export const registerMgtPersonComponent = () => {
+  registerMgtFlyoutComponent();
+
+  // register self to avoid infinte loop due to circular ref between person and person card
+  registerComponent('person', MgtPerson);
+  // only register person card if it hasn't been registered yet
+  if (!customElements.get(buildComponentName('person-card'))) registerMgtPersonCardComponent();
+};
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -104,7 +107,6 @@ const defaultPersonProperties = [
  *
  * @cssprop --person-details-wrapper-width - {Length} the minimum width of the details section. Default is 168px.
  */
-@customElement('person')
 export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

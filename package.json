@@ -6,7 +6,7 @@
     "packages": [
       "packages/*",
       "packages/providers/*",
-      "samples/react-contoso"
+      "samples/*"
     ],
     "nohoist": [
       "**/@microsoft/sp-office-ui-fabric-core**",
@@ -16,7 +16,7 @@
   },
   "scripts": {
     "init": "yarn && yarn build",
-    "analyze": "custom-elements-manifest analyze --litelement --globs \"./packages/*/src/**/*.ts\"",
+    "analyze": "custom-elements-manifest analyze --globs \"./packages/*/src/**/*.ts\"",
     "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
     "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope @microsoft/*",
     "build:mgt": "cd ./packages/mgt && npm run build",

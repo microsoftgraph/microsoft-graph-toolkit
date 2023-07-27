@@ -37,20 +37,29 @@ import {
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce, isValidEmail } from '../../utils/Utils';
-import { MgtPerson } from '../mgt-person/mgt-person';
+import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
-import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { fluentTextField, fluentCard } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { strings } from './strings';
 import { Person, User } from '@microsoft/microsoft-graph-types';
-
-registerFluentComponents(fluentTextField, fluentCard);
+import { registerComponent } from '../registerComponent';
+import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType, UserType } from '../../graph/graph.people';
+
+export const registerMgtPeoplePickerComponent = () => {
+  registerFluentComponents(fluentTextField, fluentCard);
+
+  registerMgtFlyoutComponent();
+  registerMgtPersonComponent();
+  registerMgtSpinnerComponent();
+  registerComponent('people-picker', MgtPeoplePicker);
+};
 
 /**
  * Web component used to search for people from the Microsoft Graph
@@ -80,7 +89,6 @@ export { PersonType, UserType } from '../../graph/graph.people';
  * @cssprop --people-picker-search-icon-color - {Color} the search icon color
  * @cssprop --people-picker-remove-selected-close-icon-color - {Color} the remove selected person close icon color.
  */
-@customElement('people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

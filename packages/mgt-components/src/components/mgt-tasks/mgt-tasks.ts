@@ -22,12 +22,12 @@ import { repeat } from 'lit/directives/repeat.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { getMe } from '../../graph/graph.user';
 import { getShortDateString } from '../../utils/Utils';
-import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
-import { MgtPeople } from '../mgt-people/mgt-people';
+import { MgtPeoplePicker, registerMgtPeoplePickerComponent } from '../mgt-people-picker/mgt-people-picker';
+import { MgtPeople, registerMgtPeopleComponent } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
-import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-tasks-css';
 import { strings } from './strings';
@@ -43,8 +43,9 @@ import {
   fluentCheckbox,
   fluentSkeleton
 } from '@fluentui/web-components';
-
-registerFluentComponents(fluentSelect, fluentOption, fluentTextField, fluentButton, fluentCheckbox, fluentSkeleton);
+import { registerComponent } from '../registerComponent';
+import { registerMgtDotOptionsComponent } from '../sub-components/mgt-dot-options/mgt-dot-options';
+import { registerMgtArrowOptionsComponent } from '../sub-components/mgt-arrow-options/mgt-arrow-options';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -135,6 +136,17 @@ const TASK_RES = {
 const plannerAssignment = {
   '@odata.type': '#microsoft.graph.plannerAssignment',
   orderHint: ' !'
+};
+
+export const registerMgtTasksComponent = () => {
+  registerFluentComponents(fluentSelect, fluentOption, fluentTextField, fluentButton, fluentCheckbox, fluentSkeleton);
+
+  registerMgtArrowOptionsComponent();
+  registerMgtDotOptionsComponent();
+  registerMgtFlyoutComponent();
+  registerMgtPeopleComponent();
+  registerMgtPeoplePickerComponent();
+  registerComponent('tasks', MgtTasks);
 };
 
 /**
@@ -231,8 +243,6 @@ const plannerAssignment = {
  * @cssprop --tasks-border-radius - {Length} the border radius of the area where the tasks are rendered. Default is none.
  * @cssprop --tasks-padding - {Length} the padding of the are where the tasks are rendered. Default is 12px.
  */
-
-@customElement('tasks')
 export class MgtTasks extends MgtTemplatedComponent {
   /**
    * determines whether todo, or planner functionality for task component

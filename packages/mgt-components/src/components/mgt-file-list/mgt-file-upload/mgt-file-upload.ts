@@ -26,8 +26,8 @@ import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { formatBytes } from '../../../utils/Utils';
 import { styles } from './mgt-file-upload-css';
 import { strings } from './strings';
-
-registerFluentComponents(fluentProgress, fluentButton, fluentCheckbox, fluentDialog);
+import { registerComponent } from '../../registerComponent';
+import { registerMgtFileComponent } from '../../components';
 
 /**
  * Simple union type for file system entry and directory entry types
@@ -229,6 +229,13 @@ interface FileWithPath extends File {
   fullPath: string;
 }
 
+export const registerMgtFileUploadComponent = () => {
+  registerFluentComponents(fluentProgress, fluentButton, fluentCheckbox, fluentDialog);
+
+  registerMgtFileComponent();
+  registerComponent('file-upload', MgtFileUpload);
+};
+
 /**
  * A component to upload files to OneDrive or SharePoint Sites
  *
@@ -257,8 +264,6 @@ interface FileWithPath extends File {
  * @cssprop --file-upload-dialog-height - {String} the height of the file upload dialog box. Default value is auto.
  * @cssprop --file-upload-dialog-padding - {String} the padding of the file upload dialog box. Default value is 24px;
  */
-
-@customElement('file-upload')
 export class MgtFileUpload extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
