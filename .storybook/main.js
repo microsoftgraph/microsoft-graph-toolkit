@@ -8,6 +8,9 @@
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
+  core: {
+    builder: 'webpack5',
+  },
   presets: [
     // {
     //   name: '@storybook/addon-docs/preset',
