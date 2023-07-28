@@ -4059,7 +4059,7 @@ ${display("inline-block")} :host {
           background: ${pi.ButtonFace};
           fill: ${pi.ButtonText};
         }
-      `)),expandCollapseGlyph:'\n    <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">\n      <path d="M4.65 2.15a.5.5 0 000 .7L7.79 6 4.65 9.15a.5.5 0 10.7.7l3.5-3.5a.5.5 0 000-.7l-3.5-3.5a.5.5 0 00-.7 0z"/>\n    </svg>\n  '});const Ic=function provideFluentDesignSystem(t){return Qi.getOrCreate(t).withPrefix("fluent")}(),registerFluentComponents=(...t)=>{if(null==t?void 0:t.length)for(const o of t)Ic.register(o())};var __decorate$r=function(t,o,n,s){var a,l=arguments.length,c=l<3?o:null===s?s=Object.getOwnPropertyDescriptor(o,n):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)c=Reflect.decorate(t,o,n,s);else for(var h=t.length-1;h>=0;h--)(a=t[h])&&(c=(l<3?a(c):l>3?a(o,n,c):a(o,n))||c);return l>3&&c&&Object.defineProperty(o,n,c),c},__metadata$q=function(t,o){if("object"==typeof Reflect&&"function"==typeof Reflect.metadata)return Reflect.metadata(t,o)},__awaiter$q=function(t,o,n,s){return new(n||(n=Promise))((function(a,l){function fulfilled(t){try{step(s.next(t))}catch(t){l(t)}}function rejected(t){try{step(s.throw(t))}catch(t){l(t)}}function step(t){t.done?a(t.value):function adopt(t){return t instanceof n?t:new n((function(o){o(t)}))}(t.value).then(fulfilled,rejected)}step((s=s.apply(t,o||[])).next())}))};registerFluentComponents(Vl,bc);let Ec=class MgtAgenda extends MgtTemplatedComponent{constructor(){super(...arguments),this._days=3,this.onResize=()=>{this._isNarrow=this.offsetWidth<600}}static get styles(){return Lt}get date(){return this._date}set date(t){this._date!==t&&(this._date=t,this.reloadState())}get groupId(){return this._groupId}set groupId(t){this._groupId!==t&&(this._groupId=t,this.reloadState())}get days(){return this._days}set days(t){this._days!==t&&(this._days=t,this.reloadState())}get eventQuery(){return this._eventQuery}set eventQuery(t){this._eventQuery!==t&&(this._eventQuery=t,this.reloadState())}get preferredTimezone(){return this._preferredTimezone}set preferredTimezone(t){this._preferredTimezone!==t&&(this._preferredTimezone=t,this.reloadState())}static get requiredScopes(){return[...new Set(["calendars.read",...qt.requiredScopes])]}connectedCallback(){this._isNarrow=this.offsetWidth<600,super.connectedCallback(),window.addEventListener("resize",this.onResize)}disconnectedCallback(){window.removeEventListener("resize",this.onResize),super.disconnectedCallback()}render(){if(!this.events&&this.isLoadingState)return this.renderLoading();if(!this.events||0===this.events.length)return this.renderNoData();const t=this.showMax&&this.showMax>0?this.events.slice(0,this.showMax):this.events,o=this.renderTemplate("default",{events:t});if(o)return o;const n={agenda:!0,grouped:this.groupByDay};return Le`
+      `)),expandCollapseGlyph:'\n    <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg">\n      <path d="M4.65 2.15a.5.5 0 000 .7L7.79 6 4.65 9.15a.5.5 0 10.7.7l3.5-3.5a.5.5 0 000-.7l-3.5-3.5a.5.5 0 00-.7 0z"/>\n    </svg>\n  '});const Ic=function provideFluentDesignSystem(t){return Qi.getOrCreate(t).withPrefix("fluent")}(),registerFluentComponents=(...t)=>{if(null==t?void 0:t.length)for(const o of t)Ic.register(o())};var __decorate$r=function(t,o,n,s){var a,l=arguments.length,c=l<3?o:null===s?s=Object.getOwnPropertyDescriptor(o,n):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)c=Reflect.decorate(t,o,n,s);else for(var h=t.length-1;h>=0;h--)(a=t[h])&&(c=(l<3?a(c):l>3?a(o,n,c):a(o,n))||c);return l>3&&c&&Object.defineProperty(o,n,c),c},__metadata$q=function(t,o){if("object"==typeof Reflect&&"function"==typeof Reflect.metadata)return Reflect.metadata(t,o)},__awaiter$q=function(t,o,n,s){return new(n||(n=Promise))((function(a,l){function fulfilled(t){try{step(s.next(t))}catch(t){l(t)}}function rejected(t){try{step(s.throw(t))}catch(t){l(t)}}function step(t){t.done?a(t.value):function adopt(t){return t instanceof n?t:new n((function(o){o(t)}))}(t.value).then(fulfilled,rejected)}step((s=s.apply(t,o||[])).next())}))};registerFluentComponents(Vl);let Ec=class MgtAgenda extends MgtTemplatedComponent{constructor(){super(...arguments),this._days=3,this.onResize=()=>{this._isNarrow=this.offsetWidth<600}}static get styles(){return Lt}get date(){return this._date}set date(t){this._date!==t&&(this._date=t,this.reloadState())}get groupId(){return this._groupId}set groupId(t){this._groupId!==t&&(this._groupId=t,this.reloadState())}get days(){return this._days}set days(t){this._days!==t&&(this._days=t,this.reloadState())}get eventQuery(){return this._eventQuery}set eventQuery(t){this._eventQuery!==t&&(this._eventQuery=t,this.reloadState())}get preferredTimezone(){return this._preferredTimezone}set preferredTimezone(t){this._preferredTimezone!==t&&(this._preferredTimezone=t,this.reloadState())}static get requiredScopes(){return[...new Set(["calendars.read",...qt.requiredScopes])]}connectedCallback(){this._isNarrow=this.offsetWidth<600,super.connectedCallback(),window.addEventListener("resize",this.onResize)}disconnectedCallback(){window.removeEventListener("resize",this.onResize),super.disconnectedCallback()}render(){if(!this.events&&this.isLoadingState)return this.renderLoading();if(!this.events||0===this.events.length)return this.renderNoData();const t=this.showMax&&this.showMax>0?this.events.slice(0,this.showMax):this.events,o=this.renderTemplate("default",{events:t});if(o)return o;const n={agenda:!0,grouped:this.groupByDay};return Le`
       <div dir=${this.direction} class="${pt(n)}">
         ${this.groupByDay?this.renderGroups(t):this.renderEvents(t)}
         ${this.isLoadingState?this.renderLoading():Le``}
@@ -4093,25 +4093,13 @@ ${display("inline-block")} :host {
       </fluent-card>
     `}renderHeader(t){return this.renderTemplate("header",{header:t},"header-"+t)||Le`
         <div class="header" aria-label="${t}">${t}</div>
-      `}renderTitle(t){let o=(null==t?void 0:t.bodyPreview)?t.bodyPreview.slice(0,100):"";const n=""!==o,s={"event-subject":!0,narrow:this._isNarrow};o=o.split(" ").slice(0,-1).join(" ")+"...";const a=Le`
-      <div
-        aria-describedby="tooltip-${t.id}"
-        class="${pt(s)}"
-        id=${t.id}>
-          ${t.subject}
-      </div>
-      <fluent-tooltip
-        id="tooltip-${t.id}"
-        position="right"
-        anchor="${t.id}">
-          ${o}
-      </fluent-tooltip>
-    `,l=Le`
+      `}renderTitle(t){return Le`
       <div
         aria-label=${t.subject}
-        class="${pt(s)}">
-          ${t.subject}
-      </div>`;return n?a:l}renderLocation(t){return t.location.displayName?Le`
+        class="${pt({"event-subject":!0,narrow:this._isNarrow})}"
+      >
+        ${t.subject}
+      </div>`}renderLocation(t){return t.location.displayName?Le`
       <div class="event-location-container">
         <div class="event-location-icon">${getSvg(Tt.OfficeLocation)}</div>
         <div class="event-location" aria-label="${t.location.displayName}">${t.location.displayName}</div>
