@@ -17,7 +17,7 @@ import '../../styles/style-helper';
 import { styles } from './mgt-taxonomy-picker-css';
 import { DataChangedDetail, registerMgtGetComponent } from '../mgt-get/mgt-get';
 import { registerComponent } from '../registerComponent';
-import { registerMgtSpinnerComponent } from '../components';
+import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 
 export const registerMgtTaxonomyPickerComponent = () => {
   registerFluentComponents(fluentCombobox, fluentOption);

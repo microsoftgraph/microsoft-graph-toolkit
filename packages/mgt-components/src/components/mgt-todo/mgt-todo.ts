@@ -34,7 +34,7 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 
 import { TodoTaskList, TodoTask, TaskStatus } from '@microsoft/microsoft-graph-types';
 import { registerComponent } from '../registerComponent';
-import { registerMgtPickerComponent } from '../components';
+import { registerMgtPickerComponent } from '../mgt-picker/mgt-picker';
 
 /**
  * Filter function

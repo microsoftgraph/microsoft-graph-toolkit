@@ -27,7 +27,7 @@ import { formatBytes } from '../../../utils/Utils';
 import { styles } from './mgt-file-upload-css';
 import { strings } from './strings';
 import { registerComponent } from '../../registerComponent';
-import { registerMgtFileComponent } from '../../components';
+import { registerMgtFileComponent } from '../../mgt-file/mgt-file';
 
 /**
  * Simple union type for file system entry and directory entry types

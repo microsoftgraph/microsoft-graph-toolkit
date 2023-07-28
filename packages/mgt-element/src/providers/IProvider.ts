@@ -6,7 +6,7 @@
  */
 
 import { AuthenticationProvider, AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
-import { validateBaseURL } from '../utils/GraphHelpers';
+import { validateBaseURL } from '../utils/validateBaseURL';
 import { GraphEndpoint, IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from '../IGraph';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 

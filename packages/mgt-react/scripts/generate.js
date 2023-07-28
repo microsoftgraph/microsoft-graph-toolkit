@@ -24,7 +24,7 @@ const gaTags = new Set([
   'search-results',
   'spinner'
 ]);
-const outputFileName = 'react';
+const barrelFileName = 'react';
 
 const generateTags = (tags, fileName) => {
   const mgtComponentImports = new Set();
@@ -176,4 +176,14 @@ ${output}
   fs.writeFileSync(`${__dirname}/../src/generated/${fileName}.ts`, output);
 };
 
-generateTags(gaTags, outputFileName);
+// generate each component to a separate file
+gaTags.forEach(tag => {
+  generateTags(new Set([tag]), tag);
+});
+
+output = '';
+// generate a barrel file
+gaTags.forEach(tag => {
+  output += `export * from './${tag}';\n`;
+});
+fs.writeFileSync(`${__dirname}/../src/generated/${barrelFileName}.ts`, output);

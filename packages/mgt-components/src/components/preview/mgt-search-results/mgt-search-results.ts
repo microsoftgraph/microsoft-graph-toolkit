@@ -15,7 +15,6 @@ import {
   prepScopes,
   Providers,
   ProviderState,
-  customElement,
   mgtHtml,
   BetaGraph,
   BatchResponse,
@@ -53,7 +52,8 @@ import { fluentSkeleton, fluentButton, fluentTooltip, fluentDivider } from '@flu
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { CacheResponse } from '../../CacheResponse';
 import { registerComponent } from '../../registerComponent';
-import { registerMgtFileComponent, registerMgtPersonComponent } from '../../components';
+import { registerMgtFileComponent } from '../../mgt-file/mgt-file';
+import { registerMgtPersonComponent } from '../../mgt-person/mgt-person';
 
 /**
  * Object representing a thumbnail

@@ -21,7 +21,7 @@ import { IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from './IGraph';
 import { IProvider } from './providers/IProvider';
 import { Batch } from './utils/Batch';
 import { ComponentMiddlewareOptions } from './utils/ComponentMiddlewareOptions';
-import { chainMiddleware } from './utils/GraphHelpers';
+import { chainMiddleware } from './utils/chainMiddleware';
 import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
 import { PACKAGE_VERSION } from './utils/version';
 import { customElementHelper } from './components/customElementHelper';
