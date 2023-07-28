@@ -1,4 +1,3 @@
-import {  } from '@microsoft/mgt-components/dist/es6/exports';
 import { registerMgtThemeToggleComponent } from '@microsoft/mgt-components/dist/es6/components/components';
 import { ComponentMediaQuery } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';

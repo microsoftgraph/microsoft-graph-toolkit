@@ -65,7 +65,7 @@ export const registerMgtPersonCardComponent = () => {
 
   registerMgtSpinnerComponent();
   // register self to avoid infinte loop due to circular ref between person and person card
-  registerComponent('person-card', MgtPerson);
+  registerComponent('person-card', MgtPersonCard);
   // only register person if not already registered
   if (!customElements.get(buildComponentName('person'))) registerMgtPersonComponent();
 };

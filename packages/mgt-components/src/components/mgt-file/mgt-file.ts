@@ -33,7 +33,7 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { strings } from './strings';
 import { registerComponent } from '../registerComponent';
 
-export const registerMgtFileComponent = () => registerComponent('mgt-file', MgtFile);
+export const registerMgtFileComponent = () => registerComponent('file', MgtFile);
 
 /**
  * The File component is used to represent an individual file/folder from OneDrive or SharePoint by displaying information such as the file/folder name, an icon indicating the file type, and other properties such as the author, last modified date, or other details selected by the developer.

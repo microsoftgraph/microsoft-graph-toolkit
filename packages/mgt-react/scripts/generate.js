@@ -158,8 +158,12 @@ const generateTags = (tags, fileName) => {
     }', ${generateRegisterFunctionName(wrapper.componentClass)});\n`;
   }
 
-  output = `import { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components/dist/es6/exports';
-import { ${Array.from(registrationFunctions).join(
+  const componentTypeImports = Array.from(mgtComponentImports).join(',');
+  const initialLine = componentTypeImports
+    ? `import { ${componentTypeImports} } from '@microsoft/mgt-components/dist/es6/exports';
+`
+    : '';
+  output = `${initialLine}import { ${Array.from(registrationFunctions).join(
     ','
   )} } from '@microsoft/mgt-components/dist/es6/components/components';
 import { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';

@@ -35,7 +35,10 @@
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd ."
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/es6/index.js",
+    "./src/index.ts"
+  ],
   "dependencies": {
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "3.0.2",
