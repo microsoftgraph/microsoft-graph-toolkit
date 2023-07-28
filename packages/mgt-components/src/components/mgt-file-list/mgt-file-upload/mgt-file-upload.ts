@@ -66,6 +66,13 @@ interface FutureDataTransferItem extends DataTransferItem {
   getAsEntry: typeof DataTransferItem.prototype.webkitGetAsEntry;
 }
 
+const isFutureDataTransferItem = (item: DataTransferItem): item is FutureDataTransferItem =>
+  'getAsEntry' in item && typeof item.getAsEntry === 'function';
+
+const isDataTransferItem = (item: DataTransferItem | File): item is DataTransferItem =>
+  ('getAsFile' in item && typeof item.getAsFile === 'function') ||
+  ('webkitGetAsEntry' in item && typeof item.webkitGetAsEntry === 'function');
+
 /**
  * Upload conflict behavior status
  */
@@ -1165,13 +1172,10 @@ export class MgtFileUpload extends MgtBaseComponent {
     let entry: FileSystemEntry;
     const collectFilesItems: File[] = [];
 
-    for (const uploadFileItem of filesItems as DataTransferItemList) {
-      if (uploadFileItem.kind === 'file') {
-        // Defensive code to validate if function exists in Browser
-        // Collect all Folders into Array
-        const futureUpload = uploadFileItem as FutureDataTransferItem;
-        if (futureUpload.getAsEntry) {
-          entry = futureUpload.getAsEntry();
+    for (const uploadFileItem of filesItems) {
+      if (isDataTransferItem(uploadFileItem)) {
+        if (isFutureDataTransferItem(uploadFileItem)) {
+          entry = uploadFileItem.getAsEntry();
           if (isFileSystemDirectoryEntry(entry)) {
             folders.push(entry);
           } else {
@@ -1192,22 +1196,19 @@ export class MgtFileUpload extends MgtBaseComponent {
               collectFilesItems.push(file);
             }
           }
-        } else if ('function' == typeof uploadFileItem.getAsFile) {
+        } else {
           const file = uploadFileItem.getAsFile();
           if (file) {
             this.writeFilePath(file, '');
             collectFilesItems.push(file);
           }
         }
-        continue;
       } else {
-        const fileItem = uploadFileItem.getAsFile();
-        if (fileItem) {
-          this.writeFilePath(fileItem, '');
-          collectFilesItems.push(fileItem);
-        }
+        this.writeFilePath(uploadFileItem, '');
+        collectFilesItems.push(uploadFileItem);
       }
     }
+
     // Collect Files from folder
     if (folders.length > 0) {
       const folderFiles = await this.getFolderFiles(folders);

@@ -16,7 +16,7 @@ import { getEventsPageIterator, getEventsQueryPageIterator } from './mgt-agenda.
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPeople, registerMgtPeopleComponent } from '../mgt-people/mgt-people';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { fluentCard, fluentTooltip } from '@fluentui/web-components';
+import { fluentCard } from '@fluentui/web-components';
 import { classMap } from 'lit/directives/class-map.js';
 import { registerComponent } from '../registerComponent';
 
@@ -47,7 +47,7 @@ import { registerComponent } from '../registerComponent';
  */
 
 export const registerMgtAgendaComponent = () => {
-  registerFluentComponents(fluentCard, fluentTooltip);
+  registerFluentComponents(fluentCard);
   // register dependent components
   registerMgtPeopleComponent();
   // register self
@@ -407,38 +407,16 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @memberof MgtAgenda
    */
   protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
-    let eventDescription = event?.bodyPreview ? event.bodyPreview.slice(0, 100) : '';
-    const hasDescription = eventDescription !== '';
-
-    const eventSubjectClasses = {
-      'event-subject': true,
-      narrow: this._isNarrow
-    };
-
-    eventDescription = eventDescription.split(' ').slice(0, -1).join(' ') + '...';
-
-    const hasDescriptionDiv = html`
-      <div
-        aria-describedby="tooltip-${event.id}"
-        class="${classMap(eventSubjectClasses)}"
-        id=${event.id}>
-          ${event.subject}
-      </div>
-      <fluent-tooltip
-        id="tooltip-${event.id}"
-        position="right"
-        anchor="${event.id}">
-          ${eventDescription}
-      </fluent-tooltip>
-    `;
-
-    const noDescriptionDiv = html`
+    return html`
       <div
         aria-label=${event.subject}
-        class="${classMap(eventSubjectClasses)}">
-          ${event.subject}
+        class="${classMap({
+          'event-subject': true,
+          narrow: this._isNarrow
+        })}"
+      >
+        ${event.subject}
       </div>`;
-    return hasDescription ? hasDescriptionDiv : noDescriptionDiv;
   }
 
   /**
