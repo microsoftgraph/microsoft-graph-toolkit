@@ -4,6 +4,8 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+// import the mock for media match first to ensure it's hoisted and available for our dependencies
+import '../mgt-theme-toggle/mock-media-match';
 
 import { screen } from 'testing-library__dom';
 import { fixture } from '@open-wc/testing-helpers';

@@ -29,11 +29,11 @@ import { getUserPresence } from '../../graph/graph.presence';
 import { getPersonCardGraphData, createChat, sendMessage } from './mgt-person-card.graph';
 import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-css';
-import { MgtContact } from '../mgt-contact/mgt-contact';
-import { MgtFileList } from '../mgt-file-list/mgt-file-list';
-import { MgtMessages } from '../mgt-messages/mgt-messages';
-import { MgtOrganization } from '../mgt-organization/mgt-organization';
-import { MgtProfile } from '../mgt-profile/mgt-profile';
+import { MgtContact, registerMgtContactComponent } from '../mgt-contact/mgt-contact';
+import { MgtFileList, registerMgtFileListComponent } from '../mgt-file-list/mgt-file-list';
+import { MgtMessages, registerMgtMessagesComponent } from '../mgt-messages/mgt-messages';
+import { MgtOrganization, registerMgtOrganizationComponent } from '../mgt-organization/mgt-organization';
+import { MgtProfile, registerMgtProfileComponent } from '../mgt-profile/mgt-profile';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 import { strings } from './strings';
 
@@ -62,10 +62,16 @@ interface MgtPersonCardStateHistory {
 
 export const registerMgtPersonCardComponent = () => {
   registerFluentComponents(fluentCard, fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+  // register self first to avoid infinte loop due to circular ref between person and person card and organization
+  registerComponent('person-card', MgtPersonCard);
 
   registerMgtSpinnerComponent();
-  // register self to avoid infinte loop due to circular ref between person and person card
-  registerComponent('person-card', MgtPersonCard);
+  // these components newed up rather than created declaratively
+  registerMgtContactComponent();
+  registerMgtOrganizationComponent();
+  registerMgtMessagesComponent();
+  registerMgtFileListComponent();
+  registerMgtProfileComponent();
   // only register person if not already registered
   if (!customElements.get(buildComponentName('person'))) registerMgtPersonComponent();
 };

@@ -49,10 +49,11 @@ const defaultPersonProperties = [
 ];
 
 export const registerMgtPersonComponent = () => {
+  // register self first to avoid infinte loop due to circular ref between person and person card
+  registerComponent('person', MgtPerson);
+
   registerMgtFlyoutComponent();
 
-  // register self to avoid infinte loop due to circular ref between person and person card
-  registerComponent('person', MgtPerson);
   // only register person card if it hasn't been registered yet
   if (!customElements.get(buildComponentName('person-card'))) registerMgtPersonCardComponent();
 };
