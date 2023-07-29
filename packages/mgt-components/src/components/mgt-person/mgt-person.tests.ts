@@ -12,11 +12,13 @@ import fetchMock from 'jest-fetch-mock';
 import { MockProvider, Providers } from '@microsoft/mgt-element';
 import { userPhotoBatchResponse } from './__test_data/mock-responses';
 import './mgt-person';
+import { registerMgtPersonComponent } from './mgt-person';
 enableFetchMocks();
 
 let person: Element;
 describe('mgt-person - tests', () => {
   beforeEach(() => {
+    registerMgtPersonComponent();
     fetchMock.resetMocks();
     fetchMock
       // Response for the setup of the MockGraph to call to the proxy service

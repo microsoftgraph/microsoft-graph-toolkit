@@ -9,6 +9,7 @@ import './mock-media-match';
 import { screen } from 'testing-library__dom';
 import { fixture } from '@open-wc/testing-helpers';
 import './mgt-theme-toggle';
+import { registerMgtThemeToggleComponent } from './mgt-theme-toggle';
 
 class Deferred<T = unknown> {
   promise: Promise<T>;
@@ -23,6 +24,9 @@ class Deferred<T = unknown> {
 }
 
 describe('mgt-theme-toggle - tests', () => {
+  beforeEach(() => {
+    registerMgtThemeToggleComponent();
+  });
   it('should render', async () => {
     await fixture('<mgt-theme-toggle></mgt-theme-toggle>');
     const toggle = await screen.findByRole('switch');

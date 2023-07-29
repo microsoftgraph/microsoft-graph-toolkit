@@ -8,10 +8,12 @@
 import { screen } from 'testing-library__dom';
 import { fixture } from '@open-wc/testing-helpers';
 import './mgt-spinner';
+import { registerMgtSpinnerComponent } from './mgt-spinner';
 
 let spinner: Element;
 describe('mgt-spinner tests', () => {
   beforeEach(async () => {
+    registerMgtSpinnerComponent();
     spinner = await fixture('<mgt-spinner></mgt-spinner>');
   });
 
