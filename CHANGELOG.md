@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.0.1...v3.1.0) (2023-07-28)
+
+
+### Features
+
+* add canary url to allowed endpoints for graph ([#2635](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2635)) ([ec621cd](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/ec621cd37a8eb7f91356944fb29ad85699ee89fa))
+
+
+### Bug Fixes
+
+* **a11y:** add distinct name definitions for copy code buttons in storybook overview ([#2622](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2622)) ([4e52f41](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/4e52f41398b1a5771ada9fe54a67dba4e4b84397))
+* add a title text if displaying images only. ([#2625](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2625)) ([28703c9](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/28703c96dd5366b8543fab2a160994db34a9c13b))
+* check the file type being uploaded before performing upload ([#2584](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2584)) ([7fb265c](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/7fb265c744cbbf53d49fe6d5c3d45bc8493eb2fd))
+* remove agenda tooltip ([#2621](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2621)) ([27e1fc9](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/27e1fc9c61e1957dd8addacb3b667de9546fb358))
+
 ## [3.0.1](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.0.0...v3.0.1) (2023-07-18)
 
 
