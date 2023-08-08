@@ -365,7 +365,7 @@ export class MgtLogin extends MgtTemplatedComponent {
   /**
    * Tracks tabbing through the flyout (keydown)
    */
-  private readonly onUserKeyDown = (): void => {
+  private readonly onUserKeyDown = (e: KeyboardEvent): void => {
     if (!this.flyout.isOpen) {
       return;
     }
@@ -373,8 +373,10 @@ export class MgtLogin extends MgtTemplatedComponent {
     const el = this.renderRoot.querySelector('.popup-content');
     const focusableEls = el.querySelectorAll('li, fluent-button');
     const lastFocusableEl = focusableEls[focusableEls.length - 1];
-
-    lastFocusableEl.addEventListener('keydown', this.closeFlyout);
+    if (e.key === 'Tab' && lastFocusableEl === e.target) {
+      lastFocusableEl.addEventListener('keydown', this.closeFlyout);
+    }
+    el.addEventListener('blur', this.closeFlyout);
   };
 
   /**
