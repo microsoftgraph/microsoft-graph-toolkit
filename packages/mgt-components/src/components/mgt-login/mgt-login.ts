@@ -371,22 +371,18 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
 
     const el = this.renderRoot.querySelector('.popup-content');
-    const focusableEls = el.querySelectorAll('li, fluent-button');
-    const lastFocusableEl = focusableEls[focusableEls.length - 1];
-    if (e.key === 'Tab' && lastFocusableEl === e.target) {
-      lastFocusableEl.addEventListener('keydown', this.closeFlyout);
-    }
-    el.addEventListener('blur', this.closeFlyout);
-  };
+    const focusableEls = el.querySelectorAll('ul, fluent-button');
+    const firstFocusableEl = el.querySelector('#signout-button') || focusableEls[0];
+    const lastFocusableEl =
+      el.querySelector('#signin-different-account-button') || focusableEls[focusableEls.length - 1];
 
-  /**
-   * Closes the login popup flyout on tab (keydown)
-   *
-   * @param event - event tracked on user input (keydown)
-   */
-  private readonly closeFlyout = (e: KeyboardEvent): void => {
-    if (e.key === 'Tab') {
-      this.hideFlyout();
+    if (e.key === 'Tab' && e.shiftKey && firstFocusableEl === e.target) {
+      e.preventDefault();
+      (lastFocusableEl as HTMLElement)?.focus();
+    }
+    if (e.key === 'Tab' && lastFocusableEl === e.target) {
+      e.preventDefault();
+      (firstFocusableEl as HTMLElement)?.focus();
     }
   };
 
@@ -466,6 +462,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       template ||
       html`
         <fluent-button
+          id="signout-button"
           appearance="stealth"
           size="medium"
           class="flyout-command"
@@ -503,6 +500,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       return html`
         <div class="add-account">
           <fluent-button
+            id="signin-different-account-button"
             appearance="stealth"
             aria-label="${this.strings.signInWithADifferentAccount}"
             @click=${() => void this.login()}>
