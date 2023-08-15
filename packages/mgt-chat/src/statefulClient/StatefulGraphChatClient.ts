@@ -161,6 +161,11 @@ interface MessageConversion {
 const graphImageUrlRegex = /(<img[^>]+)src=(["']https:\/\/graph\.microsoft\.com[^"']*["'])/;
 
 /**
+ * Regex to detect unsupported content tags in content html.
+ */
+const unsupportedContentRegex = /<\/[atchmen]+>/;
+
+/**
  * Regex to detect and extract emoji alt text
  *
  * Pattern breakdown:
@@ -944,6 +949,15 @@ detail: ${JSON.stringify(eventDetail)}`);
       content = this.processEmojiContent(content);
     }
 
+    // Check if content is supported
+    // One way is checking for 'unsupported' html tags in the html string.
+    // To display unsupported content, we replace the content string with the
+    // unsupported content html.
+    const unsupportedContent = unsupportedContentRegex.test(content);
+    if (unsupportedContent) {
+      content = '<p>Unsupported content</p>';
+    }
+
     const imageMatch = this.graphImageMatch(content ?? '');
     if (imageMatch) {
       // if the message contains an image, we need to fetch the image and replace the placeholder
@@ -957,6 +971,11 @@ detail: ${JSON.stringify(eventDetail)}`);
   private buildAcsMessage(graphMessage: ChatMessage, currentUser: string, messageId: string, content: string): Message {
     const senderId = graphMessage.from?.user?.id || undefined;
     let messageData: Message = {
+      // Another option to display unsupported content is by
+      // setting the messageType='custom' and handling it in the
+      // MessageThread component through overridding the onRenderMessage
+      // method. Downside to this is having to customize the chat item to look
+      // and feel like the rest.
       messageId,
       contentType: graphMessage.body?.contentType ?? 'text',
       messageType: 'chat',
