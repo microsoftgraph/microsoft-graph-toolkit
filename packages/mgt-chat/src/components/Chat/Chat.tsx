@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
+import { renderToString } from 'react-dom/server';
+import {
+  ErrorBar,
+  FluentThemeProvider,
+  MessageThread,
+  SendBox,
+  MessageProps,
+  MessageRenderer,
+  Message,
+  ChatMessage
+} from '@azure/communication-react';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { FluentTheme, MessageBarType } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
@@ -9,6 +19,8 @@ import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
 import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
+import UnsupportedContent from '../UnsupportedContent/UnsupportedContent';
+import { produce } from 'immer';
 
 registerAppIcons();
 
@@ -48,6 +60,18 @@ const useStyles = makeStyles({
   }
 });
 
+/**
+ * A typeguard to get the ChatMessage type
+ * @param msg of Message
+ * @returns ChatMessage
+ */
+const isChatMessage = (msg: Message): msg is ChatMessage => 'content' in msg;
+
+/**
+ * Regex to detect unsupported content tags in content html.
+ */
+const unsupportedContentRegex = /<\/[atchmen]+>/;
+
 export const Chat = ({ chatId }: IMgtChatProps) => {
   const styles = useStyles();
   const chatClient: StatefulGraphChatClient = useGraphChatClient(chatId);
@@ -62,6 +86,20 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
   const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
     chatState.status
   );
+  const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRenderer): JSX.Element => {
+    if (isChatMessage(messageProps?.message)) {
+      const content = messageProps.message?.content;
+
+      // Test that the content is supported.
+      if (unsupportedContentRegex.test(content)) {
+        messageProps = produce(messageProps, (draft: ChatMessage) => {
+          draft.message.content = renderToString(<UnsupportedContent />);
+        });
+      }
+    }
+
+    return defaultOnRender ? defaultOnRender(messageProps) : <></>;
+  };
 
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
@@ -103,6 +141,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                       <Person userId={userId} avatarSize="small" personCardInteraction={PersonCardInteraction.click} />
                     );
                   }}
+                  onRenderMessage={onRenderMessage}
                 />
               </div>
               <div className={styles.chatInput}>
