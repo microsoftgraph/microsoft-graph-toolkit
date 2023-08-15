@@ -71,6 +71,7 @@ const isChatMessage = (msg: Message): msg is ChatMessage => 'content' in msg;
  * Regex to detect unsupported content tags in content html.
  */
 const unsupportedContentRegex = /<\/[atchmen]+>/;
+// TODO: ^ update the values to capture as unsupported.
 
 export const Chat = ({ chatId }: IMgtChatProps) => {
   const styles = useStyles();
@@ -91,7 +92,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
       const content = messageProps.message?.content;
 
       // Test that the content is supported.
-      if (unsupportedContentRegex.test(content)) {
+      if (content && unsupportedContentRegex.test(content)) {
         messageProps = produce(messageProps, (draft: ChatMessage) => {
           // update the content string to the component
           draft.message.content = renderToString(<UnsupportedContent />);

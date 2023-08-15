@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     backgroundColor: '#ebebeb',
     display: 'flex',
     boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.14), 0px 0px 2px 0px rgba(0, 0, 0, 0.12)',
-    textDecoration: 'none',
+    textDecorationLine: 'none',
     color: '#424242',
     ...shorthands.margin('4px 0 0 0'),
     ...shorthands.borderRadius('6px'),
@@ -23,6 +23,9 @@ const useStyles = makeStyles({
     ...shorthands.gap('6px'),
     ':hover': {
       backgroundColor: '#fafafa'
+    },
+    ':visited': {
+      color: '#424242'
     }
   },
   cta: {
@@ -30,7 +33,8 @@ const useStyles = makeStyles({
     fontSize: '12px',
     fontStyle: 'normal',
     fontWeight: '400',
-    lineHeight: '16px'
+    lineHeight: '16px',
+    textDecorationLine: 'none'
   }
 });
 
