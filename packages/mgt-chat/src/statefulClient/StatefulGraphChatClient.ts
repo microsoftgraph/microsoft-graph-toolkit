@@ -673,7 +673,8 @@ detail: ${JSON.stringify(eventDetail)}`);
       // trying to filter out messages on the graph request causes a 400
       // deleted messages are returned as messages with no content, which we can't filter on the graph request
       // so we filter them out here
-      .filter(m => m.body?.content)
+      // Violating DLP returns content as empty BUT with policyViolation set
+      .filter(m => m.body?.content || (!m.body?.content && m?.policyViolation))
       // This gives us both current and eventual values for each message
       .map(m => this.convertChatMessage(m));
 
@@ -873,10 +874,14 @@ detail: ${JSON.stringify(eventDetail)}`);
     content: string
   ): AcsChatMessage {
     const senderId = graphMessage.from?.user?.id || undefined;
+    let messageType = 'chat';
+    if (graphMessage?.policyViolation) {
+      messageType = 'blocked';
+    }
     return {
       messageId,
       contentType: graphMessage.body?.contentType ?? 'text',
-      messageType: 'chat',
+      messageType,
       content,
       senderDisplayName: graphMessage.from?.user?.displayName ?? undefined,
       createdOn: new Date(graphMessage.createdDateTime ?? Date.now()),
