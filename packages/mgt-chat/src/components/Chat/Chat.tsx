@@ -93,6 +93,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
       // Test that the content is supported.
       if (unsupportedContentRegex.test(content)) {
         messageProps = produce(messageProps, (draft: ChatMessage) => {
+          // update the content string to the component
           draft.message.content = renderToString(<UnsupportedContent />);
         });
       }
