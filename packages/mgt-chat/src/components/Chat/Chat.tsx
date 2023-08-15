@@ -34,6 +34,9 @@ const useStyles = makeStyles({
   },
   fullHeight: {
     height: '100%'
+  },
+  unsupportedContent: {
+    color: 'red'
   }
 });
 
