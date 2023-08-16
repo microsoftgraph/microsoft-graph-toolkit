@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
+import { ErrorBar, FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
@@ -44,8 +44,13 @@ const useStyles = makeStyles({
 /**
  * Styling for the MessageThread and its components.
  */
-const messageThreadStyles = {
-  chatContainer: { zIndex: '0' },
+const messageThreadStyles: MessageThreadStyles = {
+  chatContainer: {
+    // TODO: This "should" work but it doesn't
+    '& .ui-chat__item__message': {
+      zIndex: '0'
+    }
+  },
   chatMessageContainer: {
     '& p': {
       display: 'flex',
