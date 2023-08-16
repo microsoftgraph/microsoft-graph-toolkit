@@ -115,9 +115,6 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   {chatState.status}
                 </div>
               )}
-              {chatState.status === 'initial' && (
-                <ChatMessageBar messageBarType={MessageBarType.info} message={'Select a chat to display messages.'} />
-              )}
               {chatState.status === 'no messages' && (
                 <ChatMessageBar
                   messageBarType={MessageBarType.error}
