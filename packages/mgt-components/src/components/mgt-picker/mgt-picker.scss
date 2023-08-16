@@ -19,12 +19,14 @@
 
     fluent-combobox {
       &::part(control) {
-        .selected-value {
+        &::placeholder {
           color: $picker-text-color;
         }
 
         &:hover {
-          --secondary-text-color: var(--secondary-text-hover-color);
+          &::placeholder {
+            color: $picker-text-hover-color;
+          }
         }
       }
     }
