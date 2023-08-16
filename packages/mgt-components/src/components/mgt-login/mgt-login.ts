@@ -381,16 +381,13 @@ export class MgtLogin extends MgtTemplatedComponent {
       (lastFocusableEl as HTMLElement)?.focus();
     }
     if (e.key === 'Tab' && lastFocusableEl === e.target) {
-      e.preventDefault();
-      (firstFocusableEl as HTMLElement)?.focus();
-    }
-
-    if (e.key === 'Tab' && e.shiftKey) {
-      e.preventDefault();
-      for (let i = 0; i < focusableEls.length; i++) {
-        if (focusableEls[i] === e.target) {
-          window.setTimeout(() => (focusableEls[i - 1] as HTMLElement)?.focus(), 0);
-        }
+      if (e.shiftKey) {
+        e.preventDefault();
+        const focusableArrs = Array.from(focusableEls);
+        window.setTimeout(() => (focusableEls[focusableArrs.indexOf(lastFocusableEl) - 1] as HTMLElement)?.focus(), 0);
+      } else {
+        e.preventDefault();
+        (firstFocusableEl as HTMLElement)?.focus();
       }
     }
   };
