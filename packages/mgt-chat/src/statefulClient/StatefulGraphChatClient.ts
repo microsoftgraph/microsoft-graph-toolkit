@@ -19,7 +19,8 @@ import {
   ChatMessage,
   ChatRenamedEventMessageDetail,
   MembersAddedEventMessageDetail,
-  MembersDeletedEventMessageDetail
+  MembersDeletedEventMessageDetail,
+  ChatMessageMention
 } from '@microsoft/microsoft-graph-types';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
 import { produce } from 'immer';
@@ -846,7 +847,8 @@ detail: ${JSON.stringify(eventDetail)}`);
   }
 
   private graphChatMessageToAcsChatMessage(graphMessage: ChatMessage, currentUser: string): MessageConversion {
-    if (!graphMessage.id) {
+    const messageId = graphMessage?.id ?? '';
+    if (!messageId) {
       throw new Error('Cannot convert graph message to ACS message. No ID found on graph message');
     }
     let content = graphMessage.body?.content ?? 'undefined';
@@ -855,15 +857,43 @@ detail: ${JSON.stringify(eventDetail)}`);
     if (this.emojiMatch(content)) {
       content = this.processEmojiContent(content);
     }
+    // Handle any mentions
+    const mentions = graphMessage?.mentions ?? [];
+    if (mentions) {
+      content = this.handleMentions(mentions, content);
+    }
 
     const imageMatch = this.graphImageMatch(content ?? '');
     if (imageMatch) {
       // if the message contains an image, we need to fetch the image and replace the placeholder
       result = this.processMessageContent(graphMessage, currentUser);
     } else {
-      result.currentValue = this.buildAcsMessage(graphMessage, currentUser, graphMessage.id, content);
+      result.currentValue = this.buildAcsMessage(graphMessage, currentUser, messageId, content);
     }
     return result;
+  }
+
+  private handleMentions(mentions: ChatMessageMention[], content: string): string {
+    // Nit to remove unnecessary space between 2 mentions
+    content = content.replace(/&nbsp;<at/gim, '<at');
+    mentions.forEach((mention: ChatMessageMention) => {
+      const name = mention?.mentionText;
+      // Multiple entities can be mentioned: user, application, team, or channel
+      // TODO: findout if the other entities can use mgt-person still.
+      const { user } = mention.mentioned as AadUserConversationMember;
+      if (name && user) {
+        const { id } = user;
+        const mgtPerson = `<mgt-person
+          style="color: #7F85F5;width:fit-content;cursor:pointer;"
+          user-id="${id ?? ''}"
+          person-card="hover">
+            <template>${name}</template>
+          </mgt-person>`;
+        const regex = `<at\\sid="\\d+">${name}<\\/at>`;
+        content = content.replace(new RegExp(regex, 'gim'), mgtPerson);
+      }
+    });
+    return content;
   }
 
   private buildAcsMessage(
