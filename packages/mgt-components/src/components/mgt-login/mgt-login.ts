@@ -320,6 +320,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     const expandedState: boolean | undefined = showSignedInState ? this._isFlyoutOpen : undefined;
     return html`
       <fluent-button
+        id="login-button"
         aria-expanded="${ifDefined(expandedState)}"
         appearance=${appearance}
         aria-label="${ifDefined(isSignedIn ? undefined : this.strings.signInLinkSubtitle)}"
@@ -389,6 +390,10 @@ export class MgtLogin extends MgtTemplatedComponent {
         e.preventDefault();
         (firstFocusableEl as HTMLElement)?.focus();
       }
+    }
+    if (e.key === 'Escape') {
+      const loginButton = this.renderRoot.querySelector('#login-button');
+      (loginButton as HTMLElement)?.focus();
     }
   };
 
