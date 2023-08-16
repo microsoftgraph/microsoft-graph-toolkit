@@ -268,7 +268,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   };
 
   private readonly onActiveAccountChanged = (e: ActiveAccountChanged) => {
-    if (this.userId !== e.detail.id) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (e.detail && this.userId !== e.detail?.id) {
       this.clearCurrentUserMessages();
       void this.closeCurrentSignalRConnections();
       sessionStorage.removeItem('graph-subscriptions');
