@@ -75,12 +75,8 @@ export type GraphEndpoint =
   | 'https://graph.microsoft.us'
   | 'https://dod-graph.microsoft.us'
   | 'https://graph.microsoft.de'
-  | 'https://microsoftgraph.chinacloudapi.cn';
-
-/**
- * MICROSOFT_GRAPH_ENDPOINTS is a set of all the valid Graph URL endpoints.
- */
-export const MICROSOFT_GRAPH_ENDPOINTS: Set<GraphEndpoint> = new Set<GraphEndpoint>();
+  | 'https://microsoftgraph.chinacloudapi.cn'
+  | 'https://canary.graph.microsoft.com';
 
 /**
  * MICROSOFT_GRAPH_DEFAULT_ENDPOINT is the default Graph endpoint that is silently set on
@@ -88,13 +84,14 @@ export const MICROSOFT_GRAPH_ENDPOINTS: Set<GraphEndpoint> = new Set<GraphEndpoi
  */
 export const MICROSOFT_GRAPH_DEFAULT_ENDPOINT: GraphEndpoint = 'https://graph.microsoft.com';
 
-(() => {
-  const endpoints: GraphEndpoint[] = [
-    MICROSOFT_GRAPH_DEFAULT_ENDPOINT,
-    'https://graph.microsoft.us',
-    'https://dod-graph.microsoft.us',
-    'https://graph.microsoft.de',
-    'https://microsoftgraph.chinacloudapi.cn'
-  ];
-  endpoints.forEach(endpoint => MICROSOFT_GRAPH_ENDPOINTS.add(endpoint));
-})();
+/**
+ * MICROSOFT_GRAPH_ENDPOINTS is a set of all the valid Graph URL endpoints.
+ */
+export const MICROSOFT_GRAPH_ENDPOINTS: Set<GraphEndpoint> = new Set<GraphEndpoint>([
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT,
+  'https://graph.microsoft.us',
+  'https://dod-graph.microsoft.us',
+  'https://graph.microsoft.de',
+  'https://microsoftgraph.chinacloudapi.cn',
+  'https://canary.graph.microsoft.com'
+]);

@@ -8,15 +8,7 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import {
-  Providers,
-  ProviderState,
-  MgtTemplatedComponent,
-  prepScopes,
-  mgtHtml,
-  customElement,
-  CollectionResponse
-} from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
@@ -24,9 +16,9 @@ import { getEventsPageIterator, getEventsQueryPageIterator } from './mgt-agenda.
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { fluentCard, fluentTooltip } from '@fluentui/web-components';
+import { fluentCard } from '@fluentui/web-components';
 import { classMap } from 'lit/directives/class-map.js';
-registerFluentComponents(fluentCard, fluentTooltip);
+registerFluentComponents(fluentCard);
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -407,38 +399,16 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @memberof MgtAgenda
    */
   protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
-    let eventDescription = event?.bodyPreview ? event.bodyPreview.slice(0, 100) : '';
-    const hasDescription = eventDescription !== '';
-
-    const eventSubjectClasses = {
-      'event-subject': true,
-      narrow: this._isNarrow
-    };
-
-    eventDescription = eventDescription.split(' ').slice(0, -1).join(' ') + '...';
-
-    const hasDescriptionDiv = html`
-      <div
-        aria-describedby="tooltip-${event.id}"
-        class="${classMap(eventSubjectClasses)}"
-        id=${event.id}>
-          ${event.subject}
-      </div>
-      <fluent-tooltip
-        id="tooltip-${event.id}"
-        position="right"
-        anchor="${event.id}">
-          ${eventDescription}
-      </fluent-tooltip>
-    `;
-
-    const noDescriptionDiv = html`
+    return html`
       <div
         aria-label=${event.subject}
-        class="${classMap(eventSubjectClasses)}">
-          ${event.subject}
+        class="${classMap({
+          'event-subject': true,
+          narrow: this._isNarrow
+        })}"
+      >
+        ${event.subject}
       </div>`;
-    return hasDescription ? hasDescriptionDiv : noDescriptionDiv;
   }
 
   /**
