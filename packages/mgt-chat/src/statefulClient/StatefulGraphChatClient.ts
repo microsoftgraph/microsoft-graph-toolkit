@@ -20,7 +20,9 @@ import {
   ChatRenamedEventMessageDetail,
   MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail,
-  ChatMessageMention
+  ChatMessageMention,
+  Identity,
+  NullableOption
 } from '@microsoft/microsoft-graph-types';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
 import { produce } from 'immer';
@@ -878,9 +880,8 @@ detail: ${JSON.stringify(eventDetail)}`);
     content = content.replace(/&nbsp;<at/gim, '<at');
     mentions.forEach((mention: ChatMessageMention) => {
       const name = mention?.mentionText;
-      // Multiple entities can be mentioned: user, application, team, or channel
-      // TODO: findout if the other entities can use mgt-person still.
-      const { user } = mention.mentioned as AadUserConversationMember;
+      // Multiple entities can be mentioned: user, application, conversation etc
+      const user: NullableOption<Identity> | undefined = mention.mentioned?.user;
       if (name && user) {
         const { id } = user;
         const mgtPerson = `<mgt-person
@@ -891,6 +892,15 @@ detail: ${JSON.stringify(eventDetail)}`);
           </mgt-person>`;
         const regex = `<at\\sid="\\d+">${name}<\\/at>`;
         content = content.replace(new RegExp(regex, 'gim'), mgtPerson);
+      }
+
+      const otherMentions =
+        mention.mentioned?.conversation || mention.mentioned?.application || mention.mentioned?.device;
+      // For @Everyone etc use the mention feature in v1.7 preview
+      if (name && otherMentions) {
+        const msftMention = `<msft-mention id="$1">${name}</msft-mention>`;
+        const regex = `<at\\sid="(\\d+)">${name}<\\/at>`;
+        content = content.replace(new RegExp(regex, 'gim'), msftMention);
       }
     });
     return content;
