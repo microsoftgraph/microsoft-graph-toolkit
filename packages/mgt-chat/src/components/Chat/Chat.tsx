@@ -30,12 +30,29 @@ const useStyles = makeStyles({
     }
   },
   chatInput: {
-    ...shorthands.overflow('unset')
+    ...shorthands.overflow('unset'),
+    // Move the typing area to the bottom of the screen.
+    position: 'fixed',
+    width: '-webkit-fill-available',
+    bottom: '0'
   },
   fullHeight: {
     height: '100%'
   }
 });
+
+/**
+ * Styling for the MessageThread and its components.
+ */
+const messageThreadStyles = {
+  chatContainer: { zIndex: '0' },
+  chatMessageContainer: {
+    '& p': {
+      display: 'flex',
+      gap: '2px'
+    }
+  }
+};
 
 export const Chat = ({ chatId }: IMgtChatProps) => {
   const styles = useStyles();
@@ -87,6 +104,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                       <Person userId={userId} avatarSize="small" personCardInteraction={PersonCardInteraction.click} />
                     );
                   }}
+                  styles={messageThreadStyles}
                 />
               </div>
               <div className={styles.chatInput}>
