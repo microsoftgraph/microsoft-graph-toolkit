@@ -182,9 +182,9 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this.updateUserInfo();
     Providers.globalProvider.onStateChanged(this.onLoginStateChanged);
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
-    this._notificationClient = new GraphNotificationClient();
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
+    this._notificationClient = new GraphNotificationClient(this._eventEmitter);
   }
 
   /**
@@ -326,7 +326,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
     // this client will then load the chat and messages when that event listener is called
     promises.push(
-      this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, this._eventEmitter, () =>
+      this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, () =>
         this.notifyStateChange((draft: GraphChatClient) => {
           draft.status = 'subscribing to notifications';
         })

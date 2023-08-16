@@ -21689,6 +21689,11 @@ opencollective-postinstall@^2.0.2:
   resolved "https://registry.yarnpkg.com/opencollective-postinstall/-/opencollective-postinstall-2.0.3.tgz#7a0fff978f6dbfa4d006238fbac98ed4198c3259"
   integrity sha512-8AV/sCtuzUeTo8gQK5qDZzARrulB3egtLzFgteqB2tcT4Mw7B8Kt7JcDHmltjz6FOAHsvTevk70gZEbhM4ZS9Q==
 
+opencrypto@1.5.5:
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/opencrypto/-/opencrypto-1.5.5.tgz#d3176f8c8527a174190ed4e4db90ca3480a96d5c"
+  integrity sha512-hMwIB3B1O5B4YU8bVoUWKzEEc4ThfbysRdAsOsbvuXqZMXLH/Biq106BtrQ2oU5vwnDb9dvvITblG/T9aGb9vw==
+
 optional-require@^1.0.2:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/optional-require/-/optional-require-1.1.8.tgz#16364d76261b75d964c482b2406cb824d8ec44b7"

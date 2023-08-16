@@ -2,7 +2,8 @@
   "packages": [
     "packages/*",
     "packages/providers/*",
-    "samples/*"
+    "samples/react-contoso",
+    "samples/react-chat"
   ],
   "npmClient": "yarn",
   "version": "independent"
