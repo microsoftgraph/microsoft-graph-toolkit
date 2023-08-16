@@ -8,3 +8,4 @@
 @import '../../styles/shared-sass-variables';
 
 $picker-background-color: var(--picker-background-color, transparent);
+$picker-text-color: var(--picker-text-color, var(--secondary-text-color));
