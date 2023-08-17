@@ -381,15 +381,9 @@ export class MgtLogin extends MgtTemplatedComponent {
       e.preventDefault();
       (lastFocusableEl as HTMLElement)?.focus();
     }
-    if (e.key === 'Tab' && lastFocusableEl === e.target) {
-      if (e.shiftKey) {
-        e.preventDefault();
-        const focusableArrs = Array.from(focusableEls);
-        window.setTimeout(() => (focusableEls[focusableArrs.indexOf(lastFocusableEl) - 1] as HTMLElement)?.focus(), 0);
-      } else {
-        e.preventDefault();
-        (firstFocusableEl as HTMLElement)?.focus();
-      }
+    if (e.key === 'Tab' && !e.shiftKey && lastFocusableEl === e.target) {
+      e.preventDefault();
+      (firstFocusableEl as HTMLElement)?.focus();
     }
     if (e.key === 'Escape') {
       const loginButton = this.renderRoot.querySelector('#login-button');
