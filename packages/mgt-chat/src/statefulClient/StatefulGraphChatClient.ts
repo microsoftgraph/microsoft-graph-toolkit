@@ -877,6 +877,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     let messageType = 'chat';
     if (graphMessage?.policyViolation) {
       messageType = 'blocked';
+      link: 'https://go.microsoft.com/fwlink/?LinkId=2132837';
     }
     return {
       messageId,
