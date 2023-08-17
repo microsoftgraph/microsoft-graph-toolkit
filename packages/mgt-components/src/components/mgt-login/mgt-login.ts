@@ -389,6 +389,10 @@ export class MgtLogin extends MgtTemplatedComponent {
       const loginButton = this.renderRoot.querySelector('#login-button');
       (loginButton as HTMLElement)?.focus();
     }
+    const fluentCardEl = this.renderRoot.querySelector('fluent-card');
+    if (e.shiftKey && e.key === 'Tab' && e.target === fluentCardEl) {
+      this.hideFlyout();
+    }
   };
 
   /**
