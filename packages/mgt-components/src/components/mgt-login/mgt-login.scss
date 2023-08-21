@@ -108,7 +108,6 @@ $login-flyout-command-text-color: #{var(--login-flyout-command-text-color, var(-
       margin-top: 4px;
       background: $login-popup-background-color;
       list-style-type: none;
-      cursor: pointer;
 
       &:hover {
         background: $login-account-item-hover-bg-color;
