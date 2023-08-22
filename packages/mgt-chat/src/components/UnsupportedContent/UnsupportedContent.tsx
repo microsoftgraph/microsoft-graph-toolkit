@@ -36,11 +36,15 @@ const useStyles = makeStyles({
   }
 });
 
-const UnsupportedContent = () => {
+interface UnsupportedContentProps {
+  targetUrl: string;
+}
+
+const UnsupportedContent = (props: UnsupportedContentProps) => {
   const styles = useStyles();
   return (
     // TODO: update this URL to the correct value.
-    <a className={styles.container} href="https://teams.microsoft.com">
+    <a className={styles.container} target="blank" href={props.targetUrl}>
       <ArrowSquareUpRight24Regular />
       <p className={styles.cta}>View this message in Microsoft Teams.</p>
     </a>

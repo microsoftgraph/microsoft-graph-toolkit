@@ -97,7 +97,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
         messageProps = produce(messageProps, (draft: MessageProps) => {
           // update the content string to the component
           if (isChatMessage(draft.message)) {
-            draft.message.content = renderToString(<UnsupportedContent />);
+            draft.message.content = renderToString(<UnsupportedContent targetUrl="https://teams.microsoft.com?" />);
           }
         });
       }
