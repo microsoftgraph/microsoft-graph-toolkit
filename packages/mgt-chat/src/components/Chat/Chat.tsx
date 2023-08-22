@@ -88,8 +88,9 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
     chatState.status
   );
   const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRenderer): JSX.Element => {
-    if (isChatMessage(messageProps?.message)) {
-      const content = messageProps.message?.content;
+    const message = messageProps?.message;
+    if (isChatMessage(message)) {
+      const content = message?.content;
 
       // Test that the content is supported.
       if (content && unsupportedContentRegex.test(content)) {
