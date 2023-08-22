@@ -6,9 +6,7 @@
  */
 import { makeStyles, shorthands } from '@fluentui/react-components';
 import React from 'react';
-import { registerAppIcons } from '../styles/registerIcons';
 import { ArrowSquareUpRight24Regular } from '@fluentui/react-icons';
-registerAppIcons();
 
 const useStyles = makeStyles({
   container: {
@@ -44,7 +42,7 @@ const UnsupportedContent = () => {
     // TODO: update this URL to the correct value.
     <a className={styles.container} href="https://teams.microsoft.com">
       <ArrowSquareUpRight24Regular />
-      <p className={styles.cta}>Go back to the main window to see this content.</p>
+      <p className={styles.cta}>View this message in Microsoft Teams.</p>
     </a>
   );
 };
