@@ -1,26 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { renderToString } from 'react-dom/server';
 import {
   ErrorBar,
   FluentThemeProvider,
-  MessageThread,
-  SendBox,
   MessageProps,
   MessageRenderer,
-  Message,
-  ChatMessage
+  MessageThread,
+  SendBox
 } from '@azure/communication-react';
+<<<<<<< HEAD
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { FluentTheme, MessageBarType } from '@fluentui/react';
+=======
+import { FluentTheme } from '@fluentui/react';
+>>>>>>> 0397e88d (Update the Chat to use variables from the state object)
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
+import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
+import React, { useEffect, useState } from 'react';
+import { renderToString } from 'react-dom/server';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
+import { isChatMessage, isGraphChatMessage } from '../../utils/types';
 import ChatHeader from '../ChatHeader/ChatHeader';
+<<<<<<< HEAD
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { registerAppIcons } from '../styles/registerIcons';
+=======
+>>>>>>> 0397e88d (Update the Chat to use variables from the state object)
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
 import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
 import UnsupportedContent from '../UnsupportedContent/UnsupportedContent';
-import { produce } from 'immer';
+import { registerAppIcons } from '../styles/registerIcons';
 
 registerAppIcons();
 
@@ -60,19 +67,6 @@ const useStyles = makeStyles({
   }
 });
 
-/**
- * A typeguard to get the ChatMessage type
- * @param msg of Message
- * @returns ChatMessage
- */
-const isChatMessage = (msg: Message): msg is ChatMessage => 'content' in msg;
-
-/**
- * Regex to detect unsupported content tags in content html.
- */
-const unsupportedContentRegex = /<\/[atchmen]+>/;
-// TODO: ^ update the values to capture as unsupported.
-
 export const Chat = ({ chatId }: IMgtChatProps) => {
   const styles = useStyles();
   const chatClient: StatefulGraphChatClient = useGraphChatClient(chatId);
@@ -87,23 +81,20 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
   const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
     chatState.status
   );
-  const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRenderer): JSX.Element => {
-    const message = messageProps?.message;
-    if (isChatMessage(message)) {
-      const content = message?.content;
-
-      // Test that the content is supported.
-      if (content && unsupportedContentRegex.test(content)) {
-        messageProps = produce(messageProps, (draft: MessageProps) => {
-          // update the content string to the component
-          if (isChatMessage(draft.message)) {
-            draft.message.content = renderToString(<UnsupportedContent targetUrl="https://teams.microsoft.com?" />);
-          }
-        });
+ 
+  const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRenderer) => {
+    const updatedProps = Object.assign({}, { ...messageProps });
+    const message = updatedProps?.message;
+    if (isGraphChatMessage(message) && message?.hasUnsupportedContent) {
+      const unsupportedContentComponent = <UnsupportedContent targetUrl={message.rawChatUrl} />;
+      if (isChatMessage(message)) {
+        // TODO: assigning this string to content fails because props are
+        // TODO: readonly. Re-introduce produce?
+        message.content = renderToString(unsupportedContentComponent);
       }
     }
 
-    return defaultOnRender ? defaultOnRender(messageProps) : <></>;
+    return defaultOnRender ? defaultOnRender(updatedProps) : <></>;
   };
 
   return (
