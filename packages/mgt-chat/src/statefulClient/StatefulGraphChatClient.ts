@@ -14,9 +14,8 @@ import {
   SendBoxProps,
   SystemMessage
 } from '@azure/communication-react';
-import { getUserWithPhoto } from '@microsoft/mgt-components';
+import { IDynamicPerson, getUserWithPhoto } from '@microsoft/mgt-components';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, ProviderState, Providers } from '@microsoft/mgt-element';
-import { IDynamicPerson } from '@microsoft/mgt-react';
 import {
   AadUserConversationMember,
   Chat,
@@ -47,6 +46,7 @@ import {
   updateChatTopic
 } from './graph.chat';
 import { updateMessageContentWithImage } from './updateMessageContentWithImage';
+import { GraphError } from '@microsoft/microsoft-graph-client';
 
 // 1x1 grey pixel
 const placeholderImageContent =
