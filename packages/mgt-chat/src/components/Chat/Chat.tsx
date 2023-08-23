@@ -6,28 +6,20 @@ import {
   MessageThread,
   SendBox
 } from '@azure/communication-react';
-<<<<<<< HEAD
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { FluentTheme, MessageBarType } from '@fluentui/react';
-=======
-import { FluentTheme } from '@fluentui/react';
->>>>>>> 0397e88d (Update the Chat to use variables from the state object)
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
-import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
 import { renderToString } from 'react-dom/server';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { isChatMessage, isGraphChatMessage } from '../../utils/types';
 import ChatHeader from '../ChatHeader/ChatHeader';
-<<<<<<< HEAD
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { registerAppIcons } from '../styles/registerIcons';
-=======
->>>>>>> 0397e88d (Update the Chat to use variables from the state object)
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
 import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
 import UnsupportedContent from '../UnsupportedContent/UnsupportedContent';
-import { registerAppIcons } from '../styles/registerIcons';
+import produce from 'immer';
 
 registerAppIcons();
 
@@ -81,20 +73,19 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
   const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
     chatState.status
   );
- 
+
   const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRenderer) => {
-    const updatedProps = Object.assign({}, { ...messageProps });
-    const message = updatedProps?.message;
+    const message = messageProps?.message;
     if (isGraphChatMessage(message) && message?.hasUnsupportedContent) {
       const unsupportedContentComponent = <UnsupportedContent targetUrl={message.rawChatUrl} />;
-      if (isChatMessage(message)) {
-        // TODO: assigning this string to content fails because props are
-        // TODO: readonly. Re-introduce produce?
-        message.content = renderToString(unsupportedContentComponent);
-      }
+      messageProps = produce(messageProps, (draft: MessageProps) => {
+        if (isChatMessage(draft.message)) {
+          draft.message.content = renderToString(unsupportedContentComponent);
+        }
+      });
     }
 
-    return defaultOnRender ? defaultOnRender(updatedProps) : <></>;
+    return defaultOnRender ? defaultOnRender(messageProps) : <></>;
   };
 
   return (
