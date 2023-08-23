@@ -10,8 +10,6 @@
 @import './mgt-teams-channel-picker.theme';
 
 :host {
-  font-family: $font-family;
-
   .container {
     display: flex;
     flex-direction: column;
@@ -48,7 +46,6 @@
 
   .search-error-text,
   .loading-text {
-    font-family: $font-family;
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
