@@ -6,44 +6,47 @@
  */
 
 import {
+  ChatMessage as AcsChatMessage,
+  ContentSystemMessage,
+  ErrorBarProps,
+  Message,
   MessageThreadProps,
   SendBoxProps,
-  ChatMessage as AcsChatMessage,
-  ErrorBarProps,
-  SystemMessage,
-  ContentSystemMessage
+  SystemMessage
 } from '@azure/communication-react';
+import { getUserWithPhoto } from '@microsoft/mgt-components';
+import { ActiveAccountChanged, IGraph, LoginChangedEvent, ProviderState, Providers } from '@microsoft/mgt-element';
+import { IDynamicPerson } from '@microsoft/mgt-react';
 import {
   AadUserConversationMember,
   Chat,
   ChatMessage,
+  ChatMessageAttachment,
   ChatRenamedEventMessageDetail,
   MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
-import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
 import { produce } from 'immer';
+import { isChatMessage } from '../utils/types';
 import { v4 as uuid } from 'uuid';
-import {
-  deleteChatMessage,
-  loadChat,
-  loadChatThread,
-  loadMoreChatMessages,
-  MessageCollection,
-  sendChatMessage,
-  updateChatMessage,
-  removeChatMember,
-  addChatMembers,
-  loadChatImage,
-  updateChatTopic
-} from './graph.chat';
-import { getUserWithPhoto } from '@microsoft/mgt-components';
+import { currentUserId } from '../utils/currentUser';
+import { graph } from '../utils/graph';
 import { GraphNotificationClient } from './GraphNotificationClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
-import { IDynamicPerson } from '@microsoft/mgt-react';
+import {
+  MessageCollection,
+  addChatMembers,
+  deleteChatMessage,
+  loadChat,
+  loadChatImage,
+  loadChatThread,
+  loadMoreChatMessages,
+  removeChatMember,
+  sendChatMessage,
+  updateChatMessage,
+  updateChatTopic
+} from './graph.chat';
 import { updateMessageContentWithImage } from './updateMessageContentWithImage';
-import { graph } from '../utils/graph';
-import { currentUserId } from '../utils/currentUser';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -141,14 +144,21 @@ type MessageEventType =
   | '#microsoft.graph.chatRenamedEventMessageDetail';
 
 /**
+ * Extended Message type with additional properties.
+ */
+export type GraphChatMessage = Message & {
+  hasUnsupportedContent: boolean;
+  rawChatUrl: string;
+};
+/**
  * Holder type account for async conversion of messages.
  * Some messages need to be written to the UI immediately and recieve an async update.
  * Some messages do not have a current value and will be added after the future value is resolved.
  * Some messages do not have a future value and will be added immediately.
  */
 type MessageConversion = {
-  currentValue?: AcsChatMessage | SystemMessage;
-  futureValue?: Promise<AcsChatMessage | SystemMessage>;
+  currentValue?: GraphChatMessage;
+  futureValue?: Promise<GraphChatMessage>;
 };
 
 /**
@@ -367,7 +377,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.participants = this._chat?.members || [];
       draft.participantCount = draft.participants.length;
-      const initialMessages: (AcsChatMessage | SystemMessage)[] = [];
+      const initialMessages: GraphChatMessage[] = [];
       draft.messages = draft.messages.concat(
         messageConversions
           .map(m => m.currentValue)
@@ -407,7 +417,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       case 'message':
         return this.graphChatMessageToAcsChatMessage(message, this._userId);
       case 'unknownFutureValue':
-        return { futureValue: this.buildSystemContentMessage(message) };
+        return { futureValue: this.buildSystemContentMessage(message) } as MessageConversion;
       default:
         throw new Error(`Unknown message type ${message.messageType?.toString() || 'undefined'}`);
     }
@@ -470,9 +480,10 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         // it's here to help us catch messages we have't handled yet
         default:
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, no-console
-          console.warn(`Unknown system message type ${eventDetail['@odata.type']}
-
-detail: ${JSON.stringify(eventDetail)}`);
+          console.warn(
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `Unknown system message type ${eventDetail['@odata.type']} detail: ${JSON.stringify(eventDetail)}`
+          );
       }
     }
 
@@ -678,7 +689,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       .map(m => this.convertChatMessage(m));
 
     // update the state with the current values
-    const currentValueMessages: (AcsChatMessage | SystemMessage)[] = [];
+    const currentValueMessages: GraphChatMessage[] = [];
     messageConversions
       .map(m => m.currentValue)
       // need to use a reduce here to filter out undefined values in a way that TypeScript understands
@@ -736,11 +747,11 @@ detail: ${JSON.stringify(eventDetail)}`);
    * Update the state with given message either replacing an existing message matching on the id or adding to the list
    *
    * @private
-   * @param {(AcsChatMessage | SystemMessage)} [message]
+   * @param {(GraphChatMessage)} [message]
    * @return {*}
    * @memberof StatefulGraphChatClient
    */
-  private updateMessages(message?: AcsChatMessage | SystemMessage) {
+  private updateMessages(message?: GraphChatMessage) {
     if (!message) return;
     this.notifyStateChange((draft: GraphChatClient) => {
       const index = draft.messages.findIndex(m => m.messageId === message.messageId);
@@ -830,7 +841,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       await Promise.all(Object.values(futureImages));
       for (const [imageIndex, futureImage] of Object.entries(futureImages)) {
         const image = await futureImage;
-        if (image) {
+        if (image && isChatMessage(placeholderMessage)) {
           placeholderMessage = {
             ...placeholderMessage,
             ...{
@@ -866,13 +877,38 @@ detail: ${JSON.stringify(eventDetail)}`);
     return result;
   }
 
+  private hasUnsupportedContent(content: string, attachments: ChatMessageAttachment[]): boolean {
+    const unsupportedContentTypes = [
+      'application/vnd.microsoft.card.codesnippet',
+      'application/vnd.microsoft.card.fluid',
+      'reference'
+    ];
+    const isUnsupported: boolean[] = [];
+
+    if (attachments.length) {
+      for (const attachment of attachments) {
+        const contentType = attachment?.contentType ?? '';
+        isUnsupported.push(unsupportedContentTypes.includes(contentType));
+      }
+    } else {
+      const unsupportedContentRegex = /<\/?[atchmenbl]+>/gim;
+      const contentUnsupported = Boolean(content) && unsupportedContentRegex.test(content);
+      isUnsupported.push(contentUnsupported);
+    }
+    return isUnsupported.every(e => e === true);
+  }
+
   private buildAcsMessage(
     graphMessage: ChatMessage,
     currentUser: string,
     messageId: string,
     content: string
-  ): AcsChatMessage {
+  ): GraphChatMessage {
     const senderId = graphMessage.from?.user?.id || undefined;
+    const chatId = graphMessage?.chatId ?? '';
+    const chatUrl = `https://teams.microsoft.com/_#/conversations/${chatId}?ctx=chat`;
+    // check content is supported
+    const attachments = graphMessage?.attachments ?? [];
     return {
       messageId,
       contentType: graphMessage.body?.contentType ?? 'text',
@@ -884,7 +920,9 @@ detail: ${JSON.stringify(eventDetail)}`);
       senderId,
       mine: senderId === currentUser,
       status: 'seen',
-      attached: 'top'
+      attached: 'top',
+      hasUnsupportedContent: this.hasUnsupportedContent(content, attachments),
+      rawChatUrl: chatUrl
     };
   }
 
