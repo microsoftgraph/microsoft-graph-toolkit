@@ -19,6 +19,7 @@ import UnsupportedContent from '../UnsupportedContent/UnsupportedContent';
 import { registerAppIcons } from '../styles/registerIcons';
 import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
+import produce from 'immer';
 
 registerAppIcons();
 
@@ -67,18 +68,17 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
   }, [chatClient]);
 
   const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRenderer) => {
-    const updatedProps = Object.assign({}, { ...messageProps });
-    const message = updatedProps?.message;
+    const message = messageProps?.message;
     if (isGraphChatMessage(message) && message?.hasUnsupportedContent) {
       const unsupportedContentComponent = <UnsupportedContent targetUrl={message.rawChatUrl} />;
-      if (isChatMessage(message)) {
-        // TODO: assigning this string to content fails because props are
-        // TODO: readonly. Re-introduce produce?
-        message.content = renderToString(unsupportedContentComponent);
-      }
+      messageProps = produce(messageProps, (draft: MessageProps) => {
+        if (isChatMessage(draft.message)) {
+          draft.message.content = renderToString(unsupportedContentComponent);
+        }
+      });
     }
 
-    return defaultOnRender ? defaultOnRender(updatedProps) : <></>;
+    return defaultOnRender ? defaultOnRender(messageProps) : <></>;
   };
   const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
     chatState.status
