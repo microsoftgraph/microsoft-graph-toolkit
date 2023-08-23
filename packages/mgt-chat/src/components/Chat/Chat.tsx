@@ -6,7 +6,7 @@ import {
   MessageThread,
   SendBox
 } from '@azure/communication-react';
-import { FluentTheme } from '@fluentui/react';
+import { FluentTheme, MessageBarType } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
@@ -17,6 +17,8 @@ import ChatHeader from '../ChatHeader/ChatHeader';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
 import UnsupportedContent from '../UnsupportedContent/UnsupportedContent';
 import { registerAppIcons } from '../styles/registerIcons';
+import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
+import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 
 registerAppIcons();
 
@@ -44,12 +46,18 @@ const useStyles = makeStyles({
   },
   fullHeight: {
     height: '100%'
+  },
+  spinner: {
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    height: '100%'
   }
 });
 
 export const Chat = ({ chatId }: IMgtChatProps) => {
   const styles = useStyles();
-  const chatClient = useGraphChatClient(chatId);
+  const chatClient: StatefulGraphChatClient = useGraphChatClient(chatId);
   const [chatState, setChatState] = useState(chatClient.getState());
   useEffect(() => {
     chatClient.onStateChange(setChatState);
@@ -72,12 +80,15 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
 
     return defaultOnRender ? defaultOnRender(updatedProps) : <></>;
   };
+  const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
+    chatState.status
+  );
 
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={teamsLightTheme} className={styles.fullHeight}>
         <div className={styles.chat}>
-          {chatState.userId && chatState.messages.length > 0 ? (
+          {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
               <ChatHeader
                 chat={chatState.chat}
@@ -123,8 +134,21 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
             </>
           ) : (
             <>
-              {chatState.status}
-              <Spinner />
+              {isLoading && (
+                <div className={styles.spinner}>
+                  <Spinner /> <br />
+                  {chatState.status}
+                </div>
+              )}
+              {chatState.status === 'no messages' && (
+                <ChatMessageBar
+                  messageBarType={MessageBarType.error}
+                  message={`No messages were found for the id ${chatId}.`}
+                />
+              )}
+              {chatState.status === 'no chat id' && (
+                <ChatMessageBar messageBarType={MessageBarType.error} message={'A valid chat id is required.'} />
+              )}
             </>
           )}
         </div>

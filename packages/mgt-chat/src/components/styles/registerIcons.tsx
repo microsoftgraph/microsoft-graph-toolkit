@@ -5,6 +5,7 @@ import { buttonIconStyles } from './common.styles';
 
 const registerAppIcons = () => {
   const icons = Object.assign(DEFAULT_COMPONENT_ICONS, {
+    // TODO: Register the info and errorbadge icons
     'add-friend': (
       <svg
         xmlns="http://www.w3.org/2000/svg"
