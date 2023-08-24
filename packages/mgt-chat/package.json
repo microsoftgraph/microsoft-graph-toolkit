@@ -41,6 +41,8 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "adaptivecards": "3.0.1",
+    "adaptivecards-fluentui": "0.5.3",
     "@azure/communication-calling": "1.10.1",
     "@azure/communication-chat": "1.3.0",
     "@azure/communication-common": "2.2.0",
@@ -51,6 +53,7 @@
     "@fluentui/react-northstar": "^0.66.4",
     "@fluentui/react-components": "^9.19.1",
     "@fluentui/react-icons": "^2.0.200",
+    "markdown-it": "13.0.1",
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-msal2-provider": "*",
@@ -58,6 +61,8 @@
     "@microsoft/microsoft-graph-types": "^2.0.0",
     "@microsoft/microsoft-graph-types-beta": "^0.16.0-preview",
     "@microsoft/signalr": "^7.0.4",
+    "swiper": "10.2.0",
+    "@types/markdown-it": "13.0.0",
     "immer": "^9.0.6",
     "uuid": "^9.0.0",
     "web-vitals": "^2.1.4"
