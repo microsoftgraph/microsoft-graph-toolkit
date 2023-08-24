@@ -6,45 +6,49 @@
  */
 
 import {
+  ChatMessage as AcsChatMessage,
+  ContentSystemMessage,
+  ErrorBarProps,
   MessageThreadProps,
   SendBoxProps,
-  ChatMessage as AcsChatMessage,
-  ErrorBarProps,
-  SystemMessage,
-  ContentSystemMessage
+  SystemMessage
 } from '@azure/communication-react';
+import { getUserWithPhoto } from '@microsoft/mgt-components';
+import { ActiveAccountChanged, IGraph, LoginChangedEvent, ProviderState, Providers } from '@microsoft/mgt-element';
+import { IDynamicPerson } from '@microsoft/mgt-react';
+import { GraphError } from '@microsoft/microsoft-graph-client';
 import {
   AadUserConversationMember,
   Chat,
   ChatMessage,
+  ChatMessageAttachment,
   ChatRenamedEventMessageDetail,
   MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
-import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
+import * as AdaptiveCards from 'adaptivecards';
+import { useFluentUI } from 'adaptivecards-fluentui';
 import { produce } from 'immer';
+import MarkdownIt from 'markdown-it';
 import { v4 as uuid } from 'uuid';
-import {
-  deleteChatMessage,
-  loadChat,
-  loadChatThread,
-  loadMoreChatMessages,
-  MessageCollection,
-  sendChatMessage,
-  updateChatMessage,
-  removeChatMember,
-  addChatMembers,
-  loadChatImage,
-  updateChatTopic
-} from './graph.chat';
-import { getUserWithPhoto } from '@microsoft/mgt-components';
+import { currentUserId, currentUserName } from '../utils/currentUser';
+import { graph } from '../utils/graph';
 import { GraphNotificationClient } from './GraphNotificationClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
-import { IDynamicPerson } from '@microsoft/mgt-react';
+import {
+  MessageCollection,
+  addChatMembers,
+  deleteChatMessage,
+  loadChat,
+  loadChatImage,
+  loadChatThread,
+  loadMoreChatMessages,
+  removeChatMember,
+  sendChatMessage,
+  updateChatMessage,
+  updateChatTopic
+} from './graph.chat';
 import { updateMessageContentWithImage } from './updateMessageContentWithImage';
-import { graph } from '../utils/graph';
-import { currentUserId, getCurrentUser, currentUserName } from '../utils/currentUser';
-import { GraphError } from '@microsoft/microsoft-graph-client';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -937,6 +941,16 @@ detail: ${JSON.stringify(eventDetail)}`);
       content = this.processEmojiContent(content);
     }
 
+    // check and process adaptive cards
+    const attachments = graphMessage?.attachments ?? [];
+    if (attachments.length) {
+      // TODO: we probably want to check the graphMessage.content value and remove
+      // TODO: the references to <attachment id="xxx"></attachment>. replace with what?
+      // TODO: maintain any other text in the graphMessage.content
+      // currently replacing graphMessage.content with the adaptiveCard HTML string
+      content = this.processAdaptiveCard(attachments);
+    }
+
     const imageMatch = this.graphImageMatch(content ?? '');
     if (imageMatch) {
       // if the message contains an image, we need to fetch the image and replace the placeholder
@@ -945,6 +959,44 @@ detail: ${JSON.stringify(eventDetail)}`);
       result.currentValue = this.buildAcsMessage(graphMessage, currentUser, graphMessage.id, content);
     }
     return result;
+  }
+
+  private processAdaptiveCard(attachments: ChatMessageAttachment[]): string {
+    let content = '';
+    for (const attachment of attachments) {
+      const contentType = attachment?.contentType;
+      if (contentType === 'application/vnd.microsoft.card.adaptive') {
+        const adaptiveCardContentString: string = attachment?.content ?? '';
+        // TODO: this content is msteams specific content. Actions are NOT working
+        const adaptiveCardContent = JSON.parse(adaptiveCardContentString) ?? {};
+        const adaptiveCard = new AdaptiveCards.AdaptiveCard();
+
+        // markdown support
+        AdaptiveCards.AdaptiveCard.onProcessMarkdown = (
+          text: string,
+          result: AdaptiveCards.IMarkdownProcessingResult
+        ) => {
+          const md = new MarkdownIt();
+          result.outputHtml = md.render(text);
+          result.didProcess = true;
+        };
+
+        // Use Fluentui styles
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, react-hooks/rules-of-hooks
+        useFluentUI();
+
+        adaptiveCard.hostConfig = new AdaptiveCards.HostConfig({
+          fontFamily: 'Segoe UI, Helvetica Neue, sans-serif'
+          // More host config options
+        });
+
+        // Parse and render to html string
+        adaptiveCard.parse(adaptiveCardContent);
+        const renderedCard = adaptiveCard.render();
+        content += renderedCard?.outerHTML ?? '';
+      }
+    }
+    return content;
   }
 
   private buildAcsMessage(
