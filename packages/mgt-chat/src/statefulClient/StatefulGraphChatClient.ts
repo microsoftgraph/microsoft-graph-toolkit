@@ -21,7 +21,15 @@ import {
   MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
-import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
+import {
+  ActiveAccountChanged,
+  IGraph,
+  log,
+  LoginChangedEvent,
+  Providers,
+  ProviderState,
+  warn
+} from '@microsoft/mgt-element';
 import { produce } from 'immer';
 import { v4 as uuid } from 'uuid';
 import {
@@ -35,7 +43,8 @@ import {
   removeChatMember,
   addChatMembers,
   loadChatImage,
-  updateChatTopic
+  updateChatTopic,
+  loadChatThreadDelta
 } from './graph.chat';
 import { getUserWithPhoto } from '@microsoft/mgt-components';
 import { GraphNotificationClient } from './GraphNotificationClient';
@@ -44,6 +53,7 @@ import { IDynamicPerson } from '@microsoft/mgt-react';
 import { updateMessageContentWithImage } from './updateMessageContentWithImage';
 import { graph } from '../utils/graph';
 import { currentUserId } from '../utils/currentUser';
+import { MessageCache } from './Caching/MessageCache';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -76,7 +86,7 @@ const isChatMemberChangeEvent = (
 };
 
 // defines the type of the state object returned from the StatefulGraphChatClient
-type GraphChatClient = Pick<
+export type GraphChatClient = Pick<
   MessageThreadProps,
   | 'userId'
   | 'messages'
@@ -135,6 +145,17 @@ type CreatedOn = {
  */
 const MessageCreatedComparator = (a: CreatedOn, b: CreatedOn) => a.createdOn.getTime() - b.createdOn.getTime();
 
+const ChatMessageCreatedComparator = (a: ChatMessage, b: ChatMessage): number => {
+  if (a.createdDateTime && b.createdDateTime) {
+    if (a.createdDateTime === b.createdDateTime) return 0;
+    if (a.createdDateTime > b.createdDateTime) return 1;
+    return -1;
+  } else if (a.createdDateTime) {
+    return 1;
+  }
+  return -1;
+};
+
 type MessageEventType =
   | '#microsoft.graph.membersAddedEventMessageDetail'
   | '#microsoft.graph.membersDeletedEventMessageDetail'
@@ -142,7 +163,7 @@ type MessageEventType =
 
 /**
  * Holder type account for async conversion of messages.
- * Some messages need to be written to the UI immediately and recieve an async update.
+ * Some messages need to be written to the UI immediately and receive an async update.
  * Some messages do not have a current value and will be added after the future value is resolved.
  * Some messages do not have a future value and will be added immediately.
  */
@@ -170,11 +191,12 @@ const emojiRegex = /(<emoji[^>]+)alt=["'](\w*[^"']*)["'](.*[^>])<\/emoji>/;
 class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private readonly _notificationClient: GraphNotificationClient;
   private readonly _eventEmitter: ThreadEventEmitter;
+  private readonly _cache: MessageCache;
   private _subscribers: ((state: GraphChatClient) => void)[] = [];
   private get _messagesPerCall() {
     return 5;
   }
-  private _nextLink = '';
+  private _nextLink?: string;
   private _chat?: Chat = undefined;
   private _userDisplayName = '';
 
@@ -184,6 +206,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
+    this._cache = new MessageCache();
     this._notificationClient = new GraphNotificationClient(this._eventEmitter);
   }
 
@@ -340,8 +363,34 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       draft.status = 'loading messages';
     });
     this._chat = await loadChat(this.graph, this._chatId);
-    const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
-    await this.writeMessagesToState(messages);
+    const cachedMessages = await this._cache.loadMessages(this._chatId);
+    if (cachedMessages) {
+      // use currently cached data
+      await this.writeMessagesToState(cachedMessages);
+      // load delta messages
+      const deltaMessages = await this.loadDeltaData(this._chatId, cachedMessages.lastModifiedDateTime);
+      // add delta messages to cache
+      const updatedState = await this._cache.cacheMessages(this._chatId, deltaMessages);
+      // writeMessagesToState concats with existing state, need to be careful not to create duplicate messages
+      updatedState.value = deltaMessages;
+      // update state
+      await this.writeMessagesToState(updatedState);
+    } else {
+      const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
+      await this._cache.cacheMessages(this._chatId, messages.value, true, messages.nextLink);
+      await this.writeMessagesToState(messages);
+    }
+  }
+
+  private async loadDeltaData(chatId: string, lastModified: string): Promise<ChatMessage[]> {
+    const result: ChatMessage[] = [];
+    let response = await loadChatThreadDelta(this.graph, chatId, lastModified, this._messagesPerCall);
+    result.push(...response.value);
+    while (response.nextLink) {
+      response = await loadMoreChatMessages(this.graph, response.nextLink);
+      result.push(...response.value);
+    }
+    return result.sort(ChatMessageCreatedComparator);
   }
 
   /**
@@ -368,15 +417,17 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       draft.participants = this._chat?.members || [];
       draft.participantCount = draft.participants.length;
       const initialMessages: (AcsChatMessage | SystemMessage)[] = [];
-      draft.messages = draft.messages.concat(
-        messageConversions
-          .map(m => m.currentValue)
-          // need to use a reduce here to filter out undefined values in a way that TypeScript understands
-          .reduce((acc, val) => {
-            if (val) acc.push(val);
-            return acc;
-          }, initialMessages)
-      );
+      draft.messages = draft.messages
+        .concat(
+          messageConversions
+            .map(m => m.currentValue)
+            // need to use a reduce here to filter out undefined values in a way that TypeScript understands
+            .reduce((acc, val) => {
+              if (val) acc.push(val);
+              return acc;
+            }, initialMessages)
+        )
+        .sort(MessageCreatedComparator);
       draft.onLoadPreviousChatMessages = this._nextLink ? this.loadMoreMessages : undefined;
       draft.status = this._nextLink ? 'loading messages' : 'ready';
       draft.chat = this._chat;
@@ -469,8 +520,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         // TODO: move this default case to a console.warn before release and emit an empty message
         // it's here to help us catch messages we have't handled yet
         default:
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, no-console
-          console.warn(`Unknown system message type ${eventDetail['@odata.type']}
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          warn(`Unknown system message type ${eventDetail['@odata.type']}
 
 detail: ${JSON.stringify(eventDetail)}`);
       }
@@ -502,6 +553,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       return true;
     }
     const messages: MessageCollection = await loadMoreChatMessages(this.graph, this._nextLink);
+    await this._cache.cacheMessages(this._chatId, messages.value, true, messages.nextLink);
     await this.writeMessagesToState(messages);
     // return true when there are no more messages to load
     return !this._nextLink;
@@ -701,8 +753,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       // TODO handle the case where there were a lot of missed messages and we ned to get the next page of messages.
       // This is not a common case, but we should handle it.
     }
-    // eslint-disable-next-line no-console
-    console.log('checked for missed messages');
+    log('checked for missed messages');
   };
 
   private readonly onChatNotificationsSubscribed = (resource: string): void => {

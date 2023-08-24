@@ -5,21 +5,18 @@
  * -------------------------------------------------------------------------------------------
  */
 
-/* eslint-disable no-console */
-import { Providers } from '@microsoft/mgt-element';
+import { Providers, error, log } from '@microsoft/mgt-element';
 import * as signalR from '@microsoft/signalr';
-import OpenCrypto from 'opencrypto';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
 import type { Subscription, ChatMessage, Chat, AadUserConversationMember } from '@microsoft/microsoft-graph-types';
 import {} from '@microsoft/microsoft-graph-types-beta';
 import { GraphConfig } from './GraphConfig';
+import { SubscriptionsCache } from './Caching/SubscriptionCache';
 
 export const appSettings = {
-  functionHost: '', // TODO: improve how this is loaded
-  defaultSubscriptionLifetimeInMinutes: 5,
-  renewalThreshold: 45, // The number of seconds before subscription expires it will be renewed
-  timerInterval: 10, // The number of seconds the timer will check on expiration
-  appId: ''
+  defaultSubscriptionLifetimeInMinutes: 10,
+  renewalThreshold: 75, // The number of seconds before subscription expires it will be renewed
+  timerInterval: 20 // The number of seconds the timer will check on expiration
 };
 
 type ChangeTypes = 'created' | 'updated' | 'deleted';
@@ -36,37 +33,18 @@ type Notification = {
   encryptedContent: string;
 };
 
-type ChatSubscription = {
-  chatId: string;
-  subscriptions: Subscription[];
-};
-
-const subscriptionCacheKey = 'graph-subscriptions';
-
-const loadCachedSubscriptions = (): ChatSubscription | undefined => {
-  const cacheData = localStorage.getItem(subscriptionCacheKey);
-  return cacheData ? (JSON.parse(cacheData) as ChatSubscription) : undefined;
-};
-
 export class GraphNotificationClient {
   private connection?: signalR.HubConnection = undefined;
   private renewalInterval = -1;
   private renewalCount = 0;
   private currentUserId = '';
   private chatId = '';
+  private readonly subscriptionCache: SubscriptionsCache = new SubscriptionsCache();
 
   /**
    *
    */
   constructor(private readonly emitter: ThreadEventEmitter) {}
-
-  private _crypt?: OpenCrypto;
-  private async ensureCrpyto() {
-    if (!this._crypt) {
-      this._crypt = new OpenCrypto();
-      await Promise.resolve();
-    }
-  }
 
   private get _publicKey() {
     return 'LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tDQpNSUlGblRDQ0E0V2dBd0lCQWdJVUdJL1N3SDhjMDZ0NzB3VWtrTUxnN2UrN2hha3dEUVlKS29aSWh2Y05BUUVMDQpCUUF3WGpFTE1Ba0dBMVVFQmhNQ2RYTXhDekFKQmdOVkJBZ01BbmRoTVJBd0RnWURWUVFIREFkeVpXUnRiMjVrDQpNUkF3RGdZRFZRUUtEQWRqYjI1MGIzTnZNUXd3Q2dZRFZRUUxEQU5rWlhZeEVEQU9CZ05WQkFNTUIyMW5kQzVrDQpaWFl3SGhjTk1qTXdPREUzTVRnMU5UVTRXaGNOTWpRd09ERTJNVGcxTlRVNFdqQmVNUXN3Q1FZRFZRUUdFd0oxDQpjekVMTUFrR0ExVUVDQXdDZDJFeEVEQU9CZ05WQkFjTUIzSmxaRzF2Ym1ReEVEQU9CZ05WQkFvTUIyTnZiblJ2DQpjMjh4RERBS0JnTlZCQXNNQTJSbGRqRVFNQTRHQTFVRUF3d0hiV2QwTG1SbGRqQ0NBaUl3RFFZSktvWklodmNODQpBUUVCQlFBRGdnSVBBRENDQWdvQ2dnSUJBTFEyQnVKNWdwZ3RjMTYwM0hVMlMrUjBJaFlqOHRNd29UQ1FCc2pVDQpxVW44ZS9GRDduaUQ2ZGRpNWVvRzdXZkdHd2MrUnIzS0tYV3VDemJRQlJnb0xLZk8wbUdtVWFuaEt1a3JKYXBqDQpxYmoycDZReERYMTJCQjlORHVrQ1NEZy9ZdmdjeThTRHBEYTBSL3pyTE9UU2VTb0J1MzhzbGNEbmxBcDVMbTc3DQorTVVqNFV2cG5lWFIrOXRFUjFBQWQySVpZT1RTTFM2bllId2plUndtQ2FhV1VITHYrdnR2emQ3MUdiWmlUenBRDQpDNXNtS1dJUmVzM3VGOGoyb3hXcndJY042WVZuV3lQb3RXT2NNZEhSdmdyVDZSSjdQSCtkYmlMUlJ5OW1ORk94DQptbUJJY2ZxaWRSVHREZlFEYndNeExhNXArRlNvRW92QWhNUi9rUFRMaDkzSkkyZDJxVStEQnJnQkhYZ0dRSHZDDQo4TUZsaVBpVGJwZWJ3R09sbkNHQnZpdWp2cEJ2TUJscUhJU3RlTE0zOGwvUFRna1VsVmtrMURrdjgvRko5TlZHDQpZN2piUmV5ck4wbmlpcXRadHNUOVpNb1FQNnErdWpON0M1clA5NzdVQzlySnZ6TG9TcVhIVVh3SWhRVXUrd3dPDQpnYlBmTVpyZG1aT1NGRzMxSjQvT0tDRW0zMGNtZFR3VmdJeUJOUjNBTlJXUDdtVzdBakFsSmY5ckszVkZMK3FDDQpUM244RXlJcXVQRnVDd05uWGpWbXpQNzJZRU5MWEE4Y0lYczNFVGNDeE1VQjZ1RTlJY2hOK1ROemdpeklsNTVSDQpKa0RETFdoVmFlcHUzOFRpcldWTHI5TG8wZWRwemRMcmZoOHNXU3JJbjRYaVRTWE94d2VEMUNldW42MkRCSFl0DQpGSnMzQWdNQkFBR2pVekJSTUIwR0ExVWREZ1FXQkJScmhPQ0pZNUFUeWNTNkdhT3BwS3NscnlUWW5qQWZCZ05WDQpIU01FR0RBV2dCUnJoT0NKWTVBVHljUzZHYU9wcEtzbHJ5VFluakFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQTBHDQpDU3FHU0liM0RRRUJDd1VBQTRJQ0FRQi8wRTZnd0lpMU1ESHkxc1hISFJQb2tYbVdkeFZ0YmY3YUw3elI3YllkDQpKaUVXRzEzc1J6SElFa3pETTMwUkRJT2xvZnRrbUM1bUM2R09XMmh2WTk4alMzQnM4Z0xIVktwNTU2NVpoT01mDQpheWVId0ZmK1NON1VMRDhMYVNsSTNqVkIydzlkZFFObjhHbm1oejBYckJqektOcEl0NzVyYXFaSGpXRGVwR3lxDQpkS1dsSXJ6RktSOVF6dVV4MzhTeDNxSzlaMWhRdHBQcXJ4U1R6dU92S1RzRDU4TXpMR1JEcUl3NHFmNkRxL2R0DQptTVdnRVEvNXFrMFI5b2pDNnRGYUhjVHFxZGYwSk8xcjNPYUxDTDVFMWtYNGl3WTdPSSs2K3k3NVR4ZjROZ0x1DQpLTGcyUWZrTGRLOXorS1JsQm1tWTI4Y0dOZHV5bmtzVFM3QnpyRHQzMjRSMEV0M0V5QzRzQzRlb2JyTGFTbi9ODQpKcU83S3VIaHdheE8wUmFnN0dPNTdZTWFpNy8yV0kxQ09vTlhFOTJUTEg5NXFuMFBJWWVtSlhEVmdsOE8ybzJBDQplcmU2R1JBQXc3UWFjSERpUjdFd1o5UnVwQldNTkFxbHpiNGRFNk13bzZtWkMwcDQrQng0MHZnb2hKbWtiNXhiDQozclJsME0wM0F6RmQwVWpqNGtLOGkzdy9ic0E4cDdMWUlIS3BjQkVjS3MzbGwvV2Y3UTlhVE1LS3NvTDNTdlpYDQpIT0xrS3pYbGc4K1l4blJKZ3ZoS2I4WmFQV3R1V25ZeG5oaUlYVk4yeVBqdjlzcU56NWVmWDJOTDByczhCV0Z4DQp2T0tUcCt5dnp2aVhDeVVpSW9LMFVacHpNTWlaY05LUEdOTHgxWkM4UDJVSTNENWwwL1IvWHo5UGtSTjVveFFzDQppZz09DQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0t';
@@ -80,30 +58,26 @@ export class GraphNotificationClient {
 
   // TODO: understand if this is needed under the native model
   private readonly onReconnect = (connectionId: string | undefined) => {
-    console.log(`Reconnected. ConnectionId: ${connectionId || 'undefined'}`);
+    log(`Reconnected. ConnectionId: ${connectionId || 'undefined'}`);
     // void this.renewChatSubscriptions();
   };
 
   private async decryptMessage<T>(encryptedData: string): Promise<T> {
-    if (!this._crypt) throw new Error('ensureCrypto must be called before attempting to crypto items');
-    // return await this._crypt.rsaDecrypt(this._privateKey, encryptedData) as T;
     return (await Promise.resolve(encryptedData)) as T;
   }
 
   private readonly receiveNotificationMessage = async (notification: Notification) => {
-    console.log('received notification message', notification);
-    // const emitter: ThreadEventEmitter | undefined = this.emitter;
-    // if (!notification.encryptedContent) throw new Error('Message did not contain encrypted content');
-    // if (notification.resource.indexOf('/messages') !== -1) {
-    //   await this.processMessageNotification(notification, emitter);
-    // } else if (notification.resource.indexOf('/members') !== -1) {
-    //   await this.processMembershipNotification(notification, emitter);
-    // } else {
-    //   await this.processChatPropertiesNotification(notification, emitter);
-    // }
-    await Promise.resolve();
-    const result = new signalR.HttpResponse(200);
-    return result;
+    log('received notification message', notification);
+    const emitter: ThreadEventEmitter | undefined = this.emitter;
+    if (!notification.encryptedContent) throw new Error('Message did not contain encrypted content');
+    if (notification.resource.indexOf('/messages') !== -1) {
+      await this.processMessageNotification(notification, emitter);
+    } else if (notification.resource.indexOf('/members') !== -1) {
+      await this.processMembershipNotification(notification, emitter);
+    } else {
+      await this.processChatPropertiesNotification(notification, emitter);
+    }
+    return new signalR.HttpResponse(200);
   };
 
   private async processMessageNotification(notification: Notification, emitter: ThreadEventEmitter | undefined) {
@@ -152,25 +126,10 @@ export class GraphNotificationClient {
     }
   }
 
-  private readonly cacheSubscription = (subscriptionRecord: Subscription) => {
-    console.log(subscriptionRecord);
+  private readonly cacheSubscription = async (subscriptionRecord: Subscription): Promise<void> => {
+    log(subscriptionRecord);
 
-    let cacheEntry = loadCachedSubscriptions();
-    if (cacheEntry && cacheEntry.chatId === this.chatId) {
-      const subIndex = cacheEntry.subscriptions.findIndex(s => s.resource === subscriptionRecord.resource);
-      if (subIndex !== -1) {
-        cacheEntry.subscriptions[subIndex] = subscriptionRecord;
-      } else {
-        cacheEntry.subscriptions.push(subscriptionRecord);
-      }
-    } else {
-      cacheEntry = {
-        chatId: this.chatId,
-        subscriptions: [subscriptionRecord]
-      };
-    }
-
-    localStorage.setItem(subscriptionCacheKey, JSON.stringify(cacheEntry));
+    await this.subscriptionCache.cacheSubscription(this.chatId, subscriptionRecord);
 
     // only start timer once. -1 for renewaltimer is semaphore it has stopped.
     if (this.renewalInterval === -1) this.startRenewalTimer();
@@ -192,34 +151,38 @@ export class GraphNotificationClient {
       clientState: 'wsssecret'
     };
 
-    console.log('subscribing to changes for ' + resourcePath);
+    log('subscribing to changes for ' + resourcePath);
     // send subscription POST to Graph
     const subscription: Subscription = (await Providers.globalProvider.graph.client
       .api(GraphConfig.subscriptionEndpoint)
       .post(subscriptionDefinition)) as Subscription;
     if (!subscription?.notificationUrl) throw new Error('Subscription not created');
-    console.log(subscription);
+    log(subscription);
     subscription.notificationUrl = GraphConfig.adjustNotificationUrl(subscription.notificationUrl);
 
+    const awaits: Promise<void>[] = [];
     // Cache the subscription in storage for re-hydration on page refreshes
-    this.cacheSubscription(subscription);
+    awaits.push(this.cacheSubscription(subscription));
 
     // create a connection to the web socket if one does not exist
-    if (!this.connection) await this.createSignalRConnection(subscription.notificationUrl);
+    if (!this.connection) awaits.push(this.createSignalRConnection(subscription.notificationUrl));
 
-    console.log('Invoked CreateSubscription');
+    log('Invoked CreateSubscription');
+    return Promise.all(awaits);
   }
 
   private readonly startRenewalTimer = () => {
     if (this.renewalInterval !== -1) clearInterval(this.renewalInterval);
-    this.renewalInterval = window.setInterval(() => this.renewalTimer(), appSettings.timerInterval * 1000);
-    console.log(`Start renewal timer . Id: ${this.renewalInterval}`);
+    this.renewalInterval = window.setInterval(this.syncTimerWrapper, appSettings.timerInterval * 1000);
+    log(`Start renewal timer . Id: ${this.renewalInterval}`);
   };
 
-  private readonly renewalTimer = () => {
-    const subscriptions = loadCachedSubscriptions()?.subscriptions || [];
+  private readonly syncTimerWrapper = () => void this.renewalTimer();
+
+  private readonly renewalTimer = async () => {
+    const subscriptions = (await this.subscriptionCache.loadSubscriptions())?.subscriptions || [];
     if (subscriptions.length === 0) {
-      console.log(`No subscriptions found in session state. Stop renewal timer ${this.renewalInterval}.`);
+      log(`No subscriptions found in session state. Stop renewal timer ${this.renewalInterval}.`);
       clearInterval(this.renewalInterval);
       return;
     }
@@ -232,7 +195,7 @@ export class GraphNotificationClient {
 
       if (diff <= appSettings.renewalThreshold) {
         this.renewalCount++;
-        console.log(`Renewing Graph subscription. RenewalCount: ${this.renewalCount}`);
+        log(`Renewing Graph subscription. RenewalCount: ${this.renewalCount}`);
         // stop interval to prevent new invokes until refresh is ready.
         clearInterval(this.renewalInterval);
         this.renewalInterval = -1;
@@ -250,13 +213,13 @@ export class GraphNotificationClient {
       new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
     );
 
-    const subscriptionCache = loadCachedSubscriptions();
+    const subscriptionCache = await this.subscriptionCache.loadSubscriptions();
     const awaits: Promise<unknown>[] = [];
     for (const subscription of subscriptionCache?.subscriptions || []) {
       if (!subscription.id) continue;
       // the renewSubscription method caches the updated subscription to track the new expiration time
       awaits.push(this.renewSubscription(subscription.id, expirationTime.toISOString()));
-      console.log(`Invoked RenewSubscription ${subscription.id}`);
+      log(`Invoked RenewSubscription ${subscription.id}`);
     }
     await Promise.all(awaits);
   };
@@ -268,7 +231,7 @@ export class GraphNotificationClient {
       .patch({
         expirationDateTime
       })) as Subscription;
-    this.cacheSubscription(renewedSubscription);
+    return this.cacheSubscription(renewedSubscription);
   };
 
   public async createSignalRConnection(notificationUrl: string) {
@@ -286,39 +249,36 @@ export class GraphNotificationClient {
 
     connection.on('receivenotificationmessageasync', this.receiveNotificationMessage);
 
-    connection.on('EchoMessage', console.log);
+    connection.on('EchoMessage', log);
 
     this.connection = connection;
     try {
       await connection.start();
-      console.log(connection);
+      log(connection);
     } catch (e) {
-      console.error('An error occurred connecting to the notification web socket', e);
+      error('An error occurred connecting to the notification web socket', e);
     }
   }
 
-  private async removeSubscriptions(subscriptions: Subscription[]) {
+  private async removeSubscriptions(subscriptions: Subscription[]): Promise<unknown[]> {
     const tasks: Promise<unknown>[] = [];
     for (const s of subscriptions) {
       // if there is no id or the subscription is expired, skip
       if (!s.id || (s.expirationDateTime && new Date(s.expirationDateTime) <= new Date())) continue;
       tasks.push(Providers.globalProvider.graph.client.api(`${GraphConfig.subscriptionEndpoint}/${s.id}`).delete());
     }
-    await Promise.all(tasks);
+    return Promise.all(tasks);
   }
 
   public async subscribeToChatNotifications(userId: string, threadId: string, afterConnection: () => void) {
     afterConnection();
 
-    await this.ensureCrpyto();
-
     this.currentUserId = userId;
     this.chatId = threadId;
-    const cacheData = loadCachedSubscriptions();
+    const cacheData = await this.subscriptionCache.loadSubscriptions();
     if (cacheData && cacheData.chatId !== threadId) {
       // check validity of subscription and delete if still valid;
       await this.removeSubscriptions(cacheData.subscriptions);
-      localStorage.removeItem(subscriptionCacheKey);
     }
     if (cacheData && cacheData.chatId === threadId) {
       // check subscription validity & renew if all still valid otherwise recreate
@@ -334,9 +294,9 @@ export class GraphNotificationClient {
         await this.renewChatSubscriptions();
         return;
       }
-      localStorage.removeItem(subscriptionCacheKey);
+      await this.subscriptionCache.clearCachedSubscriptions();
     }
-    const promises: Promise<void>[] = [];
+    const promises: Promise<unknown>[] = [];
     promises.push(this.subscribeToResource(`/chats/${threadId}/messages`, ['created', 'updated', 'deleted']));
     promises.push(this.subscribeToResource(`/chats/${threadId}/members`, ['created', 'deleted']));
     promises.push(this.subscribeToResource(`/chats/${threadId}`, ['updated', 'deleted']));

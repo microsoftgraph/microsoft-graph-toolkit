@@ -7,7 +7,7 @@
 
 import { User } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { TeamsHelper, customElement } from '@microsoft/mgt-element';
+import { TeamsHelper, customElement, error } from '@microsoft/mgt-element';
 import { classMap } from 'lit/directives/class-map.js';
 
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -298,8 +298,7 @@ export class MgtContact extends BasePersonCardSection {
     if (resource) {
       window.open(`${protocol}${resource}`, '_blank', 'noreferrer');
     } else {
-      // eslint-disable-next-line no-console
-      console.error(`🦒: Target resource for ${protocol} link was not provided: resource: ${resource}`);
+      error(`Target resource for ${protocol} link was not provided: resource: ${resource}`);
     }
   }
 
@@ -311,8 +310,7 @@ export class MgtContact extends BasePersonCardSection {
    */
   protected sendChat(upn: string): void {
     if (!upn) {
-      // eslint-disable-next-line no-console
-      console.error("🦒: Can't send chat when upn is not provided");
+      error(" Can't send chat when upn is not provided");
       return;
     }
 

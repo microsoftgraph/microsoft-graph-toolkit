@@ -7,7 +7,7 @@
 
 import { CSSResult, html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { customElement, MgtBaseComponent } from '@microsoft/mgt-element';
+import { customElement, MgtBaseComponent, warn } from '@microsoft/mgt-element';
 import { fluentSearch } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { strings } from './strings';
@@ -93,8 +93,8 @@ export class MgtSearchBox extends MgtBaseComponent {
 
   constructor() {
     super();
-    console.warn(
-      '🦒: <mgt-search-box> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
+    warn(
+      '<mgt-search-box> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
     );
     this.debounceDelay = 300;
   }

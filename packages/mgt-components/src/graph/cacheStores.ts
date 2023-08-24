@@ -15,11 +15,21 @@ export type CacheNames =
   | 'files'
   | 'get'
   | 'fileLists'
-  | 'search';
+  | 'search'
+  | 'conversation';
+
 /**
  * All schemas and stores for caching component calls
  */
 export const schemas: Record<CacheNames, CacheSchema> = {
+  conversation: {
+    name: 'conversation',
+    stores: {
+      chats: 'chats',
+      subscriptions: 'subscriptions'
+    },
+    version: 1
+  },
   presence: {
     name: 'presence',
     stores: {
