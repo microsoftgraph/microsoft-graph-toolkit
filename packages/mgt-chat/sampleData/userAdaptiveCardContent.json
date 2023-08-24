@@ -1,0 +1,76 @@
+{
+  "type": "AdaptiveCard",
+  "body": [
+    {
+      "altText": "Christina Shusho - Shusha Nyavu (Official Video) SMS SKIZA 7916811 to 811",
+      "size": "stretch",
+      "url": "https://i.ytimg.com/vi/eOGKpXVSkDU/mqdefault.jpg",
+      "height": "auto",
+      "spacing": "None",
+      "type": "Image"
+    },
+    {
+      "maxLines": 2,
+      "size": "large",
+      "text": "Christina Shusho - Shusha Nyavu (Official Video) SMS SKIZA 7916811 to 811",
+      "weight": "bolder",
+      "wrap": true,
+      "type": "TextBlock"
+    },
+    {
+      "isSubtle": true,
+      "maxLines": 2,
+      "size": "small",
+      "text": "Christina Shusho | 04:04 | 5.6M views | 2 years ago",
+      "weight": "lighter",
+      "wrap": true,
+      "spacing": "Small",
+      "type": "TextBlock"
+    },
+    {
+      "actions": [
+        {
+          "data": {
+            "msteams": {
+              "type": "invoke",
+              "value": {
+                "type": "tab/tabInfoAction",
+                "tabInfo": {
+                  "contentUrl": "https://tabs.teams.microsoft.com/pre/youtubeContentStage?videoId%3deOGKpXVSkDU",
+                  "websiteUrl": "https://www.youtube.com/watch?v=eOGKpXVSkDU",
+                  "entityId": "924dabf6-32b2-400f-998d-e14c3f7edeaa"
+                }
+              }
+            }
+          },
+          "title": "Open",
+          "type": "Action.Submit"
+        },
+        {
+          "url": "https://teams.microsoft.com/l/meeting-share?deeplinkId=ACCC6AFE-449D-4AF3-8D3E-E8A7B3AB1280&fqdn=&lm=deeplink&appContext=%7b%22appSharingUrl%22%3a%22https%3a%2f%2ftabs.teams.microsoft.com%2fyoutubeMainStage%3fv%3deOGKpXVSkDU%22%2c%22appId%22%3a%22com.microsoft.teamspace.tab.youtube%22%2c%22useMeetNow%22%3atrue%7d",
+          "title": "Share in meeting",
+          "type": "Action.OpenUrl"
+        }
+      ],
+      "type": "ActionSet"
+    }
+  ],
+  "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.5",
+  "selectAction": {
+    "data": {
+      "msteams": {
+        "type": "invoke",
+        "value": {
+          "type": "tab/tabInfoAction",
+          "tabInfo": {
+            "contentUrl": "https://tabs.teams.microsoft.com/pre/youtubeContentStage?videoId%3deOGKpXVSkDU",
+            "websiteUrl": "https://www.youtube.com/watch?v=eOGKpXVSkDU",
+            "entityId": "924dabf6-32b2-400f-998d-e14c3f7edeaa"
+          }
+        }
+      }
+    },
+    "type": "Action.Submit"
+  }
+}
