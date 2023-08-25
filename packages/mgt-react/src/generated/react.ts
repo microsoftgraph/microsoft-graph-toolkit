@@ -58,6 +58,7 @@ export type FileListProps = {
 	itemView?: ViewType;
 	fileExtensions?: string[];
 	pageSize?: number;
+	disableOpenOnClick?: boolean;
 	hideMoreFilesButton?: boolean;
 	maxFileSize?: number;
 	enableFileUpload?: boolean;
