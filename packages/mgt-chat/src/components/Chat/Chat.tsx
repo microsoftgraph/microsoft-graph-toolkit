@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { ErrorBar, FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
+import {
+  ErrorBar,
+  FluentThemeProvider,
+  MessageThread,
+  SendBox,
+  MessageThreadStyles,
+  Mention
+} from '@azure/communication-react';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
@@ -7,6 +14,8 @@ import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
+import { ChatMessageMention, User } from '@microsoft/microsoft-graph-types';
+import { MgtTemplateProps } from '@microsoft/mgt-react';
 
 registerAppIcons();
 
@@ -69,6 +78,31 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
       chatClient.offStateChange(setChatState);
     };
   }, [chatClient]);
+
+  const renderMGTMention = (mention: Mention, defaultRenderer: (mention: Mention) => JSX.Element): JSX.Element => {
+    let render: JSX.Element = defaultRenderer(mention);
+
+    const mentions = chatState?.mentions ?? [];
+    // TODO: Array.flat() is a new api, update?
+    const flatMentions = mentions?.flat() as ChatMessageMention[];
+    const teamsMention = flatMentions.find(
+      m => m.id?.toString() === mention?.id && m.mentionText === mention?.displayText
+    ) as ChatMessageMention;
+
+    const user = teamsMention?.mentioned?.user as User;
+    if (user) {
+      const MGTMention = (props: MgtTemplateProps) => {
+        return defaultRenderer(mention);
+      };
+      render = (
+        <Person userId={user?.id} personCardInteraction={PersonCardInteraction.hover}>
+          <MGTMention template="default" />
+        </Person>
+      );
+    }
+    return render;
+  };
+
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={teamsLightTheme} className={styles.fullHeight}>
@@ -110,6 +144,11 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                     );
                   }}
                   styles={messageThreadStyles}
+                  mentionOptions={{
+                    displayOptions: {
+                      onRenderMention: renderMGTMention
+                    }
+                  }}
                 />
               </div>
               <div className={styles.chatInput}>
