@@ -105,6 +105,7 @@ type GraphChatClient = Pick<
     onAddChatMembers: (userIds: string[], history?: Date) => Promise<void>;
     onRemoveChatMember: (membershipId: string) => Promise<void>;
     onRenameChat: (topic: string | null) => Promise<void>;
+    mentions: NullableOption<ChatMessageMention[]>;
   };
 
 type StatefulClient<T> = {
@@ -317,6 +318,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.status = 'initial';
       draft.messages = [];
+      draft.mentions = [];
       draft.chat = undefined;
       draft.participants = [];
     });
@@ -366,6 +368,11 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       // This gives us both current and eventual values for each message
       .map(m => this.convertChatMessage(m));
 
+    // Collect mentions
+    const mentions: NullableOption<ChatMessageMention[]> = messages.value
+      .map(m => m.mentions)
+      .filter(m => m?.length) as NullableOption<ChatMessageMention[]>;
+
     // update the state with the current values
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.participants = this._chat?.members || [];
@@ -383,6 +390,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       draft.onLoadPreviousChatMessages = this._nextLink ? this.loadMoreMessages : undefined;
       draft.status = this._nextLink ? 'loading messages' : 'ready';
       draft.chat = this._chat;
+      // Keep updating if there was a next link.
+      draft.mentions = draft.mentions?.concat(...Array.from(mentions)) as NullableOption<ChatMessageMention[]>;
     });
     const futureMessages = messageConversions.filter(m => m.futureValue).map(m => m.futureValue);
     // if there are eventual future values, wait for them to resolve and update the state
@@ -859,11 +868,8 @@ detail: ${JSON.stringify(eventDetail)}`);
     if (this.emojiMatch(content)) {
       content = this.processEmojiContent(content);
     }
-    // Handle any mentions
-    const mentions = graphMessage?.mentions ?? [];
-    if (mentions) {
-      content = this.handleMentions(mentions, content);
-    }
+    // Handle any mentions in the content
+    content = this.updateMentionsContent(content);
 
     const imageMatch = this.graphImageMatch(content ?? '');
     if (imageMatch) {
@@ -875,34 +881,13 @@ detail: ${JSON.stringify(eventDetail)}`);
     return result;
   }
 
-  private handleMentions(mentions: ChatMessageMention[], content: string): string {
-    // Nit to remove unnecessary space between 2 mentions
-    content = content.replace(/&nbsp;<at/gim, '<at');
-    mentions.forEach((mention: ChatMessageMention) => {
-      const name = mention?.mentionText;
-      // Multiple entities can be mentioned: user, application, conversation etc
-      const user: NullableOption<Identity> | undefined = mention.mentioned?.user;
-      if (name && user) {
-        const { id } = user;
-        const mgtPerson = `<mgt-person
-          style="color: #7F85F5;width:fit-content;cursor:pointer;"
-          user-id="${id ?? ''}"
-          person-card="hover">
-            <template>${name}</template>
-          </mgt-person>`;
-        const regex = `<at\\sid="\\d+">${name}<\\/at>`;
-        content = content.replace(new RegExp(regex, 'gim'), mgtPerson);
-      }
-
-      const otherMentions =
-        mention.mentioned?.conversation || mention.mentioned?.application || mention.mentioned?.device;
-      // For @Everyone etc use the mention feature in v1.7 preview
-      if (name && otherMentions) {
-        const msftMention = `<msft-mention id="$1">${name}</msft-mention>`;
-        const regex = `<at\\sid="(\\d+)">${name}<\\/at>`;
-        content = content.replace(new RegExp(regex, 'gim'), msftMention);
-      }
-    });
+  private updateMentionsContent(content: string): string {
+    const msftMention = `<msft-mention id="$1">$2</msft-mention>`;
+    const atRegex = /<at\sid="(\d+)">([a-z0-9_.-\s]+)<\/at>/gim;
+    content = content
+      .replace(/&nbsp;<at/gim, '<at')
+      .replace(/at>&nbsp;/gim, 'at>')
+      .replace(atRegex, msftMention);
     return content;
   }
 
@@ -964,6 +949,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     status: 'initial',
     userId: '',
     messages: [],
+    mentions: [],
     participants: [],
     get participantCount() {
       return this.participants?.length || 0;
