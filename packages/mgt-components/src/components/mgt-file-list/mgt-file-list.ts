@@ -403,6 +403,11 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     void this.requestStateUpdate(true);
   }
 
+  @property({
+    attribute: 'disable-open-on-click',
+    type: Boolean
+  })
+  public disableOpenOnClick = false;
   /**
    * A boolean value indication if 'show-more' button should be disabled
    *
@@ -1007,7 +1012,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   }
 
   private handleFileClick(file: DriveItem) {
-    if (file?.webUrl) {
+    if (file?.webUrl && !this.disableOpenOnClick) {
       window.open(file.webUrl, '_blank', 'noreferrer');
     }
   }

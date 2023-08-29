@@ -51,7 +51,7 @@ export const localization = () => html`
 export const events = () => html`
   <p>Clicked File:</p>
   <mgt-file></mgt-file>
-  <mgt-file-list></mgt-file-list>
+  <mgt-file-list disable-open-on-click></mgt-file-list>
   <script>
     document.querySelector('mgt-file-list').addEventListener('itemClick', e => {
       const file = document.querySelector('mgt-file');
