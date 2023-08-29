@@ -644,11 +644,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPersonSubtitle(person?: IDynamicPerson): TemplateResult {
     person = person || this.internalPersonDetails;
-    if (!person.department) {
+    if (!(person as Person).department) {
       return;
     }
     return html`
-       <div class="department">${person.department}</div>
+       <div class="department">${(person as Person).department}</div>
      `;
   }
 

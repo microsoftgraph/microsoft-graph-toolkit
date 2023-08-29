@@ -13,7 +13,7 @@ import {
   customElementHelper,
   mgtHtml
 } from '@microsoft/mgt-element';
-import { Contact, Presence } from '@microsoft/microsoft-graph-types';
+import { Contact, Presence, Person } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
@@ -1195,11 +1195,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     let initials = '';
-    if (person.givenName) {
-      initials += person.givenName[0].toUpperCase();
+    if ((person as Person).givenName) {
+      initials += (person as Person).givenName[0].toUpperCase();
     }
-    if (person.surname) {
-      initials += person.surname[0].toUpperCase();
+    if ((person as Person).surname) {
+      initials += (person as Person).surname[0].toUpperCase();
     }
 
     if (!initials && person.displayName) {
