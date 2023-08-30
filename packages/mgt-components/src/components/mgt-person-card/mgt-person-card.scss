@@ -37,7 +37,6 @@ $person-card-base-icons-left-spacing: var(
 :host {
   box-shadow: $person-card-box-shadow;
   width: var(--mgt-flyout-set-width, 375px);
-  font-family: $font-family;
   overflow: hidden;
   user-select: none;
   border-radius: 8px;

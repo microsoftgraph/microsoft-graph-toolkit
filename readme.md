@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="#packages">Packages</a> • <a href="#components">Components</a> • <a href="#providers">Providers</a> • <a href="#getting-started">Getting Started</a> • <a href="#running-the-samples">Running the Samples</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
+  <a href="#packages">Packages</a> • <a href="#components">Components</a> • <a href="#providers">Providers</a> • <a href="#getting-started">Getting Started</a> • <a href="#using-our-samples">Using our samples</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
 </p>
 
 ## Packages
@@ -62,6 +62,7 @@ The Toolkit currently includes the following components:
 * [mgt-people-picker](https://learn.microsoft.com/graph/toolkit/components/people-picker)
 * [mgt-person](https://learn.microsoft.com/graph/toolkit/components/person)
 * [mgt-person-card](https://learn.microsoft.com/graph/toolkit/components/person-card)
+* [mgt-picker](https://learn.microsoft.com/en-us/graph/toolkit/components/picker)
 * [mgt-search-box](https://learn.microsoft.com/graph/toolkit/components/person-box)
 * [mgt-search-results](https://learn.microsoft.com/graph/toolkit/components/search-results)
 * [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)
@@ -143,28 +144,13 @@ Now you can reference all components and providers at the page you are using:
 <mgt-agenda></mgt-agenda>
 ```
 
-## Running the samples
+## Using our samples
 
-Some of our samples are coupled to use the locally built mgt packages instead of the published version from npm. Because of this, it's helpful to build the monorepo before attempting to run any of the samples.
-
-```bash
-# Starting at the root
-yarn
-yarn build
-# Now you can run the React sample using the local packages
-cd ./samples/react-app/
-yarn start
-```
-
-This also means that running the samples in isolation may fail if there are breaking changes between the published version of mgt and the local copy.
-To workaround this, use samples that are known to be compatible with a specific release by checking out the appropriate branch or tag first.
+We, in collaboration with the community, are providing different samples to help you with different scenarios to leverage the Microsoft Graph Toolkit. Our samples are hosted in another repo and is also fully open-source! Head over to the [Microsoft Graph Toolkit Samples Repository](https://aka.ms/mgt/samples) and you will find all sorts of samples to get you started quickly!
 
 ## Contribute
 
 We enthusiastically welcome contributions and feedback. Please read our [wiki](https://github.com/microsoftgraph/microsoft-graph-toolkit/wiki) and the [contributing guide](CONTRIBUTING.md) before you begin.
-
-### Code Contribution Challenge
-There are many exciting new features or interesting bugs that have been left behind because our team is small with limited capacity. We would love your help! We have tagged these issues with 'help wanted' and/or 'good first issue'. If you see anything you would like to contribute to, you can reach out to  mgt-help@microsoft.com or reply to the issue for help or further discussion.
 
 ## Feedback and Requests
 

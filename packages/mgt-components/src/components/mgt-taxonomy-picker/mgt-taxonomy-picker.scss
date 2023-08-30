@@ -12,8 +12,6 @@
 :host {
   --max-height: var(--taxonomy-picker-max-height, 380px);
 
-  font-family: $font-family;
-
   .picker {
     background-color: $taxonomy-picker-background-color;
   }

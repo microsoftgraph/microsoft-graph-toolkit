@@ -80,7 +80,7 @@ registerFluentComponents(fluentProgressRing);
 
 @customElement('file-list')
 export class MgtFileList extends MgtTemplatedComponent implements CardSection {
-  private _isCompact = false;
+  @state() private _isCompact = false;
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -403,6 +403,11 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     void this.requestStateUpdate(true);
   }
 
+  @property({
+    attribute: 'disable-open-on-click',
+    type: Boolean
+  })
+  public disableOpenOnClick = false;
   /**
    * A boolean value indication if 'show-more' button should be disabled
    *
@@ -554,7 +559,6 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   protected clearState(): void {
     super.clearState();
-    this._isCompact = false;
     this.files = null;
   }
 
@@ -566,7 +570,6 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   public asCompactView() {
     this._isCompact = true;
-    this.requestUpdate();
     return this;
   }
 
@@ -578,7 +581,6 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   public asFullView() {
     this._isCompact = false;
-    this.requestUpdate();
     return this;
   }
 
@@ -1010,7 +1012,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   }
 
   private handleFileClick(file: DriveItem) {
-    if (file?.webUrl) {
+    if (file?.webUrl && !this.disableOpenOnClick) {
       window.open(file.webUrl, '_blank', 'noreferrer');
     }
   }

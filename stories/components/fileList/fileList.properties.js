@@ -94,6 +94,10 @@ export const getFileListByExtensions = () => html`
     <mgt-file-list file-extensions="docx, xlsx"></mgt-file-list>
   `;
 
+export const disableOpenOnClick = () => html`
+<mgt-file-list disable-open-on-click></mgt-file-list>
+`;
+
 export const disableFileExpansion = () => html`
     <mgt-file-list hide-more-files-button></mgt-file-list>
   `;
