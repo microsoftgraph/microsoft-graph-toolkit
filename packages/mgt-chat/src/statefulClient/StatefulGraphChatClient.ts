@@ -11,7 +11,8 @@ import {
   ChatMessage as AcsChatMessage,
   ErrorBarProps,
   SystemMessage,
-  ContentSystemMessage
+  ContentSystemMessage,
+  Message
 } from '@azure/communication-react';
 import {
   AadUserConversationMember,
@@ -150,8 +151,8 @@ type MessageEventType =
  * Some messages do not have a future value and will be added immediately.
  */
 type MessageConversion = {
-  currentValue?: AcsChatMessage | SystemMessage;
-  futureValue?: Promise<AcsChatMessage | SystemMessage>;
+  currentValue?: Message;
+  futureValue?: Promise<Message>;
 };
 
 /**
@@ -448,7 +449,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.participants = this._chat?.members || [];
       draft.participantCount = draft.participants.length;
-      const initialMessages: (AcsChatMessage | SystemMessage)[] = [];
+      const initialMessages: Message[] = [];
       draft.messages = draft.messages.concat(
         messageConversions
           .map(m => m.currentValue)
@@ -601,7 +602,7 @@ detail: ${JSON.stringify(eventDetail)}`);
 
     // add a pending message to the state.
     this.notifyStateChange((draft: GraphChatClient) => {
-      const pendingMessage: AcsChatMessage = {
+      const pendingMessage: Message = {
         clientMessageId: pendingId,
         messageId: pendingId,
         contentType: 'text',
@@ -754,12 +755,13 @@ detail: ${JSON.stringify(eventDetail)}`);
       // trying to filter out messages on the graph request causes a 400
       // deleted messages are returned as messages with no content, which we can't filter on the graph request
       // so we filter them out here
-      .filter(m => m.body?.content)
+      // Violating DLP returns content as empty BUT with policyViolation set
+      .filter(m => m.body?.content || (!m.body?.content && m?.policyViolation))
       // This gives us both current and eventual values for each message
       .map(m => this.convertChatMessage(m));
 
     // update the state with the current values
-    const currentValueMessages: (AcsChatMessage | SystemMessage)[] = [];
+    const currentValueMessages: Message[] = [];
     messageConversions
       .map(m => m.currentValue)
       // need to use a reduce here to filter out undefined values in a way that TypeScript understands
@@ -817,11 +819,11 @@ detail: ${JSON.stringify(eventDetail)}`);
    * Update the state with given message either replacing an existing message matching on the id or adding to the list
    *
    * @private
-   * @param {(AcsChatMessage | SystemMessage)} [message]
+   * @param {(Message)} [message]
    * @return {*}
    * @memberof StatefulGraphChatClient
    */
-  private updateMessages(message?: AcsChatMessage | SystemMessage) {
+  private updateMessages(message?: Message) {
     if (!message) return;
     this.notifyStateChange((draft: GraphChatClient) => {
       const index = draft.messages.findIndex(m => m.messageId === message.messageId);
@@ -904,7 +906,12 @@ detail: ${JSON.stringify(eventDetail)}`);
       index++;
       match = this.graphImageMatch(messageResult);
     }
-    let placeholderMessage = this.buildAcsMessage(graphMessage, currentUser, messageId, messageResult);
+    let placeholderMessage = this.buildAcsMessage(
+      graphMessage,
+      currentUser,
+      messageId,
+      messageResult
+    ) as AcsChatMessage;
     conversion.currentValue = placeholderMessage;
     // local function to update the message with data from each of the resolved image requests
     const updateMessage = async () => {
@@ -947,14 +954,9 @@ detail: ${JSON.stringify(eventDetail)}`);
     return result;
   }
 
-  private buildAcsMessage(
-    graphMessage: ChatMessage,
-    currentUser: string,
-    messageId: string,
-    content: string
-  ): AcsChatMessage {
+  private buildAcsMessage(graphMessage: ChatMessage, currentUser: string, messageId: string, content: string): Message {
     const senderId = graphMessage.from?.user?.id || undefined;
-    return {
+    let messageData: Message = {
       messageId,
       contentType: graphMessage.body?.contentType ?? 'text',
       messageType: 'chat',
@@ -967,6 +969,13 @@ detail: ${JSON.stringify(eventDetail)}`);
       status: 'seen',
       attached: 'top'
     };
+    if (graphMessage?.policyViolation) {
+      messageData = Object.assign(messageData, {
+        messageType: 'blocked',
+        link: 'https://go.microsoft.com/fwlink/?LinkId=2132837'
+      });
+    }
+    return messageData;
   }
 
   private readonly renameChat = async (topic: string | null): Promise<void> => {
