@@ -22,7 +22,9 @@ import {
   AccountInfo,
   EndSessionRequest,
   InteractionRequiredAuthError,
-  SsoSilentRequest
+  SsoSilentRequest,
+  EventMessage,
+  AuthenticationResult
 } from '@azure/msal-browser';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 
@@ -386,6 +388,7 @@ export class Msal2Provider extends IProvider {
     } else {
       throw new Error('either clientId or publicClientApplication must be provided');
     }
+    this._publicClientApplication.addEventCallback(this.handleMsalEvent);
 
     this.ms_config.system = msalConfig.system || {};
     this.ms_config.system.iframeHashTimeout = msalConfig.system.iframeHashTimeout || 10000;
@@ -417,6 +420,14 @@ export class Msal2Provider extends IProvider {
       throw e;
     }
   }
+
+  private readonly handleMsalEvent = (message: EventMessage): void => {
+    // eslint-disable-next-line no-console
+    console.log('graff: ', message);
+    if (message.eventType === 'msal:acquireTokenSuccess' && 'scopes' in message.payload) {
+      this.approvedScopes = message.payload.scopes;
+    }
+  };
 
   /**
    * Attempts to sign in user silently

@@ -5,7 +5,15 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { CacheItem, CacheService, CacheStore, CollectionResponse, IGraph, prepScopes } from '@microsoft/mgt-element';
+import {
+  CacheItem,
+  CacheService,
+  CacheStore,
+  CollectionResponse,
+  IGraph,
+  prepScopes,
+  Providers
+} from '@microsoft/mgt-element';
 import { User } from '@microsoft/microsoft-graph-types';
 
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
@@ -441,7 +449,13 @@ export const findGroupMembers = async (
   userFilters = '',
   peopleFilters = ''
 ): Promise<User[]> => {
-  const scopes = ['user.read.all', 'people.read'];
+  const scopes = [
+    'GroupMember.Read.All',
+    'Group.Read.All',
+    'GroupMember.ReadWrite.All',
+    'Group.ReadWrite.All',
+    'Directory.Read.All'
+  ];
   const item = { maxResults: top, results: null };
 
   let cache: CacheStore<CacheUserQuery>;
@@ -478,14 +492,14 @@ export const findGroupMembers = async (
   if (peopleFilters) {
     filter += query ? ` and ${peopleFilters}` : peopleFilters;
   }
-
+  const requestScopes = Providers.globalProvider.needsAdditionalScopes(scopes);
   const graphResult = (await graph
     .api(apiUrl)
     .count(true)
     .top(top)
     .filter(filter)
     .header('ConsistencyLevel', 'eventual')
-    .middlewareOptions(prepScopes(...scopes))
+    .middlewareOptions(prepScopes(...requestScopes))
     .get()) as CollectionResponse<User>;
 
   if (getIsUsersCacheEnabled() && graphResult) {

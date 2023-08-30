@@ -51,6 +51,20 @@ export abstract class IProvider implements AuthenticationProvider {
   private readonly _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
   private _baseURL: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
 
+  public approvedScopes: string[] = [];
+
+  public hasAtLeastOneApprovedScope(requiredScopeSet: string[]): boolean {
+    return requiredScopeSet.some(s => this.approvedScopes.includes(s));
+  }
+
+  public needsAdditionalScopes(requiredScopeSet: string[]): string[] {
+    const reqScopes: string[] = [];
+    if (requiredScopeSet.length && !this.hasAtLeastOneApprovedScope(requiredScopeSet)) {
+      reqScopes.push(requiredScopeSet[0]);
+    }
+    return reqScopes;
+  }
+
   /**
    * The base URL to be used in the graph client config.
    */
