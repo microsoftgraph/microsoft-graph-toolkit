@@ -83,7 +83,15 @@ export class SharePointProvider extends IProvider {
    * @type {string[]}
    * @memberof SharePointProvider
    */
-  public scopes: string[];
+  private _scopes: string[];
+  public get scopes(): string[] {
+    return this._scopes;
+  }
+  public set scopes(value: string[]) {
+    this._scopes = value;
+    // update the approved scopes as the internal set of scopes is added to.
+    this.approvedScopes = value;
+  }
 
   /**
    * authority
@@ -117,6 +125,7 @@ export class SharePointProvider extends IProvider {
     const baseUrl = this.baseURL ? this.baseURL : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
     return await this.provider.getToken(baseUrl);
   }
+
   /**
    * update scopes
    *

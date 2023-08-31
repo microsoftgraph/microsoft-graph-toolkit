@@ -46,15 +46,27 @@ export abstract class IProvider implements AuthenticationProvider {
   public get isMultiAccountSupportedAndEnabled(): boolean {
     return false;
   }
+
   private _state: ProviderState;
   private readonly _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private readonly _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
   private _baseURL: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
 
-  public approvedScopes: string[] = [];
+  private _approvedScopes: string[] = [];
+  public get approvedScopes(): string[] {
+    return this._approvedScopes;
+  }
+
+  public set approvedScopes(value: string[]) {
+    this._approvedScopes = value.map(v => v.toLowerCase());
+  }
 
   public hasAtLeastOneApprovedScope(requiredScopeSet: string[]): boolean {
-    return requiredScopeSet.some(s => this.approvedScopes.includes(s));
+    return requiredScopeSet.some(s => this.approvedScopes.includes(s.toLowerCase()));
+  }
+
+  public hasAllOneApprovedScope(requiredScopeSet: string[]): boolean {
+    return requiredScopeSet.some(s => !this.approvedScopes.includes(s.toLowerCase()));
   }
 
   public needsAdditionalScopes(requiredScopeSet: string[]): string[] {
