@@ -333,3 +333,13 @@ export const getResponseInvalidationTime = (currentInvalidationPeriod: number) =
 export const getIsResponseCacheEnabled = () => {
   return CacheService.config.response.isEnabled && CacheService.config.isEnabled;
 };
+
+/**
+ * Format the availability string
+ *
+ * @returns boolean
+ */
+export const formatAvailability = (availability: string) => {
+  const formatted = availability.match(/[A-Z][a-z]+/g).join(' ');
+  return formatted;
+};

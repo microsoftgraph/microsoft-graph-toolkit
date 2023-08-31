@@ -31,7 +31,7 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
-import { strings, formatAvailability } from './strings';
+import { strings } from './strings';
 import { ifDefined } from 'lit/directives/if-defined.js';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
@@ -825,7 +825,15 @@ export class MgtPerson extends MgtTemplatedComponent {
       oneline: this.isOneLine()
     });
 
-    const formattedAvailability = formatAvailability(availability);
+    const availabilityText = (status: string) => {
+      for (const item in this.strings) {
+        if (item === status) {
+          return this.strings[item] as string;
+        }
+      }
+    };
+
+    const formattedAvailability = availabilityText(availability);
 
     return html`
       <span

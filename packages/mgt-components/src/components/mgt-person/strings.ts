@@ -5,13 +5,17 @@
  * -------------------------------------------------------------------------------------------
  */
 
+const availabilityMap = {
+  Available: 'Available',
+  Away: 'Away',
+  Busy: 'Busy',
+  DoNotDisturb: 'Do Not Disturb',
+  Offline: 'Offline'
+};
+
 export const strings = {
+  ...availabilityMap,
   photoFor: 'Photo for',
   emailAddress: 'Email address',
   initials: 'Initials'
-};
-
-export const formatAvailability = (availability: string) => {
-  const formatted = availability.match(/[A-Z][a-z]+/g).join(' ');
-  return formatted;
 };
