@@ -10,3 +10,8 @@ export const strings = {
   emailAddress: 'Email address',
   initials: 'Initials'
 };
+
+export const formatAvailability = (availability: string) => {
+  const formatted = availability.match(/[A-Z][a-z]+/g).join(' ');
+  return formatted;
+};

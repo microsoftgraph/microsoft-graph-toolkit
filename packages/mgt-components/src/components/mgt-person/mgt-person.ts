@@ -31,7 +31,7 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
-import { strings } from './strings';
+import { strings, formatAvailability } from './strings';
 import { ifDefined } from 'lit/directives/if-defined.js';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
@@ -825,11 +825,13 @@ export class MgtPerson extends MgtTemplatedComponent {
       oneline: this.isOneLine()
     });
 
+    const formattedAvailability = formatAvailability(availability);
+
     return html`
       <span
         class="${presenceWrapperClasses}"
-        title="${availability}"
-        aria-label="${availability}"
+        title="${formattedAvailability}"
+        aria-label="${formattedAvailability}"
         role="img">
           ${presenceIcon}
       </span>
