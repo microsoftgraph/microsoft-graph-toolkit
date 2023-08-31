@@ -71,7 +71,6 @@ type PersonViewConfig = {
  * @cssprop --login-signed-out-button-text-color - {Color} the background color of the component when signed out.
  * @cssprop --login-button-padding - {Length} the padding of the button. Default is 0px.
  * @cssprop --login-popup-background-color - {Color} the background color of the popup.
- * @cssprop --login-popup-text-color - {Color} the color of the text in the popup.
  * @cssprop --login-popup-command-button-background-color - {Color} the color of the background to the popup command button.
  * @cssprop --login-popup-padding - {Length} the padding applied to the popup card. Default is 16px.
  * @cssprop --login-add-account-button-text-color - {Color} the color for the text and icon of the add account button.
@@ -80,6 +79,8 @@ type PersonViewConfig = {
  * @cssprop --login-command-button-text-color - {Color} the color for the text of the command button.
  * @cssprop --login-command-button-background-color - {Color} the color for the background of the command button.
  * @cssprop --login-command-button-hover-background-color - {Color} the color for the background of the command button on hovering.
+ * @cssprop --login-account-item-hover-bg-color - {Color} the background color of the account item on hover.
+ * @cssprop --login-flyout-command-text-color - {Color} the color for the text of the flyout command button.
  */
 @customElement('login')
 export class MgtLogin extends MgtTemplatedComponent {
@@ -319,6 +320,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     const expandedState: boolean | undefined = showSignedInState ? this._isFlyoutOpen : undefined;
     return html`
       <fluent-button
+        id="login-button"
         aria-expanded="${ifDefined(expandedState)}"
         appearance=${appearance}
         aria-label="${ifDefined(isSignedIn ? undefined : this.strings.signInLinkSubtitle)}"
@@ -350,13 +352,48 @@ export class MgtLogin extends MgtTemplatedComponent {
         light-dismiss
         @opened=${this.flyoutOpened}
         @closed=${this.flyoutClosed}>
-        <div slot="flyout">
-          <fluent-card class="flyout-card">
-            ${this.renderFlyoutContent()}
-          </fluent-card>
-        </div>
+        <fluent-card 
+          slot="flyout" 
+          tabindex="0" 
+          class="flyout-card"
+          @keydown=${this.onUserKeyDown}
+          >
+          ${this.renderFlyoutContent()}
+        </fluent-card>
       </mgt-flyout>`;
   }
+
+  /**
+   * Tracks tabbing through the flyout (keydown)
+   */
+  private readonly onUserKeyDown = (e: KeyboardEvent): void => {
+    if (!this.flyout.isOpen) {
+      return;
+    }
+
+    const el = this.renderRoot.querySelector('.popup-content');
+    const focusableEls = el.querySelectorAll('ul, fluent-button');
+    const firstFocusableEl = el.querySelector('#signout-button') || focusableEls[0];
+    const lastFocusableEl =
+      el.querySelector('#signin-different-account-button') || focusableEls[focusableEls.length - 1];
+
+    if (e.key === 'Tab' && e.shiftKey && firstFocusableEl === e.target) {
+      e.preventDefault();
+      (lastFocusableEl as HTMLElement)?.focus();
+    }
+    if (e.key === 'Tab' && !e.shiftKey && lastFocusableEl === e.target) {
+      e.preventDefault();
+      (firstFocusableEl as HTMLElement)?.focus();
+    }
+    if (e.key === 'Escape') {
+      const loginButton = this.renderRoot.querySelector('#login-button');
+      (loginButton as HTMLElement)?.focus();
+    }
+    const fluentCardEl = this.renderRoot.querySelector('fluent-card');
+    if (e.shiftKey && e.key === 'Tab' && e.target === fluentCardEl) {
+      this.hideFlyout();
+    }
+  };
 
   /**
    * Render the flyout menu content.
@@ -434,6 +471,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       template ||
       html`
         <fluent-button
+          id="signout-button"
           appearance="stealth"
           size="medium"
           class="flyout-command"
@@ -471,6 +509,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       return html`
         <div class="add-account">
           <fluent-button
+            id="signin-different-account-button"
             appearance="stealth"
             aria-label="${this.strings.signInWithADifferentAccount}"
             @click=${() => void this.login()}>

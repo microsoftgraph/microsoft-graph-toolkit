@@ -224,9 +224,9 @@ export const getPeople = async (
 };
 
 /**
- * returns a promise that resolves after specified time
+ * Attempts to extract the email from the IDynamicPerson properties.
  *
- * @param time in milliseconds
+ * @param {IDynamicperson} entity
  */
 export const getEmailFromGraphEntity = (entity: IDynamicPerson): string => {
   const person = entity as Person;

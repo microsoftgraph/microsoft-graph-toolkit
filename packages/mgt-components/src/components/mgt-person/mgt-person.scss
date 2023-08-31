@@ -40,11 +40,11 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
 :host {
   font-size: var(--default-font-size);
-  font-family: var(--default-font-family);
 
   .flyout {
     [slot='anchor'] {
       display: flex;
+      cursor: pointer;
 
       &.vertical {
         flex-direction: column;
