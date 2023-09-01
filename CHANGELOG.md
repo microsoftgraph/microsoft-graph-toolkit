@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.1](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.1.0...v3.1.1) (2023-08-17)
+
+
+### Bug Fixes
+
+* dismiss login flyout when moving out of the popup ([#2637](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2637)) ([263f36f](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/263f36f56665e7e041be1defe80677d31f65af7b))
+* use pointer cursor when person card enabled in mgt-person. ([#2652](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2652)) ([48ea18b](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/48ea18bc28c39d65629d3095db538d2c01fe7109))
+
 ## [3.1.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.0.1...v3.1.0) (2023-07-28)
 
 

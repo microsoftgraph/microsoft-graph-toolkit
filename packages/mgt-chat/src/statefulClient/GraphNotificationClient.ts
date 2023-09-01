@@ -270,11 +270,18 @@ export class GraphNotificationClient {
     return Promise.all(tasks);
   }
 
+  public async closeSignalRConnection() {
+    // stop the connection and set it to undefined so it will reconnect when next subscription is created.
+    await this.connection?.stop();
+    this.connection = undefined;
+  }
+
   public async subscribeToChatNotifications(userId: string, threadId: string, afterConnection: () => void) {
     afterConnection();
 
     this.currentUserId = userId;
     this.chatId = threadId;
+    // MGT uses a per-user cache, so no concerns of loading the cachced data for another user.
     const cacheData = await this.subscriptionCache.loadSubscriptions();
     if (cacheData && cacheData.chatId !== threadId) {
       // check validity of subscription and delete if still valid;
