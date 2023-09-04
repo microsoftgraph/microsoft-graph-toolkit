@@ -221,7 +221,7 @@ export const withCodeEditor = makeDecorator({
 
           let { html, css, js } = editor.files;
           js = js.replace(
-            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
+            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt\x2d([^\}]+)['"];/gm,
             `import {$1} from '${mgtScriptName}';`
           );
 
