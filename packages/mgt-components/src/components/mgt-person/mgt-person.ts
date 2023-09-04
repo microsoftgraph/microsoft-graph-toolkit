@@ -785,6 +785,8 @@ export class MgtPerson extends MgtTemplatedComponent {
           case 'OutOfOffice':
             presenceIcon = getSvg(SvgIcon.PresenceOofDnd);
             break;
+          case 'Presenting':
+          case 'Focusing':
           default:
             presenceIcon = getSvg(SvgIcon.PresenceDnd);
             break;
@@ -796,6 +798,14 @@ export class MgtPerson extends MgtTemplatedComponent {
           case 'OutOfOffice':
             presenceIcon = getSvg(SvgIcon.PresenceOofAway);
             break;
+          case 'AwayLastSeenTime':
+          default:
+            presenceIcon = getSvg(SvgIcon.PresenceAway);
+            break;
+        }
+        break;
+      case 'BeRightBack':
+        switch (activity) {
           default:
             presenceIcon = getSvg(SvgIcon.PresenceAway);
             break;

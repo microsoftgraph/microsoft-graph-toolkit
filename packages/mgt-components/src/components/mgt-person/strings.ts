@@ -10,7 +10,9 @@ const availabilityMap = {
   Away: 'Away',
   Busy: 'Busy',
   DoNotDisturb: 'Do Not Disturb',
-  Offline: 'Offline'
+  Offline: 'Offline',
+  BeRightBack: 'Be Right Back',
+  PresenceUnknown: 'Presence Unknown'
 };
 
 export const strings = {
