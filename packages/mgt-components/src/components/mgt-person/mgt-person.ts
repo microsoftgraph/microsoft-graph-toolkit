@@ -17,7 +17,7 @@ import { Contact, Presence, Person } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
+import { PersonType, findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { findUsers, getMe, getUser } from '../../graph/graph.user';
@@ -39,7 +39,7 @@ export { PersonCardInteraction } from '../PersonCardInteraction';
 /**
  * Person properties part of original set provided by graph by default
  */
-const defaultPersonProperties = [
+export const defaultPersonProperties = [
   'businessPhones',
   'displayName',
   'givenName',
@@ -51,7 +51,8 @@ const defaultPersonProperties = [
   'preferredLanguage',
   'surname',
   'userPrincipalName',
-  'id'
+  'id',
+  'userType'
 ];
 
 /**
@@ -1108,7 +1109,14 @@ export class MgtPerson extends MgtTemplatedComponent {
         let image: string;
         if ('groupTypes' in details) {
           image = await getGroupImage(graph, details, MgtPerson.config.useContactApis);
+          details.entityType = 'group';
         } else {
+          if ('personType' in details) {
+            details.entityType = 'person';
+          }
+          if ('userType' in details) {
+            details.entityType = 'user';
+          }
           image = await getPersonImage(graph, details, MgtPerson.config.useContactApis);
         }
         if (image) {
