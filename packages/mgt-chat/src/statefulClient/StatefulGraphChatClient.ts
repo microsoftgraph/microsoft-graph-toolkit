@@ -56,6 +56,7 @@ import { graph } from '../utils/graph';
 import { currentUserId, currentUserName } from '../utils/currentUser';
 import { MessageCache } from './Caching/MessageCache';
 import { GraphError } from '@microsoft/microsoft-graph-client';
+import { GraphConfig } from './GraphConfig';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -211,7 +212,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
     this._cache = new MessageCache();
-    this._notificationClient = new GraphNotificationClient(this._eventEmitter);
+    this._notificationClient = new GraphNotificationClient(this._eventEmitter, graph('mgt-chat', GraphConfig.version));
   }
 
   /**
@@ -301,8 +302,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private readonly handleAccountChange = async () => {
     this.clearCurrentUserMessages();
     // need to ensure that we close any existing connection if present
-    await this._notificationClient.closeSignalRConnection();
-    sessionStorage.removeItem('graph-subscriptions');
+    await this._notificationClient?.closeSignalRConnection();
+
     this.updateUserInfo();
     // by updating the followed chat the notification client will reconnect to SignalR
     await this.updateFollowedChat();
@@ -411,14 +412,17 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         // Prefer sequential promise resolving to catch loading message errors
         // TODO: in parallel promise resolving, find out how to trigger different
         // TODO: state for failed subscriptions in GraphChatClient.onSubscribeFailed
-        await this.loadChatData();
+        const tasks: Promise<unknown>[] = [this.loadChatData()];
         // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
         // this client will then load the chat and messages when that event listener is called
-        await this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, () =>
-          this.notifyStateChange((draft: GraphChatClient) => {
-            draft.status = 'subscribing to notifications';
-          })
+        tasks.push(
+          this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, () =>
+            this.notifyStateChange((draft: GraphChatClient) => {
+              draft.status = 'subscribing to notifications';
+            })
+          )
         );
+        await Promise.all(tasks);
       } catch (e) {
         console.error('Failed to load chat data or subscribe to notications: ', e);
         if (e instanceof GraphError) {
