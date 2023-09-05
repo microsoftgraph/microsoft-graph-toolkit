@@ -34,8 +34,8 @@ jobs:
         shell: bash
         run: |
           cp samples/react-contoso/.env.sample samples/react-contoso/.env
-           sed -i 's/REACT_APP_CLIENT_ID="00000000-0000-0000-0000-000000000000"/REACT_APP_CLIENT_ID="${{secrets.REACT_CONTOSO_CHAT}}"/g' samples/react-contoso/.env
-           sed -i 's/REACT_APP_BACKEND_CLIENT_ID="00000000-0000-0000-0000-000000000000"/REACT_APP_BACKEND_CLIENT_ID="${{secrets.REACT_CONTOSO_CHAT_BACKEND}}"/g' samples/react-contoso/.env
+          sed -i 's/REACT_APP_CLIENT_ID="00000000-0000-0000-0000-000000000000"/REACT_APP_CLIENT_ID="${{secrets.REACT_CONTOSO_CHAT}}"/g' samples/react-contoso/.env
+          sed -i 's/REACT_APP_BACKEND_CLIENT_ID="00000000-0000-0000-0000-000000000000"/REACT_APP_BACKEND_CLIENT_ID="${{secrets.REACT_CONTOSO_CHAT_BACKEND}}"/g' samples/react-contoso/.env
 
       - name: Build 🛠
         run: |
