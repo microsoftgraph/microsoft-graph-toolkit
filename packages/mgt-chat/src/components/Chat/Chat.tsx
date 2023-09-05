@@ -63,9 +63,8 @@ const useStyles = makeStyles({
  */
 const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
-    // TODO: This "should" work but it doesn't
-    '& .ui-chat__item__message': {
-      zIndex: '0'
+    '& .ui-box': {
+      zIndex: 'unset'
     }
   },
   chatMessageContainer: {
