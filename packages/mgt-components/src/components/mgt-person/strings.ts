@@ -9,10 +9,10 @@ const availabilityMap = {
   Available: 'Available',
   Away: 'Away',
   Busy: 'Busy',
-  DoNotDisturb: 'Do Not Disturb',
+  DoNotDisturb: 'Do not disturb',
   Offline: 'Offline',
-  BeRightBack: 'Be Right Back',
-  PresenceUnknown: 'Presence Unknown'
+  BeRightBack: 'Be right back',
+  PresenceUnknown: 'Presence unknown'
 };
 
 export const strings = {
