@@ -20,7 +20,6 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 $task-icon-color: var(--task-icon-color, $ms-color-gray120);
 
 :host {
-  font-family: $font-family;
   display: flex;
   flex-direction: column;
   color: $color;
@@ -57,7 +56,6 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
     }
 
     select {
-      font-family: var(--default-font-family, 'Segoe UI');
       font-size: var(--tasks-plan-title-font-size, 1.1em);
       padding: var(--tasks-plan-title-padding, 5px);
       border: none;
@@ -70,7 +68,6 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
     }
 
     .plan-title {
-      font-family: var(--default-font-family, 'Segoe UI');
       font-size: var(--tasks-plan-title-font-size, 1.1em);
       padding: var(--tasks-plan-title-padding, 5px);
     }
@@ -78,7 +75,7 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
     .add-bar {
       display: flex;
 
-      .add-bar-item{
+      .add-bar-item {
         flex: 1 1 auto;
       }
     }
@@ -470,7 +467,6 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
 
             input {
               flex: 1;
-              font-family: var(--default-font-family, 'Segoe UI');
               margin: var(--task-new-input-margin, 0 24px 0 16px);
               padding: var(--task-new-input-padding, 6px);
               font-size: var(--task-new-input-font-size, 14px);
@@ -527,7 +523,6 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
 
             select,
             input {
-              font-family: $font-family;
               font-size: 12px;
               font-weight: 600;
               border: var(--task-new-select-border, none);
@@ -563,7 +558,6 @@ $task-icon-color: var(--task-icon-color, $ms-color-gray120);
           height: var(--tasks-new-button-height, 32px);
           border-radius: 4px;
           border: var(--tasks-new-button-border, solid 1px #e5e5e5);
-          font-family: var(--default-font-family, 'Segoe UI');
           font-size: 14px;
           line-height: 20px;
         }

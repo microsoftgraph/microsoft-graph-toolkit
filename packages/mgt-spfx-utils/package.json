@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt-spfx-utils",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Helper utilities for loading MGT based libraries and web parts in a SPFx context",
   "main": "./dist/es6/index.js",
   "types": "./dist/es6/index.d.ts",

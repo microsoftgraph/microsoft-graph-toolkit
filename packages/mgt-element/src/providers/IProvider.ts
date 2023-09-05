@@ -67,6 +67,19 @@ export abstract class IProvider implements AuthenticationProvider {
     return this._baseURL;
   }
 
+  private _customHosts?: string[] = undefined;
+
+  /**
+   * Custom Hostnames to allow graph client to utilize
+   */
+  public set customHosts(hosts: string[] | undefined) {
+    this._customHosts = hosts;
+  }
+
+  public get customHosts(): string[] | undefined {
+    return this._customHosts;
+  }
+
   /**
    * Enable/Disable incremental consent
    *
@@ -148,7 +161,7 @@ export abstract class IProvider implements AuthenticationProvider {
   public setState(state: ProviderState) {
     if (state !== this._state) {
       this._state = state;
-      this._loginChangedDispatcher.fire({});
+      this._loginChangedDispatcher.fire({ detail: this._state });
     }
   }
 
@@ -211,7 +224,7 @@ export abstract class IProvider implements AuthenticationProvider {
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public setActiveAccount?(user: IProviderAccount) {
-    this.fireActiveAccountChanged();
+    this.fireActiveAccountChanged({ detail: user });
   }
 
   /**
@@ -239,8 +252,8 @@ export abstract class IProvider implements AuthenticationProvider {
    *
    * @memberof IProvider
    */
-  private fireActiveAccountChanged() {
-    this._activeAccountChangedDispatcher.fire({});
+  private fireActiveAccountChanged(account: { detail: IProviderAccount }) {
+    this._activeAccountChangedDispatcher.fire(account);
   }
 
   /**
@@ -272,7 +285,9 @@ export abstract class IProvider implements AuthenticationProvider {
  * @interface ActiveAccountChanged
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface ActiveAccountChanged {}
+export interface ActiveAccountChanged {
+  detail: IProviderAccount;
+}
 /**
  * loginChangedEvent
  *
@@ -280,7 +295,9 @@ export interface ActiveAccountChanged {}
  * @interface LoginChangedEvent
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface LoginChangedEvent {}
+export interface LoginChangedEvent {
+  detail: ProviderState;
+}
 
 /**
  * LoginType

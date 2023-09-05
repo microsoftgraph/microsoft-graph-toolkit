@@ -16,5 +16,7 @@ export const strings = {
   inputPlaceholderText: 'Select a channel',
   noResultsFound: "We didn't find any matches.",
   loadingMessage: 'Loading...',
+  photoFor: 'Teams photo for',
+  teamsChannels: 'Teams and channels results',
   closeButtonAriaLabel: 'remove the selected channel'
 };

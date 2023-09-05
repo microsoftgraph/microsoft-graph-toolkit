@@ -1,5 +1,7 @@
 import { Providers } from '@microsoft/mgt-element';
 
-const currentUserId = () => Providers.globalProvider.getActiveAccount?.().id.split('.')[0] || '';
+const getCurrentUser = () => Providers.globalProvider.getActiveAccount?.();
+const currentUserId = () => getCurrentUser()?.id.split('.')[0] || '';
+const currentUserName = () => getCurrentUser()?.name || '';
 
-export { currentUserId };
+export { getCurrentUser, currentUserId, currentUserName };

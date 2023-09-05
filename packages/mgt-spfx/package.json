@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt-spfx",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "SharePoint Framework library for Microsoft Graph Toolkit",
   "main": "lib/index.js",
   "keywords": [
@@ -17,6 +17,9 @@
     "type": "git",
     "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit"
   },
+  "engines": {
+    "node": ">=16.13.0 <17.0.0"
+  },
   "author": "Microsoft",
   "license": "MIT",
   "scripts": {
@@ -30,24 +33,19 @@
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
-    "@microsoft/sp-core-library": "1.16.1",
     "tslib": "2.3.1"
   },
   "devDependencies": {
-    "@microsoft/eslint-config-spfx": "1.16.1",
-    "@microsoft/eslint-plugin-spfx": "1.16.1",
-    "@microsoft/rush-stack-compiler-4.5": "0.2.2",
-    "@microsoft/sp-build-web": "1.16.1",
-    "@microsoft/sp-module-interfaces": "1.16.1",
+    "@microsoft/rush-stack-compiler-4.5": "0.5.0",
     "@rushstack/eslint-config": "2.5.1",
-    "@types/webpack-env": "1.16.0",
-    "ajv": "6.12.5",
+    "@microsoft/eslint-plugin-spfx": "1.17.4",
+    "@microsoft/eslint-config-spfx": "1.17.4",
+    "@microsoft/sp-build-web": "1.17.4",
+    "@types/webpack-env": "~1.15.2",
+    "ajv": "^6.12.5",
     "eslint": "8.7.0",
-    "gulp": "4.0.2"
-  },
-  "resolutions": {
-    "@typescript-eslint/eslint-plugin": "^5.54.0",
-    "@typescript-eslint/eslint-plugin-tslint": "^5.54.0",
-    "@typescript-eslint/parser": "^5.54.0"
+    "gulp": "4.0.2",
+    "typescript": "4.5.5",
+    "@microsoft/sp-module-interfaces": "1.17.4"
   }
 }

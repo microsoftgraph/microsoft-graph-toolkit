@@ -223,12 +223,25 @@ export class GraphNotificationClient {
     }
   }
 
+  public async closeSignalRConnection() {
+    if (this.connection && this.connection?.state === signalR.HubConnectionState.Connected) {
+      await this.connection?.stop();
+    }
+  }
+
+  public async reConnectSignalR() {
+    if (!this.connection) await this.createSignalConnection();
+    if (this.connection?.state === signalR.HubConnectionState.Disconnected) {
+      await this.connection?.start();
+    }
+  }
+
   private async subscribeToResource(
     resourcePath: string,
     eventEmitter: ThreadEventEmitter,
     changeTypes: ChangeTypes[] = ['created', 'updated', 'deleted']
   ) {
-    if (!this.connection) throw new Error('SignalR connection not initialized');
+    if (!this.connection) throw new Error('subscribeToResource: SignalR connection is not initialized');
 
     const token = await this.getToken();
 

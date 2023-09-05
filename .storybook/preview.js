@@ -47,7 +47,12 @@ addParameters({
     inlineStories: false,
     page: noArgsDocsPage
   },
-  version: versionInfo
+  version: versionInfo,
+  options: {
+    storySort: {
+      order: ['stories']
+    }
+  }
 });
 
 const req = require.context('../stories', true, /\.(js|mdx)$/);
