@@ -473,7 +473,9 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       draft.status = this._nextLink ? 'loading messages' : 'ready';
       draft.chat = this._chat;
       // Keep updating if there was a next link.
-      draft.mentions = draft.mentions?.concat(...Array.from(mentions)) as NullableOption<ChatMessageMention[]>;
+      draft.mentions = draft.mentions?.concat(
+        ...Array.from(mentions as Iterable<ChatMessageMention>)
+      ) as NullableOption<ChatMessageMention[]>;
     });
     const futureMessages = messageConversions.filter(m => m.futureValue).map(m => m.futureValue);
     // if there are eventual future values, wait for them to resolve and update the state
