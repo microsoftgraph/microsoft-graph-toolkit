@@ -60,7 +60,7 @@ export const selectUsersById = () => html`
 export const localization = () => html`
    <mgt-people-picker></mgt-people-picker>
    <script>
-   import { LocalizationHelper } from '@microsoft/mgt';
+   import { LocalizationHelper } from '@microsoft/mgt-element';
    LocalizationHelper.strings = {
      _components: {
        'people-picker': {
