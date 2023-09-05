@@ -198,7 +198,11 @@ if(body) applyTheme('dark', body);
 body {
   background-color: var(--fill-color);
   color: var(--neutral-foreground-rest);
-  font-family: var(--body-font);
+  font-family: var(--default-font-family, var(--body-font));
+  /* Uncomment to change the default font family */
+  /* --default-font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
+  /* Uncomment to change the fluent element font variable */
+  /* --body-font: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
 }
 .custom-focus {
   --focus-ring-color: red;
