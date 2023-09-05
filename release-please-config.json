@@ -1,5 +1,6 @@
 {
-  "include-component-in-tag": false,  
+  "pull-request-header": ":giraffe: A new release is coming up!",
+  "include-component-in-tag": false,
   "bootstrap-sha": "e979212f841e8ffae3e86a74fa15edaaa0cc0191",
   "packages": {
     ".": {
