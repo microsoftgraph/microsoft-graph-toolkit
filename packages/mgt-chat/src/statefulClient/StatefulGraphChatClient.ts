@@ -612,7 +612,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
 
     // add a pending message to the state.
     this.notifyStateChange((draft: GraphChatClient) => {
-      const pendingMessage: AcsChatMessage = {
+      const pendingMessage: Message = {
         clientMessageId: pendingId,
         messageId: pendingId,
         contentType: 'text',
@@ -765,7 +765,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       // trying to filter out messages on the graph request causes a 400
       // deleted messages are returned as messages with no content, which we can't filter on the graph request
       // so we filter them out here
-      .filter(m => m.body?.content)
+      // Violating DLP returns content as empty BUT with policyViolation set
+      .filter(m => m.body?.content || (!m.body?.content && m?.policyViolation))
       // This gives us both current and eventual values for each message
       .map(m => this.convertChatMessage(m));
 
@@ -926,7 +927,12 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
           placeholderMessage = {
             ...placeholderMessage,
             ...{
-              content: updateMessageContentWithImage(placeholderMessage.content || '', imageIndex, messageId, image)
+              content: updateMessageContentWithImage(
+                placeholderMessage?.content as string,
+                imageIndex,
+                messageId,
+                image
+              )
             }
           };
         }
@@ -990,7 +996,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     const chatUrl = `https://teams.microsoft.com/_#/conversations/${chatId}?ctx=chat`;
     // check content is supported
     const attachments = graphMessage?.attachments ?? [];
-    return {
+    let messageData: GraphChatMessage = {
       messageId,
       contentType: graphMessage.body?.contentType ?? 'text',
       messageType: 'chat',
@@ -1005,6 +1011,13 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       hasUnsupportedContent: this.hasUnsupportedContent(content, attachments),
       rawChatUrl: chatUrl
     };
+    if (graphMessage?.policyViolation) {
+      messageData = Object.assign(messageData, {
+        messageType: 'blocked',
+        link: 'https://go.microsoft.com/fwlink/?LinkId=2132837'
+      });
+    }
+    return messageData;
   }
 
   private readonly renameChat = async (topic: string | null): Promise<void> => {

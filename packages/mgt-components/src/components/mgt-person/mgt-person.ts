@@ -705,8 +705,15 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   protected renderImage(personDetailsInternal: IDynamicPerson, imageSrc: string) {
     const altText = `${this.strings.photoFor} ${personDetailsInternal.displayName}`;
-    const hasImage = imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo';
-    const imageTemplate = html`<img alt=${altText} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />`;
+    const hasImage = imageSrc && !this._isInvalidImageSrc && this._avatarType === avatarType.photo;
+    const imageOnly = this.avatarType === avatarType.photo && this.view === ViewType.image;
+    const titleText =
+      (personDetailsInternal?.displayName || getEmailFromGraphEntity(personDetailsInternal)) ?? undefined;
+    const imageTemplate = html`<img
+      title="${ifDefined(imageOnly ? titleText : undefined)}"
+      alt=${altText}
+      src=${imageSrc}
+      @error=${() => (this._isInvalidImageSrc = true)} />`;
 
     const initials = personDetailsInternal ? this.getInitials(personDetailsInternal) : '';
     const hasInitials = initials?.length;
@@ -719,6 +726,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     // this reduces the redundant announcement of the user's name.
     const textTemplate = html`
       <span 
+        title="${ifDefined(this.view === ViewType.image ? titleText : undefined)}"
         role="${ifDefined(this.view === ViewType.image ? undefined : 'presentation')}"
         class="${textClasses}"
       >
@@ -746,24 +754,29 @@ export class MgtPerson extends MgtTemplatedComponent {
     switch (availability) {
       case 'Available':
         switch (activity) {
-          case 'Available':
-            presenceIcon = getSvg(SvgIcon.PresenceAvailable);
-            break;
           case 'OutOfOffice':
             presenceIcon = getSvg(SvgIcon.PresenceOofAvailable);
+            break;
+          // OutOfOffice and Uknowns
+          case 'Available':
+          default:
+            presenceIcon = getSvg(SvgIcon.PresenceAvailable);
             break;
         }
         break;
       case 'Busy':
         switch (activity) {
-          case 'Busy':
-          case 'InACall':
-          case 'InAMeeting':
-            presenceIcon = getSvg(SvgIcon.PresenceBusy);
-            break;
           case 'OutOfOffice':
           case 'OnACall':
             presenceIcon = getSvg(SvgIcon.PresenceOofBusy);
+            break;
+          // Busy,InACall,InAConferenceCall,InAMeeting, Unknown
+          case 'Busy':
+          case 'InACall':
+          case 'InAMeeting':
+          case 'InAConferenceCall':
+          default:
+            presenceIcon = getSvg(SvgIcon.PresenceBusy);
             break;
         }
         break;

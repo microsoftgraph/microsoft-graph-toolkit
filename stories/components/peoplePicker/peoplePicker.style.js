@@ -15,7 +15,7 @@ export default {
 };
 
 export const customCSSProperties = () => html`
-<mgt-people-picker></mgt-people-picker>
+<mgt-people-picker class="people-picker"></mgt-people-picker>
 <style>
   .people-picker {
     --people-picker-selected-option-background-color: orange;

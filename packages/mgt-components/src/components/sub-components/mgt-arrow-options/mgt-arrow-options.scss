@@ -16,7 +16,6 @@ $arrow-options-btn-font-color: var(--arrow-options-button-font-color, var(--acce
 
 :host {
   position: relative;
-  font-family: $font-family;
 
   .header {
     &::part(control) {
