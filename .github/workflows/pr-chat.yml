@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Deploy pr mgt-chat
+name: Deploy mgt-chat sample app
 
 on:
   push:
@@ -36,6 +36,7 @@ jobs:
           cp samples/react-contoso/.env.sample samples/react-contoso/.env
           sed -i 's/REACT_APP_CLIENT_ID="00000000-0000-0000-0000-000000000000"/REACT_APP_CLIENT_ID="${{secrets.REACT_CONTOSO_CHAT}}"/g' samples/react-contoso/.env
           sed -i 's/REACT_APP_BACKEND_CLIENT_ID="00000000-0000-0000-0000-000000000000"/REACT_APP_BACKEND_CLIENT_ID="${{secrets.REACT_CONTOSO_CHAT_BACKEND}}"/g' samples/react-contoso/.env
+          sed -i 's/REACT_APP_BASE_DIR="/"/REACT_APP_BASE_DIR="/next/mgt-chat""/g' samples/react-contoso/.env
 
       - name: Build 🛠
         run: |
@@ -47,4 +48,4 @@ jobs:
         with:
           branch: gh-pages
           folder: samples/react-contoso/build
-          target-folder: next/pr/mgt-chat
+          target-folder: next/mgt-chat

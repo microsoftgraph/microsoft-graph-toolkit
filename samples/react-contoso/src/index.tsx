@@ -21,7 +21,6 @@ brokerSettings.appId = process.env.REACT_APP_BACKEND_CLIENT_ID!;
 Providers.globalProvider = new Msal2Provider({
   clientId: process.env.REACT_APP_CLIENT_ID!,
   loginType: LoginType.Redirect,
-  redirectUri: window.location.protocol + '//' + window.location.host,
   scopes: [
     'Bookmark.Read.All',
     'Calendars.Read',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Header } from './components/Header';
 import { SideNavigation } from './components/SideNavigation';
 import { HomePage } from './pages/HomePage';
@@ -67,7 +67,7 @@ export const Layout: React.FunctionComponent = theme => {
   return (
     <FluentProvider theme={appContext.state.theme.fluentTheme}>
       <div className={styles.page}>
-        <HashRouter>
+        <BrowserRouter basename={process.env.BASE_DIR ?? '/'}>
           <Header></Header>
           <div className={styles.main}>
             <div
@@ -90,7 +90,7 @@ export const Layout: React.FunctionComponent = theme => {
               </Switch>
             </div>
           </div>
-        </HashRouter>
+        </BrowserRouter>
       </div>
     </FluentProvider>
   );
