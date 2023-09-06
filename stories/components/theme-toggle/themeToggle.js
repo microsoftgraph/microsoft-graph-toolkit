@@ -102,7 +102,7 @@ body {
 </style>
 
 <script>
-import { applyTheme } from '@microsoft/mgt';
+import { applyTheme } from '@microsoft/mgt-components';
 applyTheme('light');
 const darkElements = [
   document.querySelector("#picker-two"),
@@ -125,7 +125,7 @@ body {
 }
   </style>
   <script>
-  import { LocalizationHelper } from '@microsoft/mgt';
+  import { LocalizationHelper } from '@microsoft/mgt-element';
   LocalizationHelper.strings = {
     _components: {
       "theme-toggle": {

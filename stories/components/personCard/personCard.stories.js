@@ -59,7 +59,7 @@ export const RTL = () => html`
 export const localization = () => html`
   <mgt-person-card person-query="me"></mgt-person-card>
   <script>
-  import { LocalizationHelper } from '@microsoft/mgt';
+  import { LocalizationHelper } from '@microsoft/mgt-element';
   LocalizationHelper.strings = {
     _components: {
       login: {

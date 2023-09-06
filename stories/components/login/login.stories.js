@@ -118,7 +118,7 @@ export const Events = () => html`
 export const localization = () => html`
   <mgt-login></mgt-login>
   <script>
-  import { LocalizationHelper } from '@microsoft/mgt';
+  import { LocalizationHelper } from '@microsoft/mgt-element';
   LocalizationHelper.strings = {
     _components: {
       login: {
