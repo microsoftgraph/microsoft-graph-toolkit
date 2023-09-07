@@ -1,25 +1,15 @@
-import {
-  ErrorBar,
-  FluentThemeProvider,
-  MessageProps,
-  MessageRenderer,
-  MessageThread,
-  SendBox
-} from '@azure/communication-react';
+import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { FluentTheme, MessageBarType } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
 import React, { useEffect, useState } from 'react';
-import { renderToString } from 'react-dom/server';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
-import { isChatMessage, isGraphChatMessage } from '../../utils/types';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
 import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
-import UnsupportedContent from '../UnsupportedContent/UnsupportedContent';
-import produce from 'immer';
+import { onRenderMessage } from '../../utils/chat';
 
 registerAppIcons();
 
@@ -73,20 +63,6 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
   const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
     chatState.status
   );
-
-  const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRenderer) => {
-    const message = messageProps?.message;
-    if (isGraphChatMessage(message) && message?.hasUnsupportedContent) {
-      const unsupportedContentComponent = <UnsupportedContent targetUrl={message.rawChatUrl} />;
-      messageProps = produce(messageProps, (draft: MessageProps) => {
-        if (isChatMessage(draft.message)) {
-          draft.message.content = renderToString(unsupportedContentComponent);
-        }
-      });
-    }
-
-    return defaultOnRender ? defaultOnRender(messageProps) : <></>;
-  };
 
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
