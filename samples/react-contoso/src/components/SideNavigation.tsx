@@ -1,6 +1,6 @@
 import { Tab, TabList, makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
 import * as React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { NavigationRegular } from '@fluentui/react-icons';
 import { useAppContext } from '../AppContext';
 import { NavigationItem } from '../models/NavigationItem';
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 });
 
 export const SideNavigation: React.FunctionComponent<ISideNavigationProps> = props => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const { items } = props;
   const [selectedTab, setSelectedTab] = React.useState<any>('/');
@@ -28,7 +28,7 @@ export const SideNavigation: React.FunctionComponent<ISideNavigationProps> = pro
   const styles = useStyles();
   const appContext = useAppContext();
 
-  const navigate = (event: any, data: any) => {
+  const performNavigation = (event: any, data: any) => {
     if (data.value === 'navigation') {
       const futureIsMinimized = !isMinimized;
       setIsMinimized(futureIsMinimized);
@@ -38,7 +38,7 @@ export const SideNavigation: React.FunctionComponent<ISideNavigationProps> = pro
       });
     } else {
       setSelectedTab(data.value);
-      history.push(data.value);
+      navigate(data.value);
     }
   };
 
@@ -48,7 +48,7 @@ export const SideNavigation: React.FunctionComponent<ISideNavigationProps> = pro
 
   return (
     <>
-      <TabList size="medium" appearance="subtle" vertical onTabSelect={navigate} selectedValue={selectedTab}>
+      <TabList size="medium" appearance="subtle" vertical onTabSelect={performNavigation} selectedValue={selectedTab}>
         <Tab icon={<NavigationRegular />} value={'navigation'} className={styles.tab}></Tab>
         {items.map((item: NavigationItem, index) => (
           <Tab
