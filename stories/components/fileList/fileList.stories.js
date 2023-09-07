@@ -34,7 +34,7 @@ export const RTL = () => html`
 export const localization = () => html`
   <mgt-file-list></mgt-file-list>
   <script>
-  import { LocalizationHelper } from '@microsoft/mgt';
+  import { LocalizationHelper } from '@microsoft/mgt-element';
   LocalizationHelper.strings = {
     _components: {
       'file-list': {

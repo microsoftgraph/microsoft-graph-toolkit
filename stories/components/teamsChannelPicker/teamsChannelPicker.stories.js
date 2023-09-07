@@ -94,7 +94,7 @@ export const RTL = () => html`
 export const Localization = () => html`
   <mgt-teams-channel-picker></mgt-teams-channel-picker>
   <script>
-  import { LocalizationHelper } from '@microsoft/mgt';
+  import { LocalizationHelper } from '@microsoft/mgt-element';
     LocalizationHelper.strings = {
         _components: {
             "teams-channel-picker": {
