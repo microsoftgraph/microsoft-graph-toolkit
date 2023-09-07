@@ -1,25 +1,15 @@
-import {
-  ErrorBar,
-  FluentThemeProvider,
-  MessageProps,
-  MessageRenderer,
-  MessageThread,
-  SendBox
-} from '@azure/communication-react';
+import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
 import { FluentTheme, MessageBarType } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
-import { renderToString } from 'react-dom/server';
-import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
-import { isChatMessage, isGraphChatMessage } from '../../utils/types';
-import ChatHeader from '../ChatHeader/ChatHeader';
-import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
-import UnsupportedContent from '../UnsupportedContent/UnsupportedContent';
-import { registerAppIcons } from '../styles/registerIcons';
 import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
+import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
+import { onRenderMessage } from '../../utils/chat';
+import ChatHeader from '../ChatHeader/ChatHeader';
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
-import produce from 'immer';
+import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
+import { registerAppIcons } from '../styles/registerIcons';
 
 registerAppIcons();
 
@@ -67,19 +57,6 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
     };
   }, [chatClient]);
 
-  const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRenderer) => {
-    const message = messageProps?.message;
-    if (isGraphChatMessage(message) && message?.hasUnsupportedContent) {
-      const unsupportedContentComponent = <UnsupportedContent targetUrl={message.rawChatUrl} />;
-      messageProps = produce(messageProps, (draft: MessageProps) => {
-        if (isChatMessage(draft.message)) {
-          draft.message.content = renderToString(unsupportedContentComponent);
-        }
-      });
-    }
-
-    return defaultOnRender ? defaultOnRender(messageProps) : <></>;
-  };
   const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
     chatState.status
   );
