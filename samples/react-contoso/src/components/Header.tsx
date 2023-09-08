@@ -4,7 +4,7 @@ import { PACKAGE_VERSION } from '@microsoft/mgt-element';
 import { InfoButton } from '@fluentui/react-components/unstable';
 import { SimpleLogin } from './SimpleLogin';
 import { useIsSignedIn } from '../hooks/useIsSignedIn';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { useAppContext } from '../AppContext';
 import { Label, makeStyles, mergeClasses, shorthands, tokens } from '@fluentui/react-components';
@@ -115,16 +115,16 @@ const HeaderComponent: React.FunctionComponent = () => {
   const appContext = useAppContext();
   const setAppContext = appContext.setState;
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onSearchTermChanged = (e: CustomEvent) => {
     if (!(e.detail === '' && appContext.state.searchTerm === '*') && e.detail !== appContext.state.searchTerm) {
       appContext.setState({ ...appContext.state, searchTerm: e.detail === '' ? '*' : e.detail });
 
       if (e.detail === '') {
-        history.push('/search');
+        navigate('/search');
       } else {
-        history.push('/search?q=' + e.detail);
+        navigate('/search?q=' + e.detail);
       }
     }
   };
