@@ -19,7 +19,7 @@ export const getNavigation = (isSignedIn: boolean) => {
 
   navItems.push({
     name: 'Home',
-    url: '/',
+    url: '',
     icon: <HomeRegular />,
     key: 'home',
     requiresLogin: false,
@@ -30,7 +30,7 @@ export const getNavigation = (isSignedIn: boolean) => {
   if (isSignedIn) {
     navItems.push({
       name: 'Dashboard',
-      url: '/dashboard',
+      url: 'dashboard',
       icon: <TextBulletListSquareRegular />,
       key: 'dashboard',
       requiresLogin: true,
@@ -40,7 +40,7 @@ export const getNavigation = (isSignedIn: boolean) => {
 
     navItems.push({
       name: 'Mail and Calendar',
-      url: '/outlook',
+      url: 'outlook',
       icon: <CalendarMailRegular />,
       key: 'outlook',
       requiresLogin: true,
@@ -50,7 +50,7 @@ export const getNavigation = (isSignedIn: boolean) => {
 
     navItems.push({
       name: 'Files',
-      url: '/files',
+      url: 'files',
       icon: <DocumentRegular />,
       key: 'files',
       requiresLogin: true,
@@ -60,7 +60,7 @@ export const getNavigation = (isSignedIn: boolean) => {
 
     navItems.push({
       name: 'Taxonomy',
-      url: '/taxonomy',
+      url: 'taxonomy',
       icon: <TagMultipleRegular />,
       key: 'files',
       requiresLogin: true,
@@ -70,7 +70,7 @@ export const getNavigation = (isSignedIn: boolean) => {
 
     navItems.push({
       name: 'Search',
-      url: '/search',
+      url: 'search',
       pattern: '/search/:query',
       icon: <SearchRegular />,
       key: 'search',
