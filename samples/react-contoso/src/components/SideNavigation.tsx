@@ -23,7 +23,7 @@ export const SideNavigation: React.FunctionComponent<ISideNavigationProps> = pro
   const navigate = useNavigate();
   const location = useLocation();
   const { items } = props;
-  const [selectedTab, setSelectedTab] = React.useState<any>('/');
+  const [selectedTab, setSelectedTab] = React.useState<any>('');
   const [isMinimized, setIsMinimized] = React.useState<boolean>(false);
   const styles = useStyles();
   const appContext = useAppContext();
@@ -37,13 +37,12 @@ export const SideNavigation: React.FunctionComponent<ISideNavigationProps> = pro
         sidebar: { ...appContext.state.sidebar, isMinimized: futureIsMinimized }
       });
     } else {
-      setSelectedTab(data.value);
-      navigate(data.value);
+      navigate(data.value, { relative: 'route' });
     }
   };
 
   React.useLayoutEffect(() => {
-    setSelectedTab(location.pathname);
+    setSelectedTab(location.pathname.substring(1));
   }, [location]);
 
   return (
