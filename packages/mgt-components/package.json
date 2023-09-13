@@ -37,6 +37,8 @@
   },
   "dependencies": {
     "@fluentui/web-components": "^2.5.12",
+    "@microsoft/fast-colors": "^5.3.0",
+    "@microsoft/fast-foundation": "^2.48.1",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "3.0.2",
     "@microsoft/microsoft-graph-types": "^2.0.0",

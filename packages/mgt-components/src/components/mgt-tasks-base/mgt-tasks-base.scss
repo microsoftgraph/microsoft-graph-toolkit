@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-styles';
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles';
 @import './mgt-tasks-base.theme';
 
 $task-icon-alignment: var(--task-icon-alignment, flex-start);

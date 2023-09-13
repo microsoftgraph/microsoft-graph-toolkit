@@ -35,6 +35,12 @@
     "idb": "6.0.0",
     "lit": "^2.3.1"
   },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@microsoft/microsoft-graph-types": "^2.0.0",
+    "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
+    "@types/jest": "^29.5.2"
+  },
   "publishConfig": {
     "directory": "dist"
   }
