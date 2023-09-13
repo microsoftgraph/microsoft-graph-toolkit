@@ -7,17 +7,13 @@
       "packages/*",
       "packages/providers/*",
       "samples/react-contoso"
-    ],
-    "nohoist": [
-      "**/@microsoft/sp-office-ui-fabric-core**",
-      "**/office-ui-fabric-core**",
-      "**/@vue/*"
     ]
   },
   "scripts": {
     "init": "yarn && yarn build",
     "analyze": "custom-elements-manifest analyze --litelement --globs \"./packages/*/src/**/*.ts\"",
     "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
+    "build:dev": "npm run prettier:check && lerna run build --scope @microsoft/* --ignore @microsoft/mgt --ignore @microsoft/mgt-spfx --ignore @microsoft/mgt-spfx-utils",
     "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope @microsoft/*",
     "build:mgt": "cd ./packages/mgt && npm run build",
     "build:mgt-element": "cd ./packages/mgt-element && npm run build",
@@ -38,7 +34,7 @@
     "start": "npm-run-all prettier:check watch:serve",
     "start:storybook": "npm-run-all storybook:dev storybook:watch",
     "start:https": "npm-run-all prettier:check build:esm watch:serve:https",
-    "watch": "lerna run --parallel --stream --scope @microsoft/* build:watch ",
+    "watch": "lerna run --parallel --stream --scope @microsoft/* --ignore @microsoft/mgt --ignore @microsoft/mgt-spfx --ignore @microsoft/mgt-spfx-utils build:watch ",
     "watch:serve": "npm-run-all --parallel watch serve",
     "watch:serve:https": "npm-run-all -parallel watch serve:https",
     "watch:components": "lerna run --parallel build:watch --scope @microsoft/mgt-components --include-dependents",
@@ -84,7 +80,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.5.2",
     "@types/node": "12.12.22",
-    "@types/react": "^17.0.00",
+    "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
@@ -153,5 +149,6 @@
   },
   "resolutions": {
     "responselike": "2.0.0"
-  }
+  },
+  "packageManager": "yarn@3.6.3"
 }

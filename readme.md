@@ -127,16 +127,17 @@ You can then start using the components in your html page. Here is a full workin
 
 ### Use via NPM:
 
-The benefits of using MGT through NPM is that you have full control of the bundling process and you can bundle only the code you need for your site. First, add the npm package:
+The benefits of using MGT through NPM is that you have full control of the bundling process and you can bundle only the code you need for your site. First, add the npm packages:
 
 ```bash
-npm install @microsoft/mgt
+npm install @microsoft/mgt-components @microsoft/mgt-msal2-provider
 ```
 
 Now you can reference all components and providers at the page you are using:
 
 ```html
-<script type="module" src="node_modules/@microsoft/mgt/dist/es6/index.js"></script>
+<script type="module" src="node_modules/@microsoft/mgt-components/dist/es6/index.js"></script>
+<script type="module" src="node_modules/@microsoft/mgt-msal2-provider/dist/es6/index.js"></script>
 
 <mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 
