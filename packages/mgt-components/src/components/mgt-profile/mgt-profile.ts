@@ -306,7 +306,9 @@ export class MgtProfile extends BasePersonCardSection {
                  ${position?.detail?.company?.displayName}
                </div>
                <div class="work-position__location" tabindex="0">
-                 ${position?.detail?.company?.address?.city}, ${position?.detail?.company?.address?.state}
+                 ${position?.detail?.company?.address?.city}${
+          position?.detail?.company?.address?.city && position?.detail?.company?.address?.state ? ', ' : ''
+        }${position?.detail?.company?.address?.state}
                </div>
              </div>
            </div>
@@ -353,7 +355,7 @@ export class MgtProfile extends BasePersonCardSection {
            </div>
            <div class="data-list__item__content">
              <div class="educational-activity__degree" tabindex="0">
-               ${educationalActivity.program.displayName || 'Bachelors Degree'}
+               ${educationalActivity.program.displayName}
              </div>
            </div>
          </div>
@@ -493,8 +495,14 @@ export class MgtProfile extends BasePersonCardSection {
   }
 
   private getDisplayDateRange(event: EducationalActivity): string {
+    // if startMonthYear is not defined, we do not show the date range (otherwise it will always start with 1970)
+    if (!event.startMonthYear) {
+      return null;
+    }
+
     const start = new Date(event.startMonthYear).getFullYear();
-    if (start === 0) {
+    // if the start year is 0 or 1 - it's probably an error or a strange "undefined"-value
+    if (start === 0 || start === 1) {
       return null;
     }
 
