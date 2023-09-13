@@ -23,7 +23,7 @@
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
-    "postpack": "cpx *.tgz ../../artifacts"
+    "postpack": "cpx *.tgz \"../../artifacts\""
   },
   "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
   "bugs": {

@@ -31,7 +31,7 @@
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
-    "postpack": "cpx *.tgz ../../artifacts",
+    "postpack": "cpx *.tgz \"../../artifacts\"",
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd ."
   },

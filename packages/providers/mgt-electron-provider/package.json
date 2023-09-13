@@ -38,7 +38,7 @@
     "lint": "npm run lint:auth && npm run lint:provider",
     "lint:auth": "eslint -c .eslintrc.auth.js 'src/Authenticator/**/*.ts'",
     "lint:provider": "eslint -c .eslintrc.provider.js 'src/Provider/**/*.ts'",
-    "postpack": "cpx *.tgz ../../../artifacts"
+    "postpack": "cpx *.tgz \"../../../artifacts\""
   },
   "dependencies": {
     "@azure/msal-node": "^1.0.3",

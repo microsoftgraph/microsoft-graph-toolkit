@@ -28,7 +28,7 @@
     "compile:watch": "tsc -w",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "setVersion": "gulp setVersion --cwd .",
-    "postpack": "cpx *.tgz ../../artifacts"
+    "postpack": "cpx *.tgz \"../../artifacts\""
   },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "3.0.2",
