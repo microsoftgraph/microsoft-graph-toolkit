@@ -45,3 +45,13 @@ package-lock.json
 storybook-static/
 custom-elements.json
 workbench.html
+
+# modern yarn using zero-install
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
