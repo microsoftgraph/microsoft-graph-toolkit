@@ -9,7 +9,6 @@
       "samples/react-contoso"
     ],
     "nohoist": [
-      "**/@microsoft/sp-office-ui-fabric-core**",
       "**/office-ui-fabric-core**",
       "**/@vue/*"
     ]
