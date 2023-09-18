@@ -19,6 +19,22 @@
 
     fluent-combobox {
       &::part(control) {
+        input.selected-value {
+          color: $picker-text-color;
+        }
+
+        &::-webkit-input-placeholder {
+          color: $picker-text-color;
+        }
+
+        &::-moz-placeholder {
+          color: $picker-text-color;
+        }
+
+        &::-ms-placeholder {
+          color: $picker-text-color;
+        }
+
         &::placeholder {
           color: $picker-text-color;
         }
