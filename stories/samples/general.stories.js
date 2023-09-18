@@ -30,7 +30,7 @@ export const Localization = () => html`
   <mgt-people></mgt-people>
   <mgt-todo></mgt-todo>
   <script>
-    import { LocalizationHelper } from '@microsoft/mgt';
+    import { LocalizationHelper } from '@microsoft/mgt-element';
     LocalizationHelper.strings = {
       _components: {
         login: {
@@ -123,7 +123,7 @@ export const cache = () => html`
 }
   </style>
   <script>
-import { CacheService, Providers } from '@microsoft/mgt';
+import { CacheService, Providers } from '@microsoft/mgt-element';
 CacheService.config.isEnabled = true;
 
 const status = document.getElementById('status');
@@ -190,7 +190,7 @@ export const theme = () => html`
   <mgt-teams-channel-picker class="custom1"></mgt-teams-channel-picker>
 </div>
 <script>
-import { applyTheme } from '@microsoft/mgt';
+import { applyTheme } from '@microsoft/mgt-components';
 const body = document.querySelector('body');
 if(body) applyTheme('dark', body);
 </script>
