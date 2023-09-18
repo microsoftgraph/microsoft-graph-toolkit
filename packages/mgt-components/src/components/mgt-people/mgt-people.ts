@@ -490,15 +490,26 @@ export class MgtPeople extends MgtTemplatedComponent {
 
         // populate people
         if (this.groupId) {
-          this.people = await findGroupMembers(graph, null, this.groupId, this.showMax, PersonType.person);
+          this.people = (await findGroupMembers(
+            graph,
+            null,
+            this.groupId,
+            this.showMax,
+            PersonType.person
+          )) as IDynamicPerson[];
         } else if (this.userIds || this.peopleQueries) {
           this.people = this.userIds
-            ? await getUsersForUserIds(graph, this.userIds, '', '', this._fallbackDetails)
-            : await getUsersForPeopleQueries(graph, this.peopleQueries, this._fallbackDetails);
+            ? ((await getUsersForUserIds(graph, this.userIds, '', '', this._fallbackDetails)) as IDynamicPerson[])
+            : ((await getUsersForPeopleQueries(graph, this.peopleQueries, this._fallbackDetails)) as IDynamicPerson[]);
         } else if (this.resource) {
-          this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);
+          this.people = (await getPeopleFromResource(
+            graph,
+            this.version,
+            this.resource,
+            this.scopes
+          )) as IDynamicPerson[];
         } else {
-          this.people = await getPeople(graph);
+          this.people = (await getPeople(graph)) as IDynamicPerson[];
         }
 
         // populate presence for people

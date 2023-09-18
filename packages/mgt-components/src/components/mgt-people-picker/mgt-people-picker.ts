@@ -24,7 +24,7 @@ import {
   getUsersForUserIds,
   getUsers
 } from '../../graph/graph.user';
-import { IDynamicPerson, ViewType } from '../../graph/types';
+import { IDynamicPerson, IGroup, IUser, ViewType } from '../../graph/types';
 import {
   Providers,
   ProviderState,
@@ -639,7 +639,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       for (const id in userIds) {
         const userId = userIds[id];
         try {
-          const personDetails = await getUser(graph, userId, defaultPersonProperties);
+          const personDetails = (await getUser(graph, userId, defaultPersonProperties)) as IUser;
           this.addPerson(personDetails);
         } catch (e: any) {
           // This caters for allow-any-email property if it's enabled on the component
@@ -650,7 +650,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 mail: userId,
                 displayName: userId
               };
-              this.addPerson(anyMailUser);
+              this.addPerson(anyMailUser as IUser);
             }
           }
         }
@@ -671,7 +671,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       // eslint-disable-next-line guard-for-in, @typescript-eslint/no-for-in-array
       for (const id in groupIds) {
         try {
-          const groupDetails = await getGroup(graph, groupIds[id]);
+          const groupDetails = (await getGroup(graph, groupIds[id])) as IGroup;
           this.addPerson(groupDetails);
         } catch (e) {
           // no-op
@@ -1010,16 +1010,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               if (this.groupId) {
                 try {
                   if (this.type === PersonType.group) {
-                    this._groupPeople = await findGroupMembers(
+                    this._groupPeople = (await findGroupMembers(
                       graph,
                       null,
                       this.groupId,
                       this.showMax,
                       this.type,
                       this.transitiveSearch
-                    );
+                    )) as IUser[];
                   } else {
-                    this._groupPeople = await findGroupMembers(
+                    this._groupPeople = (await findGroupMembers(
                       graph,
                       null,
                       this.groupId,
@@ -1028,7 +1028,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                       this.transitiveSearch,
                       this.userFilters,
                       this.peopleFilters
-                    );
+                    )) as IUser[];
                   }
                 } catch (_) {
                   this._groupPeople = [];
@@ -1036,7 +1036,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               } else if (this.groupIds) {
                 if (this.type === PersonType.group) {
                   try {
-                    this._groupPeople = await getGroupsForGroupIds(graph, this.groupIds, this.groupFilters);
+                    this._groupPeople = (await getGroupsForGroupIds(
+                      graph,
+                      this.groupIds,
+                      this.groupFilters
+                    )) as IGroup[];
                   } catch (_) {
                     this._groupPeople = [];
                   }
@@ -1051,7 +1055,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                       this.transitiveSearch,
                       this.userFilters
                     );
-                    this._groupPeople = peopleInGroups;
+                    this._groupPeople = peopleInGroups as IUser[];
                   } catch (_) {
                     this._groupPeople = [];
                   }
@@ -1061,13 +1065,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             people = this._groupPeople || [];
           } else if (this.type === PersonType.person || this.type === PersonType.any) {
             if (this.userIds) {
-              people = await getUsersForUserIds(graph, this.userIds, '', this.userFilters);
+              people = (await getUsersForUserIds(graph, this.userIds, '', this.userFilters)) as IUser[];
             } else {
               const isUserOrContactType = this.userType === UserType.user || this.userType === UserType.contact;
               if (this._userFilters && isUserOrContactType) {
-                people = await getUsers(graph, this._userFilters, this.showMax);
+                people = (await getUsers(graph, this._userFilters, this.showMax)) as IUser[];
               } else {
-                people = await getPeople(graph, this.userType, this._peopleFilters, this.showMax);
+                people = (await getPeople(graph, this.userType, this._peopleFilters, this.showMax)) as IUser[];
               }
             }
           } else if (this.type === PersonType.group) {
@@ -1084,7 +1088,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 // eslint-disable-next-line @typescript-eslint/dot-notation, @typescript-eslint/no-unsafe-assignment
                 groups = groups[0]['value'];
               }
-              people = groups;
+              people = groups as IGroup[];
             }
           }
           this.defaultPeople = people;
@@ -1100,12 +1104,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         !this.defaultSelectedUsers.length &&
         !this.defaultSelectedGroups.length
       ) {
-        this.defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds, '', this.userFilters);
-        this.defaultSelectedGroups = await getGroupsForGroupIds(
+        this.defaultSelectedUsers = (await getUsersForUserIds(
+          graph,
+          this.defaultSelectedUserIds,
+          '',
+          this.userFilters
+        )) as IUser[];
+        this.defaultSelectedGroups = (await getGroupsForGroupIds(
           graph,
           this.defaultSelectedGroupIds,
           this.peopleFilters
-        );
+        )) as IGroup[];
 
         this.defaultSelectedGroups = this.defaultSelectedGroups.filter(group => {
           return group !== null;
@@ -1125,7 +1134,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
         if (this.groupId) {
           people =
-            (await findGroupMembers(
+            ((await findGroupMembers(
               graph,
               input,
               this.groupId,
@@ -1134,7 +1143,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               this.transitiveSearch,
               this.userFilters,
               this.peopleFilters
-            )) || [];
+            )) as IUser[]) || [];
         } else {
           if (this.type === PersonType.person || this.type === PersonType.any) {
             try {
@@ -1143,22 +1152,24 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 // we might have a user-filters property set, search for users with it.
                 if (this.userIds?.length) {
                   // has the user-ids proerty set
-                  people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
+                  people = (await getUsersForUserIds(graph, this.userIds, input, this._userFilters)) as IUser[];
                 } else {
-                  people = await findUsers(graph, input, this.showMax, this._userFilters);
+                  people = (await findUsers(graph, input, this.showMax, this._userFilters)) as IUser[];
                 }
               } else {
                 if (!this.groupIds) {
                   if (this.userIds?.length) {
                     // has the user-ids proerty set
-                    people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
+                    people = (await getUsersForUserIds(graph, this.userIds, input, this._userFilters)) as IUser[];
                   } else {
-                    people = (await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) || [];
+                    people =
+                      ((await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) as IUser[]) ||
+                      [];
                   }
                 } else {
                   // Does not work when the PersonType = person.
                   try {
-                    people = await findUsersFromGroupIds(
+                    people = (await findUsersFromGroupIds(
                       graph,
                       input,
                       this.groupIds,
@@ -1166,7 +1177,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                       this.type,
                       this.transitiveSearch,
                       this.userFilters
-                    );
+                    )) as IUser[];
                   } catch (_) {
                     // nop
                   }
@@ -1185,7 +1196,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               this.type !== PersonType.person
             ) {
               try {
-                const users = (await findUsers(graph, input, this.showMax, this._userFilters)) || [];
+                const users = ((await findUsers(graph, input, this.showMax, this._userFilters)) as IUser[]) || [];
 
                 // make sure only unique people
                 const peopleIds = new Set(people.map(p => p.id));
@@ -1203,14 +1214,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
             if (this.groupIds) {
               try {
-                people = await findGroupsFromGroupIds(
+                people = (await findGroupsFromGroupIds(
                   graph,
                   input,
                   this.groupIds,
                   this.showMax,
                   this.groupType,
                   this.userFilters
-                );
+                )) as IGroup[];
               } catch (_) {
                 // no-op
               }
@@ -1460,7 +1471,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         mail: this.userInput,
         displayName: this.userInput
       };
-      this.addPerson(anyMailUser);
+      this.addPerson(anyMailUser as IUser);
     }
     this.hideFlyout();
     if (this.input) {

@@ -21,7 +21,7 @@ import { IGraph } from '@microsoft/mgt-element';
 import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
-import { IDynamicPerson, ViewType } from '../../graph/types';
+import { IDynamicPerson, IUser, ViewType } from '../../graph/types';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -476,7 +476,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._history = [];
 
     this._cardState = historyState.state;
-    this._personDetails = historyState.state;
+    this._personDetails = historyState.personDetails;
     this.personImage = historyState.personImage;
     this.loadSections();
   }
@@ -1016,7 +1016,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     // check if personDetail already populated
     if (this.personDetails) {
-      const user = this.personDetails as User;
+      const user = this.personDetails as IUser;
       const id = user.userPrincipalName || user.id;
 
       // if we have an id but no email, we should get data from the graph
@@ -1036,7 +1036,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       const people = await findPeople(graph, this.personQuery, 1);
 
       if (people?.length) {
-        this.personDetails = people[0];
+        this.personDetails = people[0] as IDynamicPerson;
         await getPersonImage(graph, this.personDetails, MgtPersonCard.config.useContactApis).then(image => {
           if (image) {
             this.personDetails.personImage = image;

@@ -7,6 +7,7 @@
 
 import { Message, Person, SharedInsight, User } from '@microsoft/microsoft-graph-types';
 import { Profile } from '@microsoft/microsoft-graph-types-beta';
+import { IUser } from '../../graph/types';
 
 /**
  * Person Card Global Configuration Type
@@ -81,7 +82,7 @@ export interface MgtPersonCardConfig {
   };
 }
 
-export type UserWithManager = User & { manager?: UserWithManager };
+export type UserWithManager = IUser & { manager?: UserWithManager };
 
 export interface MgtPersonCardState {
   directReports?: User[];

@@ -17,12 +17,12 @@ import { Contact, Presence, Person } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { PersonType, findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
+import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { findUsers, getMe, getUser } from '../../graph/graph.user';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
-import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
+import { AvatarSize, IDynamicPerson, IUser, IGroup, IContact, ViewType } from '../../graph/types';
 import '../../styles/style-helper';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
@@ -54,6 +54,18 @@ export const defaultPersonProperties = [
   'id',
   'userType'
 ];
+
+const isGroup = (obj: IDynamicPerson): obj is IGroup => {
+  return obj.entityType === 'group';
+};
+
+const isUser = (obj: IDynamicPerson): obj is IUser => {
+  return obj.entityType === 'user';
+};
+
+const isContact = (obj: IDynamicPerson): obj is IContact => {
+  return obj.entityType === 'contact';
+};
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -1099,6 +1111,15 @@ export class MgtPerson extends MgtTemplatedComponent {
     let details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
 
     if (details) {
+      if ('personType' in details || 'userType' in details) {
+        details.entityType = 'user';
+      }
+      if ('initials' in details) {
+        details.entityType = 'contact';
+      }
+      if ('groupTypes' in details) {
+        details.entityType = 'group';
+      }
       if (
         !details.personImage &&
         this.fetchImage &&
@@ -1109,14 +1130,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         let image: string;
         if ('groupTypes' in details) {
           image = await getGroupImage(graph, details, MgtPerson.config.useContactApis);
-          details.entityType = 'group';
         } else {
-          if ('personType' in details) {
-            details.entityType = 'person';
-          }
-          if ('userType' in details) {
-            details.entityType = 'user';
-          }
           image = await getPersonImage(graph, details, MgtPerson.config.useContactApis);
         }
         if (image) {
@@ -1131,9 +1145,9 @@ export class MgtPerson extends MgtTemplatedComponent {
         person = await getUserWithPhoto(graph, this.userId, personProps);
       } else {
         if (this.personQuery === 'me') {
-          person = await getMe(graph, personProps);
+          person = (await getMe(graph, personProps)) as IUser;
         } else {
-          person = await getUser(graph, this.userId, personProps);
+          person = (await getUser(graph, this.userId, personProps)) as IUser;
         }
       }
       this.personDetailsInternal = person;
@@ -1148,10 +1162,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
 
       if (people?.length) {
-        this.personDetailsInternal = people[0];
-        this.personDetails = people[0];
+        this.personDetailsInternal = people[0] as IUser;
+        this.personDetails = people[0] as IUser;
         if (this._avatarType === 'photo' && !this.disableImageFetch) {
-          const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
+          const image = await getPersonImage(graph, people[0] as IUser, MgtPerson.config.useContactApis);
 
           if (image) {
             this.personDetailsInternal.personImage = image;

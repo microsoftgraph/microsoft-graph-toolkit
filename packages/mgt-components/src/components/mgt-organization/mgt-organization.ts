@@ -13,7 +13,7 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPersonCardState, UserWithManager } from '../mgt-person-card/mgt-person-card.types';
 import { styles } from './mgt-organization-css';
 import { strings } from './strings';
-import { ViewType } from '../../graph/types';
+import { IDynamicPerson, ViewType } from '../../graph/types';
 import { mgtHtml, customElement } from '@microsoft/mgt-element';
 
 /**
@@ -177,7 +177,7 @@ export class MgtOrganization extends BasePersonCardSection {
    * @returns {TemplateResult}
    * @memberof MgtOrganization
    */
-  protected renderManager(person: User): TemplateResult {
+  protected renderManager(person: IDynamicPerson): TemplateResult {
     return mgtHtml`
       <div
         class="org-member"
@@ -251,9 +251,9 @@ export class MgtOrganization extends BasePersonCardSection {
             <div
               class="org-member org-member--direct-report"
               @keydown=${(e: KeyboardEvent) => {
-                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
+                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person as IDynamicPerson);
               }}
-              @click=${() => this.navigateCard(person)}
+              @click=${() => this.navigateCard(person as IDynamicPerson)}
             >
               <div class="org-member__person">
                 <mgt-person
@@ -292,9 +292,9 @@ export class MgtOrganization extends BasePersonCardSection {
             <div
               class="direct-report"
               @keydown=${(e: KeyboardEvent) => {
-                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
+                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person as IDynamicPerson);
               }}
-              @click=${() => this.navigateCard(person)}
+              @click=${() => this.navigateCard(person as IDynamicPerson)}
             >
               <mgt-person
                 .personDetails=${person}
@@ -340,7 +340,7 @@ export class MgtOrganization extends BasePersonCardSection {
    * @returns {TemplateResult}
    * @memberof MgtOrganization
    */
-  protected renderCoworker(person: User): TemplateResult {
+  protected renderCoworker(person: IDynamicPerson): TemplateResult {
     return mgtHtml`
       <div
         class="coworker"
@@ -384,7 +384,7 @@ export class MgtOrganization extends BasePersonCardSection {
        <div class="divider"></div>
        <div class="subtitle" tabindex="0">${subtitle}</div>
        <div>
-         ${people.slice(0, 6).map(person => this.renderCoworker(person))}
+         ${people.slice(0, 6).map((person: IDynamicPerson) => this.renderCoworker(person))}
        </div>
      `;
   }

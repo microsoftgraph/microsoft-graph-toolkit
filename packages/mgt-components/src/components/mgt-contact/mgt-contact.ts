@@ -15,6 +15,7 @@ import { BasePersonCardSection } from '../BasePersonCardSection';
 import { styles } from './mgt-contact-css';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { strings } from './strings';
+import { IUser } from '../../graph/types';
 
 /**
  * Represents a contact part and its metadata
@@ -76,7 +77,7 @@ export class MgtContact extends BasePersonCardSection {
   private readonly _contactParts: Record<string, IContactPart> = {
     email: {
       icon: getSvg(SvgIcon.Email),
-      onClick: () => this.sendEmail(getEmailFromGraphEntity(this._person)),
+      onClick: () => this.sendEmail(getEmailFromGraphEntity(this._person as IUser)),
       showCompact: true,
       title: this.strings.emailTitle
     },
@@ -119,7 +120,7 @@ export class MgtContact extends BasePersonCardSection {
     super();
     this._person = person;
 
-    this._contactParts.email.value = getEmailFromGraphEntity(this._person);
+    this._contactParts.email.value = getEmailFromGraphEntity(this._person as IUser);
     this._contactParts.chat.value = this._person.userPrincipalName;
     this._contactParts.cellPhone.value = this._person.mobilePhone;
     this._contactParts.department.value = this._person.department;
