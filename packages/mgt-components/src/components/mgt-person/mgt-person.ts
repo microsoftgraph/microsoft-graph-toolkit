@@ -753,6 +753,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     const { activity, availability } = presence;
     switch (availability) {
       case 'Available':
+      case 'AvailableIdle':
         switch (activity) {
           case 'OutOfOffice':
             presenceIcon = getSvg(SvgIcon.PresenceOofAvailable);
@@ -765,6 +766,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         }
         break;
       case 'Busy':
+      case 'BusyIdle':
         switch (activity) {
           case 'OutOfOffice':
           case 'OnACall':
@@ -787,6 +789,7 @@ export class MgtPerson extends MgtTemplatedComponent {
             break;
           case 'Presenting':
           case 'Focusing':
+          case 'UrgentInterruptionsOnly':
           default:
             presenceIcon = getSvg(SvgIcon.PresenceDnd);
             break;
@@ -817,6 +820,7 @@ export class MgtPerson extends MgtTemplatedComponent {
             presenceIcon = getSvg(SvgIcon.PresenceOffline);
             break;
           case 'OutOfOffice':
+          case 'OffWork':
             presenceIcon = getSvg(SvgIcon.PresenceOofAway);
             break;
           default:
@@ -835,7 +839,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       oneline: this.isOneLine()
     });
 
-    const availabilityText = (status: string) => {
+    const activityText = (status: string) => {
       for (const item in this.strings) {
         if (item === status) {
           return this.strings[item] as string;
@@ -843,13 +847,13 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     };
 
-    const formattedAvailability = availabilityText(availability);
+    const formattedActivity = activityText(activity);
 
     return html`
       <span
         class="${presenceWrapperClasses}"
-        title="${formattedAvailability}"
-        aria-label="${formattedAvailability}"
+        title="${formattedActivity}"
+        aria-label="${formattedActivity}"
         role="img">
           ${presenceIcon}
       </span>
