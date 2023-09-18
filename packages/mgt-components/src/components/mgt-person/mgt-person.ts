@@ -14,7 +14,7 @@ import {
   mgtHtml
 } from '@microsoft/mgt-element';
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
-import { html, TemplateResult } from 'lit';
+import { html, TemplateResult, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -839,7 +839,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       oneline: this.isOneLine()
     });
 
-    const formattedActivity = this.strings[activity] as string ?? nothing;
+    const formattedActivity = (this.strings[activity] as string) ?? nothing;
 
     return html`
       <span
