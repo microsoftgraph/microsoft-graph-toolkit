@@ -1212,16 +1212,16 @@ export class MgtPerson extends MgtTemplatedComponent {
       person = this.personDetailsInternal;
     }
 
-    if ((person as Contact).initials) {
-      return (person as Contact).initials;
+    if (isContact(person)) {
+      return person.initials;
     }
 
     let initials = '';
-    if ((person as Person).givenName) {
-      initials += (person as Person).givenName[0].toUpperCase();
+    if (isUser(person)) {
+      initials += person.givenName[0].toUpperCase();
     }
-    if ((person as Person).surname) {
-      initials += (person as Person).surname[0].toUpperCase();
+    if (isUser(person)) {
+      initials += person.surname[0].toUpperCase();
     }
 
     if (!initials && person.displayName) {
