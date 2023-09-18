@@ -16,33 +16,17 @@
 
   .picker {
     background-color: $picker-background-color;
+  }
 
-    fluent-combobox {
-      &::part(control) {
-        input.selected-value {
-          color: $picker-text-color;
-        }
+  fluent-combobox {
+    &::part(selected-value) {
+      &::placeholder {
+        color: $picker-text-color;
+      }
 
-        &::-webkit-input-placeholder {
-          color: $picker-text-color;
-        }
-
-        &::-moz-placeholder {
-          color: $picker-text-color;
-        }
-
-        &::-ms-placeholder {
-          color: $picker-text-color;
-        }
-
+      &:hover {
         &::placeholder {
-          color: $picker-text-color;
-        }
-
-        &:hover {
-          &::placeholder {
-            color: $picker-text-hover-color;
-          }
+          color: $picker-text-hover-color;
         }
       }
     }
