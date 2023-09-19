@@ -839,15 +839,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       oneline: this.isOneLine()
     });
 
-    const activityText = (status: string) => {
-      for (const item in this.strings) {
-        if (item === status) {
-          return this.strings[item] as string;
-        }
-      }
-    };
-
-    const formattedActivity = activityText(activity);
+    const formattedActivity = this.strings[activity] as string ?? nothing;
 
     return html`
       <span
