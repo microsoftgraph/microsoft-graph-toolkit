@@ -41,6 +41,27 @@ export const selectionChangedEvent = () => html`
    </script>
  `;
 
+export const getEntityType = () => html`
+  <mgt-people-picker></mgt-people-picker>
+  <!-- Group entityType -->
+  <!-- <mgt-people-picker type="group"></mgt-people-picker> -->
+
+  <div class="entity-type"></div>
+
+  <script>
+  let entityType;
+  const output = document.querySelector('.entity-type');
+  document.querySelector('mgt-people-picker').addEventListener('selectionChanged', e => {
+    entityType = e.detail[0].entityType
+      if (entityType) {
+      output.innerHTML = '<b>entityType:</b> ' + entityType;
+    } else {
+      output.innerHTML = '<b>entityType:</b> null';
+    }
+  });
+  </script>
+`;
+
 export const selectGroupsById = () => html`
    <mgt-people-picker></mgt-people-picker>
    <!-- Check the js tab for example -->

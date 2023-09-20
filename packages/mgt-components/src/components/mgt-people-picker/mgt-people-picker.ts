@@ -1018,6 +1018,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                       this.type,
                       this.transitiveSearch
                     )) as IUser[];
+                    for (const person of this._groupPeople) {
+                      Object.assign(person, { entityType: 'user' });
+                    }
                   } else {
                     this._groupPeople = (await findGroupMembers(
                       graph,
