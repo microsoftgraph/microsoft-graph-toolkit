@@ -213,7 +213,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'scopes',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       return value ? value.toLowerCase().split(',') : null;
     }
   })
@@ -227,7 +227,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'content-sources',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       return value ? value.toLowerCase().split(',') : null;
     }
   })
@@ -1060,8 +1060,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           html`
           <div class="search-result-thumbnail">
             <a href="${resource.webUrl}" target="_blank"><img alt="${trimFileExtension(
-            resource.name || getNameFromUrl(resource.webUrl)
-          )}" src="${resource.thumbnail?.url || nothing}" /></a>
+              resource.name || getNameFromUrl(resource.webUrl)
+            )}" src="${resource.thumbnail?.url || nothing}" /></a>
           </div>`
         }
       </div>

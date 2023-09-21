@@ -28,7 +28,7 @@ module.exports = {
   root: true,
   ignorePatterns: ['**/**-css.ts', '.eslintrc.js', '*.cjs'],
   rules: {
-    '@typescript-eslint/prefer-optional-chain': 'warn',
-    'newline-per-chained-call': 'off'
+    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
   }
 };

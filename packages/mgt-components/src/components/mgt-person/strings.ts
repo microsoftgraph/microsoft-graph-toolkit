@@ -5,18 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-const availabilityMap = {
-  Available: 'Available',
-  Away: 'Away',
-  Busy: 'Busy',
-  DoNotDisturb: 'Do not disturb',
-  Offline: 'Offline',
-  BeRightBack: 'Be right back',
-  PresenceUnknown: 'Presence unknown',
-  AvailableIdle: 'Available idle',
-  BusyIdle: 'Busy idle'
-};
-
 const activityMap = {
   Available: 'Available',
   Away: 'Away',

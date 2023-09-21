@@ -140,22 +140,22 @@ export const findGroups = async (
 
     const filterGroups: string[] = [];
 
-    // eslint-disable-next-line no-bitwise
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison, no-bitwise
     if (GroupType.unified === (groupTypes & GroupType.unified)) {
       filterGroups.push("groupTypes/any(c:c+eq+'Unified')");
     }
 
-    // eslint-disable-next-line no-bitwise
+    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
     if (GroupType.security === (groupTypes & GroupType.security)) {
       filterGroups.push('(mailEnabled eq false and securityEnabled eq true)');
     }
 
-    // eslint-disable-next-line no-bitwise
+    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
     if (GroupType.mailenabledsecurity === (groupTypes & GroupType.mailenabledsecurity)) {
       filterGroups.push('(mailEnabled eq true and securityEnabled eq true)');
     }
 
-    // eslint-disable-next-line no-bitwise
+    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
     if (GroupType.distribution === (groupTypes & GroupType.distribution)) {
       filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
     }
@@ -264,22 +264,22 @@ export const findGroupsFromGroup = async (
   if (groupTypes !== GroupType.any) {
     const filterGroups = [];
 
-    // eslint-disable-next-line no-bitwise
+    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
     if (GroupType.unified === (groupTypes & GroupType.unified)) {
       filterGroups.push("groupTypes/any(c:c+eq+'Unified')");
     }
 
-    // eslint-disable-next-line no-bitwise
+    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
     if (GroupType.security === (groupTypes & GroupType.security)) {
       filterGroups.push('(mailEnabled eq false and securityEnabled eq true)');
     }
 
-    // eslint-disable-next-line no-bitwise
+    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
     if (GroupType.mailenabledsecurity === (groupTypes & GroupType.mailenabledsecurity)) {
       filterGroups.push('(mailEnabled eq true and securityEnabled eq true)');
     }
 
-    // eslint-disable-next-line no-bitwise
+    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
     if (GroupType.distribution === (groupTypes & GroupType.distribution)) {
       filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
     }

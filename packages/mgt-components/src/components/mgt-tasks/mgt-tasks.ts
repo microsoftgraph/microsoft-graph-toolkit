@@ -310,7 +310,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'data-source',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       value = value.toLowerCase();
       return (TasksSource[value] as TasksSource) || TasksSource.planner;
     }

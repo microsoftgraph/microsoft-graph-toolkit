@@ -148,6 +148,7 @@ const generateTags = (tags, fileName) => {
   output = `import { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components';
 import { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
 ${output}
