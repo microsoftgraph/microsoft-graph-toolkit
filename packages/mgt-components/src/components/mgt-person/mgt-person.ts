@@ -14,7 +14,7 @@ import {
   mgtHtml
 } from '@microsoft/mgt-element';
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
-import { html, TemplateResult } from 'lit';
+import { html, TemplateResult, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -753,6 +753,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     const { activity, availability } = presence;
     switch (availability) {
       case 'Available':
+      case 'AvailableIdle':
         switch (activity) {
           case 'OutOfOffice':
             presenceIcon = getSvg(SvgIcon.PresenceOofAvailable);
@@ -765,6 +766,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         }
         break;
       case 'Busy':
+      case 'BusyIdle':
         switch (activity) {
           case 'OutOfOffice':
           case 'OnACall':
@@ -785,6 +787,9 @@ export class MgtPerson extends MgtTemplatedComponent {
           case 'OutOfOffice':
             presenceIcon = getSvg(SvgIcon.PresenceOofDnd);
             break;
+          case 'Presenting':
+          case 'Focusing':
+          case 'UrgentInterruptionsOnly':
           default:
             presenceIcon = getSvg(SvgIcon.PresenceDnd);
             break;
@@ -796,6 +801,14 @@ export class MgtPerson extends MgtTemplatedComponent {
           case 'OutOfOffice':
             presenceIcon = getSvg(SvgIcon.PresenceOofAway);
             break;
+          case 'AwayLastSeenTime':
+          default:
+            presenceIcon = getSvg(SvgIcon.PresenceAway);
+            break;
+        }
+        break;
+      case 'BeRightBack':
+        switch (activity) {
           default:
             presenceIcon = getSvg(SvgIcon.PresenceAway);
             break;
@@ -807,6 +820,7 @@ export class MgtPerson extends MgtTemplatedComponent {
             presenceIcon = getSvg(SvgIcon.PresenceOffline);
             break;
           case 'OutOfOffice':
+          case 'OffWork':
             presenceIcon = getSvg(SvgIcon.PresenceOofAway);
             break;
           default:
@@ -825,11 +839,13 @@ export class MgtPerson extends MgtTemplatedComponent {
       oneline: this.isOneLine()
     });
 
+    const formattedActivity = (this.strings[activity] as string) ?? nothing;
+
     return html`
       <span
         class="${presenceWrapperClasses}"
-        title="${availability}"
-        aria-label="${availability}"
+        title="${formattedActivity}"
+        aria-label="${formattedActivity}"
         role="img">
           ${presenceIcon}
       </span>
