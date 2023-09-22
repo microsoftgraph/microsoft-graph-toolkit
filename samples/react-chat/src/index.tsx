@@ -11,7 +11,7 @@ brokerSettings.defaultSubscriptionLifetimeInMinutes = 7;
 brokerSettings.renewalThreshold = 65;
 brokerSettings.timerInterval = 15;
 
-GraphConfig.useCanary = true;
+// GraphConfig.useCanary = true;
 
 Providers.globalProvider = new Msal2Provider({
   baseURL: GraphConfig.graphEndpoint,
