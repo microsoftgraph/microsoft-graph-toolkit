@@ -7,17 +7,14 @@
       "packages/*",
       "packages/providers/*",
       "samples/react-contoso"
-    ],
-    "nohoist": [
-      "**/office-ui-fabric-core**",
-      "**/@vue/*"
     ]
   },
   "scripts": {
     "init": "yarn && yarn build",
     "analyze": "custom-elements-manifest analyze --litelement --globs \"./packages/*/src/**/*.ts\"",
-    "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
-    "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope @microsoft/*",
+    "build": "npm run prettier:check && npm run clean && lerna run --scope '@microsoft/*' build",
+    "build:dev": "npm run prettier:check && lerna run build --scope '@microsoft/*' --ignore '@microsoft/mgt' --ignore '@microsoft/mgt-spf*' --ignore '@microsoft/mgt-sharepoint-provider' --ignore '@microsoft/mgt-electron-provider' --ignore '@microsoft/mgt-teamsfx-provider' --ignore '@microsoft/mgt-proxy-provider'",
+    "build:compile": "npm run prettier:check && npm run clean && lerna run --scope @microsoft/* build:compile",
     "build:mgt": "cd ./packages/mgt && npm run build",
     "build:mgt-element": "cd ./packages/mgt-element && npm run build",
     "build:mgt-components": "cd ./packages/mgt-components && npm run build",
@@ -31,14 +28,14 @@
     "lint:styles": "stylelint './packages/mgt-components/**/*.{css,scss}'",
     "lint:fix": "npm run lint:styles -- --fix",
     "lint": "npm run lint:eslint && npm run lint:styles",
-    "pack": "shx rm -rf artifacts/*.tgz && lerna exec --stream --scope @microsoft/* -- npm pack",
+    "pack": "shx rm -rf 'artifacts/*.tgz' && lerna exec --stream --scope '@microsoft/*' -- npm pack",
     "sass": "lerna run sass --scope @microsoft/*",
     "serve": "web-dev-server --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "serve:https": "web-dev-server --http2 --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "start": "npm-run-all prettier:check watch:serve",
     "start:storybook": "npm-run-all storybook:dev storybook:watch",
     "start:https": "npm-run-all prettier:check build:esm watch:serve:https",
-    "watch": "lerna run --parallel --stream --scope @microsoft/* build:watch ",
+    "watch": "lerna run --parallel --stream --scope '@microsoft/*' --ignore '@microsoft/mgt' --ignore '@microsoft/mgt-spf*' --ignore '@microsoft/mgt-sharepoint-provider' --ignore '@microsoft/mgt-electron-provider' --ignore '@microsoft/mgt-teamsfx-provider' --ignore '@microsoft/mgt-proxy-provider' build:watch ",
     "watch:serve": "npm-run-all --parallel watch serve",
     "watch:serve:https": "npm-run-all -parallel watch serve:https",
     "watch:components": "lerna run --parallel build:watch --scope @microsoft/mgt-components --include-dependents",
@@ -84,7 +81,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.5.2",
     "@types/node": "12.12.22",
-    "@types/react": "^17.0.00",
+    "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
@@ -153,5 +150,6 @@
   },
   "resolutions": {
     "responselike": "2.0.0"
-  }
+  },
+  "packageManager": "yarn@3.6.3"
 }
