@@ -3782,14 +3782,10 @@
     source-map "~0.6.1"
     typescript "~4.2.4"
 
-"@microsoft/eslint-config-msgraph@^1.0.0":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@microsoft/eslint-config-msgraph/-/eslint-config-msgraph-1.0.1.tgz#9fb226237b03f1e73bb9f87c1e81b1e2df301d5c"
-  integrity sha512-h+7mUQ8+mlHHikIP13sdcFdHbmK7cEioiBWVWQ+kXeNX+VQqC5QM9IuZ4gNBGU3lKQY4yfCnpXpVrxRxiqc3Xg==
-
-"@microsoft/eslint-config-msgraph@file:/home/gavinb/dev/eslint-config-msgraph/microsoft-eslint-config-msgraph-2.0.0.tgz":
+"@microsoft/eslint-config-msgraph@^2.0.0":
   version "2.0.0"
-  resolved "file:/home/gavinb/dev/eslint-config-msgraph/microsoft-eslint-config-msgraph-2.0.0.tgz#5ff437a560eb56f37c633ca7f1808e3a70fe2d90"
+  resolved "https://registry.yarnpkg.com/@microsoft/eslint-config-msgraph/-/eslint-config-msgraph-2.0.0.tgz#dbf1f13683f06fdd0eafaf311cc0c6141bbfa700"
+  integrity sha512-+BPNAA24ZiFYE5vV3WdawTQ5o/Ev4TC4qJoBbrj/stP1e1s7aYdYqHGw3ZFkqAf+3nkIn0PI0PKCSj09Xaz88A==
 
 "@microsoft/eslint-config-spfx@1.18.0":
   version "1.18.0"

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { OfficeGraphInsightString,ViewType,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';

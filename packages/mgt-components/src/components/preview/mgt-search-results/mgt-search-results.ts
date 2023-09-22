@@ -83,28 +83,28 @@ interface BinaryThumbnail {
 /**
  * Object representing a Search Answer
  */
-type Answer = {
+interface Answer {
   '@odata.type': string;
   displayName?: string;
   description?: string;
   webUrl?: string;
-};
+}
 
 /**
  * Object representing a search resource supporting thumbnails
  */
-type ThumbnailResource = {
+interface ThumbnailResource {
   thumbnail: Thumbnail;
-};
+}
 
-type UserResource = {
+interface UserResource {
   lastModifiedBy?: {
     user?: {
       email?: string;
     };
   };
   userPrincipalName?: string;
-};
+}
 
 /**
  * Object representing a Search Resource

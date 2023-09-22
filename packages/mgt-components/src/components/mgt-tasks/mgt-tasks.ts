@@ -512,7 +512,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    *
    * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated(changedProperties: PropertyValueMap<any>) {
+  protected firstUpdated(changedProperties: PropertyValueMap<unknown>) {
     super.firstUpdated(changedProperties);
 
     if (this.initialId && !this._currentGroup) {

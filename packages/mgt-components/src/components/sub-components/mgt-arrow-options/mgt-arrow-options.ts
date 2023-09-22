@@ -67,9 +67,9 @@ export class MgtArrowOptions extends MgtBaseComponent {
    * @type {object}
    * @memberof MgtArrowOptions
    */
-  @property({ type: Object }) public options: Record<string, (e: UIEvent) => unknown>;
+  @property({ type: Object }) public options: Record<string, (e: UIEvent) => void>;
 
-  private readonly _clickHandler: (e: UIEvent) => unknown;
+  private readonly _clickHandler: (e: UIEvent) => void;
 
   constructor() {
     super();

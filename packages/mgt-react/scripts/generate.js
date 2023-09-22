@@ -1,4 +1,4 @@
-var fs = require('fs-extra');
+const fs = require('fs-extra');
 
 let wc = JSON.parse(fs.readFileSync(`${__dirname}/../temp/custom-elements.json`));
 
@@ -145,7 +145,9 @@ const generateTags = (tags, fileName) => {
     output += `\nexport const ${wrapper.className} = wrapMgt<${wrapper.propsType}>('${wrapper.tag}');\n`;
   }
 
-  output = `import { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components';
+  output = `/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+import { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components';
 import { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -162,7 +162,7 @@ export abstract class MgtBaseComponent extends LitElement {
    *
    * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
+  protected firstUpdated(changedProperties: PropertyValueMap<unknown> | Map<PropertyKey, unknown>): void {
     super.firstUpdated(changedProperties);
     this._isFirstUpdated = true;
     Providers.onProviderUpdated(this.handleProviderUpdates);
@@ -199,7 +199,7 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   protected fireCustomEvent(
     eventName: string,
-    detail?: any,
+    detail?: unknown,
     bubbles = false,
     cancelable = false,
     composed = false
