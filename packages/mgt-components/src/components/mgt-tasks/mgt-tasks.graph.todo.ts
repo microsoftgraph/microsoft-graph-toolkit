@@ -167,7 +167,7 @@ export const setTodoTaskIncomplete = async (graph: IGraph, taskId: string, eTag:
 export const setTodoTaskDetails = async (
   graph: IGraph,
   taskId: string,
-  task: any,
+  task: Partial<OutlookTask>,
   eTag: string
 ): Promise<OutlookTask> =>
   (await graph

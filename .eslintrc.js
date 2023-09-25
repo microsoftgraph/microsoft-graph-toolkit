@@ -36,8 +36,9 @@ module.exports = {
   root: true,
   ignorePatterns: ['**/**-css.ts', '.eslintrc.js', '*.cjs'],
   rules: {
-    '@typescript-eslint/prefer-optional-chain': 'warn',
-    'newline-per-chained-call': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
+    // prefer-nullish-coalescing requires strictNullChecking to be turned on
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
     'react/jsx-curly-spacing': 'off',
     'react/jsx-equals-spacing': 'off',
     'react/jsx-tag-spacing': [

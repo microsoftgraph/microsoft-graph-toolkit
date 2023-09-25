@@ -28,8 +28,7 @@ export const searchBox = () => html`
 export const localization = () => html`
   <mgt-search-box></mgt-search-box>
   <script>
-  import '@microsoft/mgt-components/dist/es6/components/preview';
-  import { LocalizationHelper } from '@microsoft/mgt';
+  import { LocalizationHelper } from '@microsoft/mgt-element';
   LocalizationHelper.strings = {
     _components: {
       'search-box': {

@@ -230,8 +230,8 @@ export const withCodeEditor = makeDecorator({
           // strip the preview import, we include it in the resolved script
           js = js.replace(/import '@microsoft\/mgt-components\/dist\/es6\/components\/preview'/gm, ``);
           js = js.replace(
-            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
-            `import {$1} from '${resolveScript()}';`
+            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt\x2d([^\}]+)['"];/gm,
+            `import {$1} from '${mgtScriptName}';`
           );
 
           const docContent = `

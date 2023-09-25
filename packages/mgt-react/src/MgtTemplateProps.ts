@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export type MgtTemplateProps = {
+export interface MgtTemplateProps {
   template?: string;
-  dataContext?: any;
-};
+  dataContext?: unknown;
+}

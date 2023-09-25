@@ -441,7 +441,7 @@ export const findGroupMembers = async (
   userFilters = '',
   peopleFilters = ''
 ): Promise<User[]> => {
-  const scopes = ['user.read.all', 'people.read'];
+  const scopes = ['GroupMember.Read.All'];
   const item = { maxResults: top, results: null };
 
   let cache: CacheStore<CacheUserQuery>;
