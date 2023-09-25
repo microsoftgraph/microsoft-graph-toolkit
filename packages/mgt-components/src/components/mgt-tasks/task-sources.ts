@@ -7,7 +7,7 @@
 /* eslint-disable max-classes-per-file */
 
 import { IGraph, BetaGraph } from '@microsoft/mgt-element';
-import { PlannerAssignments } from '@microsoft/microsoft-graph-types';
+import { PlannerAssignments, PlannerBucket, PlannerPlan } from '@microsoft/microsoft-graph-types';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup, PlannerTask } from '@microsoft/microsoft-graph-types-beta';
 import {
   addPlannerTask,
@@ -137,7 +137,7 @@ export interface ITaskFolder {
    * @type {*}
    * @memberof ITaskFolder
    */
-  _raw?: any;
+  _raw?: PlannerBucket | OutlookTaskFolder;
 }
 
 /**
@@ -174,7 +174,7 @@ export interface ITaskGroup {
    * @type {*}
    * @memberof ITaskGroup
    */
-  _raw?: any;
+  _raw?: PlannerPlan | OutlookTaskGroup;
 
   /**
    * Plan Container ID. Same as the group ID of the group in the plan.
@@ -251,7 +251,7 @@ export interface ITaskSource {
    * @returns {Promise<any>}
    * @memberof ITaskSource
    */
-  setTaskIncomplete(task: ITask): Promise<any>;
+  setTaskIncomplete(task: ITask): Promise<void>;
 
   /**
    * Promise to add a new task
@@ -260,7 +260,7 @@ export interface ITaskSource {
    * @returns {Promise<any>}
    * @memberof ITaskSource
    */
-  addTask(newTask: ITask): Promise<any>;
+  addTask(newTask: ITask): Promise<PlannerTask | OutlookTask>;
 
   /**
    * assign id's to task
@@ -279,7 +279,7 @@ export interface ITaskSource {
    * @returns {Promise<any>}
    * @memberof ITaskSource
    */
-  removeTask(task: ITask): Promise<any>;
+  removeTask(task: ITask): Promise<void>;
 
   /**
    * assigns task to the current signed in user
@@ -329,7 +329,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
   public async getTaskGroups(): Promise<ITaskGroup[]> {
     const plans = await getAllMyPlannerPlans(this.graph);
     return plans.map(
-      plan => ({ id: plan.id, title: plan.title, containerId: plan?.container?.containerId } as ITaskGroup)
+      plan => ({ id: plan.id, title: plan.title, containerId: plan?.container?.containerId }) as ITaskGroup
     );
   }
 
@@ -343,7 +343,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
   public async getTaskGroupsForGroup(id: string): Promise<ITaskGroup[]> {
     const plans = await getPlansForGroup(this.graph, id);
 
-    return plans.map(plan => ({ id: plan.id, title: plan.title } as ITaskGroup));
+    return plans.map(plan => ({ id: plan.id, title: plan.title }) as ITaskGroup);
   }
 
   /**
@@ -376,7 +376,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
           id: bucket.id,
           name: bucket.name,
           parentId: bucket.planId
-        } as ITaskFolder)
+        }) as ITaskFolder
     );
   }
 
@@ -402,7 +402,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
           immediateParentId: task.bucketId,
           name: task.title,
           topParentId: task.planId
-        } as ITask)
+        }) as ITask
     );
   }
 
@@ -435,11 +435,11 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async addTask(newTask: ITask): Promise<any> {
+  public async addTask(newTask: ITask): Promise<PlannerTask> {
     return await addPlannerTask(this.graph, {
       assignments: newTask.assignments,
       bucketId: newTask.immediateParentId,
-      dueDateTime: newTask.dueDate && newTask.dueDate.toISOString(),
+      dueDateTime: newTask.dueDate?.toISOString(),
       planId: newTask.topParentId,
       title: newTask.name
     });
@@ -507,7 +507,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
           id: group.id,
           secondaryId: group.groupKey,
           title: group.name
-        } as ITaskGroup)
+        }) as ITaskGroup
     );
   }
   /**
@@ -539,7 +539,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
           id: folder.id,
           name: folder.name,
           parentId: id
-        } as ITaskFolder)
+        }) as ITaskFolder
     );
   }
   /**
@@ -565,7 +565,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
           immediateParentId: id,
           name: task.subject,
           topParentId: parId
-        } as ITask)
+        }) as ITask
     );
   }
 
@@ -576,8 +576,8 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof TodoTaskSource
    */
-  public async setTaskComplete(task: ITask): Promise<any> {
-    return await setTodoTaskComplete(this.graph, task.id, task.eTag);
+  public async setTaskComplete(task: ITask): Promise<void> {
+    await setTodoTaskComplete(this.graph, task.id, task.eTag);
   }
 
   /**
@@ -588,7 +588,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async assignPeopleToTask(task: ITask, people: PlannerAssignments): Promise<any> {
+  public async assignPeopleToTask(task: ITask, people: PlannerAssignments): Promise<void> {
     return await assignPeopleToPlannerTask(this.graph, task, people);
   }
   /**
@@ -598,8 +598,8 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof TodoTaskSource
    */
-  public async setTaskIncomplete(task: ITask): Promise<any> {
-    return await setTodoTaskIncomplete(this.graph, task.id, task.eTag);
+  public async setTaskIncomplete(task: ITask): Promise<void> {
+    await setTodoTaskIncomplete(this.graph, task.id, task.eTag);
   }
   /**
    * add new task to planner
@@ -652,7 +652,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<ITaskGroup[]>}
    * @memberof PlannerTaskSource
    */
-  public async getTaskGroupsForGroup(id: string): Promise<ITaskGroup[]> {
+  public async getTaskGroupsForGroup(_id: string): Promise<ITaskGroup[]> {
     return Promise.resolve<ITaskGroup[]>(undefined);
   }
 }

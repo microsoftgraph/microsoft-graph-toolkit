@@ -28,7 +28,9 @@ import { Entity } from '@microsoft/microsoft-graph-types';
 /**
  * Simple holder type for an image
  */
-type ImageValue = { image: string };
+interface ImageValue {
+  image: string;
+}
 
 /**
  * A type guard to check if a value is a collection response
@@ -74,10 +76,10 @@ const getIsResponseCacheEnabled = (): boolean =>
 /**
  * Holder type emitted with the dataChange event
  */
-export type DataChangedDetail = {
+export interface DataChangedDetail {
   response?: CollectionResponse<Entity>;
   error?: object;
-};
+}
 
 /**
  * Custom element for making Microsoft Graph get queries
@@ -111,7 +113,7 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'scopes',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       return value ? value.toLowerCase().split(',') : null;
     },
     reflect: true
@@ -381,8 +383,7 @@ export class MgtGet extends MgtTemplatedComponent {
 
               while (
                 (pageCount < this.maxPages || this.maxPages <= 0 || (isDeltaLink && this.pollingRate)) &&
-                page &&
-                page['@odata.nextLink']
+                page?.['@odata.nextLink']
               ) {
                 pageCount++;
                 const nextResource = (page['@odata.nextLink'] as string).split(this.version)[1];
@@ -442,7 +443,7 @@ export class MgtGet extends MgtTemplatedComponent {
         if (this.pollingRate) {
           setTimeout(() => {
             this.isPolling = true;
-            this.loadState().finally(() => {
+            void this.loadState().finally(() => {
               this.isPolling = false;
             });
           }, this.pollingRate);

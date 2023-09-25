@@ -135,6 +135,7 @@ export class TemplateHelper {
         if (typeof value === 'object') {
           return JSON.stringify(value);
         } else {
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string
           return value.toString();
         }
       }
