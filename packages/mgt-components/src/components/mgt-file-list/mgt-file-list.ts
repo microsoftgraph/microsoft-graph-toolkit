@@ -154,7 +154,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   @property({
     attribute: 'file-queries',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       if (value) {
         return value.split(',').map(v => v.trim());
       } else {
@@ -365,7 +365,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   @property({
     attribute: 'file-extensions',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       return value.split(',').map(v => v.trim());
     }
   })
@@ -484,7 +484,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   @property({
     attribute: 'excluded-file-extensions',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       return value.split(',').map(v => v.trim());
     }
   })

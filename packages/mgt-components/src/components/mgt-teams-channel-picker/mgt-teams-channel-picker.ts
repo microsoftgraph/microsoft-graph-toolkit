@@ -620,10 +620,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
                 icon = html`<img
                   class="team-photo"
                   alt="${this.strings.photoFor} ${obj.item.displayName}"
-                  src=${
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                    this.teamsPhotos[obj.item.id]?.photo
-                  } />`;
+                  src=${// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                  this.teamsPhotos[obj.item.id]?.photo} />`;
               }
               return html`
                 <fluent-tree-item

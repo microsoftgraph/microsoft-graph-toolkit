@@ -41,10 +41,10 @@ registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluent
  */
 export type LoginViewType = 'avatar' | 'compact' | 'full';
 
-type PersonViewConfig = {
+interface PersonViewConfig {
   view: ViewType;
   avatarSize: AvatarSize;
-};
+}
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication

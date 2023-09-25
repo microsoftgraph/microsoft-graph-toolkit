@@ -351,8 +351,8 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   protected renderTaxonomyPicker(): TemplateResult {
     return mgtHtml`
       <fluent-combobox class="taxonomy-picker" autocomplete="both" placeholder=${this.placeholder} position=${
-      this.position
-    } ?disabled=${this.disabled}>
+        this.position
+      } ?disabled=${this.disabled}>
         ${this.terms.map(term => this.renderTaxonomyPickerItem(term))}
       </fluent-combobox>
      `;
@@ -370,8 +370,8 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
 
     return html`
         <fluent-option value=${term.id} ?selected=${selected} @click=${(e: MouseEvent) => this.handleClick(e, term)}> ${
-      this.renderTemplate('term', { term }, term.id) || term.labels[0].name
-    } </fluent-option>
+          this.renderTemplate('term', { term }, term.id) || term.labels[0].name
+        } </fluent-option>
         `;
   }
 
