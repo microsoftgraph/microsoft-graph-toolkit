@@ -13,20 +13,9 @@
 </footer>
 
 <script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script>
-<script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js" type="text/javascript"></script>
 <script type="module" src="https://unpkg.com/@fluentui/web-components@2"></script>
 <script type="text/javascript">
   const xmlns = "http://www.w3.org/2000/svg";
-
-  var config = {
-    autoCapture: {
-      lineage: true,
-    },
-    coreData: {
-      appId: "JS:GraphToolkit",
-    },
-  };
-  awa.init(config);
 
   window.onload = () => {
     addUsefulLinks();
@@ -159,11 +148,25 @@
 </script>
 
 <style>
+  /* selectors that have no results... */
+  .css-8ktt77 {
+    display: none;
+  }
+
+  .css-14o7vtb {
+    border: 2px solid transparent;
+  }
+
+  .css-14o7vtb:focus-visible {
+    outline: auto;
+  }
+
   .css-bt79wf>svg>path,
   .css-1j9r8vi>svg>path {
     color: rgba(153, 153, 153, 0.6) !important;
     fill: rgba(153, 153, 153, 0.6) !important;
   }
+  /* End selectors without results */
 
   @media (forced-colors: active) and (prefers-color-scheme: dark) {
 
@@ -175,14 +178,15 @@
       color: rgb(255, 255, 255) !important;
     }
 
-    .css-bt79wf>svg>path,
+    /* selectors that have no results... */
+    .css-oxdnkn>svg>path,
     .css-1j9r8vi>svg>path {
       color: rgba(255, 255, 255) !important;
       fill: rgba(255, 255, 255) !important;
     }
 
-    .css-cwrfva:hover,
-    .css-cwrfva:focus-visible {
+    .css-ct44ui:hover,
+    .css-ct44ui:focus-visible {
       border: 1px solid rgba(255, 255, 255) !important;
     }
 
@@ -193,6 +197,7 @@
       background-position: 0 50%;
       background-repeat: no-repeat;
     }
+    /* End selectors without results */
 
     .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle,
     .os-scrollbar>.os-scrollbar-track {
@@ -210,6 +215,7 @@
       color: rgb(0, 0, 0) !important;
     }
 
+    /* selectors that have no results... */
     .css-bt79wf>svg>path,
     .css-1j9r8vi>svg>path {
       color: rgba(0, 0, 0) !important;
@@ -228,6 +234,7 @@
       background-position: 0 50%;
       background-repeat: no-repeat;
     }
+    /* end selectors without results */
 
     .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle,
     .os-scrollbar>.os-scrollbar-track {
@@ -260,6 +267,7 @@
     color: #323232;
   }
 
+  /* has no match */
   .sidebar-subheading.css-ulso1l {
     color: #717171 !important;
   }
@@ -282,45 +290,29 @@
     color: inherit;
   }
 
-  .css-ulso1l,
-  .css-gb1sl5 {
-    color: #717171 !important;
-  }
-
-  .sto-ulso1l,
-  .css-1en6m26 {
+  /* Sets the color of the sidebar section headings */
+  .sidebar-subheading.css-ppqi8s {
     color: #616159 !important;
   }
 
   /* Fix color contrast of left expanded/collapsed chevrons */
-
-  .sto-bt79wf,
-  .sto-1j9r8vi {
+  .css-ct44ui,
+  .css-1necw0m {
     color: unset;
   }
 
   /* Removes Find component feature */
-  .css-8ktt77 {
-    display: none;
-  }
-
-  .css-14o7vtb {
-    border: 2px solid transparent;
-  }
-
-  .css-14o7vtb:focus-visible {
-    outline: auto;
-  }
   .search-field {
     display: none !important;
   }
 
+  /* fix high contrast mode colors on sidebar links */
   @media (forced-colors: active){
-    a[class*="sto-"][data-selected="true"],
-    a[class*="sto-"][data-selected="true"]:focus,
-    a[class*="sto-"][data-selected="false"]:focus,
-    a[class*="sto-"][data-selected="true"]:hover,
-    a[class*="sto-"][data-selected="false"]:hover{
+    a[class*="css-"][data-selected="true"],
+    a[class*="css-"][data-selected="true"]:focus,
+    a[class*="css-"][data-selected="false"]:focus,
+    a[class*="css-"][data-selected="true"]:hover,
+    a[class*="css-"][data-selected="false"]:hover {
       background: Highlight;
       color: LinkText;
     }
