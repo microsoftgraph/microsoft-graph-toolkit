@@ -55,15 +55,15 @@ export const defaultPersonProperties = [
   'userType'
 ];
 
-const isGroup = (obj: IDynamicPerson): obj is IGroup => {
+export const isGroup = (obj: IDynamicPerson): obj is IGroup => {
   return obj.entityType === 'group';
 };
 
-const isUser = (obj: IDynamicPerson): obj is IUser => {
+export const isUser = (obj: IDynamicPerson): obj is IUser => {
   return obj.entityType === 'user';
 };
 
-const isContact = (obj: IDynamicPerson): obj is IContact => {
+export const isContact = (obj: IDynamicPerson): obj is IContact => {
   return obj.entityType === 'contact';
 };
 
