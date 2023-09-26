@@ -992,10 +992,11 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   ): GraphChatMessage {
     const senderId = graphMessage.from?.user?.id || undefined;
     const chatId = graphMessage?.chatId ?? '';
-    const chatUrl = `https://teams.microsoft.com/_#/conversations/${chatId}?ctx=chat`;
-    // check content is supported
+    const id = graphMessage?.id ?? '';
+    const chatUrl = `https://teams.microsoft.com/l/message/${chatId}/${id}?context={"contextType":"chat"}`;
     const attachments = graphMessage?.attachments ?? [];
-    return {
+
+    let messageData: GraphChatMessage = {
       messageId,
       contentType: graphMessage.body?.contentType ?? 'text',
       messageType: 'chat',
