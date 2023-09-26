@@ -414,7 +414,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     if (fileItems.length > 0) {
       const templateFileItems = fileItems.map(fileItem => {
         if (folderStructure.indexOf(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/'))) === -1) {
-          if (fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')) !== '') {
+          if (!fileItem.fullPath.endsWith('/')) {
             folderStructure.push(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')));
             return mgtHtml`
             <div class='file-upload-table'>
@@ -943,10 +943,9 @@ export class MgtFileUpload extends MgtBaseComponent {
     let itemPath = '';
     if (this.fileUploadList.itemPath) {
       if (this.fileUploadList.itemPath.length > 0) {
-        itemPath =
-          this.fileUploadList.itemPath.substring(0, 1) === '/'
-            ? this.fileUploadList.itemPath
-            : '/' + this.fileUploadList.itemPath;
+        itemPath = this.fileUploadList.itemPath.startsWith('/')
+          ? this.fileUploadList.itemPath
+          : '/' + this.fileUploadList.itemPath;
       }
     }
 

@@ -12,7 +12,7 @@
  * are expected to be object literals with potentially nested structures and
  * where leaf values are primitives.
  */
-export const equals = (o1: any, o2: any) => {
+export const equals = (o1: unknown, o2: unknown) => {
   return equalsInternal(o1, o2, new Set());
 };
 
@@ -23,7 +23,7 @@ export const equals = (o1: any, o2: any) => {
  *
  * @see equals
  */
-const equalsInternal = (o1: any, o2: any, refs: Set<any>) => {
+const equalsInternal = (o1: unknown, o2: unknown, refs: Set<unknown>) => {
   const o1Label = Object.prototype.toString.call(o1) as string;
   const o2Label = Object.prototype.toString.call(o2) as string;
   if (

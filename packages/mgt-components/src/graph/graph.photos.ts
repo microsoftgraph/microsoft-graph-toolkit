@@ -243,7 +243,7 @@ export const getPersonImage = async (graph: IGraph, person: IDynamicPerson, useC
  * @param useContactsApis
  * @returns
  */
-export const getGroupImage = async (graph: IGraph, group: IDynamicPerson, useContactsApis = true) => {
+export const getGroupImage = async (graph: IGraph, group: IDynamicPerson) => {
   let photoDetails: CachePhoto;
   let cache: CacheStore<CachePhoto>;
 
