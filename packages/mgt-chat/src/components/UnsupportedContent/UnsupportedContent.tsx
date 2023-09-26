@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.14), 0px 0px 2px 0px rgba(0, 0, 0, 0.12)',
     textDecorationLine: 'none',
     color: '#424242',
-    ...shorthands.margin('4px 0 0 0'),
+    ...shorthands.margin('18px', '0px', '8px', '0px'),
     ...shorthands.borderRadius('6px'),
     ...shorthands.padding('16px'),
     ...shorthands.gap('6px'),
@@ -43,7 +43,6 @@ interface UnsupportedContentProps {
 const UnsupportedContent = (props: UnsupportedContentProps) => {
   const styles = useStyles();
   return (
-    // TODO: update this URL to the correct value.
     <a className={styles.container} target="blank" href={props.targetUrl}>
       <ArrowSquareUpRight24Regular />
       <p className={styles.cta}>View this message in Microsoft Teams.</p>
