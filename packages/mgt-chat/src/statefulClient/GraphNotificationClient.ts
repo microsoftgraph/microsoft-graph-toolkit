@@ -33,6 +33,8 @@ type Notification = {
   encryptedContent: string;
 };
 
+const stripWssScheme = (notificationUrl: string): string => notificationUrl.replace('wss:', '');
+
 export class GraphNotificationClient {
   private connection?: signalR.HubConnection = undefined;
   private renewalInterval = -1;
@@ -240,7 +242,7 @@ export class GraphNotificationClient {
       withCredentials: false
     };
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl(notificationUrl, connectionOptions)
+      .withUrl(stripWssScheme(notificationUrl), connectionOptions)
       .withAutomaticReconnect()
       .configureLogging(signalR.LogLevel.Information)
       .build();
