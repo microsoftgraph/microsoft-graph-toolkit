@@ -389,20 +389,19 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'avatar-type',
-    converter: value => {
+    converter: (value): avatarType => {
       value = value.toLowerCase();
 
       if (value === 'initials') {
         return avatarType.initials;
-      } else {
-        return avatarType.photo;
       }
+      return avatarType.photo;
     }
   })
-  public get avatarType(): string {
+  public get avatarType(): avatarType {
     return this._avatarType;
   }
-  public set avatarType(value: string) {
+  public set avatarType(value: avatarType) {
     if (value === this._avatarType) {
       return;
     }
@@ -555,7 +554,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _personQuery: string;
   private _userId: string;
   private _usage: string;
-  private _avatarType: string;
+  private _avatarType: avatarType;
 
   private _mouseLeaveTimeout = -1;
   private _mouseEnterTimeout = -1;
@@ -573,7 +572,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.avatarSize = 'auto';
     this.disableImageFetch = false;
     this._isInvalidImageSrc = false;
-    this._avatarType = 'photo';
+    this._avatarType = avatarType.photo;
     this.verticalLayout = false;
   }
 
@@ -718,7 +717,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   protected renderImage(personDetailsInternal: IDynamicPerson, imageSrc: string) {
     const altText = `${this.strings.photoFor} ${personDetailsInternal.displayName}`;
-    const hasImage = imageSrc && !this._isInvalidImageSrc && this._avatarType === avatarType.photo;
+    const hasImage = imageSrc && !this._isInvalidImageSrc && this.avatarType === avatarType.photo;
     const imageOnly = this.avatarType === avatarType.photo && this.view === ViewType.image;
     const titleText =
       (personDetailsInternal?.displayName || getEmailFromGraphEntity(personDetailsInternal)) ?? undefined;
@@ -1139,13 +1138,13 @@ export class MgtPerson extends MgtTemplatedComponent {
       if (
         !details.personImage &&
         this.fetchImage &&
-        this._avatarType === 'photo' &&
+        this._avatarType === avatarType.photo &&
         !this.personImage &&
         !this._fetchedImage
       ) {
         let image: string;
         if ('groupTypes' in details) {
-          image = await getGroupImage(graph, details, MgtPerson.config.useContactApis);
+          image = await getGroupImage(graph, details);
         } else {
           image = await getPersonImage(graph, details, MgtPerson.config.useContactApis);
         }
@@ -1157,7 +1156,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
       let person: IDynamicPerson;
-      if (this._avatarType === 'photo' && !this.disableImageFetch) {
+      if (this._avatarType === avatarType.photo && !this.disableImageFetch) {
         person = await getUserWithPhoto(graph, this.userId, personProps);
       } else {
         if (this.personQuery === 'me') {

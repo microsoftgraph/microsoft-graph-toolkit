@@ -149,7 +149,7 @@ export const wrapMgt = <T = WcProps>(tag: string) => {
   const WrapMgt = (props: T, ref: React.ForwardedRef<unknown>): React.CElement<WcTypeProps, Mgt> =>
     React.createElement(Mgt, { wcType: tag, innerRef: ref, ...props });
   const component: React.ForwardRefExoticComponent<
-    React.PropsWithoutRef<T & React.HTMLAttributes<any>> & React.RefAttributes<unknown>
+    React.PropsWithoutRef<T & React.HTMLAttributes<unknown>> & React.RefAttributes<unknown>
   > = React.forwardRef(WrapMgt);
   return component;
 };

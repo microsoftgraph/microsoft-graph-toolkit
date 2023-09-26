@@ -22,7 +22,7 @@ type RenderedTemplates = Record<
     /**
      * Reference to the data context used to render the slot.
      */
-    context: any;
+    context: Record<string, unknown>;
     /**
      * Reference to the rendered DOM element corresponding to the slot.
      */
@@ -93,7 +93,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    *
    * * @param _changedProperties Map of changed properties with old values
    */
-  protected update(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>) {
+  protected update(changedProperties: PropertyValueMap<unknown> | Map<PropertyKey, unknown>) {
     this.templates = this.getTemplates();
     this._slotNamesAddedDuringRender = [];
     super.update(changedProperties);

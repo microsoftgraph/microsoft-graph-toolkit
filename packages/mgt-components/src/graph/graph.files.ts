@@ -25,7 +25,7 @@ import { blobToBase64 } from '../utils/Utils';
  * @param session
  * @returns
  */
-export const isUploadSession = (session: any): session is UploadSession => {
+export const isUploadSession = (session: unknown): session is UploadSession => {
   return Array.isArray((session as UploadSession).nextExpectedRanges);
 };
 

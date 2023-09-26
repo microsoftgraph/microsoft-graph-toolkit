@@ -78,7 +78,7 @@ export class MgtPeople extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'user-ids',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       return value.split(',').map(v => v.trim());
     }
   })
@@ -112,7 +112,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   @property({
     attribute: 'people-queries',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       return value.split(',').map(v => v.trim());
     }
   })
@@ -158,7 +158,7 @@ export class MgtPeople extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'person-card',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       value = value.toLowerCase();
       if (typeof PersonCardInteraction[value] === 'undefined') {
         return PersonCardInteraction.hover;

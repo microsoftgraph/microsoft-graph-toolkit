@@ -1266,11 +1266,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       this.sections.push(new MgtOrganization(this._cardState, this._me));
     }
 
-    if (MgtPersonCard.config.sections.mailMessages && messages && messages.length) {
+    if (MgtPersonCard.config.sections.mailMessages && messages?.length) {
       this.sections.push(new MgtMessages(messages));
     }
 
-    if (MgtPersonCard.config.sections.files && files && files.length) {
+    if (MgtPersonCard.config.sections.files && files?.length) {
       this.sections.push(new MgtFileList());
     }
 
