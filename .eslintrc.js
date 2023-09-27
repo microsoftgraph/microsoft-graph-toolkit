@@ -4,7 +4,12 @@ module.exports = {
     es6: true,
     node: true
   },
-  extends: ['@microsoft/eslint-config-msgraph', 'plugin:jsx-a11y/recommended', 'plugin:react-hooks/recommended'],
+  extends: [
+    '@microsoft/eslint-config-msgraph',
+    'plugin:jsx-a11y/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:storybook/recommended'
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: [
