@@ -111,7 +111,7 @@
     "jest-fetch-mock": "^3.0.3",
     "jest-junit": "^15.0.0",
     "lerna": "^7.1.1",
-    "lit": "^2.7.5",
+    "lit": "^3.0.0-pre.0",
     "monaco-editor": "^0.30.0",
     "monaco-editor-webpack-plugin": "^6.0.0",
     "node-sass": "npm:sass@^1.44.0",

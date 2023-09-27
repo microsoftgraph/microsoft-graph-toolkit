@@ -1525,6 +1525,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/plugin-transform-optional-chaining@npm:^7.23.0":
+  version: 7.23.0
+  resolution: "@babel/plugin-transform-optional-chaining@npm:7.23.0"
+  dependencies:
+    "@babel/helper-plugin-utils": ^7.22.5
+    "@babel/helper-skip-transparent-expression-wrappers": ^7.22.5
+    "@babel/plugin-syntax-optional-chaining": ^7.8.3
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: f702634f2b97e5260dbec0d4bde05ccb6f4d96d7bfa946481aeacfa205ca846cb6e096a38312f9d51fdbdac1f258f211138c5f7075952e46a5bf8574de6a1329
+  languageName: node
+  linkType: hard
+
 "@babel/plugin-transform-parameters@npm:^7.20.7, @babel/plugin-transform-parameters@npm:^7.22.15":
   version: 7.22.15
   resolution: "@babel/plugin-transform-parameters@npm:7.22.15"
@@ -5243,12 +5256,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lit-labs/ssr-dom-shim@npm:^1.1.2-pre.0":
+  version: 1.1.2-pre.0
+  resolution: "@lit-labs/ssr-dom-shim@npm:1.1.2-pre.0"
+  checksum: 551d934e31f9986f8cb1d57b661101fb6ca2d52e3f985bf3c0cd04e1c28d678a896971f82fdfa18d9b31ebbc82f61625aa84dcdcb8e738403b591ef1a39ed6b6
+  languageName: node
+  linkType: hard
+
 "@lit/reactive-element@npm:^1.0.0, @lit/reactive-element@npm:^1.3.0, @lit/reactive-element@npm:^1.6.0":
   version: 1.6.3
   resolution: "@lit/reactive-element@npm:1.6.3"
   dependencies:
     "@lit-labs/ssr-dom-shim": ^1.0.0
   checksum: 79b58631c38effeabad090070324431da8a22cf0ff665f5e4de35e4d791f984742b3d340c9c7fce996d1124a8da95febc582471b4c237236c770b1300b56ef6e
+  languageName: node
+  linkType: hard
+
+"@lit/reactive-element@npm:^2.0.0-pre.0":
+  version: 2.0.0-pre.0
+  resolution: "@lit/reactive-element@npm:2.0.0-pre.0"
+  dependencies:
+    "@lit-labs/ssr-dom-shim": ^1.1.2-pre.0
+  checksum: f47abff1df56e31ac493dd87229b601c72d3511c82bb48cc36f5dded83c87c02613b59be32dd262afa98f347d2921b38fef906a7dc64a15bb7fc8cf0cbcd91c1
   languageName: node
   linkType: hard
 
@@ -5591,7 +5620,7 @@ __metadata:
   dependencies:
     "@microsoft/microsoft-graph-client": 3.0.2
     idb: 6.0.0
-    lit: ^2.3.1
+    lit: ^3.0.0-pre.0
   languageName: unknown
   linkType: soft
 
@@ -5659,6 +5688,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@microsoft/mgt-spfx@workspace:packages/mgt-spfx"
   dependencies:
+    "@babel/plugin-transform-logical-assignment-operators": ^7.22.11
+    "@babel/plugin-transform-nullish-coalescing-operator": ^7.22.11
+    "@babel/plugin-transform-optional-chaining": ^7.23.0
+    "@babel/preset-env": ^7.22.20
     "@microsoft/eslint-config-spfx": 1.18.0
     "@microsoft/eslint-plugin-spfx": 1.18.0
     "@microsoft/mgt-components": "*"
@@ -5670,6 +5703,7 @@ __metadata:
     "@rushstack/eslint-config": 2.5.1
     "@types/webpack-env": ~1.15.2
     ajv: ^6.12.5
+    babel-loader: ^8.0.0
     eslint: 8.7.0
     gulp: 4.0.2
     tslib: 2.3.1
@@ -13114,7 +13148,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-loader@npm:^8.2.1, babel-loader@npm:^8.2.3":
+"babel-loader@npm:^8.0.0, babel-loader@npm:^8.2.1, babel-loader@npm:^8.2.3":
   version: 8.3.0
   resolution: "babel-loader@npm:8.3.0"
   dependencies:
@@ -25643,6 +25677,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lit-element@npm:^4.0.0-pre.0":
+  version: 4.0.0-pre.0
+  resolution: "lit-element@npm:4.0.0-pre.0"
+  dependencies:
+    "@lit/reactive-element": ^2.0.0-pre.0
+    lit-html: ^3.0.0-pre.0
+  checksum: 3d4b200e843ac6372a3ec79bc15391de41cf672fd1c22c9f34f75f4be4ef0a22e8786e32ce7649d22a98a1bda91c351b87b96bebea3aa265c0044b716999869d
+  languageName: node
+  linkType: hard
+
 "lit-html@npm:^1.0.0, lit-html@npm:^1.1.1":
   version: 1.4.1
   resolution: "lit-html@npm:1.4.1"
@@ -25659,7 +25703,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lit@npm:^2.0.0, lit@npm:^2.3.1, lit@npm:^2.7.5":
+"lit-html@npm:^3.0.0-pre.0":
+  version: 3.0.0-pre.0
+  resolution: "lit-html@npm:3.0.0-pre.0"
+  dependencies:
+    "@types/trusted-types": ^2.0.2
+  checksum: cf434c507f663c5b414c103957572e0c86ebd3bfe682ca3ef41a2c33d710893e5e24a0dff4f151b3efab3d3c6c43f8a8e48f02f6bc1b371922d466bebc928631
+  languageName: node
+  linkType: hard
+
+"lit@npm:^2.0.0":
   version: 2.8.0
   resolution: "lit@npm:2.8.0"
   dependencies:
@@ -25667,6 +25720,17 @@ __metadata:
     lit-element: ^3.3.0
     lit-html: ^2.8.0
   checksum: 2480e733f7d022d3ecba91abc58a20968f0ca8f5fa30b3341ecf4bcf4845e674ad27b721a5ae53529cafc6ca603c015b80d0979ceb7a711e268ef20bb6bc7527
+  languageName: node
+  linkType: hard
+
+"lit@npm:^3.0.0-pre.0":
+  version: 3.0.0-pre.0
+  resolution: "lit@npm:3.0.0-pre.0"
+  dependencies:
+    "@lit/reactive-element": ^2.0.0-pre.0
+    lit-element: ^4.0.0-pre.0
+    lit-html: ^3.0.0-pre.0
+  checksum: 20e2c5b21f83e18591af3fdd44fd0d1263b1cdf1c4a06bf722008669098577ccfde4395ac5cf5af175ffeb8a8e6f1283d986e0f9b5852b79fc0b6cbc21365a92
   languageName: node
   linkType: hard
 
@@ -33365,7 +33429,7 @@ __metadata:
     jest-fetch-mock: ^3.0.3
     jest-junit: ^15.0.0
     lerna: ^7.1.1
-    lit: ^2.7.5
+    lit: ^3.0.0-pre.0
     monaco-editor: ^0.30.0
     monaco-editor-webpack-plugin: ^6.0.0
     node-sass: "npm:sass@^1.44.0"
