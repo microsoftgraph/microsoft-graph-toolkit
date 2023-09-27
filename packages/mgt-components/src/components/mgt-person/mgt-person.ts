@@ -13,7 +13,7 @@ import {
   customElementHelper,
   mgtHtml
 } from '@microsoft/mgt-element';
-import { Contact, Presence, Person } from '@microsoft/microsoft-graph-types';
+import { Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
@@ -22,7 +22,7 @@ import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { findUsers, getMe, getUser } from '../../graph/graph.user';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
-import { AvatarSize, IDynamicPerson, IUser, IGroup, IContact, ViewType } from '../../graph/types';
+import { AvatarSize, IDynamicPerson, IUser, ViewType } from '../../graph/types';
 import '../../styles/style-helper';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
@@ -32,6 +32,7 @@ import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
 import { strings } from './strings';
+import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
@@ -54,18 +55,6 @@ export const defaultPersonProperties = [
   'id',
   'userType'
 ];
-
-export const isGroup = (obj: IDynamicPerson): obj is IGroup => {
-  return obj.entityType === 'group';
-};
-
-export const isUser = (obj: IDynamicPerson): obj is IUser => {
-  return obj.entityType === 'user';
-};
-
-export const isContact = (obj: IDynamicPerson): obj is IContact => {
-  return obj.entityType === 'contact';
-};
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -1126,15 +1115,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     let details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
 
     if (details) {
-      if ('personType' in details || 'userType' in details) {
-        details.entityType = 'user';
-      }
-      if ('initials' in details) {
-        details.entityType = 'contact';
-      }
-      if ('groupTypes' in details) {
-        details.entityType = 'group';
-      }
       if (
         !details.personImage &&
         this.fetchImage &&
@@ -1179,7 +1159,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       if (people?.length) {
         this.personDetailsInternal = people[0] as IUser;
         this.personDetails = people[0] as IUser;
-        if (this._avatarType === 'photo' && !this.disableImageFetch) {
+        if (this._avatarType === avatarType.photo && !this.disableImageFetch) {
           const image = await getPersonImage(graph, people[0] as IUser, MgtPerson.config.useContactApis);
 
           if (image) {
@@ -1234,8 +1214,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     let initials = '';
     if (isUser(person)) {
       initials += person.givenName[0].toUpperCase();
-    }
-    if (isUser(person)) {
       initials += person.surname[0].toUpperCase();
     }
 

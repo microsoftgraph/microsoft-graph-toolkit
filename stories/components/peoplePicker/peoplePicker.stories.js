@@ -42,28 +42,32 @@ export const selectionChangedEvent = () => html`
  `;
 
 export const getEntityType = () => html`
-  <mgt-people-picker></mgt-people-picker>
-  <!-- Group entityType -->
-  <!-- <mgt-people-picker type="group"></mgt-people-picker> -->
+  <mgt-people-picker
+    type="person">
+  </mgt-people-picker>
+    <!-- Group entityType -->
+    <!-- <mgt-people-picker type="group"></mgt-people-picker> -->
 
-  <div class="entity-type"></div>
+    <div class="entity-type"></div>
 
-<script type="module">
-  import { isUser, isContact, isGroup} from '@microsoft/mgt-components';
-  let entityType = unknown;
+  <script type="module">
+  import { isUser, isContact, isGroup } from '@microsoft/mgt-components';
+  let entityType;
   const output = document.querySelector('.entity-type');
-  document.querySelector('mgt-people-picker').addEventListener('selectionChanged', e => {
+  const handleSelection = (e) => {
     const selected = e.detail[0];
-    if (isUser(selected)) {
-      entityType = 'user';
+    if (isGroup(selected)) {
+        entityType = 'group'
+    } else if (isUser(selected)) {
+        entityType = 'user'
     } else if (isContact(selected)) {
-      entityType = 'contact';
-    } else if (isGroup(selected)) {
-      entityType = 'group';
+        entityType = 'contact'
     }
-    output.innerHTML = `<b>entityType:</b> ${entityType}`;
-  });
-</script>
+    output.innerHTML = '<b>entityType:</b>' + entityType;
+  }
+  document.querySelector('mgt-people-picker').addEventListener('selectionChanged', e => handleSelection(e));
+
+  </script>
 `;
 
 export const selectGroupsById = () => html`

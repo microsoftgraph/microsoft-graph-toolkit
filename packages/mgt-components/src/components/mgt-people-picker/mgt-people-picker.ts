@@ -24,7 +24,7 @@ import {
   getUsersForUserIds,
   getUsers
 } from '../../graph/graph.user';
-import { IDynamicPerson, IGroup, IUser, ViewType } from '../../graph/types';
+import { IDynamicPerson, IUser, ViewType } from '../../graph/types';
 import {
   Providers,
   ProviderState,
@@ -672,7 +672,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       // eslint-disable-next-line guard-for-in, @typescript-eslint/no-for-in-array
       for (const id in groupIds) {
         try {
-          const groupDetails = (await getGroup(graph, groupIds[id])) as IGroup;
+          const groupDetails = await getGroup(graph, groupIds[id]);
           this.addPerson(groupDetails);
         } catch (e) {
           // no-op
@@ -1040,11 +1040,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               } else if (this.groupIds) {
                 if (this.type === PersonType.group) {
                   try {
-                    this._groupPeople = (await getGroupsForGroupIds(
-                      graph,
-                      this.groupIds,
-                      this.groupFilters
-                    )) as IGroup[];
+                    this._groupPeople = await getGroupsForGroupIds(graph, this.groupIds, this.groupFilters);
                   } catch (_) {
                     this._groupPeople = [];
                   }
@@ -1092,7 +1088,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 // eslint-disable-next-line @typescript-eslint/dot-notation, @typescript-eslint/no-unsafe-assignment
                 groups = groups[0]['value'];
               }
-              people = groups as IGroup[];
+              people = groups;
             }
           }
           this.defaultPeople = people;
@@ -1114,11 +1110,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           '',
           this.userFilters
         )) as IUser[];
-        this.defaultSelectedGroups = (await getGroupsForGroupIds(
+        this.defaultSelectedGroups = await getGroupsForGroupIds(
           graph,
           this.defaultSelectedGroupIds,
           this.peopleFilters
-        )) as IGroup[];
+        );
 
         this.defaultSelectedGroups = this.defaultSelectedGroups.filter(group => {
           return group !== null;
@@ -1218,14 +1214,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
             if (this.groupIds) {
               try {
-                people = (await findGroupsFromGroupIds(
+                people = await findGroupsFromGroupIds(
                   graph,
                   input,
                   this.groupIds,
                   this.showMax,
                   this.groupType,
                   this.userFilters
-                )) as IGroup[];
+                );
               } catch (_) {
                 // no-op
               }
