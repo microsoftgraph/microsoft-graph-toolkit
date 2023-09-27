@@ -8,8 +8,13 @@
 import { BetaGraph, IGraph, Providers, error, log } from '@microsoft/mgt-element';
 import * as signalR from '@microsoft/signalr';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
-import type { Subscription, ChatMessage, Chat, AadUserConversationMember } from '@microsoft/microsoft-graph-types';
-import {} from '@microsoft/microsoft-graph-types-beta';
+import type {
+  Entity,
+  Subscription,
+  ChatMessage,
+  Chat,
+  AadUserConversationMember
+} from '@microsoft/microsoft-graph-types';
 import { GraphConfig } from './GraphConfig';
 import { SubscriptionsCache } from './Caching/SubscriptionCache';
 
@@ -21,17 +26,24 @@ export const appSettings = {
 
 type ChangeTypes = 'created' | 'updated' | 'deleted';
 
-type Notification = {
+type Notification<T extends Entity> = {
   subscriptionId: string;
   changeType: ChangeTypes;
   resource: string;
-  resourceData: {
+  resourceData: T & {
     id: string;
     '@odata.type': string;
     '@odata.id': string;
   };
-  encryptedContent: string;
+  EncryptedContent: string;
 };
+
+type ReceivedNotification = Notification<Chat> | Notification<ChatMessage> | Notification<AadUserConversationMember>;
+
+const isMessageNotification = (o: Notification<Entity>): o is Notification<ChatMessage> =>
+  o.resource.includes('/messages(');
+const isMembershipNotification = (o: Notification<Entity>): o is Notification<AadUserConversationMember> =>
+  o.resource.includes('/members');
 
 const stripWssScheme = (notificationUrl: string): string => notificationUrl.replace('wss:', '');
 
@@ -70,22 +82,27 @@ export class GraphNotificationClient {
     return (await Promise.resolve(encryptedData)) as T;
   }
 
-  private readonly receiveNotificationMessage = async (notification: Notification) => {
+  private readonly receiveNotificationMessage = (message: string) => {
+    if (typeof message !== 'string') throw new Error('Expected string from receivenotificationmessageasync');
+
+    const notification: ReceivedNotification = JSON.parse(message) as ReceivedNotification;
     log('received notification message', notification);
     const emitter: ThreadEventEmitter | undefined = this.emitter;
-    if (!notification.encryptedContent) throw new Error('Message did not contain encrypted content');
-    if (notification.resource.indexOf('/messages') !== -1) {
-      await this.processMessageNotification(notification, emitter);
-    } else if (notification.resource.indexOf('/members') !== -1) {
-      await this.processMembershipNotification(notification, emitter);
+    if (!notification.resourceData) throw new Error('Message did not contain resourceData');
+    if (isMessageNotification(notification)) {
+      this.processMessageNotification(notification, emitter);
+    } else if (isMembershipNotification(notification)) {
+      this.processMembershipNotification(notification, emitter);
     } else {
-      await this.processChatPropertiesNotification(notification, emitter);
+      this.processChatPropertiesNotification(notification, emitter);
     }
+    return { StatusCode: '200' };
+
     return new signalR.HttpResponse(200);
   };
 
-  private async processMessageNotification(notification: Notification, emitter: ThreadEventEmitter | undefined) {
-    const message = await this.decryptMessage<ChatMessage>(notification.encryptedContent);
+  private processMessageNotification(notification: Notification<ChatMessage>, emitter: ThreadEventEmitter | undefined) {
+    const message = notification.resourceData;
 
     switch (notification.changeType) {
       case 'created':
@@ -102,8 +119,11 @@ export class GraphNotificationClient {
     }
   }
 
-  private async processMembershipNotification(notification: Notification, emitter: ThreadEventEmitter | undefined) {
-    const member = await this.decryptMessage<AadUserConversationMember>(notification.encryptedContent);
+  private processMembershipNotification(
+    notification: Notification<AadUserConversationMember>,
+    emitter: ThreadEventEmitter | undefined
+  ) {
+    const member = notification.resourceData;
     switch (notification.changeType) {
       case 'created':
         emitter?.participantAdded(member);
@@ -116,8 +136,8 @@ export class GraphNotificationClient {
     }
   }
 
-  private async processChatPropertiesNotification(notification: Notification, emitter: ThreadEventEmitter | undefined) {
-    const chat = await this.decryptMessage<Chat>(notification.encryptedContent);
+  private processChatPropertiesNotification(notification: Notification<Chat>, emitter: ThreadEventEmitter | undefined) {
+    const chat = notification.resourceData;
     switch (notification.changeType) {
       case 'updated':
         emitter?.chatThreadPropertiesUpdated(chat);
@@ -135,7 +155,7 @@ export class GraphNotificationClient {
 
     await this.subscriptionCache.cacheSubscription(this.chatId, subscriptionRecord);
 
-    // only start timer once. -1 for renewaltimer is semaphore it has stopped.
+    // only start timer once. -1 for renewalInterval is semaphore it has stopped.
     if (this.renewalInterval === -1) this.startRenewalTimer();
   };
 
@@ -150,8 +170,6 @@ export class GraphNotificationClient {
       resource: resourcePath,
       expirationDateTime,
       includeResourceData: true,
-      // encryptionCertificate: this._publicKey,
-      // encryptionCertificateId: 'not-a-cert-id',
       clientState: 'wsssecret'
     };
 
