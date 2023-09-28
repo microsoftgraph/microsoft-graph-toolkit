@@ -21,7 +21,7 @@ import { IGraph } from '@microsoft/mgt-element';
 import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
-import { IDynamicPerson, IUser, ViewType } from '../../graph/types';
+import { IDynamicPerson, ViewType } from '../../graph/types';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -36,6 +36,7 @@ import { MgtOrganization } from '../mgt-organization/mgt-organization';
 import { MgtProfile } from '../mgt-profile/mgt-profile';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 import { strings } from './strings';
+import { isUser } from '../../graph/entityType';
 
 import '../sub-components/mgt-spinner/mgt-spinner';
 
@@ -644,11 +645,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPersonSubtitle(person?: IDynamicPerson): TemplateResult {
     person = person || this.internalPersonDetails;
-    if (!(person as Person).department) {
+    if (!isUser(person) || !person.department) {
       return;
     }
     return html`
-       <div class="department">${(person as Person).department}</div>
+       <div class="department">${person.department}</div>
      `;
   }
 
@@ -1016,8 +1017,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     // check if personDetail already populated
     if (this.personDetails) {
-      const user = this.personDetails as IUser;
-      const id = user.userPrincipalName || user.id;
+      const user = this.personDetails;
+      let id: string;
+      if (isUser(user)) {
+        id = user.userPrincipalName || user.id;
+      }
 
       // if we have an id but no email, we should get data from the graph
       // in some graph calls, the user object does not contain the email
@@ -1036,7 +1040,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       const people = await findPeople(graph, this.personQuery, 1);
 
       if (people?.length) {
-        this.personDetails = people[0] as IDynamicPerson;
+        this.personDetails = people[0];
         await getPersonImage(graph, this.personDetails, MgtPersonCard.config.useContactApis).then(image => {
           if (image) {
             this.personDetails.personImage = image;

@@ -251,9 +251,9 @@ export class MgtOrganization extends BasePersonCardSection {
             <div
               class="org-member org-member--direct-report"
               @keydown=${(e: KeyboardEvent) => {
-                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person as IDynamicPerson);
+                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
               }}
-              @click=${() => this.navigateCard(person as IDynamicPerson)}
+              @click=${() => this.navigateCard(person)}
             >
               <div class="org-member__person">
                 <mgt-person
@@ -292,9 +292,9 @@ export class MgtOrganization extends BasePersonCardSection {
             <div
               class="direct-report"
               @keydown=${(e: KeyboardEvent) => {
-                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person as IDynamicPerson);
+                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
               }}
-              @click=${() => this.navigateCard(person as IDynamicPerson)}
+              @click=${() => this.navigateCard(person)}
             >
               <mgt-person
                 .personDetails=${person}
