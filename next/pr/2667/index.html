@@ -1,58 +1,59 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Microsoft Graph Toolkit Playground</title>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Microsoft Graph Toolkit Playground</title>
     <meta name="og:title" content="Microsoft Graph Toolkit Playground"></meta>
     <meta name="og:type" content="website"></meta>
     <meta name="og:description" content="Use Microsoft Graph Toolkit to find authentication providers and reusable, framework-agnostic web components for accessing and working with Microsoft Graph."></meta>
     <meta name="description" content="Use Microsoft Graph Toolkit to find authentication providers and reusable, framework-agnostic web components for accessing and working with Microsoft Graph."></meta>
-<meta name="viewport" content="width=device-width,initial-scale=1"/><style>html, body {
-    overflow: hidden;
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-  }
 
-  * {
-    box-sizing: border-box;
-  }</style><script>/* globals window */
-  /* eslint-disable no-underscore-dangle */
-  try {
-    if (window.top !== window) {
-      window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.top.__REACT_DEVTOOLS_GLOBAL_HOOK__;
-    }
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.warn('unable to connect to top frame for connecting dev tools');
-  }
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  window.onerror = function onerror(message, source, line, column, err) {
-    if (window.CONFIG_TYPE !== 'DEVELOPMENT') return;
-    // eslint-disable-next-line no-var, vars-on-top
-    var xhr = new window.XMLHttpRequest();
-    xhr.open('POST', '/runtime-error');
-    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-    xhr.send(
-      JSON.stringify({
-        /* eslint-disable object-shorthand */
-        message: message,
-        source: source,
-        line: line,
-        column: column,
-        error: err && { message: err.message, name: err.name, stack: err.stack },
-        origin: 'manager',
-        /* eslint-enable object-shorthand */
-      })
-    );
-  };</script><meta name="theme-color" content="#F6F9FC"/><link rel="shortcut icon" type="image/png" href="/favicon.png"/><link rel="manifest" href="manifest.json"/><script>navigator.serviceWorker.register("sw.js");</script><footer class="storybook-footer">Microsoft Graph Toolkit (v<span id="mgt-version"></span>) Playground was founded by Microsoft as a community guided, open source project. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a> <a href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Terms of use</a></footer><script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script><script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script><script type="module" src="https://unpkg.com/@fluentui/web-components@2"></script><script>const xmlns = "http://www.w3.org/2000/svg";
+    
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    
+    <link
+      rel="prefetch"
+      href="./sb-common-assets/nunito-sans-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="prefetch"
+      href="./sb-common-assets/nunito-sans-bold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="./sb-common-assets/fonts.css" />
 
-  var config = {
-    autoCapture: {
-      lineage: true,
-    },
-    coreData: {
-      appId: "JS:GraphToolkit",
-    },
-  };
-  awa.init(config);
+    <link href="./sb-manager/runtime.js" rel="modulepreload" />
+
+    
+    <link href="./sb-addons/storybook-version-esm-0/register-bundle.js" rel="modulepreload" />
+    
+    <link href="./sb-addons/storybook-1/manager-bundle.js" rel="modulepreload" />
+      <meta name="theme-color" content="#F6F9FC" />
+<link rel="shortcut icon" type="image/png" href="/favicon.png" />
+<link rel="manifest" href="manifest.json" />
+<script>
+  navigator.serviceWorker.register("sw.js");
+</script>
+
+<footer class="storybook-footer">
+  Microsoft Graph Toolkit (v<span id="mgt-version"></span>) Playground was founded by Microsoft as a community guided,
+  open source project.
+  <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a>
+  <a href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Terms of use</a>
+</footer>
+
+<script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script>
+<script type="module" src="https://unpkg.com/@fluentui/web-components@2"></script>
+<script type="text/javascript">
+  const xmlns = "http://www.w3.org/2000/svg";
 
   window.onload = () => {
     addUsefulLinks();
@@ -181,39 +182,17 @@
     svgElem.appendChild(svgElemPath);
     return svgElem;
   }
-  const windowWidth = window.innerWidth;</script><style>.css-bt79wf>svg>path,
-  .css-1j9r8vi>svg>path {
-    color: rgba(153, 153, 153, 0.6) !important;
-    fill: rgba(153, 153, 153, 0.6) !important;
-  }
+  const windowWidth = window.innerWidth;
+</script>
 
+<style>
   @media (forced-colors: active) and (prefers-color-scheme: dark) {
-
     #root,
     svg,
     svg>path,
     button {
       fill: rgb(255, 255, 255) !important;
       color: rgb(255, 255, 255) !important;
-    }
-
-    .css-bt79wf>svg>path,
-    .css-1j9r8vi>svg>path {
-      color: rgba(255, 255, 255) !important;
-      fill: rgba(255, 255, 255) !important;
-    }
-
-    .css-cwrfva:hover,
-    .css-cwrfva:focus-visible {
-      border: 1px solid rgba(255, 255, 255) !important;
-    }
-
-    .css-128qwy8:hover {
-      /* background-image: radial-gradient(at center center,rgba(0,0,0,0.2) 0%,transparent 70%,transparent 100%); */
-      background-image: radial-gradient(at center center, rgba(255, 255, 255) 100%, transparent 100%, transparent 100%);
-      background-size: 50px 100%;
-      background-position: 0 50%;
-      background-repeat: no-repeat;
     }
 
     .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle,
@@ -223,7 +202,6 @@
   }
 
   @media (forced-colors: active) and (prefers-color-scheme: light) {
-
     #root,
     svg,
     svg>path,
@@ -232,30 +210,13 @@
       color: rgb(0, 0, 0) !important;
     }
 
-    .css-bt79wf>svg>path,
-    .css-1j9r8vi>svg>path {
-      color: rgba(0, 0, 0) !important;
-      fill: rgba(0, 0, 0) !important;
-    }
-
-    .css-cwrfva:hover,
-    .css-cwrfva:focus-visible {
-      border: 1px solid rgba(0, 0, 0) !important;
-    }
-
-    .css-128qwy8:hover {
-      /* background-image: radial-gradient(at center center,rgba(0,0,0,0.2) 0%,transparent 70%,transparent 100%); */
-      background-image: radial-gradient(at center center, rgba(0, 0, 0, 0.2) 100%, transparent 100%, transparent 100%);
-      background-size: 50px 100%;
-      background-position: 0 50%;
-      background-repeat: no-repeat;
-    }
-
     .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle,
     .os-scrollbar>.os-scrollbar-track {
       border: 1px solid transparent;
     }
-  }</style><style>.sidebar-header button {
+  }
+
+  .sidebar-header button {
     display: none !important;
   }
 
@@ -278,10 +239,6 @@
     color: #323232;
   }
 
-  .sidebar-subheading.css-ulso1l {
-    color: #717171 !important;
-  }
-
   .sidebar-header h1 {
     font-size: 14px;
     font-weight: 700;
@@ -300,49 +257,36 @@
     color: inherit;
   }
 
-  .css-ulso1l,
-  .css-gb1sl5 {
-    color: #717171 !important;
-  }
-
-  .sto-ulso1l,
-  .css-1en6m26 {
+  /* Sets the color of the sidebar section headings */
+  .sidebar-subheading.css-ppqi8s {
     color: #616159 !important;
   }
 
   /* Fix color contrast of left expanded/collapsed chevrons */
-
-  .sto-bt79wf,
-  .sto-1j9r8vi {
+  .css-ct44ui,
+  .css-1necw0m {
     color: unset;
   }
 
   /* Removes Find component feature */
-  .css-8ktt77 {
-    display: none;
-  }
-
-  .css-14o7vtb {
-    border: 2px solid transparent;
-  }
-
-  .css-14o7vtb:focus-visible {
-    outline: auto;
-  }
   .search-field {
     display: none !important;
   }
 
+  /* fix high contrast mode colors on sidebar links */
   @media (forced-colors: active){
-    a[class*="sto-"][data-selected="true"],
-    a[class*="sto-"][data-selected="true"]:focus,
-    a[class*="sto-"][data-selected="false"]:focus,
-    a[class*="sto-"][data-selected="true"]:hover,
-    a[class*="sto-"][data-selected="false"]:hover{
+    a[class*="css-"][data-selected="true"],
+    a[class*="css-"][data-selected="true"]:focus,
+    a[class*="css-"][data-selected="false"]:focus,
+    a[class*="css-"][data-selected="true"]:hover,
+    a[class*="css-"][data-selected="false"]:hover {
       background: Highlight;
       color: LinkText;
     }
-  }</style><script>let attempts = 0;
+  }
+</style>
+<script>
+  let attempts = 0;
   // Uses setInterval to wait for the sidebar to be rendered into the page
   // interval is cleared on success or after 100 tries (10 seconds)
   const retry = setInterval(() => {
@@ -357,23 +301,70 @@
     sidebar.parentElement.appendChild(footer);
     sidebar.style.height = `calc(100% - ${footer.clientHeight}px)`;
     clearInterval(retry);
-  }, 100)</script><style>#root[hidden],
-      #docs-root[hidden] {
+  }, 100)
+</script>
+ 
+
+    <style>
+      #storybook-root[hidden] {
         display: none !important;
-      }</style></head><body><div id="root"></div><div id="docs-root"></div><script>window['CONFIG_TYPE'] = "PRODUCTION";
-          
+      }
+    </style>
+
+    
+  </head>
+  <body>
+    <div id="root"></div>
+
+    
+    <script>
       
-          
-            window['LOGLEVEL'] = "info";
-          
+        
+          window['FEATURES'] = {
+  "warnOnLegacyHierarchySeparator": true,
+  "buildStoriesJson": false,
+  "storyStoreV7": true,
+  "argTypeTargetsV7": true,
+  "legacyDecoratorFileOrder": false
+};
+        
       
-          
-            window['FEATURES'] = {"postcss":true,"emotionAlias":false,"warnOnLegacyHierarchySeparator":true,"buildStoriesJson":false,"storyStoreV7":false,"modernInlineRender":false,"breakingChangesV7":false,"interactionsDebugger":false,"babelModeV7":false,"argTypeTargetsV7":false,"previewMdx2":false};
-          
+        
+          window['REFS'] = {};
+        
       
-          
+        
+          window['LOGLEVEL'] = "info";
+        
       
-          
+        
+          window['DOCS_OPTIONS'] = {
+  "defaultName": "Docs",
+  "autodocs": "tag"
+};
+        
       
-          
-            window['DOCS_MODE'] = false;</script><script src="runtime~main.946532e9aa4280e8d2e2.manager.bundle.js"></script><script src="247.458e031532a292b904e7.manager.bundle.js"></script><script src="main.493d38384e2d57d41a5f.manager.bundle.js"></script></body></html>
+        
+          window['CONFIG_TYPE'] = "PRODUCTION";
+        
+      
+        
+      
+        
+      
+    </script>
+    
+
+    <script type="module">
+      import './sb-manager/runtime.js';
+
+      
+      import './sb-addons/storybook-version-esm-0/register-bundle.js';
+      
+      import './sb-addons/storybook-1/manager-bundle.js';
+      
+    </script>
+
+    <link href="./sb-preview/runtime.js" rel="prefetch" as="script" />
+  </body>
+</html>
