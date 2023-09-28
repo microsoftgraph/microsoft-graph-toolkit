@@ -79,7 +79,7 @@ export class Providers {
    * @param {EventHandler<ProvidersChangedState>} event
    * @memberof Providers
    */
-  public static onActiveAccountChanged(event: EventHandler<any>) {
+  public static onActiveAccountChanged(event: EventHandler<unknown>) {
     this._activeAccountChangedDispatcher.add(event);
   }
 
@@ -90,7 +90,7 @@ export class Providers {
    * @param {EventHandler<ProvidersChangedState>} event
    * @memberof Providers
    */
-  public static removeActiveAccountChangedListener(event: EventHandler<any>) {
+  public static removeActiveAccountChangedListener(event: EventHandler<unknown>) {
     this._activeAccountChangedDispatcher.remove(event);
   }
 
@@ -236,7 +236,7 @@ export class Providers {
 
   private static readonly _eventDispatcher = new EventDispatcher<ProvidersChangedState>();
 
-  private static readonly _activeAccountChangedDispatcher = new EventDispatcher<any>();
+  private static readonly _activeAccountChangedDispatcher = new EventDispatcher<unknown>();
 
   private static _globalProvider: IProvider;
   private static _cacheId: string;

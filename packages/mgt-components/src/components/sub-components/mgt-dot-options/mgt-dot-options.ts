@@ -19,7 +19,7 @@ registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
 /**
  * Defines the event functions passed to the option item.
  */
-type MenuOptionEventFunction = (e: Event) => void | any;
+type MenuOptionEventFunction = (e: Event) => void;
 
 /**
  * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.
@@ -62,7 +62,7 @@ export class MgtDotOptions extends MgtBaseComponent {
    *
    * @memberof MgtDotOptions
    */
-  @property({ type: Object }) public options: Record<string, (e: Event) => void | any>;
+  @property({ type: Object }) public options: Record<string, (e: Event) => void>;
 
   private readonly _clickHandler = () => (this.open = false);
 
@@ -116,7 +116,7 @@ export class MgtDotOptions extends MgtBaseComponent {
    * @returns
    * @memberof MgtDotOptions
    */
-  public getMenuOption(name: string, clickFn: (e: Event) => void | any) {
+  public getMenuOption(name: string, clickFn: (e: Event) => void) {
     return html`
       <div
         class="dot-item"

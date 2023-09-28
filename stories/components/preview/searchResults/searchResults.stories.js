@@ -7,15 +7,14 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { defaultDocsPage } from '../../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Preview / mgt-search-results',
   component: 'search-results',
   decorators: [withCodeEditor],
+  tags: ['autodocs'],
   parameters: {
     docs: {
-      page: defaultDocsPage,
       source: { code: '<mgt-search-results></mgt-search-results>' }
     }
   }
@@ -36,8 +35,7 @@ export const localization = () => html`
   <mgt-search-results entity-types="driveItem" query-string="contoso">
   </mgt-search-results>
   <script>
-  import '@microsoft/mgt-components/dist/es6/components/preview';
-  import { LocalizationHelper } from '@microsoft/mgt';
+  import { LocalizationHelper } from '@microsoft/mgt-element';
   LocalizationHelper.strings = {
     _components: {
       'search-results': {

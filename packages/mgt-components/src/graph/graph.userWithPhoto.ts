@@ -19,6 +19,7 @@ import { CacheUser, getIsUsersCacheEnabled, getUserInvalidationTime } from './gr
 import { IDynamicPerson } from './types';
 import { schemas } from './cacheStores';
 import { Photo } from '@microsoft/microsoft-graph-types';
+import { isGraphError } from './isGraphError';
 
 /**
  * async promise, returns IDynamicPerson
@@ -74,11 +75,13 @@ export const getUserWithPhoto = async (
         } else {
           cachedPhoto = null;
         }
-      } catch (e: any) {
-        // if 404 received (photo not found) but user already in cache, update timeCache value to prevent repeated 404 error / graph calls on each page refresh
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (e.code === 'ErrorItemNotFound' || e.code === 'ImageNotFound') {
-          await storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag: null, photo: null });
+      } catch (e: unknown) {
+        if (isGraphError(e)) {
+          // if 404 received (photo not found) but user already in cache, update timeCache value to prevent repeated 404 error / graph calls on each page refresh
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          if (e.code === 'ErrorItemNotFound' || e.code === 'ImageNotFound') {
+            await storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag: null, photo: null });
+          }
         }
       }
     }

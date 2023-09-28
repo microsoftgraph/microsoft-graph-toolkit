@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "@microsoft/mgt-chat": "*",
-    "@microsoft/mgt-react": "*",
     "@microsoft/mgt-msal2-provider": "*",
+    "@microsoft/mgt-react": "*",
     "@microsoft/microsoft-graph-types": "^2.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
