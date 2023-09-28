@@ -22,7 +22,7 @@ import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { findUsers, getMe, getUser } from '../../graph/graph.user';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
-import { AvatarSize, IDynamicPerson, IUser, ViewType } from '../../graph/types';
+import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import '../../styles/style-helper';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
@@ -1140,9 +1140,9 @@ export class MgtPerson extends MgtTemplatedComponent {
         person = await getUserWithPhoto(graph, this.userId, personProps);
       } else {
         if (this.personQuery === 'me') {
-          person = (await getMe(graph, personProps)) as IUser;
+          person = await getMe(graph, personProps);
         } else {
-          person = (await getUser(graph, this.userId, personProps)) as IUser;
+          person = await getUser(graph, this.userId, personProps);
         }
       }
       this.personDetailsInternal = person;
@@ -1157,10 +1157,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
 
       if (people?.length) {
-        this.personDetailsInternal = people[0] as IUser;
-        this.personDetails = people[0] as IUser;
+        this.personDetailsInternal = people[0];
+        this.personDetails = people[0];
         if (this._avatarType === avatarType.photo && !this.disableImageFetch) {
-          const image = await getPersonImage(graph, people[0] as IUser, MgtPerson.config.useContactApis);
+          const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
           if (image) {
             this.personDetailsInternal.personImage = image;
