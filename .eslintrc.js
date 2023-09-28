@@ -4,7 +4,7 @@ module.exports = {
     es6: true,
     node: true
   },
-  extends: ['@microsoft/eslint-config-msgraph'],
+  extends: ['@microsoft/eslint-config-msgraph', 'plugin:storybook/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: [

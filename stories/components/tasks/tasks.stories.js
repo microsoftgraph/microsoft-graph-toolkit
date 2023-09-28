@@ -7,15 +7,14 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Components / mgt-tasks',
   component: 'tasks',
   decorators: [withCodeEditor],
+  tags: ['autodocs'],
   parameters: {
     docs: {
-      page: defaultDocsPage,
       source: { code: '<mgt-tasks></mgt-tasks>' }
     }
   }
@@ -32,7 +31,6 @@ export const tasksWithGroupId = () => html`
     Group.ReadWrite.All permissions. Test this component in your tenant.
   -->
 `;
-
 
 export const useToDoAsDataSource = () => html`
   <mgt-tasks data-source="todo"></mgt-tasks>
