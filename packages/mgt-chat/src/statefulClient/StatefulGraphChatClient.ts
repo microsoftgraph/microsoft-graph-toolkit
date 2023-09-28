@@ -62,9 +62,9 @@ import { GraphConfig } from './GraphConfig';
 const placeholderImageContent =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY7h58yYABRoCjB9qX5UAAAAASUVORK5CYII=';
 
-type ODataType = {
+interface ODataType {
   '@odata.type': MessageEventType;
-};
+}
 type MembersAddedEventDetail = ODataType &
   MembersAddedEventMessageDetail & {
     '@odata.type': '#microsoft.graph.membersAddedEventMessageDetail';
@@ -119,7 +119,7 @@ export type GraphChatClient = Pick<
     onRenameChat: (topic: string | null) => Promise<void>;
   };
 
-type StatefulClient<T> = {
+interface StatefulClient<T> {
   /**
    * Get the current state of the client
    */
@@ -136,11 +136,11 @@ type StatefulClient<T> = {
    * @param handler Callback to be unregistered
    */
   offStateChange(handler: (state: T) => void): void;
-};
+}
 
-type CreatedOn = {
+interface CreatedOn {
   createdOn: Date;
-};
+}
 
 /**
  * Simple object comparator function for sorting by createdOn date
@@ -172,10 +172,10 @@ type MessageEventType =
  * Some messages do not have a current value and will be added after the future value is resolved.
  * Some messages do not have a future value and will be added immediately.
  */
-type MessageConversion = {
+interface MessageConversion {
   currentValue?: Message;
   futureValue?: Promise<Message>;
-};
+}
 
 /**
  * Regex to detect and replace image urls using graph requests to supply the image content
@@ -541,6 +541,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     switch (message.messageType) {
       case 'message':
         return this.graphChatMessageToAcsChatMessage(message, this.userId);
+      case 'systemEventMessage':
       case 'unknownFutureValue':
         return { futureValue: this.buildSystemContentMessage(message) };
       default:

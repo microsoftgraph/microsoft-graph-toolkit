@@ -21,7 +21,7 @@ interface ListChatMembersProps {
   closeParentPopover: () => void;
 }
 
-const RemovePerson = bundleIcon(Dismiss24Regular, Dismiss24Regular);
+const RemovePerson = bundleIcon(Dismiss24Regular, () => <></>);
 
 const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParentPopover }: ListChatMembersProps) => {
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);

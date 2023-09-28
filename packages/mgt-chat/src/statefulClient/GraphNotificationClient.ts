@@ -5,8 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
+/* eslint-disable no-console */
 import { BetaGraph, IGraph, Providers, error, log } from '@microsoft/mgt-element';
-import * as signalR from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder, IHttpConnectionOptions, LogLevel } from '@microsoft/signalr';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
 import type {
   Entity,
@@ -26,7 +27,7 @@ export const appSettings = {
 
 type ChangeTypes = 'created' | 'updated' | 'deleted';
 
-type Notification<T extends Entity> = {
+interface Notification<T extends Entity> {
   subscriptionId: string;
   changeType: ChangeTypes;
   resource: string;
@@ -36,7 +37,7 @@ type Notification<T extends Entity> = {
     '@odata.id': string;
   };
   EncryptedContent: string;
-};
+}
 
 type ReceivedNotification = Notification<Chat> | Notification<ChatMessage> | Notification<AadUserConversationMember>;
 
@@ -48,7 +49,7 @@ const isMembershipNotification = (o: Notification<Entity>): o is Notification<Aa
 const stripWssScheme = (notificationUrl: string): string => notificationUrl.replace('wss:', '');
 
 export class GraphNotificationClient {
-  private connection?: signalR.HubConnection = undefined;
+  private connection?: HubConnection = undefined;
   private renewalInterval = -1;
   private renewalCount = 0;
   private currentUserId = '';
@@ -64,7 +65,10 @@ export class GraphNotificationClient {
   /**
    *
    */
-  constructor(private readonly emitter: ThreadEventEmitter, private readonly _graph: IGraph) {}
+  constructor(
+    private readonly emitter: ThreadEventEmitter,
+    private readonly _graph: IGraph
+  ) {}
 
   private readonly getToken = async () => {
     const token = await Providers.globalProvider.getAccessToken();
@@ -97,8 +101,6 @@ export class GraphNotificationClient {
       this.processChatPropertiesNotification(notification, emitter);
     }
     return { StatusCode: '200' };
-
-    return new signalR.HttpResponse(200);
   };
 
   private processMessageNotification(notification: Notification<ChatMessage>, emitter: ThreadEventEmitter | undefined) {
@@ -255,14 +257,14 @@ export class GraphNotificationClient {
   };
 
   public async createSignalRConnection(notificationUrl: string) {
-    const connectionOptions: signalR.IHttpConnectionOptions = {
+    const connectionOptions: IHttpConnectionOptions = {
       accessTokenFactory: this.getToken,
       withCredentials: false
     };
-    const connection = new signalR.HubConnectionBuilder()
+    const connection = new HubConnectionBuilder()
       .withUrl(stripWssScheme(notificationUrl), connectionOptions)
       .withAutomaticReconnect()
-      .configureLogging(signalR.LogLevel.Information)
+      .configureLogging(LogLevel.Information)
       .build();
 
     connection.onreconnected(this.onReconnect);

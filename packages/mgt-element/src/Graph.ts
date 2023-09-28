@@ -159,7 +159,7 @@ export const createFromProvider = (provider: IProvider, version?: string, compon
   const baseURL = provider.baseURL ? provider.baseURL : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
   const client = Client.initWithMiddleware({
     middleware: chainMiddleware(...middleware),
-    customHosts: typeof provider.customHosts === undefined ? null : new Set(provider.customHosts),
+    customHosts: provider.customHosts ? new Set(provider.customHosts) : null,
     baseUrl: baseURL
   });
 

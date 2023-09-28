@@ -20,11 +20,11 @@ import { chatOperationScopes } from './chatOperationScopes';
 /**
  * Generic collection response from graph
  */
-export type GraphCollection<T = any> = {
+export interface GraphCollection<T = any> {
   '@odata.nextLink'?: string;
   nextLink?: string;
   value: T[];
-};
+}
 
 /**
  * Object representing a collection of chat messages

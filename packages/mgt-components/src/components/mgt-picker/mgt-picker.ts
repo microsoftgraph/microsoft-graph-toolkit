@@ -301,7 +301,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     this.error = err;
   }
 
-  private handleClick(e: MouseEvent, item: any) {
+  private handleClick(e: MouseEvent, item: Entity) {
     this.fireCustomEvent('selectionChanged', item, true, false, true);
   }
 
@@ -313,7 +313,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   private readonly handleComboboxKeydown = (e: KeyboardEvent) => {
     let value: string;
-    let item: any;
+    let item: Entity;
     const keyName: string = e.key;
     const comboBox: HTMLElement = e.target as HTMLElement;
     const fluentOptionEl = comboBox.querySelector('.selected');
@@ -321,7 +321,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       value = fluentOptionEl.getAttribute('value');
     }
 
-    if (['Enter'].includes(keyName)) {
+    if ('Enter' === keyName) {
       if (value) {
         item = this.response.filter(res => res.id === value).pop();
         this.fireCustomEvent('selectionChanged', item, true, false, true);

@@ -37,7 +37,7 @@ import {
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce, isValidEmail } from '../../utils/Utils';
-import { MgtPerson } from '../mgt-person/mgt-person';
+import { MgtPerson, defaultPersonProperties } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
@@ -46,6 +46,7 @@ import { fluentTextField, fluentCard } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { strings } from './strings';
 import { Person, User } from '@microsoft/microsoft-graph-types';
+import { isGraphError } from '../../graph/isGraphError';
 
 registerFluentComponents(fluentTextField, fluentCard);
 
@@ -639,12 +640,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       for (const id in userIds) {
         const userId = userIds[id];
         try {
-          const personDetails = await getUser(graph, userId);
+          const personDetails = await getUser(graph, userId, defaultPersonProperties);
           this.addPerson(personDetails);
-        } catch (e: any) {
+        } catch (e: unknown) {
           // This caters for allow-any-email property if it's enabled on the component
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          if (e.message?.includes('does not exist') && this.allowAnyEmail) {
+          if (isGraphError(e) && e.message?.includes('does not exist') && this.allowAnyEmail) {
             if (isValidEmail(userId)) {
               const anyMailUser = {
                 mail: userId,

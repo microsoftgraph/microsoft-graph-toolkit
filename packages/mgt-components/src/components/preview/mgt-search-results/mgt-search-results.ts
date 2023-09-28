@@ -84,28 +84,28 @@ interface BinaryThumbnail {
 /**
  * Object representing a Search Answer
  */
-type Answer = {
+interface Answer {
   '@odata.type': string;
   displayName?: string;
   description?: string;
   webUrl?: string;
-};
+}
 
 /**
  * Object representing a search resource supporting thumbnails
  */
-type ThumbnailResource = {
+interface ThumbnailResource {
   thumbnail: Thumbnail;
-};
+}
 
-type UserResource = {
+interface UserResource {
   lastModifiedBy?: {
     user?: {
       email?: string;
     };
   };
   userPrincipalName?: string;
-};
+}
 
 /**
  * Object representing a Search Resource
@@ -214,7 +214,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'scopes',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       return value ? value.toLowerCase().split(',') : null;
     }
   })
@@ -228,7 +228,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'content-sources',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       return value ? value.toLowerCase().split(',') : null;
     }
   })
@@ -1061,8 +1061,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           html`
           <div class="search-result-thumbnail">
             <a href="${resource.webUrl}" target="_blank"><img alt="${trimFileExtension(
-            resource.name || getNameFromUrl(resource.webUrl)
-          )}" src="${resource.thumbnail?.url || nothing}" /></a>
+              resource.name || getNameFromUrl(resource.webUrl)
+            )}" src="${resource.thumbnail?.url || nothing}" /></a>
           </div>`
         }
       </div>

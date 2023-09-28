@@ -383,7 +383,7 @@ export const ChangeBindingSyntax = () => html`
     </template>
   </mgt-agenda>
   <script>
-    import { TemplateHelper } from '@microsoft/mgt';
+    import { TemplateHelper } from '@microsoft/mgt-element';
 
     TemplateHelper.setBindingSyntax('[[', ']]');
   </script>
@@ -399,7 +399,7 @@ export const TemplateRenderedEvent = () => html`
 </mgt-person>
 
 <script type="module">
-  import { Providers } from '@microsoft/mgt';
+  import { Providers } from '@microsoft/mgt-element';
 
 let mgtPerson = document.querySelector('mgt-person');
 
