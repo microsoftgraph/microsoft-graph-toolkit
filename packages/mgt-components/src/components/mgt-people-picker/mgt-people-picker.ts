@@ -37,7 +37,7 @@ import {
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce, isValidEmail } from '../../utils/Utils';
-import { MgtPerson } from '../mgt-person/mgt-person';
+import { MgtPerson, defaultPersonProperties } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
@@ -640,7 +640,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       for (const id in userIds) {
         const userId = userIds[id];
         try {
-          const personDetails = await getUser(graph, userId);
+          const personDetails = await getUser(graph, userId, defaultPersonProperties);
           this.addPerson(personDetails);
         } catch (e: unknown) {
           // This caters for allow-any-email property if it's enabled on the component

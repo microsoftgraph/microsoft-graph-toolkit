@@ -13,7 +13,7 @@ import {
   customElementHelper,
   mgtHtml
 } from '@microsoft/mgt-element';
-import { Contact, Presence } from '@microsoft/microsoft-graph-types';
+import { Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
@@ -32,6 +32,7 @@ import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
 import { strings } from './strings';
+import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
@@ -39,7 +40,7 @@ export { PersonCardInteraction } from '../PersonCardInteraction';
 /**
  * Person properties part of original set provided by graph by default
  */
-const defaultPersonProperties = [
+export const defaultPersonProperties = [
   'businessPhones',
   'displayName',
   'givenName',
@@ -51,7 +52,8 @@ const defaultPersonProperties = [
   'preferredLanguage',
   'surname',
   'userPrincipalName',
-  'id'
+  'id',
+  'userType'
 ];
 
 /**
@@ -1205,15 +1207,13 @@ export class MgtPerson extends MgtTemplatedComponent {
       person = this.personDetailsInternal;
     }
 
-    if ((person as Contact).initials) {
-      return (person as Contact).initials;
+    if (isContact(person)) {
+      return person.initials;
     }
 
     let initials = '';
-    if (person.givenName) {
+    if (isUser(person)) {
       initials += person.givenName[0].toUpperCase();
-    }
-    if (person.surname) {
       initials += person.surname[0].toUpperCase();
     }
 
