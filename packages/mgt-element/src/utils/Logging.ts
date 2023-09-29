@@ -1,5 +1,14 @@
 /* eslint-disable no-console */
-export const log = (message?: unknown, ...optionalParams: unknown[]) => console.log('🦒: ', message, optionalParams);
-export const warn = (message?: unknown, ...optionalParams: unknown[]) => console.warn('🦒: ', message, optionalParams);
+const prependInfo = (message?: unknown, ...optionalParams: unknown[]) => [
+  new Date().toISOString(),
+  '🦒: ',
+  message,
+  optionalParams
+];
+
+export const log = (message?: unknown, ...optionalParams: unknown[]) =>
+  console.log(...prependInfo(message, optionalParams));
+export const warn = (message?: unknown, ...optionalParams: unknown[]) =>
+  console.warn(...prependInfo(message, optionalParams));
 export const error = (message?: unknown, ...optionalParams: unknown[]) =>
-  console.error('🦒: ', message, optionalParams);
+  console.error(...prependInfo(message, optionalParams));

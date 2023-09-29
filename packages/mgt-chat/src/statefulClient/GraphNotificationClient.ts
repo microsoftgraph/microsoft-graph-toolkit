@@ -100,6 +100,7 @@ export class GraphNotificationClient {
     } else {
       this.processChatPropertiesNotification(notification, emitter);
     }
+    // Need to return a status code string of 200 so that graph knows the message was received and doesn't re-send the notification
     return { StatusCode: '200' };
   };
 
