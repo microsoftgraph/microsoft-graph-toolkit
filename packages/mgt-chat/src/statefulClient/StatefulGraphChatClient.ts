@@ -730,6 +730,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * Event handler to be called when a new message is received by the notification service
    */
   private readonly onMessageReceived = async (message: ChatMessage) => {
+    this.updateMentions(message);
     const messageConversion = this.convertChatMessage(message);
     const acsMessage = messageConversion.currentValue;
     this.updateMessages(acsMessage);
@@ -738,6 +739,23 @@ detail: ${JSON.stringify(eventDetail)}`);
       const futureMessageState = await messageConversion.futureValue;
       this.updateMessages(futureMessageState);
     }
+  };
+
+  /**
+   * When you receive a new message, check if there are any mentions and update
+   * the state. This will allow to match users to mentions them during rendering.
+   *
+   * @param newMessage from teams.
+   * @returns
+   */
+  private readonly updateMentions = (newMessage: ChatMessage) => {
+    if (!newMessage) return;
+    this.notifyStateChange((draft: GraphChatClient) => {
+      const mentions = newMessage?.mentions ?? [];
+      draft.mentions = draft.mentions?.concat(
+        ...Array.from(mentions as Iterable<ChatMessageMention>)
+      ) as NullableOption<ChatMessageMention[]>;
+    });
   };
 
   /*
