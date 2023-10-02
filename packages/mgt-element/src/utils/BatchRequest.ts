@@ -55,10 +55,7 @@ export class BatchRequest {
   public id: string;
 
   constructor(index: number, id: string, resource: string, method: string) {
-    if (resource.charAt(0) !== '/') {
-      resource = '/' + resource;
-    }
-    this.resource = resource;
+    this.resource = resource.startsWith('/') ? resource : `/${resource}`;
     this.method = method;
     this.index = index;
     this.id = id;

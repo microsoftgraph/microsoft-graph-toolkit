@@ -15,12 +15,14 @@ import { customElementHelper } from '../components/customElementHelper';
  *
  * @param tagName the base name for the custom element tag
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const customElement = (tagName: string): ((classOrDescriptor: unknown) => any) => {
   const mgtTagName = `${customElementHelper.prefix}-${tagName}`;
   const mgtElement = customElements.get(mgtTagName);
   const unknownVersion = ' Unknown likely <3.0.0';
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-  const version = (element: CustomElementConstructor): string => (element as any).packageVersion || unknownVersion;
+  const version = (element: CustomElementConstructor): string =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    ((element as any).packageVersion || unknownVersion) as string;
   if (mgtElement) {
     return (classOrDescriptor: CustomElementConstructor) => {
       // eslint-disable-next-line no-console

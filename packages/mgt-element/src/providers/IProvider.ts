@@ -342,9 +342,9 @@ export enum ProviderState {
  *
  * @export
  */
-export type IProviderAccount = {
+export interface IProviderAccount {
   id: string;
   mail?: string;
   name?: string;
   tenantId?: string;
-};
+}

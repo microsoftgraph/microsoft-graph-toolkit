@@ -386,6 +386,7 @@ export class Msal2Provider extends IProvider {
     } else {
       throw new Error('either clientId or publicClientApplication must be provided');
     }
+    await this._publicClientApplication.initialize();
 
     this.ms_config.system = msalConfig.system || {};
     this.ms_config.system.iframeHashTimeout = msalConfig.system.iframeHashTimeout || 10000;

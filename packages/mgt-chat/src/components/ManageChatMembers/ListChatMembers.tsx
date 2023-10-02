@@ -21,7 +21,7 @@ interface ListChatMembersProps {
   closeParentPopover: () => void;
 }
 
-const RemovePerson = bundleIcon(Dismiss24Regular, () => null);
+const RemovePerson = bundleIcon(Dismiss24Regular, () => <></>);
 
 const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParentPopover }: ListChatMembersProps) => {
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
@@ -52,7 +52,7 @@ const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParent
         <DialogSurface>
           <DialogBody>
             <DialogTitle>Remove {removeUser?.displayName || ''} from the conversation?</DialogTitle>
-            <DialogContent>They'll still have access to the chat history.</DialogContent>
+            <DialogContent>They&apos;ll still have access to the chat history.</DialogContent>
             <DialogActions>
               <Button appearance="secondary" onClick={closeDialog}>
                 Close

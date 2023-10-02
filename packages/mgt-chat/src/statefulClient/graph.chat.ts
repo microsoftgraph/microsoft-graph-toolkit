@@ -19,11 +19,11 @@ import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microso
 /**
  * Generic collection response from graph
  */
-type GraphCollection<T = any> = {
+interface GraphCollection<T = any> {
   '@odata.nextLink': string;
   nextLink: string;
   value: T[];
-};
+}
 
 /**
  * Object representing a collection of chat messages

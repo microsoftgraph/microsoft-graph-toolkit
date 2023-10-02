@@ -58,7 +58,7 @@ export const applyTheme = (theme: Theme, element: HTMLElement = document.body): 
 /**
  * Simple data holder for theme settings
  */
-type ColorScheme = {
+interface ColorScheme {
   /**
    * Hex color string for accent base color
    *
@@ -83,7 +83,7 @@ type ColorScheme = {
    * Optional function to override design tokens
    */
   designTokenOverrides?: (element: HTMLElement) => void;
-};
+}
 
 /**
  * Helper function to apply fluent ui color scheme to an element
