@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ErrorBar,
-  FluentThemeProvider,
-  MessageThread,
-  SendBox,
-  MessageThreadStyles,
-  Mention
-} from '@azure/communication-react';
+import { ErrorBar, FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { FluentTheme, MessageBarType } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
@@ -15,9 +8,8 @@ import ChatHeader from '../ChatHeader/ChatHeader';
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
-import { ChatMessageMention, User } from '@microsoft/microsoft-graph-types';
-import { MgtTemplateProps } from '@microsoft/mgt-react';
 import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
+import { renderMGTMention } from '../../utils/mentions';
 
 registerAppIcons();
 
@@ -41,11 +33,7 @@ const useStyles = makeStyles({
     }
   },
   chatInput: {
-    ...shorthands.overflow('unset'),
-    // Move the typing area to the bottom of the screen.
-    position: 'fixed',
-    width: '-webkit-fill-available',
-    bottom: '0'
+    ...shorthands.overflow('unset')
   },
   fullHeight: {
     height: '100%'
@@ -68,9 +56,15 @@ const messageThreadStyles: MessageThreadStyles = {
     }
   },
   chatMessageContainer: {
-    '& p': {
-      display: 'flex',
-      gap: '2px'
+    '& p>mgt-person,msft-mention': {
+      display: 'inline-block',
+      ...shorthands.marginInline('0px', '2px')
+    }
+  },
+  myChatMessageContainer: {
+    '& p>mgt-person,msft-mention': {
+      display: 'inline-block',
+      ...shorthands.marginInline('0px', '2px')
     }
   }
 };
@@ -86,29 +80,6 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
     };
   }, [chatClient]);
 
-  const renderMGTMention = (mention: Mention, defaultRenderer: (mention: Mention) => JSX.Element): JSX.Element => {
-    let render: JSX.Element = defaultRenderer(mention);
-
-    const mentions = chatState?.mentions ?? [];
-    // TODO: Array.flat() is a new api, update?
-    const flatMentions = mentions?.flat() as ChatMessageMention[];
-    const teamsMention = flatMentions.find(
-      m => m.id?.toString() === mention?.id && m.mentionText === mention?.displayText
-    ) as ChatMessageMention;
-
-    const user = teamsMention?.mentioned?.user as User;
-    if (user) {
-      const MGTMention = (props: MgtTemplateProps) => {
-        return defaultRenderer(mention);
-      };
-      render = (
-        <Person userId={user?.id} personCardInteraction={PersonCardInteraction.hover}>
-          <MGTMention template="default" />
-        </Person>
-      );
-    }
-    return render;
-  };
   const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
     chatState.status
   );
@@ -156,7 +127,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   styles={messageThreadStyles}
                   mentionOptions={{
                     displayOptions: {
-                      onRenderMention: renderMGTMention
+                      onRenderMention: renderMGTMention(chatState)
                     }
                   }}
                 />
