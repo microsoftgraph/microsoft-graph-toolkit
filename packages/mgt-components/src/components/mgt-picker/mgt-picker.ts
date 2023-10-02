@@ -8,7 +8,7 @@
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
+import { MgtTemplatedComponent, mgtHtml, customElement, error } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
@@ -214,8 +214,8 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (this.isLoadingState && !this.response) {
       return this.renderTemplate('loading', null);
     } else if (this.hasTemplate('error')) {
-      const error = this.error ? (this.error as Error) : null;
-      return this.renderTemplate('error', { error }, 'error');
+      const err = this.error ? (this.error as Error) : null;
+      return this.renderTemplate('error', { error: err }, 'error');
     } else if (this.hasTemplate('no-data')) {
       return this.renderTemplate('no-data', null);
     }
@@ -286,9 +286,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       if (parent) {
         parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
       } else {
-        console.error(
-          '🦒: mgt-picker component requires a child mgt-get component. Something has gone horribly wrong.'
-        );
+        error('mgt-picker component requires a child mgt-get component. Something has gone horribly wrong.');
       }
     }
     this.isRefreshing = false;
@@ -298,9 +296,9 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private handleDataChange(e: CustomEvent<DataChangedDetail>): void {
     const response = e.detail.response.value;
-    const error = e.detail.error ? e.detail.error : null;
+    const err = e.detail.error ? e.detail.error : null;
     this.response = response;
-    this.error = error;
+    this.error = err;
   }
 
   private handleClick(e: MouseEvent, item: Entity) {

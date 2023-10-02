@@ -15,13 +15,14 @@ import {
 import { CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import { chatOperationScopes } from './chatOperationScopes';
 
 /**
  * Generic collection response from graph
  */
-interface GraphCollection<T = any> {
-  '@odata.nextLink': string;
-  nextLink: string;
+export interface GraphCollection<T = any> {
+  '@odata.nextLink'?: string;
+  nextLink?: string;
   value: T[];
 }
 
@@ -29,21 +30,6 @@ interface GraphCollection<T = any> {
  * Object representing a collection of chat messages
  */
 export type MessageCollection = GraphCollection<ChatMessage>;
-
-/**
- * Object mapping chat operations to the scopes required to perform them
- */
-const chatOperationScopes: Record<string, string[]> = {
-  loadChat: ['chat.readbasic'],
-  loadChatMessages: ['chat.read'],
-  loadChatImage: ['chat.read'],
-  sendChatMessage: ['chatmessage.send'],
-  updateChatMessage: ['chat.readwrite'],
-  deleteChatMessage: ['chat.readwrite'],
-  removeChatMemeber: ['chatmember.readwrite'],
-  addChatMember: ['chatmember.readwrite'],
-  createChat: ['chat.create']
-};
 
 /**
  * Provides an array of the distinct scopes required for all chat operations
@@ -94,11 +80,39 @@ export const loadChatThread = async (
 };
 
 /**
+ * Load the first page of messages from the specified chat which were modified after the specified timestamp
+ * Will provide a nextLink to load more messages if there are more than the specified messageCount
+ *
+ * @param graph authenticated graph client from mgt
+ * @param chatId the id of the chat to load messages from
+ * @param lastModified the ISO 8601 timestamp after which data should be loaded from.
+ * @param messageCount how many messages to load per page
+ * @returns {Promise<MessageCollection>} a collection of messages and a possible nextLink to load more messages
+ */
+export const loadChatThreadDelta = async (
+  graph: IGraph,
+  chatId: string,
+  lastModified: string,
+  messageCount: number
+): Promise<MessageCollection> => {
+  const response = (await graph
+    .api(`/chats/${chatId}/messages`)
+    .filter(`lastModifiedDateTime gt ${lastModified}`)
+    .orderby('lastModifiedDateTime DESC')
+    .top(messageCount)
+    .middlewareOptions(prepScopes(...chatOperationScopes.loadChatMessages))
+    .get()) as MessageCollection;
+  // split the nextLink on version to maintain a relative path
+  response.nextLink = response['@odata.nextLink']?.split(graph.version)[1];
+  return response;
+};
+
+/**
  * Loads another page of messages from the specified chat
  *
  * @param graph authenticated graph client from mgt
  * @param nextLink the nextLink to load more messages from
- * @returns {Promise<MessageCollection>} a collection of messages and a possilbe nextLink to load more messages
+ * @returns {Promise<MessageCollection>} a collection of messages and a possible nextLink to load more messages
  */
 export const loadMoreChatMessages = async (graph: IGraph, nextLink: string): Promise<MessageCollection> => {
   // not defining scopes here because this uses a nextLink and the initial request ensures the required scopes are present
@@ -217,7 +231,7 @@ export const addChatMembers = async (
 export const isPhotoCacheEnabled = (): boolean => CacheService.config.photos.isEnabled && CacheService.config.isEnabled;
 
 export const loadChatImage = async (graph: IGraph, url: string): Promise<string | null> => {
-  let cachedPhoto: CachePhoto;
+  let cachedPhoto: CachePhoto | null;
 
   // attempt to get user and photo from cache if enabled
   if (isPhotoCacheEnabled()) {

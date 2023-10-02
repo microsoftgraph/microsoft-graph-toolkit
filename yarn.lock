@@ -2854,13 +2854,13 @@ __metadata:
   linkType: hard
 
 "@fluentui/fluent2-theme@npm:^8.0.0":
-  version: 8.107.38
-  resolution: "@fluentui/fluent2-theme@npm:8.107.38"
+  version: 8.107.39
+  resolution: "@fluentui/fluent2-theme@npm:8.107.39"
   dependencies:
-    "@fluentui/react": ^8.111.2
+    "@fluentui/react": ^8.111.3
     "@fluentui/set-version": ^8.2.11
     tslib: ^2.1.0
-  checksum: f4e9a4e01180a3e3b326817e0f4bb32eb2a2570b227e5936ad1e6fd182cb5b2a07689583ba7c8efaf19147b6dc6d57a227d8e83f38d8e77f3e2b53fa2ba29545
+  checksum: d1298b5c35769d0b719364908ef6aee273513680022807ce8a7b29d9e98f5248ccc9a8bd6559ac06ca23ddc1f7bde8622a2fe982593ed24282580076f8646d52
   languageName: node
   linkType: hard
 
@@ -3744,7 +3744,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-portal-compat-context@npm:^9.0.5, @fluentui/react-portal-compat-context@npm:^9.0.6":
+"@fluentui/react-portal-compat-context@npm:^9.0.5, @fluentui/react-portal-compat-context@npm:^9.0.6, @fluentui/react-portal-compat-context@npm:^9.0.9":
   version: 9.0.9
   resolution: "@fluentui/react-portal-compat-context@npm:9.0.9"
   dependencies:
@@ -4321,9 +4321,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react@npm:^8.0.0, @fluentui/react@npm:^8.111.2":
-  version: 8.111.2
-  resolution: "@fluentui/react@npm:8.111.2"
+"@fluentui/react@npm:^8.0.0, @fluentui/react@npm:^8.111.3":
+  version: 8.111.3
+  resolution: "@fluentui/react@npm:8.111.3"
   dependencies:
     "@fluentui/date-time-utilities": ^8.5.13
     "@fluentui/font-icons-mdl2": ^8.5.24
@@ -4331,7 +4331,7 @@ __metadata:
     "@fluentui/merge-styles": ^8.5.12
     "@fluentui/react-focus": ^8.8.31
     "@fluentui/react-hooks": ^8.6.29
-    "@fluentui/react-portal-compat-context": ^9.0.6
+    "@fluentui/react-portal-compat-context": ^9.0.9
     "@fluentui/react-window-provider": ^2.2.15
     "@fluentui/set-version": ^8.2.11
     "@fluentui/style-utilities": ^8.9.17
@@ -4344,7 +4344,7 @@ __metadata:
     "@types/react-dom": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
     react-dom: ">=16.8.0 <19.0.0"
-  checksum: 355c8e1df037b8eeda9c08832789308fdf26a512902c7ac2d674f1f6b42ffbbce0aa4324b074b21d51ebc744be3d75aa8ea8bc80306ffaf9db38b3185d8dc72b
+  checksum: 6ea81badf647715955542e389f4bd1ccf681106fe6649577eeb7209c380a74a49925a8ef9dfc40b1a38a57cc37dc3a8e40af3a890f0f257b55833f32a21f292e
   languageName: node
   linkType: hard
 
@@ -5882,6 +5882,7 @@ __metadata:
     "@microsoft/signalr": ^7.0.4
     "@types/react": ^17.0.0
     immer: ^9.0.6
+    opencrypto: 1.5.5
     react: ^17.0.0
     react-dom: ^17.0.0
     react-scripts: 5.0.1
@@ -14835,9 +14836,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001006, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001538, caniuse-lite@npm:^1.0.30001539":
-  version: 1.0.30001540
-  resolution: "caniuse-lite@npm:1.0.30001540"
-  checksum: 95b9203a85ad0187a2480c341bfff6f32d61b9eb9cc323d2942025cd29fbe3f9c3dd056646996d303a0a42c968954f32994f97250e931b2ea5b9531099d6ba2d
+  version: 1.0.30001541
+  resolution: "caniuse-lite@npm:1.0.30001541"
+  checksum: 972f6c223cf4ea2c6821b817b419249285006bbf67ebe415fe58097cf07551e3bae898586736d92f7c40b9f0ac28638dbf760631c23742b780affd0254f44d17
   languageName: node
   linkType: hard
 
@@ -17675,9 +17676,9 @@ __metadata:
   linkType: hard
 
 "dompurify@npm:^3.0.3":
-  version: 3.0.5
-  resolution: "dompurify@npm:3.0.5"
-  checksum: 2d9421570c833ce26ce7022955241749b646d41e8bf453f42ede9f22d0e98af482cedb7dfbf8129419eb48b351c1d677a08fc9f1cd91836ce7f6c1807a0676b2
+  version: 3.0.6
+  resolution: "dompurify@npm:3.0.6"
+  checksum: e5c6cdc5fe972a9d0859d939f1d86320de275be00bbef7bd5591c80b1e538935f6ce236624459a1b0c84ecd7c6a1e248684aa4637512659fccc0ce7c353828a6
   languageName: node
   linkType: hard
 
@@ -17864,9 +17865,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.530":
-  version: 1.4.532
-  resolution: "electron-to-chromium@npm:1.4.532"
-  checksum: e9f77b5d6df84aa1f7598359ec2c988c3758e58106e63f2a0a6dc4756a6733b126316e61a79a2a6643aa2a0f9a1cf9ebe66c817dcb970a3fc9d8190342ef070a
+  version: 1.4.535
+  resolution: "electron-to-chromium@npm:1.4.535"
+  checksum: 31659d1b89efb5c2066ae250d4c8cd6afbcd2b5354bb5453559d9021e1f6c427c5f821904b764473d8eaef75b38bd8accc5eef36c6f698db99496a02cb77fc16
   languageName: node
   linkType: hard
 
@@ -29347,6 +29348,13 @@ __metadata:
   bin:
     opencollective-postinstall: index.js
   checksum: 0a68c5cef135e46d11e665d5077398285d1ce5311c948e8327b435791c409744d4a6bb9c55bd6507fb5f2ef34b0ad920565adcdaf974cbdae701aead6f32b396
+  languageName: node
+  linkType: hard
+
+"opencrypto@npm:1.5.5":
+  version: 1.5.5
+  resolution: "opencrypto@npm:1.5.5"
+  checksum: 8b89b84b5b0d88d4082c634b8fb4e6001552d5d2fdc8e36b3796cc368cf7e8844bc14d587711eb5964a2c6ebe3d6b52d06a3fc1a0184a82e0cdcd56d3cae8a35
   languageName: node
   linkType: hard
 

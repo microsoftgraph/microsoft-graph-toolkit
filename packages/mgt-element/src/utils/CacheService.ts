@@ -8,6 +8,7 @@
 import { Providers } from '../providers/Providers';
 import { ProviderState } from '../providers/IProvider';
 import { CacheStore } from './CacheStore';
+import { error } from './Logging';
 
 /**
  * Localstorage key for storing names of cache databases
@@ -97,6 +98,13 @@ export interface CacheConfig {
    * @memberof CacheConfig
    */
   fileLists: CacheOptions;
+  /**
+   * Cache options for conversation store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+  conversation: CacheOptions;
 }
 
 /**
@@ -171,7 +179,7 @@ export class CacheService {
               const delReq = indexedDB.deleteDatabase(x);
               delReq.onsuccess = () => resolve();
               delReq.onerror = () => {
-                console.error(`🦒: ${delReq.error.name} occurred deleting cache: ${x}`, delReq.error.message);
+                error(`${delReq.error.name} occurred deleting cache: ${x}`, delReq.error.message);
                 reject();
               };
             })
@@ -225,6 +233,10 @@ export class CacheService {
     },
     fileLists: {
       invalidationPeriod: null,
+      isEnabled: true
+    },
+    conversation: {
+      invalidationPeriod: 5 * 24 * 60 * 60 * 1000,
       isEnabled: true
     }
   };
