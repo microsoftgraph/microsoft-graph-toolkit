@@ -158,10 +158,10 @@ export type GraphChatMessage = Message & {
  * Some messages do not have a current value and will be added after the future value is resolved.
  * Some messages do not have a future value and will be added immediately.
  */
-type MessageConversion = {
+interface MessageConversion {
   currentValue?: GraphChatMessage;
   futureValue?: Promise<GraphChatMessage>;
-};
+}
 
 /**
  * Regex to detect and replace image urls using graph requests to supply the image content
@@ -915,12 +915,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       index++;
       match = this.graphImageMatch(messageResult);
     }
-    let placeholderMessage = this.buildAcsMessage(
-      graphMessage,
-      currentUser,
-      messageId,
-      messageResult
-    ) as AcsChatMessage;
+    let placeholderMessage = this.buildAcsMessage(graphMessage, currentUser, messageId, messageResult);
     conversion.currentValue = placeholderMessage;
     // local function to update the message with data from each of the resolved image requests
     const updateMessage = async () => {
@@ -931,7 +926,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
           placeholderMessage = {
             ...placeholderMessage,
             ...{
-              content: updateMessageContentWithImage(placeholderMessage.content || '', imageIndex, messageId, image)
+              content: updateMessageContentWithImage(placeholderMessage.content ?? '', imageIndex, messageId, image)
             }
           };
         }
