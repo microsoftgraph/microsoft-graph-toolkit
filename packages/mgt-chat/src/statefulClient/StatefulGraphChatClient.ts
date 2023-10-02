@@ -22,7 +22,6 @@ import {
   MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail,
   ChatMessageMention,
-  Identity,
   NullableOption
 } from '@microsoft/microsoft-graph-types';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
@@ -81,7 +80,7 @@ const isChatMemberChangeEvent = (
 };
 
 // defines the type of the state object returned from the StatefulGraphChatClient
-type GraphChatClient = Pick<
+export type GraphChatClient = Pick<
   MessageThreadProps,
   | 'userId'
   | 'messages'
@@ -971,6 +970,14 @@ detail: ${JSON.stringify(eventDetail)}`);
     return result;
   }
 
+  /**
+   * Teams mentions are in the pattern <at id="1">User</at>. This replacement
+   * changes the mentions pattern to <msft-mention id="1">User</msft-mention>
+   * which will trigger the `mentionOptions` prop to be called in MessageThread.
+   *
+   * @param content is the message with mentions.
+   * @returns string with replaced mention parts.
+   */
   private updateMentionsContent(content: string): string {
     const msftMention = `<msft-mention id="$1">$2</msft-mention>`;
     const atRegex = /<at\sid="(\d+)">([a-z0-9_.-\s]+)<\/at>/gim;
