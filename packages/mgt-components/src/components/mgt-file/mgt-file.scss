@@ -47,6 +47,8 @@ $line3-text-transform: var(--file-line3-text-transform, initial);
     background-color: $file-background-color-hover;
     border-radius: $file-border-radius;
     cursor: pointer;
+
+    --secondary-text-color: var(--secondary-text-hover-color);
   }
 
   &:focus,
