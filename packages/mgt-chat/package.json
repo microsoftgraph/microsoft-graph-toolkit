@@ -59,8 +59,11 @@
     "@microsoft/microsoft-graph-types": "^2.0.0",
     "@microsoft/microsoft-graph-types-beta": "^0.16.0-preview",
     "@microsoft/signalr": "^7.0.4",
+    "adaptivecards": "^3.0.1",
     "immer": "^9.0.6",
+    "markdown-it": "^13.0.2",
     "opencrypto": "1.5.5",
+    "swiper": "^10.3.1",
     "uuid": "^9.0.0",
     "web-vitals": "^2.1.4"
   },
