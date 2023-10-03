@@ -36,7 +36,7 @@ import {
   MembersDeletedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
 import * as AdaptiveCards from 'adaptivecards';
-// import { useFluentUI } from 'adaptivecards-fluentui';
+import { IAdaptiveCard } from 'adaptivecards/lib/schema';
 import { produce } from 'immer';
 import MarkdownIt from 'markdown-it';
 import { v4 as uuid } from 'uuid';
@@ -1009,7 +1009,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       // TODO: the references to <attachment id="xxx"></attachment>. replace with what?
       // TODO: maintain any other text in the graphMessage.content
       // currently replacing graphMessage.content with the adaptiveCard HTML string
-      content = this.processAdaptiveCard(attachments);
+      content = this.processCardsInAttachments(attachments);
     }
 
     const imageMatch = this.graphImageMatch(content ?? '');
@@ -1022,7 +1022,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     return result;
   }
 
-  private processAdaptiveCard(attachments: ChatMessageAttachment[]): string {
+  private processCardsInAttachments(attachments: ChatMessageAttachment[]): string {
     let content = '';
     for (const attachment of attachments) {
       const contentType = attachment?.contentType;
@@ -1032,40 +1032,60 @@ detail: ${JSON.stringify(eventDetail)}`);
           @typescript-eslint/no-unsafe-assignment,
           @typescript-eslint/no-unsafe-member-access,
           @typescript-eslint/no-unsafe-call, react-hooks/rules-of-hooks */
-        // TODO: this content is msteams specific content. Actions are NOT working
-        // TODO: preprocess. Only display Action.Openurl action cards.
-        // TODO: render the rest as unsupported content.
-        const adaptiveCardContent = JSON.parse(adaptiveCardContentString) ?? {};
-        const adaptiveCard = new AdaptiveCards.AdaptiveCard();
+        const adaptiveCardContent = JSON.parse(adaptiveCardContentString) as IAdaptiveCard;
+        if (this.isAdaptiveCardSupported(adaptiveCardContent)) {
+          const adaptiveCard = new AdaptiveCards.AdaptiveCard();
 
-        // markdown support
-        AdaptiveCards.AdaptiveCard.onProcessMarkdown = (
-          text: string,
-          result: AdaptiveCards.IMarkdownProcessingResult
-        ) => {
-          const md = new MarkdownIt();
-          result.outputHtml = md.render(text);
-          result.didProcess = true;
-        };
+          // markdown support
+          AdaptiveCards.AdaptiveCard.onProcessMarkdown = (
+            text: string,
+            result: AdaptiveCards.IMarkdownProcessingResult
+          ) => {
+            const md = new MarkdownIt();
+            result.outputHtml = md.render(text);
+            result.didProcess = true;
+          };
 
-        // Use Fluentui styles
-        // BUG: https://github.com/microsoft/fluentui/issues/29107 describes
-        // the issue experienced when you include this.
-        // TODO: find an alternative to styling the card for MGT
-        // useFluentUI();
+          // Use Fluentui styles
+          // BUG: https://github.com/microsoft/fluentui/issues/29107 describes
+          // the issue experienced when you include this.
+          // TODO: find an alternative to styling the card for MGT
+          // useFluentUI();
 
-        adaptiveCard.hostConfig = new AdaptiveCards.HostConfig({
-          fontFamily: 'Segoe UI, Helvetica Neue, sans-serif'
-          // More host config options
-        });
+          adaptiveCard.hostConfig = new AdaptiveCards.HostConfig({
+            fontFamily: 'Segoe UI, Helvetica Neue, sans-serif'
+            // More host config options
+          });
 
-        // Parse and render to html string
-        adaptiveCard.parse(adaptiveCardContent);
-        const renderedCard = adaptiveCard.render();
-        content += renderedCard?.outerHTML ?? '';
+          // Parse and render to html string
+          adaptiveCard.parse(adaptiveCardContent);
+          const renderedCard = adaptiveCard.render();
+          content += renderedCard?.outerHTML ?? '';
+        }
       }
     }
+
+    // NOTE:To refactor such that empty content BUT it has attachments, makes it
+    // unsupported content and should render the banner.
+    // TODO: remove this and update with unsupported content logic.
+    if (!content) {
+      content = '<p>Unsupported content</p>';
+    }
     return content;
+  }
+
+  private isAdaptiveCardSupported(content: IAdaptiveCard): boolean {
+    let answer = false;
+    // QUESTION: should it be rendered if it's the ONLY action?
+    let actionCounts = 0;
+    const contentActions = content?.actions ?? [];
+    for (const actionSet of contentActions) {
+      if (Object.values(actionSet).includes('Action.OpenUrl')) {
+        actionCounts++;
+      }
+    }
+    if (contentActions && actionCounts === contentActions.length) answer = true;
+    return answer;
   }
 
   private buildAcsMessage(graphMessage: ChatMessage, currentUser: string, messageId: string, content: string): Message {
