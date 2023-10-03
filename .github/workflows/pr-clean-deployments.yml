@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Clean pr storybook
+name: Clean pr deployments
 
 on:
   pull_request:
@@ -30,5 +30,29 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git rm -r next/pr/${{ github.event.number }}
-          git commit -m "PR ${{ github.event.number }} closed"
+          git commit -m "PR ${{ github.event.number }} closed - remove storybook"
+          git push
+
+  react-contoso:
+    if: "contains(github.event.pull_request.labels.*.name, 'Build: React Contoso')"
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git rm -r next/sample/pr/${{ github.event.number }}
+          git commit -m "PR ${{ github.event.number }} closed - remove react-contoso"
           git push
