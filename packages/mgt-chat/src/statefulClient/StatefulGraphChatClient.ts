@@ -6,57 +6,61 @@
  */
 
 import {
+  ChatMessage as AcsChatMessage,
+  ContentSystemMessage,
+  ErrorBarProps,
+  Message,
   MessageThreadProps,
   SendBoxProps,
-  ChatMessage as AcsChatMessage,
-  ErrorBarProps,
-  SystemMessage,
-  ContentSystemMessage,
-  Message
+  SystemMessage
 } from '@azure/communication-react';
+import { getUserWithPhoto } from '@microsoft/mgt-components';
+import {
+  ActiveAccountChanged,
+  IGraph,
+  LoginChangedEvent,
+  ProviderState,
+  Providers,
+  log,
+  warn
+} from '@microsoft/mgt-element';
+import { IDynamicPerson } from '@microsoft/mgt-react';
+import { GraphError } from '@microsoft/microsoft-graph-client';
 import {
   AadUserConversationMember,
   Chat,
   ChatMessage,
+  ChatMessageAttachment,
   ChatRenamedEventMessageDetail,
   MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
-import {
-  ActiveAccountChanged,
-  IGraph,
-  log,
-  LoginChangedEvent,
-  Providers,
-  ProviderState,
-  warn
-} from '@microsoft/mgt-element';
+import * as AdaptiveCards from 'adaptivecards';
+// import { useFluentUI } from 'adaptivecards-fluentui';
 import { produce } from 'immer';
+import MarkdownIt from 'markdown-it';
 import { v4 as uuid } from 'uuid';
-import {
-  deleteChatMessage,
-  loadChat,
-  loadChatThread,
-  loadMoreChatMessages,
-  MessageCollection,
-  sendChatMessage,
-  updateChatMessage,
-  removeChatMember,
-  addChatMembers,
-  loadChatImage,
-  updateChatTopic,
-  loadChatThreadDelta
-} from './graph.chat';
-import { getUserWithPhoto } from '@microsoft/mgt-components';
+import { currentUserId, currentUserName } from '../utils/currentUser';
+import { graph } from '../utils/graph';
+import { MessageCache } from './Caching/MessageCache';
+import { GraphConfig } from './GraphConfig';
 import { GraphNotificationClient } from './GraphNotificationClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
-import { IDynamicPerson } from '@microsoft/mgt-react';
+import {
+  MessageCollection,
+  addChatMembers,
+  deleteChatMessage,
+  loadChat,
+  loadChatImage,
+  loadChatThread,
+  loadChatThreadDelta,
+  loadMoreChatMessages,
+  removeChatMember,
+  sendChatMessage,
+  updateChatMessage,
+  updateChatTopic
+} from './graph.chat';
 import { updateMessageContentWithImage } from './updateMessageContentWithImage';
-import { graph } from '../utils/graph';
-import { currentUserId, currentUserName } from '../utils/currentUser';
-import { MessageCache } from './Caching/MessageCache';
-import { GraphError } from '@microsoft/microsoft-graph-client';
-import { GraphConfig } from './GraphConfig';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -998,6 +1002,16 @@ detail: ${JSON.stringify(eventDetail)}`);
       content = this.processEmojiContent(content);
     }
 
+    // check and process adaptive cards
+    const attachments = graphMessage?.attachments ?? [];
+    if (attachments.length) {
+      // TODO: we probably want to check the graphMessage.content value and remove
+      // TODO: the references to <attachment id="xxx"></attachment>. replace with what?
+      // TODO: maintain any other text in the graphMessage.content
+      // currently replacing graphMessage.content with the adaptiveCard HTML string
+      content = this.processAdaptiveCard(attachments);
+    }
+
     const imageMatch = this.graphImageMatch(content ?? '');
     if (imageMatch) {
       // if the message contains an image, we need to fetch the image and replace the placeholder
@@ -1006,6 +1020,52 @@ detail: ${JSON.stringify(eventDetail)}`);
       result.currentValue = this.buildAcsMessage(graphMessage, currentUser, graphMessage.id, content);
     }
     return result;
+  }
+
+  private processAdaptiveCard(attachments: ChatMessageAttachment[]): string {
+    let content = '';
+    for (const attachment of attachments) {
+      const contentType = attachment?.contentType;
+      if (contentType === 'application/vnd.microsoft.card.adaptive') {
+        const adaptiveCardContentString: string = attachment?.content ?? '';
+        /* eslint-disable
+          @typescript-eslint/no-unsafe-assignment,
+          @typescript-eslint/no-unsafe-member-access,
+          @typescript-eslint/no-unsafe-call, react-hooks/rules-of-hooks */
+        // TODO: this content is msteams specific content. Actions are NOT working
+        // TODO: preprocess. Only display Action.Openurl action cards.
+        // TODO: render the rest as unsupported content.
+        const adaptiveCardContent = JSON.parse(adaptiveCardContentString) ?? {};
+        const adaptiveCard = new AdaptiveCards.AdaptiveCard();
+
+        // markdown support
+        AdaptiveCards.AdaptiveCard.onProcessMarkdown = (
+          text: string,
+          result: AdaptiveCards.IMarkdownProcessingResult
+        ) => {
+          const md = new MarkdownIt();
+          result.outputHtml = md.render(text);
+          result.didProcess = true;
+        };
+
+        // Use Fluentui styles
+        // BUG: https://github.com/microsoft/fluentui/issues/29107 describes
+        // the issue experienced when you include this.
+        // TODO: find an alternative to styling the card for MGT
+        // useFluentUI();
+
+        adaptiveCard.hostConfig = new AdaptiveCards.HostConfig({
+          fontFamily: 'Segoe UI, Helvetica Neue, sans-serif'
+          // More host config options
+        });
+
+        // Parse and render to html string
+        adaptiveCard.parse(adaptiveCardContent);
+        const renderedCard = adaptiveCard.render();
+        content += renderedCard?.outerHTML ?? '';
+      }
+    }
+    return content;
   }
 
   private buildAcsMessage(graphMessage: ChatMessage, currentUser: string, messageId: string, content: string): Message {
