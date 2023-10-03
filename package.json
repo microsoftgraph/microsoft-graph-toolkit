@@ -162,5 +162,8 @@
   "resolutions": {
     "responselike": "2.0.0"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "yarn@3.6.3",
+  "dependencies": {
+    "@types/markdown-it": "^13.0.2"
+  }
 }
