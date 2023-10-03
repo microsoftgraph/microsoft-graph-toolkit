@@ -31,6 +31,10 @@
       background: $task-background-color-completed;
     }
 
+    &.read-only {
+      opacity: 1;
+    }
+
     &:hover {
       background-color: $task-background-color-hover;
       border-radius: 8px;

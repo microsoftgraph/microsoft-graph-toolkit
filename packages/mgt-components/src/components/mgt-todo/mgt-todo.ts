@@ -255,6 +255,7 @@ export class MgtTodo extends MgtTasksBase {
         type="date"
         id="new-taskDate-input"
         class="${classMap(dateClass)}"
+        ?readonly=${this.readOnly}
         aria-label="${this.strings.newTaskDateInputLabel}"
         .value="${this.dateToInputValue(this._newTaskDueDate)}"
         @change="${this.handleDateChange}">
@@ -267,6 +268,7 @@ export class MgtTodo extends MgtTasksBase {
         appearance="outline"
         class="new-task"
         id="new-task-name-input"
+        ?readonly=${this.readOnly}
         aria-label="${this.strings.newTaskLabel}"
         .value=${this._newTaskName}
         placeholder="${this.strings.newTaskPlaceholder}"
@@ -335,6 +337,16 @@ export class MgtTodo extends MgtTasksBase {
       `
       : html``;
 
+    const taskDeleteTemplate = this.readOnly
+      ? html``
+      : html`
+        <fluent-button class="task-delete"
+          @click="${() => this.removeTask(task.id)}"
+          aria-label="${this.strings.deleteTaskLabel}">
+          ${getSvg(SvgIcon.Delete)}
+        </fluent-button>
+      `;
+
     if (this.hasTemplate('task-details')) {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
     } else {
@@ -342,11 +354,7 @@ export class MgtTodo extends MgtTasksBase {
       <div class="task-details">
         <div class="title">${task.title}</div>
         <div class="task-due">${taskDueTemplate}</div>
-        <fluent-button class="task-delete"
-          @click="${() => this.removeTask(task.id)}"
-          aria-label="${this.strings.deleteTaskLabel}">
-          ${getSvg(SvgIcon.Delete)}
-        </fluent-button>
+        ${taskDeleteTemplate}
       </div>
       `;
     }
@@ -369,7 +377,8 @@ export class MgtTodo extends MgtTasksBase {
     });
 
     return html`
-      <fluent-checkbox id=${task.id} class=${taskClasses} @click="${() => this.handleTaskCheckClick(task)}">
+      <fluent-checkbox id=${task.id} class=${taskClasses} ?disabled=${this.readOnly} @click="${() =>
+        this.handleTaskCheckClick(task)}">
         ${this.renderTaskDetails(task)}
       </fluent-checkbox>
     `;
@@ -393,7 +402,8 @@ export class MgtTodo extends MgtTasksBase {
     const taskCheckContent = html`${getSvg(SvgIcon.CheckMark)}`;
 
     return html`
-      <fluent-checkbox id=${task.id} class=${taskClasses} checked @click="${() => this.handleTaskCheckClick(task)}">
+      <fluent-checkbox id=${task.id} class=${taskClasses} checked ?disabled=${this.readOnly} @click="${() =>
+        this.handleTaskCheckClick(task)}">
         <div slot="checked-indicator">
           ${taskCheckContent}
         </div>
