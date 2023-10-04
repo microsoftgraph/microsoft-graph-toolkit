@@ -1,6 +1,7 @@
 {
   "name": "react-contoso",
   "version": "1.3.0",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@fluentui/fluent2-theme": "^8.0.0",
