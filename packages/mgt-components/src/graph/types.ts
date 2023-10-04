@@ -14,7 +14,11 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
  * In addition, this custom type also defines the optional `personImage` property,
  * which is used to pass the image around to other components as part of the person object.
  */
-export type IDynamicPerson = (MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) & {
+export type IUser = MicrosoftGraph.User | MicrosoftGraph.Person;
+export type IContact = MicrosoftGraph.Contact;
+export type IGroup = MicrosoftGraph.Group;
+
+export type IDynamicPerson = (IUser | IContact | IGroup) & {
   /**
    * personDetails.personImage is a toolkit injected property to pass image between components
    * an optimization to avoid fetching the image when unnecessary.

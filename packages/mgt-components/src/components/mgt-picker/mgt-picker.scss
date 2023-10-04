@@ -12,8 +12,24 @@
 :host {
   --max-height: var(--picker-max-height, 380px);
 
+  font-family: $font-family;
+
   .picker {
     background-color: $picker-background-color;
+  }
+
+  fluent-combobox {
+    &::part(selected-value) {
+      &::placeholder {
+        color: $picker-text-color;
+      }
+
+      &:hover {
+        &::placeholder {
+          color: $picker-text-hover-color;
+        }
+      }
+    }
   }
 }
 
