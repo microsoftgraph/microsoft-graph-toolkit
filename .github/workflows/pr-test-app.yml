@@ -46,10 +46,10 @@ jobs:
         with:
           branch: gh-pages
           folder: samples/react-contoso/build
-          target-folder: sample/pr/${{ github.event.number }}
+          target-folder: next/sample/pr/${{ github.event.number }}
 
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v1
         with:
-          message: 'The sample application storybook is available [here](https://mgt.dev/sample/pr/${{ github.event.number }})'
+          message: '🚀 New react-contoso sample application deployed [here](https://mgt.dev/next/sample/pr/${{ github.event.number }})'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
