@@ -255,20 +255,20 @@ export class MgtTodo extends MgtTasksBase {
         type="date"
         id="new-taskDate-input"
         class="${classMap(dateClass)}"
-        ?readonly=${this.readOnly}
         aria-label="${this.strings.newTaskDateInputLabel}"
         .value="${this.dateToInputValue(this._newTaskDueDate)}"
         @change="${this.handleDateChange}">
       </fluent-text-field>
     `;
 
-    const newTaskDetails = html`
+    const newTaskDetails = this.readOnly
+      ? html``
+      : html`
       <fluent-text-field
         autocomplete="off"
         appearance="outline"
         class="new-task"
         id="new-task-name-input"
-        ?readonly=${this.readOnly}
         aria-label="${this.strings.newTaskLabel}"
         .value=${this._newTaskName}
         placeholder="${this.strings.newTaskPlaceholder}"
