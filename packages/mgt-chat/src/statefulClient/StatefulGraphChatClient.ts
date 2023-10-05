@@ -57,7 +57,7 @@ import {
   updateChatTopic
 } from './graph.chat';
 import { updateMessageContentWithImage } from './updateMessageContentWithImage';
-import { isChatMessage } from 'src/utils/types';
+import { isChatMessage } from '../utils/types';
 
 // 1x1 grey pixel
 const placeholderImageContent =
