@@ -41,6 +41,7 @@ jobs:
           folder: storybook-static
           target-folder: next
           clean-exclude: |
+            sample
             pr
             v3
           token: ${{ secrets.GITHUB_TOKEN }}
