@@ -63,4 +63,20 @@ describe('mgt-person - tests', () => {
 
     expect(screen.queryByTestId('flyout-slot')).toBeDefined();
   });
+
+  it('should render with initials using the supplied details', async () => {
+    Providers.globalProvider = new MockProvider(true);
+    person = await fixture(
+      `<mgt-person person-details='${JSON.stringify({
+        displayName: 'Frank Herbert',
+        mail: 'herbert@dune.net',
+        givenName: null,
+        surname: null,
+        personType: {}
+      })}' view="twoLines"></mgt-person>`
+    );
+    expect(person).not.toBeUndefined();
+    const initials = await screen.findByText('FH');
+    expect(initials).toBeDefined();
+  });
 });
