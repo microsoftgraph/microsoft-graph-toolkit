@@ -6,8 +6,8 @@
  */
 
 import { MgtTemplatedComponent, ProviderState, Providers, customElementHelper, mgtHtml } from '@microsoft/mgt-element';
-import { Contact, Presence } from '@microsoft/microsoft-graph-types';
-import { html, TemplateResult } from 'lit';
+import { Presence } from '@microsoft/microsoft-graph-types';
+import { html, TemplateResult, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -25,6 +25,7 @@ import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
 import { strings } from './strings';
+import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { buildComponentName, registerComponent } from '../registerComponent';
 
@@ -33,7 +34,7 @@ export { PersonCardInteraction } from '../PersonCardInteraction';
 /**
  * Person properties part of original set provided by graph by default
  */
-const defaultPersonProperties = [
+export const defaultPersonProperties = [
   'businessPhones',
   'displayName',
   'givenName',
@@ -45,7 +46,8 @@ const defaultPersonProperties = [
   'preferredLanguage',
   'surname',
   'userPrincipalName',
-  'id'
+  'id',
+  'userType'
 ];
 
 export const registerMgtPersonComponent = () => {
@@ -379,20 +381,19 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'avatar-type',
-    converter: value => {
+    converter: (value): avatarType => {
       value = value.toLowerCase();
 
       if (value === 'initials') {
         return avatarType.initials;
-      } else {
-        return avatarType.photo;
       }
+      return avatarType.photo;
     }
   })
-  public get avatarType(): string {
+  public get avatarType(): avatarType {
     return this._avatarType;
   }
-  public set avatarType(value: string) {
+  public set avatarType(value: avatarType) {
     if (value === this._avatarType) {
       return;
     }
@@ -545,7 +546,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _personQuery: string;
   private _userId: string;
   private _usage: string;
-  private _avatarType: string;
+  private _avatarType: avatarType;
 
   private _mouseLeaveTimeout = -1;
   private _mouseEnterTimeout = -1;
@@ -563,7 +564,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.avatarSize = 'auto';
     this.disableImageFetch = false;
     this._isInvalidImageSrc = false;
-    this._avatarType = 'photo';
+    this._avatarType = avatarType.photo;
     this.verticalLayout = false;
   }
 
@@ -708,7 +709,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   protected renderImage(personDetailsInternal: IDynamicPerson, imageSrc: string) {
     const altText = `${this.strings.photoFor} ${personDetailsInternal.displayName}`;
-    const hasImage = imageSrc && !this._isInvalidImageSrc && this._avatarType === avatarType.photo;
+    const hasImage = imageSrc && !this._isInvalidImageSrc && this.avatarType === avatarType.photo;
     const imageOnly = this.avatarType === avatarType.photo && this.view === ViewType.image;
     const titleText =
       (personDetailsInternal?.displayName || getEmailFromGraphEntity(personDetailsInternal)) ?? undefined;
@@ -756,6 +757,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     const { activity, availability } = presence;
     switch (availability) {
       case 'Available':
+      case 'AvailableIdle':
         switch (activity) {
           case 'OutOfOffice':
             presenceIcon = getSvg(SvgIcon.PresenceOofAvailable);
@@ -768,6 +770,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         }
         break;
       case 'Busy':
+      case 'BusyIdle':
         switch (activity) {
           case 'OutOfOffice':
           case 'OnACall':
@@ -788,6 +791,9 @@ export class MgtPerson extends MgtTemplatedComponent {
           case 'OutOfOffice':
             presenceIcon = getSvg(SvgIcon.PresenceOofDnd);
             break;
+          case 'Presenting':
+          case 'Focusing':
+          case 'UrgentInterruptionsOnly':
           default:
             presenceIcon = getSvg(SvgIcon.PresenceDnd);
             break;
@@ -799,6 +805,14 @@ export class MgtPerson extends MgtTemplatedComponent {
           case 'OutOfOffice':
             presenceIcon = getSvg(SvgIcon.PresenceOofAway);
             break;
+          case 'AwayLastSeenTime':
+          default:
+            presenceIcon = getSvg(SvgIcon.PresenceAway);
+            break;
+        }
+        break;
+      case 'BeRightBack':
+        switch (activity) {
           default:
             presenceIcon = getSvg(SvgIcon.PresenceAway);
             break;
@@ -810,6 +824,7 @@ export class MgtPerson extends MgtTemplatedComponent {
             presenceIcon = getSvg(SvgIcon.PresenceOffline);
             break;
           case 'OutOfOffice':
+          case 'OffWork':
             presenceIcon = getSvg(SvgIcon.PresenceOofAway);
             break;
           default:
@@ -828,11 +843,13 @@ export class MgtPerson extends MgtTemplatedComponent {
       oneline: this.isOneLine()
     });
 
+    const formattedActivity = (this.strings[activity] as string) ?? nothing;
+
     return html`
       <span
         class="${presenceWrapperClasses}"
-        title="${availability}"
-        aria-label="${availability}"
+        title="${formattedActivity}"
+        aria-label="${formattedActivity}"
         role="img">
           ${presenceIcon}
       </span>
@@ -1104,13 +1121,13 @@ export class MgtPerson extends MgtTemplatedComponent {
       if (
         !details.personImage &&
         this.fetchImage &&
-        this._avatarType === 'photo' &&
+        this._avatarType === avatarType.photo &&
         !this.personImage &&
         !this._fetchedImage
       ) {
         let image: string;
         if ('groupTypes' in details) {
-          image = await getGroupImage(graph, details, MgtPerson.config.useContactApis);
+          image = await getGroupImage(graph, details);
         } else {
           image = await getPersonImage(graph, details, MgtPerson.config.useContactApis);
         }
@@ -1122,7 +1139,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
       let person: IDynamicPerson;
-      if (this._avatarType === 'photo' && !this.disableImageFetch) {
+      if (this._avatarType === avatarType.photo && !this.disableImageFetch) {
         person = await getUserWithPhoto(graph, this.userId, personProps);
       } else {
         if (this.personQuery === 'me') {
@@ -1145,7 +1162,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       if (people?.length) {
         this.personDetailsInternal = people[0];
         this.personDetails = people[0];
-        if (this._avatarType === 'photo' && !this.disableImageFetch) {
+        if (this._avatarType === avatarType.photo && !this.disableImageFetch) {
           const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
           if (image) {
@@ -1193,15 +1210,13 @@ export class MgtPerson extends MgtTemplatedComponent {
       person = this.personDetailsInternal;
     }
 
-    if ((person as Contact).initials) {
-      return (person as Contact).initials;
+    if (isContact(person)) {
+      return person.initials;
     }
 
     let initials = '';
-    if (person.givenName) {
+    if (isUser(person)) {
       initials += person.givenName[0].toUpperCase();
-    }
-    if (person.surname) {
       initials += person.surname[0].toUpperCase();
     }
 

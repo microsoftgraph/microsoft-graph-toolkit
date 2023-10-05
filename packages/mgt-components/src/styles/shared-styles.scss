@@ -8,6 +8,18 @@
 @import './shared-sass-variables';
 
 $focus-ring-style: var(--focus-ring-style, auto);
+$font-family: var(
+  --default-font-family,
+  'Segoe UI',
+  'Segoe UI Web (West European)',
+  'Segoe UI',
+  -apple-system,
+  'BlinkMacSystemFont',
+  'Roboto',
+  'Helvetica Neue',
+  sans-serif
+);
+$font-size: var(--default-font-size, 14px);
 
 :host([hidden]) {
   display: none;
@@ -15,9 +27,9 @@ $focus-ring-style: var(--focus-ring-style, auto);
 
 :host {
   display: block;
+  font-family: $font-family;
+  font-size: $font-size;
 
-  --default-font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, 'BlinkMacSystemFont', 'Roboto', 'Helvetica Neue', sans-serif;
-  --default-font-size: 14px;
   --theme-primary-color: #0078d7;
   --theme-dark-color: #005a9e;
 }
@@ -29,7 +41,7 @@ $focus-ring-style: var(--focus-ring-style, auto);
   // ensure default is set for other browsers
   /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
   outline-color: var(--focus-ring-color, -webkit-focus-ring-color);
-  
+
   // set the style of the focus ring
   // this needs to be something other than auto in Firefox to use the custom color
   outline-style: $focus-ring-style;

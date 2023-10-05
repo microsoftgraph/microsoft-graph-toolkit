@@ -1,4 +1,4 @@
-import addons, { makeDecorator } from '@storybook/addons';
+import { addons, makeDecorator } from '@storybook/preview-api';
 
 import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/IProvider';
 import { EditorElement } from './editor';
@@ -70,8 +70,9 @@ export const withCodeEditor = makeDecorator({
   skipIfNoParametersOrOptions: false,
   wrapper: (getStory, context, { options }) => {
     const forOptions = options ? options.disableThemeToggle : false;
-    const forContext =
-      context && (context.name === 'Custom CSS Properties' || context.title.toLowerCase().includes('templating'));
+    const title =
+      ['Custom CSS Properties', 'Theme'].includes(context.name) || context.title.toLowerCase().includes('templating');
+    const forContext = context && title;
     const disableThemeToggle = forOptions || forContext;
     let story = getStory(context);
 
@@ -220,7 +221,7 @@ export const withCodeEditor = makeDecorator({
 
           let { html, css, js } = editor.files;
           js = js.replace(
-            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
+            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt\x2d([^\}]+)['"];/gm,
             `import {$1} from '${mgtScriptName}';`
           );
 

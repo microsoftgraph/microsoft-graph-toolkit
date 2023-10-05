@@ -51,6 +51,7 @@ describe('mgt-person - tests', () => {
     person = await fixture('<mgt-person person-query="me" view="twoLines"></mgt-person>');
     const img = await screen.findAllByAltText('Photo for Megan Bowen');
     expect(img).not.toBeNull();
+    expect(person).not.toBeUndefined();
   });
 
   it('should pop up a flyout on click', async () => {

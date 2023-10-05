@@ -9,5 +9,8 @@
 @import '../../components/mgt-file/mgt-file.theme';
 
 $file-list-background-color: var(--file-list-background-color, var(--neutral-layer-floating));
-$show-more-button-background-color: var(--show-more-button-background-color, var(--neutral-layer-floating));
-$show-more-button-background-color--hover: var(--show-more-button-background-color-hover, var(-neutral-fill-hover));
+$show-more-button-background-color: var(--show-more-button-background-color, var(--neutral-stroke-divider-rest));
+$show-more-button-background-color--hover: var(
+  --show-more-button-background-color-hover,
+  var(--neutral-fill-input-alt-active)
+);

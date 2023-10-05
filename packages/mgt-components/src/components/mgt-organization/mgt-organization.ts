@@ -81,7 +81,7 @@ export class MgtOrganization extends BasePersonCardSection {
   public get displayName(): string {
     const { person, directReports } = this._state;
 
-    if (!person.manager && directReports && directReports.length) {
+    if (!person.manager && directReports?.length) {
       return `${this.strings.directReportsSectionTitle} (${directReports.length})`;
     }
 

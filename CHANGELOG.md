@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.2](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.1.1...v3.1.2) (2023-09-05)
+
+
+### Bug Fixes
+
+* adds pointer cursor to logged in accounts ([#2674](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2674)) ([11e5a1c](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/11e5a1cb319812afdb2355c4973e9b072ea680e0))
+* disable open on click behavior ([#2685](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2685)) ([10b25f9](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/10b25f97ff9666bb9e0c0fadf5b453ced9da84fc))
+* set custom css token --default-font-family to apply to all elements in DOM ([#2677](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2677)) ([cb69e01](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/cb69e0160b41773f65d88a4ea457fc18b7360f51))
+* use correct scope for group member resolution ([#2690](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2690)) ([ca313c1](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/ca313c1c7855dde9385981518392351662365428))
+
+## [3.1.1](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.1.0...v3.1.1) (2023-08-17)
+
+
+### Bug Fixes
+
+* dismiss login flyout when moving out of the popup ([#2637](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2637)) ([263f36f](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/263f36f56665e7e041be1defe80677d31f65af7b))
+* use pointer cursor when person card enabled in mgt-person. ([#2652](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2652)) ([48ea18b](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/48ea18bc28c39d65629d3095db538d2c01fe7109))
+
+## [3.1.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.0.1...v3.1.0) (2023-07-28)
+
+
+### Features
+
+* add canary url to allowed endpoints for graph ([#2635](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2635)) ([ec621cd](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/ec621cd37a8eb7f91356944fb29ad85699ee89fa))
+
+
+### Bug Fixes
+
+* **a11y:** add distinct name definitions for copy code buttons in storybook overview ([#2622](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2622)) ([4e52f41](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/4e52f41398b1a5771ada9fe54a67dba4e4b84397))
+* add a title text if displaying images only. ([#2625](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2625)) ([28703c9](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/28703c96dd5366b8543fab2a160994db34a9c13b))
+* check the file type being uploaded before performing upload ([#2584](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2584)) ([7fb265c](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/7fb265c744cbbf53d49fe6d5c3d45bc8493eb2fd))
+* remove agenda tooltip ([#2621](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2621)) ([27e1fc9](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/27e1fc9c61e1957dd8addacb3b667de9546fb358))
+
 ## [3.0.1](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.0.0...v3.0.1) (2023-07-18)
 
 

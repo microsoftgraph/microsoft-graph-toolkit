@@ -9,7 +9,7 @@ import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { styles } from './mgt-file-css';
-import { MgtTemplatedComponent, Providers, ProviderState, customElement } from '@microsoft/mgt-element';
+import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
 import {
   getDriveItemById,
   getDriveItemByPath,

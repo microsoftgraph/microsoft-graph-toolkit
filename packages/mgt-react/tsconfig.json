@@ -6,6 +6,6 @@
     "baseUrl": "./"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "scripts/*.js"],
   "references": [{ "path": "../mgt-element" }, { "path": "../mgt" }]
 }

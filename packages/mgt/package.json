@@ -33,7 +33,7 @@
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
     "copy:loader": "cpx src/bundle/mgt-loader.js dist/bundle",
-    "copy:wc": "cpx ../../node_modules/@webcomponents/webcomponentsjs/bundles/**/* dist/bundle/wc/bundles && cpx ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist/bundle/wc",
+    "copy:wc": "cpx '../../node_modules/@webcomponents/webcomponentsjs/bundles/**/*' ./dist/bundle/wc/bundles && cpx ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js ./dist/bundle/wc",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts",
     "rollup": "rollup -c",
@@ -44,12 +44,12 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@microsoft/mgt-element": "*",
     "@microsoft/mgt-components": "*",
-    "@microsoft/mgt-proxy-provider": "*",
-    "@microsoft/mgt-sharepoint-provider": "*",
+    "@microsoft/mgt-element": "*",
+    "@microsoft/mgt-mock-provider": "*",
     "@microsoft/mgt-msal2-provider": "*",
-    "@microsoft/mgt-mock-provider": "*"
+    "@microsoft/mgt-proxy-provider": "*",
+    "@microsoft/mgt-sharepoint-provider": "*"
   },
   "devDependencies": {
     "@webcomponents/webcomponentsjs": "^2.5.0"

@@ -28,7 +28,6 @@ $line3-font-weight: var(--file-line3-font-weight, $font-weight);
 $line3-text-transform: var(--file-line3-text-transform, initial);
 
 :host {
-  font-family: $font-family;
   font-size: $font-size;
   font-weight: $font-weight;
   border: $file-border;
@@ -48,6 +47,8 @@ $line3-text-transform: var(--file-line3-text-transform, initial);
     background-color: $file-background-color-hover;
     border-radius: $file-border-radius;
     cursor: pointer;
+
+    --secondary-text-color: var(--secondary-text-hover-color);
   }
 
   &:focus,

@@ -7,11 +7,11 @@
 
 /* global window */
 
-import { addParameters, setCustomElements } from '@storybook/web-components';
+import { setCustomElements } from '@storybook/web-components';
 import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import customElements from '../custom-elements.json';
 import { versionInfo } from './versionInfo';
-import { noArgsDocsPage } from './story-elements/noArgsDocsPage.js';
+import { defaultDocsPage } from './story-elements/defaultDocsPage';
 
 const setCustomElementsManifestWithOptions = (customElements, options) => {
   let { privateFields = true } = options;
@@ -33,7 +33,7 @@ const setCustomElementsManifestWithOptions = (customElements, options) => {
 
 setCustomElementsManifestWithOptions(customElements, { privateFields: false });
 
-addParameters({
+export const parameters = {
   previewTabs: {
     'storybook/docs/panel': {
       hidden: true
@@ -43,12 +43,19 @@ addParameters({
     }
   },
   docs: {
-    iframeHeight: '400px',
-    inlineStories: false,
-    page: noArgsDocsPage
+    page: defaultDocsPage,
+    story: {
+      inline: false,
+      height: '500px'
+    }
   },
-  version: versionInfo
-});
+  version: versionInfo,
+  options: {
+    storySort: {
+      order: ['stories']
+    }
+  }
+};
 
 const req = require.context('../stories', true, /\.(js|mdx)$/);
 // configure(req, module);

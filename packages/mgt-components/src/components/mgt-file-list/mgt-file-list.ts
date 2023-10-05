@@ -158,7 +158,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   @property({
     attribute: 'file-queries',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       if (value) {
         return value.split(',').map(v => v.trim());
       } else {
@@ -369,7 +369,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   @property({
     attribute: 'file-extensions',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       return value.split(',').map(v => v.trim());
     }
   })
@@ -407,6 +407,11 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     void this.requestStateUpdate(true);
   }
 
+  @property({
+    attribute: 'disable-open-on-click',
+    type: Boolean
+  })
+  public disableOpenOnClick = false;
   /**
    * A boolean value indication if 'show-more' button should be disabled
    *
@@ -483,7 +488,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   @property({
     attribute: 'excluded-file-extensions',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       return value.split(',').map(v => v.trim());
     }
   })
@@ -1011,7 +1016,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   }
 
   private handleFileClick(file: DriveItem) {
-    if (file?.webUrl) {
+    if (file?.webUrl && !this.disableOpenOnClick) {
       window.open(file.webUrl, '_blank', 'noreferrer');
     }
   }

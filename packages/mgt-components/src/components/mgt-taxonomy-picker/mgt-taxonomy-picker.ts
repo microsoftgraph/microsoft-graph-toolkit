@@ -41,6 +41,8 @@ export const registerMgtTaxonomyPickerComponent = () => {
  *
  * @cssprop --taxonomy-picker-background-color - {Color} Picker component background color
  * @cssprop --taxonomy-picker-list-max-height - {String} max height for options list. Default value is 380px.
+ * @cssprop --taxonomy-picker-placeholder-color - {Color} Text color for the placeholder in the picker
+ * @cssprop --taxonomy-picker-placeholder-hover-color - {Color} Text color for the placeholder in the picker on hover
  */
 export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   /**
@@ -358,8 +360,8 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   protected renderTaxonomyPicker(): TemplateResult {
     return mgtHtml`
       <fluent-combobox class="taxonomy-picker" autocomplete="both" placeholder=${this.placeholder} position=${
-      this.position
-    } ?disabled=${this.disabled}>
+        this.position
+      } ?disabled=${this.disabled}>
         ${this.terms.map(term => this.renderTaxonomyPickerItem(term))}
       </fluent-combobox>
      `;
@@ -377,8 +379,8 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
 
     return html`
         <fluent-option value=${term.id} ?selected=${selected} @click=${(e: MouseEvent) => this.handleClick(e, term)}> ${
-      this.renderTemplate('term', { term }, term.id) || term.labels[0].name
-    } </fluent-option>
+          this.renderTemplate('term', { term }, term.id) || term.labels[0].name
+        } </fluent-option>
         `;
   }
 

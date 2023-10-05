@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.20.0]
+        node-version: [18.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -41,6 +41,8 @@ jobs:
           folder: storybook-static
           target-folder: next
           clean-exclude: |
+            sample
             pr
             v3
+            mgt-chat
           token: ${{ secrets.GITHUB_TOKEN }}

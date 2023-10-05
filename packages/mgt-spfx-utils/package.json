@@ -38,10 +38,9 @@
   "license": "MIT",
   "dependencies": {
     "@microsoft/mgt-components": "*",
-    "@types/react": "^17.0.00",
+    "@types/react": "^17.0.0",
     "react": "^17.0.1"
   },
-  "devDependencies": {},
   "resolutions": {
     "react": "16.13.1"
   },

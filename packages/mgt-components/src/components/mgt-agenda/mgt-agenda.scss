@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles';
 @import './mgt-agenda.theme';
 
@@ -27,7 +27,6 @@ $agenda-event-location-font-size: var(--agenda-event-location-font-size, 12px);
 
   .header {
     margin: $agenda-header-margin;
-    font-family: $font-family;
     font-size: $agenda-header-font-size;
     font-style: normal;
     font-weight: 400;
@@ -69,7 +68,6 @@ $agenda-event-location-font-size: var(--agenda-event-location-font-size, 12px);
       }
 
       &-time-container {
-        font-family: $font-family;
         font-style: normal;
         font-weight: 600;
         font-size: 12px;
@@ -107,7 +105,6 @@ $agenda-event-location-font-size: var(--agenda-event-location-font-size, 12px);
       }
 
       &-subject {
-        font-family: $font-family;
         font-style: normal;
         font-weight: 400;
         font-size: $agenda-event-subject-font-size;
@@ -125,7 +122,6 @@ $agenda-event-location-font-size: var(--agenda-event-location-font-size, 12px);
         .event {
           &-location {
             padding-inline-start: 3px;
-            font-family: $font-family;
             font-style: normal;
             font-weight: 400;
             font-size: $agenda-event-location-font-size;

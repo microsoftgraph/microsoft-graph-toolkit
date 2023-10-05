@@ -5,8 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { EducationalActivity, PersonAnnualEvent, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
-import { html, TemplateResult } from 'lit';
+import {
+  EducationalActivity,
+  PersonAnnualEvent,
+  PersonInterest,
+  PhysicalAddress,
+  Profile
+} from '@microsoft/microsoft-graph-types-beta';
+import { html, TemplateResult, nothing } from 'lit';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { styles } from './mgt-profile-css';
@@ -307,7 +313,7 @@ export class MgtProfile extends BasePersonCardSection {
                  ${position?.detail?.company?.displayName}
                </div>
                <div class="work-position__location" tabindex="0">
-                 ${position?.detail?.company?.address?.city}, ${position?.detail?.company?.address?.state}
+                 ${this.displayLocation(position?.detail?.company?.address)}
                </div>
              </div>
            </div>
@@ -352,11 +358,14 @@ export class MgtProfile extends BasePersonCardSection {
                ${this.getDisplayDateRange(educationalActivity)}
              </div>
            </div>
-           <div class="data-list__item__content">
-             <div class="educational-activity__degree" tabindex="0">
-               ${educationalActivity.program.displayName || 'Bachelors Degree'}
-             </div>
-           </div>
+           ${
+             educationalActivity.program.displayName
+               ? html`<div class="data-list__item__content">
+                  <div class="educational-activity__degree" tabindex="0">
+                  ${educationalActivity.program.displayName}
+                </div>`
+               : nothing
+           }
          </div>
        `);
     }
@@ -493,14 +502,30 @@ export class MgtProfile extends BasePersonCardSection {
     });
   }
 
-  private getDisplayDateRange(event: EducationalActivity): string {
+  private getDisplayDateRange(event: EducationalActivity): string | symbol {
+    // if startMonthYear is not defined, we do not show the date range (otherwise it will always start with 1970)
+    if (!event.startMonthYear) {
+      return nothing;
+    }
+
     const start = new Date(event.startMonthYear).getFullYear();
-    if (start === 0) {
-      return null;
+    // if the start year is 0 or 1 - it's probably an error or a strange "undefined"-value
+    if (start === 0 || start === 1) {
+      return nothing;
     }
 
     const end = event.endMonthYear ? new Date(event.endMonthYear).getFullYear() : this.strings.currentYearSubtitle;
     return `${start} — ${end}`;
+  }
+
+  private displayLocation(address: PhysicalAddress | undefined): string | symbol {
+    if (address?.city) {
+      if (address.state) {
+        return `${address.city}, ${address.state}`;
+      }
+      return address.city;
+    }
+    return nothing;
   }
 
   private initPostRenderOperations(): void {

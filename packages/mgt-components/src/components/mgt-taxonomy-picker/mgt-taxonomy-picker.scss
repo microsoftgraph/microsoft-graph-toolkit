@@ -10,12 +10,24 @@
 @import './mgt-taxonomy-picker.theme';
 
 :host {
-  --max-height: var(--taxonomy-picker-max-height, 380px);
-
-  font-family: $font-family;
+  --max-height: var(--taxonomy-picker-list-max-height, 380px);
 
   .picker {
     background-color: $taxonomy-picker-background-color;
+  }
+
+  fluent-combobox {
+    &::part(selected-value) {
+      &::placeholder {
+        color: $taxonomy-picker-placeholder-color;
+      }
+
+      &:hover {
+        &::placeholder {
+          color: $taxonomy-picker-placeholder-hover-color;
+        }
+      }
+    }
   }
 }
 

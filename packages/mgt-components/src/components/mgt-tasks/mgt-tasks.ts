@@ -5,14 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  ComponentMediaQuery,
-  MgtTemplatedComponent,
-  ProviderState,
-  Providers,
-  customElement,
-  mgtHtml
-} from '@microsoft/mgt-element';
+import { ComponentMediaQuery, MgtTemplatedComponent, ProviderState, Providers, mgtHtml } from '@microsoft/mgt-element';
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
 import { HTMLTemplateResult, PropertyValueMap, TemplateResult, html } from 'lit';
@@ -320,7 +313,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'data-source',
-    converter: (value, type) => {
+    converter: (value, _type) => {
       value = value.toLowerCase();
       return (TasksSource[value] as TasksSource) || TasksSource.planner;
     }
@@ -522,7 +515,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    *
    * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated(changedProperties: PropertyValueMap<any>) {
+  protected firstUpdated(changedProperties: PropertyValueMap<unknown>) {
     super.firstUpdated(changedProperties);
 
     if (this.initialId && !this._currentGroup) {

@@ -16,7 +16,7 @@ import { MockGraph } from './MockGraph';
  * @extends {IProvider}
  */
 export class MockProvider extends IProvider {
-  public provider: any;
+  public provider: IProvider;
 
   private readonly _mockGraphPromise: Promise<MockGraph>;
 
