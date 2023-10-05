@@ -53,6 +53,7 @@ import { registerFluentComponents } from '../../utils/FluentComponents';
 import { BasePersonCardSection, CardSection } from '../BasePersonCardSection';
 import { buildComponentName, registerComponent } from '../registerComponent';
 import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
+import { IHistoryClearer, IExpandable } from './types';
 
 interface MgtPersonCardStateHistory {
   state: MgtPersonCardState;
@@ -114,7 +115,7 @@ export const registerMgtPersonCardComponent = () => {
  * @cssprop --person-card-chat-input-hover-color - {Color} The chat input hover color
  * @cssprop --person-card-chat-input-focus-color - {Color} The chat input focus color
  */
-export class MgtPersonCard extends MgtTemplatedComponent {
+export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClearer, IExpandable {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.

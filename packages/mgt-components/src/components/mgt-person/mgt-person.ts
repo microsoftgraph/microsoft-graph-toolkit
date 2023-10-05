@@ -18,7 +18,6 @@ import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import '../../styles/style-helper';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
-import { MgtPersonCard, registerMgtPersonCardComponent } from '../mgt-person-card/mgt-person-card';
 import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
@@ -28,6 +27,7 @@ import { strings } from './strings';
 import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { buildComponentName, registerComponent } from '../registerComponent';
+import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -55,9 +55,6 @@ export const registerMgtPersonComponent = () => {
   registerComponent('person', MgtPerson);
 
   registerMgtFlyoutComponent();
-
-  // only register person card if it hasn't been registered yet
-  if (!customElements.get(buildComponentName('person-card'))) registerMgtPersonCardComponent();
 };
 
 /**
@@ -534,6 +531,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   @state() private _fetchedPresence: Presence;
   @state() private _isInvalidImageSrc: boolean;
   @state() private _personCardShouldRender: boolean;
+  @state() private _hasLoadedPersonCard = false;
 
   private _personDetailsInternal: IDynamicPerson;
   private _personDetails: IDynamicPerson;
@@ -1034,12 +1032,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     image: string,
     presence: Presence
   ): TemplateResult {
-    const flyoutContent = this._personCardShouldRender
-      ? html`
+    const flyoutContent =
+      this._personCardShouldRender && this._hasLoadedPersonCard
+        ? html`
            <div slot="flyout" data-testid="flyout-slot">
              ${this.renderFlyoutContent(personDetails, image, presence)}
            </div>`
-      : html``;
+        : html``;
 
     const slotClasses = classMap({
       vertical: this.isVertical()
@@ -1090,6 +1089,16 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (provider && provider.state === ProviderState.SignedOut) {
       this.personDetailsInternal = null;
       return;
+    }
+
+    // if there could be a person-card then we should load those resources using a dynamic import
+    if (this.personCardInteraction !== PersonCardInteraction.none && !this._hasLoadedPersonCard) {
+      const { registerMgtPersonCardComponent } = await import('../mgt-person-card/mgt-person-card');
+
+      // only register person card if it hasn't been registered yet
+      if (!customElements.get(buildComponentName('person-card'))) registerMgtPersonCardComponent();
+
+      this._hasLoadedPersonCard = true;
     }
 
     const graph = provider.graph.forComponent(this);
@@ -1349,7 +1358,8 @@ export class MgtPerson extends MgtTemplatedComponent {
       flyout.close();
     }
     const personCard =
-      this.querySelector<MgtPersonCard>('.mgt-person-card') || this.renderRoot.querySelector('.mgt-person-card');
+      this.querySelector<Element & IExpandable & IHistoryClearer>('.mgt-person-card') ||
+      this.renderRoot.querySelector('.mgt-person-card');
     if (personCard) {
       personCard.isExpanded = false;
       personCard.clearHistory();
