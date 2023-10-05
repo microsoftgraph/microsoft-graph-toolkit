@@ -4644,6 +4644,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui/react-portal-compat-context@npm:^9.0.9":
+  version: 9.0.9
+  resolution: "@fluentui/react-portal-compat-context@npm:9.0.9"
+  dependencies:
+    "@swc/helpers": ^0.5.1
+  peerDependencies:
+    "@types/react": ">=16.14.0 <19.0.0"
+    react: ">=16.14.0 <19.0.0"
+  checksum: 4effef4e5f9c3c2b34bc23f13c384d4c1af1e704483c4488f84c8f62321e4fe5ebaa908533b02f4430764c134048363d8f28fb57678d03dbea758078fe2a6dde
+  languageName: node
+  linkType: hard
+
 "@fluentui/react-portal@npm:^9.3.1":
   version: 9.3.1
   resolution: "@fluentui/react-portal@npm:9.3.1"
@@ -5228,7 +5240,7 @@ __metadata:
     "@fluentui/merge-styles": ^8.5.12
     "@fluentui/react-focus": ^8.8.30
     "@fluentui/react-hooks": ^8.6.29
-    "@fluentui/react-portal-compat-context": ^9.0.6
+    "@fluentui/react-portal-compat-context": ^9.0.9
     "@fluentui/react-window-provider": ^2.2.15
     "@fluentui/set-version": ^8.2.11
     "@fluentui/style-utilities": ^8.9.16
@@ -6887,6 +6899,7 @@ __metadata:
     "@microsoft/signalr": ^7.0.4
     "@types/react": ^17.0.0
     immer: ^9.0.6
+    opencrypto: 1.5.5
     react: ^17.0.0
     react-dom: ^17.0.0
     react-scripts: 5.0.1
@@ -10602,6 +10615,15 @@ __metadata:
   dependencies:
     tslib: ^2.4.0
   checksum: 273fd3f3fc461a92f3790cc551ea054745c6d6959afbe1232e6d7aa1c722bbc114d308aab96bef5c78fc0303c85c7b472ef00e2253251cc89737f3b1af56e5a5
+  languageName: node
+  linkType: hard
+
+"@swc/helpers@npm:^0.5.1":
+  version: 0.5.2
+  resolution: "@swc/helpers@npm:0.5.2"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: 51d7e3d8bd56818c49d6bfbd715f0dbeedc13cf723af41166e45c03e37f109336bbcb57a1f2020f4015957721aeb21e1a7fff281233d797ff7d3dd1f447fa258
   languageName: node
   linkType: hard
 
@@ -18721,9 +18743,9 @@ __metadata:
   linkType: hard
 
 "dompurify@npm:^3.0.3":
-  version: 3.0.5
-  resolution: "dompurify@npm:3.0.5"
-  checksum: 2d9421570c833ce26ce7022955241749b646d41e8bf453f42ede9f22d0e98af482cedb7dfbf8129419eb48b351c1d677a08fc9f1cd91836ce7f6c1807a0676b2
+  version: 3.0.6
+  resolution: "dompurify@npm:3.0.6"
+  checksum: e5c6cdc5fe972a9d0859d939f1d86320de275be00bbef7bd5591c80b1e538935f6ce236624459a1b0c84ecd7c6a1e248684aa4637512659fccc0ce7c353828a6
   languageName: node
   linkType: hard
 
@@ -30415,6 +30437,13 @@ __metadata:
   bin:
     opencollective-postinstall: index.js
   checksum: 0a68c5cef135e46d11e665d5077398285d1ce5311c948e8327b435791c409744d4a6bb9c55bd6507fb5f2ef34b0ad920565adcdaf974cbdae701aead6f32b396
+  languageName: node
+  linkType: hard
+
+"opencrypto@npm:1.5.5":
+  version: 1.5.5
+  resolution: "opencrypto@npm:1.5.5"
+  checksum: 8b89b84b5b0d88d4082c634b8fb4e6001552d5d2fdc8e36b3796cc368cf7e8844bc14d587711eb5964a2c6ebe3d6b52d06a3fc1a0184a82e0cdcd56d3cae8a35
   languageName: node
   linkType: hard
 

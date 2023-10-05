@@ -19,7 +19,8 @@ import {
   mgtHtml,
   BetaGraph,
   BatchResponse,
-  CollectionResponse
+  CollectionResponse,
+  warn
 } from '@microsoft/mgt-element';
 
 import { schemas } from '../../../graph/cacheStores';
@@ -400,8 +401,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    console.warn(
-      '🦒: <mgt-search-results> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    warn(
+      '<mgt-search-results> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
     );
   }
 

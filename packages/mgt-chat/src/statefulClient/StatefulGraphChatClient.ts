@@ -15,7 +15,15 @@ import {
   SystemMessage
 } from '@azure/communication-react';
 import { IDynamicPerson, getUserWithPhoto } from '@microsoft/mgt-components';
-import { ActiveAccountChanged, IGraph, LoginChangedEvent, ProviderState, Providers } from '@microsoft/mgt-element';
+import {
+  ActiveAccountChanged,
+  IGraph,
+  LoginChangedEvent,
+  ProviderState,
+  Providers,
+  log,
+  warn
+} from '@microsoft/mgt-element';
 import { GraphError } from '@microsoft/microsoft-graph-client';
 import {
   AadUserConversationMember,
@@ -30,7 +38,8 @@ import { produce } from 'immer';
 import { v4 as uuid } from 'uuid';
 import { currentUserId, currentUserName } from '../utils/currentUser';
 import { graph } from '../utils/graph';
-import { isChatMessage } from '../utils/types';
+import { MessageCache } from './Caching/MessageCache';
+import { GraphConfig } from './GraphConfig';
 import { GraphNotificationClient } from './GraphNotificationClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
 import {
@@ -40,6 +49,7 @@ import {
   loadChat,
   loadChatImage,
   loadChatThread,
+  loadChatThreadDelta,
   loadMoreChatMessages,
   removeChatMember,
   sendChatMessage,
@@ -47,6 +57,7 @@ import {
   updateChatTopic
 } from './graph.chat';
 import { updateMessageContentWithImage } from './updateMessageContentWithImage';
+import { isChatMessage } from 'src/utils/types';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -79,7 +90,7 @@ const isChatMemberChangeEvent = (
 };
 
 // defines the type of the state object returned from the StatefulGraphChatClient
-type GraphChatClient = Pick<
+export type GraphChatClient = Pick<
   MessageThreadProps,
   | 'userId'
   | 'messages'
@@ -140,6 +151,17 @@ interface CreatedOn {
  */
 const MessageCreatedComparator = (a: CreatedOn, b: CreatedOn) => a.createdOn.getTime() - b.createdOn.getTime();
 
+const ChatMessageCreatedComparator = (a: ChatMessage, b: ChatMessage): number => {
+  if (a.createdDateTime && b.createdDateTime) {
+    if (a.createdDateTime === b.createdDateTime) return 0;
+    if (a.createdDateTime > b.createdDateTime) return 1;
+    return -1;
+  } else if (a.createdDateTime) {
+    return 1;
+  }
+  return -1;
+};
+
 type MessageEventType =
   | '#microsoft.graph.membersAddedEventMessageDetail'
   | '#microsoft.graph.membersDeletedEventMessageDetail'
@@ -154,7 +176,7 @@ export type GraphChatMessage = Message & {
 };
 /**
  * Holder type account for async conversion of messages.
- * Some messages need to be written to the UI immediately and recieve an async update.
+ * Some messages need to be written to the UI immediately and receive an async update.
  * Some messages do not have a current value and will be added after the future value is resolved.
  * Some messages do not have a future value and will be added immediately.
  */
@@ -182,11 +204,12 @@ const emojiRegex = /(<emoji[^>]+)alt=["'](\w*[^"']*)["'](.*[^>])<\/emoji>/;
 class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private readonly _notificationClient: GraphNotificationClient;
   private readonly _eventEmitter: ThreadEventEmitter;
+  private readonly _cache: MessageCache;
   private _subscribers: ((state: GraphChatClient) => void)[] = [];
   private get _messagesPerCall() {
     return 5;
   }
-  private _nextLink = '';
+  private _nextLink?: string;
   private _chat?: Chat = undefined;
   private _userDisplayName = '';
 
@@ -194,9 +217,10 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this.updateUserInfo();
     Providers.globalProvider.onStateChanged(this.onLoginStateChanged);
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
-    this._notificationClient = new GraphNotificationClient();
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
+    this._cache = new MessageCache();
+    this._notificationClient = new GraphNotificationClient(this._eventEmitter, graph('mgt-chat', GraphConfig.version));
   }
 
   /**
@@ -279,22 +303,19 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private readonly onActiveAccountChanged = (e: ActiveAccountChanged) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (e.detail && this.userId !== e.detail?.id) {
-      this.clearCurrentUserMessages();
-      void this.closeCurrentSignalRConnections();
-      sessionStorage.removeItem('graph-subscriptions');
-      void this.reconnectSignalRConnection();
-      this.updateUserInfo();
-      void this.updateFollowedChat();
+      void this.handleAccountChange();
     }
   };
 
-  private async closeCurrentSignalRConnections() {
-    await this._notificationClient.closeSignalRConnection();
-  }
+  private readonly handleAccountChange = async () => {
+    this.clearCurrentUserMessages();
+    // need to ensure that we close any existing connection if present
+    await this._notificationClient?.closeSignalRConnection();
 
-  private async reconnectSignalRConnection() {
-    await this._notificationClient.reConnectSignalR();
-  }
+    this.updateUserInfo();
+    // by updating the followed chat the notification client will reconnect to SignalR
+    await this.updateFollowedChat();
+  };
 
   private clearCurrentUserMessages() {
     this.notifyStateChange((draft: GraphChatClient) => {
@@ -395,17 +416,21 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       this.notifyStateChange((draft: GraphChatClient) => {
         draft.status = 'creating server connections';
       });
-
       try {
         // Prefer sequential promise resolving to catch loading message errors
         // TODO: in parallel promise resolving, find out how to trigger different
         // TODO: state for failed subscriptions in GraphChatClient.onSubscribeFailed
-        await this.loadChatData();
-        await this._notificationClient.subscribeToChatNotifications(this.userId, this.chatId, this._eventEmitter, () =>
-          this.notifyStateChange((draft: GraphChatClient) => {
-            draft.status = 'subscribing to notifications';
-          })
+        const tasks: Promise<unknown>[] = [this.loadChatData()];
+        // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
+        // this client will then load the chat and messages when that event listener is called
+        tasks.push(
+          this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, () =>
+            this.notifyStateChange((draft: GraphChatClient) => {
+              draft.status = 'subscribing to notifications';
+            })
+          )
         );
+        await Promise.all(tasks);
       } catch (e) {
         console.error('Failed to load chat data or subscribe to notications: ', e);
         if (e instanceof GraphError) {
@@ -430,8 +455,34 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     } catch (error) {
       return Promise.reject(error);
     }
-    const messages: MessageCollection = await loadChatThread(this.graph, this.chatId, this._messagesPerCall);
-    await this.writeMessagesToState(messages);
+    const cachedMessages = await this._cache.loadMessages(this._chatId);
+    if (cachedMessages) {
+      // use currently cached data
+      await this.writeMessagesToState(cachedMessages);
+      // load delta messages
+      const deltaMessages = await this.loadDeltaData(this._chatId, cachedMessages.lastModifiedDateTime);
+      // add delta messages to cache
+      const updatedState = await this._cache.cacheMessages(this._chatId, deltaMessages);
+      // writeMessagesToState concats with existing state, need to be careful not to create duplicate messages
+      updatedState.value = deltaMessages;
+      // update state
+      await this.writeMessagesToState(updatedState);
+    } else {
+      const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
+      await this._cache.cacheMessages(this._chatId, messages.value, true, messages.nextLink);
+      await this.writeMessagesToState(messages);
+    }
+  }
+
+  private async loadDeltaData(chatId: string, lastModified: string): Promise<ChatMessage[]> {
+    const result: ChatMessage[] = [];
+    let response = await loadChatThreadDelta(this.graph, chatId, lastModified, this._messagesPerCall);
+    result.push(...response.value);
+    while (response.nextLink) {
+      response = await loadMoreChatMessages(this.graph, response.nextLink);
+      result.push(...response.value);
+    }
+    return result.sort(ChatMessageCreatedComparator);
   }
 
   /**
@@ -457,16 +508,18 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.participants = this._chat?.members || [];
       draft.participantCount = draft.participants.length;
-      const initialMessages: GraphChatMessage[] = [];
-      draft.messages = draft.messages.concat(
-        messageConversions
-          .map(m => m.currentValue)
-          // need to use a reduce here to filter out undefined values in a way that TypeScript understands
-          .reduce((acc, val) => {
-            if (val) acc.push(val);
-            return acc;
-          }, initialMessages)
-      );
+      const initialMessages: Message[] = [];
+      draft.messages = draft.messages
+        .concat(
+          messageConversions
+            .map(m => m.currentValue)
+            // need to use a reduce here to filter out undefined values in a way that TypeScript understands
+            .reduce((acc, val) => {
+              if (val) acc.push(val);
+              return acc;
+            }, initialMessages)
+        )
+        .sort(MessageCreatedComparator);
       draft.onLoadPreviousChatMessages = this._nextLink ? this.loadMoreMessages : undefined;
       draft.status = this._nextLink ? 'loading messages' : 'ready';
       draft.chat = this._chat;
@@ -496,6 +549,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     switch (message.messageType) {
       case 'message':
         return this.graphChatMessageToAcsChatMessage(message, this.userId);
+      case 'systemEventMessage':
       case 'unknownFutureValue':
         return { futureValue: this.buildSystemContentMessage(message) } as MessageConversion;
       default:
@@ -559,11 +613,10 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         // TODO: move this default case to a console.warn before release and emit an empty message
         // it's here to help us catch messages we have't handled yet
         default:
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, no-console
-          console.warn(
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            `Unknown system message type ${eventDetail['@odata.type']} detail: ${JSON.stringify(eventDetail)}`
-          );
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-call
+          warn(`Unknown system message type ${eventDetail['@odata.type']}
+
+detail: ${JSON.stringify(eventDetail)}`);
       }
     }
 
@@ -593,6 +646,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       return true;
     }
     const messages: MessageCollection = await loadMoreChatMessages(this.graph, this._nextLink);
+    await this._cache.cacheMessages(this._chatId, messages.value, true, messages.nextLink);
     await this.writeMessagesToState(messages);
     // return true when there are no more messages to load
     return !this._nextLink;
@@ -793,8 +847,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       // TODO handle the case where there were a lot of missed messages and we ned to get the next page of messages.
       // This is not a common case, but we should handle it.
     }
-    // eslint-disable-next-line no-console
-    console.log('checked for missed messages');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    log('checked for missed messages');
   };
 
   private readonly onChatNotificationsSubscribed = (resource: string): void => {

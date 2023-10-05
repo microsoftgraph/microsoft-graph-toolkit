@@ -19,6 +19,8 @@
 const fs = require('fs');
 const path = require('path');
 
+import { log, warn } from '@microsoft/mgt-element';
+
 import { CACHE_LOCATION } from './Constants';
 
 /**
@@ -28,8 +30,7 @@ import { CACHE_LOCATION } from './Constants';
  * @return {*}
  */
 const beforeCacheAccess = async cacheContext => {
-  // eslint-disable-next-line no-console
-  console.warn('🦒: PLEASE DO NOT USE THIS CACHE PLUGIN IN PRODUCTION ENVIRONMENTS!!!!');
+  warn('PLEASE DO NOT USE THIS CACHE PLUGIN IN PRODUCTION ENVIRONMENTS!!!!');
   return new Promise<void>((resolve, reject) => {
     if (fs.existsSync(CACHE_LOCATION)) {
       fs.readFile(CACHE_LOCATION, 'utf-8', (err, data) => {
@@ -67,8 +68,7 @@ const afterCacheAccess = async cacheContext => {
     }
     await fs.writeFile(CACHE_LOCATION, cacheContext.tokenCache.serialize(), err => {
       if (err) {
-        // eslint-disable-next-line no-console
-        console.log('🦒: ', err);
+        log(err);
       }
     });
   }

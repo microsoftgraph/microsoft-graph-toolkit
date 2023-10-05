@@ -10,7 +10,8 @@ import {
   ProviderState,
   createFromProvider,
   GraphEndpoint,
-  MICROSOFT_GRAPH_DEFAULT_ENDPOINT
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT,
+  error
 } from '@microsoft/mgt-element';
 import { TokenCredential } from '@azure/core-auth';
 
@@ -129,10 +130,9 @@ export class TeamsFxProvider extends IProvider {
       if (!this._accessToken) {
         throw new Error('Access token is null');
       }
-    } catch (error: unknown) {
-      const err = error as object;
-      // eslint-disable-next-line no-console
-      console.error(`🦒: Cannot get access token due to error: ${err.toString()}`);
+    } catch (e: unknown) {
+      const err = e as object;
+      error(`Cannot get access token due to error: ${err.toString()}`);
       this.setState(ProviderState.SignedOut);
       this._accessToken = '';
     }

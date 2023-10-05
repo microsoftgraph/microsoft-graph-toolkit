@@ -36,7 +36,7 @@ export class CacheStore<T extends CacheItem> {
    * @returns {Promise<T>}
    * @memberof Cache
    */
-  public async getValue(key: string): Promise<T> {
+  public async getValue(key: string): Promise<T | null> {
     if (!window.indexedDB) {
       return null;
     }
@@ -45,6 +45,25 @@ export class CacheStore<T extends CacheItem> {
       return db.get(this.store, key) as unknown as T;
     } catch (e) {
       return null;
+    }
+  }
+
+  /**
+   * removes a value from the cache for the given key
+   *
+   * @param {string} key
+   * @returns {Promise<void>}
+   * @memberof Cache
+   */
+  public async delete(key: string): Promise<void> {
+    if (!window.indexedDB) {
+      return;
+    }
+    try {
+      const db = await this.getDb();
+      return db.delete(this.store, key);
+    } catch (e) {
+      return;
     }
   }
 

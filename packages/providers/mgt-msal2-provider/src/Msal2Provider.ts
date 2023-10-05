@@ -11,7 +11,8 @@ import {
   ProviderState,
   createFromProvider,
   IProviderAccount,
-  GraphEndpoint
+  GraphEndpoint,
+  error
 } from '@microsoft/mgt-element';
 import {
   Configuration,
@@ -414,7 +415,7 @@ export class Msal2Provider extends IProvider {
         await this.trySilentSignIn();
       }
     } catch (e) {
-      console.error('🦒: Problem attempting to sign in', e);
+      error('Problem attempting to sign in', e);
       throw e;
     }
   }
@@ -734,7 +735,7 @@ export class Msal2Provider extends IProvider {
             const response = await this._publicClientApplication.acquireTokenPopup(accessTokenRequest);
             return response.accessToken;
           } catch (popUpErr) {
-            console.error('🦒: problem with pop-up sign in', popUpErr);
+            error('problem with pop-up sign in', popUpErr);
             throw popUpErr;
           }
         }

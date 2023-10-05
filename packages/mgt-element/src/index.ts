@@ -31,6 +31,7 @@ export * from './utils/GraphPageIterator';
 export * from './utils/LocalizationHelper';
 export * from './utils/mgtHtml';
 export * from './utils/CustomElement';
+export * from './utils/Logging';
 export { PACKAGE_VERSION } from './utils/version';
 
 export * from './CollectionResponse';
