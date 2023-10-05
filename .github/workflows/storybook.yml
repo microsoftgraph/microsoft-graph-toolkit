@@ -44,4 +44,5 @@ jobs:
             sample
             pr
             v3
+            mgt-chat
           token: ${{ secrets.GITHUB_TOKEN }}
