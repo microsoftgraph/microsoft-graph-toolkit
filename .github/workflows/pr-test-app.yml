@@ -1,0 +1,56 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Deploy react-contoso sample app for PR
+
+on:
+  pull_request:
+    types: [opened, labeled, synchronize, reopened]
+    branches: [main, release/**, next/**]
+
+jobs:
+  react-contoso:
+    if: "contains(github.event.pull_request.labels.*.name, 'Build: React Contoso')"
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install deps 🛠
+        run: |
+          echo "installing deps for packages"
+          yarn
+
+      - name: Setup env file
+        shell: bash
+        run: |
+          cp samples/react-contoso/.env.sample samples/react-contoso/.env
+          sed -i 's|REACT_APP_CLIENT_ID="ed072e38-e76e-45ae-ab76-073cb95495bb"|REACT_APP_CLIENT_ID="${{secrets.REACT_CONTOSO_CHAT}}"|g' samples/react-contoso/.env
+          sed -i 's|REACT_APP_BASE_DIR="/"|REACT_APP_BASE_DIR="/next/sample/pr/${{ github.event.number }}"|g' samples/react-contoso/.env
+
+      - name: Build 🛠
+        run: |
+          yarn build
+          yarn build:react-contoso
+
+      - name: Deploy mgt.dev/sample/pr/${{ github.event.number }} 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          branch: gh-pages
+          folder: samples/react-contoso/build
+          target-folder: next/sample/pr/${{ github.event.number }}
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v1
+        with:
+          message: '🚀 New react-contoso sample application deployed [here](https://mgt.dev/next/sample/pr/${{ github.event.number }})'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
