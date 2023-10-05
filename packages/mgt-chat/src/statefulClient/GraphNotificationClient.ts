@@ -7,7 +7,7 @@
 
 /* eslint-disable no-console */
 import { Providers } from '@microsoft/mgt-element';
-import * as signalR from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
 import { ChatMessage, Chat, ConversationMember, AadUserConversationMember } from '@microsoft/microsoft-graph-types';
 
@@ -35,15 +35,15 @@ const Return = {
 
 type ChangeTypes = 'created' | 'updated' | 'deleted';
 
-type SubscriptionDefinition = {
+interface SubscriptionDefinition {
   resource: string;
   expirationTime: Date;
   changeTypes: ChangeTypes[];
   resourceData: boolean;
   signalRConnectionId: string | null;
-};
+}
 
-type Notification = {
+interface Notification {
   subscriptionId: string;
   changeType: ChangeTypes;
   resource: string;
@@ -53,25 +53,25 @@ type Notification = {
     '@odata.id': string;
   };
   encryptedContent: string;
-};
+}
 
-type Subscription = {
+interface Subscription {
   subscriptionId: string;
   expirationTime: string; // ISO 8601
   resource: string;
-};
+}
 
-type SubscriptionRecord = {
+interface SubscriptionRecord {
   SubscriptionId: string;
   ExpirationTime: string; // ISO 8601
   Resource: string;
-};
+}
 
 const loadCachedSubscriptions = (): Subscription[] =>
   JSON.parse(sessionStorage.getItem('graph-subscriptions') || '[]') as Subscription[];
 
 export class GraphNotificationClient {
-  private connection?: signalR.HubConnection = undefined;
+  private connection?: HubConnection = undefined;
   private renewalInterval = -1;
   private renewalCount = 0;
   private currentUserId = '';
@@ -102,13 +102,13 @@ export class GraphNotificationClient {
     console.log(`Creation of subscription for resource ${subscriptionDefinition.resource} failed.`);
   };
 
-  private buildConnection() {
-    return new signalR.HubConnectionBuilder()
+  private buildConnection(): HubConnection {
+    return new HubConnectionBuilder()
       .withUrl(appSettings.functionHost + '/api', {
         accessTokenFactory: async () => await this.getToken()
       })
       .withAutomaticReconnect()
-      .configureLogging(signalR.LogLevel.Information)
+      .configureLogging(LogLevel.Information)
       .build();
   }
 
@@ -224,14 +224,15 @@ export class GraphNotificationClient {
   }
 
   public async closeSignalRConnection() {
-    if (this.connection && this.connection?.state === signalR.HubConnectionState.Connected) {
+    if (this.connection && this.connection?.state === HubConnectionState.Connected) {
       await this.connection?.stop();
     }
   }
 
   public async reConnectSignalR() {
     if (!this.connection) await this.createSignalConnection();
-    if (this.connection?.state === signalR.HubConnectionState.Disconnected) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (this.connection?.state === HubConnectionState.Disconnected) {
       await this.connection?.start();
     }
   }

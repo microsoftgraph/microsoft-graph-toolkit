@@ -13,3 +13,4 @@ export * from './graph/graph.photos';
 export * from './graph/cacheStores';
 export * from './styles/theme-manager';
 export * from './utils/Utils';
+export * from './graph/entityType';

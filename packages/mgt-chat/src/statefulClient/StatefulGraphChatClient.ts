@@ -16,6 +16,7 @@ import {
 } from '@azure/communication-react';
 import { IDynamicPerson, getUserWithPhoto } from '@microsoft/mgt-components';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, ProviderState, Providers } from '@microsoft/mgt-element';
+import { GraphError } from '@microsoft/microsoft-graph-client';
 import {
   AadUserConversationMember,
   Chat,
@@ -26,10 +27,10 @@ import {
   MembersDeletedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
 import { produce } from 'immer';
-import { isChatMessage } from '../utils/types';
 import { v4 as uuid } from 'uuid';
-import { currentUserId } from '../utils/currentUser';
+import { currentUserId, currentUserName } from '../utils/currentUser';
 import { graph } from '../utils/graph';
+import { isChatMessage } from '../utils/types';
 import { GraphNotificationClient } from './GraphNotificationClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
 import {
@@ -46,16 +47,14 @@ import {
   updateChatTopic
 } from './graph.chat';
 import { updateMessageContentWithImage } from './updateMessageContentWithImage';
-import { currentUserName } from '../utils/currentUser';
-import { GraphError } from '@microsoft/microsoft-graph-client';
 
 // 1x1 grey pixel
 const placeholderImageContent =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY7h58yYABRoCjB9qX5UAAAAASUVORK5CYII=';
 
-type ODataType = {
+interface ODataType {
   '@odata.type': MessageEventType;
-};
+}
 type MembersAddedEventDetail = ODataType &
   MembersAddedEventMessageDetail & {
     '@odata.type': '#microsoft.graph.membersAddedEventMessageDetail';
@@ -110,7 +109,7 @@ type GraphChatClient = Pick<
     onRenameChat: (topic: string | null) => Promise<void>;
   };
 
-type StatefulClient<T> = {
+interface StatefulClient<T> {
   /**
    * Get the current state of the client
    */
@@ -127,11 +126,11 @@ type StatefulClient<T> = {
    * @param handler Callback to be unregistered
    */
   offStateChange(handler: (state: T) => void): void;
-};
+}
 
-type CreatedOn = {
+interface CreatedOn {
   createdOn: Date;
-};
+}
 
 /**
  * Simple object comparator function for sorting by createdOn date
@@ -159,10 +158,10 @@ export type GraphChatMessage = Message & {
  * Some messages do not have a current value and will be added after the future value is resolved.
  * Some messages do not have a future value and will be added immediately.
  */
-type MessageConversion = {
+interface MessageConversion {
   currentValue?: GraphChatMessage;
   futureValue?: Promise<GraphChatMessage>;
-};
+}
 
 /**
  * Regex to detect and replace image urls using graph requests to supply the image content
@@ -927,12 +926,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
           placeholderMessage = {
             ...placeholderMessage,
             ...{
-              content: updateMessageContentWithImage(
-                placeholderMessage?.content as string,
-                imageIndex,
-                messageId,
-                image
-              )
+              content: updateMessageContentWithImage(placeholderMessage.content ?? '', imageIndex, messageId, image)
             }
           };
         }
@@ -993,9 +987,10 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   ): GraphChatMessage {
     const senderId = graphMessage.from?.user?.id || undefined;
     const chatId = graphMessage?.chatId ?? '';
-    const chatUrl = `https://teams.microsoft.com/_#/conversations/${chatId}?ctx=chat`;
-    // check content is supported
+    const id = graphMessage?.id ?? '';
+    const chatUrl = `https://teams.microsoft.com/l/message/${chatId}/${id}?context={"contextType":"chat"}`;
     const attachments = graphMessage?.attachments ?? [];
+
     let messageData: GraphChatMessage = {
       messageId,
       contentType: graphMessage.body?.contentType ?? 'text',

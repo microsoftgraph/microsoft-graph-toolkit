@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "Microsoft Graph Toolkit v2 for SPFx",
+    "name": "Microsoft Graph Toolkit v3 for SPFx",
     "id": "e342d2ab-fc3f-45f6-93a5-268fd8632211",
     "version": "3.0.1.0",
     "includeClientSideAssets": true,

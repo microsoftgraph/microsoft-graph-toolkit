@@ -7,15 +7,14 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Components / mgt-person-card',
   component: 'person-card',
   decorators: [withCodeEditor],
+  tags: ['autodocs'],
   parameters: {
     docs: {
-      page: defaultDocsPage,
       source: { code: '<mgt-person-card person-query="me" id="online" show-presence></mgt-person-card>' }
     }
   }
@@ -59,7 +58,7 @@ export const RTL = () => html`
 export const localization = () => html`
   <mgt-person-card person-query="me"></mgt-person-card>
   <script>
-  import { LocalizationHelper } from '@microsoft/mgt';
+  import { LocalizationHelper } from '@microsoft/mgt-element';
   LocalizationHelper.strings = {
     _components: {
       login: {

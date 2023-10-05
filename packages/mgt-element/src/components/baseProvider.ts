@@ -101,7 +101,7 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
    *
    * * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>) {
+  protected firstUpdated(changedProperties: PropertyValueMap<unknown> | Map<PropertyKey, unknown>) {
     super.firstUpdated(changedProperties);
 
     let higherPriority = false;

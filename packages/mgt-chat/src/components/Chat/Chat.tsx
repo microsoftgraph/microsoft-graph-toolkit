@@ -43,6 +43,9 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     height: '100%'
+  },
+  unsupportedContent: {
+    color: 'red'
   }
 });
 

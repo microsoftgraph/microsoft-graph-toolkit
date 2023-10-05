@@ -1,0 +1,51 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Deploy mgt-chat sample app
+
+on:
+  push:
+    branches: [next/mgt-chat]
+
+jobs:
+  react-contoso:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install deps 🛠
+        run: |
+          echo "installing yarn"
+          npm install -g yarn
+          echo "installing deps for packages"
+          yarn
+
+      - name: Setup env file
+        shell: bash
+        run: |
+          cp samples/react-contoso/.env.sample samples/react-contoso/.env
+          sed -i 's|REACT_APP_CLIENT_ID="00000000-0000-0000-0000-000000000000"|REACT_APP_CLIENT_ID="${{secrets.REACT_CONTOSO_CHAT}}"|g' samples/react-contoso/.env
+          sed -i 's|REACT_APP_BACKEND_CLIENT_ID="00000000-0000-0000-0000-000000000000"|REACT_APP_BACKEND_CLIENT_ID="${{secrets.REACT_CONTOSO_CHAT_BACKEND}}"|g' samples/react-contoso/.env
+          sed -i 's|REACT_APP_BASE_DIR="/"|REACT_APP_BASE_DIR="/next/mgt-chat"|g' samples/react-contoso/.env
+
+      - name: Build 🛠
+        run: |
+          yarn build
+          yarn build:react-contoso
+
+      - name: Deploy mgt.dev/next/mgt-chat 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          branch: gh-pages
+          folder: samples/react-contoso/build
+          target-folder: next/mgt-chat
