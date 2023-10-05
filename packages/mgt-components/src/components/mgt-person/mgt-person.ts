@@ -261,10 +261,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    *
    * @type {IDynamicPerson}
    */
-  @property({
-    attribute: null,
-    type: Object
-  })
+  @state()
   private get personDetailsInternal(): IDynamicPerson {
     return this._personDetailsInternal;
   }
@@ -1216,8 +1213,8 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     let initials = '';
     if (isUser(person)) {
-      initials += person.givenName[0].toUpperCase();
-      initials += person.surname[0].toUpperCase();
+      initials += person.givenName?.[0].toUpperCase() ?? '';
+      initials += person.surname?.[0].toUpperCase() ?? '';
     }
 
     if (!initials && person.displayName) {
