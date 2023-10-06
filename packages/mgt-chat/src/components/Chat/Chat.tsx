@@ -9,6 +9,7 @@ import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
 import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
+import { onRenderMessage } from '../../utils/chat';
 
 registerAppIcons();
 
@@ -100,6 +101,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                       <Person userId={userId} avatarSize="small" personCardInteraction={PersonCardInteraction.click} />
                     );
                   }}
+                  onRenderMessage={onRenderMessage}
                 />
               </div>
               <div className={styles.chatInput}>

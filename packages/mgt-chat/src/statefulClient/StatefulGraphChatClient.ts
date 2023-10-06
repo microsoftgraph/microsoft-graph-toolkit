@@ -35,10 +35,7 @@ import {
   MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
-import * as AdaptiveCards from 'adaptivecards';
-import { IAdaptiveCard } from 'adaptivecards/lib/schema';
 import { produce } from 'immer';
-import MarkdownIt from 'markdown-it';
 import { v4 as uuid } from 'uuid';
 import { currentUserId, currentUserName } from '../utils/currentUser';
 import { graph } from '../utils/graph';
@@ -61,6 +58,7 @@ import {
   updateChatTopic
 } from './graph.chat';
 import { updateMessageContentWithImage } from './updateMessageContentWithImage';
+import { isChatMessage } from '../utils/types';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -171,14 +169,21 @@ type MessageEventType =
   | '#microsoft.graph.chatRenamedEventMessageDetail';
 
 /**
+ * Extended Message type with additional properties.
+ */
+export type GraphChatMessage = Message & {
+  attachments?: ChatMessageAttachment[];
+};
+
+/**
  * Holder type account for async conversion of messages.
  * Some messages need to be written to the UI immediately and receive an async update.
  * Some messages do not have a current value and will be added after the future value is resolved.
  * Some messages do not have a future value and will be added immediately.
  */
 interface MessageConversion {
-  currentValue?: Message;
-  futureValue?: Promise<Message>;
+  currentValue?: GraphChatMessage;
+  futureValue?: Promise<GraphChatMessage>;
 }
 
 /**
@@ -547,7 +552,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         return this.graphChatMessageToAcsChatMessage(message, this.userId);
       case 'systemEventMessage':
       case 'unknownFutureValue':
-        return { futureValue: this.buildSystemContentMessage(message) };
+        return { futureValue: this.buildSystemContentMessage(message) } as MessageConversion;
       default:
         throw new Error(`Unknown message type ${message.messageType?.toString() || 'undefined'}`);
     }
@@ -609,7 +614,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         // TODO: move this default case to a console.warn before release and emit an empty message
         // it's here to help us catch messages we have't handled yet
         default:
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-call
           warn(`Unknown system message type ${eventDetail['@odata.type']}
 
 detail: ${JSON.stringify(eventDetail)}`);
@@ -820,7 +825,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       .map(m => this.convertChatMessage(m));
 
     // update the state with the current values
-    const currentValueMessages: Message[] = [];
+    const currentValueMessages: GraphChatMessage[] = [];
     messageConversions
       .map(m => m.currentValue)
       // need to use a reduce here to filter out undefined values in a way that TypeScript understands
@@ -843,6 +848,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       // TODO handle the case where there were a lot of missed messages and we ned to get the next page of messages.
       // This is not a common case, but we should handle it.
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     log('checked for missed messages');
   };
 
@@ -877,11 +883,10 @@ detail: ${JSON.stringify(eventDetail)}`);
    * Update the state with given message either replacing an existing message matching on the id or adding to the list
    *
    * @private
-   * @param {(Message)} [message]
-   * @return {*}
+   * @param {(GraphChatMessage)} [message]
    * @memberof StatefulGraphChatClient
    */
-  private updateMessages(message?: Message) {
+  private updateMessages(message?: GraphChatMessage) {
     if (!message) return;
     this.notifyStateChange((draft: GraphChatClient) => {
       const index = draft.messages.findIndex(m => m.messageId === message.messageId);
@@ -964,19 +969,14 @@ detail: ${JSON.stringify(eventDetail)}`);
       index++;
       match = this.graphImageMatch(messageResult);
     }
-    let placeholderMessage = this.buildAcsMessage(
-      graphMessage,
-      currentUser,
-      messageId,
-      messageResult
-    ) as AcsChatMessage;
+    let placeholderMessage = this.buildAcsMessage(graphMessage, currentUser, messageId, messageResult);
     conversion.currentValue = placeholderMessage;
     // local function to update the message with data from each of the resolved image requests
     const updateMessage = async () => {
       await Promise.all(Object.values(futureImages));
       for (const [imageIndex, futureImage] of Object.entries(futureImages)) {
         const image = await futureImage;
-        if (image) {
+        if (image && isChatMessage(placeholderMessage)) {
           placeholderMessage = {
             ...placeholderMessage,
             ...{
@@ -1002,16 +1002,6 @@ detail: ${JSON.stringify(eventDetail)}`);
       content = this.processEmojiContent(content);
     }
 
-    // check and process adaptive cards
-    const attachments = graphMessage?.attachments ?? [];
-    if (attachments.length) {
-      // TODO: we probably want to check the graphMessage.content value and remove
-      // TODO: the references to <attachment id="xxx"></attachment>. replace with what?
-      // TODO: maintain any other text in the graphMessage.content
-      // currently replacing graphMessage.content with the adaptiveCard HTML string
-      content = this.processCardsInAttachments(attachments);
-    }
-
     const imageMatch = this.graphImageMatch(content ?? '');
     if (imageMatch) {
       // if the message contains an image, we need to fetch the image and replace the placeholder
@@ -1022,75 +1012,15 @@ detail: ${JSON.stringify(eventDetail)}`);
     return result;
   }
 
-  private processCardsInAttachments(attachments: ChatMessageAttachment[]): string {
-    let content = '';
-    for (const attachment of attachments) {
-      const contentType = attachment?.contentType;
-      if (contentType === 'application/vnd.microsoft.card.adaptive') {
-        const adaptiveCardContentString: string = attachment?.content ?? '';
-        /* eslint-disable
-          @typescript-eslint/no-unsafe-assignment,
-          @typescript-eslint/no-unsafe-member-access,
-          @typescript-eslint/no-unsafe-call, react-hooks/rules-of-hooks */
-        const adaptiveCardContent = JSON.parse(adaptiveCardContentString) as IAdaptiveCard;
-        if (this.isAdaptiveCardSupported(adaptiveCardContent)) {
-          const adaptiveCard = new AdaptiveCards.AdaptiveCard();
-
-          // markdown support
-          AdaptiveCards.AdaptiveCard.onProcessMarkdown = (
-            text: string,
-            result: AdaptiveCards.IMarkdownProcessingResult
-          ) => {
-            const md = new MarkdownIt();
-            result.outputHtml = md.render(text);
-            result.didProcess = true;
-          };
-
-          // Use Fluentui styles
-          // BUG: https://github.com/microsoft/fluentui/issues/29107 describes
-          // the issue experienced when you include this.
-          // TODO: find an alternative to styling the card for MGT
-          // useFluentUI();
-
-          adaptiveCard.hostConfig = new AdaptiveCards.HostConfig({
-            fontFamily: 'Segoe UI, Helvetica Neue, sans-serif'
-            // More host config options
-          });
-
-          // Parse and render to html string
-          adaptiveCard.parse(adaptiveCardContent);
-          const renderedCard = adaptiveCard.render();
-          content += renderedCard?.outerHTML ?? '';
-        }
-      }
-    }
-
-    // NOTE:To refactor such that empty content BUT it has attachments, makes it
-    // unsupported content and should render the banner.
-    // TODO: remove this and update with unsupported content logic.
-    if (!content) {
-      content = '<p>Unsupported content</p>';
-    }
-    return content;
-  }
-
-  private isAdaptiveCardSupported(content: IAdaptiveCard): boolean {
-    let answer = false;
-    // QUESTION: should it be rendered if it's the ONLY action?
-    let actionCounts = 0;
-    const contentActions = content?.actions ?? [];
-    for (const actionSet of contentActions) {
-      if (Object.values(actionSet).includes('Action.OpenUrl')) {
-        actionCounts++;
-      }
-    }
-    if (contentActions && actionCounts === contentActions.length) answer = true;
-    return answer;
-  }
-
-  private buildAcsMessage(graphMessage: ChatMessage, currentUser: string, messageId: string, content: string): Message {
+  private buildAcsMessage(
+    graphMessage: ChatMessage,
+    currentUser: string,
+    messageId: string,
+    content: string
+  ): GraphChatMessage {
     const senderId = graphMessage.from?.user?.id || undefined;
-    let messageData: Message = {
+    const attachments = graphMessage?.attachments ?? [];
+    let messageData: GraphChatMessage = {
       messageId,
       contentType: graphMessage.body?.contentType ?? 'text',
       messageType: 'chat',
@@ -1101,7 +1031,8 @@ detail: ${JSON.stringify(eventDetail)}`);
       senderId,
       mine: senderId === currentUser,
       status: 'seen',
-      attached: 'top'
+      attached: 'top',
+      attachments
     };
     if (graphMessage?.policyViolation) {
       messageData = Object.assign(messageData, {
