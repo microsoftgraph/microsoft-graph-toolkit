@@ -96,7 +96,7 @@ describe('mgt-person - tests', () => {
     expect(initials).toBeDefined();
   });
 
-  it('should render with frist initials when only given name is supplied', async () => {
+  it('should render with first initial when only given name is supplied', async () => {
     Providers.globalProvider = new MockProvider(true);
     person = await fixture(
       `<mgt-person person-details='${JSON.stringify({
@@ -112,6 +112,22 @@ describe('mgt-person - tests', () => {
     expect(initials).toBeDefined();
   });
 
+  it('should render with first initial when only given name is populated and surname is an empty string', async () => {
+    Providers.globalProvider = new MockProvider(true);
+    person = await fixture(
+      `<mgt-person person-details='${JSON.stringify({
+        displayName: 'Frank Herbert',
+        mail: 'herbert@dune.net',
+        givenName: 'Frank',
+        surname: '',
+        personType: {}
+      })}' view="twoLines"></mgt-person>`
+    );
+    expect(person).not.toBeUndefined();
+    const initials = await screen.findByText('F');
+    expect(initials).toBeDefined();
+  });
+
   it('should render with last initial when only surname is supplied', async () => {
     Providers.globalProvider = new MockProvider(true);
     person = await fixture(
@@ -119,6 +135,21 @@ describe('mgt-person - tests', () => {
         displayName: 'Frank Herbert',
         mail: 'herbert@dune.net',
         givenName: null,
+        surname: 'Herbert',
+        personType: {}
+      })}' view="twoLines"></mgt-person>`
+    );
+    expect(person).not.toBeUndefined();
+    const initials = await screen.findByText('H');
+    expect(initials).toBeDefined();
+  });
+  it('should render with last initial when only surname is populated and given name is an empty string', async () => {
+    Providers.globalProvider = new MockProvider(true);
+    person = await fixture(
+      `<mgt-person person-details='${JSON.stringify({
+        displayName: 'Frank Herbert',
+        mail: 'herbert@dune.net',
+        givenName: '',
         surname: 'Herbert',
         personType: {}
       })}' view="twoLines"></mgt-person>`
