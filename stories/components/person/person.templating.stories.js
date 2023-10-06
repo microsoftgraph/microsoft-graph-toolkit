@@ -57,7 +57,9 @@ export const retemplateMetadata = () => html`
     </template>
   </mgt-person>
 
-  <mgt-person view="fourLines">
+  <br/>
+
+  <mgt-person person-query="me" view="fourLines">
     <template data-type="line1">
       <div>
         Hello, my name is: {{person.displayName}}
