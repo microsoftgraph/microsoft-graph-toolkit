@@ -1091,16 +1091,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    // if there could be a person-card then we should load those resources using a dynamic import
-    if (this.personCardInteraction !== PersonCardInteraction.none && !this._hasLoadedPersonCard) {
-      const { registerMgtPersonCardComponent } = await import('../mgt-person-card/mgt-person-card');
-
-      // only register person card if it hasn't been registered yet
-      if (!customElements.get(buildComponentName('person-card'))) registerMgtPersonCardComponent();
-
-      this._hasLoadedPersonCard = true;
-    }
-
     const graph = provider.graph.forComponent(this);
 
     if (this.fallbackDetails) {
@@ -1366,9 +1356,22 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   };
 
+  private readonly loadPersonCardResources = async () => {
+    // if there could be a person-card then we should load those resources using a dynamic import
+    if (this.personCardInteraction !== PersonCardInteraction.none && !this._hasLoadedPersonCard) {
+      const { registerMgtPersonCardComponent } = await import('../mgt-person-card/mgt-person-card');
+
+      // only register person card if it hasn't been registered yet
+      if (!customElements.get(buildComponentName('person-card'))) registerMgtPersonCardComponent();
+
+      this._hasLoadedPersonCard = true;
+    }
+  };
+
   public showPersonCard = () => {
     if (!this._personCardShouldRender) {
       this._personCardShouldRender = true;
+      void this.loadPersonCardResources();
     }
 
     const flyout = this.flyout;
