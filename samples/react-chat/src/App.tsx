@@ -50,7 +50,8 @@ function App() {
             </div>
           )}
         </div>
-        <div className="chat-pane">{<Chat chatId={chatId} />}</div>
+
+        <div className="chat-pane">{chatId && <Chat chatId={chatId} />}</div>
       </main>
     </div>
   );

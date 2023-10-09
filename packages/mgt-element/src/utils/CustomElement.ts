@@ -7,6 +7,7 @@
 
 import { customElement as litElement } from 'lit/decorators.js';
 import { customElementHelper } from '../components/customElementHelper';
+import { error } from './Logging';
 
 /**
  * This is a wrapper decorator for `customElement` from `lit`
@@ -26,8 +27,8 @@ export const customElement = (tagName: string): ((classOrDescriptor: unknown) =>
   if (mgtElement) {
     return (classOrDescriptor: CustomElementConstructor) => {
       // eslint-disable-next-line no-console
-      console.error(
-        `🦒: Tag name ${mgtTagName} is already defined using class ${mgtElement.name} version ${version(mgtElement)}\n`,
+      error(
+        `Tag name ${mgtTagName} is already defined using class ${mgtElement.name} version ${version(mgtElement)}\n`,
         `Currently registering class ${classOrDescriptor.name} with version ${version(classOrDescriptor)}\n`,
         'Please use the disambiguation feature to define a unique tag name for this component see: https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-components#disambiguation'
       );

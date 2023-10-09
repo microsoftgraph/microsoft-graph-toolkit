@@ -89,8 +89,8 @@ export class Graph implements IGraph {
    * @returns {IGraph}
    * @memberof Graph
    */
-  public forComponent(component: Element | string): Graph {
-    const graph = new Graph(this._client, this._version);
+  public forComponent(component: Element | string, version?: string): Graph {
+    const graph = new Graph(this._client, version || this._version);
     graph.setComponent(component);
     return graph;
   }

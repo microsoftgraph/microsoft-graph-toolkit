@@ -11,4 +11,5 @@ import { appSettings } from './statefulClient/GraphNotificationClient';
 
 export * from './components';
 export * from './utils/createNewChat';
+export * from './statefulClient/GraphConfig';
 export { allChatScopes, appSettings as brokerSettings };

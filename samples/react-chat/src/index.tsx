@@ -5,12 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Providers } from '@microsoft/mgt-react';
 import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
-import { allChatScopes, brokerSettings } from '@microsoft/mgt-chat';
+import { allChatScopes, brokerSettings, GraphConfig } from '@microsoft/mgt-chat';
 
-brokerSettings.functionHost = 'https://mgtgnbfunc.azurewebsites.net';
-brokerSettings.appId = 'de25c6a1-c9e7-4681-9288-eba1b93446fb';
+brokerSettings.defaultSubscriptionLifetimeInMinutes = 7;
+brokerSettings.renewalThreshold = 65;
+brokerSettings.timerInterval = 15;
+
+// GraphConfig.useCanary = true;
 
 Providers.globalProvider = new Msal2Provider({
+  baseURL: GraphConfig.graphEndpoint,
   clientId: 'ed072e38-e76e-45ae-ab76-073cb95495bb',
   scopes: allChatScopes
 });
