@@ -418,3 +418,13 @@ export const moreExamples = () => html`
   </div>
 
 `;
+
+export const personDetailExamples = () => html`
+<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":null,"surname":null,"personType":{}}' view="twoLines"></mgt-person>
+<br>
+<mgt-person person-details='{"displayName":"Frank van Herbert","mail":"herbert@dune.net","givenName":null,"surname":null,"personType":{}}' view="twoLines"></mgt-person>
+<br>
+<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":"Frank","surname":null,"personType":{}}' view="twoLines"></mgt-person>
+<br>
+<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":null,"surname":"Herbert","personType":{}}' view="twoLines"></mgt-person>
+ `;
