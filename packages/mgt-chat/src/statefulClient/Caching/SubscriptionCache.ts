@@ -8,24 +8,24 @@ type CachedSubscriptionData = CacheItem & {
   subscriptions: Subscription[];
 };
 
-const subscriptionCacheKey = 'graph-current-subscriptions';
+const buildCacheKey = (chatId: string, sessionId: string): string => `${chatId}:${sessionId}`;
 
 export class SubscriptionsCache {
   private get cache(): CacheStore<CachedSubscriptionData> {
     const conversation: CacheSchema = schemas.conversation;
-    return CacheService.getCache<CachedSubscriptionData>(conversation, conversation.stores.chats);
+    return CacheService.getCache<CachedSubscriptionData>(conversation, conversation.stores.subscriptions);
   }
 
-  public async loadSubscriptions(): Promise<CachedSubscriptionData | undefined> {
+  public async loadSubscriptions(chatId: string, sessionId: string): Promise<CachedSubscriptionData | undefined> {
     if (isConversationCacheEnabled()) {
-      const data = await this.cache.getValue(subscriptionCacheKey);
+      const data = await this.cache.getValue(buildCacheKey(chatId, sessionId));
       if (cacheEntryIsValid(data)) return data ?? undefined;
     }
     return undefined;
   }
 
-  public async cacheSubscription(chatId: string, subscriptionRecord: Subscription): Promise<void> {
-    let cacheEntry = await this.loadSubscriptions();
+  public async cacheSubscription(chatId: string, sessionId: string, subscriptionRecord: Subscription): Promise<void> {
+    let cacheEntry = await this.loadSubscriptions(chatId, sessionId);
     if (cacheEntry && cacheEntry.chatId === chatId) {
       const subIndex = cacheEntry.subscriptions.findIndex(s => s.resource === subscriptionRecord.resource);
       if (subIndex !== -1) {
@@ -40,10 +40,10 @@ export class SubscriptionsCache {
       };
     }
 
-    await this.cache.putValue(subscriptionCacheKey, cacheEntry);
+    await this.cache.putValue(buildCacheKey(chatId, sessionId), cacheEntry);
   }
 
-  public async clearCachedSubscriptions(): Promise<void> {
-    await this.cache.delete(subscriptionCacheKey);
+  public async deleteCachedSubscriptions(chatId: string, sessionId: string): Promise<void> {
+    await this.cache.delete(buildCacheKey(chatId, sessionId));
   }
 }

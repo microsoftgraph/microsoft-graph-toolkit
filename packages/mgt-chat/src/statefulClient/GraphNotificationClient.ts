@@ -54,6 +54,7 @@ export class GraphNotificationClient {
   private renewalCount = 0;
   private currentUserId = '';
   private chatId = '';
+  private sessionId = '';
   private readonly subscriptionCache: SubscriptionsCache = new SubscriptionsCache();
   private get graph() {
     return this._graph;
@@ -169,7 +170,7 @@ export class GraphNotificationClient {
     ).toISOString();
     const subscriptionDefinition: Subscription = {
       changeType: changeTypes.join(','),
-      notificationUrl: 'wss:',
+      notificationUrl: `wss:?groupid=${this.chatId}&sessionId=${this.sessionId}`,
       resource: resourcePath,
       expirationDateTime,
       includeResourceData: true,
@@ -299,12 +300,11 @@ export class GraphNotificationClient {
     this.connection = undefined;
   }
 
-  public async subscribeToChatNotifications(userId: string, threadId: string, afterConnection: () => void) {
-    afterConnection();
-
+  public async subscribeToChatNotifications(userId: string, threadId: string, sessionId: string) {
     this.currentUserId = userId;
     this.chatId = threadId;
-    // MGT uses a per-user cache, so no concerns of loading the cachced data for another user.
+    this.sessionId = sessionId;
+    // MGT uses a per-user cache, so no concerns of loading the cached data for another user.
     const cacheData = await this.subscriptionCache.loadSubscriptions();
     if (cacheData && cacheData.chatId !== threadId) {
       // check validity of subscription and delete if still valid;
