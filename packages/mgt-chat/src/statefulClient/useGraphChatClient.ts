@@ -22,10 +22,6 @@ export const useGraphChatClient = (chatId: string): StatefulGraphChatClient => {
   useEffect(() => {
     // we must have both a chatId & sessionId to subscribe.
     if (chatId && sessionId) chatClient.subscribeToChat(chatId, sessionId);
-    return () => {
-      // unsubscribe for chatId + sessionId
-      if (chatId && sessionId) chatClient.unsubscribeFromChat(chatId, sessionId);
-    };
   }, [chatId, sessionId, chatClient]);
 
   return chatClient;

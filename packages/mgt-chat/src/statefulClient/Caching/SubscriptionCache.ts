@@ -43,7 +43,7 @@ export class SubscriptionsCache {
     await this.cache.putValue(buildCacheKey(chatId, sessionId), cacheEntry);
   }
 
-  public async deleteCachedSubscriptions(chatId: string, sessionId: string): Promise<void> {
-    await this.cache.delete(buildCacheKey(chatId, sessionId));
+  public deleteCachedSubscriptions(chatId: string, sessionId: string): Promise<void> {
+    return this.cache.delete(buildCacheKey(chatId, sessionId));
   }
 }

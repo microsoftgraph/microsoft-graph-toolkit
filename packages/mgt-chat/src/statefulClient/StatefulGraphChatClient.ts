@@ -397,13 +397,6 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     }
   }
 
-  public unsubscribeFromChat(chatId: string, sessionId: string) {
-    if (chatId && sessionId && chatId === this.chatId && sessionId === this._sessionId) {
-      this._sessionId = sessionId;
-      this.chatId = chatId;
-    }
-  }
-
   /**
    * A helper to co-ordinate the loading of a chat and its messages, and the subscription to notifications for that chat
    *
@@ -431,7 +424,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         const tasks: Promise<unknown>[] = [this.loadChatData()];
         // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
         // this client will then load the chat and messages when that event listener is called
-        tasks.push(this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, this._sessionId));
+        tasks.push(this._notificationClient.subscribeToChatNotifications(this._chatId, this._sessionId));
         await Promise.all(tasks);
       } catch (e) {
         console.error('Failed to load chat data or subscribe to notications: ', e);

@@ -52,7 +52,6 @@ export class GraphNotificationClient {
   private connection?: HubConnection = undefined;
   private renewalInterval = -1;
   private renewalCount = 0;
-  private currentUserId = '';
   private chatId = '';
   private sessionId = '';
   private readonly subscriptionCache: SubscriptionsCache = new SubscriptionsCache();
@@ -82,10 +81,6 @@ export class GraphNotificationClient {
     log(`Reconnected. ConnectionId: ${connectionId || 'undefined'}`);
     // void this.renewChatSubscriptions();
   };
-
-  private async decryptMessage<T>(encryptedData: string): Promise<T> {
-    return (await Promise.resolve(encryptedData)) as T;
-  }
 
   private readonly receiveNotificationMessage = (message: string) => {
     if (typeof message !== 'string') throw new Error('Expected string from receivenotificationmessageasync');
@@ -157,7 +152,7 @@ export class GraphNotificationClient {
   private readonly cacheSubscription = async (subscriptionRecord: Subscription): Promise<void> => {
     log(subscriptionRecord);
 
-    await this.subscriptionCache.cacheSubscription(this.chatId, subscriptionRecord);
+    await this.subscriptionCache.cacheSubscription(this.chatId, this.sessionId, subscriptionRecord);
 
     // only start timer once. -1 for renewalInterval is semaphore it has stopped.
     if (this.renewalInterval === -1) this.startRenewalTimer();
@@ -170,7 +165,7 @@ export class GraphNotificationClient {
     ).toISOString();
     const subscriptionDefinition: Subscription = {
       changeType: changeTypes.join(','),
-      notificationUrl: `wss:?groupid=${this.chatId}&sessionId=${this.sessionId}`,
+      notificationUrl: `wss:?groupId=${this.chatId}&sessionId=${this.sessionId}`,
       resource: resourcePath,
       expirationDateTime,
       includeResourceData: true,
@@ -206,7 +201,8 @@ export class GraphNotificationClient {
   private readonly syncTimerWrapper = () => void this.renewalTimer();
 
   private readonly renewalTimer = async () => {
-    const subscriptions = (await this.subscriptionCache.loadSubscriptions())?.subscriptions || [];
+    const subscriptions =
+      (await this.subscriptionCache.loadSubscriptions(this.chatId, this.sessionId))?.subscriptions || [];
     if (subscriptions.length === 0) {
       log(`No subscriptions found in session state. Stop renewal timer ${this.renewalInterval}.`);
       clearInterval(this.renewalInterval);
@@ -239,7 +235,7 @@ export class GraphNotificationClient {
       new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
     );
 
-    const subscriptionCache = await this.subscriptionCache.loadSubscriptions();
+    const subscriptionCache = await this.subscriptionCache.loadSubscriptions(this.chatId, this.sessionId);
     const awaits: Promise<unknown>[] = [];
     for (const subscription of subscriptionCache?.subscriptions || []) {
       if (!subscription.id) continue;
@@ -300,22 +296,32 @@ export class GraphNotificationClient {
     this.connection = undefined;
   }
 
-  public async subscribeToChatNotifications(userId: string, threadId: string, sessionId: string) {
-    this.currentUserId = userId;
-    this.chatId = threadId;
+  public async unsubscribeFromChatNotifications(chatId: string, sessionId: string) {
+    if (chatId === this.chatId && sessionId === this.chatId && this.connection) {
+      await this.connection?.stop();
+      this.connection = undefined;
+      const cacheData = await this.subscriptionCache.loadSubscriptions(chatId, sessionId);
+      if (cacheData) {
+        await this.removeSubscriptions(cacheData.subscriptions);
+      }
+    }
+  }
+
+  public async subscribeToChatNotifications(chatId: string, sessionId: string) {
+    // if we have a "previous" chat state at present, unsubscribe
+    if (this.chatId && this.sessionId && chatId !== this.chatId && sessionId !== this.sessionId) {
+      await this.unsubscribeFromChatNotifications(this.chatId, this.sessionId);
+    }
+    this.chatId = chatId;
     this.sessionId = sessionId;
     // MGT uses a per-user cache, so no concerns of loading the cached data for another user.
-    const cacheData = await this.subscriptionCache.loadSubscriptions();
-    if (cacheData && cacheData.chatId !== threadId) {
-      // check validity of subscription and delete if still valid;
-      await this.removeSubscriptions(cacheData.subscriptions);
-    }
-    if (cacheData && cacheData.chatId === threadId) {
+    const cacheData = await this.subscriptionCache.loadSubscriptions(chatId, sessionId);
+    if (cacheData) {
       // check subscription validity & renew if all still valid otherwise recreate
       const someExpired = cacheData.subscriptions.some(
         s => s.expirationDateTime && new Date(s.expirationDateTime) <= new Date()
       );
-      // for a given user they only get one websocket and receive all notifications via that websocket.
+      // for a given user + app + chatId + sessionId they only get one websocket and receive all notifications via that websocket.
       const webSocketUrl = cacheData.subscriptions.find(s => s.notificationUrl)?.notificationUrl;
       if (someExpired) {
         await this.removeSubscriptions(cacheData.subscriptions);
@@ -324,12 +330,12 @@ export class GraphNotificationClient {
         await this.renewChatSubscriptions();
         return;
       }
-      await this.subscriptionCache.clearCachedSubscriptions();
+      await this.subscriptionCache.deleteCachedSubscriptions(chatId, sessionId);
     }
     const promises: Promise<unknown>[] = [];
-    promises.push(this.subscribeToResource(`/chats/${threadId}/messages`, ['created', 'updated', 'deleted']));
-    promises.push(this.subscribeToResource(`/chats/${threadId}/members`, ['created', 'deleted']));
-    promises.push(this.subscribeToResource(`/chats/${threadId}`, ['updated', 'deleted']));
+    promises.push(this.subscribeToResource(`/chats/${chatId}/messages`, ['created', 'updated', 'deleted']));
+    promises.push(this.subscribeToResource(`/chats/${chatId}/members`, ['created', 'deleted']));
+    promises.push(this.subscribeToResource(`/chats/${chatId}`, ['updated', 'deleted']));
     await Promise.all(promises);
   }
 }
