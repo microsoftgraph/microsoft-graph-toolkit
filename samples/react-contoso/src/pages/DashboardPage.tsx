@@ -18,7 +18,7 @@ const useStyles = makeStyles({
   }
 });
 
-export const DashboardPage: React.FunctionComponent = () => {
+const DashboardPage: React.FunctionComponent = () => {
   const styles = useStyles();
 
   const [taskListId, setTaskListId] = React.useState<string>('');
@@ -56,3 +56,5 @@ export const DashboardPage: React.FunctionComponent = () => {
     </>
   );
 };
+
+export default DashboardPage;
