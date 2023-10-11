@@ -97,7 +97,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   // render props
                   onRenderAvatar={(userId?: string) => {
                     return (
-                      <Person userId={userId} avatarSize="small" personCardInteraction={PersonCardInteraction.click} />
+                      <Person userId={userId} avatarSize="small" personCardInteraction={PersonCardInteraction.hover} />
                     );
                   }}
                 />
