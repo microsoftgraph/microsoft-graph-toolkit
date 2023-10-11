@@ -1026,7 +1026,8 @@ detail: ${JSON.stringify(eventDetail)}`);
         isUnsupported.push(unsupportedContentTypes.includes(contentType));
       }
     } else {
-      const unsupportedContentRegex = /<\/?[atchmenbl]+>/gim;
+      // checking content with <attachment> tags
+      const unsupportedContentRegex = /<\/?attachment>/gim;
       const contentUnsupported = Boolean(content) && unsupportedContentRegex.test(content);
       isUnsupported.push(contentUnsupported);
     }
