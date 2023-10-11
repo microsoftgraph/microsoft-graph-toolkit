@@ -613,7 +613,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         // TODO: move this default case to a console.warn before release and emit an empty message
         // it's here to help us catch messages we have't handled yet
         default:
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-call
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           warn(`Unknown system message type ${eventDetail['@odata.type']}
 
 detail: ${JSON.stringify(eventDetail)}`);
@@ -847,7 +847,6 @@ detail: ${JSON.stringify(eventDetail)}`);
       // TODO handle the case where there were a lot of missed messages and we ned to get the next page of messages.
       // This is not a common case, but we should handle it.
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     log('checked for missed messages');
   };
 

@@ -298,7 +298,6 @@ export class MgtContact extends BasePersonCardSection {
     if (resource) {
       window.open(`${protocol}${resource}`, '_blank', 'noreferrer');
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       error(`Target resource for ${protocol} link was not provided: resource: ${resource}`);
     }
   }
@@ -311,7 +310,6 @@ export class MgtContact extends BasePersonCardSection {
    */
   protected sendChat(upn: string): void {
     if (!upn) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       error(" Can't send chat when upn is not provided");
       return;
     }

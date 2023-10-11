@@ -93,7 +93,6 @@ export class MgtSearchBox extends MgtBaseComponent {
 
   constructor() {
     super();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     warn(
       '<mgt-search-box> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
     );

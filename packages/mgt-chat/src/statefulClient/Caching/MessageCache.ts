@@ -11,7 +11,6 @@ interface CachedMessageData extends CacheItem, GraphCollection<ChatMessage> {
 
 export class MessageCache {
   private get cache(): CacheStore<CachedMessageData> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const conversation: CacheSchema = schemas.conversation;
     return CacheService.getCache<CachedMessageData>(conversation, conversation.stores.chats);
   }

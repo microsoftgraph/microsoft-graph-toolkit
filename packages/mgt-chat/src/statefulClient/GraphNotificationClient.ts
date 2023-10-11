@@ -78,7 +78,6 @@ export class GraphNotificationClient {
 
   // TODO: understand if this is needed under the native model
   private readonly onReconnect = (connectionId: string | undefined) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     log(`Reconnected. ConnectionId: ${connectionId || 'undefined'}`);
     // void this.renewChatSubscriptions();
   };
@@ -91,7 +90,6 @@ export class GraphNotificationClient {
     if (typeof message !== 'string') throw new Error('Expected string from receivenotificationmessageasync');
 
     const notification: ReceivedNotification = JSON.parse(message) as ReceivedNotification;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     log('received notification message', notification);
     const emitter: ThreadEventEmitter | undefined = this.emitter;
     if (!notification.resourceData) throw new Error('Message did not contain resourceData');
@@ -156,7 +154,6 @@ export class GraphNotificationClient {
   }
 
   private readonly cacheSubscription = async (subscriptionRecord: Subscription): Promise<void> => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     log(subscriptionRecord);
 
     await this.subscriptionCache.cacheSubscription(this.chatId, subscriptionRecord);
@@ -179,14 +176,12 @@ export class GraphNotificationClient {
       clientState: 'wsssecret'
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     log('subscribing to changes for ' + resourcePath);
     // send subscription POST to Graph
     const subscription: Subscription = (await this.beta
       .api(GraphConfig.subscriptionEndpoint)
       .post(subscriptionDefinition)) as Subscription;
     if (!subscription?.notificationUrl) throw new Error('Subscription not created');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     log(subscription);
     // subscription.notificationUrl = GraphConfig.adjustNotificationUrl(subscription.notificationUrl);
 
@@ -197,7 +192,6 @@ export class GraphNotificationClient {
     // create a connection to the web socket if one does not exist
     if (!this.connection) awaits.push(this.createSignalRConnection(subscription.notificationUrl));
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     log('Invoked CreateSubscription');
     return Promise.all(awaits);
   }
@@ -205,7 +199,6 @@ export class GraphNotificationClient {
   private readonly startRenewalTimer = () => {
     if (this.renewalInterval !== -1) clearInterval(this.renewalInterval);
     this.renewalInterval = window.setInterval(this.syncTimerWrapper, appSettings.timerInterval * 1000);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     log(`Start renewal timer . Id: ${this.renewalInterval}`);
   };
 
@@ -214,7 +207,6 @@ export class GraphNotificationClient {
   private readonly renewalTimer = async () => {
     const subscriptions = (await this.subscriptionCache.loadSubscriptions())?.subscriptions || [];
     if (subscriptions.length === 0) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       log(`No subscriptions found in session state. Stop renewal timer ${this.renewalInterval}.`);
       clearInterval(this.renewalInterval);
       return;
@@ -228,7 +220,6 @@ export class GraphNotificationClient {
 
       if (diff <= appSettings.renewalThreshold) {
         this.renewalCount++;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         log(`Renewing Graph subscription. RenewalCount: ${this.renewalCount}`);
         // stop interval to prevent new invokes until refresh is ready.
         clearInterval(this.renewalInterval);
@@ -253,7 +244,6 @@ export class GraphNotificationClient {
       if (!subscription.id) continue;
       // the renewSubscription method caches the updated subscription to track the new expiration time
       awaits.push(this.renewSubscription(subscription.id, expirationTime.toISOString()));
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       log(`Invoked RenewSubscription ${subscription.id}`);
     }
     await Promise.all(awaits);
@@ -288,10 +278,8 @@ export class GraphNotificationClient {
     this.connection = connection;
     try {
       await connection.start();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       log(connection);
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       error('An error occurred connecting to the notification web socket', e);
     }
   }
