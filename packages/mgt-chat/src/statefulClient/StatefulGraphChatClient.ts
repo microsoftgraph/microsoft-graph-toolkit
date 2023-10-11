@@ -772,6 +772,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * Event handler to be called when a new message is received by the notification service
    */
   private readonly onMessageReceived = async (message: ChatMessage) => {
+    await this._cache.cacheMessage(this._chatId, message);
     const messageConversion = this.convertChatMessage(message);
     const acsMessage = messageConversion.currentValue;
     this.updateMessages(acsMessage);
@@ -786,8 +787,10 @@ detail: ${JSON.stringify(eventDetail)}`);
    * Event handler to be called when a message deletion is received by the notification service
    */
   private readonly onMessageDeleted = (message: ChatMessage) => {
+    void this._cache.deleteMessage(this.chatId, message);
     this.notifyStateChange((draft: GraphChatClient) => {
       const draftMessage = draft.messages.find(m => m.messageId === message.id) as AcsChatMessage;
+      // TODO: confirm if we should show the deleted content message in all cases or only when the message was deleted by the current user
       if (draftMessage) this.setDeletedContent(draftMessage);
     });
   };
@@ -796,6 +799,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * Event handler to be called when a message edit is received by the notification service
    */
   private readonly onMessageEdited = async (message: ChatMessage) => {
+    await this._cache.cacheMessage(this._chatId, message);
     const messageConversion = this.convertChatMessage(message);
     this.updateMessages(messageConversion.currentValue);
     if (messageConversion.futureValue) {
