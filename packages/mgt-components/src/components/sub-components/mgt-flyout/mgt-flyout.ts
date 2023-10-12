@@ -418,7 +418,9 @@ export class MgtFlyout extends MgtBaseComponent {
         window.requestAnimationFrame(() => this.updateFlyout());
       }
 
-      if (height) {
+      // don't use the calculated height on the first pass as the contents of the flyout may not have rendered yet
+      // this gives them a change to contribute height and not get forced to a smaller than intended height
+      if (height && !firstPass) {
         flyout.style.maxHeight = `${height}px`;
         flyout.style.setProperty('--mgt-flyout-set-height', `${height}px`);
       } else {
