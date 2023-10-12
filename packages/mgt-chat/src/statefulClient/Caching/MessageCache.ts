@@ -73,20 +73,24 @@ export class MessageCache {
   }
 
   private addMessageToCacheData(message: ChatMessage, cachedData: CachedMessageData) {
-    // this message hasn't been modified, it should not be in the cache already
-    // NB this assumption may prove to be an issue later, in which case, I'm sorry future developer.
-    if (message.lastModifiedDateTime === message.createdDateTime) {
-      cachedData.value.push(message);
+    const spliceIndex = cachedData.value.findIndex(m => m.id === message.id);
+    if (spliceIndex !== -1) {
+      cachedData.value.splice(spliceIndex, 1, message);
     } else {
-      const spliceIndex = cachedData.value.findIndex(m => m.id === message.id);
-      if (spliceIndex !== -1) {
-        cachedData.value.splice(spliceIndex, 1, message);
-      } else {
-        cachedData.value.push(message);
-      }
+      cachedData.value.push(message);
     }
     // coerce potential nullish values to an empty string to allow comparison
     if (message.lastModifiedDateTime && message.lastModifiedDateTime > (cachedData.lastModifiedDateTime ?? ''))
       cachedData.lastModifiedDateTime = message.lastModifiedDateTime;
+  }
+
+  public async deleteMessage(chatId: string, message: ChatMessage) {
+    const cachedData = await this.cache.getValue(chatId);
+    // for now we're ignoring the case where we didn't find anything in the cache for the given chatId as there's nothing to delete.
+    if (cachedData) {
+      const spliceIndex = cachedData.value.findIndex(m => m.id === message.id);
+      cachedData.value.splice(spliceIndex, 1);
+      await this.cache.putValue(chatId, cachedData);
+    }
   }
 }
