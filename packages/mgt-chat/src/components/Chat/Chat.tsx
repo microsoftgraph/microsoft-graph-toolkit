@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
 import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
-import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import { FluentTheme, MessageBarType } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
+import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
+import React, { useEffect, useState } from 'react';
+import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
+import { onRenderMessage } from '../../utils/chat';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
-import { registerAppIcons } from '../styles/registerIcons';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
-import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
+import { registerAppIcons } from '../styles/registerIcons';
 
 registerAppIcons();
 
@@ -42,6 +43,9 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     height: '100%'
+  },
+  unsupportedContent: {
+    color: 'red'
   }
 });
 
@@ -100,6 +104,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                       <Person userId={userId} avatarSize="small" personCardInteraction={PersonCardInteraction.hover} />
                     );
                   }}
+                  onRenderMessage={onRenderMessage}
                 />
               </div>
               <div className={styles.chatInput}>
