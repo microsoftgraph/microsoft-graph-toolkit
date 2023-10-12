@@ -8,3 +8,8 @@
 @import '../../styles/shared-sass-variables';
 
 $taxonomy-picker-background-color: var(--taxonomy-picker-background-color, transparent);
+$taxonomy-picker-placeholder-color: var(--taxonomy-picker-placeholder-color, var(--input-filled-placeholder-rest));
+$taxonomy-picker-placeholder-hover-color: var(
+  --taxonomy-picker-placeholder-color-hover,
+  var(--secondary-text-hover-color)
+);
