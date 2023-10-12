@@ -10,13 +10,10 @@ export const renderMGTMention = (chatState: GraphChatClient) => {
     let render: JSX.Element = defaultRenderer(mention);
 
     const mentions = chatState?.mentions ?? [];
-    // TODO: Array.flat() is a new api, update?
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    const flatMentions = mentions?.flat() as ChatMessageMention[];
-    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-    const teamsMention = flatMentions.find(
+    const flatMentions = mentions?.flat();
+    const teamsMention: ChatMessageMention | undefined = flatMentions?.find(
       m => m.id?.toString() === mention?.id && m.mentionText === mention?.displayText
-    ) as ChatMessageMention;
+    );
 
     const user = teamsMention?.mentioned?.user as User;
     if (user) {
@@ -28,8 +25,6 @@ export const renderMGTMention = (chatState: GraphChatClient) => {
           <MGTMention template="default" />
         </Person>
       );
-
-      //   render = <button>{mention.displayText}</button>;
     }
     return render;
   };
