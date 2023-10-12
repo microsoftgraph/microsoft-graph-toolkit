@@ -5,7 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-/* eslint-disable no-console */
 import { BetaGraph, IGraph, Providers, error, log } from '@microsoft/mgt-element';
 import { HubConnection, HubConnectionBuilder, IHttpConnectionOptions, LogLevel } from '@microsoft/signalr';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
@@ -272,7 +271,6 @@ export class GraphNotificationClient {
 
     connection.on('receivenotificationmessageasync', this.receiveNotificationMessage);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     connection.on('EchoMessage', log);
 
     this.connection = connection;

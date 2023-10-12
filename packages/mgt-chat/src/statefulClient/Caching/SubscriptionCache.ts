@@ -12,7 +12,6 @@ const subscriptionCacheKey = 'graph-current-subscriptions';
 
 export class SubscriptionsCache {
   private get cache(): CacheStore<CachedSubscriptionData> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const conversation: CacheSchema = schemas.conversation;
     return CacheService.getCache<CachedSubscriptionData>(conversation, conversation.stores.chats);
   }
@@ -45,7 +44,6 @@ export class SubscriptionsCache {
   }
 
   public async clearCachedSubscriptions(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     await this.cache.delete(subscriptionCacheKey);
   }
 }

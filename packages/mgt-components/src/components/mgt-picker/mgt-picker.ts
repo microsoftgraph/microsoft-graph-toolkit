@@ -286,7 +286,6 @@ export class MgtPicker extends MgtTemplatedComponent {
       if (parent) {
         parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         error('mgt-picker component requires a child mgt-get component. Something has gone horribly wrong.');
       }
     }
