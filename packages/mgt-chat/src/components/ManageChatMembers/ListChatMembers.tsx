@@ -12,7 +12,7 @@ import { List, ListItem } from '@fluentui/react-northstar';
 import { Person, PersonViewType } from '@microsoft/mgt-react';
 import { AadUserConversationMember } from '@microsoft/microsoft-graph-types';
 import { styles } from './manage-chat-members.styles';
-import { Dismiss24Regular, bundleIcon } from '@fluentui/react-icons';
+import { Dismiss24Regular, Dismiss24Filled, bundleIcon } from '@fluentui/react-icons';
 
 interface ListChatMembersProps {
   currentUserId: string;

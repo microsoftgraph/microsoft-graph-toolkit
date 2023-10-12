@@ -3425,7 +3425,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-icons@npm:^2.0.200, @fluentui/react-icons@npm:^2.0.217, @fluentui/react-icons@npm:~2.0.194":
+"@fluentui/react-icons@npm:^2.0.210, @fluentui/react-icons@npm:^2.0.217, @fluentui/react-icons@npm:~2.0.194":
   version: 2.0.219
   resolution: "@fluentui/react-icons@npm:2.0.219"
   dependencies:
@@ -5887,7 +5887,7 @@ __metadata:
     "@azure/msal-browser": 2.33.0
     "@fluentui/react": ~8.106.1
     "@fluentui/react-components": ^9.19.1
-    "@fluentui/react-icons": ^2.0.200
+    "@fluentui/react-icons": ^2.0.210
     "@fluentui/react-northstar": ^0.66.4
     "@microsoft/mgt-components": "*"
     "@microsoft/mgt-element": "*"
@@ -16627,9 +16627,9 @@ __metadata:
   linkType: hard
 
 "cssdb@npm:^7.1.0":
-  version: 7.8.0
-  resolution: "cssdb@npm:7.8.0"
-  checksum: 4071a60df6edaeba1d7df63432836c59023b41bdf3c0a2b4f434cb46a4a6e1b6a5717d0003eb264503187d183827c4b24209f4ad3009b76b96df65654444207d
+  version: 7.7.3
+  resolution: "cssdb@npm:7.7.3"
+  checksum: 5001cfcff37cacf348383910f8c7c5c3e75dc18d7f2e340afd31e5b5dd1dbab9979cf2e6a82eb84911d4f15ef82bdbba80a7ce4c96b0489a7c1d7c79b8d3efc6
   languageName: node
   linkType: hard
 
@@ -17889,9 +17889,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.535":
-  version: 1.4.544
-  resolution: "electron-to-chromium@npm:1.4.544"
-  checksum: 78e88e4c56fc4faaa9a405de5e0b51305531e9cdf2c71bcc9296c2c59fb68001472e5b924f8701c873bc855ab5174cf0340642712d7af05c1d8e92356529397e
+  version: 1.4.543
+  resolution: "electron-to-chromium@npm:1.4.543"
+  checksum: 2691478369bb543c22a0e661625beda6c2b3fbbdf0a3af91a12eeda0fdd18447e025d7d9b09f55f87d66e5983a8401a52ba1b26a9e43678f638dc9141ec3e427
   languageName: node
   linkType: hard
 
