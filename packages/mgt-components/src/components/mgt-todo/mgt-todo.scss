@@ -25,9 +25,15 @@
     }
 
     &.complete {
-      text-decoration: line-through;
       border: 1px solid $task-border-completed;
       background: $task-background-color-completed;
+
+      .task-details {
+        .title,
+        .task-due {
+          text-decoration: line-through;
+        }
+      }
     }
 
     &.read-only {
@@ -84,6 +90,13 @@
         .task-due-date {
           display: flex;
           margin-top: 5px;
+        }
+      }
+
+      .task-options {
+        .options {
+          height: 10px;
+          width: 20px;
         }
       }
     }

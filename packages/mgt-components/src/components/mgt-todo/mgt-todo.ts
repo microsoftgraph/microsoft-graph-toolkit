@@ -102,6 +102,7 @@ export class MgtTodo extends MgtTasksBase {
   private _loadingTasks: string[];
   private _newTaskDueDate: Date;
   @state() private _newTaskName: string;
+  @state() private _changedTaskName: string;
   private _isNewTaskBeingAdded: boolean;
   private _graph: IGraph;
   @state() private currentList: TodoTaskList;
@@ -166,11 +167,13 @@ export class MgtTodo extends MgtTasksBase {
     );
 
     const completedTaskTemplates = repeat(
-      completedTasks.sort((a, b) => {
-        return new Date(a.lastModifiedDateTime).getTime() - new Date(b.lastModifiedDateTime).getTime();
-      }),
+      completedTasks
+        .sort((a, b) => {
+          return new Date(a.lastModifiedDateTime).getTime() - new Date(b.lastModifiedDateTime).getTime();
+        })
+        .filter(task => task.status === 'completed'),
       task => task.id,
-      task => this.renderCompletedTask(task)
+      task => this.renderTask(task)
     );
     return html`
       ${taskTemplates}
@@ -217,6 +220,21 @@ export class MgtTodo extends MgtTasksBase {
     } finally {
       this.clearNewTaskData();
       this._isNewTaskBeingAdded = false;
+      this.requestUpdate();
+    }
+  };
+
+  /**
+   *Upfdate a todo task and reposition it in the list
+   * @protected
+   * @returns {Promise<void>}
+   * @memberof MgtTodo
+   */
+  protected updateTask = async (task: TodoTask): Promise<void> => {
+    try {
+      await this.updateTaskItem(task);
+    } finally {
+      this.clearNewTaskData();
       this.requestUpdate();
     }
   };
@@ -340,25 +358,46 @@ export class MgtTodo extends MgtTasksBase {
       `
       : html``;
 
-    const taskDeleteTemplate = this.readOnly
-      ? html``
-      : html`
-        <fluent-button class="task-delete"
-          @click="${() => this.removeTask(task.id)}"
-          aria-label="${this.strings.deleteTaskLabel}"
-        >
-          ${getSvg(SvgIcon.Delete)}
-        </fluent-button>
-      `;
+    const taskOptions = this.readOnly
+      ? nothing
+      : mgtHtml`
+          <mgt-dot-options
+            class="dot-options"
+            .options="${{
+              [this.strings.editTaskOption]: () => this.updateTask(task),
+              [this.strings.deleteTaskOption]: () => this.removeTask(task.id)
+            }}"
+          ></mgt-dot-options>`;
+
+    const taskDeleteTemplate = html`
+      <fluent-button class="task-delete"
+        @click="${() => this.removeTask(task.id)}"
+        aria-label="${this.strings.deleteTaskOption}">
+        ${getSvg(SvgIcon.Delete)}
+      </fluent-button>`;
 
     if (this.hasTemplate('task-details')) {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
     } else {
+      const changeTaskDetailsTemplate = html`
+      <fluent-text-field 
+        autocomplete="off"
+        appearance="outline"
+        class="title"
+        id=${task.id}
+        .value="${task.title}"
+        aria-label="${this.strings.editTaskLabel}"
+        @keydown="${(e: KeyboardEvent) => this.handleChangeKeyDown(e, task)}"
+        @change="${(e: KeyboardEvent) => this.handleChangeInput(e, task)}"
+      >
+      </fluent-text-field>
+      `;
+
       taskDetailsTemplate = html`
       <div class="task-details">
-        <div class="title">${task.title}</div>
+        <div class="title">${changeTaskDetailsTemplate}</div>
         <div class="task-due">${taskDueTemplate}</div>
-        ${taskDeleteTemplate}
+        ${task.status === 'completed' ? taskDeleteTemplate : taskOptions}
       </div>
       `;
     }
@@ -375,49 +414,23 @@ export class MgtTodo extends MgtTasksBase {
    * @memberof MgtTodo
    */
   protected renderTask = (task: TodoTask) => {
+    const isCompleted = task.status === 'completed';
+
     const taskClasses = classMap({
+      complete: isCompleted,
       'read-only': this.readOnly,
       task: true
     });
 
-    return html`
-      <fluent-checkbox 
-        id=${task.id}
-        class=${taskClasses}
-        ?disabled=${this.readOnly}
-        @click="${() => this.handleTaskCheckClick(task)}"
-      >
-        ${this.renderTaskDetails(task)}
-      </fluent-checkbox>
-    `;
-  };
-
-  /**
-   * Render a completed task in the list.
-   *
-   * @protected
-   * @param {TodoTask} task
-   * @returns {TemplateResult}
-   * @memberof MgtTodo
-   */
-  protected renderCompletedTask = (task: TodoTask) => {
-    const taskClasses = classMap({
-      complete: true,
-      'read-only': this.readOnly,
-      task: true
-    });
-
-    const taskCheckContent = html`${getSvg(SvgIcon.CheckMark)}`;
+    const taskCheckContent = isCompleted ? html`${getSvg(SvgIcon.CheckMark)}` : nothing;
 
     return html`
       <fluent-checkbox 
         id=${task.id} 
         class=${taskClasses} 
-        checked 
-        ?disabled=${this.readOnly} 
-        @click="${() => this.handleTaskCheckClick(task)}"
+        ?checked=${isCompleted}
       >
-        <div slot="checked-indicator">
+        <div slot="checked-indicator" @click="${() => this.handleTaskCheckClick(task)}">
           ${taskCheckContent}
         </div>
         ${this.renderTaskDetails(task)}
@@ -487,6 +500,22 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   /**
+   * Send a request the Graph to update a todo task item
+   *
+   * @protected
+   * @returns {Promise<void>}
+   * @memberof MgtTodo
+   */
+  protected async updateTaskItem(task: TodoTask): Promise<void> {
+    const listId = this.currentList.id;
+    const taskData = {
+      title: this._changedTaskName
+    };
+
+    await updateTodoTask(this._graph, listId, task.id, taskData);
+  }
+
+  /**
    * Clear out the new task metadata input fields
    *
    * @protected
@@ -495,6 +524,7 @@ export class MgtTodo extends MgtTasksBase {
   protected clearNewTaskData = (): void => {
     this._newTaskDueDate = null;
     this._newTaskName = '';
+    this._changedTaskName = '';
   };
 
   /**
@@ -562,14 +592,26 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   private readonly handleInput = (e: MouseEvent) => {
-    if ((e.target as HTMLInputElement).id === 'new-task-name-input') {
+    if (this._isNewTaskBeingAdded && (e.target as HTMLInputElement).id === 'new-task-name-input') {
       this._newTaskName = (e.target as HTMLInputElement).value;
     }
   };
 
+  private readonly handleChangeInput = (e: KeyboardEvent, task: TodoTask) => {
+    if ((e.target as HTMLInputElement).id === task.id) {
+      this._changedTaskName = (e.target as HTMLInputElement).value;
+    }
+  };
+
   private readonly handleKeyDown = async (e: KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && (e.target as HTMLInputElement).id === 'new-task-name-input') {
       await this.addTask();
+    }
+  };
+
+  private readonly handleChangeKeyDown = async (e: KeyboardEvent, task: TodoTask) => {
+    if (e.key === 'Enter') {
+      await this.updateTask(task);
     }
   };
 
