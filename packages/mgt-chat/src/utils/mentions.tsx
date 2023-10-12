@@ -10,8 +10,8 @@ export const renderMGTMention = (chatState: GraphChatClient) => {
     let render: JSX.Element = defaultRenderer(mention);
 
     const mentions = chatState?.mentions ?? [];
-    const flatMentions = mentions?.flat();
-    const teamsMention: ChatMessageMention | undefined = flatMentions?.find(
+    const flatMentions = mentions.flat();
+    const teamsMention: ChatMessageMention | undefined = flatMentions.find(
       m => m.id?.toString() === mention?.id && m.mentionText === mention?.displayText
     );
 
