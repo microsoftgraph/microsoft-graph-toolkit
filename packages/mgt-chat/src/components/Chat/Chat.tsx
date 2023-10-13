@@ -1,14 +1,15 @@
-import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
+import { ErrorBar, FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
 import { FluentTheme, MessageBarType } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
-import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
+import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { onRenderMessage } from '../../utils/chat';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
+import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
 
 registerAppIcons();
@@ -48,6 +49,29 @@ const useStyles = makeStyles({
     color: 'red'
   }
 });
+
+/**
+ * Styling for the MessageThread and its components.
+ */
+const messageThreadStyles: MessageThreadStyles = {
+  chatContainer: {
+    '& .ui-box': {
+      zIndex: 'unset'
+    }
+  },
+  chatMessageContainer: {
+    '& p>mgt-person,msft-mention': {
+      display: 'inline-block',
+      ...shorthands.marginInline('0px', '2px')
+    }
+  },
+  myChatMessageContainer: {
+    '& p>mgt-person,msft-mention': {
+      display: 'inline-block',
+      ...shorthands.marginInline('0px', '2px')
+    }
+  }
+};
 
 export const Chat = ({ chatId }: IMgtChatProps) => {
   const styles = useStyles();
@@ -103,6 +127,12 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                     return (
                       <Person userId={userId} avatarSize="small" personCardInteraction={PersonCardInteraction.hover} />
                     );
+                  }}
+                  styles={messageThreadStyles}
+                  mentionOptions={{
+                    displayOptions: {
+                      onRenderMention: renderMGTMention(chatState)
+                    }
                   }}
                   onRenderMessage={onRenderMessage}
                 />

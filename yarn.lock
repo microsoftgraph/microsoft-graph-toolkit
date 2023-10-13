@@ -89,23 +89,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/communication-calling@npm:1.15.2":
-  version: 1.15.2
-  resolution: "@azure/communication-calling@npm:1.15.2"
+"@azure/communication-calling@npm:1.16.3":
+  version: 1.16.3
+  resolution: "@azure/communication-calling@npm:1.16.3"
   dependencies:
-    "@azure/communication-common": latest
-    "@azure/logger": 1.0.3
-  checksum: 37aafc663501f6d909014f42e1358913aeb313028e4065d5b57fdfdb351363c6b396db8bdf94ce0075ba99c88d7e0d659cdaaac08ecf7116801b49b47cff9d52
+    "@azure/communication-common": ^2.0.0
+    "@azure/logger": ^1.0.3
+  checksum: da044d19caeabbfa934d002136a236acd44d66e2e9f0c44f1608960b347aa71a2e158b0fde32ba8bf0f2048e7b103093add025f190e26d79133fe669b1c59b08
   languageName: node
   linkType: hard
 
-"@azure/communication-chat@npm:1.3.1":
-  version: 1.3.1
-  resolution: "@azure/communication-chat@npm:1.3.1"
+"@azure/communication-chat@npm:1.3.2":
+  version: 1.3.2
+  resolution: "@azure/communication-chat@npm:1.3.2"
   dependencies:
     "@azure/abort-controller": ^1.0.0
     "@azure/communication-common": ^2.2.0
-    "@azure/communication-signaling": 1.0.0-beta.16
+    "@azure/communication-signaling": 1.0.0-beta.20
     "@azure/core-auth": ^1.3.0
     "@azure/core-client": ^1.3.0
     "@azure/core-paging": ^1.1.1
@@ -115,7 +115,7 @@ __metadata:
     events: ^3.0.0
     tslib: ^2.2.0
     uuid: ^8.3.0
-  checksum: 8075ce80035716bba29535ef86cdf3a497ad6472a0f351e7cdacac88e40dc70392b2f433f26a8d7a4a773af0837845b2dc463eb7d7bec8279bef77b7e03fc0af
+  checksum: 753596b81579d8210ff71bf1e2bd651849ddb7fbdc5f0ceec07664d9d2af1a8ecafc1486d639e8cc6899af9a2ad01c51d76e463e9160d0b00df42843e307c384
   languageName: node
   linkType: hard
 
@@ -151,7 +151,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/communication-common@npm:^2.1.0, @azure/communication-common@npm:^2.2.0, @azure/communication-common@npm:latest":
+"@azure/communication-common@npm:^2.0.0, @azure/communication-common@npm:^2.1.0, @azure/communication-common@npm:^2.2.0":
   version: 2.3.0
   resolution: "@azure/communication-common@npm:2.3.0"
   dependencies:
@@ -225,16 +225,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/communication-signaling@npm:1.0.0-beta.16":
-  version: 1.0.0-beta.16
-  resolution: "@azure/communication-signaling@npm:1.0.0-beta.16"
+"@azure/communication-signaling@npm:1.0.0-beta.20":
+  version: 1.0.0-beta.20
+  resolution: "@azure/communication-signaling@npm:1.0.0-beta.20"
   dependencies:
     "@azure/core-http": ^2.0.0
     "@azure/core-tracing": 1.0.0-preview.13
     "@azure/logger": ~1.0.0
     events: ^3.0.0
     tslib: ^1.10.0
-  checksum: b8f0e1c41f465e28c8df3bc7e84aa1b34288f863a5b33b5c8608db153b52db040f36d56d20240f4f855c2d6de4632e49103c89257368d7763777e542e6a6c407
+  checksum: f023ac73f3a55f168c3dfe93786ed7464a61d9d94cae8dfdfd217b56b58bd6ae67c885569b8fd70fee7945201058ec7eb77251d3b7a7ec876393998cb168855a
   languageName: node
   linkType: hard
 
@@ -378,16 +378,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/logger@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@azure/logger@npm:1.0.3"
-  dependencies:
-    tslib: ^2.2.0
-  checksum: f3443c70c678a7449a5f3be09488a0a15711c506c9da6a81fa9e43178128ddf5db3abc02c99359d188e4ef47d703c5e5f206df71b0e01884245de3220ab1205b
-  languageName: node
-  linkType: hard
-
-"@azure/logger@npm:^1.0.0, @azure/logger@npm:^1.0.2, @azure/logger@npm:^1.0.4, @azure/logger@npm:~1.0.0":
+"@azure/logger@npm:^1.0.0, @azure/logger@npm:^1.0.2, @azure/logger@npm:^1.0.3, @azure/logger@npm:^1.0.4, @azure/logger@npm:~1.0.0":
   version: 1.0.4
   resolution: "@azure/logger@npm:1.0.4"
   dependencies:
@@ -2761,10 +2752,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:8.50.0":
-  version: 8.50.0
-  resolution: "@eslint/js@npm:8.50.0"
-  checksum: 302478f2acaaa7228729ec6a04f56641590185e1d8cd1c836a6db8a6b8009f80a57349341be9fbb9aa1721a7a569d1be3ffc598a33300d22816f11832095386c
+"@eslint/js@npm:8.51.0":
+  version: 8.51.0
+  resolution: "@eslint/js@npm:8.51.0"
+  checksum: 0228bf1e1e0414843e56d9ff362a2a72d579c078f93174666f29315690e9e30a8633ad72c923297f7fd7182381b5a476805ff04dac8debe638953eb1ded3ac73
   languageName: node
   linkType: hard
 
@@ -2854,13 +2845,13 @@ __metadata:
   linkType: hard
 
 "@fluentui/fluent2-theme@npm:^8.0.0":
-  version: 8.107.42
-  resolution: "@fluentui/fluent2-theme@npm:8.107.42"
+  version: 8.107.43
+  resolution: "@fluentui/fluent2-theme@npm:8.107.43"
   dependencies:
-    "@fluentui/react": ^8.112.1
+    "@fluentui/react": ^8.112.2
     "@fluentui/set-version": ^8.2.11
     tslib: ^2.1.0
-  checksum: fa3e175a044f1e1ac7aadeed2a8f8ec5450e23888d330ce84d21e0ce81598e359de7e86862619923f3545743ef5d736cc56c5be721a18ffd12fe66ecc1c034c3
+  checksum: 3fcec7280eeca453e356c86dba31c09e7f99aeaf28de98e74c62717415c41b806fc0973119d7a0bbf50631eb0bfd9944ff3b83f666155c73eafabcd37e78c1fe
   languageName: node
   linkType: hard
 
@@ -3435,14 +3426,14 @@ __metadata:
   linkType: hard
 
 "@fluentui/react-icons@npm:^2.0.210, @fluentui/react-icons@npm:^2.0.217, @fluentui/react-icons@npm:~2.0.194":
-  version: 2.0.218
-  resolution: "@fluentui/react-icons@npm:2.0.218"
+  version: 2.0.219
+  resolution: "@fluentui/react-icons@npm:2.0.219"
   dependencies:
     "@griffel/react": ^1.0.0
     tslib: ^2.1.0
   peerDependencies:
     react: ">=16.8.0 <19.0.0"
-  checksum: 1c658ab36743f5d584df29fffd70c651183911b464ec7607200a3642c489b053c6614d2b04a6f1f82ccf3bf1cb49bf0b49656da15a6696f004ca7960e5dc59a4
+  checksum: 6c70a843e7c5d0ea125fe23c21b7280a4ea052d2910f730680ce823146488487012426b20568fdbfa38dcc97d096e9be0f5ef32750980caefe5e199ca125ee85
   languageName: node
   linkType: hard
 
@@ -4346,9 +4337,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react@npm:^8.0.0, @fluentui/react@npm:^8.112.1":
-  version: 8.112.1
-  resolution: "@fluentui/react@npm:8.112.1"
+"@fluentui/react@npm:^8.0.0, @fluentui/react@npm:^8.112.2":
+  version: 8.112.2
+  resolution: "@fluentui/react@npm:8.112.2"
   dependencies:
     "@fluentui/date-time-utilities": ^8.5.13
     "@fluentui/font-icons-mdl2": ^8.5.25
@@ -4369,7 +4360,7 @@ __metadata:
     "@types/react-dom": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
     react-dom: ">=16.8.0 <19.0.0"
-  checksum: 9e37d80d7eef01285777baf42506a296b877aaace0c38bc0cb76050c8d834d1bbf346405b2cfe51017f27bc6bb76f25add7978442c0e28d45e6c1132813d2d32
+  checksum: e3199942e8fed0d36e0fa04f7def8ec1dcf05b74aaac99225e93289ba0675b2305aea31380b11dab22d90d83106251715d22036ffbe4365ffad51a768a114c3d
   languageName: node
   linkType: hard
 
@@ -5887,9 +5878,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@microsoft/mgt-chat@workspace:packages/mgt-chat"
   dependencies:
-    "@azure/communication-calling": 1.15.2
+    "@azure/communication-calling": 1.16.3
     "@azure/communication-calling-effects": 1.0.1
-    "@azure/communication-chat": 1.3.1
+    "@azure/communication-chat": 1.3.2
     "@azure/communication-common": 2.2.1
     "@azure/communication-identity": 1.2.0
     "@azure/communication-react": 1.7.0-beta.2
@@ -6985,14 +6976,14 @@ __metadata:
   linkType: hard
 
 "@pnpm/dependency-path@npm:~2.1.2":
-  version: 2.1.3
-  resolution: "@pnpm/dependency-path@npm:2.1.3"
+  version: 2.1.4
+  resolution: "@pnpm/dependency-path@npm:2.1.4"
   dependencies:
     "@pnpm/crypto.base32-hash": 2.0.0
-    "@pnpm/types": 9.2.0
-    encode-registry: ^3.0.0
+    "@pnpm/types": 9.3.0
+    encode-registry: ^3.0.1
     semver: ^7.5.4
-  checksum: 8e8d9f59249af7882f763cec827eb49f7474ddcb16075e2d2c22d920185207503b81a78b9ac1f74006b85c680fbf9732e8cdf234425c355426ddf00cc7aaa893
+  checksum: e301b9eec7b6231f80aad90a49c15f9d8e64403007e5b1d9b79f909f61a89c247a21c6045bd649ba76e711bbed1924c59bee28d4aee9d7dff88a2e149b51bf81
   languageName: node
   linkType: hard
 
@@ -7090,10 +7081,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pnpm/types@npm:9.2.0":
-  version: 9.2.0
-  resolution: "@pnpm/types@npm:9.2.0"
-  checksum: 211157d4b43d86b5466a88e8c00d1387b909526eefbfa93b0237dd783d5126e68f7fe5c891c37f0393e4bf320107463d266845bf9d9cdbdaafd29054ddcfd04c
+"@pnpm/types@npm:9.3.0":
+  version: 9.3.0
+  resolution: "@pnpm/types@npm:9.3.0"
+  checksum: beebc0e673c2d66e7af7b1af15d5cfcd77db76b76033594caeb27f390c8441b707a0e236ed267373c2b54e381c0d2f2b99a5d05a75d6a0e44ddff89c5cf4fbc6
   languageName: node
   linkType: hard
 
@@ -9637,11 +9628,11 @@ __metadata:
   linkType: hard
 
 "@swc/helpers@npm:^0.5.1":
-  version: 0.5.2
-  resolution: "@swc/helpers@npm:0.5.2"
+  version: 0.5.3
+  resolution: "@swc/helpers@npm:0.5.3"
   dependencies:
     tslib: ^2.4.0
-  checksum: 51d7e3d8bd56818c49d6bfbd715f0dbeedc13cf723af41166e45c03e37f109336bbcb57a1f2020f4015957721aeb21e1a7fff281233d797ff7d3dd1f447fa258
+  checksum: 61c3f7ccd47fc70ad91437df88be6b458cdc11e311cb331288827d7c50befffc72aa18fe913ec2a9e70fbf44e4b818bed38bfd7c329d689e1ff3c198d084cd02
   languageName: node
   linkType: hard
 
@@ -10355,9 +10346,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 20.8.2
-  resolution: "@types/node@npm:20.8.2"
-  checksum: 3da73e25d821bfcdb7de98589027e08bb4848e55408671c4a83ec0341e124b5313a0b20e1e4b4eff1168ea17a86f622ad73fcb04b761abd77496b9a27cbd5de5
+  version: 20.8.3
+  resolution: "@types/node@npm:20.8.3"
+  checksum: bfb88b341faeb19f8fd37306a3bf433721b876c6491d10fcb0b13fd26601fa36ee45113dd82b1e1c23e3c957dff5b99f81a16493cefa03abe797e41a2487a4f7
   languageName: node
   linkType: hard
 
@@ -10390,9 +10381,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:^16.0.0, @types/node@npm:^16.18.12":
-  version: 16.18.57
-  resolution: "@types/node@npm:16.18.57"
-  checksum: db21a14416de3abce8dfc30d9e9513c505060ef4d197fdc1b1b7374feca3417a7757172d041989fd49910245e9f2d7869201accac3cceee7c75bfdf8759ead6d
+  version: 16.18.58
+  resolution: "@types/node@npm:16.18.58"
+  checksum: 6d8404abc6c97bacd220f606441727adea923f3bd010d07d869f0dc6c4c6dc016430880af1f270edf1b84ae637a7fa5339e6adb3abba210a4820ac5e28f34067
   languageName: node
   linkType: hard
 
@@ -10492,11 +10483,11 @@ __metadata:
   linkType: hard
 
 "@types/react-dom@npm:^18.0.0":
-  version: 18.2.10
-  resolution: "@types/react-dom@npm:18.2.10"
+  version: 18.2.11
+  resolution: "@types/react-dom@npm:18.2.11"
   dependencies:
     "@types/react": "*"
-  checksum: ced70643d82dd9d165cd6d1a98ec7556daf77d8fdec1ed19badb744a2a2370a84cc109248667536d7f850409e85432c300ec9f8c87d46e066ad295ddf9b6ab03
+  checksum: 70dbdd2f8836a797ab8a3771c773f51023aab187d4d88ed3733bb3f2cbc2146057788a0095a03637101aeab9a48fce0ea369f96a35fc07e785ef53b8ab870885
   languageName: node
   linkType: hard
 
@@ -10747,9 +10738,9 @@ __metadata:
   linkType: hard
 
 "@types/uuid@npm:^9.0.1":
-  version: 9.0.4
-  resolution: "@types/uuid@npm:9.0.4"
-  checksum: 356e2504456eaebbc43a5af5ca6c07d71f5ae5520b5767cb1c62cd0ec55475fc4ee3d16a2874f4a5fce78e40e8583025afd3a7d9ba41f82939de310665f53f0e
+  version: 9.0.5
+  resolution: "@types/uuid@npm:9.0.5"
+  checksum: 7577940949619768303c0bf0a7cc235fac3cfae1c0bb4a2e85bfb87b2eb1024955ab446f775394d259442cd769b663b6ce43c39bdfc955d946bf833804ddb421
   languageName: node
   linkType: hard
 
@@ -10866,11 +10857,11 @@ __metadata:
   linkType: hard
 
 "@types/yargs@npm:^17.0.8":
-  version: 17.0.26
-  resolution: "@types/yargs@npm:17.0.26"
+  version: 17.0.28
+  resolution: "@types/yargs@npm:17.0.28"
   dependencies:
     "@types/yargs-parser": "*"
-  checksum: 26611969674f4972080c3b22239d4579eaadc5287f95f7802f893c4a9bb292c141467bd70f1e66eb834486c63a23c4f10032618b3d2e7b1ddc05051d08db4078
+  checksum: f78c5e5c29903933c0557b4ffcd1d0b8564d66859c8ca4aa51da3714e49109ed7c2644334a1918d033df19028f4cecc91fd2e502651bb8e8451f246c371da847
   languageName: node
   linkType: hard
 
@@ -17974,7 +17965,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"encode-registry@npm:^3.0.0":
+"encode-registry@npm:^3.0.0, encode-registry@npm:^3.0.1":
   version: 3.0.1
   resolution: "encode-registry@npm:3.0.1"
   dependencies:
@@ -18759,8 +18750,8 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-storybook@npm:^0.6.14":
-  version: 0.6.14
-  resolution: "eslint-plugin-storybook@npm:0.6.14"
+  version: 0.6.15
+  resolution: "eslint-plugin-storybook@npm:0.6.15"
   dependencies:
     "@storybook/csf": ^0.0.1
     "@typescript-eslint/utils": ^5.45.0
@@ -18768,7 +18759,7 @@ __metadata:
     ts-dedent: ^2.2.0
   peerDependencies:
     eslint: ">=6"
-  checksum: f2ba1d77da273a3294416394573edc60d780bc1d7ac177eb921f25b32b90bb87a549698126ce572211067130b93974cc812b594d726d234c41f71f163edd56d8
+  checksum: e2c4d7be3e695c88d7194c363fba8ac644b36583bf9d608aa59dcd53cc5e422f7828611ee49c7934639ce827c0206d33fa94b3ea452ffbd2c8e7254ed90bc412
   languageName: node
   linkType: hard
 
@@ -18910,13 +18901,13 @@ __metadata:
   linkType: hard
 
 "eslint@npm:^8.3.0, eslint@npm:^8.49.0":
-  version: 8.50.0
-  resolution: "eslint@npm:8.50.0"
+  version: 8.51.0
+  resolution: "eslint@npm:8.51.0"
   dependencies:
     "@eslint-community/eslint-utils": ^4.2.0
     "@eslint-community/regexpp": ^4.6.1
     "@eslint/eslintrc": ^2.1.2
-    "@eslint/js": 8.50.0
+    "@eslint/js": 8.51.0
     "@humanwhocodes/config-array": ^0.11.11
     "@humanwhocodes/module-importer": ^1.0.1
     "@nodelib/fs.walk": ^1.2.8
@@ -18952,7 +18943,7 @@ __metadata:
     text-table: ^0.2.0
   bin:
     eslint: bin/eslint.js
-  checksum: 9ebfe5615dc84700000d218e32ddfdcfc227ca600f65f18e5541ec34f8902a00356a9a8804d9468fd6c8637a5ef6a3897291dad91ba6579d5b32ffeae5e31768
+  checksum: 214fa5d1fcb67af1b8992ce9584ccd85e1aa7a482f8b8ea5b96edc28fa838a18a3b69456db45fc1ed3ef95f1e9efa9714f737292dc681e572d471d02fda9649c
   languageName: node
   linkType: hard
 
@@ -20128,13 +20119,13 @@ __metadata:
   linkType: hard
 
 "flat-cache@npm:^3.0.4":
-  version: 3.1.0
-  resolution: "flat-cache@npm:3.1.0"
+  version: 3.1.1
+  resolution: "flat-cache@npm:3.1.1"
   dependencies:
-    flatted: ^3.2.7
+    flatted: ^3.2.9
     keyv: ^4.5.3
     rimraf: ^3.0.2
-  checksum: 99312601d5b90f44aef403f17f056dc09be7e437703740b166cdc9386d99e681f74e6b6e8bd7d010bda66904ea643c9527276b1b80308a2119741d94108a4d8f
+  checksum: 4958cfe0f46acf84953d4e16676ef5f0d38eab3a92d532a1e8d5f88f11eea8b36d5d598070ff2aeae15f1fde18f8d7d089eefaf9db10b5a587cc1c9072325c7a
   languageName: node
   linkType: hard
 
@@ -20147,7 +20138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flatted@npm:^3.2.7":
+"flatted@npm:^3.2.9":
   version: 3.2.9
   resolution: "flatted@npm:3.2.9"
   checksum: f14167fbe26a9d20f6fca8d998e8f1f41df72c8e81f9f2c9d61ed2bea058248f5e1cbd05e7f88c0e5087a6a0b822a1e5e2b446e879f3cfbe0b07ba2d7f80b026
@@ -25845,11 +25836,11 @@ __metadata:
   linkType: hard
 
 "keyv@npm:^4.5.3":
-  version: 4.5.3
-  resolution: "keyv@npm:4.5.3"
+  version: 4.5.4
+  resolution: "keyv@npm:4.5.4"
   dependencies:
     json-buffer: 3.0.1
-  checksum: 3ffb4d5b72b6b4b4af443bbb75ca2526b23c750fccb5ac4c267c6116888b4b65681015c2833cb20d26cf3e6e32dac6b988c77f7f022e1a571b7d90f1442257da
+  checksum: 74a24395b1c34bd44ad5cb2b49140d087553e170625240b86755a6604cd65aa16efdbdeae5cdb17ba1284a0fbb25ad06263755dbc71b8d8b06f74232ce3cdd72
   languageName: node
   linkType: hard
 
@@ -26027,12 +26018,12 @@ __metadata:
   linkType: hard
 
 "launch-editor@npm:^2.6.0":
-  version: 2.6.0
-  resolution: "launch-editor@npm:2.6.0"
+  version: 2.6.1
+  resolution: "launch-editor@npm:2.6.1"
   dependencies:
     picocolors: ^1.0.0
-    shell-quote: ^1.7.3
-  checksum: 48e4230643e8fdb5c14c11314706d58d9f3fbafe2606be3d6e37da1918ad8bfe39dd87875c726a1b59b9f4da99d87ec3e36d4c528464f0b820f9e91e5cb1c02d
+    shell-quote: ^1.8.1
+  checksum: e06d193075ac09f7f8109f10cabe464a211bf7ed4cbe75f83348d6f67bf4d9f162f06e7a1ab3e1cd7fc250b5342c3b57080618aff2e646dc34248fe499227601
   languageName: node
   linkType: hard
 
@@ -28793,11 +28784,11 @@ __metadata:
   linkType: hard
 
 "npm-install-checks@npm:^6.0.0":
-  version: 6.2.0
-  resolution: "npm-install-checks@npm:6.2.0"
+  version: 6.3.0
+  resolution: "npm-install-checks@npm:6.3.0"
   dependencies:
     semver: ^7.1.1
-  checksum: 2f91f71e07111ef89c6f4ad37b89933322567be51ca3a4ec5e972cc5edbc8d1ac6059f3b8904d2bab9893df1567366230eda3d0fe3bcf0de610c48f3f57f17a8
+  checksum: 6c20dadb878a0d2f1f777405217b6b63af1299d0b43e556af9363ee6eefaa98a17dfb7b612a473a473e96faf7e789c58b221e0d8ffdc1d34903c4f71618df3b4
   languageName: node
   linkType: hard
 
@@ -34741,7 +34732,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shell-quote@npm:^1.6.1, shell-quote@npm:^1.7.3":
+"shell-quote@npm:^1.6.1, shell-quote@npm:^1.7.3, shell-quote@npm:^1.8.1":
   version: 1.8.1
   resolution: "shell-quote@npm:1.8.1"
   checksum: 5f01201f4ef504d4c6a9d0d283fa17075f6770bfbe4c5850b074974c68062f37929ca61700d95ad2ac8822e14e8c4b990ca0e6e9272e64befd74ce5e19f0736b
