@@ -105,15 +105,15 @@ You can use the components by referencing the loader directly (via unpkg), or in
 ### Use via mgt-loader:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt@3/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt-components@3/dist/bundle/mgt-loader.js"></script>
 ```
 
-> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 3.0.0 < 4.0.0`, omitting the `@3` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
+> NOTE: This link will load the highest available version of @microsoft/mgt-components in the range `>= 3.0.0 < 4.0.0`, omitting the `@3` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
 
 You can then start using the components in your html page. Here is a full working example with the MSAL2 provider:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt@3/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt-components@3/dist/bundle/mgt-loader.js"></script>
 <mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 <mgt-login></mgt-login>
 
@@ -130,13 +130,15 @@ You can then start using the components in your html page. Here is a full workin
 The benefits of using MGT through NPM is that you have full control of the bundling process and you can bundle only the code you need for your site. First, add the npm package:
 
 ```bash
-npm install @microsoft/mgt
+npm install @microsoft/mgt-components
+npm install @microsoft/mgt-msal2-provider
 ```
 
 Now you can reference all components and providers at the page you are using:
 
 ```html
-<script type="module" src="node_modules/@microsoft/mgt/dist/es6/index.js"></script>
+<script type="module" src="node_modules/@microsoft/mgt-components/dist/es6/index.js"></script>
+<script type="module" src="node_modules/@microsoft/mgt-msal2-provider/dist/es6/index.js"></script>
 
 <mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 
