@@ -6,6 +6,10 @@
   "types": "./dist/es6/index.d.ts",
   "module": "./dist/es6/index.js",
   "source": "./src/index.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
   "keywords": [
     "microsoft graph",
     "microsoft graph toolkit",
