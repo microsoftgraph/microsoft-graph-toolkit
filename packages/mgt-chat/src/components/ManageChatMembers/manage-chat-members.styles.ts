@@ -23,6 +23,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     width: 'max-content',
+    height: 'max-content',
     padding: '4px 12px 12px 12px'
   }),
   historyInput: mergeStyles({ width: '48px' }),
