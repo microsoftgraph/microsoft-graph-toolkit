@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import {
+  makeStyles,
+  shorthands,
   Button,
   Popover,
   PopoverSurface,
@@ -22,7 +24,6 @@ import {
   DoorArrowLeft20Regular
 } from '@fluentui/react-icons';
 import { AadUserConversationMember } from '@microsoft/microsoft-graph-types';
-import { styles } from './manage-chat-members.styles';
 import { buttonIconStyles } from '../styles/common.styles';
 import { AddChatMembers } from './AddChatMembers';
 import { ListChatMembers } from './ListChatMembers';
@@ -37,7 +38,18 @@ interface ManageChatMembersProps {
 const AddPeople = bundleIcon(PeopleAdd24Filled, PeopleAdd24Regular);
 const Leave = bundleIcon(DoorArrowLeft20Filled, DoorArrowLeft20Regular);
 
+const useStyles = makeStyles({
+  popover: {
+    ...shorthands.padding('0 !important')
+  },
+  triggerButton: {
+    minWidth: 'max-content',
+    width: 'max-content'
+  }
+});
+
 const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatMember }: ManageChatMembersProps) => {
+  const styles = useStyles();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showAddMembers, setShowAddMembers] = useState(false);
   const openAddMembers = useCallback(() => {
@@ -72,7 +84,7 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
         {showAddMembers ? (
           <AddChatMembers closeDialog={closeCallout} addChatMembers={addChatMembers} />
         ) : (
-          <div>
+          <>
             <ListChatMembers
               members={members}
               removeChatMember={removeChatMember}
@@ -97,7 +109,7 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
               <DialogSurface>
                 <DialogBody>
                   <DialogTitle>Leave the conversation?</DialogTitle>
-                  <DialogContent>You'll still have access to the chat history.</DialogContent>
+                  <DialogContent>You&apos;ll still have access to the chat history.</DialogContent>
                   <DialogActions>
                     <DialogTrigger disableButtonEnhancement>
                       <Button appearance="secondary" onClick={closeCallout}>
@@ -113,7 +125,7 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
                 </DialogBody>
               </DialogSurface>
             </Dialog>
-          </div>
+          </>
         )}
       </PopoverSurface>
     </Popover>

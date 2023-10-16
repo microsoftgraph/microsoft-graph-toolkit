@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import {
+  makeStyles,
+  shorthands,
   Button,
   Dialog,
   DialogActions,
@@ -11,8 +13,7 @@ import {
 import { List, ListItem } from '@fluentui/react-northstar';
 import { Person, PersonViewType } from '@microsoft/mgt-react';
 import { AadUserConversationMember } from '@microsoft/microsoft-graph-types';
-import { styles } from './manage-chat-members.styles';
-import { Dismiss24Regular, Dismiss24Filled, bundleIcon } from '@fluentui/react-icons';
+import { Dismiss24Regular, bundleIcon } from '@fluentui/react-icons';
 
 interface ListChatMembersProps {
   currentUserId: string;
@@ -23,7 +24,24 @@ interface ListChatMembersProps {
 
 const RemovePerson = bundleIcon(Dismiss24Regular, () => <></>);
 
+const useStyles = makeStyles({
+  listItem: {
+    listStyleType: 'none',
+    width: '100%'
+  },
+  memberList: {
+    fontWeight: 800,
+    gridGap: '8px',
+    ...shorthands.marginBlock('0px'),
+    ...shorthands.padding('4px')
+  },
+  fullWidth: {
+    width: '100%'
+  }
+});
+
 const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParentPopover }: ListChatMembersProps) => {
+  const styles = useStyles();
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
   const [removeUser, setRemoveUser] = useState<AadUserConversationMember | undefined>(undefined);
   const openRemoveDialog = useCallback((user: AadUserConversationMember) => {
