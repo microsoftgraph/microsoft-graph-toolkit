@@ -58,7 +58,7 @@ const styles = {
     columnGap: '4px'
   }),
   triggerButton: mergeStyles({
-    minWidth: 'max-content',
+    minWidth: 'unset !important',
     width: 'max-content'
   })
 };
