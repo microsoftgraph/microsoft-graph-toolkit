@@ -53,16 +53,15 @@ You can use the components by referencing the loader directly (via unpkg), or in
 ### Use via mgt-loader:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt-components@3/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@3/dist/bundle/mgt-loader.js"></script>
 ```
 
-> NOTE: This link will load the highest available version of @microsoft/mgt-components in the range `>= 3.0.0 < 4.0.0`, omitting the `@3` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
+> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 3.0.0 < 4.0.0`, omitting the `@3` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
 
 You can then start using the components in your html page. Here is a full working example with the Msal2 provider:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt-components@3/dist/bundle/mgt-loader.js"></script>
-<script src="https://unpkg.com/@microsoft/mgt-msal2-provider@3/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@3/dist/bundle/mgt-loader.js"></script>
 
 <mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 
