@@ -14,6 +14,7 @@ import {
   makeStyles,
   tokens
 } from '@fluentui/react-components';
+import type { PopoverProps } from '@fluentui/react-components';
 
 interface ChatHeaderProps {
   chat?: Chat;
@@ -77,10 +78,19 @@ const GroupChatHeader = ({ chat, currentUserId, onRenameChat }: ChatHeaderProps)
   const chatTitle = chat?.topic
     ? chat.topic
     : reduceToFirstNamesList(chat?.members as AadUserConversationMember[], currentUserId);
+  const trapFocus = true;
+  const popoverProps: Partial<PopoverProps> = {
+    trapFocus,
+    inertTrapFocus: trapFocus,
+    inline: true,
+    positioning: 'below-start',
+    open: isPopoverOpen,
+    onOpenChange: handleOpenChange
+  };
   return (
     <>
       {chatTitle}
-      <Popover trapFocus positioning={'below-start'} open={isPopoverOpen} onOpenChange={handleOpenChange}>
+      <Popover {...popoverProps}>
         <PopoverTrigger>
           <Button appearance="transparent" icon={<EditIcon />} aria-label="Name group chat"></Button>
         </PopoverTrigger>
@@ -126,7 +136,7 @@ const getOtherParticipantUserId = (chat?: Chat, currentUserId = '') =>
  * For group chats with no topic it will show the first names of other participants comma separated.
  * For 1:1 chats it will show the first name of the other participant.
  */
-const ChatHeader = memo(({ chat, currentUserId, onRenameChat }: ChatHeaderProps) => {
+const ChatHeader = ({ chat, currentUserId, onRenameChat }: ChatHeaderProps) => {
   const styles = useStyles();
   return (
     <div className={styles.chatHeader}>
@@ -137,6 +147,6 @@ const ChatHeader = memo(({ chat, currentUserId, onRenameChat }: ChatHeaderProps)
       )}
     </div>
   );
-});
+};
 
-export default ChatHeader;
+export default memo(ChatHeader);

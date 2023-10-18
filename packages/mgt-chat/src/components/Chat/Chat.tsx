@@ -36,6 +36,9 @@ const useStyles = makeStyles({
   chatInput: {
     ...shorthands.overflow('unset')
   },
+  chatHeader: {
+    zIndex: 2
+  },
   fullHeight: {
     height: '100%'
   },
@@ -94,19 +97,21 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
         <div className={styles.chat}>
           {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
-              <ChatHeader
-                chat={chatState.chat}
-                currentUserId={chatState.userId}
-                onRenameChat={chatState.onRenameChat}
-              />
-              {chatState.participants?.length > 0 && chatState.chat?.chatType === 'group' && (
-                <ManageChatMembers
-                  members={chatState.participants}
-                  removeChatMember={chatState.onRemoveChatMember}
+              <div className={styles.chatHeader}>
+                <ChatHeader
+                  chat={chatState.chat}
                   currentUserId={chatState.userId}
-                  addChatMembers={chatState.onAddChatMembers}
+                  onRenameChat={chatState.onRenameChat}
                 />
-              )}
+                {chatState.participants?.length > 0 && chatState.chat?.chatType === 'group' && (
+                  <ManageChatMembers
+                    members={chatState.participants}
+                    removeChatMember={chatState.onRemoveChatMember}
+                    currentUserId={chatState.userId}
+                    addChatMembers={chatState.onAddChatMembers}
+                  />
+                )}
+              </div>
               <div className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}

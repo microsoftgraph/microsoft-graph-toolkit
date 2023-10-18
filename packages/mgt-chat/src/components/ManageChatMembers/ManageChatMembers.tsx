@@ -12,7 +12,8 @@ import {
   DialogContent,
   DialogSurface,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
+  PopoverProps
 } from '@fluentui/react-components';
 import {
   bundleIcon,
@@ -60,9 +61,17 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
     }
     closeCallout();
   }, [removeChatMember, members, currentUserId, closeCallout]);
-
+  const trapFocus = true;
+  const popoverProps: Partial<PopoverProps> = {
+    trapFocus,
+    inertTrapFocus: trapFocus,
+    inline: true,
+    positioning: 'below-start',
+    open: isPopoverOpen,
+    onOpenChange: handleOpenChange
+  };
   return (
-    <Popover trapFocus positioning={'below-start'} open={isPopoverOpen} onOpenChange={handleOpenChange}>
+    <Popover {...popoverProps}>
       <PopoverTrigger>
         <Button className={styles.triggerButton} appearance="transparent" icon={<AddPeople />}>
           {members.length}
@@ -97,7 +106,7 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
               <DialogSurface>
                 <DialogBody>
                   <DialogTitle>Leave the conversation?</DialogTitle>
-                  <DialogContent>You'll still have access to the chat history.</DialogContent>
+                  <DialogContent>You&apos;ll still have access to the chat history.</DialogContent>
                   <DialogActions>
                     <DialogTrigger disableButtonEnhancement>
                       <Button appearance="secondary" onClick={closeCallout}>
