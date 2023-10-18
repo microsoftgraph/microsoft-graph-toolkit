@@ -14,7 +14,8 @@ import {
   DialogContent,
   DialogSurface,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
+  PopoverProps
 } from '@fluentui/react-components';
 import {
   bundleIcon,
@@ -56,7 +57,7 @@ const useStyles = makeStyles({
     ...shorthands.padding('0 !important')
   },
   triggerButton: {
-    minWidth: 'max-content',
+    minWidth: 'unset !important',
     width: 'max-content'
   }
 });
@@ -85,9 +86,17 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
     }
     closeCallout();
   }, [removeChatMember, members, currentUserId, closeCallout]);
-
+  const trapFocus = true;
+  const popoverProps: Partial<PopoverProps> = {
+    trapFocus,
+    inertTrapFocus: trapFocus,
+    inline: true,
+    positioning: 'below-start',
+    open: isPopoverOpen,
+    onOpenChange: handleOpenChange
+  };
   return (
-    <Popover trapFocus positioning={'below-start'} open={isPopoverOpen} onOpenChange={handleOpenChange}>
+    <Popover {...popoverProps}>
       <PopoverTrigger>
         <Button className={styles.triggerButton} appearance="transparent" icon={<AddPeople />}>
           {members.length}
