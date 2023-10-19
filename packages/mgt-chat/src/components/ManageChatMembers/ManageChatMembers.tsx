@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import {
   makeStyles,
   shorthands,
@@ -57,12 +57,20 @@ const useStyles = makeStyles({
     ...shorthands.padding('0 !important')
   },
   triggerButton: {
+    ...shorthands.marginInline('8px'),
+    ...shorthands.paddingInline('0'),
+    '--spacingHorizontalSNudge': '2px',
     minWidth: 'unset !important',
     width: 'max-content'
   }
 });
 
-const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatMember }: ManageChatMembersProps) => {
+const ManageChatMembersComponent = ({
+  currentUserId,
+  members,
+  addChatMembers,
+  removeChatMember
+}: ManageChatMembersProps) => {
   const styles = useStyles();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showAddMembers, setShowAddMembers] = useState(false);
@@ -150,5 +158,7 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
     </Popover>
   );
 };
+
+const ManageChatMembers = memo(ManageChatMembersComponent);
 
 export { ManageChatMembers };
