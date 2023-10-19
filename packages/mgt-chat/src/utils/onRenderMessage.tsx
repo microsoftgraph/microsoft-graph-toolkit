@@ -8,8 +8,8 @@
 import { MessageProps, MessageRenderer } from '@azure/communication-react';
 import * as AdaptiveCards from 'adaptivecards';
 import MarkdownIt from 'markdown-it';
-import React from 'react';
-import { isGraphChatMessage, isActionOpenUrl } from './types';
+import React, { useEffect, useRef } from 'react';
+import { isGraphChatMessage, isActionOpenUrl, isChatMessage } from './types';
 import {
   IAdaptiveCard,
   ISubmitAction,
@@ -22,6 +22,34 @@ import { ChatMessageAttachment } from '@microsoft/microsoft-graph-types';
 type IAction = ISubmitAction | IOpenUrlAction | IShowCardAction | IExecuteAction;
 
 /**
+ * Props for an adaptive card message.s
+ */
+interface AdaptiveCardMessageProps {
+  attachments: ChatMessageAttachment[];
+  defaultOnRender?: (props: MessageProps) => JSX.Element;
+  messageProps: MessageProps;
+}
+
+/**
+ * Render an adaptive card from the attachments
+ */
+const MGTAdaptiveCard = (msg: AdaptiveCardMessageProps) => {
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const attachments = msg.attachments;
+  const adaptiveCardAttachment = getAdaptiveCardAttachment(attachments);
+  useEffect(() => {
+    if (adaptiveCardAttachment) {
+      const cardHtmlElement = getHtmlElementFromAttachment(adaptiveCardAttachment);
+      cardRef?.current?.appendChild(cardHtmlElement!);
+    }
+  }, [cardRef, adaptiveCardAttachment]);
+  const defaultOnRender = msg?.defaultOnRender;
+  const messageProps = msg.messageProps;
+  const defaultRender = defaultOnRender ? defaultOnRender(messageProps) : <></>;
+  return adaptiveCardAttachment ? <div ref={cardRef}></div> : defaultRender;
+};
+
+/**
  * Renders the preferred content depending on whether it is supported.
  *
  * @param messageProps final message values from the state.
@@ -30,32 +58,42 @@ type IAction = ISubmitAction | IOpenUrlAction | IShowCardAction | IExecuteAction
  */
 const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRenderer) => {
   const message = messageProps?.message;
-  if (isGraphChatMessage(message) && message?.attachments) {
+  // Images, files etc have attachments but have no content. They are rendered
+  // as they are. Avoid rendering an empty.
+  if (isGraphChatMessage(message) && message?.attachments?.length) {
     const attachments = message?.attachments;
-    const render = handleAttachments(attachments, messageProps, defaultOnRender);
-    // NOTES:
-    // Rendering the card as a JSX element does not render the sender name and the
-    // date the message was send. BUT it's the only way to get the buttons to
-    // respond to click events from actions.
-    //
-    // Rendering the card as an HTML string and updating the content gets the
-    // UI as expected but we lose the ability to trigger click events on the
-    // rendered buttons.
-    // messageProps = produce(messageProps, (draft: MessageProps) => {
-    //   if (isChatMessage(draft.message)) {
-    //     draft.message.content = renderToString(card);
-    //   }
-    // });
-    return render;
+    const isSupported = isAttachmentSupported(attachments);
+    if (isSupported) {
+      return (
+        <MGTAdaptiveCard attachments={attachments} defaultOnRender={defaultOnRender} messageProps={messageProps} />
+      );
+    }
+    return <div>Unsupported card content</div>;
   }
   return defaultOnRender ? defaultOnRender(messageProps) : <></>;
 };
 
-const handleAttachments = (
-  attachments: ChatMessageAttachment[],
-  messageProps: MessageProps,
-  defaultOnRender?: MessageRenderer
-): JSX.Element => {
+/**
+ * Filters out the adaptive card attachments.
+ * @param attachments
+ * @returns
+ */
+const getAdaptiveCardAttachment = (attachments: ChatMessageAttachment[]): ChatMessageAttachment | undefined => {
+  for (const att of attachments) {
+    const contentType = att?.contentType ?? '';
+    if (contentType === 'application/vnd.microsoft.card.adaptive') {
+      return att;
+    }
+  }
+  return;
+};
+
+/**
+ * Returns true if the list of attachments is supported. Otherwise false.
+ * @param attachments
+ * @returns
+ */
+const isAttachmentSupported = (attachments: ChatMessageAttachment[]): boolean => {
   const unsupportedCards = [
     'application/vnd.microsoft.card.list',
     'application/vnd.microsoft.card.hero',
@@ -64,23 +102,21 @@ const handleAttachments = (
     'application/vnd.microsoft.card.thumbnail'
   ];
 
-  let render: JSX.Element = defaultOnRender ? defaultOnRender(messageProps) : <></>;
-
-  // Normally it's just a single card per message. Looping through all attachments
-  // and only processing those with an adaptive card content type.
   for (const attachment of attachments) {
     const contentType = attachment?.contentType ?? '';
-    if (contentType === 'application/vnd.microsoft.card.adaptive') {
-      render = handleAdaptiveCards(attachment);
-    } else if (unsupportedCards.includes(contentType)) {
-      // TODO: update with the correct component
-      render = <p>Unsupported content type</p>;
+    if (unsupportedCards.includes(contentType)) {
+      return false;
     }
   }
-  return render;
+  return Boolean(attachments);
 };
 
-const handleAdaptiveCards = (attachment: ChatMessageAttachment): JSX.Element => {
+/**
+ * Process the attachment object and return an HTMLElement or nothing.
+ * @param attachment
+ * @returns
+ */
+const getHtmlElementFromAttachment = (attachment: ChatMessageAttachment | undefined): HTMLElement | undefined => {
   /* eslint-disable
     @typescript-eslint/no-unsafe-assignment,
     @typescript-eslint/no-unsafe-member-access,
@@ -131,13 +167,8 @@ const handleAdaptiveCards = (attachment: ChatMessageAttachment): JSX.Element => 
         window.open(url, '_blank', 'noopener,noreferrer');
       }
     };
-    const renderedCard = adaptiveCard.render() as HTMLElement;
-    // BUG: this renders the card 3+ times. Better way to render a card that
-    // will respond to click events?
-    return <div ref={r => r?.appendChild(renderedCard)}></div>;
   }
-  // TODO: update with the correct component
-  return <p>Unsupported card content</p>;
+  return adaptiveCard.render();
 };
 
 export { onRenderMessage };
