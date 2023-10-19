@@ -1,5 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import {
+  makeStyles,
+  mergeClasses,
+  shorthands,
   Button,
   Dialog,
   DialogActions,
@@ -11,8 +14,7 @@ import {
 import { List, ListItem } from '@fluentui/react-northstar';
 import { Person, PersonViewType } from '@microsoft/mgt-react';
 import { AadUserConversationMember } from '@microsoft/microsoft-graph-types';
-import { styles } from './manage-chat-members.styles';
-import { Dismiss24Regular, bundleIcon } from '@fluentui/react-icons';
+import { Dismiss20Filled, bundleIcon, iconFilledClassName, iconRegularClassName } from '@fluentui/react-icons';
 
 interface ListChatMembersProps {
   currentUserId: string;
@@ -21,9 +23,57 @@ interface ListChatMembersProps {
   closeParentPopover: () => void;
 }
 
-const RemovePerson = bundleIcon(Dismiss24Regular, () => <></>);
+const RemovePerson = bundleIcon(Dismiss20Filled, () => <></>);
+
+const useStyles = makeStyles({
+  iconPlaceholder: {
+    display: 'flex',
+    width: '24px'
+  },
+  listItem: {
+    listStyleType: 'none',
+    width: '100%',
+    ':focus-visible': {
+      [`& .${iconFilledClassName}`]: {
+        display: 'inline',
+        color: 'var(--colorNeutralForeground2BrandHover)'
+      },
+      [`& .${iconRegularClassName}`]: {
+        display: 'none'
+      }
+    }
+  },
+  memberList: {
+    fontWeight: 800,
+    gridGap: '8px',
+    ...shorthands.marginBlock('0'),
+    ...shorthands.padding('0')
+  },
+  personRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    ...shorthands.paddingBlock('5px'),
+    ...shorthands.paddingInline('16px'),
+    ':hover': {
+      backgroundColor: 'var(--colorSubtleBackgroundHover)',
+      [`& .${iconFilledClassName}`]: {
+        display: 'inline',
+        color: 'var(--colorNeutralForeground2BrandHover)'
+      },
+      [`& .${iconRegularClassName}`]: {
+        display: 'none'
+      }
+    }
+  },
+  fullWidth: {
+    width: '100%'
+  }
+});
 
 const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParentPopover }: ListChatMembersProps) => {
+  const styles = useStyles();
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
   const [removeUser, setRemoveUser] = useState<AadUserConversationMember | undefined>(undefined);
   const openRemoveDialog = useCallback((user: AadUserConversationMember) => {
@@ -46,6 +96,7 @@ const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParent
 
     void removeChatMember(removeUser.id).then(closeDialog);
   }, [removeUser, removeChatMember, closeDialog]);
+
   return (
     <>
       <Dialog open={removeDialogOpen} onOpenChange={(_, data) => setRemoveDialogOpen(data.open)}>
@@ -73,12 +124,7 @@ const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParent
               className={styles.listItem}
               index={index}
               content={
-                <Button
-                  appearance="subtle"
-                  icon={isCurrentUser ? null : <RemovePerson />}
-                  iconPosition="after"
-                  className={styles.fullWidth}
-                >
+                <div className={mergeClasses(styles.personRow, styles.fullWidth)}>
                   <Person
                     className={styles.fullWidth}
                     tabIndex={-1}
@@ -86,11 +132,15 @@ const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParent
                     view={PersonViewType.oneline}
                     showPresence
                   />
-                </Button>
+                  <span className={styles.iconPlaceholder}>{!isCurrentUser && <RemovePerson />}</span>
+                </div>
               }
               onClick={() => {
-                if (isCurrentUser) return;
-                openRemoveDialog(member);
+                if (isCurrentUser) {
+                  closeDialog();
+                } else {
+                  openRemoveDialog(member);
+                }
               }}
             />
           ) : null;

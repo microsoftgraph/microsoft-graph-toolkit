@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import {
+  makeStyles,
+  shorthands,
   Button,
   Popover,
   PopoverSurface,
@@ -12,18 +14,17 @@ import {
   DialogContent,
   DialogSurface,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
+  PopoverProps
 } from '@fluentui/react-components';
 import {
   bundleIcon,
   PeopleAdd24Regular,
   PeopleAdd24Filled,
-  DoorArrowLeft20Filled,
-  DoorArrowLeft20Regular
+  DoorArrowLeft24Filled,
+  DoorArrowLeft24Regular
 } from '@fluentui/react-icons';
 import { AadUserConversationMember } from '@microsoft/microsoft-graph-types';
-import { styles } from './manage-chat-members.styles';
-import { buttonIconStyles } from '../styles/common.styles';
 import { AddChatMembers } from './AddChatMembers';
 import { ListChatMembers } from './ListChatMembers';
 
@@ -35,9 +36,34 @@ interface ManageChatMembersProps {
 }
 
 const AddPeople = bundleIcon(PeopleAdd24Filled, PeopleAdd24Regular);
-const Leave = bundleIcon(DoorArrowLeft20Filled, DoorArrowLeft20Regular);
+const Leave = bundleIcon(DoorArrowLeft24Filled, DoorArrowLeft24Regular);
+
+const useStyles = makeStyles({
+  button: {
+    justifyContent: 'flex-start',
+    ...shorthands.paddingInline('16px')
+  },
+  buttonRow: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  container: {
+    ...shorthands.paddingBlock('4px')
+  },
+  divider: {
+    ...shorthands.marginBlock('4px')
+  },
+  popover: {
+    ...shorthands.padding('0 !important')
+  },
+  triggerButton: {
+    minWidth: 'unset !important',
+    width: 'max-content'
+  }
+});
 
 const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatMember }: ManageChatMembersProps) => {
+  const styles = useStyles();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showAddMembers, setShowAddMembers] = useState(false);
   const openAddMembers = useCallback(() => {
@@ -60,9 +86,17 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
     }
     closeCallout();
   }, [removeChatMember, members, currentUserId, closeCallout]);
-
+  const trapFocus = true;
+  const popoverProps: Partial<PopoverProps> = {
+    trapFocus,
+    inertTrapFocus: trapFocus,
+    inline: true,
+    positioning: 'below-start',
+    open: isPopoverOpen,
+    onOpenChange: handleOpenChange
+  };
   return (
-    <Popover trapFocus positioning={'below-start'} open={isPopoverOpen} onOpenChange={handleOpenChange}>
+    <Popover {...popoverProps}>
       <PopoverTrigger>
         <Button className={styles.triggerButton} appearance="transparent" icon={<AddPeople />}>
           {members.length}
@@ -72,47 +106,44 @@ const ManageChatMembers = ({ currentUserId, members, addChatMembers, removeChatM
         {showAddMembers ? (
           <AddChatMembers closeDialog={closeCallout} addChatMembers={addChatMembers} />
         ) : (
-          <div>
+          <div className={styles.container}>
             <ListChatMembers
               members={members}
               removeChatMember={removeChatMember}
               currentUserId={currentUserId}
               closeParentPopover={closeCallout}
             />
-            <Divider />
-            <Button
-              appearance="transparent"
-              icon={<AddPeople />}
-              onClick={openAddMembers}
-              className={buttonIconStyles.button}
-            >
-              Add people
-            </Button>
-            <Dialog>
-              <DialogTrigger>
-                <Button appearance="transparent" icon={<Leave />} className={buttonIconStyles.button}>
-                  Leave
-                </Button>
-              </DialogTrigger>
-              <DialogSurface>
-                <DialogBody>
-                  <DialogTitle>Leave the conversation?</DialogTitle>
-                  <DialogContent>You'll still have access to the chat history.</DialogContent>
-                  <DialogActions>
-                    <DialogTrigger disableButtonEnhancement>
-                      <Button appearance="secondary" onClick={closeCallout}>
-                        Cancel
-                      </Button>
-                    </DialogTrigger>
-                    {members.length > 2 && (
-                      <Button appearance="primary" onClick={leaveChat}>
-                        Leave
-                      </Button>
-                    )}
-                  </DialogActions>
-                </DialogBody>
-              </DialogSurface>
-            </Dialog>
+            <Divider className={styles.divider} />
+            <div className={styles.buttonRow}>
+              <Button appearance="subtle" icon={<AddPeople />} onClick={openAddMembers} className={styles.button}>
+                Add people
+              </Button>
+              <Dialog>
+                <DialogTrigger>
+                  <Button appearance="subtle" icon={<Leave />} className={styles.button}>
+                    Leave
+                  </Button>
+                </DialogTrigger>
+                <DialogSurface>
+                  <DialogBody>
+                    <DialogTitle>Leave the conversation?</DialogTitle>
+                    <DialogContent>You&apos;ll still have access to the chat history.</DialogContent>
+                    <DialogActions>
+                      <DialogTrigger disableButtonEnhancement>
+                        <Button appearance="secondary" onClick={closeCallout}>
+                          Cancel
+                        </Button>
+                      </DialogTrigger>
+                      {members.length > 2 && (
+                        <Button appearance="primary" onClick={leaveChat}>
+                          Leave
+                        </Button>
+                      )}
+                    </DialogActions>
+                  </DialogBody>
+                </DialogSurface>
+              </Dialog>
+            </div>
           </div>
         )}
       </PopoverSurface>

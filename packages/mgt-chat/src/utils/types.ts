@@ -24,7 +24,7 @@ export const isChatMessage = (msg: Message): msg is ChatMessage => {
  * @returns {GraphChatMessage}
  */
 export const isGraphChatMessage = (msg: Message): msg is GraphChatMessage => {
-  return 'attachments' in msg;
+  return 'content' in msg && 'hasUnsupportedContent' in msg && 'rawChatUrl' in msg && 'attachments' in msg;
 };
 
 /**
