@@ -18,6 +18,9 @@ import {
   IExecuteAction
 } from 'adaptivecards/lib/schema';
 import { ChatMessageAttachment } from '@microsoft/microsoft-graph-types';
+import produce from 'immer';
+import { renderToString } from 'react-dom/server';
+import UnsupportedContent from '../components/UnsupportedContent/UnsupportedContent';
 
 type IAction = ISubmitAction | IOpenUrlAction | IShowCardAction | IExecuteAction;
 
@@ -58,17 +61,26 @@ const MGTAdaptiveCard = (msg: AdaptiveCardMessageProps) => {
  */
 const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRenderer) => {
   const message = messageProps?.message;
-  // Images, files etc have attachments but have no content. They are rendered
-  // as they are. Avoid rendering an empty.
-  if (isGraphChatMessage(message) && message?.attachments?.length) {
-    const attachments = message?.attachments;
+  if (isGraphChatMessage(message)) {
+    const attachments = message?.attachments ?? [];
+    // Images, files etc have attachments but have no content. They are rendered
+    // as they are. Avoid rendering an empty.
     const isSupported = isAttachmentSupported(attachments);
-    if (isSupported) {
-      return (
-        <MGTAdaptiveCard attachments={attachments} defaultOnRender={defaultOnRender} messageProps={messageProps} />
-      );
+
+    if (message?.hasUnsupportedContent) {
+      const unsupportedContentComponent = <UnsupportedContent targetUrl={message.rawChatUrl} />;
+      messageProps = produce(messageProps, (draft: MessageProps) => {
+        if (isChatMessage(draft.message)) {
+          draft.message.content = renderToString(unsupportedContentComponent);
+        }
+      });
+    } else if (attachments.length) {
+      if (isSupported) {
+        return (
+          <MGTAdaptiveCard attachments={attachments} defaultOnRender={defaultOnRender} messageProps={messageProps} />
+        );
+      }
     }
-    return <div>Unsupported card content</div>;
   }
   return defaultOnRender ? defaultOnRender(messageProps) : <></>;
 };

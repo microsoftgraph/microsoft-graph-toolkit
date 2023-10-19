@@ -5,11 +5,11 @@ import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
-import { onRenderMessage } from '../../utils/chat';
+// import { onRenderMessage } from '../../utils/chat';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
-// import { onRenderMessage } from '../../utils/onRenderMessage';
+import { onRenderMessage } from '../../utils/onRenderMessage';
 import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
 
