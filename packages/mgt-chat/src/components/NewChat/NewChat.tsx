@@ -35,9 +35,7 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     ...shorthands.paddingBlock('3px', '16px'),
-    minWidth: '300px',
-    backgroundColor: tokens.colorNeutralBackground1,
-    boxShadow: tokens.shadow8
+    minWidth: '300px'
   },
   title: {
     ...typographyStyles.subtitle2,

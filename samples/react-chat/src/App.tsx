@@ -44,7 +44,7 @@ function App() {
                 onChatCreated={onChatCreated}
                 onCancelClicked={() => setShowNewChat(false)}
                 mode="auto"
-                hideTitle={true}
+                hideTitle={false}
                 title="Create a new chat"
               />
             </div>
