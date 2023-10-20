@@ -20,7 +20,8 @@ const useTitleStyles = makeStyles({
     fontSize: '18px',
     fontWeight: 700,
     marginBlockStart: '10px',
-    marginBlockEnd: '8px'
+    marginBlockEnd: '8px',
+    zIndex: 3
   }
 });
 
