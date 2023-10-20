@@ -1093,11 +1093,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const graph = provider.graph.forComponent(this);
 
-    if (this.fallbackDetails) {
-      this.line2Property = 'email';
-    }
-
-    if (this.verticalLayout && this.view < ViewType.fourlines) {
+    if ((this.verticalLayout && this.view < ViewType.fourlines) || this.fallbackDetails) {
       this.line2Property = 'email';
     }
 
@@ -1111,8 +1107,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     ];
     personProps = personProps.filter(email => email !== 'email');
 
-    let details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
-
+    let details = this.personDetailsInternal || this.personDetails;
     if (details) {
       if (
         !details.personImage &&
@@ -1170,6 +1165,8 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
+    details = details ? details : this.fallbackDetails;
+
     // populate presence
     const defaultPresence: Presence = {
       activity: 'Offline',
@@ -1179,7 +1176,6 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
       try {
-        details = this.personDetailsInternal || this.personDetails;
         if (details) {
           // setting userId to 'me' ensures only the presence.read permission is required
           const userId = this.personQuery !== 'me' ? details?.id : null;

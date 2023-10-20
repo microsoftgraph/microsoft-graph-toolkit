@@ -46,21 +46,27 @@ export const setPersonDetails = () => html`
 
 export const personFallbackDetails = () => html`
    <div class="example">
-   <mgt-person person-query="mbowen" view="twoLines" fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
+   <mgt-person person-query="mbowen" view="twoLines" show-presence fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
  </div>
  <div class="example">
-   <mgt-person person-query="mbowen" view="twoLines"
+   <mgt-person person-query="mbowen" view="twoLines" show-presence
      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'></mgt-person>
  </div>
  <div class="example">
-   <mgt-person person-query="mbowen" view="twoLines"
+   <mgt-person person-query="mbowen" view="twoLines" show-presence
      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'></mgt-person>
  </div>
  <!-- No Fallback details -->
  <div class="example">
-   <mgt-person person-query="mbowen" view="twoLines"
+   <mgt-person person-query="mbowen" view="twoLines" show-presence
      fallback-details='{}'></mgt-person>
  </div>
+<!-- Correct Person Query and Fallback Details -->
+ <div class="example">
+   <mgt-person person-query="bowen" view="twoLines" show-presence
+   fallback-details='{"mail":"Noone@M365x214355.onmicrosoft.com","displayName":"Someone"}'></mgt-person>
+ </div>
+ 
 
    <style>
    .example {
