@@ -1,6 +1,6 @@
 import { ErrorBar, FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
 import { FluentTheme, MessageBarType } from '@fluentui/react';
-import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
+import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
@@ -92,7 +92,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
 
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
-      <FluentProvider theme={teamsLightTheme} className={styles.fullHeight}>
+      <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.chat}>
           {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
