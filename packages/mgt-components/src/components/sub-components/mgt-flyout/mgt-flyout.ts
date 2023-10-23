@@ -11,7 +11,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
 import { MgtBaseComponent } from '@microsoft/mgt-element/';
-import { registerComponent } from '../../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 export const registerMgtFlyoutComponent = () => registerComponent('flyout', MgtFlyout);
 

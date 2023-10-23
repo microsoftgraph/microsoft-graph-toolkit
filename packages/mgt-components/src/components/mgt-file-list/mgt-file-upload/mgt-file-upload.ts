@@ -26,7 +26,7 @@ import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { formatBytes } from '../../../utils/Utils';
 import { styles } from './mgt-file-upload-css';
 import { strings } from './strings';
-import { registerComponent } from '../../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtFileComponent } from '../../mgt-file/mgt-file';
 
 /**

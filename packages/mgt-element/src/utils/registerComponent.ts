@@ -1,4 +1,4 @@
-import { customElementHelper } from '@microsoft/mgt-element';
+import { customElementHelper } from '../components/customElementHelper';
 
 export const buildComponentName = (tagBase: string) => `${customElementHelper.prefix}-${tagBase}`;
 

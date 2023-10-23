@@ -12,7 +12,7 @@ import { MgtBaseComponent } from '@microsoft/mgt-element';
 import { styles } from './mgt-arrow-options-css';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { fluentMenu, fluentMenuItem, fluentButton } from '@fluentui/web-components';
-import { registerComponent } from '../../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 /*
   Ok, the name here deserves a bit of explanation,

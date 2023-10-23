@@ -15,7 +15,7 @@ import { BasePersonCardSection } from '../BasePersonCardSection';
 import { styles } from './mgt-contact-css';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { strings } from './strings';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 /**
  * Represents a contact part and its metadata

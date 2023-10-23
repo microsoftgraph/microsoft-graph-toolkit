@@ -34,7 +34,7 @@ import {
   fluentCard,
   fluentTextField
 } from '@fluentui/web-components';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 
 /**

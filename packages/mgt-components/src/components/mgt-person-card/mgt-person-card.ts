@@ -51,7 +51,7 @@ import {
 } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { BasePersonCardSection, CardSection } from '../BasePersonCardSection';
-import { buildComponentName, registerComponent } from '../registerComponent';
+import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
 import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 import { IHistoryClearer, IExpandable } from './types';
 

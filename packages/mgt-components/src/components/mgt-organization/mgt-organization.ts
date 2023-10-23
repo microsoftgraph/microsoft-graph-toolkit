@@ -15,7 +15,7 @@ import { styles } from './mgt-organization-css';
 import { strings } from './strings';
 import { ViewType } from '../../graph/types';
 import { mgtHtml } from '@microsoft/mgt-element';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtPersonComponent } from '../mgt-person/mgt-person';
 
 export const registerMgtOrganizationComponent = () => {

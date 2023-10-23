@@ -13,7 +13,7 @@ import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { strings } from './strings';
 import { styles } from './mgt-search-box-css';
 import { debounce } from '../../../utils/Utils';
-import { registerComponent } from '../../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 export const registerMgtSearchBoxComponent = () => {
   registerFluentComponents(fluentSearch);

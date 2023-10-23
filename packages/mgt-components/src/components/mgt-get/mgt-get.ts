@@ -25,7 +25,7 @@ import { schemas } from '../../graph/cacheStores';
 import { CacheResponse } from '../CacheResponse';
 import { Entity } from '@microsoft/microsoft-graph-types';
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 /**
  * Simple holder type for an image

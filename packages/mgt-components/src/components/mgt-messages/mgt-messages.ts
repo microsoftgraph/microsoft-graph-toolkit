@@ -13,7 +13,7 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { getRelativeDisplayDate } from '../../utils/Utils';
 import { styles } from './mgt-messages-css';
 import { strings } from './strings';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 export const registerMgtMessagesComponent = () => registerComponent('messages', MgtMessages);
 

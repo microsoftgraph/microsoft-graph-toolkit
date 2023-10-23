@@ -36,7 +36,7 @@ import {
   fluentCheckbox,
   fluentSkeleton
 } from '@fluentui/web-components';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtDotOptionsComponent } from '../sub-components/mgt-dot-options/mgt-dot-options';
 import { registerMgtArrowOptionsComponent } from '../sub-components/mgt-arrow-options/mgt-arrow-options';
 

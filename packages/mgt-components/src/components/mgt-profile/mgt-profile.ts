@@ -17,7 +17,7 @@ import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { styles } from './mgt-profile-css';
 import { strings } from './strings';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 export const registerMgtProfileComponent = () => registerComponent('profile', MgtProfile);
 

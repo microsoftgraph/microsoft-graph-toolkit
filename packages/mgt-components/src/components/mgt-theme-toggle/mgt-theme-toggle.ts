@@ -12,7 +12,7 @@ import { fluentSwitch } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { applyTheme } from '../../styles/theme-manager';
 import { strings } from './strings';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 export const registerMgtThemeToggleComponent = () => {
   registerFluentComponents(fluentSwitch);

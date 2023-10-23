@@ -45,7 +45,7 @@ import { fluentTextField, fluentCard } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { strings } from './strings';
 import { Person, User } from '@microsoft/microsoft-graph-types';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 import { isGraphError } from '../../graph/isGraphError';
 

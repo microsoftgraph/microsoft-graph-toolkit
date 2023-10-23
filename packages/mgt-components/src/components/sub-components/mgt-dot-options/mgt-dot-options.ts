@@ -13,7 +13,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { strings } from './strings';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { styles } from './mgt-dot-options-css';
-import { registerComponent } from '../../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 /**
  * Defines the event functions passed to the option item.

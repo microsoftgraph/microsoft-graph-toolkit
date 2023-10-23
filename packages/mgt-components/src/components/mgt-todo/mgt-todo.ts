@@ -33,7 +33,7 @@ import { isElementDark } from '../../utils/isDark';
 import { ifDefined } from 'lit/directives/if-defined.js';
 
 import { TodoTaskList, TodoTask, TaskStatus } from '@microsoft/microsoft-graph-types';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtPickerComponent } from '../mgt-picker/mgt-picker';
 
 /**

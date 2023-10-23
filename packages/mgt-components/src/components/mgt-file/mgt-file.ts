@@ -31,7 +31,7 @@ import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { getFileTypeIconUriByExtension } from '../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { strings } from './strings';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 export const registerMgtFileComponent = () => registerComponent('file', MgtFile);
 

@@ -8,7 +8,7 @@
 import { html } from 'lit';
 import { MgtBaseComponent } from '@microsoft/mgt-element';
 import { styles } from './mgt-spinner-css';
-import { registerComponent } from '../../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 export const registerMgtSpinnerComponent = () => registerComponent('spinner', MgtSpinner);
 

@@ -16,7 +16,7 @@ import { registerFluentComponents } from '../../utils/FluentComponents';
 import '../../styles/style-helper';
 import { styles } from './mgt-taxonomy-picker-css';
 import { DataChangedDetail, registerMgtGetComponent } from '../mgt-get/mgt-get';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 
 export const registerMgtTaxonomyPickerComponent = () => {

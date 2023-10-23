@@ -16,7 +16,7 @@ import '../../styles/style-helper';
 import { Entity } from '@microsoft/microsoft-graph-types';
 import { DataChangedDetail, registerMgtGetComponent } from '../mgt-get/mgt-get';
 import { styles } from './mgt-picker-css';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 export const registerMgtPickerComponent = () => {
   registerFluentComponents(fluentCombobox, fluentOption);

@@ -26,7 +26,7 @@ import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types'
 import { strings } from './strings';
 import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { buildComponentName, registerComponent } from '../registerComponent';
+import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
 import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';

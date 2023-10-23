@@ -51,7 +51,7 @@ import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { fluentSkeleton, fluentButton, fluentTooltip, fluentDivider } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { CacheResponse } from '../../CacheResponse';
-import { registerComponent } from '../../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtFileComponent } from '../../mgt-file/mgt-file';
 import { registerMgtPersonComponent } from '../../mgt-person/mgt-person';
 

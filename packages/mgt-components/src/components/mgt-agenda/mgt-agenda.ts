@@ -18,7 +18,7 @@ import { MgtPeople, registerMgtPeopleComponent } from '../mgt-people/mgt-people'
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentCard } from '@fluentui/web-components';
 import { classMap } from 'lit/directives/class-map.js';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 /**
  * Web Component which represents events in a user or group calendar.

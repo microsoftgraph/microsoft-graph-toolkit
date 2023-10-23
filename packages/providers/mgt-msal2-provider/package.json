@@ -38,7 +38,10 @@
     "lint": "eslint -c ../../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../../artifacts"
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/es6/index.js",
+    "./src/index.ts"
+  ],
   "dependencies": {
     "@azure/msal-browser": "^2.22.0",
     "@microsoft/mgt-element": "*",

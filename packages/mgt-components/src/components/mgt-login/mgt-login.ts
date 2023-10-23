@@ -26,7 +26,7 @@ import '../../styles/style-helper';
 
 import { fluentListbox, fluentProgressRing, fluentButton, fluentCard } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 /**
  * loginViewType describes the enum strings that can be passed in to determine

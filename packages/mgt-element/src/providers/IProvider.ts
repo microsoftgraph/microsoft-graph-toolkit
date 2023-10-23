@@ -11,7 +11,7 @@ import { GraphEndpoint, IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from '../IGra
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 
 /**
- * Provider Type to be extended for implmenting new providers
+ * Provider Type to be extended for implementing new providers
  *
  * @export
  * @abstract

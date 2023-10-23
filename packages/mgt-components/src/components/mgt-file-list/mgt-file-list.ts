@@ -47,7 +47,7 @@ import { MgtFileUploadConfig, registerMgtFileUploadComponent } from './mgt-file-
 import { fluentProgressRing } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { CardSection } from '../BasePersonCardSection';
-import { registerComponent } from '../registerComponent';
+import { registerComponent } from '@microsoft/mgt-element';
 
 export const registerMgtFileListComponent = () => {
   registerFluentComponents(fluentProgressRing);

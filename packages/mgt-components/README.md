@@ -48,7 +48,7 @@ The components can be used on their own, but they are at their best when they ar
     ```html
     <script type="module">
       import {Providers} from '@microsoft/mgt-element';
-      import {Msal2Provider} from '@microsoft/mgt-msal2-provider';
+      import {Msal2Provider} from '@microsoft/mgt-msal2-provider/dist/es6/exports';
 
       // import the components
       import '@microsoft/mgt-components';
@@ -66,7 +66,7 @@ The components can be used on their own, but they are at their best when they ar
 
 By default importing anything from the root of the `@microsoft/mgt-components` package triggers a side effect causing the registration of all components as custom elements with the browser. If you are using a bundler that can perform "tree shaking" then there are two steps to ensure that your bundler can correctly determine which pieces of code to include in you bundle.
 
-- Use the `@microsoft/mgt-components/exports` path to import your dependencies. This code path has no side effects unlike the root path.
+- Use the `@microsoft/mgt-components/dist/es6/exports` path to import your dependencies. This code path has no side effects unlike the root path.
 - Explicitly register each component that will be used in your application using the appropriate function. For each component there is a registration function `registerMgt{Name}Component()`, e.g. `registerMgtLoginComponent()`.
 
 In cases where a component has a dependency on other components these are all registered in the registration function. For example, the mgt-login component uses an mgt-person internally, so `registerMgtLoginComponent()` calls `registerMgtPersonComponent()`.`
@@ -84,13 +84,13 @@ This removes the registration of a component from being a side effect of importi
 ```html
 <script type="module">
   import {Providers} from '@microsoft/mgt-element';
-  import {Msal2Provider} from '@microsoft/mgt-msal2-provider';
+  import {Msal2Provider} from '@microsoft/mgt-msal2-provider/dist/es6/exports';
 
   // import the registration functions
   import {
     registerMgtLoginComponent,
     registerMgtAgendaComponent
-  } from '@microsoft/mgt-components';
+  } from '@microsoft/mgt-components/dist/es6/exports';
 
   // register the components
   registerMgtLoginComponent();
@@ -121,11 +121,11 @@ The earlier example can be updated to use the disambiguation feature as follows:
 ```html
 <script type="module">
   import { Providers, customElementHelper } from '@microsoft/mgt-element';
-  import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
+  import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
   import {
     registerMgtLoginComponent,
     registerMgtAgendaComponent
-  } from '@microsoft/mgt-components';
+  } from '@microsoft/mgt-components/dist/es6/exports';
 
   // configure disambiguation
   customElementHelper.withDisambiguation('contoso');
@@ -155,7 +155,7 @@ The earlier example can be updated to use the disambiguation feature as follows:
 ```html
 <script type="module">
   import { Providers, customElementHelper } from '@microsoft/mgt-element';
-  import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
+  import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
   // configure disambiguation
   customElementHelper.withDisambiguation('contoso');
 
@@ -266,7 +266,7 @@ When using an `import` statement the import statement is hoisted and executed be
 ```typescript
 // static import via a statement
 import { Providers, customElementHelper } from '@microsoft/mgt-element';
-import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
+import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
 
 customElementHelper.withDisambiguation('contoso');
 Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
@@ -285,7 +285,7 @@ import('@microsoft/mgt-components').then(() => {
 ```typescript
 // static import via a statement
 import { Provider } from '@microsoft/mgt-element';
-import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
+import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
 import '@microsoft/mgt-components';
 
 Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
