@@ -88,7 +88,7 @@ export const GroupChatHeader = ({ chat, currentUserId, onRenameChat }: ChatHeade
               <Input placeholder="Enter group name" onChange={onChatNameChanged} value={chatName || ''} />
             </Field>
             <div className={styles.formButtons}>
-              <Button appearance="secondary" onClick={onCancelClicked} aria-label="cancel">
+              <Button appearance="secondary" onClick={onCancelClicked}>
                 Cancel
               </Button>
               <Button appearance="primary" disabled={chatName === chat?.topic} onClick={renameChat} aria-label="send">
