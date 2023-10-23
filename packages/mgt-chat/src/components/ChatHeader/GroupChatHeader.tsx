@@ -91,7 +91,7 @@ export const GroupChatHeader = ({ chat, currentUserId, onRenameChat }: ChatHeade
               <Button appearance="secondary" onClick={onCancelClicked} aria-label="cancel">
                 Cancel
               </Button>
-              <Button appearance="primary" disabled={chatName === chat?.topic} onClick={renameChat}>
+              <Button appearance="primary" disabled={chatName === chat?.topic} onClick={renameChat} aria-label="send">
                 Send
               </Button>
             </div>
