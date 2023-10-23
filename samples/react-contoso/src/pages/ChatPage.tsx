@@ -92,7 +92,6 @@ export const ChatPage: React.FunctionComponent = () => {
                     onCancelClicked={() => {
                       setIsNewChatOpen(false);
                     }}
-                    hideTitle={true}
                   ></NewChat>
                 </DialogBody>
               </DialogSurface>

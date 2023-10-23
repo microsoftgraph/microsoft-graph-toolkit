@@ -25,8 +25,6 @@ The following example displays a signed-in user's conversation using the `mgt-ne
 
 | Attribute | Property | Description |
 | - | - | - |
-| hide-title  | hideTitle | A Boolean to set the component interface to hide its title. Default is `false`. |
-| title | title | Value of the title displayed in the component. |
 | mode | mode | Set to `oneOnOne`, `group` or `auto`. Default is `auto`. |
 
 ## CSS custom properties
