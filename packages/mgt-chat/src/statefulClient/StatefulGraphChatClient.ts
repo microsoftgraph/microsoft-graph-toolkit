@@ -1069,10 +1069,22 @@ detail: ${JSON.stringify(eventDetail)}`);
     return content;
   }
 
+  /**
+   * Checks through a list of attachments if they are supported. It checks
+   * the content if it has unsupported text formats when there are no attachments.
+   * @param content to be rendered.
+   * @param attachments in the chat.
+   * @returns {boolean}
+   */
   private hasUnsupportedContent(content: string, attachments: ChatMessageAttachment[]): boolean {
     const unsupportedContentTypes = [
       'application/vnd.microsoft.card.codesnippet',
       'application/vnd.microsoft.card.fluid',
+      'application/vnd.microsoft.card.list',
+      'application/vnd.microsoft.card.hero',
+      'application/vnd.microsoft.card.o365connector',
+      'application/vnd.microsoft.card.receipt',
+      'application/vnd.microsoft.card.thumbnail',
       'reference'
     ];
     const isUnsupported: boolean[] = [];

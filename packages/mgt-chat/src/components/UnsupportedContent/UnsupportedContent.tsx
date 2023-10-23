@@ -15,6 +15,7 @@ const useStyles = makeStyles({
     boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.14), 0px 0px 2px 0px rgba(0, 0, 0, 0.12)',
     textDecorationLine: 'none',
     color: '#424242',
+    alignItems: 'center',
     ...shorthands.margin('18px', '0px', '8px', '0px'),
     ...shorthands.borderRadius('6px'),
     ...shorthands.padding('16px'),

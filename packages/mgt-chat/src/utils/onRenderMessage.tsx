@@ -27,7 +27,7 @@ type IAction = ISubmitAction | IOpenUrlAction | IShowCardAction | IExecuteAction
 /**
  * Props for an adaptive card message.s
  */
-interface AdaptiveCardMessageProps {
+interface MGTAdaptiveCardProps {
   attachments: ChatMessageAttachment[];
   defaultOnRender?: (props: MessageProps) => JSX.Element;
   messageProps: MessageProps;
@@ -36,7 +36,7 @@ interface AdaptiveCardMessageProps {
 /**
  * Render an adaptive card from the attachments
  */
-const MGTAdaptiveCard = (msg: AdaptiveCardMessageProps) => {
+const MGTAdaptiveCard = (msg: MGTAdaptiveCardProps) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const attachments = msg.attachments;
   const adaptiveCardAttachment = getAdaptiveCardAttachment(attachments);
@@ -63,9 +63,6 @@ const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRe
   const message = messageProps?.message;
   if (isGraphChatMessage(message)) {
     const attachments = message?.attachments ?? [];
-    // Images, files etc have attachments but have no content. They are rendered
-    // as they are. Avoid rendering an empty.
-    const isSupported = isAttachmentSupported(attachments);
 
     if (message?.hasUnsupportedContent) {
       const unsupportedContentComponent = <UnsupportedContent targetUrl={message.rawChatUrl} />;
@@ -75,11 +72,9 @@ const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRe
         }
       });
     } else if (attachments.length) {
-      if (isSupported) {
-        return (
-          <MGTAdaptiveCard attachments={attachments} defaultOnRender={defaultOnRender} messageProps={messageProps} />
-        );
-      }
+      return (
+        <MGTAdaptiveCard attachments={attachments} defaultOnRender={defaultOnRender} messageProps={messageProps} />
+      );
     }
   }
   return defaultOnRender ? defaultOnRender(messageProps) : <></>;
@@ -101,29 +96,6 @@ const getAdaptiveCardAttachment = (attachments: ChatMessageAttachment[]): ChatMe
 };
 
 /**
- * Returns true if the list of attachments is supported. Otherwise false.
- * @param attachments
- * @returns
- */
-const isAttachmentSupported = (attachments: ChatMessageAttachment[]): boolean => {
-  const unsupportedCards = [
-    'application/vnd.microsoft.card.list',
-    'application/vnd.microsoft.card.hero',
-    'application/vnd.microsoft.card.o365connector',
-    'application/vnd.microsoft.card.receipt',
-    'application/vnd.microsoft.card.thumbnail'
-  ];
-
-  for (const attachment of attachments) {
-    const contentType = attachment?.contentType ?? '';
-    if (unsupportedCards.includes(contentType)) {
-      return false;
-    }
-  }
-  return Boolean(attachments);
-};
-
-/**
  * Process the attachment object and return an HTMLElement or nothing.
  * @param attachment
  * @returns
@@ -136,7 +108,6 @@ const getHtmlElementFromAttachment = (attachment: ChatMessageAttachment | undefi
   const adaptiveCard = new AdaptiveCards.AdaptiveCard();
   const adaptiveCardContentString: string = attachment?.content ?? '';
   const adaptiveCardContent = JSON.parse(adaptiveCardContentString) as IAdaptiveCard;
-  const hasSchema = Object.keys(adaptiveCardContent).includes('$schema');
 
   // Check if the actions property has OpenUrl actions only
   const actions = adaptiveCardContent?.actions?.filter(ac => ac.type === 'Action.OpenUrl');
@@ -147,7 +118,6 @@ const getHtmlElementFromAttachment = (attachment: ChatMessageAttachment | undefi
 
   // Check if the body has actionSet actions and filter for OpenUrl only
   const actionSetArray = adaptiveCardContent?.body?.filter(ac => Object.values(ac).includes('ActionSet'));
-  let hasInnerActions = false; // flag to ensure we render with inner actions
   if (actionSetArray) {
     const finalInnerActions = [];
     for (const actionSet of actionSetArray) {
@@ -159,27 +129,24 @@ const getHtmlElementFromAttachment = (attachment: ChatMessageAttachment | undefi
     for (const b of adaptiveCardContent?.body ?? []) {
       if (Object.values(b).includes('ActionSet')) {
         b.actions = finalInnerActions;
-        hasInnerActions = true;
       }
     }
   }
 
-  if (hasSchema && (actions || hasInnerActions)) {
-    // markdown support
-    AdaptiveCards.AdaptiveCard.onProcessMarkdown = (text: string, result: AdaptiveCards.IMarkdownProcessingResult) => {
-      const md = new MarkdownIt();
-      result.outputHtml = md.render(text);
-      result.didProcess = true;
-    };
+  // markdown support
+  AdaptiveCards.AdaptiveCard.onProcessMarkdown = (text: string, result: AdaptiveCards.IMarkdownProcessingResult) => {
+    const md = new MarkdownIt();
+    result.outputHtml = md.render(text);
+    result.didProcess = true;
+  };
 
-    adaptiveCard.parse(adaptiveCardContent);
-    adaptiveCard.onExecuteAction = (action: AdaptiveCards.Action) => {
-      if (isActionOpenUrl(action)) {
-        const url: string = action?.url ?? '';
-        window.open(url, '_blank', 'noopener,noreferrer');
-      }
-    };
-  }
+  adaptiveCard.parse(adaptiveCardContent);
+  adaptiveCard.onExecuteAction = (action: AdaptiveCards.Action) => {
+    if (isActionOpenUrl(action)) {
+      const url: string = action?.url ?? '';
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
   return adaptiveCard.render();
 };
 
