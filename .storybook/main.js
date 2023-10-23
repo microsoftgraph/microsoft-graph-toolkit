@@ -1,3 +1,4 @@
+import { dirname, join } from 'path';
 /**
  * -------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
@@ -8,26 +9,17 @@
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
-  core: {
-    builder: 'webpack5',
-  },
-  presets: [
-    // {
-    //   name: '@storybook/addon-docs/preset',
-    //   options: {
-    //     sourceLoaderOptions: null
-    //   }
-    // }
-  ],
-  stories: ['../stories/overview.stories.mdx', '../stories/**/*.@(js|mdx)'],
+  presets: [],
+
+  stories: ['../stories/overview.stories.mdx', '../stories/**/*.stories.@(js|mdx)'],
+  staticDirs: ['../assets'],
+
   addons: [
-    'storybook-version',
-    '@storybook/addon-docs'
-    // '@storybook/addon-a11y/register',
-    // '@storybook/addon-actions/register',
-    // '@storybook/addon-knobs/register',
-    // '@storybook/addon-links/register'
+    getAbsolutePath('storybook-version'),
+    getAbsolutePath('@storybook/addon-docs'),
+    getAbsolutePath('@storybook/addon-mdx-gfm')
   ],
+
   webpackFinal: async (config, { configType }) => {
     // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
     // You can change the configuration based on that.
@@ -42,5 +34,18 @@ module.exports = {
 
     // Return the altered config
     return config;
+  },
+
+  framework: {
+    name: getAbsolutePath('@storybook/web-components-webpack5'),
+    options: {}
+  },
+
+  docs: {
+    autodocs: 'tag'
   }
 };
+
+function getAbsolutePath(value) {
+  return dirname(require.resolve(join(value, 'package.json')));
+}

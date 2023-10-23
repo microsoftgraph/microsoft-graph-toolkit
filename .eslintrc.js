@@ -4,7 +4,7 @@ module.exports = {
     es6: true,
     node: true
   },
-  extends: ['@microsoft/eslint-config-msgraph'],
+  extends: ['@microsoft/eslint-config-msgraph', 'plugin:storybook/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: [
@@ -28,7 +28,8 @@ module.exports = {
   root: true,
   ignorePatterns: ['**/**-css.ts', '.eslintrc.js', '*.cjs'],
   rules: {
-    '@typescript-eslint/prefer-optional-chain': 'warn',
-    'newline-per-chained-call': 'off'
+    '@typescript-eslint/no-explicit-any': 'warn',
+    // prefer-nullish-coalescing requires strictNullChecking to be turned on
+    '@typescript-eslint/prefer-nullish-coalescing': 'off'
   }
 };

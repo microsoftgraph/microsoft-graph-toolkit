@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Title, Subtitle, Description, Primary, ArgsTable, Stories, PRIMARY_STORY } from '@storybook/addon-docs';
+import { Title, Subtitle, Description, Primary, PRIMARY_STORY, ArgTypes } from '@storybook/addon-docs';
 
 export const defaultDocsPage = () => (
   <>
@@ -8,7 +8,6 @@ export const defaultDocsPage = () => (
     <Subtitle />
     <Description />
     <Primary />
-    <ArgsTable story={PRIMARY_STORY} />
-    <Stories />
+    <ArgTypes story={PRIMARY_STORY} />
   </>
 );

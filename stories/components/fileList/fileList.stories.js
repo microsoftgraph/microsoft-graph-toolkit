@@ -7,15 +7,14 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Components / mgt-file-list',
   component: 'file-list',
   decorators: [withCodeEditor],
+  tags: ['autodocs'],
   parameters: {
     docs: {
-      page: defaultDocsPage,
       source: { code: '<mgt-file-list></mgt-file-list>' }
     }
   }
@@ -34,7 +33,7 @@ export const RTL = () => html`
 export const localization = () => html`
   <mgt-file-list></mgt-file-list>
   <script>
-  import { LocalizationHelper } from '@microsoft/mgt';
+  import { LocalizationHelper } from '@microsoft/mgt-element';
   LocalizationHelper.strings = {
     _components: {
       'file-list': {

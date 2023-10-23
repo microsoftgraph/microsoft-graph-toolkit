@@ -36,6 +36,7 @@ import { MgtOrganization } from '../mgt-organization/mgt-organization';
 import { MgtProfile } from '../mgt-profile/mgt-profile';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 import { strings } from './strings';
+import { isUser } from '../../graph/entityType';
 
 import '../sub-components/mgt-spinner/mgt-spinner';
 
@@ -476,7 +477,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._history = [];
 
     this._cardState = historyState.state;
-    this._personDetails = historyState.state;
+    this._personDetails = historyState.personDetails;
     this.personImage = historyState.personImage;
     this.loadSections();
   }
@@ -644,7 +645,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPersonSubtitle(person?: IDynamicPerson): TemplateResult {
     person = person || this.internalPersonDetails;
-    if (!person.department) {
+    if (!isUser(person) || !person.department) {
       return;
     }
     return html`
@@ -1016,8 +1017,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     // check if personDetail already populated
     if (this.personDetails) {
-      const user = this.personDetails as User;
-      const id = user.userPrincipalName || user.id;
+      const user = this.personDetails;
+      let id: string;
+      if (isUser(user)) {
+        id = user.userPrincipalName || user.id;
+      }
 
       // if we have an id but no email, we should get data from the graph
       // in some graph calls, the user object does not contain the email
@@ -1266,11 +1270,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       this.sections.push(new MgtOrganization(this._cardState, this._me));
     }
 
-    if (MgtPersonCard.config.sections.mailMessages && messages && messages.length) {
+    if (MgtPersonCard.config.sections.mailMessages && messages?.length) {
       this.sections.push(new MgtMessages(messages));
     }
 
-    if (MgtPersonCard.config.sections.files && files && files.length) {
+    if (MgtPersonCard.config.sections.files && files?.length) {
       this.sections.push(new MgtFileList());
     }
 

@@ -5,7 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export type MgtTemplateProps = {
+// Make type generic with a default of any to provide backwards compatibility and allow correct typing of the dataContext
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface MgtTemplateProps<T = any> {
   template?: string;
-  dataContext?: any;
-};
+  dataContext?: T;
+}

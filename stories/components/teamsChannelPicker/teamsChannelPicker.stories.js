@@ -7,15 +7,14 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
   title: 'Components / mgt-teams-channel-picker',
   component: 'teams-channel-picker',
   decorators: [withCodeEditor],
+  tags: ['autodocs'],
   parameters: {
     docs: {
-      page: defaultDocsPage,
       source: {
         code: '<mgt-teams-channel-picker></mgt-teams-channel-picker>'
       }
@@ -94,7 +93,7 @@ export const RTL = () => html`
 export const Localization = () => html`
   <mgt-teams-channel-picker></mgt-teams-channel-picker>
   <script>
-  import { LocalizationHelper } from '@microsoft/mgt';
+  import { LocalizationHelper } from '@microsoft/mgt-element';
     LocalizationHelper.strings = {
         _components: {
             "teams-channel-picker": {

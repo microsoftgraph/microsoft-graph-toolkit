@@ -35,7 +35,7 @@ describe('objectEquals', () => {
       { a: circularObject, b: circularArray }
     ],
     [{ a: simpleDate }, { a: simpleDate }]
-  ])('should return true between %p and %p', (o1: any, o2: any) => {
+  ])('should return true between %p and %p', (o1: unknown, o2: unknown) => {
     expect(equals(o1, o2)).toBe(true);
   });
 
@@ -47,7 +47,7 @@ describe('objectEquals', () => {
     [{ a: new Date() }, { a: new Date() }],
     [circularObject, circularArray],
     [circularObject, { b: circularObject }]
-  ])('should return false between %p and %p', (o1: any, o2: any) => {
+  ])('should return false between %p and %p', (o1: unknown, o2: unknown) => {
     expect(equals(o1, o2)).toBe(false);
   });
 });

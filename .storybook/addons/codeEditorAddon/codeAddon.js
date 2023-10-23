@@ -1,4 +1,4 @@
-import addons, { makeDecorator } from '@storybook/addons';
+import { addons, makeDecorator } from '@storybook/preview-api';
 
 import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/IProvider';
 import { EditorElement } from './editor';
@@ -221,7 +221,7 @@ export const withCodeEditor = makeDecorator({
 
           let { html, css, js } = editor.files;
           js = js.replace(
-            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
+            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt\x2d([^\}]+)['"];/gm,
             `import {$1} from '${mgtScriptName}';`
           );
 
