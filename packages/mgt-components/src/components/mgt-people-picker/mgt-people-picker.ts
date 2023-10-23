@@ -352,6 +352,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!value) value = [];
     if (!arraysAreEqual(this._selectedPeople, value)) {
       this._selectedPeople = value;
+      this.fireCustomEvent('selectionChanged', this._selectedPeople);
       this.requestUpdate();
     }
   }
@@ -605,7 +606,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.addEventListener('copy', this.handleCopy);
     this.addEventListener('cut', this.handleCut);
     this.addEventListener('paste', this.handlePaste);
+    this.addEventListener('selectionChanged', this.handleSelectionChanged);
   }
+
+  /**
+   * Clears the disabled property on the people picker when used in single mode.
+   */
+  private readonly handleSelectionChanged = () => {
+    const innerInput = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+    if (innerInput && this.selectedPeople.length === 0 && !this.disabled) {
+      innerInput.removeAttribute('disabled');
+    }
+  };
 
   private get hasMaxSelections(): boolean {
     return this.selectionMode === 'single' && this.selectedPeople.length >= 1;
@@ -1118,7 +1130,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
         this.selectedPeople = [...this.defaultSelectedUsers, ...this.defaultSelectedGroups];
         this.requestUpdate();
-        this.fireCustomEvent('selectionChanged', this.selectedPeople);
       }
 
       if (input) {
@@ -1298,7 +1309,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
     this.selectedPeople = filteredPersonArr;
     void this.loadState();
-    this.fireCustomEvent('selectionChanged', this.selectedPeople);
     inputControl?.focus();
   }
 
@@ -1334,7 +1344,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       if (duplicatePeople.length === 0) {
         this.selectedPeople = [...this.selectedPeople, person];
-        this.fireCustomEvent('selectionChanged', this.selectedPeople);
         void this.loadState();
         this._foundPeople = [];
         this._arrowSelectionCount = -1;
@@ -1422,8 +1431,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
       void this.loadState();
       this.hideFlyout();
-      // fire selected people changed event
-      this.fireCustomEvent('selectionChanged', this.selectedPeople);
       return;
     }
 
@@ -1693,7 +1700,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this._currentHighlightedUserPos = 0;
     void this.loadState();
     this.hideFlyout();
-    this.fireCustomEvent('selectionChanged', this.selectedPeople);
   }
   /**
    * Changes the color class to show which people are selected for copy/cut-paste
