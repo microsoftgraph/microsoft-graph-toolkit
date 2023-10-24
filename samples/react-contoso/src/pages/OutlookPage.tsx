@@ -36,7 +36,7 @@ const useStyles = makeStyles({
   }
 });
 
-export const OutlookPage: React.FunctionComponent = () => {
+const OutlookPage: React.FunctionComponent = () => {
   const styles = useStyles();
   const [selectedTab, setSelectedTab] = React.useState<TabValue>('focused');
 
@@ -85,3 +85,5 @@ export const OutlookPage: React.FunctionComponent = () => {
     </>
   );
 };
+
+export default OutlookPage;

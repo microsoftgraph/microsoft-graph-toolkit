@@ -6,7 +6,7 @@
  */
 
 import { fluentButton, fluentCheckbox, fluentDialog, fluentProgress } from '@fluentui/web-components';
-import { customElement, IGraph, MgtBaseComponent, mgtHtml } from '@microsoft/mgt-element';
+import { IGraph, MgtBaseComponent, mgtHtml } from '@microsoft/mgt-element';
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
@@ -26,8 +26,8 @@ import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { formatBytes } from '../../../utils/Utils';
 import { styles } from './mgt-file-upload-css';
 import { strings } from './strings';
-
-registerFluentComponents(fluentProgress, fluentButton, fluentCheckbox, fluentDialog);
+import { registerComponent } from '@microsoft/mgt-element';
+import { registerMgtFileComponent } from '../../mgt-file/mgt-file';
 
 /**
  * Simple union type for file system entry and directory entry types
@@ -236,6 +236,13 @@ interface FileWithPath extends File {
   fullPath: string;
 }
 
+export const registerMgtFileUploadComponent = () => {
+  registerFluentComponents(fluentProgress, fluentButton, fluentCheckbox, fluentDialog);
+
+  registerMgtFileComponent();
+  registerComponent('file-upload', MgtFileUpload);
+};
+
 /**
  * A component to upload files to OneDrive or SharePoint Sites
  *
@@ -264,8 +271,6 @@ interface FileWithPath extends File {
  * @cssprop --file-upload-dialog-height - {String} the height of the file upload dialog box. Default value is auto.
  * @cssprop --file-upload-dialog-padding - {String} the padding of the file upload dialog box. Default value is 24px;
  */
-
-@customElement('file-upload')
 export class MgtFileUpload extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

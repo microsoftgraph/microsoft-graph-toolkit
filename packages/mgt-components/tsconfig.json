@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "module": "ES2020",
     "outDir": "dist/es6",
     "sourceRoot": "src",
     "rootDir": "src",

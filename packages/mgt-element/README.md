@@ -24,7 +24,8 @@ This example illustrates how to instantiate a new provider (MsalProvider in this
 
     ```ts
     import {Providers} from '@microsoft/mgt-element';
-    import {Msal2Provider} from '@microsoft/mgt-msal2-provider';
+    // importing via the export path will exclude the custom element for <mgt-msal2-proivder> from the final bundle
+    import {Msal2Provider} from '@microsoft/mgt-msal2-provider/dist/es6/exports';
 
     // initialize the auth provider globally
     Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});

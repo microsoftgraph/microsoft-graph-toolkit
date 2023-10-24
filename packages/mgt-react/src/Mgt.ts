@@ -145,7 +145,8 @@ export class Mgt extends Wc {
  * @param {(string | Function)} tag
  * @returns React component
  */
-export const wrapMgt = <T = WcProps>(tag: string) => {
+export const wrapMgt = <T = WcProps>(tag: string, registerElementFunction: () => void) => {
+  registerElementFunction();
   const WrapMgt = (props: T, ref: React.ForwardedRef<unknown>): React.CElement<WcTypeProps, Mgt> =>
     React.createElement(Mgt, { wcType: tag, innerRef: ref, ...props });
   const component: React.ForwardRefExoticComponent<

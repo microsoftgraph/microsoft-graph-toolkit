@@ -40,6 +40,7 @@
     "lint:provider": "eslint -c .eslintrc.provider.js 'src/Provider/**/*.ts'",
     "postpack": "cpx *.tgz ../../../artifacts"
   },
+  "sideEffects": false,
   "dependencies": {
     "@azure/msal-node": "^1.0.3",
     "@microsoft/mgt-element": "*",

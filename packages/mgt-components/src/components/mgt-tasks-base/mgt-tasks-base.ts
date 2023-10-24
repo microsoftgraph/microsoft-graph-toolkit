@@ -12,9 +12,6 @@ import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentTextField, fluentButton, fluentCalendar } from '@fluentui/web-components';
 import { TodoTask } from '@microsoft/microsoft-graph-types';
-
-registerFluentComponents(fluentTextField, fluentButton, fluentCalendar);
-
 /**
  * The foundation for creating task based components.
  *
@@ -74,6 +71,8 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
   constructor() {
     super();
+
+    registerFluentComponents(fluentTextField, fluentButton, fluentCalendar);
 
     this.clearState();
     this._previousMediaQuery = this.mediaQuery;
