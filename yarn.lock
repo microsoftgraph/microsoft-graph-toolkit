@@ -5896,6 +5896,7 @@ __metadata:
     "@microsoft/microsoft-graph-types": ^2.0.0
     "@microsoft/microsoft-graph-types-beta": ^0.16.0-preview
     "@microsoft/signalr": ^7.0.4
+    "@types/markdown-it": ^13.0.2
     "@types/react": ^17.0.0
     adaptivecards: ^3.0.1
     immer: ^9.0.6
@@ -34089,7 +34090,6 @@ __metadata:
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/user-event": ^14.4.3
     "@types/jest": ^29.5.2
-    "@types/markdown-it": ^13.0.2
     "@types/node": 12.12.22
     "@types/react": ^17.0.0
     "@types/react-dom": ^17.0.0

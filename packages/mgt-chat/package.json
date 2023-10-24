@@ -38,6 +38,7 @@
   "author": "Microsoft",
   "license": "MIT",
   "devDependencies": {
+    "@types/markdown-it": "^13.0.2",
     "@types/react": "^17.0.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",

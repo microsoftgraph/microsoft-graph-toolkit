@@ -101,10 +101,6 @@ const getAdaptiveCardAttachment = (attachments: ChatMessageAttachment[]): ChatMe
  * @returns
  */
 const getHtmlElementFromAttachment = (attachment: ChatMessageAttachment | undefined): HTMLElement | undefined => {
-  /* eslint-disable
-    @typescript-eslint/no-unsafe-assignment,
-    @typescript-eslint/no-unsafe-member-access,
-    @typescript-eslint/no-unsafe-call, react-hooks/rules-of-hooks */
   const adaptiveCard = new AdaptiveCards.AdaptiveCard();
   const adaptiveCardContentString: string = attachment?.content ?? '';
   const adaptiveCardContent = JSON.parse(adaptiveCardContentString) as IAdaptiveCard;
