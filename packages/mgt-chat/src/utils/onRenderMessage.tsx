@@ -6,7 +6,7 @@
  */
 
 import { MessageProps, MessageRenderer } from '@azure/communication-react';
-import * as AdaptiveCards from 'adaptivecards';
+import { Action, AdaptiveCard, IMarkdownProcessingResult } from 'adaptivecards';
 import MarkdownIt from 'markdown-it';
 import React, { useEffect, useRef } from 'react';
 import { isGraphChatMessage, isActionOpenUrl, isChatMessage } from './types';
@@ -27,7 +27,7 @@ type IAction = ISubmitAction | IOpenUrlAction | IShowCardAction | IExecuteAction
 /**
  * Props for an adaptive card message.s
  */
-interface MGTAdaptiveCardProps {
+interface MgtAdaptiveCardProps {
   attachments: ChatMessageAttachment[];
   defaultOnRender?: (props: MessageProps) => JSX.Element;
   messageProps: MessageProps;
@@ -36,7 +36,7 @@ interface MGTAdaptiveCardProps {
 /**
  * Render an adaptive card from the attachments
  */
-const MGTAdaptiveCard = (msg: MGTAdaptiveCardProps) => {
+const MgtAdaptiveCard = (msg: MgtAdaptiveCardProps) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const attachments = msg.attachments;
   const adaptiveCardAttachment = getAdaptiveCardAttachment(attachments);
@@ -73,7 +73,7 @@ const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRe
       });
     } else if (attachments.length) {
       return (
-        <MGTAdaptiveCard attachments={attachments} defaultOnRender={defaultOnRender} messageProps={messageProps} />
+        <MgtAdaptiveCard attachments={attachments} defaultOnRender={defaultOnRender} messageProps={messageProps} />
       );
     }
   }
@@ -101,7 +101,7 @@ const getAdaptiveCardAttachment = (attachments: ChatMessageAttachment[]): ChatMe
  * @returns
  */
 const getHtmlElementFromAttachment = (attachment: ChatMessageAttachment | undefined): HTMLElement | undefined => {
-  const adaptiveCard = new AdaptiveCards.AdaptiveCard();
+  const adaptiveCard = new AdaptiveCard();
   const adaptiveCardContentString: string = attachment?.content ?? '';
   const adaptiveCardContent = JSON.parse(adaptiveCardContentString) as IAdaptiveCard;
 
@@ -130,14 +130,14 @@ const getHtmlElementFromAttachment = (attachment: ChatMessageAttachment | undefi
   }
 
   // markdown support
-  AdaptiveCards.AdaptiveCard.onProcessMarkdown = (text: string, result: AdaptiveCards.IMarkdownProcessingResult) => {
+  AdaptiveCard.onProcessMarkdown = (text: string, result: IMarkdownProcessingResult) => {
     const md = new MarkdownIt();
     result.outputHtml = md.render(text);
     result.didProcess = true;
   };
 
   adaptiveCard.parse(adaptiveCardContent);
-  adaptiveCard.onExecuteAction = (action: AdaptiveCards.Action) => {
+  adaptiveCard.onExecuteAction = (action: Action) => {
     if (isActionOpenUrl(action)) {
       const url: string = action?.url ?? '';
       window.open(url, '_blank', 'noopener,noreferrer');
