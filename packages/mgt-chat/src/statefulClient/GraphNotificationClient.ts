@@ -45,7 +45,7 @@ const isMessageNotification = (o: Notification<Entity>): o is Notification<ChatM
 const isMembershipNotification = (o: Notification<Entity>): o is Notification<AadUserConversationMember> =>
   o.resource.includes('/members');
 
-const stripWssScheme = (notificationUrl: string): string => notificationUrl.replace('wss:', '');
+const stripWssScheme = (notificationUrl: string): string => notificationUrl.replace('websockets:', '');
 
 export class GraphNotificationClient {
   private connection?: HubConnection = undefined;
@@ -168,7 +168,7 @@ export class GraphNotificationClient {
     ).toISOString();
     const subscriptionDefinition: Subscription = {
       changeType: changeTypes.join(','),
-      notificationUrl: 'wss:',
+      notificationUrl: 'websockets:',
       resource: resourcePath,
       expirationDateTime,
       includeResourceData: true,
