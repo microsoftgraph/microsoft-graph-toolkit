@@ -82,8 +82,6 @@ export const App: React.FunctionComponent = () => {
             onChatCreated={onChatCreated}
             onCancelClicked={() => setShowNewChat(false)}
             mode="auto"
-            hideTitle={true}
-            title="Create a new chat"
         />
     )}
 
