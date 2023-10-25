@@ -1,5 +1,9 @@
 {
-  "packages": ["packages/*", "packages/providers/*", "samples/react-contoso"],
+  "packages": [
+    "packages/*",
+    "packages/providers/*",
+    "samples/*"
+  ],
   "npmClient": "yarn",
   "version": "independent"
 }

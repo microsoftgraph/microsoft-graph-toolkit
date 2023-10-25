@@ -25,6 +25,7 @@ import './mgt-messages/mgt-messages';
 import './mgt-organization/mgt-organization';
 import './mgt-profile/mgt-profile';
 import './mgt-theme-toggle/mgt-theme-toggle';
+import './sub-components/mgt-spinner/mgt-spinner';
 
 export * from './mgt-agenda/mgt-agenda';
 export * from './mgt-file/mgt-file';
@@ -47,3 +48,6 @@ export * from './mgt-messages/mgt-messages';
 export * from './mgt-organization/mgt-organization';
 export * from './mgt-profile/mgt-profile';
 export * from './mgt-theme-toggle/mgt-theme-toggle';
+export * from './sub-components/mgt-spinner/mgt-spinner';
+// include preview components here for ease of import into mgt-react
+export * from './preview';

@@ -8,16 +8,22 @@
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
+import { MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import '../../styles/style-helper';
 import { Entity } from '@microsoft/microsoft-graph-types';
-import { DataChangedDetail } from '../mgt-get/mgt-get';
+import { DataChangedDetail, registerMgtGetComponent } from '../mgt-get/mgt-get';
 import { styles } from './mgt-picker-css';
+import { registerComponent } from '@microsoft/mgt-element';
 
-registerFluentComponents(fluentCombobox, fluentOption);
+export const registerMgtPickerComponent = () => {
+  registerFluentComponents(fluentCombobox, fluentOption);
+
+  registerMgtGetComponent();
+  registerComponent('picker', MgtPicker);
+};
 
 /**
  * Web component that allows a single entity pick from a generic endpoint from Graph. Uses mgt-get.
@@ -30,7 +36,6 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * @cssprop --picker-background-color - {Color} Picker component background color
  * @cssprop --picker-list-max-height - {String} max height for options list. Default value is 380px.
  */
-@customElement('picker')
 export class MgtPicker extends MgtTemplatedComponent {
   protected get strings() {
     return strings;

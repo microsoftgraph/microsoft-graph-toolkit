@@ -10,7 +10,6 @@ import {
   GraphPageIterator,
   Providers,
   ProviderState,
-  customElement,
   mgtHtml,
   MgtTemplatedComponent
 } from '@microsoft/mgt-element';
@@ -42,14 +41,21 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
-import { MgtFile } from '../mgt-file/mgt-file';
-import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
+import { MgtFile, registerMgtFileComponent } from '../mgt-file/mgt-file';
+import { MgtFileUploadConfig, registerMgtFileUploadComponent } from './mgt-file-upload/mgt-file-upload';
 
 import { fluentProgressRing } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { CardSection } from '../BasePersonCardSection';
+import { registerComponent } from '@microsoft/mgt-element';
 
-registerFluentComponents(fluentProgressRing);
+export const registerMgtFileListComponent = () => {
+  registerFluentComponents(fluentProgressRing);
+
+  registerMgtFileComponent();
+  registerMgtFileUploadComponent();
+  registerComponent('file-list', MgtFileList);
+};
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -77,8 +83,6 @@ registerFluentComponents(fluentProgressRing);
  * @cssprop --show-more-button-border-bottom-left-radius - {String} the "show more" button bottom left border radius. Default value is 8px;
  * @cssprop --progress-ring-size -{String} Progress ring height and width. Default value is 24px.
  */
-
-@customElement('file-list')
 export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   @state() private _isCompact = false;
   /**

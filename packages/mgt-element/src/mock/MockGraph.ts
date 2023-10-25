@@ -16,7 +16,7 @@ import {
 } from '@microsoft/microsoft-graph-client';
 import { MgtBaseComponent } from '../components/baseComponent';
 import { Graph } from '../Graph';
-import { chainMiddleware } from '../utils/GraphHelpers';
+import { chainMiddleware } from '../utils/chainMiddleware';
 
 import { MockProvider } from './MockProvider';
 import { MockMiddleware } from './MockMiddleware';

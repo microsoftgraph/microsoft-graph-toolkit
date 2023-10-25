@@ -24,7 +24,7 @@ const gaTags = new Set([
   'search-results',
   'spinner'
 ]);
-const outputFileName = 'react';
+const barrelFileName = 'react';
 
 const generateTags = (tags, fileName) => {
   const mgtComponentImports = new Set();
@@ -73,6 +73,14 @@ const generateTags = (tags, fileName) => {
     }
   };
 
+  const registrationFunctions = new Set();
+
+  const generateRegisterFunctionName = type => `register${type}Component`;
+
+  const addComponentRegistrationImport = type => {
+    registrationFunctions.add(generateRegisterFunctionName(type));
+  };
+
   for (const tag of customTags.sort((a, b) => (a.tagName > b.tagName ? 1 : -1))) {
     const className = tag.tagName
       .split('-')
@@ -81,9 +89,12 @@ const generateTags = (tags, fileName) => {
 
     wrappers.push({
       tag: tag.tagName,
+      componentClass: tag.name,
       propsType: className + 'Props',
       className: className
     });
+
+    addComponentRegistrationImport(tag.name);
 
     const props = {};
 
@@ -142,13 +153,23 @@ const generateTags = (tags, fileName) => {
   }
 
   for (const wrapper of wrappers) {
-    output += `\nexport const ${wrapper.className} = wrapMgt<${wrapper.propsType}>('${wrapper.tag}');\n`;
+    output += `\nexport const ${wrapper.className} = wrapMgt<${wrapper.propsType}>('${
+      wrapper.tag
+    }', ${generateRegisterFunctionName(wrapper.componentClass)});\n`;
   }
 
+  const componentTypeImports = Array.from(mgtComponentImports).join(',');
+  const initialLine = componentTypeImports
+    ? `import { ${componentTypeImports} } from '@microsoft/mgt-components/dist/es6/exports';
+`
+    : '';
   output = `/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components';
+${initialLine}import { ${Array.from(registrationFunctions).join(
+    ','
+  )} } from '@microsoft/mgt-components/dist/es6/components/components';
 import { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -163,4 +184,14 @@ ${output}
   fs.writeFileSync(`${__dirname}/../src/generated/${fileName}.ts`, output);
 };
 
-generateTags(gaTags, outputFileName);
+// generate each component to a separate file
+gaTags.forEach(tag => {
+  generateTags(new Set([tag]), tag);
+});
+
+output = '';
+// generate a barrel file
+gaTags.forEach(tag => {
+  output += `export * from './${tag}';\n`;
+});
+fs.writeFileSync(`${__dirname}/../src/generated/${barrelFileName}.ts`, output);

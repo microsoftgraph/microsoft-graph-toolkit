@@ -6,20 +6,24 @@
  */
 
 import { fluentMenu, fluentMenuItem, fluentButton } from '@fluentui/web-components';
-import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
+import { MgtBaseComponent } from '@microsoft/mgt-element';
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { strings } from './strings';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { styles } from './mgt-dot-options-css';
-
-registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
+import { registerComponent } from '@microsoft/mgt-element';
 
 /**
  * Defines the event functions passed to the option item.
  */
 type MenuOptionEventFunction = (e: Event) => void;
+
+export const registerMgtDotOptionsComponent = () => {
+  registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
+  registerComponent('dot-options', MgtDotOptions);
+};
 
 /**
  * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.
@@ -28,7 +32,7 @@ type MenuOptionEventFunction = (e: Event) => void;
  * @class MgtDotOptions
  * @extends {MgtBaseComponent}
  */
-@customElement('dot-options')
+
 export class MgtDotOptions extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

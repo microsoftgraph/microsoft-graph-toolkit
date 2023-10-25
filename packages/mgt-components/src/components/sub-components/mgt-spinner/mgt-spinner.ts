@@ -6,8 +6,11 @@
  */
 
 import { html } from 'lit';
-import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
+import { MgtBaseComponent } from '@microsoft/mgt-element';
 import { styles } from './mgt-spinner-css';
+import { registerComponent } from '@microsoft/mgt-element';
+
+export const registerMgtSpinnerComponent = () => registerComponent('spinner', MgtSpinner);
 
 /**
  * Custom Component used to handle loading state in components.
@@ -16,7 +19,6 @@ import { styles } from './mgt-spinner-css';
  * @class MgtSpinner
  * @extends {MgtBaseComponent}
  */
-@customElement('spinner')
 export class MgtSpinner extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

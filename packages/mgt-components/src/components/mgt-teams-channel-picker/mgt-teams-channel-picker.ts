@@ -14,7 +14,6 @@ import {
   ProviderState,
   MgtTemplatedComponent,
   BetaGraph,
-  customElement,
   mgtHtml,
   CollectionResponse
 } from '@microsoft/mgt-element';
@@ -35,15 +34,8 @@ import {
   fluentCard,
   fluentTextField
 } from '@fluentui/web-components';
-
-registerFluentComponents(
-  fluentBreadcrumb,
-  fluentBreadcrumbItem,
-  fluentCard,
-  fluentTreeView,
-  fluentTreeItem,
-  fluentTextField
-);
+import { registerComponent } from '@microsoft/mgt-element';
+import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 
 /**
  * Team with displayName
@@ -143,6 +135,19 @@ interface ChannelPickerItemState {
   parent: ChannelPickerItemState;
 }
 
+export const registerMgtTeamsChannelPickerComponent = () => {
+  registerFluentComponents(
+    fluentBreadcrumb,
+    fluentBreadcrumbItem,
+    fluentCard,
+    fluentTreeView,
+    fluentTreeItem,
+    fluentTextField
+  );
+  registerMgtSpinnerComponent();
+  registerComponent('teams-channel-picker', MgtTeamsChannelPicker);
+};
+
 /**
  * Web component used to select channels from a User's Microsoft Teams profile
  *
@@ -173,7 +178,6 @@ interface ChannelPickerItemState {
  * @cssprop --channel-picker-close-icon-color - {Color} the close icon color.
  *
  */
-@customElement('teams-channel-picker')
 export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

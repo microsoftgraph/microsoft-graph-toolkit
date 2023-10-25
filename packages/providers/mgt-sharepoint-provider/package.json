@@ -38,6 +38,7 @@
     "lint": "eslint -c ../../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../../artifacts"
   },
+  "sideEffects": false,
   "dependencies": {
     "@microsoft/mgt-element": "*"
   },
