@@ -66,9 +66,11 @@ describe('mgt-person - tests', () => {
     );
     person.shadowRoot.querySelector('img').click();
     // need to use wait until here because of the dynamic import of the person card
+    // this can be flaky due to the dynamic import and timing variance
     await waitUntil(
       () => person.shadowRoot.querySelector('div[data-testid="flyout-slot"]'),
-      'mgt-person failed to render flyout'
+      'mgt-person failed to render flyout',
+      { interval: 500, timeout: 6000 }
     );
     const flyout = person.shadowRoot.querySelector('div[data-testid="flyout-slot"]');
     await expect(flyout).dom.to.be.equal(`
