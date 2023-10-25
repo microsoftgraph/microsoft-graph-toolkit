@@ -30,9 +30,10 @@
     "compile:watch": "tsc -w",
     "build:watch": "npm run compile:watch",
     "postpack": "cpx *.tgz ../../artifacts",
-    "analyze": "custom-elements-manifest analyze --litelement --globs \"../*/src/**/*.ts\" --outdir temp",
+    "analyze": "custom-elements-manifest analyze --globs \"../*/src/**/*.ts\" --outdir temp",
     "generate": "npm run analyze && node ./scripts/generate.js"
   },
+  "sideEffects": false,
   "dependencies": {
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",

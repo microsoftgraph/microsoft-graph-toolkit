@@ -7,7 +7,9 @@
 
 import { openDB } from 'idb';
 import { Providers } from '../providers/Providers';
-import { CacheItem, CacheSchema, dbListKey } from './CacheService';
+import { dbListKey } from './dbListKey';
+import { CacheItem } from './CacheItem';
+import { CacheSchema } from './CacheSchema';
 
 /**
  * Represents a store in the cache

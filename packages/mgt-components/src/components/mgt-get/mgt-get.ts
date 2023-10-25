@@ -15,8 +15,8 @@ import {
   prepScopes,
   Providers,
   ProviderState,
-  customElement,
-  CollectionResponse
+  CollectionResponse,
+  IGraph
 } from '@microsoft/mgt-element';
 
 import { getPhotoForResource } from '../../graph/graph.photos';
@@ -24,6 +24,8 @@ import { getDocumentThumbnail } from '../../graph/graph.files';
 import { schemas } from '../../graph/cacheStores';
 import { CacheResponse } from '../CacheResponse';
 import { Entity } from '@microsoft/microsoft-graph-types';
+import { GraphRequest } from '@microsoft/microsoft-graph-client';
+import { registerComponent } from '@microsoft/mgt-element';
 
 /**
  * Simple holder type for an image
@@ -81,6 +83,8 @@ export interface DataChangedDetail {
   error?: object;
 }
 
+export const registerMgtGetComponent = () => registerComponent('get', MgtGet);
+
 /**
  * Custom element for making Microsoft Graph get queries
  *
@@ -90,7 +94,6 @@ export interface DataChangedDetail {
  * @class mgt-get
  * @extends {MgtTemplatedComponent}
  */
-@customElement('get')
 export class MgtGet extends MgtTemplatedComponent {
   /**
    * The resource to get
@@ -357,8 +360,8 @@ export class MgtGet extends MgtTemplatedComponent {
             isDeltaLink = new URL(uri, 'https://graph.microsoft.com').pathname.endsWith('delta');
           }
 
-          const graph = provider.graph.forComponent(this);
-          let request = graph.api(uri).version(this.version);
+          const graph: IGraph = provider.graph.forComponent(this);
+          let request: GraphRequest = graph.api(uri).version(this.version);
 
           if (this.scopes?.length) {
             request = request.middlewareOptions(prepScopes(...this.scopes));

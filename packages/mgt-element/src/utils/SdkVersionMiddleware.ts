@@ -11,7 +11,7 @@ import {
   setRequestHeader
 } from '@microsoft/microsoft-graph-client/lib/es/src/middleware/MiddlewareUtil';
 import { ComponentMiddlewareOptions } from './ComponentMiddlewareOptions';
-import { validateBaseURL } from './GraphHelpers';
+import { validateBaseURL } from './validateBaseURL';
 
 /**
  * Implements Middleware for the Graph sdk to inject

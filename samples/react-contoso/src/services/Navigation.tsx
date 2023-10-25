@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { NavigationItem } from '../models/NavigationItem';
 import {
   HomeRegular,
@@ -7,12 +8,12 @@ import {
   DocumentRegular,
   TagMultipleRegular
 } from '@fluentui/react-icons';
-import { DashboardPage } from '../pages/DashboardPage';
-import { OutlookPage } from '../pages/OutlookPage';
-import { SearchPage } from '../pages/SearchPage';
-import { HomePage } from '../pages/HomePage';
-import { FilesPage } from '../pages/FilesPage';
-import { TaxonomyPage } from '../pages/TaxonomyPage';
+const DashboardPage = lazy(() => import('../pages/DashboardPage'));
+const OutlookPage = lazy(() => import('../pages/OutlookPage'));
+const SearchPage = lazy(() => import('../pages/SearchPage'));
+const HomePage = lazy(() => import('../pages/HomePage'));
+const FilesPage = lazy(() => import('../pages/FilesPage'));
+const TaxonomyPage = lazy(() => import('../pages/TaxonomyPage'));
 
 export const getNavigation = (isSignedIn: boolean) => {
   let navItems: NavigationItem[] = [];
@@ -23,7 +24,11 @@ export const getNavigation = (isSignedIn: boolean) => {
     icon: <HomeRegular />,
     key: 'home',
     requiresLogin: false,
-    component: <HomePage />,
+    component: (
+      <Suspense fallback="Loading...">
+        <HomePage />
+      </Suspense>
+    ),
     exact: true
   });
 
@@ -34,7 +39,11 @@ export const getNavigation = (isSignedIn: boolean) => {
       icon: <TextBulletListSquareRegular />,
       key: 'dashboard',
       requiresLogin: true,
-      component: <DashboardPage />,
+      component: (
+        <Suspense fallback="Loading...">
+          <DashboardPage />
+        </Suspense>
+      ),
       exact: true
     });
 
@@ -44,7 +53,11 @@ export const getNavigation = (isSignedIn: boolean) => {
       icon: <CalendarMailRegular />,
       key: 'outlook',
       requiresLogin: true,
-      component: <OutlookPage />,
+      component: (
+        <Suspense fallback="Loading...">
+          <OutlookPage />
+        </Suspense>
+      ),
       exact: true
     });
 
@@ -54,7 +67,11 @@ export const getNavigation = (isSignedIn: boolean) => {
       icon: <DocumentRegular />,
       key: 'files',
       requiresLogin: true,
-      component: <FilesPage />,
+      component: (
+        <Suspense fallback="Loading...">
+          <FilesPage />
+        </Suspense>
+      ),
       exact: true
     });
 
@@ -64,7 +81,11 @@ export const getNavigation = (isSignedIn: boolean) => {
       icon: <TagMultipleRegular />,
       key: 'files',
       requiresLogin: true,
-      component: <TaxonomyPage />,
+      component: (
+        <Suspense fallback="Loading...">
+          <TaxonomyPage />
+        </Suspense>
+      ),
       exact: true
     });
 
@@ -75,7 +96,11 @@ export const getNavigation = (isSignedIn: boolean) => {
       icon: <SearchRegular />,
       key: 'search',
       requiresLogin: true,
-      component: <SearchPage />,
+      component: (
+        <Suspense fallback="Loading...">
+          <SearchPage />
+        </Suspense>
+      ),
       exact: false
     });
   }
