@@ -230,7 +230,7 @@ export class MgtTodo extends MgtTasksBase {
   };
 
   /**
-   *Upfdate a todo task and reposition it in the list
+   *Update a todo task in the todo list
    * @protected
    * @returns {Promise<void>}
    * @memberof MgtTodo
@@ -369,7 +369,7 @@ export class MgtTodo extends MgtTasksBase {
           <mgt-dot-options
             class="dot-options"
             .options="${{
-              [this.strings.editTaskOption]: () => this.updateTask(task),
+              [this.strings.editTaskOption]: () => this.inputGainedFocus(task),
               [this.strings.deleteTaskOption]: () => this.removeTask(task.id)
             }}"
           ></mgt-dot-options>`;
@@ -385,17 +385,18 @@ export class MgtTodo extends MgtTasksBase {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
     } else {
       const changeTaskDetailsTemplate = html`
-      <fluent-text-field 
-        autocomplete="off"
-        appearance="outline"
-        class="title"
-        id=${task.id}
-        .value="${task.title}"
-        aria-label="${this.strings.editTaskLabel}"
-        @keydown="${(e: KeyboardEvent) => this.handleChangeKeyDown(e, task)}"
-        @change="${(e: KeyboardEvent) => this.handleChangeInput(e, task)}"
-      >
-      </fluent-text-field>
+        <fluent-text-field 
+          autocomplete="off"
+          appearance="outline"
+          class="title"
+          id=${task.id}
+          .value="${task.title}"
+          aria-label="${this.strings.editTaskLabel}"
+          @keydown="${(e: KeyboardEvent) => this.handleChangeKeyDown(e, task)}"
+          @input="${(e: KeyboardEvent) => this.handleChangeInput(e, task)}"
+          @blur="${(e: Event) => this.handleBlur(e, task)}"
+        >
+        </fluent-text-field>
       `;
 
       taskDetailsTemplate = html`
@@ -427,19 +428,26 @@ export class MgtTodo extends MgtTasksBase {
       task: true
     });
 
-    const taskCheckContent = isCompleted ? html`${getSvg(SvgIcon.CheckMark)}` : nothing;
+    const checkboxClasses = classMap({
+      complete: isCompleted
+    });
+
+    const taskCheckContent = isCompleted ? html`${getSvg(SvgIcon.CheckMark)}` : html`${getSvg(SvgIcon.Radio)}`;
 
     return html`
-      <fluent-checkbox 
-        id=${task.id} 
-        class=${taskClasses} 
-        ?checked=${isCompleted}
-      >
-        <div slot="checked-indicator" @click="${() => this.handleTaskCheckClick(task)}">
-          ${taskCheckContent}
-        </div>
+      <div class=${taskClasses}>
+        <fluent-checkbox 
+          id=${task.id} 
+          class=${checkboxClasses}
+          ?checked=${isCompleted}
+          @click="${() => this.handleTaskCheckClick(task)}"
+        >
+          <div slot="checked-indicator">
+            ${taskCheckContent}
+          </div>
+        </fluent-checkbox>
         ${this.renderTaskDetails(task)}
-      </fluent-checkbox>
+      </div>
     `;
   };
 
@@ -597,7 +605,7 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   private readonly handleInput = (e: MouseEvent) => {
-    if (this._isNewTaskBeingAdded && (e.target as HTMLInputElement).id === 'new-task-name-input') {
+    if ((e.target as HTMLInputElement).id === 'new-task-name-input') {
       this._newTaskName = (e.target as HTMLInputElement).value;
     }
   };
@@ -615,7 +623,21 @@ export class MgtTodo extends MgtTasksBase {
   };
 
   private readonly handleChangeKeyDown = async (e: KeyboardEvent, task: TodoTask) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && (e.target as HTMLInputElement).id === task.id) {
+      await this.updateTask(task);
+    }
+  };
+
+  private readonly inputGainedFocus = (task: TodoTask) => {
+    let document = this.renderRoot.querySelector<HTMLElement>(`fluent-text-field#${task.id}`);
+    if (document) {
+      document = document.shadowRoot.querySelector<HTMLInputElement>('input');
+      document.focus();
+    }
+  };
+
+  private readonly handleBlur = async (e: Event, task: TodoTask) => {
+    if ((e.target as HTMLInputElement).id === task.id && this._changedTaskName) {
       await this.updateTask(task);
     }
   };

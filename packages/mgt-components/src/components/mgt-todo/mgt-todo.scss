@@ -17,6 +17,7 @@
     margin-block: 1px;
     box-shadow: $task-box-shadow;
     width: 100%;
+    display: flex;
     background-color: $task-background-color;
 
     &.new-task {
@@ -53,6 +54,7 @@
       padding: 2px;
       line-height: 24px;
       border-radius: 4px;
+      width: 100%;
 
       .task {
         > div {
@@ -199,35 +201,33 @@
   }
 
   fluent-checkbox {
-    &.task {
-      &.complete {
-        div > svg {
-          .filled {
-            display: block;
-          }
-
-          .regular {
-            display: none;
-          }
-
-          path {
-            fill: $task-radio-background-color;
-          }
-        }
-      }
-
+    &.complete {
       div > svg {
         .filled {
-          display: none;
-        }
-
-        .regular {
           display: block;
         }
 
-        path {
-          fill: $task-background-color;
+        .regular {
+          display: none;
         }
+
+        path {
+          fill: $task-radio-background-color;
+        }
+      }
+    }
+
+    div > svg {
+      .filled {
+        display: none;
+      }
+
+      .regular {
+        display: block;
+      }
+
+      path {
+        fill: $task-background-color;
       }
     }
 
