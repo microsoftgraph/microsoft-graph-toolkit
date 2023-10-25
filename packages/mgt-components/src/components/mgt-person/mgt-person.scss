@@ -12,6 +12,7 @@
 $person-background-border-radius: var(--person-border-radius, 4px);
 
 // avatar sizes: 16,20,24,28,32,36,40,48,56,64,72,96,120,128
+$person-alignment: var(--person-alignment, normal);
 $person-avatar-size: var(--person-avatar-size, 24px);
 $person-avatar-size-40: var(--person-avatar-size, 40px);
 $person-avatar-size-56: var(--person-avatar-size, 56px);
@@ -45,6 +46,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     [slot='anchor'] {
       display: flex;
       cursor: pointer;
+      align-items: $person-alignment;
 
       &.vertical {
         flex-direction: column;
