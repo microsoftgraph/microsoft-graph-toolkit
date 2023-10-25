@@ -629,10 +629,14 @@ export class MgtTodo extends MgtTasksBase {
   };
 
   private readonly inputGainedFocus = (task: TodoTask) => {
-    let document = this.renderRoot.querySelector<HTMLElement>(`fluent-text-field#${task.id}`);
-    if (document) {
-      document = document.shadowRoot.querySelector<HTMLInputElement>('input');
-      document.focus();
+    const documents = this.renderRoot.querySelectorAll<HTMLElement>('fluent-text-field');
+    for (const document of documents) {
+      if (document.id === task.id) {
+        const input = document.shadowRoot?.querySelector<HTMLInputElement>('input');
+        if (input) {
+          input.focus();
+        }
+      }
     }
   };
 
