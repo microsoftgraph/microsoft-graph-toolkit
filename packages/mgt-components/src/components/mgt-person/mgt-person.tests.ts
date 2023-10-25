@@ -4,13 +4,13 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-
-import { fixture, html, expect, elementUpdated, waitUntil } from '@open-wc/testing';
+import { fixture, html, expect, waitUntil } from '@open-wc/testing';
 import { MockProvider, Providers } from '@microsoft/mgt-element';
-import './mgt-person';
+import { registerMgtPersonComponent } from './mgt-person';
 
 describe('mgt-person - tests', () => {
   before(() => {
+    registerMgtPersonComponent();
     Providers.globalProvider = new MockProvider(true);
   });
 
@@ -65,8 +65,11 @@ describe('mgt-person - tests', () => {
       { ignoreAttributes: ['src'] }
     );
     person.shadowRoot.querySelector('img').click();
-    await elementUpdated(person);
-
+    // need to use wait until here because of the dynamic import of the person card
+    await waitUntil(
+      () => person.shadowRoot.querySelector('div[data-testid="flyout-slot"]'),
+      'mgt-person failed to render flyout'
+    );
     const flyout = person.shadowRoot.querySelector('div[data-testid="flyout-slot"]');
     await expect(flyout).dom.to.be.equal(`
       <div slot="flyout" data-testid="flyout-slot">

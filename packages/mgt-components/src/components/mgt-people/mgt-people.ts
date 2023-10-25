@@ -13,18 +13,12 @@ import { getPeople, getPeopleFromResource, PersonType } from '../../graph/graph.
 import { getUsersPresenceByPeople } from '../../graph/graph.presence';
 import { findGroupMembers, getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
-import {
-  Providers,
-  ProviderState,
-  MgtTemplatedComponent,
-  arraysAreEqual,
-  mgtHtml,
-  customElement
-} from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual, mgtHtml } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
-import { MgtPerson } from '../mgt-person/mgt-person';
+import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
+import { registerComponent } from '@microsoft/mgt-element';
 
 export { PersonCardInteraction } from './../PersonCardInteraction';
 
@@ -41,7 +35,12 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * @cssprop --people-overflow-font-size - {String} the text color of the overflow text. Default is 12px.
  * @cssprop --people-overflow-font-weight - {String} the font weight of the overflow text. Default is 400.
  */
-@customElement('people')
+
+export const registerMgtPeopleComponent = () => {
+  registerMgtPersonComponent();
+  registerComponent('people', MgtPeople);
+};
+
 export class MgtPeople extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

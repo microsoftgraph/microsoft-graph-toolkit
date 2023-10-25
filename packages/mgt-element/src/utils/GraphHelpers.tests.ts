@@ -11,7 +11,9 @@ import { fake } from 'sinon';
 import { AuthenticationHandlerOptions, Middleware } from '@microsoft/microsoft-graph-client';
 import { MockProvider } from '../mock/MockProvider';
 import { Providers } from '../providers/Providers';
-import { chainMiddleware, prepScopes, validateBaseURL } from './GraphHelpers';
+import { chainMiddleware } from './chainMiddleware';
+import { prepScopes } from './prepScopes';
+import { validateBaseURL } from './validateBaseURL';
 
 describe('GraphHelpers - prepScopes', () => {
   it('should return an empty array when incremental consent is disabled', async () => {

@@ -20,7 +20,7 @@ The `@microsoft/mgt-proxy-provider` package exposes the `ProxyProvider` class wh
 
     ```ts
     import {Providers} from '@microsoft/mgt-element';
-    import {ProxyProvider} from '@microsoft/mgt-proxy-provider';
+    import {ProxyProvider} from '@microsoft/mgt-proxy-provider/exports';
 
     // initialize the auth provider globally
     Providers.globalProvider = new ProxyProvider("https://myurl.com/api/GraphProxy");

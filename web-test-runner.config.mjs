@@ -22,7 +22,7 @@ export default {
   },
   reporters: [
     // use the default reporter only for reporting test progress
-    defaultReporter({ reportTestResults: false, reportTestProgress: true }),
+    defaultReporter({ reportTestResults: true, reportTestProgress: true }),
     // use another reporter to report test results
     junitReporter({
       outputPath: './testResults/junit.xml',

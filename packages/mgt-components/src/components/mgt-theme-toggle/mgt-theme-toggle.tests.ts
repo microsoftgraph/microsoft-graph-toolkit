@@ -5,10 +5,10 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+import { registerMgtThemeToggleComponent } from './mgt-theme-toggle';
 
 import { html, fixture, expect } from '@open-wc/testing';
 import { sendMouse, emulateMedia } from '@web/test-runner-commands';
-import './mgt-theme-toggle';
 class Deferred<T = unknown> {
   promise: Promise<T>;
   resolve: (value: T) => void;
@@ -31,6 +31,9 @@ const getMiddleOfElement = (element: Element) => {
 };
 
 describe('mgt-theme-toggle - media behavior tests', () => {
+  before(() => {
+    registerMgtThemeToggleComponent();
+  });
   it('should render as checked whe color scheme is dark', async () => {
     await emulateMedia({ colorScheme: 'dark' });
     expect(matchMedia('(prefers-color-scheme: dark)').matches).to.be.true;
@@ -82,6 +85,9 @@ describe('mgt-theme-toggle - media behavior tests', () => {
 });
 
 describe('mgt-theme-toggle - tests', () => {
+  beforeEach(() => {
+    registerMgtThemeToggleComponent();
+  });
   it('should render', async () => {
     const toggle = await fixture('<mgt-theme-toggle></mgt-theme-toggle>');
     await expect(toggle).shadowDom.to.equal(

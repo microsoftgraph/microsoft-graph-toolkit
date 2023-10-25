@@ -40,6 +40,7 @@
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd ."
   },
+  "sideEffects": false,
   "dependencies": {
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",

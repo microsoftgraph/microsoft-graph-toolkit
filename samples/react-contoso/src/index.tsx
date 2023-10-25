@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom';
 import { App } from './App';
 import { mergeStyles } from '@fluentui/react';
-import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
+import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
 import { Providers, LoginType } from '@microsoft/mgt-element';
 
 // Inject some global styles

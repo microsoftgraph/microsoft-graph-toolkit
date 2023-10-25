@@ -6,8 +6,13 @@
  */
 
 import { property } from 'lit/decorators.js';
-import { Providers, LoginType, MgtBaseProvider, customElement } from '@microsoft/mgt-element';
+import { Providers, LoginType, MgtBaseProvider, registerComponent } from '@microsoft/mgt-element';
 import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
+
+export const registerMgtMsal2Provider = () => {
+  registerComponent('msal2-provider', MgtMsal2Provider);
+};
+
 /**
  * Authentication Library Provider for Microsoft personal accounts
  *
@@ -15,9 +20,7 @@ import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
  * @class MgtMsalProvider
  * @extends {MgtBaseProvider}
  */
-@customElement('msal2-provider')
-// @customElement('mgt-msal2-provider')
-export class MgtMsal2Provider extends MgtBaseProvider {
+class MgtMsal2Provider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user
    *
