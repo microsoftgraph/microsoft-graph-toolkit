@@ -39,17 +39,22 @@ interface MgtAdaptiveCardProps {
 const MgtAdaptiveCard = (msg: MgtAdaptiveCardProps) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const attachments = msg.attachments;
-  const adaptiveCardAttachment = getAdaptiveCardAttachment(attachments);
+  const adaptiveCardAttachments = getAdaptiveCardAttachments(attachments);
   useEffect(() => {
-    if (adaptiveCardAttachment) {
-      const cardHtmlElement = getHtmlElementFromAttachment(adaptiveCardAttachment);
-      cardRef?.current?.appendChild(cardHtmlElement!);
+    if (adaptiveCardAttachments.length) {
+      const cardElement = cardRef?.current;
+      // Remove all children before appending the attachment elements
+      while (cardElement?.firstChild) cardElement.removeChild(cardElement?.lastChild as Node);
+      for (const attachment of adaptiveCardAttachments) {
+        const cardHtmlElement = getHtmlElementFromAttachment(attachment);
+        cardElement?.appendChild(cardHtmlElement!);
+      }
     }
-  }, [cardRef, adaptiveCardAttachment]);
+  }, [cardRef, adaptiveCardAttachments]);
   const defaultOnRender = msg?.defaultOnRender;
   const messageProps = msg.messageProps;
   const defaultRender = defaultOnRender ? defaultOnRender(messageProps) : <></>;
-  return adaptiveCardAttachment ? <div ref={cardRef}></div> : defaultRender;
+  return adaptiveCardAttachments.length ? <div ref={cardRef}></div> : defaultRender;
 };
 
 /**
@@ -85,14 +90,15 @@ const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRe
  * @param attachments
  * @returns
  */
-const getAdaptiveCardAttachment = (attachments: ChatMessageAttachment[]): ChatMessageAttachment | undefined => {
+const getAdaptiveCardAttachments = (attachments: ChatMessageAttachment[]): ChatMessageAttachment[] => {
+  const cardAttachments: ChatMessageAttachment[] = [];
   for (const att of attachments) {
     const contentType = att?.contentType ?? '';
     if (contentType === 'application/vnd.microsoft.card.adaptive') {
-      return att;
+      cardAttachments.push(att);
     }
   }
-  return;
+  return cardAttachments;
 };
 
 /**
