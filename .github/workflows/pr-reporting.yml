@@ -20,7 +20,7 @@ jobs:
           artifact: test-results
           name: Test Results # Name of the check run which will be created
           path: junit.xml # Path to test results
-          reporter: jest-junit # Format of test results
+          reporter: java-junit # Format of test results
       - name: Download coverage artifacts with cli
         run: |
           gh run download ${{ github.event.workflow_run.id }} -n coverage
