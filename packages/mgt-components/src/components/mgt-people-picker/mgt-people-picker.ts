@@ -617,12 +617,29 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Disable the inner input of the fluent-text-field.
+   */
+  private disableTextInput() {
+    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+    inputControl?.setAttribute('disabled', 'true');
+    inputControl.value = '';
+  }
+
+  /**
+   * Enable the inner input of the fluent-text-field.
+   */
+  private enableTextInput() {
+    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+    inputControl?.removeAttribute('disabled');
+    inputControl?.focus();
+  }
+
+  /**
    * Clears the disabled property on the people picker when used in single mode.
    */
   private readonly handleSelectionChanged = () => {
-    const innerInput = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
-    if (innerInput && this.selectedPeople.length === 0 && !this.disabled) {
-      innerInput.removeAttribute('disabled');
+    if (this.selectedPeople.length === 0 && !this.disabled) {
+      this.enableTextInput();
     }
   };
 
@@ -1310,13 +1327,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       return p.id !== person.id;
     });
-    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
-    if (this.hasMaxSelections && inputControl) {
-      inputControl.removeAttribute('disabled');
+    if (this.hasMaxSelections) {
+      this.enableTextInput();
     }
     this.selectedPeople = filteredPersonArr;
     void this.loadState();
-    inputControl?.focus();
   }
 
   /**
@@ -1487,10 +1502,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // handle suggestion list item click
   private handleSuggestionClick(person: IDynamicPerson): void {
     this.addPerson(person);
-    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
-    if (this.hasMaxSelections && inputControl) {
-      inputControl.setAttribute('disabled', 'true');
-      this.input.value = inputControl.value = '';
+    if (this.hasMaxSelections) {
+      this.disableTextInput();
+      this.input.value = '';
     }
     this.hideFlyout();
   }
@@ -1578,9 +1592,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this.addPerson(foundPerson);
           this.hideFlyout();
           this.input.value = '';
-          const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
-          if (this.hasMaxSelections && inputControl) {
-            inputControl.setAttribute('disabled', 'true');
+          if (this.hasMaxSelections) {
+            this.disableTextInput();
           }
         }
       } else if (this.allowAnyEmail) {
