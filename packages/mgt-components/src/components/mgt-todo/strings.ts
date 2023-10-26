@@ -22,6 +22,7 @@ export const strings = {
   editTaskOption: 'Edit',
   dueDate: 'Due date',
   newTaskDateInputLabel: 'New Task Date Input',
+  changeTaskDateInputLabel: 'Change Task Date Input',
   newTaskNameInputLabel: 'New Task Name Input',
   cancelAddingTask: 'Cancel adding a new task'
 };

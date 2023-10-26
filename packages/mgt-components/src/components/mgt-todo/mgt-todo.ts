@@ -11,7 +11,6 @@ import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { IGraph, mgtHtml } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
-import { getDateString } from '../../utils/Utils';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import '../mgt-person/mgt-person';
 import { MgtTasksBase } from '../mgt-tasks-base/mgt-tasks-base';
@@ -356,13 +355,6 @@ export class MgtTodo extends MgtTasksBase {
 
     let taskDetailsTemplate = null;
 
-    const taskDueTemplate = task.dueDateTime
-      ? html`
-        <span class="task-calendar">${getSvg(SvgIcon.Calendar)}</span>
-        <span class="task-due-date">${getDateString(new Date(task.dueDateTime.dateTime))}</span>
-      `
-      : html``;
-
     const taskOptions = this.readOnly
       ? nothing
       : mgtHtml`
@@ -384,6 +376,23 @@ export class MgtTodo extends MgtTasksBase {
     if (this.hasTemplate('task-details')) {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
     } else {
+      const dateClass = { dark: this._isDarkMode, date: true };
+      const calendarTemplate = html`
+        <fluent-text-field
+          autocomplete="off"
+          type="date"
+          id="${task.id}-taskDate-input"
+          class="${classMap(dateClass)}"
+          aria-label="${this.strings.changeTaskDateInputLabel}"
+          .value="${
+            task.dueDateTime
+              ? this.dateToInputValue(new Date(task.dueDateTime.dateTime))
+              : this.dateToInputValue(this._newTaskDueDate)
+          }"
+          @change="${this.handleDateChange}"
+        >
+        </fluent-text-field>
+      `;
       const changeTaskDetailsTemplate = html`
         <fluent-text-field 
           autocomplete="off"
@@ -396,14 +405,21 @@ export class MgtTodo extends MgtTasksBase {
           @input="${(e: KeyboardEvent) => this.handleChangeInput(e, task)}"
           @blur="${(e: Event) => this.handleBlur(e, task)}"
         >
+          <div slot="end" class="end">
+            ${
+              task.dueDateTime
+                ? html`
+                  <span class="task-due">${calendarTemplate}</span>`
+                : nothing
+            }
+            ${task.status === 'completed' ? taskDeleteTemplate : taskOptions}
+          </div> 
         </fluent-text-field>
       `;
 
       taskDetailsTemplate = html`
       <div class="task-details">
-        <div class="title">${changeTaskDetailsTemplate}</div>
-        <div class="task-due">${taskDueTemplate}</div>
-        ${task.status === 'completed' ? taskDeleteTemplate : taskOptions}
+        ${changeTaskDetailsTemplate}
       </div>
       `;
     }
@@ -525,6 +541,14 @@ export class MgtTodo extends MgtTasksBase {
       title: this._changedTaskName
     };
 
+    if (this._newTaskDueDate) {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      taskData['dueDateTime'] = {
+        dateTime: new Date(this._newTaskDueDate).toLocaleDateString(),
+        timeZone: 'UTC'
+      };
+    }
+
     await updateTodoTask(this._graph, listId, task.id, taskData);
   }
 
@@ -625,6 +649,7 @@ export class MgtTodo extends MgtTasksBase {
   private readonly handleChangeKeyDown = async (e: KeyboardEvent, task: TodoTask) => {
     if (e.key === 'Enter' && (e.target as HTMLInputElement).id === task.id) {
       await this.updateTask(task);
+      (e.target as HTMLInputElement)?.blur();
     }
   };
 
