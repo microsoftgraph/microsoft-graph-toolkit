@@ -5,7 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-/* eslint-disable no-console */
 import { BetaGraph, IGraph, Providers, error, log } from '@microsoft/mgt-element';
 import { HubConnection, HubConnectionBuilder, IHttpConnectionOptions, LogLevel } from '@microsoft/signalr';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
@@ -46,7 +45,7 @@ const isMessageNotification = (o: Notification<Entity>): o is Notification<ChatM
 const isMembershipNotification = (o: Notification<Entity>): o is Notification<AadUserConversationMember> =>
   o.resource.includes('/members');
 
-const stripWssScheme = (notificationUrl: string): string => notificationUrl.replace('wss:', '');
+const stripWssScheme = (notificationUrl: string): string => notificationUrl.replace('websockets:', '');
 
 export class GraphNotificationClient {
   private connection?: HubConnection = undefined;
@@ -165,7 +164,7 @@ export class GraphNotificationClient {
     ).toISOString();
     const subscriptionDefinition: Subscription = {
       changeType: changeTypes.join(','),
-      notificationUrl: `wss:?groupId=${this.chatId}&sessionId=${this.sessionId}`,
+      notificationUrl: `websockets:?groupId=${this.chatId}&sessionId=${this.sessionId}`,
       resource: resourcePath,
       expirationDateTime,
       includeResourceData: true,

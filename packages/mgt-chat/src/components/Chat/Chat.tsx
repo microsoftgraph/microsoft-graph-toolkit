@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
-import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
+import { ErrorBar, FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
 import { FluentTheme, MessageBarType } from '@fluentui/react';
-import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
+import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
+import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
+import React, { useEffect, useState } from 'react';
+import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
-import ChatHeader from '../ChatHeader/ChatHeader';
+import { onRenderMessage } from '../../utils/chat';
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
+import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
-import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
-import { StatefulGraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
+import { ChatHeader } from '../ChatHeader/ChatHeader';
 
 registerAppIcons();
 
@@ -21,9 +22,11 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    ...shorthands.overflow('auto')
+    ...shorthands.overflow('auto'),
+    paddingBlockEnd: '12px'
   },
   chatMessages: {
+    paddingInlineStart: '16px',
     height: 'auto',
     ...shorthands.overflow('auto'),
     '& img': {
@@ -32,6 +35,7 @@ const useStyles = makeStyles({
     }
   },
   chatInput: {
+    ...shorthands.paddingInline('24px'),
     ...shorthands.overflow('unset')
   },
   fullHeight: {
@@ -42,8 +46,34 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     height: '100%'
+  },
+  unsupportedContent: {
+    color: 'red'
   }
 });
+
+/**
+ * Styling for the MessageThread and its components.
+ */
+const messageThreadStyles: MessageThreadStyles = {
+  chatContainer: {
+    '& .ui-box': {
+      zIndex: 'unset'
+    }
+  },
+  chatMessageContainer: {
+    '& p>mgt-person,msft-mention': {
+      display: 'inline-block',
+      ...shorthands.marginInline('0px', '2px')
+    }
+  },
+  myChatMessageContainer: {
+    '& p>mgt-person,msft-mention': {
+      display: 'inline-block',
+      ...shorthands.marginInline('0px', '2px')
+    }
+  }
+};
 
 export const Chat = ({ chatId }: IMgtChatProps) => {
   const styles = useStyles();
@@ -62,23 +92,11 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
 
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
-      <FluentProvider theme={teamsLightTheme} className={styles.fullHeight}>
+      <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.chat}>
           {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
-              <ChatHeader
-                chat={chatState.chat}
-                currentUserId={chatState.userId}
-                onRenameChat={chatState.onRenameChat}
-              />
-              {chatState.participants?.length > 0 && chatState.chat?.chatType === 'group' && (
-                <ManageChatMembers
-                  members={chatState.participants}
-                  removeChatMember={chatState.onRemoveChatMember}
-                  currentUserId={chatState.userId}
-                  addChatMembers={chatState.onAddChatMembers}
-                />
-              )}
+              <ChatHeader chatState={chatState} />
               <div className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}
@@ -97,9 +115,16 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   // render props
                   onRenderAvatar={(userId?: string) => {
                     return (
-                      <Person userId={userId} avatarSize="small" personCardInteraction={PersonCardInteraction.click} />
+                      <Person userId={userId} avatarSize="small" personCardInteraction={PersonCardInteraction.hover} />
                     );
                   }}
+                  styles={messageThreadStyles}
+                  mentionOptions={{
+                    displayOptions: {
+                      onRenderMention: renderMGTMention(chatState)
+                    }
+                  }}
+                  onRenderMessage={onRenderMessage}
                 />
               </div>
               <div className={styles.chatInput}>
