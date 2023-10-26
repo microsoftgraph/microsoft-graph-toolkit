@@ -56,6 +56,7 @@ const useStyles = makeStyles({
     justifyContent: 'space-between',
     ...shorthands.paddingBlock('5px'),
     ...shorthands.paddingInline('16px'),
+    cursor: 'pointer',
     ':hover': {
       backgroundColor: 'var(--colorSubtleBackgroundHover)',
       [`& .${iconFilledClassName}`]: {

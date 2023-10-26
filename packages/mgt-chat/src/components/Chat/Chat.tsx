@@ -1,13 +1,12 @@
 import { ErrorBar, FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
 import { FluentTheme, MessageBarType } from '@fluentui/react';
-import { FluentProvider, makeStyles, shorthands, teamsLightTheme } from '@fluentui/react-components';
+import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
-import ChatHeader from '../ChatHeader/ChatHeader';
+import { ChatHeader } from '../ChatHeader/ChatHeader';
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
-import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
 import { onRenderMessage } from '../../utils/onRenderMessage';
 import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
@@ -23,9 +22,11 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    ...shorthands.overflow('auto')
+    ...shorthands.overflow('auto'),
+    paddingBlockEnd: '12px'
   },
   chatMessages: {
+    paddingInlineStart: '16px',
     height: 'auto',
     ...shorthands.overflow('auto'),
     '& img': {
@@ -34,10 +35,8 @@ const useStyles = makeStyles({
     }
   },
   chatInput: {
+    ...shorthands.paddingInline('24px'),
     ...shorthands.overflow('unset')
-  },
-  chatHeader: {
-    zIndex: 2
   },
   fullHeight: {
     height: '100%'
@@ -93,25 +92,11 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
 
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
-      <FluentProvider theme={teamsLightTheme} className={styles.fullHeight}>
+      <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.chat}>
           {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
-              <div className={styles.chatHeader}>
-                <ChatHeader
-                  chat={chatState.chat}
-                  currentUserId={chatState.userId}
-                  onRenameChat={chatState.onRenameChat}
-                />
-                {chatState.participants?.length > 0 && chatState.chat?.chatType === 'group' && (
-                  <ManageChatMembers
-                    members={chatState.participants}
-                    removeChatMember={chatState.onRemoveChatMember}
-                    currentUserId={chatState.userId}
-                    addChatMembers={chatState.onAddChatMembers}
-                  />
-                )}
-              </div>
+              <ChatHeader chatState={chatState} />
               <div className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}

@@ -40,13 +40,7 @@ function App() {
           <button onClick={() => setShowNewChat(true)}>New Chat</button>
           {showNewChat && (
             <div className="new-chat">
-              <NewChat
-                onChatCreated={onChatCreated}
-                onCancelClicked={() => setShowNewChat(false)}
-                mode="auto"
-                hideTitle={true}
-                title="Create a new chat"
-              />
+              <NewChat onChatCreated={onChatCreated} onCancelClicked={() => setShowNewChat(false)} mode="auto" />
             </div>
           )}
         </div>
