@@ -5,7 +5,6 @@ on:
     workflows: [Build pr]
     types:
       - completed
-    branches: [main, release/**, next/**]
 
 jobs:
   pr_report:
