@@ -42,6 +42,7 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
+  "sideEffects": false,
   "dependencies": {
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",

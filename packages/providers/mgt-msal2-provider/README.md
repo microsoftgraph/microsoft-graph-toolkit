@@ -19,7 +19,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
 
     ```ts
     import {Providers, LoginType} from '@microsoft/mgt-element';
-    import {Msal2Provider, PromptType} from '@microsoft/mgt-msal2-provider';
+    import {Msal2Provider, PromptType} from '@microsoft/mgt-msal2-provider/dist/es6/exports';
 
     // initialize the auth provider globally
     Providers.globalProvider = new Msal2Provider({
@@ -44,7 +44,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
 
     ```ts
     import {Providers, LoginType} from '@microsoft/mgt-element';
-    import {Msal2Provider, PromptType} from '@microsoft/mgt-msal2-provider';
+    import {Msal2Provider, PromptType} from '@microsoft/mgt-msal2-provider/dist/es6/exports';
     import {PublicClientApplication} from '@azure/msal-browser';
 
     // initialize the auth provider globally
@@ -96,7 +96,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
 
     ```ts
     import {Providers, LoginType} from '@microsoft/mgt-element';
-    import {Msal2Provider, PromptType} from '@microsoft/mgt-msal2-provider';
+    import {Msal2Provider, PromptType} from '@microsoft/mgt-msal2-provider/dist/es6/exports';
 
     // initialize the auth provider globally
     Providers.globalProvider = new Msal2Provider({

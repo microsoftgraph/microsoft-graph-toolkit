@@ -2,7 +2,7 @@ import * as React from 'react';
 import { PageHeader } from '../components/PageHeader';
 import { TaxonomyExplorer } from './Taxonomy/TaxonomyExplorer';
 
-export const TaxonomyPage: React.FunctionComponent = () => {
+const TaxonomyPage: React.FunctionComponent = () => {
   return (
     <>
       <PageHeader
@@ -13,3 +13,5 @@ export const TaxonomyPage: React.FunctionComponent = () => {
     </>
   );
 };
+
+export default TaxonomyPage;

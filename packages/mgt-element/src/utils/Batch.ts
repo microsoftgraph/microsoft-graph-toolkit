@@ -7,8 +7,8 @@
 
 import { BatchResponse, BatchResponseBody, IBatch } from '../IBatch';
 import { BatchRequestContent, MiddlewareOptions } from '@microsoft/microsoft-graph-client';
-import { delay } from '../utils';
-import { prepScopes } from './GraphHelpers';
+import { delay } from './delay';
+import { prepScopes } from './prepScopes';
 import { IGraph } from '../IGraph';
 import { BatchRequest } from './BatchRequest';
 

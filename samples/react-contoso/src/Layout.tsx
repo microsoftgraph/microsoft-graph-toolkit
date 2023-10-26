@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Header } from './components/Header';
 import { SideNavigation } from './components/SideNavigation';
-import { HomePage } from './pages/HomePage';
 import { useIsSignedIn } from './hooks/useIsSignedIn';
 import { NavigationItem } from './models/NavigationItem';
 import { getNavigation } from './services/Navigation';
@@ -10,6 +9,7 @@ import { FluentProvider, makeStyles, mergeClasses, shorthands } from '@fluentui/
 import { tokens } from '@fluentui/react-theme';
 import { applyTheme } from '@microsoft/mgt-react';
 import { useAppContext } from './AppContext';
+const HomePage = lazy(() => import('./pages/HomePage'));
 
 const useStyles = makeStyles({
   sidebar: {
@@ -86,7 +86,14 @@ export const Layout: React.FunctionComponent = theme => {
                       <Route path={item.url} element={item.component} key={item.key} />
                     )
                 )}
-                <Route path="*" element={<HomePage />} />
+                <Route
+                  path="*"
+                  element={
+                    <Suspense fallback="Loading...">
+                      <HomePage />
+                    </Suspense>
+                  }
+                />
               </Routes>
             </div>
           </div>

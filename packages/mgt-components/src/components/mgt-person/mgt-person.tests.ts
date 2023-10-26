@@ -4,6 +4,8 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+// import the mock for media match first to ensure it's hoisted and available for our dependencies
+import '../mgt-theme-toggle/mock-media-match';
 
 import { screen } from 'testing-library__dom';
 import { fixture } from '@open-wc/testing-helpers';
@@ -12,11 +14,13 @@ import fetchMock from 'jest-fetch-mock';
 import { MockProvider, Providers } from '@microsoft/mgt-element';
 import { userPhotoBatchResponse } from './__test_data/mock-responses';
 import './mgt-person';
+import { registerMgtPersonComponent } from './mgt-person';
 enableFetchMocks();
 
 let person: Element;
 describe('mgt-person - tests', () => {
   beforeEach(() => {
+    registerMgtPersonComponent();
     fetchMock.resetMocks();
     fetchMock
       // Response for the setup of the MockGraph to call to the proxy service

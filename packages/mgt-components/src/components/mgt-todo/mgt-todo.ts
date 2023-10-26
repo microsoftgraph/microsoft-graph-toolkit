@@ -9,7 +9,7 @@ import { html, nothing, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { IGraph, customElement, mgtHtml } from '@microsoft/mgt-element';
+import { IGraph, mgtHtml } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getDateString } from '../../utils/Utils';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -33,13 +33,19 @@ import { isElementDark } from '../../utils/isDark';
 import { ifDefined } from 'lit/directives/if-defined.js';
 
 import { TodoTaskList, TodoTask, TaskStatus } from '@microsoft/microsoft-graph-types';
-
-registerFluentComponents(fluentCheckbox, fluentRadioGroup, fluentButton);
+import { registerComponent } from '@microsoft/mgt-element';
+import { registerMgtPickerComponent } from '../mgt-picker/mgt-picker';
 
 /**
  * Filter function
  */
 export type TodoFilter = (task: TodoTask) => boolean;
+
+export const registerMgtTodoComponent = () => {
+  registerFluentComponents(fluentCheckbox, fluentRadioGroup, fluentButton);
+  registerMgtPickerComponent();
+  registerComponent('todo', MgtTodo);
+};
 
 /**
  * component enables the user to view, add, remove, complete, or edit todo tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.
@@ -58,7 +64,6 @@ export type TodoFilter = (task: TodoTask) => boolean;
  * @cssprop --task-border-completed - {Color} - Task border color when completed
  * @cssprop --task-radio-background-color - {Color} - Task radio background color
  */
-@customElement('todo')
 export class MgtTodo extends MgtTasksBase {
   /**
    * Array of styles to apply to the element. The styles should be defined

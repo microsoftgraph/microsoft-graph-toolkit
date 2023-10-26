@@ -11,10 +11,10 @@
   },
   "scripts": {
     "init": "yarn && yarn build",
-    "analyze": "custom-elements-manifest analyze --litelement --globs \"./packages/*/src/**/*.ts\"",
-    "build": "npm run prettier:check && npm run clean && lerna run --scope '@microsoft/*' build",
+    "analyze": "custom-elements-manifest analyze --globs \"./packages/*/src/**/*.ts\"",
+    "build": "npm run prettier:check && npm run clean && lerna run build --scope '@microsoft/*'",
     "build:dev": "npm run prettier:check && lerna run build --scope '@microsoft/*' --ignore '@microsoft/mgt' --ignore '@microsoft/mgt-spf*' --ignore '@microsoft/mgt-sharepoint-provider' --ignore '@microsoft/mgt-electron-provider' --ignore '@microsoft/mgt-teamsfx-provider' --ignore '@microsoft/mgt-proxy-provider'",
-    "build:compile": "npm run prettier:check && npm run clean && lerna run --scope @microsoft/* build:compile",
+    "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope '@microsoft/*'",
     "build:mgt": "cd ./packages/mgt && npm run build",
     "build:mgt-element": "cd ./packages/mgt-element && npm run build",
     "build:mgt-components": "cd ./packages/mgt-components && npm run build",
