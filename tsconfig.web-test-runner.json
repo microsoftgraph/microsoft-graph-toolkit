@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    // Needed to mix class fields and reactive properties in Lit elements https://lit.dev/docs/components/properties/#avoiding-issues-with-class-fields
+    "useDefineForClassFields": false
+  },
+  "include": ["packages/**/src/**/*.ts"],
+  "exclude": ["node_modules", "lib"]
+}

@@ -34,7 +34,7 @@
   "dependencies": {
     "@microsoft/microsoft-graph-client": "3.0.2",
     "idb": "6.0.0",
-    "lit": "^3.0.0-pre.0"
+    "lit": "^3.0.0"
   },
   "publishConfig": {
     "directory": "dist"
