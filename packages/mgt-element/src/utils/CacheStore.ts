@@ -128,11 +128,10 @@ export class CacheStore<T extends CacheItem> {
             if (Object.prototype.hasOwnProperty.call(this.schema.stores, storeName)) {
               const indexes: Index[] = this.schema.indexes?.[storeName] ?? [];
               if (!db.objectStoreNames.contains(storeName)) {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const objectStore = db.createObjectStore(storeName);
-                // this.indexNames.forEach(i => {
-                //   objectStore.createIndex(i, i);
-                // });
+                indexes.forEach(i => {
+                  objectStore.createIndex(i.name, i.field);
+                });
               } else {
                 const store = transaction.objectStore(storeName);
                 indexes.forEach(i => {
