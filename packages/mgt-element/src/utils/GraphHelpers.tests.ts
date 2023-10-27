@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /**
  * -------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
@@ -5,7 +6,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { it } from '@jest/globals';
+import { expect } from '@open-wc/testing';
+import { fake } from 'sinon';
 import { AuthenticationHandlerOptions, Middleware } from '@microsoft/microsoft-graph-client';
 import { MockProvider } from '../mock/MockProvider';
 import { Providers } from '../providers/Providers';
@@ -14,64 +16,69 @@ import { prepScopes } from './prepScopes';
 import { validateBaseURL } from './validateBaseURL';
 
 describe('GraphHelpers - prepScopes', () => {
-  it('should return an empty array when incremental consent is disabled', () => {
+  it('should return an empty array when incremental consent is disabled', async () => {
     const scopes = ['scope1', 'scope2'];
     Providers.globalProvider = new MockProvider(true);
     Providers.globalProvider.isIncrementalConsentDisabled = true;
-    expect(prepScopes(...scopes)).toEqual([]);
+    // eql for loose equality
+    await expect(prepScopes(...scopes)).to.eql([]);
   });
-  it('should return an array of AuthenticationHandlerOptions when incremental consent is enabled', () => {
+  it('should return an array of AuthenticationHandlerOptions when incremental consent is enabled', async () => {
     const scopes = ['scope1', 'scope2'];
     Providers.globalProvider = new MockProvider(true);
     Providers.globalProvider.isIncrementalConsentDisabled = false;
-    expect(prepScopes(...scopes)).toEqual([new AuthenticationHandlerOptions(undefined, { scopes })]);
+    await expect(prepScopes(...scopes)).to.eql([new AuthenticationHandlerOptions(undefined, { scopes })]);
   });
 });
 
 describe('GraphHelpers - chainMiddleware', () => {
-  it('should return the first middleware when only one is passed', () => {
-    const middleware: Middleware[] = [{ execute: jest.fn(), setNext: jest.fn() }];
+  it('should return the first middleware when only one is passed', async () => {
+    const middleware: Middleware[] = [{ execute: fake(), setNext: fake() }];
     const result = chainMiddleware(...middleware);
-    expect(result).toEqual(middleware[0]);
+    await expect(result).to.equal(middleware[0]);
   });
 
   it('should return undefined when the middleware array is empty', () => {
     const middleware: Middleware[] = [];
     const result = chainMiddleware(...middleware);
-    expect(result).toBeUndefined();
+    expect(result).to.be.undefined;
   });
   it('should now throw when the middleware array is undefined', () => {
     let error: string;
     try {
       const result = chainMiddleware(undefined);
-      expect(result).toBeUndefined();
+      expect(result).to.be.undefined;
     } catch (e) {
       error = 'thrown and caught';
     }
-    expect(error).toBeUndefined();
+    expect(error).to.be.undefined;
   });
 });
 
 describe('GraphHelpers - validateBaseUrl', () => {
-  it.each([
-    'https://graph.microsoft.com',
-    'https://graph.microsoft.us',
-    'https://dod-graph.microsoft.us',
-    'https://graph.microsoft.de',
-    'https://microsoftgraph.chinacloudapi.cn'
-  ])('should return %p as a valid base url', (graphUrl: string) => {
-    expect(validateBaseURL(graphUrl)).toBe(graphUrl);
+  it('should return as a valid Url', async () => {
+    const validUrls = [
+      'https://graph.microsoft.com',
+      'https://graph.microsoft.us',
+      'https://dod-graph.microsoft.us',
+      'https://graph.microsoft.de',
+      'https://microsoftgraph.chinacloudapi.cn'
+    ];
+    for (const url of validUrls) {
+      await expect(validateBaseURL(url)).to.equal(url);
+    }
   });
-  it.each(['https://graph.microsoft.net', 'https://random.us', 'https://nope.cn'])(
-    'should return undefined for %p as an invalid base url',
-    (graphUrl: string) => {
-      expect(validateBaseURL(graphUrl)).toBeUndefined();
+  it('should return undefeined for invalid Url', () => {
+    const validUrls = ['https://graph.microsoft.net', 'https://random.us', 'https://nope.cn'];
+    for (const url of validUrls) {
+      expect(validateBaseURL(url)).to.be.undefined;
     }
-  );
-  it.each(['not a url', 'graph.microsoft.com'])(
-    'should return undefined for when supplied a %p which is not a well formed url',
-    (input: string) => {
-      expect(validateBaseURL(input)).toBeUndefined();
+  });
+
+  it('should return undefined for when supplied a %p which is not a well formed url', () => {
+    const testValues = ['not a url', 'graph.microsoft.com'];
+    for (const test of testValues) {
+      expect(validateBaseURL(test)).to.be.undefined;
     }
-  );
+  });
 });

@@ -26,6 +26,8 @@ jobs:
       - run: npm install -g lerna
       - name: Install node_modules
         run: yarn
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
       - run: node scripts/setVersion.js --next
       - run: yarn build
       - run: yarn lint
