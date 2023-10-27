@@ -5,7 +5,9 @@ import { cacheEntryIsValid } from './cacheEntryIsValid';
 
 type CachedSubscriptionData = CacheItem & {
   chatId: string;
+  sessionId: string;
   subscriptions: Subscription[];
+  lastAccessDateTime: string;
 };
 
 const buildCacheKey = (chatId: string, sessionId: string): string => `${chatId}:${sessionId}`;
@@ -18,8 +20,13 @@ export class SubscriptionsCache {
 
   public async loadSubscriptions(chatId: string, sessionId: string): Promise<CachedSubscriptionData | undefined> {
     if (isConversationCacheEnabled()) {
-      const data = await this.cache.getValue(buildCacheKey(chatId, sessionId));
-      if (cacheEntryIsValid(data)) return data ?? undefined;
+      const cacheKey = buildCacheKey(chatId, sessionId);
+      const data = await this.cache.getValue(cacheKey);
+      if (data && cacheEntryIsValid(data)) {
+        data.lastAccessDateTime = new Date().toISOString();
+        await this.cache.putValue(cacheKey, data);
+        return data;
+      }
     }
     return undefined;
   }
@@ -36,14 +43,23 @@ export class SubscriptionsCache {
     } else {
       cacheEntry = {
         chatId,
-        subscriptions: [subscriptionRecord]
+        sessionId,
+        subscriptions: [subscriptionRecord],
+        // we're cheating a bit here to ensure that we have a defined lastAccessDateTime
+        // but we're updating the value for all cases before storing it.
+        lastAccessDateTime: ''
       };
     }
+    cacheEntry.lastAccessDateTime = new Date().toISOString();
 
     await this.cache.putValue(buildCacheKey(chatId, sessionId), cacheEntry);
   }
 
   public deleteCachedSubscriptions(chatId: string, sessionId: string): Promise<void> {
     return this.cache.delete(buildCacheKey(chatId, sessionId));
+  }
+
+  public loadInactiveSubscriptions(inactivityThreshold: string): Promise<CachedSubscriptionData[]> {
+    return this.cache.queryDb('lastAccessDateTime', IDBKeyRange.upperBound(inactivityThreshold));
   }
 }

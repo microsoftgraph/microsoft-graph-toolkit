@@ -21,7 +21,10 @@ import { SubscriptionsCache } from './Caching/SubscriptionCache';
 export const appSettings = {
   defaultSubscriptionLifetimeInMinutes: 10,
   renewalThreshold: 75, // The number of seconds before subscription expires it will be renewed
-  timerInterval: 20 // The number of seconds the timer will check on expiration
+  renewalTimerInterval: 20, // The number of seconds between executions of the renewal timer
+  removalThreshold: 1 * 60, // number of seconds after the last update of a subscription to consider in inactive
+  removalTimerInterval: 1 * 60, // the number of seconds between executions of the timer to remove inactive subscriptions
+  useCanary: GraphConfig.useCanary
 };
 
 type ChangeTypes = 'created' | 'updated' | 'deleted';
@@ -50,6 +53,7 @@ const stripWssScheme = (notificationUrl: string): string => notificationUrl.repl
 export class GraphNotificationClient {
   private connection?: HubConnection = undefined;
   private renewalInterval = -1;
+  private cleanupInterval = -1;
   private renewalCount = 0;
   private chatId = '';
   private sessionId = '';
@@ -67,7 +71,22 @@ export class GraphNotificationClient {
   constructor(
     private readonly emitter: ThreadEventEmitter,
     private readonly _graph: IGraph
-  ) {}
+  ) {
+    // start the cleanup timer when we create the notification client.
+    this.startCleanupTimer();
+  }
+
+  /**
+   * Removes any active timers that may exist to prevent memory leaks and perf issues.
+   * Call this method when the component that depends an instance of this class is being removed from the DOM
+   * i.e
+   */
+  public async tearDown() {
+    log('clearing intervals');
+    window.clearInterval(this.cleanupInterval);
+    window.clearInterval(this.renewalInterval);
+    await this.unsubscribeFromChatNotifications(this.chatId, this.sessionId);
+  }
 
   private readonly getToken = async () => {
     const token = await Providers.globalProvider.getAccessToken();
@@ -178,7 +197,6 @@ export class GraphNotificationClient {
       .post(subscriptionDefinition)) as Subscription;
     if (!subscription?.notificationUrl) throw new Error('Subscription not created');
     log(subscription);
-    // subscription.notificationUrl = GraphConfig.adjustNotificationUrl(subscription.notificationUrl);
 
     const awaits: Promise<void>[] = [];
     // Cache the subscription in storage for re-hydration on page refreshes
@@ -193,7 +211,7 @@ export class GraphNotificationClient {
 
   private readonly startRenewalTimer = () => {
     if (this.renewalInterval !== -1) clearInterval(this.renewalInterval);
-    this.renewalInterval = window.setInterval(this.syncTimerWrapper, appSettings.timerInterval * 1000);
+    this.renewalInterval = window.setInterval(this.syncTimerWrapper, appSettings.renewalTimerInterval * 1000);
     log(`Start renewal timer . Id: ${this.renewalInterval}`);
   };
 
@@ -279,15 +297,49 @@ export class GraphNotificationClient {
     }
   }
 
+  private async deleteSubscription(id: string) {
+    try {
+      await this.graph.api(`${GraphConfig.subscriptionEndpoint}/${id}`).delete();
+    } catch (e) {
+      error(e);
+    }
+  }
+
   private async removeSubscriptions(subscriptions: Subscription[]): Promise<unknown[]> {
     const tasks: Promise<unknown>[] = [];
     for (const s of subscriptions) {
       // if there is no id or the subscription is expired, skip
       if (!s.id || (s.expirationDateTime && new Date(s.expirationDateTime) <= new Date())) continue;
-      tasks.push(this.graph.api(`${GraphConfig.subscriptionEndpoint}/${s.id}`).delete());
+      tasks.push(this.deleteSubscription(s.id));
     }
     return Promise.all(tasks);
   }
+
+  private startCleanupTimer() {
+    this.cleanupInterval = window.setInterval(this.cleanupTimerSync, appSettings.removalTimerInterval * 1000);
+  }
+
+  private readonly cleanupTimerSync = () => {
+    void this.cleanupTimer();
+  };
+
+  private readonly cleanupTimer = async () => {
+    const offset = Math.min(
+      appSettings.removalThreshold * 1000,
+      appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
+    );
+    const threshold = new Date(new Date().getTime() - offset).toISOString();
+    const inactiveSubs = await this.subscriptionCache.loadInactiveSubscriptions(threshold);
+    let tasks: Promise<unknown>[] = [];
+    for (const inactive of inactiveSubs) {
+      tasks.push(this.removeSubscriptions(inactive.subscriptions));
+    }
+    await Promise.all(tasks);
+    tasks = [];
+    for (const inactive of inactiveSubs) {
+      tasks.push(this.subscriptionCache.deleteCachedSubscriptions(inactive.chatId, inactive.sessionId));
+    }
+  };
 
   public async closeSignalRConnection() {
     // stop the connection and set it to undefined so it will reconnect when next subscription is created.
@@ -295,14 +347,14 @@ export class GraphNotificationClient {
     this.connection = undefined;
   }
 
-  public async unsubscribeFromChatNotifications(chatId: string, sessionId: string) {
-    if (chatId === this.chatId && sessionId === this.chatId && this.connection) {
-      await this.connection?.stop();
-      this.connection = undefined;
-      const cacheData = await this.subscriptionCache.loadSubscriptions(chatId, sessionId);
-      if (cacheData) {
-        await this.removeSubscriptions(cacheData.subscriptions);
-      }
+  private async unsubscribeFromChatNotifications(chatId: string, sessionId: string) {
+    await this.closeSignalRConnection();
+    const cacheData = await this.subscriptionCache.loadSubscriptions(chatId, sessionId);
+    if (cacheData) {
+      await Promise.all([
+        this.removeSubscriptions(cacheData.subscriptions),
+        this.subscriptionCache.deleteCachedSubscriptions(chatId, sessionId)
+      ]);
     }
   }
 

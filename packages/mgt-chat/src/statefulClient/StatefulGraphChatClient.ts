@@ -227,6 +227,13 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   }
 
   /**
+   * Provides a method to clean up any resources being used internally when a consuming component is being removed from the DOM
+   */
+  public async tearDown() {
+    await this._notificationClient.tearDown();
+  }
+
+  /**
    * Register a callback to receive state updates
    *
    * @param {(state: GraphChatClient) => void} handler

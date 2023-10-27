@@ -9,7 +9,7 @@ import { allChatScopes, brokerSettings, GraphConfig } from '@microsoft/mgt-chat'
 
 brokerSettings.defaultSubscriptionLifetimeInMinutes = 7;
 brokerSettings.renewalThreshold = 65;
-brokerSettings.timerInterval = 15;
+brokerSettings.renewalTimerInterval = 15;
 
 // GraphConfig.useCanary = true;
 

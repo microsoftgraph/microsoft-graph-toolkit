@@ -18,7 +18,7 @@ export class MessageCache {
   public async loadMessages(chatId: string): Promise<CachedMessageData | null | undefined> {
     if (isConversationCacheEnabled()) {
       const data = await this.cache.getValue(chatId);
-      if (cacheEntryIsValid(data)) return data;
+      if (data && cacheEntryIsValid(data)) return data;
     }
     return undefined;
   }
