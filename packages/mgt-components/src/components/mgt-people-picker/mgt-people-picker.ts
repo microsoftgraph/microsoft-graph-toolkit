@@ -621,8 +621,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private disableTextInput() {
     const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
-    inputControl?.setAttribute('disabled', 'true');
-    inputControl.value = '';
+    if (inputControl) {
+      inputControl?.setAttribute('disabled', 'true');
+      inputControl.value = '';
+    }
   }
 
   /**
