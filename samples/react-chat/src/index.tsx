@@ -12,6 +12,7 @@ brokerSettings.renewalThreshold = 65;
 brokerSettings.renewalTimerInterval = 15;
 
 // GraphConfig.useCanary = true;
+GraphConfig.ackAsString = true;
 
 Providers.globalProvider = new Msal2Provider({
   baseURL: GraphConfig.graphEndpoint,

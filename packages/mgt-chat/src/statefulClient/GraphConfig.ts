@@ -1,6 +1,8 @@
 import { GraphEndpoint } from '@microsoft/mgt-element';
 
 export class GraphConfig {
+  public static ackAsString = false;
+
   public static useCanary = false;
 
   public static version = 'v1.0';
