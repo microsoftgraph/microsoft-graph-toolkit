@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BetaGraph, IGraph, Providers, error, log } from '@microsoft/mgt-element';
+import { BetaGraph, IGraph, Providers, createFromProvider, error, log } from '@microsoft/mgt-element';
 import { HubConnection, HubConnectionBuilder, IHttpConnectionOptions, LogLevel } from '@microsoft/signalr';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
 import type {
@@ -48,8 +48,6 @@ const isMessageNotification = (o: Notification<Entity>): o is Notification<ChatM
 const isMembershipNotification = (o: Notification<Entity>): o is Notification<AadUserConversationMember> =>
   o.resource.includes('/members');
 
-const stripWssScheme = (notificationUrl: string): string => notificationUrl.replace('websockets:', '');
-
 export class GraphNotificationClient {
   private connection?: HubConnection = undefined;
   private renewalInterval = -1;
@@ -63,6 +61,11 @@ export class GraphNotificationClient {
   }
   private get beta() {
     return BetaGraph.fromGraph(this._graph);
+  }
+  private get subscriptionGraph() {
+    return GraphConfig.useCanary
+      ? createFromProvider(Providers.globalProvider, GraphConfig.canarySubscriptionVersion, 'mgt-chat')
+      : this.beta;
   }
 
   /**
@@ -183,7 +186,7 @@ export class GraphNotificationClient {
     ).toISOString();
     const subscriptionDefinition: Subscription = {
       changeType: changeTypes.join(','),
-      notificationUrl: `websockets:?groupId=${this.chatId}&sessionId=${this.sessionId}`,
+      notificationUrl: `${GraphConfig.webSocketsPrefix}?groupId=${this.chatId}&sessionId=${this.sessionId}`,
       resource: resourcePath,
       expirationDateTime,
       includeResourceData: true,
@@ -191,9 +194,10 @@ export class GraphNotificationClient {
     };
 
     log('subscribing to changes for ' + resourcePath);
+    const subscriptionEndpoint = GraphConfig.subscriptionEndpoint;
     // send subscription POST to Graph
-    const subscription: Subscription = (await this.beta
-      .api(GraphConfig.subscriptionEndpoint)
+    const subscription: Subscription = (await this.subscriptionGraph
+      .api(subscriptionEndpoint)
       .post(subscriptionDefinition)) as Subscription;
     if (!subscription?.notificationUrl) throw new Error('Subscription not created');
     log(subscription);
@@ -277,7 +281,7 @@ export class GraphNotificationClient {
       withCredentials: false
     };
     const connection = new HubConnectionBuilder()
-      .withUrl(stripWssScheme(notificationUrl), connectionOptions)
+      .withUrl(GraphConfig.adjustNotificationUrl(notificationUrl), connectionOptions)
       .withAutomaticReconnect()
       .configureLogging(LogLevel.Information)
       .build();

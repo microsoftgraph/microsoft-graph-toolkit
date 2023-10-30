@@ -147,7 +147,7 @@ export class Graph implements IGraph {
  * @returns {Graph}
  * @memberof Graph
  */
-export const createFromProvider = (provider: IProvider, version?: string, component?: Element): Graph => {
+export const createFromProvider = (provider: IProvider, version?: string, component?: Element | string): Graph => {
   const middleware: Middleware[] = [
     new AuthenticationHandler(provider),
     new RetryHandler(new RetryHandlerOptions()),
