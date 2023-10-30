@@ -33,8 +33,7 @@ $mgt-flyout-box-shadow: var(--mgt-flyout-box-shadow, var(--elevation-shadow-card
     border-radius: 8px;
 
     &.small {
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden auto;
     }
   }
 
@@ -45,12 +44,14 @@ $mgt-flyout-box-shadow: var(--mgt-flyout-box-shadow, var(--elevation-shadow-card
       animation-duration: 0.3s;
       animation-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
       animation-fill-mode: both;
-      transition: top 0.3s ease, bottom 0.3s ease, left 0.3s ease;
+      transition:
+        top 0.3s ease,
+        bottom 0.3s ease,
+        left 0.3s ease;
       z-index: 9999999;
 
       &.small {
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow: hidden auto;
       }
     }
   }

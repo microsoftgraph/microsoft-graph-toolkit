@@ -10,7 +10,10 @@ import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
-import { MgtBaseComponent, customElement } from '@microsoft/mgt-element/';
+import { MgtBaseComponent } from '@microsoft/mgt-element/';
+import { registerComponent } from '@microsoft/mgt-element';
+
+export const registerMgtFlyoutComponent = () => registerComponent('flyout', MgtFlyout);
 
 /**
  * A component to create flyout anchored to an element
@@ -19,7 +22,6 @@ import { MgtBaseComponent, customElement } from '@microsoft/mgt-element/';
  * @class MgtFlyout
  * @extends {LitElement}
  */
-@customElement('flyout')
 export class MgtFlyout extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -418,7 +420,9 @@ export class MgtFlyout extends MgtBaseComponent {
         window.requestAnimationFrame(() => this.updateFlyout());
       }
 
-      if (height) {
+      // don't use the calculated height on the first pass as the contents of the flyout may not have rendered yet
+      // this gives them a change to contribute height and not get forced to a smaller than intended height
+      if (height && !firstPass) {
         flyout.style.maxHeight = `${height}px`;
         flyout.style.setProperty('--mgt-flyout-set-height', `${height}px`);
       } else {

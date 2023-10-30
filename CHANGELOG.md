@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.3](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.1.2...v3.1.3) (2023-10-06)
+
+
+### Bug Fixes
+
+* **a11y:** mgt-file and mgt-picker visibility issues in dark-mode ([#2667](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2667)) ([239bfb0](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/239bfb0978569ae55343afd0c998edb370d9ea98))
+* add Group entity to IDynamicPerson type and introduce typeguards to find the entity type ([#2688](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2688)) ([b3bc50d](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/b3bc50dda72e1865ff3314f2bd2f8b93739d6710))
+* add spaces to presence hover text in mgt-person ([#2693](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2693)) ([f50e6ab](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/f50e6ab514ad9b1e4deb0113e4f50558c8ec49c3))
+* disable todo checkboxes and inputs in read-only mode ([#2745](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2745)) ([d19f078](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/d19f078abe52d6b0f3e9e9899db3a783c54a9133))
+* ensure batch url resources start with / ([#2740](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2740)) ([247f37a](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/247f37ae57074ec73d9ba17c0f5e96a54ab7149a))
+* ensure msal public client application is initialized ([#2702](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2702)) ([b9fcfe7](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/b9fcfe7ee154c98ad59d43dc9c5678354a1c423d))
+* ensure people-picker search works when userIds are supplied([#2736](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2736)) ([a724b05](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/a724b05163ff1344c346df691177ae5803587051))
+* initials rendering in mgt-person ([#2764](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2764)) ([882aaf6](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/882aaf6ac20666640eb511f36139826b8ec720e0))
+* **MgtProfile:** Fix handling of null values for educations & work positions ([#2717](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2717)) ([ba381c8](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/ba381c83ac182e855edce9217c7c072197fa165d))
+* typing for template props data context ([#2754](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2754)) ([c9023c2](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/c9023c22a3f2d8cef4c52416ab8e9fd872c48926))
+* update mgt-taxonomy-picker colors to match mgt-picker ([#2747](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/2747)) ([be7add8](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/be7add83c77809f6210d1bf877d8009840da5c47))
+
 ## [3.1.2](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.1.1...v3.1.2) (2023-09-05)
 
 

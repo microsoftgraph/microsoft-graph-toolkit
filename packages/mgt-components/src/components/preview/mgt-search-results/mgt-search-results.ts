@@ -15,7 +15,6 @@ import {
   prepScopes,
   Providers,
   ProviderState,
-  customElement,
   mgtHtml,
   BetaGraph,
   BatchResponse,
@@ -53,8 +52,9 @@ import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { fluentSkeleton, fluentButton, fluentTooltip, fluentDivider } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { CacheResponse } from '../../CacheResponse';
-
-registerFluentComponents(fluentSkeleton, fluentButton, fluentTooltip, fluentDivider);
+import { registerComponent } from '@microsoft/mgt-element';
+import { registerMgtFileComponent } from '../../mgt-file/mgt-file';
+import { registerMgtPersonComponent } from '../../mgt-person/mgt-person';
 
 /**
  * Object representing a thumbnail
@@ -119,6 +119,14 @@ type SearchResource = Partial<
  */
 type SearchResponseCollection = CollectionResponse<SearchResponse>;
 
+export const registerMgtSearchResultsComponent = () => {
+  registerFluentComponents(fluentSkeleton, fluentButton, fluentTooltip, fluentDivider);
+
+  registerMgtFileComponent();
+  registerMgtPersonComponent();
+  registerComponent('search-results', MgtSearchResults);
+};
+
 /**
  * **Preview component** Custom element for making Microsoft Graph get queries.
  * Component may change before general availability release.
@@ -133,7 +141,6 @@ type SearchResponseCollection = CollectionResponse<SearchResponse>;
  * @class mgt-search-results
  * @extends {MgtTemplatedComponent}
  */
-@customElement('search-results')
 export class MgtSearchResults extends MgtTemplatedComponent {
   /**
    * Default page size is 10
