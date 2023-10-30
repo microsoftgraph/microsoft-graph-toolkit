@@ -19,6 +19,7 @@ export type PeoplePickerProps = {
 	people?: IDynamicPerson[];
 	showMax?: number;
 	disableImages?: boolean;
+	showPresence?: boolean;
 	selectedPeople?: IDynamicPerson[];
 	defaultSelectedUserIds?: string[];
 	defaultSelectedGroupIds?: string[];
