@@ -5,33 +5,38 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { it } from '@jest/globals';
-import { assert } from 'console';
 import { EventDispatcher } from './EventDispatcher';
+import { assert, restore, fake } from 'sinon';
 
 describe('EventDispatcher tests', () => {
+  afterEach(() => {
+    // Restore the default sandbox here
+    restore();
+  });
   it('should add and remove event handlers', () => {
     const dispatcher = new EventDispatcher();
-    const handler1 = jest.fn();
-    const handler2 = jest.fn();
+    const handler1 = fake();
+    const handler2 = fake();
     dispatcher.add(handler1);
     dispatcher.add(handler2);
     dispatcher.fire('event');
-    expect(handler1).toHaveBeenCalledTimes(1);
-    expect(handler2).toHaveBeenCalledTimes(1);
+
+    assert.calledOnce(handler1);
+    assert.calledOnce(handler2);
     dispatcher.remove(handler1);
     dispatcher.fire('event');
-    expect(handler1).toHaveBeenCalledTimes(1);
-    expect(handler2).toHaveBeenCalledTimes(2);
+    assert.calledOnce(handler1);
+    assert.callCount(handler2, 2);
   });
+
   it('should not throw when remove is called with an unregistered handler', () => {
     try {
       const dispatcher = new EventDispatcher();
-      const handler1 = jest.fn();
+      const handler1 = fake();
       dispatcher.remove(handler1);
     } catch (e) {
-      assert(false, 'should not throw');
+      assert.fail('should not throw');
     }
-    assert(true, 'did not throw');
+    assert.pass('did not throw');
   });
 });

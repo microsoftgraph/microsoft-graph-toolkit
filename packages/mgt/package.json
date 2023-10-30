@@ -38,9 +38,7 @@
     "postpack": "cpx *.tgz ../../artifacts",
     "rollup": "rollup -c",
     "sass": "gulp sass --cwd .",
-    "sass:watch": "gulp watchSass --cwd .",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "sass:watch": "gulp watchSass --cwd ."
   },
   "sideEffects": false,
   "dependencies": {
@@ -53,14 +51,6 @@
   },
   "devDependencies": {
     "@webcomponents/webcomponentsjs": "^2.5.0"
-  },
-  "jest-junit": {
-    "suiteName": "jest tests",
-    "output": "testResults/junit.xml",
-    "classNameTemplate": "{classname} - {title}",
-    "titleTemplate": "{classname} - {title}",
-    "ancestorSeparator": " > ",
-    "usePathForSuiteName": "true"
   },
   "publishConfig": {
     "directory": "dist"
