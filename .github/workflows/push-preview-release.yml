@@ -19,7 +19,7 @@ jobs:
         node-version: [18.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -47,7 +47,7 @@ jobs:
       name: release
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
