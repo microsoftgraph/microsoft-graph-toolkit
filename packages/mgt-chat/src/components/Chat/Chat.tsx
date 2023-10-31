@@ -59,6 +59,10 @@ const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
     '& .ui-box': {
       zIndex: 'unset'
+    },
+    '& .fui-ChatMessage': {
+      marginLeft: 'unset',
+      width: '100%'
     }
   },
   chatMessageContainer: {

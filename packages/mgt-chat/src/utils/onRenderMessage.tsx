@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { MessageProps, MessageRenderer } from '@azure/communication-react';
+import { Message, MessageProps, MessageRenderer } from '@azure/communication-react';
 import { Action, AdaptiveCard, IMarkdownProcessingResult } from 'adaptivecards';
 import MarkdownIt from 'markdown-it';
 import React, { useEffect, useRef } from 'react';
@@ -19,6 +19,8 @@ import {
 } from 'adaptivecards/lib/schema';
 import { ChatMessageAttachment } from '@microsoft/microsoft-graph-types';
 import produce from 'immer';
+import { ChatMessage, ChatMyMessage } from '@fluentui-contrib/react-chat';
+
 import { renderToString } from 'react-dom/server';
 import UnsupportedContent from '../components/UnsupportedContent/UnsupportedContent';
 
@@ -54,7 +56,25 @@ const MgtAdaptiveCard = (msg: MgtAdaptiveCardProps) => {
   const defaultOnRender = msg?.defaultOnRender;
   const messageProps = msg.messageProps;
   const defaultRender = defaultOnRender ? defaultOnRender(messageProps) : <></>;
-  return adaptiveCardAttachments.length ? <div ref={cardRef}></div> : defaultRender;
+  const Container = messageContainer(msg.messageProps.message);
+  return adaptiveCardAttachments.length ? (
+    <Container>
+      <div ref={cardRef}></div>
+    </Container>
+  ) : (
+    defaultRender
+  );
+};
+
+/**
+ * Determine which message container to render. By default use the ChatMessage.
+ * @param msg is the Message
+ */
+const messageContainer = (msg: Message) => {
+  if (isChatMessage(msg) && msg?.mine) {
+    return ChatMyMessage;
+  }
+  return ChatMessage;
 };
 
 /**
