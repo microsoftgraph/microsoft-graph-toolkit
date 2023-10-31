@@ -1,7 +1,8 @@
 import { Divider, makeStyles, mergeClasses } from '@fluentui/react-components';
-import React, { memo } from 'react';
+import React from 'react';
 import { GraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import ChatTitle from './ChatTitle';
+import Teams from './Teams';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
 import { useCommonHeaderStyles } from './useCommonHeaderStyles';
 
@@ -29,11 +30,15 @@ interface ChatHeaderProps {
 const ChatHeader = ({ chatState }: ChatHeaderProps) => {
   const styles = useHeaderStyles();
   const commonStyles = useCommonHeaderStyles();
+  const chatWebUrl = chatState?.chat?.webUrl ?? 'https://teams.microsoft.com';
+
   return (
     <div className={styles.chatHeader}>
       <ChatTitle chat={chatState.chat} currentUserId={chatState.userId} onRenameChat={chatState.onRenameChat} />
       <Divider appearance="subtle" />
       <div className={mergeClasses(styles.secondRow, commonStyles.row)}>
+        {/* TODO: Should we show the 'go to teams' ellipsis in one-on-one chats? */}
+        {chatState.chat?.chatType === 'oneOnOne' && <Teams link={chatWebUrl} />}
         {chatState.participants?.length > 0 && chatState.chat?.chatType === 'group' && (
           <>
             <ManageChatMembers
@@ -43,6 +48,7 @@ const ChatHeader = ({ chatState }: ChatHeaderProps) => {
               addChatMembers={chatState.onAddChatMembers}
             />
             <Divider vertical appearance="subtle" inset className={styles.noGrow} />
+            <Teams link={chatWebUrl} appearance="subtle" />
           </>
         )}
       </div>
