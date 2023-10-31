@@ -1,4 +1,11 @@
 /**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+/**
  * Object mapping chat operations to the scopes required to perform them
  */
 export const chatOperationScopes: Record<string, string[]> = {
