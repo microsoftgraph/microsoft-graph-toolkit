@@ -63,6 +63,16 @@ const messageThreadStyles: MessageThreadStyles = {
     '& .fui-ChatMessage': {
       marginLeft: 'unset',
       width: '100%'
+    },
+    '& .fui-ChatMessage__author': {
+      fontWeight: 'var(--fontWeightSemibold)',
+      color: 'var(--colorNeutralForeground1)',
+      ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
+    },
+    '& .fui-ChatMessage__timestamp': {
+      fontWeight: 'var(--fontWeightRegular)',
+      color: 'var(--colorNeutralForeground3)',
+      ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
     }
   },
   chatMessageContainer: {

@@ -23,6 +23,7 @@ import { ChatMessage, ChatMyMessage } from '@fluentui-contrib/react-chat';
 
 import { renderToString } from 'react-dom/server';
 import UnsupportedContent from '../components/UnsupportedContent/UnsupportedContent';
+import { onDisplayDateTimeString } from './displayDates';
 
 type IAction = ISubmitAction | IOpenUrlAction | IShowCardAction | IExecuteAction;
 
@@ -57,8 +58,11 @@ const MgtAdaptiveCard = (msg: MgtAdaptiveCardProps) => {
   const messageProps = msg.messageProps;
   const defaultRender = defaultOnRender ? defaultOnRender(messageProps) : <></>;
   const Container = messageContainer(msg.messageProps.message);
+  const author = isChatMessage(msg.messageProps.message) ? msg.messageProps.message?.senderDisplayName : '';
+  const timestamp = onDisplayDateTimeString(msg.messageProps.message.createdOn);
+
   return adaptiveCardAttachments.length ? (
-    <Container>
+    <Container author={author} timestamp={timestamp}>
       <div ref={cardRef}></div>
     </Container>
   ) : (
