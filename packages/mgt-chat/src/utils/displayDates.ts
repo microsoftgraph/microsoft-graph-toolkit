@@ -1,4 +1,9 @@
-//
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
 
 /**
  * Renders a date object in the format YYYY-MM-DD HH:MM AM. Modified from https://github.com/Azure/communication-ui-library/blob/main/packages/storybook/stories/ChatComposite/snippets/Utils.tsx#L128
