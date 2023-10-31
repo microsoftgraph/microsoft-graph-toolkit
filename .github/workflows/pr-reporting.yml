@@ -5,7 +5,6 @@ on:
     workflows: [Build pr]
     types:
       - completed
-    branches: [main, release/**, next/**]
 
 jobs:
   pr_report:
@@ -14,14 +13,14 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       # added to work around missing .git repo wanted by gh cli
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Test Report
         uses: dorny/test-reporter@v1
         with:
           artifact: test-results
-          name: JEST Tests # Name of the check run which will be created
+          name: Test Results # Name of the check run which will be created
           path: junit.xml # Path to test results
-          reporter: jest-junit # Format of test results
+          reporter: java-junit # Format of test results
       - name: Download coverage artifacts with cli
         run: |
           gh run download ${{ github.event.workflow_run.id }} -n coverage

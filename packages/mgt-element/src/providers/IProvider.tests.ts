@@ -1,7 +1,8 @@
 import { IProvider } from './IProvider';
 import { SimpleProvider } from './SimpleProvider';
+import { expect } from '@open-wc/testing';
 
-describe('IProvider tests', () => {
+describe('IProvider.needsAdditionalScopes tests', () => {
   let p: IProvider;
   beforeEach(() => {
     p = new SimpleProvider(
@@ -11,21 +12,21 @@ describe('IProvider tests', () => {
     );
     p.approvedScopes = ['user.read', 'group.read.all', 'presence.read'];
   });
-  it('should provide an empty array when one scope is already present', () => {
+  it('should provide an empty array when one scope is already present', async () => {
     const result = p.needsAdditionalScopes(['groupmember.read.all', 'group.read.all']);
-    expect(result).toEqual([]);
+    await expect(result).to.eql([]);
   });
-  it('should provide an empty array when one scope is already present ignoring case of scopes in provider', () => {
+  it('should provide an empty array when one scope is already present ignoring case of scopes in provider', async () => {
     p.approvedScopes = ['user.read', 'Group.Read.All', 'presence.read'];
     const result = p.needsAdditionalScopes(['groupmember.read.all', 'group.read.all']);
-    expect(result).toEqual([]);
+    await expect(result).to.eql([]);
   });
-  it('should provide an empty array when one scope is already present ignoring case of scopes in provider', () => {
+  it('should provide an empty array when one scope is already present ignoring case of scopes in provider', async () => {
     const result = p.needsAdditionalScopes(['groupmember.read.all', 'Group.Read.All']);
-    expect(result).toEqual([]);
+    await expect(result).to.eql([]);
   });
-  it('should provide an the first element in the pass array where there is no overlap', () => {
+  it('should provide an the first element in the passed array where there is no overlap', async () => {
     const result = p.needsAdditionalScopes(['groupmember.read.all', 'group.readwrite.all']);
-    expect(result).toEqual(['groupmember.read.all']);
+    await expect(result).to.eql(['groupmember.read.all']);
   });
 });

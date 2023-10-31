@@ -5,19 +5,19 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { screen } from 'testing-library__dom';
-import { fixture } from '@open-wc/testing-helpers';
+import { fixture, html, expect } from '@open-wc/testing';
 import './mgt-spinner';
+import { registerMgtSpinnerComponent } from './mgt-spinner';
 
 let spinner: Element;
 describe('mgt-spinner tests', () => {
+  // before(() => reg);
   beforeEach(async () => {
-    spinner = await fixture('<mgt-spinner></mgt-spinner>');
+    registerMgtSpinnerComponent();
+    spinner = await fixture(html`<mgt-spinner></mgt-spinner>`);
   });
 
   it('should render', async () => {
-    const spinnerHtml = await screen.findByTitle('spinner');
-    expect(spinnerHtml).not.toBeNull();
-    expect(spinner.shadowRoot.innerHTML).toContain('<fluent-progress-ring title="spinner"></fluent-progress-ring>');
+    await expect(spinner).shadowDom.to.equal('<fluent-progress-ring title="spinner"></fluent-progress-ring>');
   });
 });

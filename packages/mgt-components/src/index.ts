@@ -4,9 +4,10 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+import { registerMgtComponents } from './registerMgtComponents';
 
-export * from './components/components';
-export * from './components/preview';
-export * from './graph/types';
-export * from './styles/theme-manager';
-export * from './graph/entityType';
+export * from './exports';
+
+// this side effect will register all components
+// this is to prevent a breaking change as we enable tree shaking
+registerMgtComponents();

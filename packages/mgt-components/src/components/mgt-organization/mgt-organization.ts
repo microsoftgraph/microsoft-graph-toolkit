@@ -14,7 +14,14 @@ import { MgtPersonCardState, UserWithManager } from '../mgt-person-card/mgt-pers
 import { styles } from './mgt-organization-css';
 import { strings } from './strings';
 import { ViewType } from '../../graph/types';
-import { mgtHtml, customElement } from '@microsoft/mgt-element';
+import { mgtHtml } from '@microsoft/mgt-element';
+import { registerComponent } from '@microsoft/mgt-element';
+import { registerMgtPersonComponent } from '../mgt-person/mgt-person';
+
+export const registerMgtOrganizationComponent = () => {
+  registerMgtPersonComponent();
+  registerComponent('organization', MgtOrganization);
+};
 
 /**
  * The member organization subsection of the person card
@@ -23,7 +30,6 @@ import { mgtHtml, customElement } from '@microsoft/mgt-element';
  * @class MgtOrganization
  * @extends {MgtTemplatedComponent}
  */
-@customElement('organization')
 export class MgtOrganization extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined

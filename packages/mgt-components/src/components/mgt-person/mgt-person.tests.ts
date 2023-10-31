@@ -4,70 +4,85 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-
-import { screen } from 'testing-library__dom';
-import { fixture } from '@open-wc/testing-helpers';
-import { enableFetchMocks } from 'jest-fetch-mock';
-import fetchMock from 'jest-fetch-mock';
+import { fixture, html, expect, waitUntil } from '@open-wc/testing';
 import { MockProvider, Providers } from '@microsoft/mgt-element';
-import { userPhotoBatchResponse } from './__test_data/mock-responses';
-import './mgt-person';
-enableFetchMocks();
+import { registerMgtPersonComponent } from './mgt-person';
 
-let person: Element;
 describe('mgt-person - tests', () => {
-  beforeEach(() => {
-    fetchMock.resetMocks();
-    fetchMock
-      // Response for the setup of the MockGraph to call to the proxy service
-      .once(() =>
-        Promise.resolve({
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          status: 200,
-          body: 'https://fake-proxy.microsoft.com/'
-        })
-      )
-      // response to the $batch request to load the user photo and user data when there is nothing in the cache
-      // note that this used mockOnceIf matching the fake url supplied in the first mock.
-      .mockOnceIf(/https:\/\/fake-proxy\.microsoft\.com\/*$/, () =>
-        Promise.resolve({
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          status: 200,
-          body: JSON.stringify(userPhotoBatchResponse)
-        })
-      );
+  before(() => {
+    registerMgtPersonComponent();
+    Providers.globalProvider = new MockProvider(true);
   });
 
   it('should render', async () => {
-    Providers.globalProvider = new MockProvider(true);
-    person = await fixture('<mgt-person person-query="me" view="twoLines"></mgt-person>');
-    const img = await screen.findAllByAltText('Photo for Megan Bowen');
-    expect(img).not.toBeNull();
-    expect(person).not.toBeUndefined();
+    const person = await fixture(html`<mgt-person person-query="me" view="twoLines"></mgt-person>`);
+    await waitUntil(() => person.shadowRoot.querySelector('img'), 'mgt-person did not update');
+    await expect(person).shadowDom.to.equal(
+      `<div class=" person-root twolines " dir="ltr">
+        <div class="avatar-wrapper">
+          <img alt="Photo for Megan Bowen" src="">
+        </div>
+        <div class=" details-wrapper ">
+              <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+              <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+        </div>
+      </div>`,
+      { ignoreAttributes: ['src'] }
+    );
   });
 
   it('should pop up a flyout on click', async () => {
-    Providers.globalProvider = new MockProvider(true);
-    person = await fixture('<mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>');
-    const img = await screen.findAllByAltText('Photo for Megan Bowen');
-    expect(img).not.toBeNull();
-    expect(img.length).toBe(1);
-    // test that there is no flyout
-    expect(screen.queryByTestId('flyout-slot')).toBeNull();
-
-    img[0].click();
-
-    expect(screen.queryByTestId('flyout-slot')).toBeDefined();
+    const person = await fixture(html`<mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>`);
+    await waitUntil(() => person.shadowRoot.querySelector('img'), 'mgt-person did not update');
+    await expect(person).shadowDom.to.equal(
+      `<div class=" person-root twolines " dir="ltr"tabindex="0">
+        <mgt-flyout
+          class="flyout"
+          light-dismiss=""
+        >
+          <div slot="anchor">
+            <div class="avatar-wrapper">
+              <img alt="Photo for Megan Bowen">
+            </div>
+            <div class="details-wrapper">
+              <div
+                aria-label="Megan Bowen"
+                class="line1"
+                role="presentation"
+              >
+                Megan Bowen
+              </div>
+              <div
+                aria-label="Auditor"
+                class="line2"
+                role="presentation"
+              >
+                Auditor
+              </div>
+            </div>
+        </mgt-flyout>
+      </div>`,
+      { ignoreAttributes: ['src'] }
+    );
+    person.shadowRoot.querySelector('img').click();
+    // need to use wait until here because of the dynamic import of the person card
+    // this can be flaky due to the dynamic import and timing variance
+    await waitUntil(
+      () => person.shadowRoot.querySelector('div[data-testid="flyout-slot"]'),
+      'mgt-person failed to render flyout',
+      { interval: 500, timeout: 10000 }
+    );
+    const flyout = person.shadowRoot.querySelector('div[data-testid="flyout-slot"]');
+    await expect(flyout).dom.to.be.equal(`
+      <div slot="flyout" data-testid="flyout-slot">
+        <mgt-person-card class="mgt-person-card" lock-tab-navigation="">
+        </mgt-person-card>
+      </div>`);
   });
 
   it('should render with initials when given name and surname are supplied', async () => {
-    Providers.globalProvider = new MockProvider(true);
-    person = await fixture(
-      `<mgt-person person-details='${JSON.stringify({
+    const person = await fixture(
+      html`<mgt-person person-details='${JSON.stringify({
         displayName: 'Frank Herbert',
         mail: 'herbert@dune.net',
         givenName: 'Brian',
@@ -75,119 +90,90 @@ describe('mgt-person - tests', () => {
         personType: {}
       })}' view="twoLines"></mgt-person>`
     );
-    expect(person).not.toBeUndefined();
-    const initials = await screen.findByText('BH');
-    expect(initials).toBeDefined();
+    await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('BH');
   });
 
   it('should render with initials when given name and surname are null', async () => {
     Providers.globalProvider = new MockProvider(true);
-    person = await fixture(
-      `<mgt-person person-details='${JSON.stringify({
+    const person = await fixture(html`
+      <mgt-person person-details='${JSON.stringify({
         displayName: 'Frank Herbert',
         mail: 'herbert@dune.net',
         givenName: null,
         surname: null,
         personType: {}
-      })}' view="twoLines"></mgt-person>`
-    );
-    expect(person).not.toBeUndefined();
-    const initials = await screen.findByText('FH');
-    expect(initials).toBeDefined();
+      })}' view="twoLines"></mgt-person>`);
+    await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('FH');
   });
 
   it('should render with first initial when only given name is supplied', async () => {
-    Providers.globalProvider = new MockProvider(true);
-    person = await fixture(
-      `<mgt-person person-details='${JSON.stringify({
+    const person = await fixture(html`
+      <mgt-person person-details='${JSON.stringify({
         displayName: 'Frank Herbert',
         mail: 'herbert@dune.net',
         givenName: 'Frank',
         surname: null,
         personType: {}
-      })}' view="twoLines"></mgt-person>`
-    );
-    expect(person).not.toBeUndefined();
-    const initials = await screen.findByText('F');
-    expect(initials).toBeDefined();
+      })}' view="twoLines"></mgt-person>`);
+    await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('F');
   });
 
   it('should render with first initial when only given name is populated and surname is an empty string', async () => {
-    Providers.globalProvider = new MockProvider(true);
-    person = await fixture(
-      `<mgt-person person-details='${JSON.stringify({
+    const person = await fixture(html`
+      <mgt-person person-details='${JSON.stringify({
         displayName: 'Frank Herbert',
         mail: 'herbert@dune.net',
         givenName: 'Frank',
         surname: '',
         personType: {}
-      })}' view="twoLines"></mgt-person>`
-    );
-    expect(person).not.toBeUndefined();
-    const initials = await screen.findByText('F');
-    expect(initials).toBeDefined();
+      })}' view="twoLines"></mgt-person>`);
+    await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('F');
   });
 
   it('should render with last initial when only surname is supplied', async () => {
-    Providers.globalProvider = new MockProvider(true);
-    person = await fixture(
-      `<mgt-person person-details='${JSON.stringify({
+    const person = await fixture(html`
+      <mgt-person person-details='${JSON.stringify({
         displayName: 'Frank Herbert',
         mail: 'herbert@dune.net',
         givenName: null,
         surname: 'Herbert',
         personType: {}
-      })}' view="twoLines"></mgt-person>`
-    );
-    expect(person).not.toBeUndefined();
-    const initials = await screen.findByText('H');
-    expect(initials).toBeDefined();
+      })}' view="twoLines"></mgt-person>`);
+    await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('H');
   });
   it('should render with last initial when only surname is populated and given name is an empty string', async () => {
-    Providers.globalProvider = new MockProvider(true);
-    person = await fixture(
-      `<mgt-person person-details='${JSON.stringify({
+    const person = await fixture(html`
+      <mgt-person person-details='${JSON.stringify({
         displayName: 'Frank Herbert',
         mail: 'herbert@dune.net',
         givenName: '',
         surname: 'Herbert',
         personType: {}
-      })}' view="twoLines"></mgt-person>`
-    );
-    expect(person).not.toBeUndefined();
-    const initials = await screen.findByText('H');
-    expect(initials).toBeDefined();
+      })}' view="twoLines"></mgt-person>`);
+    await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('H');
   });
 
   it('should render with one initial when only displayName of one word is supplied', async () => {
-    Providers.globalProvider = new MockProvider(true);
-    person = await fixture(
-      `<mgt-person person-details='${JSON.stringify({
+    const person = await fixture(html`
+      <mgt-person person-details='${JSON.stringify({
         displayName: 'Frank',
         mail: 'herbert@dune.net',
         givenName: null,
         surname: null,
         personType: {}
-      })}' view="twoLines"></mgt-person>`
-    );
-    expect(person).not.toBeUndefined();
-    const initials = await screen.findByText('F');
-    expect(initials).toBeDefined();
+      })}' view="twoLines"></mgt-person>`);
+    await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('F');
   });
 
   it('should render with two initial when only displayName of more than two words is supplied', async () => {
-    Providers.globalProvider = new MockProvider(true);
-    person = await fixture(
-      `<mgt-person person-details='${JSON.stringify({
+    const person = await fixture(html`
+      <mgt-person person-details='${JSON.stringify({
         displayName: 'Frank van Herbert',
         mail: 'herbert@dune.net',
         givenName: null,
         surname: null,
         personType: {}
-      })}' view="twoLines"></mgt-person>`
-    );
-    expect(person).not.toBeUndefined();
-    const initials = await screen.findByText('FV');
-    expect(initials).toBeDefined();
+      })}' view="twoLines"></mgt-person>`);
+    await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('FV');
   });
 });

@@ -8,17 +8,17 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { Providers, ProviderState, MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
 import { getEventsPageIterator, getEventsQueryPageIterator } from './mgt-agenda.graph';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
-import { MgtPeople } from '../mgt-people/mgt-people';
+import { MgtPeople, registerMgtPeopleComponent } from '../mgt-people/mgt-people';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentCard } from '@fluentui/web-components';
 import { classMap } from 'lit/directives/class-map.js';
-registerFluentComponents(fluentCard);
+import { registerComponent } from '@microsoft/mgt-element';
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -45,7 +45,15 @@ registerFluentComponents(fluentCard);
  * @cssprop --event-location-color - {Color} Event location color
  * @cssprop --event-attendees-color - {Color} Event attendees color
  */
-@customElement('agenda')
+
+export const registerMgtAgendaComponent = () => {
+  registerFluentComponents(fluentCard);
+  // register dependent components
+  registerMgtPeopleComponent();
+  // register self
+  registerComponent('agenda', MgtAgenda);
+};
+
 export class MgtAgenda extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

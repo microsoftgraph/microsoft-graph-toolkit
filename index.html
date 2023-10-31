@@ -39,12 +39,18 @@
   </head>
 
   <body>
-    <mgt-msal2-provider
+    <!-- <mgt-msal2-provider
       client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
       redirect-uri="http://localhost:3000"
-    ></mgt-msal2-provider>
+      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all,files.read,files.read.all,files.readwrite,files.readwrite.all"
+    ></mgt-msal2-provider> -->
 
-    <!-- <mgt-mock-provider></mgt-mock-provider> -->
+    <!-- <mgt-msal2-provider
+      client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
+      redirect-uri="http://localhost:3000"
+    ></mgt-msal2-provider> -->
+
+    <mgt-mock-provider></mgt-mock-provider>
     <header>
       <mgt-theme-toggle></mgt-theme-toggle>
     </header>
