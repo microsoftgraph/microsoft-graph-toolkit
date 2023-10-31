@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph, prepScopes, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
+import { IGraph, prepScopes, CacheItem, CacheService, CacheStore, Providers } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Person, ProfilePhoto } from '@microsoft/microsoft-graph-types';
@@ -40,6 +40,16 @@ export const getPhotoInvalidationTime = () =>
  * Whether photo store is enabled
  */
 export const getIsPhotosCacheEnabled = () => CacheService.config.photos.isEnabled && CacheService.config.isEnabled;
+
+/**
+ * Ordered list of scopes able to load user photos for any user, least privilege comes first
+ */
+export const anyUserValidPhotoScopes = ['User.ReadBasic.All', 'User.Read.All', 'User.ReadWrite.All'];
+
+/**
+ * Ordered list of scopes able to load user photo for the current user, least privilege comes first
+ */
+export const currentUserValidPhotoScopes = ['User.Read', 'User.ReadWrite', ...anyUserValidPhotoScopes];
 
 /**
  * retrieves a photo for the specified resource.
@@ -90,8 +100,13 @@ export const getContactPhoto = async (graph: IGraph, contactId: string): Promise
       return photoDetails.photo;
     }
   }
+  const validContactPhotoScopes = ['Contacts.Read', 'Contacts.ReadWrite'];
 
-  photoDetails = await getPhotoForResource(graph, `me/contacts/${contactId}`, ['contacts.read']);
+  photoDetails = await getPhotoForResource(
+    graph,
+    `me/contacts/${contactId}`,
+    Providers.globalProvider.needsAdditionalScopes(validContactPhotoScopes)
+  );
   if (getIsPhotosCacheEnabled() && photoDetails) {
     await cache.putValue(contactId, photoDetails);
   }
@@ -115,7 +130,8 @@ export const getUserPhoto = async (graph: IGraph, userId: string): Promise<strin
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
     } else if (photoDetails) {
-      // there is a photo in the cache, but it's staleS
+      // there is a photo in the cache, but it's stale. implicit assumption that the app has permissions
+      // necessary to fetch photo metadata otherwise there couldn't be data in the cache
       try {
         const response = (await graph.api(`users/${userId}/photo`).get()) as ProfilePhoto;
         if (
@@ -131,9 +147,9 @@ export const getUserPhoto = async (graph: IGraph, userId: string): Promise<strin
       }
     }
   }
-
+  const requiredScopes = Providers.globalProvider.needsAdditionalScopes(anyUserValidPhotoScopes);
   // if there is a photo in the cache, we got here because it was stale
-  photoDetails = photoDetails || (await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']));
+  photoDetails = photoDetails || (await getPhotoForResource(graph, `users/${userId}`, requiredScopes));
   if (getIsPhotosCacheEnabled() && photoDetails) {
     await cache.putValue(userId, photoDetails);
   }
@@ -169,8 +185,8 @@ export const myPhoto = async (graph: IGraph): Promise<string> => {
   } catch {
     return null;
   }
-
-  photoDetails = photoDetails || (await getPhotoForResource(graph, 'me', ['user.read']));
+  const requiredScopes = Providers.globalProvider.needsAdditionalScopes(currentUserValidPhotoScopes);
+  photoDetails = photoDetails || (await getPhotoForResource(graph, 'me', requiredScopes));
   if (getIsPhotosCacheEnabled()) {
     await cache.putValue('me', photoDetails || {});
   }

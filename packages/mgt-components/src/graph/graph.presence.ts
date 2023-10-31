@@ -5,7 +5,15 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph, prepScopes, CacheItem, CacheService, CacheStore, CollectionResponse } from '@microsoft/mgt-element';
+import {
+  IGraph,
+  prepScopes,
+  CacheItem,
+  CacheService,
+  CacheStore,
+  CollectionResponse,
+  Providers
+} from '@microsoft/mgt-element';
 import { Person, Presence } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
 import { IDynamicPerson } from './types';
@@ -51,12 +59,13 @@ export const getUserPresence = async (graph: IGraph, userId?: string): Promise<P
     }
   }
 
-  const scopes = userId ? ['presence.read.all'] : ['presence.read'];
+  const validScopes = ['presence.read', 'presence.read.all'];
   const resource = userId ? `/users/${userId}/presence` : '/me/presence';
+  const additionalRequiredScopes = Providers.globalProvider.needsAdditionalScopes(validScopes);
 
   const result = (await graph
     .api(resource)
-    .middlewareOptions(prepScopes(...scopes))
+    .middlewareOptions(prepScopes(...additionalRequiredScopes))
     .get()) as Presence;
   if (getIsPresenceCacheEnabled()) {
     await cache.putValue(userId || 'me', { presence: JSON.stringify(result) });
@@ -78,7 +87,7 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
 
   const peoplePresence: Record<string, Presence> = {};
   const peoplePresenceToQuery: string[] = [];
-  const scopes = ['presence.read.all'];
+  const validScopes = ['presence.read.all'];
   let cache: CacheStore<CachePresence>;
 
   if (getIsPresenceCacheEnabled()) {
@@ -103,9 +112,11 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
 
   try {
     if (peoplePresenceToQuery.length > 0) {
+      const additionalRequiredScopes = Providers.globalProvider.needsAdditionalScopes(validScopes);
+
       const presenceResult = (await graph
         .api('/communications/getPresencesByUserId')
-        .middlewareOptions(prepScopes(...scopes))
+        .middlewareOptions(prepScopes(...additionalRequiredScopes))
         .post({
           ids: peoplePresenceToQuery
         })) as CollectionResponse<Presence>;
