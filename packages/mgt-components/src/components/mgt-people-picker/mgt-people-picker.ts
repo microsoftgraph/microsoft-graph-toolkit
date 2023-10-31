@@ -622,7 +622,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private disableTextInput() {
     const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
     if (inputControl) {
-      inputControl?.setAttribute('disabled', 'true');
+      inputControl.setAttribute('disabled', 'true');
       inputControl.value = '';
     }
   }
@@ -632,8 +632,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private enableTextInput() {
     const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
-    inputControl?.removeAttribute('disabled');
-    inputControl?.focus();
+    if(inputControl){
+      inputControl.removeAttribute('disabled');
+      inputControl.focus();
+    }
   }
 
   /**
