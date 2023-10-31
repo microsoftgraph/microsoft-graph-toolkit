@@ -2804,6 +2804,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui-contrib/react-chat@npm:^0.1.7":
+  version: 0.1.7
+  resolution: "@fluentui-contrib/react-chat@npm:0.1.7"
+  dependencies:
+    "@swc/helpers": ~0.5.1
+  peerDependencies:
+    "@fluentui/react-components": ">=9.25.1 <10.0.0"
+    "@fluentui/react-icons": ">=2.0.204 <3.0.0"
+    "@types/react": ">=16.8.0 <19.0.0"
+    "@types/react-dom": ">=16.8.0 <19.0.0"
+    react: ">=16.8.0 <19.0.0"
+    react-dom: ">=16.8.0 <19.0.0"
+  checksum: 41b1a4be48409d1bfe15f881cf5b6c104b4f445c94e3f5a1d0fb08fa15c8e0f0bc405782c66ac8cf79b27776b2420d800fac866e564befbe4cb093816482a0e9
+  languageName: node
+  linkType: hard
+
 "@fluentui/accessibility@npm:^0.66.5":
   version: 0.66.5
   resolution: "@fluentui/accessibility@npm:0.66.5"
@@ -9631,7 +9647,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/helpers@npm:^0.5.1":
+"@swc/helpers@npm:^0.5.1, @swc/helpers@npm:~0.5.1":
   version: 0.5.3
   resolution: "@swc/helpers@npm:0.5.3"
   dependencies:
@@ -34073,6 +34089,7 @@ __metadata:
     "@babel/preset-react": ^7.12.7
     "@babel/preset-typescript": ^7.23.0
     "@custom-elements-manifest/analyzer": ^0.8.3
+    "@fluentui-contrib/react-chat": ^0.1.7
     "@microsoft/eslint-config-msgraph": ^2.0.0
     "@octokit/rest": ^18.5.3
     "@open-wc/testing-helpers": ^2.3.0

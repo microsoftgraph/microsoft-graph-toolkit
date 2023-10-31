@@ -69,6 +69,7 @@
     "@babel/preset-react": "^7.12.7",
     "@babel/preset-typescript": "^7.23.0",
     "@custom-elements-manifest/analyzer": "^0.8.3",
+    "@fluentui-contrib/react-chat": "^0.1.7",
     "@microsoft/eslint-config-msgraph": "^2.0.0",
     "@octokit/rest": "^18.5.3",
     "@open-wc/testing-helpers": "^2.3.0",
