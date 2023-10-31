@@ -632,7 +632,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private enableTextInput() {
     const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
-    if(inputControl){
+    if (inputControl) {
       inputControl.removeAttribute('disabled');
       inputControl.focus();
     }
