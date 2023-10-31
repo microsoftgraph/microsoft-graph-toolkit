@@ -114,4 +114,3 @@ const cjsBundle = {
   ]
 };
 export default [es6Bundle, es5Bundle, cjsBundle];
-// export default [es6Bundle, es6PreviewBundle, es5Bundle, cjsBundle];

@@ -1,4 +1,11 @@
 /**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+/**
  * A function to calculate minimal permissions to request for a given set of operations.
  * In some circumstances this may result in requesting more scopes that are necessary
  * but should not create requests for higher permissions than the true "minimum" set.
