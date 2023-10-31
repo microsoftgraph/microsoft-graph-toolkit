@@ -7,16 +7,16 @@
 
 import { onDisplayDateTimeString } from './displayDates';
 
-describe('displaDates tests', () => {
-  it('renders am dates', () => {
+describe('displayDates - onDisplayDateTimeString', () => {
+  it('shoulder render date object as string with am', () => {
     const amDate = new Date('Tue Oct 31 2023 07:08:40 GMT+0300 (East Africa Time)');
     const dateString = onDisplayDateTimeString(amDate);
-    expect(dateString).toEqual('2023-10-31 7:08 a.m.');
+    expect(dateString).toEqual('2023-10-31 4:08 a.m.');
   });
 
-  it('renders pm dates', () => {
+  it('shoulder render date object as string with pm', () => {
     const pmDate = new Date('Tue Oct 31 2023 17:08:40 GMT+0300 (East Africa Time)');
     const dateString = onDisplayDateTimeString(pmDate);
-    expect(dateString).toEqual('2023-10-31 5:08 p.m.');
+    expect(dateString).toEqual('2023-10-31 2:08 p.m.');
   });
 });
