@@ -365,6 +365,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!value) value = [];
     if (!arraysAreEqual(this._selectedPeople, value)) {
       this._selectedPeople = value;
+      this.fireCustomEvent('selectionChanged', this._selectedPeople);
       this.requestUpdate();
     }
   }
@@ -618,7 +619,39 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.addEventListener('copy', this.handleCopy);
     this.addEventListener('cut', this.handleCut);
     this.addEventListener('paste', this.handlePaste);
+    this.addEventListener('selectionChanged', this.handleSelectionChanged);
   }
+
+  /**
+   * Disable the inner input of the fluent-text-field.
+   */
+  private disableTextInput() {
+    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+    if (inputControl) {
+      inputControl.setAttribute('disabled', 'true');
+      inputControl.value = '';
+    }
+  }
+
+  /**
+   * Enable the inner input of the fluent-text-field.
+   */
+  private enableTextInput() {
+    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
+    if (inputControl) {
+      inputControl.removeAttribute('disabled');
+      inputControl.focus();
+    }
+  }
+
+  /**
+   * Clears the disabled property on the people picker when used in single mode.
+   */
+  private readonly handleSelectionChanged = () => {
+    if (this.selectedPeople.length === 0 && !this.disabled) {
+      this.enableTextInput();
+    }
+  };
 
   private get hasMaxSelections(): boolean {
     return this.selectionMode === 'single' && this.selectedPeople.length >= 1;
@@ -1131,7 +1164,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
         this.selectedPeople = [...this.defaultSelectedUsers, ...this.defaultSelectedGroups];
         this.requestUpdate();
-        this.fireCustomEvent('selectionChanged', this.selectedPeople);
       }
 
       if (input) {
@@ -1305,14 +1337,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       return p.id !== person.id;
     });
-    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
-    if (this.hasMaxSelections && inputControl) {
-      inputControl.removeAttribute('disabled');
+    if (this.hasMaxSelections) {
+      this.enableTextInput();
     }
     this.selectedPeople = filteredPersonArr;
     void this.loadState();
-    this.fireCustomEvent('selectionChanged', this.selectedPeople);
-    inputControl?.focus();
   }
 
   /**
@@ -1347,7 +1376,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       if (duplicatePeople.length === 0) {
         this.selectedPeople = [...this.selectedPeople, person];
-        this.fireCustomEvent('selectionChanged', this.selectedPeople);
         void this.loadState();
         this._foundPeople = [];
         this._arrowSelectionCount = -1;
@@ -1435,8 +1463,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
       void this.loadState();
       this.hideFlyout();
-      // fire selected people changed event
-      this.fireCustomEvent('selectionChanged', this.selectedPeople);
       return;
     }
 
@@ -1486,10 +1512,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // handle suggestion list item click
   private handleSuggestionClick(person: IDynamicPerson): void {
     this.addPerson(person);
-    const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
-    if (this.hasMaxSelections && inputControl) {
-      inputControl.setAttribute('disabled', 'true');
-      this.input.value = inputControl.value = '';
+    if (this.hasMaxSelections) {
+      this.disableTextInput();
+      this.input.value = '';
     }
     this.hideFlyout();
   }
@@ -1577,9 +1602,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this.addPerson(foundPerson);
           this.hideFlyout();
           this.input.value = '';
-          const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
-          if (this.hasMaxSelections && inputControl) {
-            inputControl.setAttribute('disabled', 'true');
+          if (this.hasMaxSelections) {
+            this.disableTextInput();
           }
         }
       } else if (this.allowAnyEmail) {
@@ -1706,7 +1730,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this._currentHighlightedUserPos = 0;
     void this.loadState();
     this.hideFlyout();
-    this.fireCustomEvent('selectionChanged', this.selectedPeople);
   }
   /**
    * Changes the color class to show which people are selected for copy/cut-paste

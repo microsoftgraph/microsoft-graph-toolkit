@@ -24,6 +24,41 @@ export const groupId = () => html`
 
 export const singleSelectMode = () => html`
 <mgt-people-picker selection-mode="single"></mgt-people-picker>
+
+<h2>Render in a modal and clear on opening the modal</h2>
+<button aria-label="open modal" id="modal">Open modal</button>
+
+<div id="modal-content">
+    <mgt-people-picker id="modal-picker" selection-mode="single"></mgt-people-picker>
+    <button aria-label="close modal" id="close-modal">X</button>
+</div>
+
+<style>
+#modal-content {
+  height: 200px;
+  width: 100%;
+  background-color: beige;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+</style>
+
+<script>
+const modal = document.getElementById("modal")
+const closeModal = document.getElementById("close-modal")
+const modalContent = document.getElementById("modal-content")
+const modalPicker = document.getElementById("modal-picker")
+modal.addEventListener('click', () => {
+    modalContent.style.display = "flex"
+    modalPicker.selectedPeople = []
+})
+
+closeModal.addEventListener('click', () => {
+    modalContent.style.display = "none"
+})
+</script>
 `;
 
 export const dynamicGroupId = () => html`
