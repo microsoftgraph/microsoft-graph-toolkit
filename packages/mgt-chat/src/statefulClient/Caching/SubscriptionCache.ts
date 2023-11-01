@@ -12,27 +12,34 @@ import { cacheEntryIsValid } from './cacheEntryIsValid';
 
 type CachedSubscriptionData = CacheItem & {
   chatId: string;
+  sessionId: string;
   subscriptions: Subscription[];
+  lastAccessDateTime: string;
 };
 
-const subscriptionCacheKey = 'graph-current-subscriptions';
+const buildCacheKey = (chatId: string, sessionId: string): string => `${chatId}:${sessionId}`;
 
 export class SubscriptionsCache {
   private get cache(): CacheStore<CachedSubscriptionData> {
     const conversation: CacheSchema = schemas.conversation;
-    return CacheService.getCache<CachedSubscriptionData>(conversation, conversation.stores.chats);
+    return CacheService.getCache<CachedSubscriptionData>(conversation, conversation.stores.subscriptions);
   }
 
-  public async loadSubscriptions(): Promise<CachedSubscriptionData | undefined> {
+  public async loadSubscriptions(chatId: string, sessionId: string): Promise<CachedSubscriptionData | undefined> {
     if (isConversationCacheEnabled()) {
-      const data = await this.cache.getValue(subscriptionCacheKey);
-      if (cacheEntryIsValid(data)) return data ?? undefined;
+      const cacheKey = buildCacheKey(chatId, sessionId);
+      const data = await this.cache.getValue(cacheKey);
+      if (data && cacheEntryIsValid(data)) {
+        data.lastAccessDateTime = new Date().toISOString();
+        await this.cache.putValue(cacheKey, data);
+        return data;
+      }
     }
     return undefined;
   }
 
-  public async cacheSubscription(chatId: string, subscriptionRecord: Subscription): Promise<void> {
-    let cacheEntry = await this.loadSubscriptions();
+  public async cacheSubscription(chatId: string, sessionId: string, subscriptionRecord: Subscription): Promise<void> {
+    let cacheEntry = await this.loadSubscriptions(chatId, sessionId);
     if (cacheEntry && cacheEntry.chatId === chatId) {
       const subIndex = cacheEntry.subscriptions.findIndex(s => s.resource === subscriptionRecord.resource);
       if (subIndex !== -1) {
@@ -43,14 +50,23 @@ export class SubscriptionsCache {
     } else {
       cacheEntry = {
         chatId,
-        subscriptions: [subscriptionRecord]
+        sessionId,
+        subscriptions: [subscriptionRecord],
+        // we're cheating a bit here to ensure that we have a defined lastAccessDateTime
+        // but we're updating the value for all cases before storing it.
+        lastAccessDateTime: ''
       };
     }
+    cacheEntry.lastAccessDateTime = new Date().toISOString();
 
-    await this.cache.putValue(subscriptionCacheKey, cacheEntry);
+    await this.cache.putValue(buildCacheKey(chatId, sessionId), cacheEntry);
   }
 
-  public async clearCachedSubscriptions(): Promise<void> {
-    await this.cache.delete(subscriptionCacheKey);
+  public deleteCachedSubscriptions(chatId: string, sessionId: string): Promise<void> {
+    return this.cache.delete(buildCacheKey(chatId, sessionId));
+  }
+
+  public loadInactiveSubscriptions(inactivityThreshold: string): Promise<CachedSubscriptionData[]> {
+    return this.cache.queryDb('lastAccessDateTime', IDBKeyRange.upperBound(inactivityThreshold));
   }
 }

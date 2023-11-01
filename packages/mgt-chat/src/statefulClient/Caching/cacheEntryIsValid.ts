@@ -17,5 +17,5 @@ const getConversationCacheInvalidationTime = (): number => {
   return conversation.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
 };
 
-export const cacheEntryIsValid = (cacheEntry: CacheItem | null) =>
-  cacheEntry?.timeCached && getConversationCacheInvalidationTime() > Date.now() - cacheEntry.timeCached;
+export const cacheEntryIsValid = (cacheEntry: CacheItem) =>
+  cacheEntry.timeCached && getConversationCacheInvalidationTime() > Date.now() - cacheEntry.timeCached;
