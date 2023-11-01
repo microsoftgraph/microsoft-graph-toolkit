@@ -66,9 +66,10 @@ const MgtAdaptiveCard = (msg: MgtAdaptiveCardProps) => {
   const Container = messageContainer(msg.messageProps.message);
   const author = isChatMessage(msg.messageProps.message) ? msg.messageProps.message?.senderDisplayName : '';
   const timestamp = onDisplayDateTimeString(msg.messageProps.message.createdOn);
+  const details = isChatMessage(msg.messageProps.message) ? msg.messageProps.message?.status : '';
 
   return adaptiveCardAttachments.length ? (
-    <Container author={author} timestamp={timestamp}>
+    <Container author={author} timestamp={timestamp} details={details}>
       <div ref={cardRef}></div>
     </Container>
   ) : (
