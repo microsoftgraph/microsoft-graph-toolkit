@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { GraphPageIterator, IGraph, Providers, prepScopes } from '@microsoft/mgt-element';
+import { GraphPageIterator, IGraph, needsAdditionalScopes, prepScopes } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 /**
@@ -55,7 +55,7 @@ export const getEventsPageIterator = async (
   const allValidScopes = groupId
     ? ['Group.Read.All', 'Group.ReadWrite.All']
     : ['Calendars.ReadBasic', 'Calendars.Read', 'Calendars.ReadWrite'];
-  const additionalScopes = Providers.globalProvider.needsAdditionalScopes(allValidScopes);
+  const additionalScopes = needsAdditionalScopes(allValidScopes);
 
   return getEventsQueryPageIterator(graph, uri, additionalScopes);
 };

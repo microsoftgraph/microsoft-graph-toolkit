@@ -12,7 +12,7 @@ import {
   CacheService,
   CacheStore,
   CollectionResponse,
-  Providers
+  needsAdditionalScopes
 } from '@microsoft/mgt-element';
 import { Person, Presence } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
@@ -61,7 +61,7 @@ export const getUserPresence = async (graph: IGraph, userId?: string): Promise<P
 
   const validScopes = ['presence.read', 'presence.read.all'];
   const resource = userId ? `/users/${userId}/presence` : '/me/presence';
-  const additionalRequiredScopes = Providers.globalProvider.needsAdditionalScopes(validScopes);
+  const additionalRequiredScopes = needsAdditionalScopes(validScopes);
 
   const result = (await graph
     .api(resource)
@@ -112,7 +112,7 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
 
   try {
     if (peoplePresenceToQuery.length > 0) {
-      const additionalRequiredScopes = Providers.globalProvider.needsAdditionalScopes(validScopes);
+      const additionalRequiredScopes = needsAdditionalScopes(validScopes);
 
       const presenceResult = (await graph
         .api('/communications/getPresencesByUserId')

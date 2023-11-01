@@ -5,15 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  IGraph,
-  prepScopes,
-  CacheItem,
-  CacheService,
-  CacheStore,
-  Providers,
-  needsAdditionalScopes
-} from '@microsoft/mgt-element';
+import { IGraph, prepScopes, CacheItem, CacheService, CacheStore, needsAdditionalScopes } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Person, ProfilePhoto } from '@microsoft/microsoft-graph-types';
@@ -113,7 +105,7 @@ export const getContactPhoto = async (graph: IGraph, contactId: string): Promise
   photoDetails = await getPhotoForResource(
     graph,
     `me/contacts/${contactId}`,
-    Providers.globalProvider.needsAdditionalScopes(validContactPhotoScopes)
+    needsAdditionalScopes(validContactPhotoScopes)
   );
   if (getIsPhotosCacheEnabled() && photoDetails) {
     await cache.putValue(contactId, photoDetails);
@@ -155,7 +147,7 @@ export const getUserPhoto = async (graph: IGraph, userId: string): Promise<strin
       }
     }
   }
-  const requiredScopes = Providers.globalProvider.needsAdditionalScopes(anyUserValidPhotoScopes);
+  const requiredScopes = needsAdditionalScopes(anyUserValidPhotoScopes);
   // if there is a photo in the cache, we got here because it was stale
   photoDetails = photoDetails || (await getPhotoForResource(graph, `users/${userId}`, requiredScopes));
   if (getIsPhotosCacheEnabled() && photoDetails) {
@@ -193,7 +185,7 @@ export const myPhoto = async (graph: IGraph): Promise<string> => {
   } catch {
     return null;
   }
-  const requiredScopes = Providers.globalProvider.needsAdditionalScopes(currentUserValidPhotoScopes);
+  const requiredScopes = needsAdditionalScopes(currentUserValidPhotoScopes);
   photoDetails = photoDetails || (await getPhotoForResource(graph, 'me', requiredScopes));
   if (getIsPhotosCacheEnabled()) {
     await cache.putValue('me', photoDetails || {});

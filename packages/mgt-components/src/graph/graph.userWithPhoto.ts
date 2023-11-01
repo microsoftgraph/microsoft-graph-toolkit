@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { CacheService, IGraph, Providers, prepScopes } from '@microsoft/mgt-element';
+import { CacheService, IGraph, needsAdditionalScopes, prepScopes } from '@microsoft/mgt-element';
 
 import {
   CachePhoto,
@@ -46,11 +46,11 @@ export const getUserWithPhoto = async (
   const currentUserValidScopes = ['User.Read', 'User.ReadWrite', ...anyUserValidScopes];
 
   const requiredUserScopes = userId
-    ? Providers.globalProvider.needsAdditionalScopes(anyUserValidScopes)
-    : Providers.globalProvider.needsAdditionalScopes(currentUserValidScopes);
+    ? needsAdditionalScopes(anyUserValidScopes)
+    : needsAdditionalScopes(currentUserValidScopes);
   const requiredPhotoScopes = userId
-    ? Providers.globalProvider.needsAdditionalScopes(anyUserValidPhotoScopes)
-    : Providers.globalProvider.needsAdditionalScopes(currentUserValidPhotoScopes);
+    ? needsAdditionalScopes(anyUserValidPhotoScopes)
+    : needsAdditionalScopes(currentUserValidPhotoScopes);
 
   let photo: string;
   let user: IDynamicPerson = null;

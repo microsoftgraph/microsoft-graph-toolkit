@@ -11,8 +11,8 @@ import {
   CacheStore,
   CollectionResponse,
   IGraph,
-  prepScopes,
-  Providers
+  needsAdditionalScopes,
+  prepScopes
 } from '@microsoft/mgt-element';
 import { User } from '@microsoft/microsoft-graph-types';
 
@@ -84,7 +84,7 @@ export const getUsers = async (graph: IGraph, userFilters = '', top = 10): Promi
   }
 
   try {
-    const additionalScopes = Providers.globalProvider.needsAdditionalScopes(allValidScopes);
+    const additionalScopes = needsAdditionalScopes(allValidScopes);
     const response = (await graphClient
       .middlewareOptions(prepScopes(...additionalScopes))
       .get()) as CollectionResponse<User>;
@@ -129,7 +129,7 @@ export const getMe = async (graph: IGraph, requestedProps?: string[]): Promise<U
   if (requestedProps) {
     apiString = apiString + '?$select=' + requestedProps.toString();
   }
-  const additionalScopes = Providers.globalProvider.needsAdditionalScopes(allValidMeScopes);
+  const additionalScopes = needsAdditionalScopes(allValidMeScopes);
   const response = (await graph
     .api(apiString)
     .middlewareOptions(prepScopes(...additionalScopes))
@@ -183,7 +183,7 @@ export const getUser = async (graph: IGraph, userPrincipleName: string, requeste
   // else we must grab it
   let response: User;
   try {
-    const additionalScopes = Providers.globalProvider.needsAdditionalScopes(allValidUserByScopes);
+    const additionalScopes = needsAdditionalScopes(allValidUserByScopes);
     response = (await graph
       .api(apiString)
       .middlewareOptions(prepScopes(...additionalScopes))
@@ -226,7 +226,7 @@ export const getUsersForUserIds = async (
     cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
   }
 
-  const additionalUserByIdScopes = Providers.globalProvider.needsAdditionalScopes(allValidUserByScopes);
+  const additionalUserByIdScopes = needsAdditionalScopes(allValidUserByScopes);
 
   for (const id of userIds) {
     peopleDict[id] = null;
@@ -363,7 +363,7 @@ export const getUsersForPeopleQueries = async (
       const person = JSON.parse(cacheRes.results[0]) as User;
       people.push(person);
     } else {
-      const additionalScopes = Providers.globalProvider.needsAdditionalScopes(allValidPeopleScopes);
+      const additionalScopes = needsAdditionalScopes(allValidPeopleScopes);
       batch.get(personQuery, `/me/people?$search="${personQuery}"`, additionalScopes, {
         'X-PeopleQuery-QuerySources': 'Mailbox,Directory'
       });
@@ -449,7 +449,7 @@ export const findUsers = async (graph: IGraph, query: string, top = 10, userFilt
     graphBuilder.filter(userFilters);
   }
   try {
-    const additionalScopes = Providers.globalProvider.needsAdditionalScopes(scopes);
+    const additionalScopes = needsAdditionalScopes(scopes);
     graphResult = (await graphBuilder
       .top(top)
       .middlewareOptions(prepScopes(...additionalScopes))
@@ -527,7 +527,7 @@ export const findGroupMembers = async (
   if (peopleFilters) {
     filter += query ? ` and ${peopleFilters}` : peopleFilters;
   }
-  const additionalRequiredScopes = Providers.globalProvider.needsAdditionalScopes(allValidScopes);
+  const additionalRequiredScopes = needsAdditionalScopes(allValidScopes);
   const graphResult = (await graph
     .api(apiUrl)
     .count(true)
