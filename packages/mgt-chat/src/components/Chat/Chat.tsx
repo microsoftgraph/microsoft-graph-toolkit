@@ -73,6 +73,23 @@ const messageThreadStyles: MessageThreadStyles = {
       fontWeight: 'var(--fontWeightRegular)',
       color: 'var(--colorNeutralForeground3)',
       ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
+    },
+    '& .fui-ChatMyMessage': {
+      gridTemplateColumns: 'auto auto',
+      columnGap: 'unset'
+    },
+    '& .fui-ChatMyMessage__body': {
+      background: '#c7e0f4' // No token found for this color, yet.
+    },
+    '& .fui-ChatMyMessage__author': {
+      fontWeight: 'var(--fontWeightSemibold)',
+      color: 'var(--colorNeutralForeground1)',
+      ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
+    },
+    '& span.fui-ChatMyMessage__timestamp': {
+      fontWeight: 'var(--fontWeightRegular)',
+      color: 'var(--colorNeutralForeground3)',
+      ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
     }
   },
   chatMessageContainer: {
