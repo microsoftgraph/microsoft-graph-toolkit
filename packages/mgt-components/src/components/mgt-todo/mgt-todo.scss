@@ -99,13 +99,6 @@
           margin-top: 5px;
         }
       }
-
-      .task-options {
-        .options {
-          height: 10px;
-          width: 20px;
-        }
-      }
     }
   }
 
@@ -185,6 +178,24 @@
           }
         }
       }
+    }
+
+    &.date {
+      color: $task-detail-color;
+    }
+
+    &::after {
+      border-bottom: none;
+    }
+
+    &.dark {
+      &::part(control) {
+        color-scheme: dark;
+      }
+    }
+
+    &.hide-date {
+      display: none;
     }
   }
 

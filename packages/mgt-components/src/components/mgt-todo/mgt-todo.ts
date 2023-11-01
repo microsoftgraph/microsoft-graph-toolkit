@@ -15,7 +15,6 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import '../mgt-person/mgt-person';
 import { MgtTasksBase } from '../mgt-tasks-base/mgt-tasks-base';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
-import '../sub-components/mgt-dot-options/mgt-dot-options';
 import {
   createTodoTask,
   deleteTodoTask,
@@ -107,6 +106,7 @@ export class MgtTodo extends MgtTasksBase {
   private _newTaskDueDate: Date;
   @state() private _newTaskName: string;
   @state() private _changedTaskName: string;
+  private _updatingTask: boolean;
   private _isNewTaskBeingAdded: boolean;
   private _graph: IGraph;
   @state() private currentList: TodoTaskList;
@@ -118,6 +118,7 @@ export class MgtTodo extends MgtTasksBase {
     this._newTaskDueDate = null;
     this._tasks = [];
     this._loadingTasks = [];
+    this._updatingTask = false;
     this._isLoadingTasks = false;
     this.addEventListener('selectionChanged', this.handleSelectionChanged);
   }
@@ -355,17 +356,6 @@ export class MgtTodo extends MgtTasksBase {
 
     let taskDetailsTemplate = null;
 
-    const taskOptions = this.readOnly
-      ? nothing
-      : mgtHtml`
-          <mgt-dot-options
-            class="dot-options"
-            .options="${{
-              [this.strings.editTaskOption]: () => this.inputGainedFocus(task),
-              [this.strings.deleteTaskOption]: () => this.removeTask(task.id)
-            }}"
-          ></mgt-dot-options>`;
-
     const taskDeleteTemplate = html`
       <fluent-button class="task-delete"
         @click="${() => this.removeTask(task.id)}"
@@ -376,7 +366,9 @@ export class MgtTodo extends MgtTasksBase {
     if (this.hasTemplate('task-details')) {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
     } else {
-      const dateClass = { dark: this._isDarkMode, date: true };
+      const hideDate = task.dueDateTime || this._updatingTask ? false : true;
+
+      const dateClass = { dark: this._isDarkMode, date: true, 'hide-date': hideDate };
       const calendarTemplate = html`
         <fluent-text-field
           autocomplete="off"
@@ -406,15 +398,10 @@ export class MgtTodo extends MgtTasksBase {
           @blur="${(e: Event) => this.handleBlur(e, task)}"
         >
           <div slot="end" class="end">
-            ${
-              task.dueDateTime
-                ? html`
-                  <span class="task-due">${calendarTemplate}</span>`
-                : nothing
-            }
-            ${task.status === 'completed' ? taskDeleteTemplate : taskOptions}
+            ${html`<span class="task-due">${calendarTemplate}</span>`}
           </div> 
         </fluent-text-field>
+        ${taskDeleteTemplate}
       `;
 
       taskDetailsTemplate = html`
@@ -576,6 +563,7 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
+    this._updatingTask = false;
   };
 
   private readonly loadTasks = async (list: TodoTaskList): Promise<void> => {
@@ -636,6 +624,7 @@ export class MgtTodo extends MgtTasksBase {
 
   private readonly handleChangeInput = (e: KeyboardEvent, task: TodoTask) => {
     if ((e.target as HTMLInputElement).id === task.id) {
+      this._updatingTask = true;
       this._changedTaskName = (e.target as HTMLInputElement).value;
     }
   };
@@ -650,24 +639,14 @@ export class MgtTodo extends MgtTasksBase {
     if (e.key === 'Enter' && (e.target as HTMLInputElement).id === task.id) {
       await this.updateTask(task);
       (e.target as HTMLInputElement)?.blur();
-    }
-  };
-
-  private readonly inputGainedFocus = (task: TodoTask) => {
-    const documents = this.renderRoot.querySelectorAll<HTMLElement>('fluent-text-field');
-    for (const document of documents) {
-      if (document.id === task.id) {
-        const input = document.shadowRoot?.querySelector<HTMLInputElement>('input');
-        if (input) {
-          input.focus();
-        }
-      }
+      this._updatingTask = false;
     }
   };
 
   private readonly handleBlur = async (e: Event, task: TodoTask) => {
     if ((e.target as HTMLInputElement).id === task.id && this._changedTaskName) {
       await this.updateTask(task);
+      this._updatingTask = false;
     }
   };
 
