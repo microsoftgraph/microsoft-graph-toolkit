@@ -40,6 +40,7 @@
   "devDependencies": {
     "@types/markdown-it": "^13.0.2",
     "@types/react": "^17.0.0",
+    "adaptivecards-designer": "^2.4.3",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-scripts": "5.0.1",
