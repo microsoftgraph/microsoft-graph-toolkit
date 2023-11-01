@@ -69,6 +69,12 @@ export abstract class IProvider implements AuthenticationProvider {
     return requiredScopeSet.some(s => !this.approvedScopes.includes(s.toLowerCase()));
   }
 
+  /**
+   * Examines the currently consented scopes for any match in the requiredScopeSet to determine what, if any, scopes need to be consented to
+   *
+   * @param {string[]} requiredScopeSet an array of scopes to be checked
+   * @returns {string[]} if any matches in requiredScopeSet exist then an empty array is returns, otherwise an array containing the first element in the requiredScopeSet is returned
+   */
   public needsAdditionalScopes(requiredScopeSet: string[]): string[] {
     const reqScopes: string[] = [];
     if (requiredScopeSet.length && !this.hasAtLeastOneApprovedScope(requiredScopeSet)) {

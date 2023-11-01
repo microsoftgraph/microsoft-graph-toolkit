@@ -5,7 +5,15 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph, prepScopes, CacheItem, CacheService, CacheStore, Providers } from '@microsoft/mgt-element';
+import {
+  IGraph,
+  prepScopes,
+  CacheItem,
+  CacheService,
+  CacheStore,
+  Providers,
+  needsAdditionalScopes
+} from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Person, ProfilePhoto } from '@microsoft/microsoft-graph-types';
@@ -288,8 +296,10 @@ export const getGroupImage = async (graph: IGraph, group: IDynamicPerson) => {
     }
   }
 
+  const validGroupPhotoScopes = ['Group.Read.All', 'Group.ReadWrite.All'];
+  const requiredScopes = needsAdditionalScopes(validGroupPhotoScopes);
   // if there is a photo in the cache, we got here because it was stale
-  photoDetails = photoDetails || (await getPhotoForResource(graph, `groups/${groupId}`, ['user.readbasic.all']));
+  photoDetails = photoDetails || (await getPhotoForResource(graph, `groups/${groupId}`, requiredScopes));
   if (getIsPhotosCacheEnabled() && photoDetails) {
     await cache.putValue(groupId, photoDetails);
   }
