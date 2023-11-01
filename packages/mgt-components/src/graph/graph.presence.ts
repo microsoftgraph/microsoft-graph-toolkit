@@ -51,7 +51,7 @@ export const getUserPresence = async (graph: IGraph, userId?: string): Promise<P
     }
   }
 
-  const scopes = userId ? ['presence.read.all'] : ['presence.read'];
+  const scopes = ['presence.read'];
   const resource = userId ? `/users/${userId}/presence` : '/me/presence';
 
   const result = (await graph
