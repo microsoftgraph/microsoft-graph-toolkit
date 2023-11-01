@@ -24,6 +24,12 @@ import { ChatMessage, ChatMyMessage } from '@fluentui-contrib/react-chat';
 import { renderToString } from 'react-dom/server';
 import UnsupportedContent from '../components/UnsupportedContent/UnsupportedContent';
 import { onDisplayDateTimeString } from './displayDates';
+/**
+ * This is a _dirty_ hack to bundle the teams light CSS used in adaptive cards
+ * designer.
+ * THOUGHT: import this on demand based on the set theme?
+ */
+import 'adaptivecards-designer/dist/containers/teams-container-light.css';
 
 type IAction = ISubmitAction | IOpenUrlAction | IShowCardAction | IExecuteAction;
 
