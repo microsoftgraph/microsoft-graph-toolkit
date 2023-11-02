@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.js": "./static/js/main.5cf4dd4a.js",
+    "timer-worker.js": "./static/js/timer-worker.6c2a781d.chunk.js",
+    "index.html": "./index.html",
+    "main.5cf4dd4a.js.map": "./static/js/main.5cf4dd4a.js.map",
+    "timer-worker.6c2a781d.chunk.js.map": "./static/js/timer-worker.6c2a781d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.5cf4dd4a.js"
+  ]
+}
