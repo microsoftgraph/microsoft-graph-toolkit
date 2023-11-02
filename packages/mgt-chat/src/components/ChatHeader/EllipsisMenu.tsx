@@ -67,7 +67,7 @@ const TeamsIcon = createSvgIcon({
   displayName: 'TeamsIcon'
 });
 
-const TeamsEllipsisIcon = bundleIcon(MoreHorizontal24Filled, MoreHorizontal24Regular);
+const EllipsisIcon = bundleIcon(MoreHorizontal24Filled, MoreHorizontal24Regular);
 
 const menuProps: Partial<MenuProps> = {
   inline: true,
@@ -98,7 +98,7 @@ const EllipsisMenu = (props: MenuItemsProps) => {
   return (
     <Menu {...menuProps}>
       <MenuTrigger disableButtonEnhancement>
-        <Button appearance="transparent" icon={<TeamsEllipsisIcon />} />
+        <Button appearance="transparent" icon={<EllipsisIcon />} />
       </MenuTrigger>
 
       <MenuPopover className={styles.menuPopover}>
