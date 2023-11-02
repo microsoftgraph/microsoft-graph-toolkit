@@ -30,15 +30,13 @@ interface ChatHeaderProps {
 const ChatHeader = ({ chatState }: ChatHeaderProps) => {
   const styles = useHeaderStyles();
   const commonStyles = useCommonHeaderStyles();
-  const chatWebUrl = chatState?.chat?.webUrl ?? 'https://teams.microsoft.com';
+  const chatWebUrl = chatState?.chat?.webUrl ?? 'https://teams.microsoft.com/v2';
 
   return (
     <div className={styles.chatHeader}>
       <ChatTitle chat={chatState.chat} currentUserId={chatState.userId} onRenameChat={chatState.onRenameChat} />
       <Divider appearance="subtle" />
       <div className={mergeClasses(styles.secondRow, commonStyles.row)}>
-        {/* TODO: Should we show the 'go to teams' ellipsis in one-on-one chats? */}
-        {chatState.chat?.chatType === 'oneOnOne' && <Teams link={chatWebUrl} />}
         {chatState.participants?.length > 0 && chatState.chat?.chatType === 'group' && (
           <>
             <ManageChatMembers
@@ -48,9 +46,9 @@ const ChatHeader = ({ chatState }: ChatHeaderProps) => {
               addChatMembers={chatState.onAddChatMembers}
             />
             <Divider vertical appearance="subtle" inset className={styles.noGrow} />
-            <Teams link={chatWebUrl} appearance="subtle" />
           </>
         )}
+        <Teams link={chatWebUrl} appearance="subtle" />
       </div>
       <Divider appearance="subtle" />
     </div>
