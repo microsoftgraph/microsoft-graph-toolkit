@@ -19,11 +19,8 @@ export * from './providers/IProvider';
 export * from './providers/Providers';
 export * from './providers/SimpleProvider';
 
-export * from './utils/CacheItem';
-export * from './utils/CacheSchema';
 export * from './utils/CacheService';
 export * from './utils/CacheStore';
-export * from './utils/dbListKey';
 export * from './utils/EventDispatcher';
 export * from './utils/equals';
 export * from './utils/chainMiddleware';

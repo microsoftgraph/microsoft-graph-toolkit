@@ -3,6 +3,7 @@ import { App } from './App';
 import { mergeStyles } from '@fluentui/react';
 import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
 import { Providers, LoginType } from '@microsoft/mgt-element';
+import { GraphConfig } from '@microsoft/mgt-chat';
 
 // Inject some global styles
 mergeStyles({
@@ -13,6 +14,10 @@ mergeStyles({
     overflow: 'hidden'
   }
 });
+
+// Currently AGS expects the result sent to acknowledge messages as a stringifyed JSON object
+// remove this when the change to accept objects rolls out
+GraphConfig.ackAsString = true;
 
 Providers.globalProvider = new Msal2Provider({
   clientId: process.env.REACT_APP_CLIENT_ID!,

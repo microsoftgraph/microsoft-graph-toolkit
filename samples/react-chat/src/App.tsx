@@ -37,6 +37,8 @@ function App() {
           <ChatList chatSelected={chatSelected} />
           Selected chat: {chatId}
           <br />
+          <button onClick={() => setChatId('')}>Clear selected chat</button>
+          <br />
           <button onClick={() => setShowNewChat(true)}>New Chat</button>
           {showNewChat && (
             <div className="new-chat">

@@ -9,9 +9,15 @@ import { Providers } from '../providers/Providers';
 import { ProviderState } from '../providers/IProvider';
 import { CacheStore } from './CacheStore';
 import { error } from './Logging';
-import { CacheSchema } from './CacheSchema';
-import { CacheItem } from './CacheItem';
-import { dbListKey } from './dbListKey';
+
+/**
+ * Localstorage key for storing names of cache databases
+ *
+ * @type {string}
+ *
+ */
+
+export const dbListKey = 'mgt-db-list';
 
 /**
  * Holds the cache options for cache store
@@ -274,4 +280,61 @@ export class CacheService {
     });
     this.isInitialized = true;
   }
+}
+
+export interface Index {
+  name: string;
+  field: string;
+}
+
+/**
+ * Represents organization for a cache
+ *
+ * @export
+ * @interface CacheSchema
+ */
+export interface CacheSchema {
+  /**
+   * version number of cache, useful for upgrading
+   *
+   * @type {number}
+   * @memberof CacheSchema
+   */
+  version: number;
+  /**
+   * name of the cache
+   *
+   * @type {string}
+   * @memberof CacheSchema
+   */
+  name: string;
+  /**
+   * list of stores in the cache
+   *
+   * @type {{ [name: string]: CacheSchemaStore }}
+   * @memberof CacheSchema
+   */
+  stores: Record<string, string>;
+  /**
+   * Optional field to define indexed fields on a per store basis
+   * K is the name of the store for which the indexes should be applied
+   * T is the names of the fields on the stored data to be indexed
+   */
+  indexes?: Record<string, Index[]>;
+}
+
+/**
+ * item that is stored in cache
+ *
+ * @export
+ * @interface CacheItem
+ */
+export interface CacheItem {
+  /**
+   * date and time that item was retrieved from api/stored in cache
+   *
+   * @type {number}
+   * @memberof CacheItem
+   */
+  timeCached?: number;
 }

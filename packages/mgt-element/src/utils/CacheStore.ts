@@ -7,9 +7,7 @@
 
 import { openDB } from 'idb';
 import { Providers } from '../providers/Providers';
-import { dbListKey } from './dbListKey';
-import { CacheItem } from './CacheItem';
-import { CacheSchema } from './CacheSchema';
+import { CacheItem, CacheSchema, Index, dbListKey } from './CacheService';
 
 /**
  * Represents a store in the cache
@@ -120,22 +118,37 @@ export class CacheStore<T extends CacheItem> {
     if (dbName) {
       return openDB(dbName, this.schema.version, {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        upgrade: (db, _oldVersion, _newVersion, _transaction) => {
+        upgrade: (db, _oldVersion, _newVersion, transaction) => {
           const dbArray: string[] = (JSON.parse(localStorage.getItem(dbListKey)) as string[]) || [];
           if (!dbArray.includes(dbName)) {
             dbArray.push(dbName);
           }
           localStorage.setItem(dbListKey, JSON.stringify(dbArray));
           for (const storeName in this.schema.stores) {
-            if (
-              Object.prototype.hasOwnProperty.call(this.schema.stores, storeName) &&
-              !db.objectStoreNames.contains(storeName)
-            ) {
-              db.createObjectStore(storeName);
+            if (Object.prototype.hasOwnProperty.call(this.schema.stores, storeName)) {
+              const indexes: Index[] = this.schema.indexes?.[storeName] ?? [];
+              if (!db.objectStoreNames.contains(storeName)) {
+                const objectStore = db.createObjectStore(storeName);
+                indexes.forEach(i => {
+                  objectStore.createIndex(i.name, i.field);
+                });
+              } else {
+                const store = transaction.objectStore(storeName);
+                indexes.forEach(i => {
+                  if (store && !store.indexNames.contains(i.name)) {
+                    store.createIndex(i.name, i.field);
+                  }
+                });
+              }
             }
           }
         }
       });
     }
+  }
+
+  public async queryDb(indexName: string, query: IDBKeyRange | IDBValidKey): Promise<T[]> {
+    const db = await this.getDb();
+    return (await db.getAllFromIndex(this.store, indexName, query)) as T[];
   }
 }
