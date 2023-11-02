@@ -227,6 +227,13 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   }
 
   /**
+   * Provides a method to clean up any resources being used internally when a consuming component is being removed from the DOM
+   */
+  public async tearDown() {
+    await this._notificationClient.tearDown();
+  }
+
+  /**
    * Register a callback to receive state updates
    *
    * @param {(state: GraphChatClient) => void} handler
@@ -388,14 +395,23 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   /**
    * Set the current chat ID and tries to get the chat data.
    */
-  public set chatId(value: string) {
+  private set chatId(value: string) {
     // take no action if the chatId is the same
     if (value && this._chatId === value) {
       return;
     }
     this._chatId = value;
-    if (this._chatId) {
+    if (this._chatId && this._sessionId) {
       void this.updateFollowedChat();
+    }
+  }
+
+  private _sessionId: string | undefined;
+
+  public subscribeToChat(chatId: string, sessionId: string) {
+    if (chatId && sessionId) {
+      this._sessionId = sessionId;
+      this.chatId = chatId;
     }
   }
 
@@ -407,7 +423,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
    */
   private async updateFollowedChat() {
     // avoid subscribing to a resource with an empty chatId
-    if (this.chatId) {
+    if (this.chatId && this._sessionId) {
       // reset state to initial
       this.notifyStateChange((draft: GraphChatClient) => {
         draft.status = 'initial';
@@ -427,13 +443,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         const tasks: Promise<unknown>[] = [this.loadChatData()];
         // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
         // this client will then load the chat and messages when that event listener is called
-        tasks.push(
-          this._notificationClient.subscribeToChatNotifications(this._userId, this._chatId, () =>
-            this.notifyStateChange((draft: GraphChatClient) => {
-              draft.status = 'subscribing to notifications';
-            })
-          )
-        );
+        tasks.push(this._notificationClient.subscribeToChatNotifications(this._chatId, this._sessionId));
         await Promise.all(tasks);
       } catch (e) {
         console.error('Failed to load chat data or subscribe to notications: ', e);

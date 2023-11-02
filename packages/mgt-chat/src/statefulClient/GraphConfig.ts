@@ -1,6 +1,15 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { GraphEndpoint } from '@microsoft/mgt-element';
 
 export class GraphConfig {
+  public static ackAsString = false;
+
   public static useCanary = false;
 
   public static version = 'v1.0';
