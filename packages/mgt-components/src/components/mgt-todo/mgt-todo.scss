@@ -64,15 +64,6 @@
         }
       }
 
-      .title {
-        flex-grow: 1;
-        display: inline;
-
-        .end {
-          display: flex;
-        }
-      }
-
       .task-delete {
         display: flex;
       }
@@ -83,21 +74,6 @@
         height: 32px;
         text-decoration: inherit;
         display: flex;
-
-        .task-calendar {
-          display: flex;
-          margin-top: 5px;
-          margin-inline-end: 10px;
-
-          svg {
-            fill: $task-color;
-          }
-        }
-
-        .task-due-date {
-          display: flex;
-          margin-top: 5px;
-        }
       }
     }
   }
@@ -169,14 +145,20 @@
             border-bottom: 1px solid $task-date-input-hover-color;
           }
 
-          input:active {
-            border-bottom: 1px solid $task-date-input-active-color;
-          }
-
+          input:active,
           input:focus {
             border-bottom: 1px solid $task-date-input-active-color;
           }
         }
+      }
+    }
+
+    &.title {
+      flex-grow: 1;
+      display: inline;
+
+      .end {
+        display: flex;
       }
     }
 
