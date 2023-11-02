@@ -343,6 +343,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   })
   public disableImages: boolean;
 
+  @property({
+    attribute: 'show-presence',
+    type: Boolean
+  })
+  public showPresence: boolean;
+
   /**
    * array of user picked people.
    *
@@ -993,7 +999,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       mgtHtml`
          <mgt-person
           class="person"
-          show-presence
+          ?show-presence=${this.showPresence}
           view="twoLines"
           line2-property="jobTitle,mail"
           .personDetails=${person}
