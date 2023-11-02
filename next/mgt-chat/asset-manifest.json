@@ -1,10 +1,12 @@
 {
   "files": {
-    "main.js": "./static/js/main.094100af.js",
+    "main.js": "./static/js/main.b740ffe0.js",
+    "timer-worker.js": "./static/js/timer-worker.6c2a781d.chunk.js",
     "index.html": "./index.html",
-    "main.094100af.js.map": "./static/js/main.094100af.js.map"
+    "main.b740ffe0.js.map": "./static/js/main.b740ffe0.js.map",
+    "timer-worker.6c2a781d.chunk.js.map": "./static/js/timer-worker.6c2a781d.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.094100af.js"
+    "static/js/main.b740ffe0.js"
   ]
 }
