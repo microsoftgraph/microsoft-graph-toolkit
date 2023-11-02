@@ -298,7 +298,11 @@ export const pickerUserFilters = () => html`
 
 export const pickerPeopleFilters = () => html`
   <mgt-people-picker
-      people-filters="jobTitle eq 'Web Marketing Manager'">
+      people-filters="jobTitle eq 'Retail Manager'">
+  </mgt-people-picker>
+
+  <mgt-people-picker
+    people-filters="personType/class eq 'Person' and personType/subclass eq 'OrganizationUser'">
   </mgt-people-picker>
 `;
 
