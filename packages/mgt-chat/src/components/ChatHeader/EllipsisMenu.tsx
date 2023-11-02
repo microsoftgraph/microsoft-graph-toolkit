@@ -84,8 +84,7 @@ const ellipsisMenuStyles = makeStyles({
       fontFamily: 'Segoe UI',
       fontSize: '12px',
       fontStyle: 'normal',
-      fontWeight: '600',
-      lineHeight: '16px'
+      fontWeight: '600'
     }
   }
 });
