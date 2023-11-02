@@ -2,9 +2,9 @@ import { Divider, makeStyles, mergeClasses } from '@fluentui/react-components';
 import React from 'react';
 import { GraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import ChatTitle from './ChatTitle';
-import Teams from './Teams';
 import { ManageChatMembers } from '../ManageChatMembers/ManageChatMembers';
 import { useCommonHeaderStyles } from './useCommonHeaderStyles';
+import { EllipsisMenu } from './EllipsisMenu';
 
 const useHeaderStyles = makeStyles({
   chatHeader: {
@@ -48,7 +48,7 @@ const ChatHeader = ({ chatState }: ChatHeaderProps) => {
             <Divider vertical appearance="subtle" inset className={styles.noGrow} />
           </>
         )}
-        <Teams link={chatWebUrl} appearance="subtle" />
+        <EllipsisMenu chatWebUrl={chatWebUrl} />
       </div>
       <Divider appearance="subtle" />
     </div>
