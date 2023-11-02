@@ -388,10 +388,10 @@ export class MgtTodo extends MgtTasksBase {
           appearance="outline"
           class="title"
           id=${task.id}
-          .value="${task.title}"
+          .value="${task.title || this._changedTaskName}"
           aria-label="${this.strings.editTaskLabel}"
-          @keydown="${(e: KeyboardEvent) => this.handleChangeKeyDown(e, task)}"
-          @input="${(e: KeyboardEvent) => this.handleChangeInput(e, task)}"
+          @keydown="${(e: KeyboardEvent) => this.handleChange(e, task)}"
+          @input="${(e: KeyboardEvent) => this.handleChange(e, task)}"
           @blur="${(e: Event) => this.handleBlur(e, task)}"
           @focus="${(e: KeyboardEvent) => this.updatingTask(e, task)}"
         >
@@ -526,9 +526,17 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected async updateTaskItem(task: TodoTask): Promise<void> {
     const listId = this.currentList.id;
-    const taskData = {
-      title: this._changedTaskName
-    };
+    if (!this._changedTaskName && !this._newTaskDueDate) {
+      return;
+    }
+
+    let taskData = {};
+
+    if (this._changedTaskName) {
+      taskData = {
+        title: this._changedTaskName
+      };
+    }
 
     if (this._newTaskDueDate) {
       // eslint-disable-next-line @typescript-eslint/dot-notation
@@ -624,8 +632,12 @@ export class MgtTodo extends MgtTasksBase {
     }
   };
 
-  private readonly handleChangeInput = (e: KeyboardEvent, task: TodoTask) => {
+  private readonly handleChange = async (e: KeyboardEvent, task: TodoTask) => {
     if ((e.target as HTMLInputElement).id === task.id) {
+      if (e.key === 'Enter') {
+        await this.updateTask(task);
+        (e.target as HTMLInputElement)?.blur();
+      }
       this._changedTaskName = (e.target as HTMLInputElement).value;
     }
   };
@@ -633,13 +645,6 @@ export class MgtTodo extends MgtTasksBase {
   private readonly handleKeyDown = async (e: KeyboardEvent) => {
     if (e.key === 'Enter' && (e.target as HTMLInputElement).id === 'new-task-name-input') {
       await this.addTask();
-    }
-  };
-
-  private readonly handleChangeKeyDown = async (e: KeyboardEvent, task: TodoTask) => {
-    if (e.key === 'Enter' && (e.target as HTMLInputElement).id === task.id) {
-      await this.updateTask(task);
-      (e.target as HTMLInputElement)?.blur();
     }
   };
 
