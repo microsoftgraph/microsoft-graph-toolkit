@@ -13,7 +13,9 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { getRelativeDisplayDate } from '../../utils/Utils';
 import { styles } from './mgt-messages-css';
 import { strings } from './strings';
-import { customElement } from '@microsoft/mgt-element';
+import { registerComponent } from '@microsoft/mgt-element';
+
+export const registerMgtMessagesComponent = () => registerComponent('messages', MgtMessages);
 
 /**
  * The email messages subsection of the person card
@@ -22,7 +24,6 @@ import { customElement } from '@microsoft/mgt-element';
  * @class MgtMessages
  * @extends {MgtTemplatedComponent}
  */
-@customElement('messages')
 export class MgtMessages extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined

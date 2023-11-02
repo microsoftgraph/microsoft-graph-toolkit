@@ -20,12 +20,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install -g lerna
       - name: Install node_modules
         run: yarn
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
       - run: node scripts/setVersion.js --next
       - run: yarn build
       - run: yarn lint

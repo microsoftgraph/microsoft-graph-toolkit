@@ -23,7 +23,9 @@ export * from './utils/CacheService';
 export * from './utils/CacheStore';
 export * from './utils/EventDispatcher';
 export * from './utils/equals';
-export * from './utils/GraphHelpers';
+export * from './utils/chainMiddleware';
+export * from './utils/prepScopes';
+export * from './utils/validateBaseURL';
 export * from './utils/TeamsHelper';
 export * from './utils/TemplateContext';
 export * from './utils/TemplateHelper';
@@ -32,6 +34,8 @@ export * from './utils/LocalizationHelper';
 export * from './utils/mgtHtml';
 export * from './utils/CustomElement';
 export * from './utils/Logging';
+export * from './utils/registerComponent';
+
 export { PACKAGE_VERSION } from './utils/version';
 
 export * from './CollectionResponse';

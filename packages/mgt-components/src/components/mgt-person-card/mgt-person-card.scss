@@ -48,8 +48,7 @@ $person-card-base-icons-left-spacing: var(
 
   .small {
     max-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden auto;
   }
 
   .nav {
@@ -280,8 +279,7 @@ $person-card-base-icons-left-spacing: var(
         fluent-tab-panel {
           max-height: 360px;
           min-height: 360px;
-          overflow-y: auto;
-          overflow-x: hidden;
+          overflow: hidden auto;
           padding: 0;
           scrollbar-width: thin;
 
@@ -361,8 +359,7 @@ $person-card-base-icons-left-spacing: var(
 
     .section-host {
       min-height: 360px;
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden auto;
 
       &::-webkit-scrollbar {
         height: 4em;
