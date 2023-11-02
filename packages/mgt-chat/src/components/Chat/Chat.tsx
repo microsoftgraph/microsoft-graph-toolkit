@@ -26,16 +26,20 @@ const useStyles = makeStyles({
     paddingBlockEnd: '12px'
   },
   chatMessages: {
-    paddingInlineStart: '16px',
     height: 'auto',
+    ...shorthands.paddingInline('20px'),
     ...shorthands.overflow('auto'),
     '& img': {
       maxWidth: '100%',
       height: 'auto'
+    },
+
+    '& ul': {
+      ...shorthands.padding('unset')
     }
   },
   chatInput: {
-    ...shorthands.paddingInline('24px'),
+    ...shorthands.paddingInline('16px'),
     ...shorthands.overflow('unset')
   },
   fullHeight: {
@@ -97,7 +101,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
           {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
               <ChatHeader chatState={chatState} />
-              <div className={styles.chatMessages}>
+              <div id="messages" className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}
                   messages={chatState.messages}
@@ -127,7 +131,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   onRenderMessage={onRenderMessage}
                 />
               </div>
-              <div className={styles.chatInput}>
+              <div id="chatInput" className={styles.chatInput}>
                 <SendBox onSendMessage={chatState.onSendMessage} />
               </div>
               <ErrorBar activeErrorMessages={chatState.activeErrorMessages} />
