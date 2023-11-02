@@ -69,7 +69,7 @@ const messageThreadStyles: MessageThreadStyles = {
       color: 'var(--colorNeutralForeground1)',
       ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
     },
-    '& .fui-ChatMessage__timestamp': {
+    '& .fui-ChatMessage__timestamp,.fui-ChatMessage__details': {
       fontWeight: 'var(--fontWeightRegular)',
       color: 'var(--colorNeutralForeground3)',
       ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
@@ -86,7 +86,7 @@ const messageThreadStyles: MessageThreadStyles = {
       color: 'var(--colorNeutralForeground1)',
       ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
     },
-    '& span.fui-ChatMyMessage__timestamp': {
+    '& span.fui-ChatMyMessage__timestamp,.fui-ChatMyMessage__details': {
       fontWeight: 'var(--fontWeightRegular)',
       color: 'var(--colorNeutralForeground3)',
       ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')

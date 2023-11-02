@@ -30,6 +30,15 @@ import { onDisplayDateTimeString } from './displayDates';
  * THOUGHT: import this on demand based on the set theme?
  */
 import 'adaptivecards-designer/dist/containers/teams-container-light.css';
+import {
+  Eye12Filled,
+  Eye12Regular,
+  Filter12Filled,
+  Send16Filled,
+  Send16Regular,
+  bundleIcon
+} from '@fluentui/react-icons';
+import { FluentIcon } from '@fluentui/react-icons/lib/utils/createFluentIcon';
 
 type IAction = ISubmitAction | IOpenUrlAction | IShowCardAction | IExecuteAction;
 
@@ -41,6 +50,17 @@ interface MgtAdaptiveCardProps {
   defaultOnRender?: (props: MessageProps) => JSX.Element;
   messageProps: MessageProps;
 }
+
+/**
+ * Message status icons.
+ */
+const detailsIcons: Record<string, FluentIcon> = {
+  seen: bundleIcon(Eye12Filled, Eye12Regular),
+  delivered: bundleIcon(Eye12Filled, Eye12Regular),
+  sending: bundleIcon(Send16Filled, Send16Regular),
+  failed: bundleIcon(Eye12Filled, Eye12Regular),
+  '': bundleIcon(Eye12Filled, Eye12Regular)
+};
 
 /**
  * Render an adaptive card from the attachments
@@ -67,9 +87,10 @@ const MgtAdaptiveCard = (msg: MgtAdaptiveCardProps) => {
   const author = isChatMessage(msg.messageProps.message) ? msg.messageProps.message?.senderDisplayName : '';
   const timestamp = onDisplayDateTimeString(msg.messageProps.message.createdOn);
   const details = isChatMessage(msg.messageProps.message) ? msg.messageProps.message?.status : '';
+  const DetailsIcon: FluentIcon = detailsIcons[details as string];
 
   return adaptiveCardAttachments.length ? (
-    <Container author={author} timestamp={timestamp} details={details}>
+    <Container author={author} timestamp={timestamp} details={<DetailsIcon />}>
       <div ref={cardRef}></div>
     </Container>
   ) : (
