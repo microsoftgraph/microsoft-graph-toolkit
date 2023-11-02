@@ -14,12 +14,51 @@ export default {
   decorators: [withCodeEditor]
 };
 
+export const showPresence = () => html`
+<mgt-people-picker show-presence></mgt-people-picker>
+`;
+
 export const groupId = () => html`
-  <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
+<mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
 `;
 
 export const singleSelectMode = () => html`
 <mgt-people-picker selection-mode="single"></mgt-people-picker>
+
+<h2>Render in a modal and clear on opening the modal</h2>
+<button aria-label="open modal" id="modal">Open modal</button>
+
+<div id="modal-content">
+    <mgt-people-picker id="modal-picker" selection-mode="single"></mgt-people-picker>
+    <button aria-label="close modal" id="close-modal">X</button>
+</div>
+
+<style>
+#modal-content {
+  height: 200px;
+  width: 100%;
+  background-color: beige;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+</style>
+
+<script>
+const modal = document.getElementById("modal")
+const closeModal = document.getElementById("close-modal")
+const modalContent = document.getElementById("modal-content")
+const modalPicker = document.getElementById("modal-picker")
+modal.addEventListener('click', () => {
+    modalContent.style.display = "flex"
+    modalPicker.selectedPeople = []
+})
+
+closeModal.addEventListener('click', () => {
+    modalContent.style.display = "none"
+})
+</script>
 `;
 
 export const dynamicGroupId = () => html`
@@ -259,7 +298,11 @@ export const pickerUserFilters = () => html`
 
 export const pickerPeopleFilters = () => html`
   <mgt-people-picker
-      people-filters="jobTitle eq 'Web Marketing Manager'">
+      people-filters="jobTitle eq 'Retail Manager'">
+  </mgt-people-picker>
+
+  <mgt-people-picker
+    people-filters="personType/class eq 'Person' and personType/subclass eq 'OrganizationUser'">
   </mgt-people-picker>
 `;
 
