@@ -89,7 +89,7 @@ const ellipsisMenuStyles = makeStyles({
   }
 });
 interface MenuItemsProps {
-  chatWebUrl?: string;
+  chatWebUrl: string;
 }
 
 const EllipsisMenu = (props: MenuItemsProps) => {
@@ -103,7 +103,7 @@ const EllipsisMenu = (props: MenuItemsProps) => {
 
       <MenuPopover className={styles.menuPopover}>
         <MenuList>
-          <MenuItemLink icon={<TeamsIcon />} target="_blank" href={props.chatWebUrl!}>
+          <MenuItemLink icon={<TeamsIcon />} target="_blank" href={props.chatWebUrl}>
             Go to Microsoft Teams
           </MenuItemLink>
         </MenuList>
