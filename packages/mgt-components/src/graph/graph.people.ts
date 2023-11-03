@@ -144,7 +144,7 @@ export const findPeople = async (
 
   if (filters !== '') {
     // Adding the default people filters to the search filters
-    filter += `${filter} and ${filters}`;
+    filter += `${filters}`;
   }
   let graphResult: CollectionResponse<Person>;
   try {
