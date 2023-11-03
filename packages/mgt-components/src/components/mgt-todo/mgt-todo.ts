@@ -100,7 +100,7 @@ export class MgtTodo extends MgtTasksBase {
     return ['tasks.read', 'tasks.readwrite'];
   }
   private _tasks: TodoTask[];
-  @state() private _updatedTask: TodoTask;
+  @state() private _taskBeingUpdated: TodoTask;
 
   private _isLoadingTasks: boolean;
   private _loadingTasks: string[];
@@ -236,6 +236,9 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected updateTask = async (task: TodoTask): Promise<void> => {
     try {
+      if (!this._changedTaskName && !this._newTaskDueDate) {
+        return;
+      }
       await this.updateTaskItem(task);
     } finally {
       this.clearNewTaskData();
@@ -365,7 +368,7 @@ export class MgtTodo extends MgtTasksBase {
     if (this.hasTemplate('task-details')) {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
     } else {
-      const dateClass = { dark: this._isDarkMode, date: true };
+      const dateClass = { dark: this._isDarkMode, date: true, 'task-due': true };
       const calendarTemplate = html`
         <fluent-text-field
           autocomplete="off"
@@ -376,9 +379,11 @@ export class MgtTodo extends MgtTasksBase {
           .value="${
             task.dueDateTime
               ? this.dateToInputValue(new Date(task.dueDateTime.dateTime))
-              : this.dateToInputValue(this._newTaskDueDate)
+              : this._taskBeingUpdated === task
+              ? this.dateToInputValue(this._newTaskDueDate)
+              : nothing
           }"
-          @change="${this.handleDateChange}"
+          @change="${(e: Event) => this.handleDateUpdate(e, task)}"
         >
         </fluent-text-field>
       `;
@@ -395,14 +400,8 @@ export class MgtTodo extends MgtTasksBase {
           @blur="${(e: Event) => this.handleBlur(e, task)}"
           @focus="${(e: KeyboardEvent) => this.updatingTask(e, task)}"
         >
-          <div slot="end" class="end">
-            ${
-              task.dueDateTime || this._updatedTask === task
-                ? html`<span class="task-due">${calendarTemplate}</span>`
-                : nothing
-            }
-          </div> 
         </fluent-text-field>
+        ${task.dueDateTime || this._taskBeingUpdated === task ? html`${calendarTemplate}` : nothing}
         ${taskDeleteTemplate}
       `;
 
@@ -526,10 +525,6 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected async updateTaskItem(task: TodoTask): Promise<void> {
     const listId = this.currentList.id;
-    if (!this._changedTaskName && !this._newTaskDueDate) {
-      return;
-    }
-
     let taskData = {};
 
     if (this._changedTaskName) {
@@ -546,7 +541,11 @@ export class MgtTodo extends MgtTasksBase {
       };
     }
 
-    await updateTodoTask(this._graph, listId, task.id, taskData);
+    const updatedTask = await updateTodoTask(this._graph, listId, task.id, taskData);
+    const taskIndex = this._tasks.findIndex(t => t.id === updatedTask.id);
+    this._tasks[taskIndex] = updatedTask;
+
+    this._loadingTasks = this._loadingTasks.filter(id => id !== updatedTask.id);
   }
 
   /**
@@ -573,7 +572,7 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
-    this._updatedTask = null;
+    this._taskBeingUpdated = null;
   };
 
   private readonly loadTasks = async (list: TodoTaskList): Promise<void> => {
@@ -650,13 +649,14 @@ export class MgtTodo extends MgtTasksBase {
 
   private readonly updatingTask = (e: KeyboardEvent, task: TodoTask) => {
     if ((e.target as HTMLInputElement).id === task.id) {
-      this._updatedTask = task;
+      this._taskBeingUpdated = task;
     }
   };
 
   private readonly handleBlur = async (e: Event, task: TodoTask) => {
     if ((e.target as HTMLInputElement).id === task.id) {
       await this.updateTask(task);
+      (e.target as HTMLInputElement)?.blur();
     }
   };
 
@@ -666,6 +666,19 @@ export class MgtTodo extends MgtTasksBase {
       this._newTaskDueDate = new Date(value + 'T17:00');
     } else {
       this._newTaskDueDate = null;
+    }
+  };
+
+  private readonly handleDateUpdate = async (e: Event, task: TodoTask) => {
+    if ((e.target as HTMLInputElement).id === `${task.id}-taskDate-input`) {
+      const value = (e.target as HTMLInputElement).value;
+      if (value) {
+        this._newTaskDueDate = new Date(value + 'T17:00');
+        await this.updateTask(task);
+        (e.target as HTMLInputElement)?.blur();
+      } else {
+        this._newTaskDueDate = null;
+      }
     }
   };
 }
