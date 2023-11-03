@@ -5,14 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  MgtTemplatedComponent,
-  ProviderState,
-  Providers,
-  customElement,
-  customElementHelper,
-  mgtHtml
-} from '@microsoft/mgt-element';
+import { MgtTemplatedComponent, ProviderState, Providers, customElementHelper, mgtHtml } from '@microsoft/mgt-element';
 import { Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -25,15 +18,16 @@ import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import '../../styles/style-helper';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
-import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import '../sub-components/mgt-flyout/mgt-flyout';
-import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
 import { strings } from './strings';
 import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
+import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -55,6 +49,13 @@ export const defaultPersonProperties = [
   'id',
   'userType'
 ];
+
+export const registerMgtPersonComponent = () => {
+  // register self first to avoid infinte loop due to circular ref between person and person card
+  registerComponent('person', MgtPerson);
+
+  registerMgtFlyoutComponent();
+};
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -106,7 +107,6 @@ export const defaultPersonProperties = [
  *
  * @cssprop --person-details-wrapper-width - {Length} the minimum width of the details section. Default is 168px.
  */
-@customElement('person')
 export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -258,10 +258,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    *
    * @type {IDynamicPerson}
    */
-  @property({
-    attribute: null,
-    type: Object
-  })
+  @state()
   private get personDetailsInternal(): IDynamicPerson {
     return this._personDetailsInternal;
   }
@@ -534,6 +531,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   @state() private _fetchedPresence: Presence;
   @state() private _isInvalidImageSrc: boolean;
   @state() private _personCardShouldRender: boolean;
+  @state() private _hasLoadedPersonCard = false;
 
   private _personDetailsInternal: IDynamicPerson;
   private _personDetails: IDynamicPerson;
@@ -1034,12 +1032,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     image: string,
     presence: Presence
   ): TemplateResult {
-    const flyoutContent = this._personCardShouldRender
-      ? html`
+    const flyoutContent =
+      this._personCardShouldRender && this._hasLoadedPersonCard
+        ? html`
            <div slot="flyout" data-testid="flyout-slot">
              ${this.renderFlyoutContent(personDetails, image, presence)}
            </div>`
-      : html``;
+        : html``;
 
     const slotClasses = classMap({
       vertical: this.isVertical()
@@ -1094,11 +1093,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const graph = provider.graph.forComponent(this);
 
-    if (this.fallbackDetails) {
-      this.line2Property = 'email';
-    }
-
-    if (this.verticalLayout && this.view < ViewType.fourlines) {
+    if ((this.verticalLayout && this.view < ViewType.fourlines) || this.fallbackDetails) {
       this.line2Property = 'email';
     }
 
@@ -1112,8 +1107,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     ];
     personProps = personProps.filter(email => email !== 'email');
 
-    let details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
-
+    let details = this.personDetailsInternal || this.personDetails;
     if (details) {
       if (
         !details.personImage &&
@@ -1171,6 +1165,8 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
+    details = details ? details : this.fallbackDetails;
+
     // populate presence
     const defaultPresence: Presence = {
       activity: 'Offline',
@@ -1180,7 +1176,6 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
       try {
-        details = this.personDetailsInternal || this.personDetails;
         if (details) {
           // setting userId to 'me' ensures only the presence.read permission is required
           const userId = this.personQuery !== 'me' ? details?.id : null;
@@ -1213,8 +1208,8 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     let initials = '';
     if (isUser(person)) {
-      initials += person.givenName[0].toUpperCase();
-      initials += person.surname[0].toUpperCase();
+      initials += person.givenName?.[0]?.toUpperCase() ?? '';
+      initials += person.surname?.[0]?.toUpperCase() ?? '';
     }
 
     if (!initials && person.displayName) {
@@ -1349,16 +1344,30 @@ export class MgtPerson extends MgtTemplatedComponent {
       flyout.close();
     }
     const personCard =
-      this.querySelector<MgtPersonCard>('.mgt-person-card') || this.renderRoot.querySelector('.mgt-person-card');
+      this.querySelector<Element & IExpandable & IHistoryClearer>('.mgt-person-card') ||
+      this.renderRoot.querySelector('.mgt-person-card');
     if (personCard) {
       personCard.isExpanded = false;
       personCard.clearHistory();
     }
   };
 
+  private readonly loadPersonCardResources = async () => {
+    // if there could be a person-card then we should load those resources using a dynamic import
+    if (this.personCardInteraction !== PersonCardInteraction.none && !this._hasLoadedPersonCard) {
+      const { registerMgtPersonCardComponent } = await import('../mgt-person-card/mgt-person-card');
+
+      // only register person card if it hasn't been registered yet
+      if (!customElements.get(buildComponentName('person-card'))) registerMgtPersonCardComponent();
+
+      this._hasLoadedPersonCard = true;
+    }
+  };
+
   public showPersonCard = () => {
     if (!this._personCardShouldRender) {
       this._personCardShouldRender = true;
+      void this.loadPersonCardResources();
     }
 
     const flyout = this.flyout;

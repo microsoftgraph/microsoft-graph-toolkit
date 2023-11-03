@@ -40,22 +40,4 @@ const es6Bundle = {
   ]
 };
 
-const es6PreviewBundle = {
-  input: ['./packages/mgt/dist/es6/preview-bundle.js'],
-  output: {
-    dir: 'assets',
-    entryFileNames: 'mgt.preview.storybook.js',
-    format: 'esm'
-  },
-  plugins: [
-    babel({
-      extensions,
-      ...getBabelConfig(false)
-    }),
-    resolve({ module: true, jsnext: true, extensions }),
-    postcss(),
-    terser({ keep_classnames: true, keep_fnames: true })
-  ]
-};
-
-export default [es6Bundle, es6PreviewBundle];
+export default [es6Bundle];

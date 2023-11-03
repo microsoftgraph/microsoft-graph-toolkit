@@ -24,7 +24,7 @@ const useStyles = makeStyles({
   }
 });
 
-export const SearchPage: React.FunctionComponent = () => {
+const SearchPage: React.FunctionComponent = () => {
   const styles = useStyles();
   const appContext = useAppContext();
   const [query] = React.useState(new URLSearchParams(window.location.search).get('q'));
@@ -65,3 +65,5 @@ export const SearchPage: React.FunctionComponent = () => {
     </>
   );
 };
+
+export default SearchPage;

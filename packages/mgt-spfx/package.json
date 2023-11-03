@@ -35,6 +35,7 @@
     "@microsoft/mgt-sharepoint-provider": "*",
     "tslib": "2.3.1"
   },
+  "sideEffects": false,
   "devDependencies": {
     "@microsoft/eslint-config-spfx": "1.18.0",
     "@microsoft/eslint-plugin-spfx": "1.18.0",
