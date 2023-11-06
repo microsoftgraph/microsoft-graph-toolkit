@@ -140,7 +140,7 @@ export const getMe = async (graph: IGraph, requestedProps?: string[]): Promise<U
   return response;
 };
 
-const allValidUserByScopes = [
+export const validUserByIdScopes = [
   'User.ReadBasic.All',
   'User.Read.All',
   'User.ReadWrite.All',
@@ -183,7 +183,7 @@ export const getUser = async (graph: IGraph, userPrincipleName: string, requeste
   // else we must grab it
   let response: User;
   try {
-    const additionalScopes = needsAdditionalScopes(allValidUserByScopes);
+    const additionalScopes = needsAdditionalScopes(validUserByIdScopes);
     response = (await graph
       .api(apiString)
       .middlewareOptions(prepScopes(...additionalScopes))
@@ -226,7 +226,7 @@ export const getUsersForUserIds = async (
     cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
   }
 
-  const additionalUserByIdScopes = needsAdditionalScopes(allValidUserByScopes);
+  const additionalUserByIdScopes = needsAdditionalScopes(validUserByIdScopes);
 
   for (const id of userIds) {
     peopleDict[id] = null;
@@ -423,7 +423,7 @@ export const getUsersForPeopleQueries = async (
  * @returns {Promise<User[]>}
  */
 export const findUsers = async (graph: IGraph, query: string, top = 10, userFilters = ''): Promise<User[]> => {
-  const scopes = allValidUserByScopes;
+  const scopes = validUserByIdScopes;
   const item = { maxResults: top, results: null };
   const cacheKey = `${query}:${top}:${userFilters}`;
   let cache: CacheStore<CacheUserQuery>;

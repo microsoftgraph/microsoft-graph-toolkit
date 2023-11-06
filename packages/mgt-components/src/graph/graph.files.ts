@@ -115,7 +115,7 @@ const validDriveItemScopes = [
   'Sites.Read.All',
   'Sites.ReadWrite.All'
 ];
-const validInsightScopes = ['Sites.Read.All', 'Sites.ReadWrite.All'];
+export const validInsightScopes = ['Sites.Read.All', 'Sites.ReadWrite.All'];
 const validFileUploadScopes = ['Files.ReadWrite', 'Files.ReadWrite.All', 'Sites.ReadWrite.All'];
 /**
  * Load a DriveItem give and arbitrary query
