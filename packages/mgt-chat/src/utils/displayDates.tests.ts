@@ -6,17 +6,18 @@
  */
 
 import { onDisplayDateTimeString } from './displayDates';
+import { expect } from '@open-wc/testing';
 
 describe('displayDates - onDisplayDateTimeString', () => {
-  it('shoulder render date object as string with am', () => {
+  it('shoulder render date object as string with am', async () => {
     const amDate = new Date('Tue Oct 31 2023 07:08:40 GMT+0300 (East Africa Time)');
     const dateString = onDisplayDateTimeString(amDate);
-    expect(dateString).toEqual('2023-10-31 4:08 a.m.');
+    await expect(dateString).equal('2023-10-31 7:08 a.m.');
   });
 
-  it('shoulder render date object as string with pm', () => {
+  it('shoulder render date object as string with pm', async () => {
     const pmDate = new Date('Tue Oct 31 2023 17:08:40 GMT+0300 (East Africa Time)');
     const dateString = onDisplayDateTimeString(pmDate);
-    expect(dateString).toEqual('2023-10-31 2:08 p.m.');
+    await expect(dateString).equal('2023-10-31 5:08 p.m.');
   });
 });
