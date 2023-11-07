@@ -19,7 +19,7 @@
   "stylelint.packageManager": "yarn",
   "stylelint.snippet": ["css", "less", "postcss", "scss"],
   "stylelint.validate": ["css", "less", "postcss", "scss"],
-  "cSpell.words": ["odata"],
-  "liveServer.settings.root": "storybook-static",
+  "cSpell.words": ["odata", "mailenabledsecurity"],
+  "liveServer.settings.root": "coverage/lcov-report",
   "liveServer.settings.port": 6006
 }

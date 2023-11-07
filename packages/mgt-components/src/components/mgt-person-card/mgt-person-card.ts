@@ -14,7 +14,6 @@ import {
   ProviderState,
   TeamsHelper,
   mgtHtml,
-  customElement,
   customElementHelper
 } from '@microsoft/mgt-element';
 import { IGraph } from '@microsoft/mgt-element';
@@ -27,13 +26,13 @@ import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getPersonCardGraphData, createChat, sendMessage } from './mgt-person-card.graph';
-import { MgtPerson } from '../mgt-person/mgt-person';
+import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-css';
-import { MgtContact } from '../mgt-contact/mgt-contact';
-import { MgtFileList } from '../mgt-file-list/mgt-file-list';
-import { MgtMessages } from '../mgt-messages/mgt-messages';
-import { MgtOrganization } from '../mgt-organization/mgt-organization';
-import { MgtProfile } from '../mgt-profile/mgt-profile';
+import { MgtContact, registerMgtContactComponent } from '../mgt-contact/mgt-contact';
+import { MgtFileList, registerMgtFileListComponent } from '../mgt-file-list/mgt-file-list';
+import { MgtMessages, registerMgtMessagesComponent } from '../mgt-messages/mgt-messages';
+import { MgtOrganization, registerMgtOrganizationComponent } from '../mgt-organization/mgt-organization';
+import { MgtProfile, registerMgtProfileComponent } from '../mgt-profile/mgt-profile';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 import { strings } from './strings';
 import { isUser } from '../../graph/entityType';
@@ -52,14 +51,31 @@ import {
 } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { BasePersonCardSection, CardSection } from '../BasePersonCardSection';
-
-registerFluentComponents(fluentCard, fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
+import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
+import { IHistoryClearer, IExpandable } from './types';
 
 interface MgtPersonCardStateHistory {
   state: MgtPersonCardState;
   personDetails: IDynamicPerson;
   personImage: string;
 }
+
+export const registerMgtPersonCardComponent = () => {
+  registerFluentComponents(fluentCard, fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+  // register self first to avoid infinte loop due to circular ref between person and person card and organization
+  registerComponent('person-card', MgtPersonCard);
+
+  registerMgtSpinnerComponent();
+  // these components newed up rather than created declaratively
+  registerMgtContactComponent();
+  registerMgtOrganizationComponent();
+  registerMgtMessagesComponent();
+  registerMgtFileListComponent();
+  registerMgtProfileComponent();
+  // only register person if not already registered
+  if (!customElements.get(buildComponentName('person'))) registerMgtPersonComponent();
+};
 
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
@@ -99,8 +115,7 @@ interface MgtPersonCardStateHistory {
  * @cssprop --person-card-chat-input-hover-color - {Color} The chat input hover color
  * @cssprop --person-card-chat-input-focus-color - {Color} The chat input focus color
  */
-@customElement('person-card')
-export class MgtPersonCard extends MgtTemplatedComponent {
+export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClearer, IExpandable {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.

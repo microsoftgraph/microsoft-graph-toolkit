@@ -56,7 +56,7 @@ const useStyles = makeStyles({
   }
 });
 
-export const ChatPage: React.FunctionComponent = () => {
+const ChatPage: React.FunctionComponent = () => {
   const styles = useStyles();
   const [selectedChat, setSelectedChat] = React.useState<GraphChat>();
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
@@ -134,3 +134,5 @@ const ChatList = React.memo((props: ChatListProps) => {
     </Get>
   );
 });
+
+export default ChatPage;

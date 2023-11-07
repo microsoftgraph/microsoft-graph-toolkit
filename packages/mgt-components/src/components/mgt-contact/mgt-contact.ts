@@ -7,7 +7,7 @@
 
 import { User } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { TeamsHelper, customElement, error } from '@microsoft/mgt-element';
+import { TeamsHelper, error } from '@microsoft/mgt-element';
 import { classMap } from 'lit/directives/class-map.js';
 
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -15,6 +15,7 @@ import { BasePersonCardSection } from '../BasePersonCardSection';
 import { styles } from './mgt-contact-css';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { strings } from './strings';
+import { registerComponent } from '@microsoft/mgt-element';
 
 /**
  * Represents a contact part and its metadata
@@ -31,6 +32,10 @@ interface IContactPart {
 
 type Protocol = 'mailto:' | 'tel:';
 
+export const registerMgtContactComponent = () => {
+  registerComponent('contact', MgtContact);
+};
+
 /**
  * The contact details subsection of the person card
  *
@@ -38,8 +43,6 @@ type Protocol = 'mailto:' | 'tel:';
  * @class MgtContact
  * @extends {MgtTemplatedComponent}
  */
-@customElement('contact')
-// @customElement('mgt-contact')
 export class MgtContact extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined

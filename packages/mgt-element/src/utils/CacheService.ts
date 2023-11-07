@@ -16,6 +16,7 @@ import { error } from './Logging';
  * @type {string}
  *
  */
+
 export const dbListKey = 'mgt-db-list';
 
 /**
@@ -281,6 +282,11 @@ export class CacheService {
   }
 }
 
+export interface Index {
+  name: string;
+  field: string;
+}
+
 /**
  * Represents organization for a cache
  *
@@ -309,6 +315,12 @@ export interface CacheSchema {
    * @memberof CacheSchema
    */
   stores: Record<string, string>;
+  /**
+   * Optional field to define indexed fields on a per store basis
+   * K is the name of the store for which the indexes should be applied
+   * T is the names of the fields on the stored data to be indexed
+   */
+  indexes?: Record<string, Index[]>;
 }
 
 /**

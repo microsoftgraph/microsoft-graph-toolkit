@@ -8,11 +8,11 @@
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
+import { MgtBaseComponent } from '@microsoft/mgt-element';
 import { styles } from './mgt-arrow-options-css';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { fluentMenu, fluentMenuItem, fluentButton } from '@fluentui/web-components';
-registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
+import { registerComponent } from '@microsoft/mgt-element';
 
 /*
   Ok, the name here deserves a bit of explanation,
@@ -21,6 +21,11 @@ registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
   So the arrow was removed, but the name was already set everywhere.
   - benotter
  */
+
+export const registerMgtArrowOptionsComponent = () => {
+  registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
+  registerComponent('arrow-options', MgtArrowOptions);
+};
 
 /**
  * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.
@@ -35,7 +40,6 @@ registerFluentComponents(fluentMenu, fluentMenuItem, fluentButton);
  * @class MgtArrowOptions
  * @extends {MgtBaseComponent}
  */
-@customElement('arrow-options')
 export class MgtArrowOptions extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

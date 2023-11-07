@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { CacheItem, CacheService } from '@microsoft/mgt-react';
 
 /**
@@ -10,5 +17,5 @@ const getConversationCacheInvalidationTime = (): number => {
   return conversation.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
 };
 
-export const cacheEntryIsValid = (cacheEntry: CacheItem | null) =>
-  cacheEntry?.timeCached && getConversationCacheInvalidationTime() > Date.now() - cacheEntry.timeCached;
+export const cacheEntryIsValid = (cacheEntry: CacheItem) =>
+  cacheEntry.timeCached && getConversationCacheInvalidationTime() > Date.now() - cacheEntry.timeCached;

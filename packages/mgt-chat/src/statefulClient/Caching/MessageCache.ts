@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { CacheItem, CacheSchema, CacheService, CacheStore, schemas } from '@microsoft/mgt-react';
 import { ChatMessage } from '@microsoft/microsoft-graph-types';
 import { GraphCollection } from '../graph.chat';
@@ -18,7 +25,7 @@ export class MessageCache {
   public async loadMessages(chatId: string): Promise<CachedMessageData | null | undefined> {
     if (isConversationCacheEnabled()) {
       const data = await this.cache.getValue(chatId);
-      if (cacheEntryIsValid(data)) return data;
+      if (data && cacheEntryIsValid(data)) return data;
     }
     return undefined;
   }
