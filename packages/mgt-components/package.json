@@ -45,6 +45,7 @@
     "@microsoft/microsoft-graph-client": "3.0.2",
     "@microsoft/microsoft-graph-types": "^2.0.0",
     "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
+    "lit": "^3.0.0",
     "office-ui-fabric-core": "^11.0.0"
   },
   "publishConfig": {
