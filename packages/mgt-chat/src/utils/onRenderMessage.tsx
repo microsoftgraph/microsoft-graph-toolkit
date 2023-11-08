@@ -5,109 +5,22 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Message, MessageProps, MessageRenderer } from '@azure/communication-react';
-import { Action, AdaptiveCard, IMarkdownProcessingResult } from 'adaptivecards';
-import MarkdownIt from 'markdown-it';
+import { MessageProps, MessageRenderer } from '@azure/communication-react';
 import React, { useEffect, useRef } from 'react';
-import { isGraphChatMessage, isActionOpenUrl, isChatMessage } from './types';
-import {
-  IAdaptiveCard,
-  ISubmitAction,
-  IOpenUrlAction,
-  IShowCardAction,
-  IExecuteAction
-} from 'adaptivecards/lib/schema';
-import { ChatMessageAttachment } from '@microsoft/microsoft-graph-types';
+import { isGraphChatMessage, isChatMessage } from './types';
 import produce from 'immer';
-import { ChatMessage, ChatMyMessage } from '@fluentui-contrib/react-chat';
 
 import { renderToString } from 'react-dom/server';
 import UnsupportedContent from '../components/UnsupportedContent/UnsupportedContent';
-import { onDisplayDateTimeString } from './displayDates';
+import MgtAdaptiveCard from '../components/MgtAdaptiveCard/MgtAdaptiveCard';
 /**
  * This is a _dirty_ hack to bundle the teams light CSS used in adaptive cards
  * designer.
  * THOUGHT: import this on demand based on the set theme?
  */
 import 'adaptivecards-designer/dist/containers/teams-container-light.css';
-import {
-  Eye12Filled,
-  Eye12Regular,
-  Filter12Filled,
-  Send16Filled,
-  Send16Regular,
-  bundleIcon
-} from '@fluentui/react-icons';
-import { FluentIcon } from '@fluentui/react-icons/lib/utils/createFluentIcon';
-
-type IAction = ISubmitAction | IOpenUrlAction | IShowCardAction | IExecuteAction;
-
-/**
- * Props for an adaptive card message.s
- */
-interface MgtAdaptiveCardProps {
-  attachments: ChatMessageAttachment[];
-  defaultOnRender?: (props: MessageProps) => JSX.Element;
-  messageProps: MessageProps;
-}
-
-/**
- * Message status icons.
- */
-const detailsIcons: Record<string, FluentIcon> = {
-  seen: bundleIcon(Eye12Filled, Eye12Regular),
-  delivered: bundleIcon(Eye12Filled, Eye12Regular),
-  sending: bundleIcon(Send16Filled, Send16Regular),
-  failed: bundleIcon(Eye12Filled, Eye12Regular),
-  '': bundleIcon(Eye12Filled, Eye12Regular)
-};
-
-/**
- * Render an adaptive card from the attachments
- */
-const MgtAdaptiveCard = (msg: MgtAdaptiveCardProps) => {
-  const cardRef = useRef<HTMLDivElement | null>(null);
-  const attachments = msg.attachments;
-  const adaptiveCardAttachments = getAdaptiveCardAttachments(attachments);
-  useEffect(() => {
-    if (adaptiveCardAttachments.length) {
-      const cardElement = cardRef?.current;
-      // Remove all children before appending the attachment elements
-      while (cardElement?.firstChild) cardElement.removeChild(cardElement?.lastChild as Node);
-      for (const attachment of adaptiveCardAttachments) {
-        const cardHtmlElement = getHtmlElementFromAttachment(attachment);
-        cardElement?.appendChild(cardHtmlElement!);
-      }
-    }
-  }, [cardRef, adaptiveCardAttachments]);
-  const defaultOnRender = msg?.defaultOnRender;
-  const messageProps = msg.messageProps;
-  const defaultRender = defaultOnRender ? defaultOnRender(messageProps) : <></>;
-  const Container = messageContainer(msg.messageProps.message);
-  const author = isChatMessage(msg.messageProps.message) ? msg.messageProps.message?.senderDisplayName : '';
-  const timestamp = onDisplayDateTimeString(msg.messageProps.message.createdOn);
-  const details = isChatMessage(msg.messageProps.message) ? msg.messageProps.message?.status : '';
-  const DetailsIcon: FluentIcon = detailsIcons[details as string];
-
-  return adaptiveCardAttachments.length ? (
-    <Container author={author} timestamp={timestamp} details={<DetailsIcon />}>
-      <div ref={cardRef}></div>
-    </Container>
-  ) : (
-    defaultRender
-  );
-};
-
-/**
- * Determine which message container to render. By default use the ChatMessage.
- * @param msg is the Message
- */
-const messageContainer = (msg: Message) => {
-  if (isChatMessage(msg) && msg?.mine) {
-    return ChatMyMessage;
-  }
-  return ChatMessage;
-};
+import { messageContainer } from './messageContainer';
+import { onDisplayDateTimeString } from './displayDates';
 
 /**
  * Renders the preferred content depending on whether it is supported.
@@ -134,74 +47,27 @@ const onRenderMessage = (messageProps: MessageProps, defaultOnRender?: MessageRe
       );
     }
   }
+
+  // return <MgtMessageContainer messageProps={messageProps} defaultOnRender={defaultOnRender} />;
   return defaultOnRender ? defaultOnRender(messageProps) : <></>;
 };
 
-/**
- * Filters out the adaptive card attachments.
- * @param attachments
- * @returns
- */
-const getAdaptiveCardAttachments = (attachments: ChatMessageAttachment[]): ChatMessageAttachment[] => {
-  const cardAttachments: ChatMessageAttachment[] = [];
-  for (const att of attachments) {
-    const contentType = att?.contentType ?? '';
-    if (contentType === 'application/vnd.microsoft.card.adaptive') {
-      cardAttachments.push(att);
-    }
-  }
-  return cardAttachments;
+interface MgtMessageContainerProps {
+  messageProps: MessageProps;
+  defaultOnRender: MessageRenderer;
+}
+
+const MgtMessageContainer = ({ messageProps, defaultOnRender }: MgtMessageContainerProps) => {
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const author = isChatMessage(messageProps.message) ? messageProps.message?.senderDisplayName : '';
+  const timestamp = onDisplayDateTimeString(messageProps.message.createdOn);
+  const details = isChatMessage(messageProps.message) ? messageProps.message?.status : '';
+  const body = messageProps.message?.content;
+
+  useEffect(() => {
+    if (bodyRef.current) bodyRef.current.innerHTML = body;
+  }, [bodyRef, body]);
+  const Container = messageContainer(messageProps.message);
+  return body ? <Container author={author} timestamp={timestamp} ref={bodyRef} /> : defaultOnRender(messageProps);
 };
-
-/**
- * Process the attachment object and return an HTMLElement or nothing.
- * @param attachment
- * @returns
- */
-const getHtmlElementFromAttachment = (attachment: ChatMessageAttachment | undefined): HTMLElement | undefined => {
-  const adaptiveCard = new AdaptiveCard();
-  const adaptiveCardContentString: string = attachment?.content ?? '';
-  const adaptiveCardContent = JSON.parse(adaptiveCardContentString) as IAdaptiveCard;
-
-  // Check if the actions property has OpenUrl actions only
-  const actions = adaptiveCardContent?.actions?.filter(ac => ac.type === 'Action.OpenUrl');
-  if (actions) {
-    // Update actions to only Action.OpenUrl actions.
-    adaptiveCardContent.actions = actions;
-  }
-
-  // Check if the body has actionSet actions and filter for OpenUrl only
-  const actionSetArray = adaptiveCardContent?.body?.filter(ac => Object.values(ac).includes('ActionSet'));
-  if (actionSetArray) {
-    const finalInnerActions = [];
-    for (const actionSet of actionSetArray) {
-      const innerActions = actionSet?.actions as IAction[];
-      const valid = innerActions?.filter(ac => ac?.type === 'Action.OpenUrl');
-      if (valid) finalInnerActions.push(...valid);
-    }
-
-    for (const b of adaptiveCardContent?.body ?? []) {
-      if (Object.values(b).includes('ActionSet')) {
-        b.actions = finalInnerActions;
-      }
-    }
-  }
-
-  // markdown support
-  AdaptiveCard.onProcessMarkdown = (text: string, result: IMarkdownProcessingResult) => {
-    const md = new MarkdownIt();
-    result.outputHtml = md.render(text);
-    result.didProcess = true;
-  };
-
-  adaptiveCard.parse(adaptiveCardContent);
-  adaptiveCard.onExecuteAction = (action: Action) => {
-    if (isActionOpenUrl(action)) {
-      const url: string = action?.url ?? '';
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-  };
-  return adaptiveCard.render();
-};
-
 export { onRenderMessage };
