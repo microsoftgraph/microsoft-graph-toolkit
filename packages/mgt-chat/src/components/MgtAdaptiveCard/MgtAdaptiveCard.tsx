@@ -11,7 +11,6 @@ import MarkdownIt from 'markdown-it';
 import React, { useEffect, useRef } from 'react';
 import { isChatMessage, isActionOpenUrl } from '../../utils/types';
 import { ChatMessageAttachment } from '@microsoft/microsoft-graph-types';
-import { onDisplayDateTimeString } from '../../utils/displayDates';
 import { FluentIcon } from '@fluentui/react-icons/lib/utils/createFluentIcon';
 import { Eye12Filled, Eye12Regular, Send16Filled, Send16Regular, bundleIcon } from '@fluentui/react-icons';
 import {
@@ -22,6 +21,7 @@ import {
   IExecuteAction
 } from 'adaptivecards/lib/schema';
 import { messageContainer } from '../../utils/messageContainer';
+import { getRelativeDisplayDate } from '@microsoft/mgt-components';
 
 type IAction = ISubmitAction | IOpenUrlAction | IShowCardAction | IExecuteAction;
 
@@ -69,7 +69,7 @@ const MgtAdaptiveCard = (msg: MgtAdaptiveCardProps) => {
   const defaultRender = defaultOnRender ? defaultOnRender(messageProps) : <></>;
   const Container = messageContainer(msg.messageProps.message);
   const author = isChatMessage(msg.messageProps.message) ? msg.messageProps.message?.senderDisplayName : '';
-  const timestamp = onDisplayDateTimeString(msg.messageProps.message.createdOn);
+  const timestamp = getRelativeDisplayDate(new Date(msg.messageProps.message.createdOn));
   const details = isChatMessage(msg.messageProps.message) ? msg.messageProps.message?.status : '';
   const DetailsIcon: FluentIcon = detailsIcons[details as string];
 
