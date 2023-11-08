@@ -35,6 +35,7 @@ interface MgtAdaptiveCardProps {
 }
 
 /**
+ * TODO: find the correct icons, if needed.
  * Message status icons.
  */
 const detailsIcons: Record<string, FluentIcon> = {
