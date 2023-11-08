@@ -205,48 +205,6 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   /**
-   * Create a new todo task and add it to the list
-   *
-   * @protected
-   * @returns {Promise<void>}
-   * @memberof MgtTodo
-   */
-  protected addTask = async (): Promise<void> => {
-    if (this._isNewTaskBeingAdded || !this._newTaskName) {
-      return;
-    }
-
-    this._isNewTaskBeingAdded = true;
-    this.requestUpdate();
-
-    try {
-      await this.createNewTask();
-    } finally {
-      this.clearNewTaskData();
-      this._isNewTaskBeingAdded = false;
-      this.requestUpdate();
-    }
-  };
-
-  /**
-   *Update a todo task in the todo list
-   * @protected
-   * @returns {Promise<void>}
-   * @memberof MgtTodo
-   */
-  protected updateTask = async (task: TodoTask): Promise<void> => {
-    try {
-      if (!this._changedTaskName && !this._newTaskDueDate) {
-        return;
-      }
-      await this.updateTaskItem(task);
-    } finally {
-      this.clearNewTaskData();
-      this.requestUpdate();
-    }
-  };
-
-  /**
    * Render the panel for creating a new task
    *
    * @protected
@@ -517,6 +475,55 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   /**
+   * Create a new todo task and add it to the list
+   *
+   * @protected
+   * @returns {Promise<void>}
+   * @memberof MgtTodo
+   */
+  protected addTask = async (): Promise<void> => {
+    if (this._isNewTaskBeingAdded || !this._newTaskName) {
+      return;
+    }
+
+    this._isNewTaskBeingAdded = true;
+    this.requestUpdate();
+
+    try {
+      await this.createNewTask();
+    } finally {
+      this.clearNewTaskData();
+      this._isNewTaskBeingAdded = false;
+      this.requestUpdate();
+    }
+  };
+
+  /**
+   *Update a todo task in the todo list
+   * @protected
+   * @returns {Promise<void>}
+   * @memberof MgtTodo
+   */
+  protected updateTask = async (task: TodoTask): Promise<void> => {
+    try {
+      let isChangedDueDate: boolean;
+      if (task.dueDateTime) {
+        isChangedDueDate =
+          new Date(task.dueDateTime?.dateTime).toLocaleDateString() !== this._newTaskDueDate?.toLocaleDateString();
+      } else {
+        isChangedDueDate = this._newTaskDueDate !== null;
+      }
+      if (!this._changedTaskName && !isChangedDueDate) {
+        return;
+      }
+      await this.updateTaskItem(task);
+    } finally {
+      this.clearNewTaskData();
+      this.requestUpdate();
+    }
+  };
+
+  /**
    * Send a request the Graph to update a todo task item
    *
    * @protected
@@ -539,6 +546,9 @@ export class MgtTodo extends MgtTasksBase {
         dateTime: new Date(this._newTaskDueDate).toLocaleDateString(),
         timeZone: 'UTC'
       };
+    } else {
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      taskData['dueDateTime'] = null;
     }
 
     const updatedTask = await updateTodoTask(this._graph, listId, task.id, taskData);
@@ -674,11 +684,12 @@ export class MgtTodo extends MgtTasksBase {
       const value = (e.target as HTMLInputElement).value;
       if (value) {
         this._newTaskDueDate = new Date(value + 'T17:00');
-        await this.updateTask(task);
-        (e.target as HTMLInputElement)?.blur();
       } else {
         this._newTaskDueDate = null;
       }
+
+      await this.updateTask(task);
+      (e.target as HTMLInputElement)?.blur();
     }
   };
 }
