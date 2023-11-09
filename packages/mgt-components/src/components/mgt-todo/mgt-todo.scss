@@ -68,6 +68,11 @@
         display: flex;
       }
 
+      .container {
+        display: flex;
+        width: 100%;
+      }
+
       .task-due {
         min-width: 120px;
         margin-inline-end: 12px;

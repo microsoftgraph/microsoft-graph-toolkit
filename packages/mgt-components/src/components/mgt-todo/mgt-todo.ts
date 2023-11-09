@@ -120,6 +120,7 @@ export class MgtTodo extends MgtTasksBase {
     this._loadingTasks = [];
     this._isLoadingTasks = false;
     this.addEventListener('selectionChanged', this.handleSelectionChanged);
+    this.addEventListener('blur', this.handleBlur);
   }
 
   /**
@@ -341,25 +342,26 @@ export class MgtTodo extends MgtTasksBase {
               ? this.dateToInputValue(this._newTaskDueDate)
               : nothing
           }"
-          @change="${(e: Event) => this.handleDateUpdate(e, task)}"
+          @change="${this.handleDateChange}"
         >
         </fluent-text-field>
       `;
       const changeTaskDetailsTemplate = html`
-        <fluent-text-field 
-          autocomplete="off"
-          appearance="outline"
-          class="title"
-          id=${task.id}
-          .value="${task.title || this._changedTaskName}"
-          aria-label="${this.strings.editTaskLabel}"
-          @keydown="${(e: KeyboardEvent) => this.handleChange(e, task)}"
-          @input="${(e: KeyboardEvent) => this.handleChange(e, task)}"
-          @blur="${(e: Event) => this.handleBlur(e, task)}"
-          @focus="${(e: KeyboardEvent) => this.updatingTask(e, task)}"
-        >
-        </fluent-text-field>
-        ${task.dueDateTime || this._taskBeingUpdated === task ? html`${calendarTemplate}` : nothing}
+        <div class="container" @blur="${this.handleBlur}">
+          <fluent-text-field 
+            autocomplete="off"
+            appearance="outline"
+            class="title"
+            id=${task.id}
+            .value="${task.title || this._changedTaskName}"
+            aria-label="${this.strings.editTaskLabel}"
+            @keydown="${(e: KeyboardEvent) => this.handleChange(e, task)}"
+            @input="${(e: KeyboardEvent) => this.handleChange(e, task)}"
+            @focus="${(e: KeyboardEvent) => this.updatingTask(e, task)}"
+          >
+          </fluent-text-field>
+          ${task.dueDateTime || this._taskBeingUpdated === task ? html`${calendarTemplate}` : nothing}
+        </div>
         ${taskDeleteTemplate}
       `;
 
@@ -403,6 +405,7 @@ export class MgtTodo extends MgtTasksBase {
           class=${checkboxClasses}
           ?checked=${isCompleted}
           @click="${() => this.handleTaskCheckClick(task)}"
+          @keydown="${(e: KeyboardEvent) => this.handleTaskCheckKeydown(e, task)}"
         >
           <div slot="checked-indicator">
             ${taskCheckContent}
@@ -532,7 +535,7 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected async updateTaskItem(task: TodoTask): Promise<void> {
     const listId = this.currentList.id;
-    let taskData = {};
+    let taskData: TodoTask = {};
 
     if (this._changedTaskName) {
       taskData = {
@@ -635,6 +638,18 @@ export class MgtTodo extends MgtTasksBase {
     }
   }
 
+  private handleTaskCheckKeydown(e: KeyboardEvent, task: TodoTask) {
+    if (e.key === 'Enter' && !this.readOnly) {
+      this.handleTaskClick(task);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (task.status === 'completed') {
+        void this.updateTaskStatus(task, 'notStarted');
+      } else {
+        void this.updateTaskStatus(task, 'completed');
+      }
+    }
+  }
+
   private readonly handleInput = (e: MouseEvent) => {
     if ((e.target as HTMLInputElement).id === 'new-task-name-input') {
       this._newTaskName = (e.target as HTMLInputElement).value;
@@ -663,10 +678,17 @@ export class MgtTodo extends MgtTasksBase {
     }
   };
 
-  private readonly handleBlur = async (e: Event, task: TodoTask) => {
-    if ((e.target as HTMLInputElement).id === task.id) {
-      await this.updateTask(task);
-      (e.target as HTMLInputElement)?.blur();
+  private readonly handleBlur = () => {
+    const task = this._taskBeingUpdated;
+    const targets = this.renderRoot.querySelectorAll('fluent-text-field');
+    for (const target of targets) {
+      if (
+        task &&
+        ((target as HTMLInputElement).id === task.id || (target as HTMLInputElement).id === `${task.id}-taskDate-input`)
+      ) {
+        void this.updateTask(task);
+        (target as HTMLInputElement)?.blur();
+      }
     }
   };
 
@@ -676,20 +698,6 @@ export class MgtTodo extends MgtTasksBase {
       this._newTaskDueDate = new Date(value + 'T17:00');
     } else {
       this._newTaskDueDate = null;
-    }
-  };
-
-  private readonly handleDateUpdate = async (e: Event, task: TodoTask) => {
-    if ((e.target as HTMLInputElement).id === `${task.id}-taskDate-input`) {
-      const value = (e.target as HTMLInputElement).value;
-      if (value) {
-        this._newTaskDueDate = new Date(value + 'T17:00');
-      } else {
-        this._newTaskDueDate = null;
-      }
-
-      await this.updateTask(task);
-      (e.target as HTMLInputElement)?.blur();
     }
   };
 }
