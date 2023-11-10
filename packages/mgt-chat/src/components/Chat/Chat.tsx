@@ -107,7 +107,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
           {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
               <ChatHeader chatState={chatState} />
-              <div id="messages" className={styles.chatMessages}>
+              <div className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}
                   messages={chatState.messages}
@@ -137,7 +137,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   onRenderMessage={onRenderMessage}
                 />
               </div>
-              <div id="chatInput" className={styles.chatInput}>
+              <div className={styles.chatInput}>
                 <SendBox onSendMessage={chatState.onSendMessage} />
               </div>
               <ErrorBar activeErrorMessages={chatState.activeErrorMessages} />
