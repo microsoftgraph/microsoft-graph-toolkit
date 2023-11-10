@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, TemplateResult } from 'lit';
+import { html, nothing, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import {
@@ -33,7 +33,9 @@ import { MgtFileList, registerMgtFileListComponent } from '../mgt-file-list/mgt-
 import { MgtMessages, registerMgtMessagesComponent } from '../mgt-messages/mgt-messages';
 import { MgtOrganization, registerMgtOrganizationComponent } from '../mgt-organization/mgt-organization';
 import { MgtProfile, registerMgtProfileComponent } from '../mgt-profile/mgt-profile';
-import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
+import { MgtPersonCardState } from './mgt-person-card.types';
+import { MgtPersonCardConfig } from './MgtPersonCardConfig';
+import { getMgtPersonCardScopes } from './getMgtPersonCardScopes';
 import { strings } from './strings';
 import { isUser } from '../../graph/entityType';
 
@@ -63,7 +65,7 @@ interface MgtPersonCardStateHistory {
 
 export const registerMgtPersonCardComponent = () => {
   registerFluentComponents(fluentCard, fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
-  // register self first to avoid infinte loop due to circular ref between person and person card and organization
+  // register self first to avoid infinite loop due to circular ref between person and person card and organization
   registerComponent('person-card', MgtPersonCard);
 
   registerMgtSpinnerComponent();
@@ -147,83 +149,8 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
    * @memberof MgtPersonCard
    */
   public static get requiredScopes(): string[] {
-    return MgtPersonCard.getScopes();
+    return getMgtPersonCardScopes();
   }
-
-  /**
-   * Scopes used to fetch data for the component
-   *
-   * @static
-   * @return {*}  {string[]}
-   * @memberof MgtPersonCard
-   */
-  public static getScopes(): string[] {
-    const scopes: string[] = [];
-
-    if (this.config.sections.files) {
-      scopes.push('Sites.Read.All');
-    }
-
-    if (this.config.sections.mailMessages) {
-      scopes.push('Mail.Read');
-      scopes.push('Mail.ReadBasic');
-    }
-
-    if (this.config.sections.organization) {
-      scopes.push('User.Read.All');
-
-      if (typeof this.config.sections.organization !== 'boolean' && this.config.sections.organization.showWorksWith) {
-        scopes.push('People.Read.All');
-      }
-    }
-
-    if (this.config.sections.profile) {
-      scopes.push('User.Read.All');
-    }
-
-    if (this.config.useContactApis) {
-      scopes.push('Contacts.Read');
-    }
-
-    if (scopes.indexOf('User.Read.All') < 0) {
-      // at minimum, we need these scopes
-      scopes.push('User.ReadBasic.All');
-      scopes.push('User.Read');
-    }
-
-    if (scopes.indexOf('People.Read.All') < 0) {
-      // at minimum, we need these scopes
-      scopes.push('People.Read');
-    }
-
-    scopes.push('Chat.Create', 'Chat.ReadWrite');
-
-    // return unique
-    return [...new Set(scopes)];
-  }
-
-  /**
-   * Global configuration object for
-   * all person card components
-   *
-   * @static
-   * @type {MgtPersonCardConfig}
-   * @memberof MgtPersonCard
-   */
-  public static get config() {
-    return this._config;
-  }
-
-  private static readonly _config: MgtPersonCardConfig = {
-    sections: {
-      files: true,
-      mailMessages: true,
-      organization: { showWorksWith: true },
-      profile: true
-    },
-    useContactApis: true,
-    isSendMessageVisible: true
-  };
 
   /**
    * Set the person details to render
@@ -954,14 +881,15 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
    * @returns {TemplateResult}
    * @memberof MgtPersonCard
    */
-  protected renderMessagingSection(): TemplateResult {
+  protected renderMessagingSection() {
     const person = this.personDetails as User;
     const user = this._me.userPrincipalName;
     const chatInput = this._chatInput;
     if (person?.userPrincipalName === user) {
       return;
     } else {
-      return html`
+      return MgtPersonCardConfig.isSendMessageVisible
+        ? html`
       <div class="message-section">
         <fluent-text-field
           autocomplete="off"
@@ -981,7 +909,8 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
           ${!this.isSending ? getSvg(SvgIcon.Send) : getSvg(SvgIcon.Confirmation)}
         </fluent-button>
       </div>
-      `;
+      `
+        : nothing;
     }
   }
 
@@ -1056,7 +985,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
 
       if (people?.length) {
         this.personDetails = people[0];
-        await getPersonImage(graph, this.personDetails, MgtPersonCard.config.useContactApis).then(image => {
+        await getPersonImage(graph, this.personDetails, MgtPersonCardConfig.useContactApis).then(image => {
           if (image) {
             this.personDetails.personImage = image;
             this.personImage = image;
@@ -1086,12 +1015,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
 
     // populate state
     if (this.personDetails?.id) {
-      this._cardState = await getPersonCardGraphData(
-        graph,
-        this.personDetails,
-        this._me === this.personDetails.id,
-        MgtPersonCard.config
-      );
+      this._cardState = await getPersonCardGraphData(graph, this.personDetails, this._me === this.personDetails.id);
     }
 
     this.loadSections();
@@ -1281,19 +1205,19 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
 
     const { person, directReports, messages, files, profile } = this._cardState;
 
-    if (MgtPersonCard.config.sections.organization && (person?.manager || directReports?.length)) {
+    if (MgtPersonCardConfig.sections.organization && (person?.manager || directReports?.length)) {
       this.sections.push(new MgtOrganization(this._cardState, this._me));
     }
 
-    if (MgtPersonCard.config.sections.mailMessages && messages?.length) {
+    if (MgtPersonCardConfig.sections.mailMessages && messages?.length) {
       this.sections.push(new MgtMessages(messages));
     }
 
-    if (MgtPersonCard.config.sections.files && files?.length) {
+    if (MgtPersonCardConfig.sections.files && files?.length) {
       this.sections.push(new MgtFileList());
     }
 
-    if (MgtPersonCard.config.sections.profile && profile) {
+    if (MgtPersonCardConfig.sections.profile && profile) {
       const profileSection = new MgtProfile(profile);
       if (profileSection.hasData) {
         this.sections.push(profileSection);
