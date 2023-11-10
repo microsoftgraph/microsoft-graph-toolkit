@@ -38,7 +38,10 @@ const useStyles = makeStyles({
       ...shorthands.padding('unset')
     },
     '& .ui-chat__item__message': {
-      marginLeft: 'unset'
+      marginLeft: 'unset',
+      '& ul': {
+        ...shorthands.paddingInline('40px', '0px')
+      }
     }
   },
   chatInput: {
