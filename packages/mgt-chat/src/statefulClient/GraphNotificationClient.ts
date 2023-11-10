@@ -17,6 +17,7 @@ import type {
 } from '@microsoft/microsoft-graph-types';
 import { GraphConfig } from './GraphConfig';
 import { SubscriptionsCache } from './Caching/SubscriptionCache';
+import { Timer } from '../utils/Timer';
 
 export const appSettings = {
   defaultSubscriptionLifetimeInMinutes: 10,
@@ -50,12 +51,13 @@ const isMembershipNotification = (o: Notification<Entity>): o is Notification<Aa
 
 export class GraphNotificationClient {
   private connection?: HubConnection = undefined;
-  private renewalInterval = -1;
-  private cleanupInterval = -1;
+  private renewalInterval?: string;
+  private cleanupInterval?: string;
   private renewalCount = 0;
   private chatId = '';
   private sessionId = '';
   private readonly subscriptionCache: SubscriptionsCache = new SubscriptionsCache();
+  private readonly timer = new Timer();
   private get graph() {
     return this._graph;
   }
@@ -85,9 +87,10 @@ export class GraphNotificationClient {
    * i.e
    */
   public async tearDown() {
-    log('clearing intervals');
-    window.clearInterval(this.cleanupInterval);
-    window.clearInterval(this.renewalInterval);
+    log('cleaning up graph notification resources');
+    if (this.cleanupInterval) this.timer.clearInterval(this.cleanupInterval);
+    if (this.renewalInterval) this.timer.clearInterval(this.renewalInterval);
+    this.timer.close();
     await this.unsubscribeFromChatNotifications(this.chatId, this.sessionId);
   }
 
@@ -177,7 +180,7 @@ export class GraphNotificationClient {
     await this.subscriptionCache.cacheSubscription(this.chatId, this.sessionId, subscriptionRecord);
 
     // only start timer once. -1 for renewalInterval is semaphore it has stopped.
-    if (this.renewalInterval === -1) this.startRenewalTimer();
+    if (this.renewalInterval === undefined) this.startRenewalTimer();
   };
 
   private async subscribeToResource(resourcePath: string, changeTypes: ChangeTypes[]) {
@@ -215,14 +218,15 @@ export class GraphNotificationClient {
   }
 
   private readonly startRenewalTimer = () => {
-    if (this.renewalInterval !== -1) clearInterval(this.renewalInterval);
-    this.renewalInterval = window.setInterval(this.syncTimerWrapper, appSettings.renewalTimerInterval * 1000);
+    if (this.renewalInterval !== undefined) this.timer.clearInterval(this.renewalInterval);
+    this.renewalInterval = this.timer.setInterval(this.syncTimerWrapper, appSettings.renewalTimerInterval * 1000);
     log(`Start renewal timer . Id: ${this.renewalInterval}`);
   };
 
   private readonly syncTimerWrapper = () => void this.renewalTimer();
 
   private readonly renewalTimer = async () => {
+    log(`running subscription renewal timer for chatId: ${this.chatId} sessionId: ${this.sessionId}`);
     const subscriptions =
       (await this.subscriptionCache.loadSubscriptions(this.chatId, this.sessionId))?.subscriptions || [];
     if (subscriptions.length === 0) {
@@ -242,7 +246,7 @@ export class GraphNotificationClient {
         log(`Renewing Graph subscription. RenewalCount: ${this.renewalCount}`);
         // stop interval to prevent new invokes until refresh is ready.
         clearInterval(this.renewalInterval);
-        this.renewalInterval = -1;
+        this.renewalInterval = undefined;
         void this.renewChatSubscriptions();
         // There is one subscription that need expiration, all subscriptions will be renewed
         break;
@@ -251,7 +255,7 @@ export class GraphNotificationClient {
   };
 
   public renewChatSubscriptions = async () => {
-    clearInterval(this.renewalInterval);
+    if (this.renewalInterval) this.timer.clearInterval(this.renewalInterval);
 
     const expirationTime = new Date(
       new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
@@ -321,7 +325,7 @@ export class GraphNotificationClient {
   }
 
   private startCleanupTimer() {
-    this.cleanupInterval = window.setInterval(this.cleanupTimerSync, appSettings.removalTimerInterval * 1000);
+    this.cleanupInterval = this.timer.setInterval(this.cleanupTimerSync, appSettings.removalTimerInterval * 1000);
   }
 
   private readonly cleanupTimerSync = () => {
@@ -329,6 +333,7 @@ export class GraphNotificationClient {
   };
 
   private readonly cleanupTimer = async () => {
+    log(`running cleanup timer`);
     const offset = Math.min(
       appSettings.removalThreshold * 1000,
       appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000

@@ -5,11 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, TemplateResult } from 'lit';
+import { html, nothing, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { IGraph, customElement, mgtHtml } from '@microsoft/mgt-element';
+import { IGraph, mgtHtml } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getDateString } from '../../utils/Utils';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -33,13 +33,19 @@ import { isElementDark } from '../../utils/isDark';
 import { ifDefined } from 'lit/directives/if-defined.js';
 
 import { TodoTaskList, TodoTask, TaskStatus } from '@microsoft/microsoft-graph-types';
-
-registerFluentComponents(fluentCheckbox, fluentRadioGroup, fluentButton);
+import { registerComponent } from '@microsoft/mgt-element';
+import { registerMgtPickerComponent } from '../mgt-picker/mgt-picker';
 
 /**
  * Filter function
  */
 export type TodoFilter = (task: TodoTask) => boolean;
+
+export const registerMgtTodoComponent = () => {
+  registerFluentComponents(fluentCheckbox, fluentRadioGroup, fluentButton);
+  registerMgtPickerComponent();
+  registerComponent('todo', MgtTodo);
+};
 
 /**
  * component enables the user to view, add, remove, complete, or edit todo tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.
@@ -58,7 +64,6 @@ export type TodoFilter = (task: TodoTask) => boolean;
  * @cssprop --task-border-completed - {Color} - Task border color when completed
  * @cssprop --task-radio-background-color - {Color} - Task radio background color
  */
-@customElement('todo')
 export class MgtTodo extends MgtTasksBase {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -244,7 +249,8 @@ export class MgtTodo extends MgtTasksBase {
       <fluent-button
         aria-label=${this.strings.cancelAddingTask}
         class="task-cancel-icon" 
-        @click="${this.clearNewTaskData}">
+        @click="${this.clearNewTaskData}"
+      >
         ${getSvg(SvgIcon.Cancel)}
       </fluent-button>
     `;
@@ -257,11 +263,14 @@ export class MgtTodo extends MgtTasksBase {
         class="${classMap(dateClass)}"
         aria-label="${this.strings.newTaskDateInputLabel}"
         .value="${this.dateToInputValue(this._newTaskDueDate)}"
-        @change="${this.handleDateChange}">
+        @change="${this.handleDateChange}"
+      >
       </fluent-text-field>
     `;
 
-    const newTaskDetails = html`
+    const newTaskDetails = this.readOnly
+      ? nothing
+      : html`
       <fluent-text-field
         autocomplete="off"
         appearance="outline"
@@ -271,7 +280,8 @@ export class MgtTodo extends MgtTasksBase {
         .value=${this._newTaskName}
         placeholder="${this.strings.newTaskPlaceholder}"
         @keydown="${this.handleKeyDown}"
-        @input="${this.handleInput}">
+        @input="${this.handleInput}"
+      >
         <div slot="start" class="start">${addIcon}</div>
         ${
           this._newTaskName
@@ -335,6 +345,17 @@ export class MgtTodo extends MgtTasksBase {
       `
       : html``;
 
+    const taskDeleteTemplate = this.readOnly
+      ? html``
+      : html`
+        <fluent-button class="task-delete"
+          @click="${() => this.removeTask(task.id)}"
+          aria-label="${this.strings.deleteTaskLabel}"
+        >
+          ${getSvg(SvgIcon.Delete)}
+        </fluent-button>
+      `;
+
     if (this.hasTemplate('task-details')) {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
     } else {
@@ -342,11 +363,7 @@ export class MgtTodo extends MgtTasksBase {
       <div class="task-details">
         <div class="title">${task.title}</div>
         <div class="task-due">${taskDueTemplate}</div>
-        <fluent-button class="task-delete"
-          @click="${() => this.removeTask(task.id)}"
-          aria-label="${this.strings.deleteTaskLabel}">
-          ${getSvg(SvgIcon.Delete)}
-        </fluent-button>
+        ${taskDeleteTemplate}
       </div>
       `;
     }
@@ -369,7 +386,12 @@ export class MgtTodo extends MgtTasksBase {
     });
 
     return html`
-      <fluent-checkbox id=${task.id} class=${taskClasses} @click="${() => this.handleTaskCheckClick(task)}">
+      <fluent-checkbox 
+        id=${task.id}
+        class=${taskClasses}
+        ?disabled=${this.readOnly}
+        @click="${() => this.handleTaskCheckClick(task)}"
+      >
         ${this.renderTaskDetails(task)}
       </fluent-checkbox>
     `;
@@ -393,7 +415,13 @@ export class MgtTodo extends MgtTasksBase {
     const taskCheckContent = html`${getSvg(SvgIcon.CheckMark)}`;
 
     return html`
-      <fluent-checkbox id=${task.id} class=${taskClasses} checked @click="${() => this.handleTaskCheckClick(task)}">
+      <fluent-checkbox 
+        id=${task.id} 
+        class=${taskClasses} 
+        checked 
+        ?disabled=${this.readOnly} 
+        @click="${() => this.handleTaskCheckClick(task)}"
+      >
         <div slot="checked-indicator">
           ${taskCheckContent}
         </div>

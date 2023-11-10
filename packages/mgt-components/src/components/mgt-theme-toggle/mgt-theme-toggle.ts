@@ -7,13 +7,17 @@
 
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { customElement, MgtBaseComponent } from '@microsoft/mgt-element';
+import { MgtBaseComponent } from '@microsoft/mgt-element';
 import { fluentSwitch } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { applyTheme } from '../../styles/theme-manager';
 import { strings } from './strings';
+import { registerComponent } from '@microsoft/mgt-element';
 
-registerFluentComponents(fluentSwitch);
+export const registerMgtThemeToggleComponent = () => {
+  registerFluentComponents(fluentSwitch);
+  registerComponent('theme-toggle', MgtThemeToggle);
+};
 
 /**
  * Toggle to switch between light and dark mode
@@ -24,7 +28,6 @@ registerFluentComponents(fluentSwitch);
  * @class MgtDarkToggle
  * @extends {MgtBaseComponent}
  */
-@customElement('theme-toggle')
 export class MgtThemeToggle extends MgtBaseComponent {
   constructor() {
     super();

@@ -12,6 +12,7 @@ module.exports = {
   presets: [],
 
   stories: ['../stories/overview.stories.mdx', '../stories/**/*.stories.@(js|mdx)'],
+  staticDirs: ['../assets'],
 
   addons: [
     getAbsolutePath('storybook-version'),

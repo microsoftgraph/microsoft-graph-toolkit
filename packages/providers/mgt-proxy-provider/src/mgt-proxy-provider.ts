@@ -6,8 +6,12 @@
  */
 
 import { property } from 'lit/decorators.js';
-import { Providers, MgtBaseProvider, customElement } from '@microsoft/mgt-element';
+import { Providers, MgtBaseProvider, registerComponent } from '@microsoft/mgt-element';
 import { ProxyProvider } from './ProxyProvider';
+
+export const registerMgtProxyProvider = () => {
+  registerComponent('proxy-provider', MgtProxyProvider);
+};
 
 /**
  * Authentication component for ProxyProvider
@@ -16,8 +20,7 @@ import { ProxyProvider } from './ProxyProvider';
  * @class MgtProxyProvider
  * @extends {LitElement}
  */
-@customElement('proxy-provider')
-export class MgtProxyProvider extends MgtBaseProvider {
+class MgtProxyProvider extends MgtBaseProvider {
   /**
    * The base url to the proxy api
    *

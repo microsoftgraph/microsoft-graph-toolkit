@@ -53,10 +53,13 @@ const useStyles = makeStyles({
   },
   dialog: {
     display: 'block'
+  },
+  dialogSurface: {
+    contain: 'unset'
   }
 });
 
-export const ChatPage: React.FunctionComponent = () => {
+const ChatPage: React.FunctionComponent = () => {
   const styles = useStyles();
   const [selectedChat, setSelectedChat] = React.useState<GraphChat>();
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
@@ -84,7 +87,7 @@ export const ChatPage: React.FunctionComponent = () => {
                   New Chat
                 </Button>
               </DialogTrigger>
-              <DialogSurface>
+              <DialogSurface className={styles.dialogSurface}>
                 <DialogBody className={styles.dialog}>
                   <DialogTitle>New Chat</DialogTitle>
                   <NewChat
@@ -134,3 +137,5 @@ const ChatList = React.memo((props: ChatListProps) => {
     </Get>
   );
 });
+
+export default ChatPage;

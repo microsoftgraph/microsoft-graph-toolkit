@@ -30,6 +30,7 @@
     "setVersion": "gulp setVersion --cwd .",
     "postpack": "cpx *.tgz ../../artifacts"
   },
+  "sideEffects": false,
   "dependencies": {
     "@microsoft/microsoft-graph-client": "3.0.2",
     "idb": "6.0.0",
