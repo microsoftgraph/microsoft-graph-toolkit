@@ -1,9 +1,8 @@
 import { Persona, makeStyles, mergeClasses, shorthands } from '@fluentui/react-components';
-import { Providers } from '@microsoft/mgt-element';
 import { MgtTemplateProps, Person, ViewType } from '@microsoft/mgt-react';
 import { Chat, AadUserConversationMember } from '@microsoft/microsoft-graph-types';
-import React, { useCallback, useEffect, useState } from 'react';
-import { PeopleCommunityRegular, CalendarMonthRegular } from '@fluentui/react-icons';
+import React, { useCallback, useState } from 'react';
+import { PeopleTeam16Regular, Calendar16Regular } from '@fluentui/react-icons';
 
 const useStyles = makeStyles({
   chat: {
@@ -21,17 +20,28 @@ const useStyles = makeStyles({
     backgroundColor: 'var(--colorNeutralBackground1Selected)'
   },
   person: {
+    userSelect: 'none',
+    '--person-line1-font-weight': 'var(--fontWeightRegular)',
     '--person-avatar-size-small': '40px',
+    '--person-avatar-size': '40px',
+    '--person-line2-font-size': 'var(--fontSizeBase200)',
+    '--person-line2-text-color': 'var(--colorNeutralForeground4)',
     '& .fui-Persona__primaryText': {
-      fontSize: 'var(--fontSizeBase300);'
+      fontSize: 'var(--fontSizeBase300)',
+      fontWeight: 'var(--fontWeightRegular)',
     },
     '& .fui-Persona__secondaryText': {
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
       width: '200px',
       display: 'inline-block',
+      fontSize: 'var(--fontSizeBase200);',
+      color: 'var(--colorNeutralForeground4)',
       ...shorthands.overflow('hidden')
     }
+  },
+  group: {
+    paddingTop: '5px',
   },
   messagePreview: {
     whiteSpace: 'nowrap',
@@ -50,71 +60,110 @@ export interface ChatInteractionProps {
 interface ChatItemProps {
   chat: Chat;
   isSelected?: boolean;
+  userId?: string;
 }
 
-const getMessagePreview = (chat: Chat) => {
-  return chat?.lastMessagePreview?.body?.contentType === 'text' ? chat?.lastMessagePreview?.body?.content : '...';
+interface MessagePreviewProps {
+  messagePreview?: string;
+}
+
+const getMessagePreview = (chat: Chat, userId?: string): string | undefined => {
+
+  let preview = "";
+  if (chat?.lastMessagePreview?.from?.user && chat?.lastMessagePreview?.from?.user.id !== userId) {
+    preview += chat?.lastMessagePreview?.from?.user.displayName?.split(' ')[0]!;
+    preview += ": ";
+  } else {
+    preview += "You: ";
+  }
+
+  if (chat?.lastMessagePreview?.body?.contentType === 'text') {
+    preview += chat?.lastMessagePreview?.body?.content;
+  } else if (chat?.lastMessagePreview?.body?.contentType === 'html') {
+    const html = chat?.lastMessagePreview?.body?.content!;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    const images = doc.querySelectorAll('img');
+    const card = doc.querySelector('attachment');
+    const systemCard = doc.querySelector('span[itemId]');
+    const systemEventMessage = doc.querySelector('systemEventMessage');
+
+    if (systemEventMessage || systemCard) return undefined;
+
+    preview += doc.body.textContent || doc.body.innerText || "";
+
+    if (images) {
+      if (Array.from(images.values()).find(i => i.src.includes('.gif'))) {
+        preview += " 📷 GIF";
+      } else {
+        preview += " Sent an image";
+      }
+    }
+
+    if (card) {
+      preview = "Sent a card";
+    }
+  }
+
+  return preview?.trim().replace(/[\n\t\r]/g, "").replace(/\s+/g, ' ');
 };
 
-const ChatItem = ({ chat, isSelected, onSelected }: ChatItemProps & ChatInteractionProps) => {
+const ChatItem = React.memo(({ chat, isSelected, onSelected, userId }: ChatItemProps & ChatInteractionProps) => {
   const styles = useStyles();
-  const [myId, setMyId] = useState<string>();
-
-  useEffect(() => {
-    const getMyId = async () => {
-      const me = await Providers.me();
-      setMyId(me.id);
-    };
-    if (!myId) {
-      void getMyId();
-    }
-  }, [myId]);
+  const [messagePreview, setMessagePreview] = useState<string | undefined>("");
 
   const getOtherParticipantId = useCallback(
     (chat: Chat) => {
-      const member = chat.members?.find(m => (m as AadUserConversationMember).userId !== myId);
+      const member = chat.members?.find(m => (m as AadUserConversationMember).userId !== userId);
 
       if (member) {
-        console.log('member', member);
         return (member as AadUserConversationMember).userId as string;
-      } else if (chat.members?.length === 1 && (chat.members[0] as AadUserConversationMember).userId === myId) {
-        return myId;
+      } else if (chat.members?.length === 1 && (chat.members[0] as AadUserConversationMember).userId === userId) {
+        return userId;
       }
 
       return undefined;
     },
-    [myId]
+    [userId]
   );
 
   const getGroupTitle = useCallback((chat: Chat) => {
-    let groupTitle: string | undefined = '';
-    if (chat.topic) {
-      groupTitle = chat.topic;
-    } else {
-      groupTitle = chat.members
-        ?.map(member => {
-          return member.displayName?.split(' ')[0];
-        })
-        .join(', ');
-    }
+    const lf = new Intl.ListFormat('en');
+    let groupMembers: string[] = [];
 
-    return groupTitle;
-  }, []);
+    if (chat.topic) {
+      return chat.topic;
+    } else {
+      chat.members?.filter(member => member["userId"] !== userId)
+        ?.forEach(member => {
+          groupMembers.push(member.displayName?.split(' ')[0]!);
+        });
+
+      return lf.format(groupMembers);
+    }
+  }, [userId]);
+
+  React.useEffect(() => {
+    setMessagePreview(getMessagePreview(chat, userId));
+  }, [chat, userId]);
 
   return (
     <>
-      {myId && (
+      {userId && (
         <div className={mergeClasses(styles.chat, `${isSelected && styles.active}`)}>
           {chat.chatType === 'oneOnOne' && (
             <Person
               userId={getOtherParticipantId(chat)}
-              view={ViewType.twolines}
+              view={messagePreview ? ViewType.twolines : ViewType.oneline}
               avatarSize="auto"
               showPresence={true}
               onClick={() => onSelected(chat)}
               className={styles.person}
             >
-              <MessagePreview template="line2" chat={chat} />
+              {messagePreview && (
+                <MessagePreview template="line2" chat={chat} userId={userId} messagePreview={messagePreview} />
+              )}
             </Person>
           )}
           {chat.chatType === 'group' && (
@@ -123,9 +172,9 @@ const ChatItem = ({ chat, isSelected, onSelected }: ChatItemProps & ChatInteract
                 textAlignment="center"
                 size="extra-large"
                 name={getGroupTitle(chat)}
-                secondaryText={getMessagePreview(chat)}
-                avatar={{ icon: <PeopleCommunityRegular />, initials: null }}
-                className={styles.person}
+                secondaryText={messagePreview}
+                avatar={{ icon: <PeopleTeam16Regular />, initials: null }}
+                className={mergeClasses(styles.person, styles.group)}
               />
               <span></span>
             </div>
@@ -135,10 +184,10 @@ const ChatItem = ({ chat, isSelected, onSelected }: ChatItemProps & ChatInteract
               <Persona
                 textAlignment="center"
                 size="extra-large"
-                className={styles.person}
-                avatar={{ icon: <CalendarMonthRegular />, initials: null }}
+                className={mergeClasses(styles.person, styles.group)}
+                avatar={{ icon: <Calendar16Regular />, initials: null }}
                 name={getGroupTitle(chat)}
-                secondaryText={getMessagePreview(chat)}
+                secondaryText={messagePreview}
               />
             </div>
           )}
@@ -146,16 +195,18 @@ const ChatItem = ({ chat, isSelected, onSelected }: ChatItemProps & ChatInteract
       )}
     </>
   );
-};
+});
 
-const MessagePreview = (props: MgtTemplateProps & ChatItemProps) => {
+const MessagePreview = (props: MgtTemplateProps & ChatItemProps & MessagePreviewProps) => {
   const styles = useStyles();
 
   return (
     <>
-      <span className={styles.messagePreview}>{getMessagePreview(props.chat)}</span>
+      {props.messagePreview && (
+        <span className={styles.messagePreview}>{props.messagePreview}</span>
+      )}
     </>
   );
 };
 
-export default ChatItem;
+export default React.memo(ChatItem);

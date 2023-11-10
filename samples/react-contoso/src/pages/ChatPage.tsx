@@ -61,12 +61,26 @@ const useStyles = makeStyles({
 
 const ChatPage: React.FunctionComponent = () => {
   const styles = useStyles();
+
+  const getPreviousDate = (months: number) => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - months);
+    return date.toISOString();
+  };
+
+  const [resourceUrl, setResourceUrl] = React.useState(`me/chats?$expand=members,lastMessagePreview&$orderBy=lastMessagePreview/createdDateTime desc&$filter=viewpoint/lastMessageReadDateTime ge ${getPreviousDate(
+    9
+  )}`);
+
   const [selectedChat, setSelectedChat] = React.useState<GraphChat>();
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
 
-  const chatSelected = (e: GraphChat) => {
+  const onChatCreated = (e: GraphChat) => {
     if (e.id !== selectedChat?.id && isNewChatOpen) {
       setIsNewChatOpen(false);
+      setResourceUrl(`me/chats?$expand=members,lastMessagePreview&$orderBy=lastMessagePreview/createdDateTime desc&$filter=viewpoint/lastMessageReadDateTime ge ${getPreviousDate(
+        9
+      )}`);
     }
     setSelectedChat(e);
   };
@@ -91,7 +105,7 @@ const ChatPage: React.FunctionComponent = () => {
                 <DialogBody className={styles.dialog}>
                   <DialogTitle>New Chat</DialogTitle>
                   <NewChat
-                    onChatCreated={chatSelected}
+                    onChatCreated={onChatCreated}
                     onCancelClicked={() => {
                       setIsNewChatOpen(false);
                     }}
@@ -100,7 +114,8 @@ const ChatPage: React.FunctionComponent = () => {
               </DialogSurface>
             </Dialog>
           </div>
-          <ChatList chatSelected={selectedChat} onChatSelected={setSelectedChat}></ChatList>
+          <ChatList onChatSelected={setSelectedChat} resourceUrl={resourceUrl}></ChatList>
+
         </div>
         <div className={styles.side}>{selectedChat && <Chat chatId={selectedChat.id!}></Chat>}</div>
       </div>
@@ -110,28 +125,18 @@ const ChatPage: React.FunctionComponent = () => {
 
 interface ChatListProps {
   onChatSelected: (e: GraphChat) => void;
-  chatSelected: GraphChat | undefined;
+  resourceUrl: string;
 }
 
 const ChatList = React.memo((props: ChatListProps) => {
-  const getPreviousDate = (months: number) => {
-    const date = new Date();
-    date.setMonth(date.getMonth() - months);
-    return date.toISOString();
-  };
-
   return (
     <Get
-      resource={`me/chats?$expand=members,lastMessagePreview&$orderBy=lastMessagePreview/createdDateTime desc&$filter=viewpoint/lastMessageReadDateTime ge ${getPreviousDate(
-        9
-      )}`}
+      resource={props.resourceUrl}
       scopes={['chat.read']}
-      cacheEnabled={true}
     >
       <ChatListTemplate
         template="default"
         onSelected={props.onChatSelected}
-        selectedChat={props.chatSelected}
       ></ChatListTemplate>
       <Loading template="loading" message={'Loading your chats...'}></Loading>
     </Get>
