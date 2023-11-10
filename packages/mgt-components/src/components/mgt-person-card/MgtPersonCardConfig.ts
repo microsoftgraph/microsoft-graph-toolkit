@@ -1,5 +1,3 @@
-import { IMgtPersonCardConfig } from './mgt-person-card.types';
-
 interface SectionsConfig {
   /**
    * Gets or sets whether the organization section is shown
@@ -37,7 +35,7 @@ interface SectionsConfig {
 }
 
 export class MgtPersonCardConfig {
-  public static sections = {
+  public static sections: SectionsConfig = {
     files: true,
     mailMessages: true,
     organization: { showWorksWith: true },
