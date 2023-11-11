@@ -52,14 +52,8 @@ const useStyles = makeStyles({
   }
 });
 
-export interface ChatInteractionProps {
-  onSelected: (selected: Chat) => void;
-  selectedChat?: Chat;
-}
-
 interface ChatItemProps {
   chat: Chat;
-  isSelected?: boolean;
   userId?: string;
 }
 
@@ -106,10 +100,12 @@ const getMessagePreview = (chat: Chat, userId?: string): string | undefined => {
     }
   }
 
+  // Remove all new lines, tabs, and carriage returns
+  // Replace all multiple spaces with a single space
   return preview?.trim().replace(/[\n\t\r]/g, "").replace(/\s+/g, ' ');
 };
 
-const ChatItem = React.memo(({ chat, isSelected, onSelected, userId }: ChatItemProps & ChatInteractionProps) => {
+export const ChatItem = React.memo(({ chat, userId }: ChatItemProps) => {
   const styles = useStyles();
   const [messagePreview, setMessagePreview] = useState<string | undefined>("");
 
@@ -151,14 +147,13 @@ const ChatItem = React.memo(({ chat, isSelected, onSelected, userId }: ChatItemP
   return (
     <>
       {userId && (
-        <div className={mergeClasses(styles.chat, `${isSelected && styles.active}`)}>
+        <div className={styles.chat}>
           {chat.chatType === 'oneOnOne' && (
             <Person
               userId={getOtherParticipantId(chat)}
               view={messagePreview ? ViewType.twolines : ViewType.oneline}
               avatarSize="auto"
               showPresence={true}
-              onClick={() => onSelected(chat)}
               className={styles.person}
             >
               {messagePreview && (
@@ -167,7 +162,7 @@ const ChatItem = React.memo(({ chat, isSelected, onSelected, userId }: ChatItemP
             </Person>
           )}
           {chat.chatType === 'group' && (
-            <div onClick={() => onSelected(chat)}>
+            <div>
               <Persona
                 textAlignment="center"
                 size="extra-large"
@@ -180,7 +175,7 @@ const ChatItem = React.memo(({ chat, isSelected, onSelected, userId }: ChatItemP
             </div>
           )}
           {chat.chatType === 'meeting' && (
-            <div onClick={() => onSelected(chat)}>
+            <div>
               <Persona
                 textAlignment="center"
                 size="extra-large"
@@ -208,5 +203,3 @@ const MessagePreview = (props: MgtTemplateProps & ChatItemProps & MessagePreview
     </>
   );
 };
-
-export default React.memo(ChatItem);

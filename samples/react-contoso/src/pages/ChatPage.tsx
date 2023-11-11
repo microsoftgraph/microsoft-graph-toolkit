@@ -136,7 +136,7 @@ const ChatList = React.memo((props: ChatListProps) => {
     >
       <ChatListTemplate
         template="default"
-        onSelected={props.onChatSelected}
+        onChatSelected={props.onChatSelected}
       ></ChatListTemplate>
       <Loading template="loading" message={'Loading your chats...'}></Loading>
     </Get>
