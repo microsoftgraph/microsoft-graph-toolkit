@@ -5948,8 +5948,8 @@ __metadata:
     uuid: ^9.0.0
     web-vitals: ^2.1.4
   peerDependencies:
-    react: ^17.0.0
-    react-dom: ^17.0.0
+    react: ^17.0.1 || ^18.0.0
+    react-dom: ^17.0.1 || ^18.0.0
   languageName: unknown
   linkType: soft
 
