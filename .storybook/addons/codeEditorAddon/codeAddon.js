@@ -211,6 +211,9 @@ export const withCodeEditor = makeDecorator({
       loadEditorContent();
     });
 
+    const componentRegistration = `
+    `;
+
     const loadEditorContent = () => {
       const storyElement = document.createElement('iframe');
 
@@ -229,6 +232,10 @@ export const withCodeEditor = makeDecorator({
           <html>
             <head>
               <script type="module" src="${mgtScriptName}"></script>
+              <script type="module">
+                import { registerMgtComponents } from "${mgtScriptName}";
+                registerMgtComponents();
+              </script>
               <script type="module">
                 ${providerInitCode}
               </script>
