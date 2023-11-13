@@ -23,18 +23,26 @@
 
   var rootPath = getScriptPath();
 
+  function onScriptLoaded() {
+    console.log('script loaded');
+    // register all the components to ensure that they are available in the browser
+    mgt.registerMgtComponents();
+    mgt.registerMgtMockProvider();
+    mgt.registerMgtMsal2Provider();
+    mgt.registerMgtProxyProvider();
+  }
+
   // decide es5 or es6
   if (es6()) {
     window.WebComponents = window.WebComponents || {};
     window.WebComponents.root = rootPath + 'wc/';
 
     addScript(rootPath + 'wc/webcomponents-loader.js');
-    addScript(rootPath + 'mgt.es6.js');
+    addScript(rootPath + 'mgt.es6.js', onScriptLoaded);
   } else {
     // es5 bundle already includes all the polyfills
-    addScript(rootPath + 'mgt.es5.js');
+    addScript(rootPath + 'mgt.es5.js', onScriptLoaded);
   }
-
   function getScriptPath() {
     var scripts = document.getElementsByTagName('script');
     var path = scripts[scripts.length - 1].src.split('?')[0];
@@ -59,12 +67,10 @@
 
   function addScript(src, onload) {
     var tag = document.createElement('script');
+    document.head.append(tag);
+    if (onload) {
+      tag.addEventListener('load', onload);
+    }
     tag.src = src;
-
-    // if (onload) {
-    //   tag.addEventListener("load", onload);
-    // }
-
-    document.write(tag.outerHTML);
   }
 })();
