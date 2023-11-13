@@ -32,16 +32,6 @@ export interface GraphCollection<T = any> {
 export type MessageCollection = GraphCollection<ChatMessage>;
 
 /**
- * Provides an array of the distinct scopes required for all chat operations
- */
-export const allChatScopes = Array.from(
-  Object.values(chatOperationScopes).reduce((acc, scopes) => {
-    scopes.forEach(s => acc.add(s));
-    return acc;
-  }, new Set<string>())
-);
-
-/**
  * Load the specified chat from graph with the members expanded
  *
  * @param graph authenticated graph client from mgt
@@ -188,7 +178,7 @@ export const deleteChatMessage = async (graph: IGraph, chatId: string, messageId
 export const removeChatMember = async (graph: IGraph, chatId: string, membershipId: string): Promise<void> => {
   await graph
     .api(`/chats/${chatId}/members/${membershipId}`)
-    .middlewareOptions(prepScopes(...chatOperationScopes.deleteChatMessage))
+    .middlewareOptions(prepScopes(...chatOperationScopes.removeChatMember))
     .delete();
 };
 
@@ -299,7 +289,7 @@ export const createChatThread = async (
 
   const chat = (await graph
     .api('/chats')
-    .middlewareOptions(prepScopes(...chatOperationScopes.loadChatImage))
+    .middlewareOptions(prepScopes(...chatOperationScopes.createChat))
     .post(body)) as Chat;
   if (!chat?.id) throw new Error('Chat id not returned from create chat thread');
   if (chatMessage) {
