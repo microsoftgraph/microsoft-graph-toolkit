@@ -16,4 +16,8 @@ describe('emoji rewrite tests', () => {
     );
     await expect(result).to.be.equal('<p>😎🤪</p>');
   });
+  it('returns the original value if there is no emoji', async () => {
+    const result = rewriteEmojiContent('<p><em>Seb is cool</em></p>');
+    await expect(result).to.be.equal('<p><em>Seb is cool</em></p>');
+  });
 });
