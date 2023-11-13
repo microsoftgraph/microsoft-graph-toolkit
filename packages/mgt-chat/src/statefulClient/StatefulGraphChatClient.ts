@@ -58,8 +58,9 @@ import {
   updateChatMessage,
   updateChatTopic
 } from './graph.chat';
-import { updateMessageContentWithImage } from './updateMessageContentWithImage';
+import { updateMessageContentWithImage } from '../utils/updateMessageContentWithImage';
 import { isChatMessage } from '../utils/types';
+import { rewriteEmojiContent } from '../utils/rewriteEmojiContent';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -192,17 +193,6 @@ interface MessageConversion {
  * Regex to detect and replace image urls using graph requests to supply the image content
  */
 const graphImageUrlRegex = /(<img[^>]+)src=(["']https:\/\/graph\.microsoft\.com[^"']*["'])/;
-
-/**
- * Regex to detect and extract emoji alt text
- *
- * Pattern breakdown:
- * (<emoji[^>]+): Captures the opening emoji tag, including any attributes.
- * alt=["'](\w*[^"']*)["']: Matches and captures the "alt" attribute value within single or double quotes. The value can contain word characters but not quotes.
- * (.*[^>]): Captures any remaining text within the opening emoji tag, excluding the closing tag.
- * </emoji>: Matches the closing emoji tag.
- */
-const emojiRegex = /(<emoji[^>]+)alt=["'](\w*[^"']*)["'](.*[^>])<\/emoji>/;
 
 class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private readonly _notificationClient: GraphNotificationClient;
@@ -973,24 +963,8 @@ detail: ${JSON.stringify(eventDetail)}`);
     this.removeParticipantFromState(membershpId);
   };
 
-  private emojiMatch(messageContent: string): RegExpMatchArray | null {
-    return messageContent.match(emojiRegex);
-  }
-
   private graphImageMatch(messageContent: string): RegExpMatchArray | null {
     return messageContent.match(graphImageUrlRegex);
-  }
-
-  // iterative repave the emoji custom element with the content of the alt attribute
-  // on the emoji element
-  private processEmojiContent(messageContent: string): string {
-    let result = messageContent;
-    let match = this.emojiMatch(result);
-    while (match) {
-      result = result.replace(emojiRegex, '$2');
-      match = this.emojiMatch(result);
-    }
-    return result;
   }
 
   private processMessageContent(graphMessage: ChatMessage, currentUser: string): MessageConversion {
@@ -1043,9 +1017,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     let content = graphMessage.body?.content ?? 'undefined';
     let result: MessageConversion = {};
     // do simple emoji replacement first
-    if (this.emojiMatch(content)) {
-      content = this.processEmojiContent(content);
-    }
+    content = rewriteEmojiContent(content);
     // Handle any mentions in the content
     content = this.updateMentionsContent(content);
 
