@@ -1165,7 +1165,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
-    details = details ? details : this.fallbackDetails;
+    details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
 
     // populate presence
     const defaultPresence: Presence = {
