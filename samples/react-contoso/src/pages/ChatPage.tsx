@@ -53,6 +53,9 @@ const useStyles = makeStyles({
   },
   dialog: {
     display: 'block'
+  },
+  dialogSurface: {
+    contain: 'unset'
   }
 });
 
@@ -84,7 +87,7 @@ const ChatPage: React.FunctionComponent = () => {
                   New Chat
                 </Button>
               </DialogTrigger>
-              <DialogSurface>
+              <DialogSurface className={styles.dialogSurface}>
                 <DialogBody className={styles.dialog}>
                   <DialogTitle>New Chat</DialogTitle>
                   <NewChat

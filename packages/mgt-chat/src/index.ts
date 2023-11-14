@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { allChatScopes } from './statefulClient/graph.chat';
+import { allChatScopes } from './statefulClient/chatOperationScopes';
 
 import { appSettings } from './statefulClient/GraphNotificationClient';
 

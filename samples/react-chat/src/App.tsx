@@ -7,7 +7,7 @@ import ChatListTemplate from './components/ChatListTemplate/ChatListTemplate';
 
 const ChatList = memo(({ chatSelected }: { chatSelected: (e: GraphChat) => void }) => {
   return (
-    <Get resource="me/chats?$expand=members" scopes={['chat.read']} cacheEnabled={false}>
+    <Get resource="me/chats?$expand=members" scopes={['Chat.ReadWrite']} cacheEnabled={false}>
       <ChatListTemplate template="default" onSelected={chatSelected} />
     </Get>
   );
