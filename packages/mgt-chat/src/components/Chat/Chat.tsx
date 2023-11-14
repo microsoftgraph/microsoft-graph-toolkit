@@ -23,7 +23,11 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     height: '100%',
     ...shorthands.overflow('auto'),
-    paddingBlockEnd: '12px'
+    paddingBlockEnd: '12px',
+
+    '& p': {
+      ...shorthands.margin('unset')
+    }
   },
   chatMessages: {
     paddingInlineStart: '16px',

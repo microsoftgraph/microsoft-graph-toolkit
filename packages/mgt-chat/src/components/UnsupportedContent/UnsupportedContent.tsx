@@ -16,7 +16,7 @@ const useStyles = makeStyles({
     textDecorationLine: 'none',
     color: '#424242',
     alignItems: 'center',
-    ...shorthands.margin('18px', '0px', '8px', '0px'),
+    ...shorthands.margin('0px', '0px', '2px', '0px'),
     ...shorthands.borderRadius('6px'),
     ...shorthands.padding('16px'),
     ...shorthands.gap('6px'),
