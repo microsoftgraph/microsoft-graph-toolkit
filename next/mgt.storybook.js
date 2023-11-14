@@ -375,7 +375,7 @@ const Te={attribute:!0,type:String,converter:X,reflect:!1,hasChanged:f$1},r$2=(e
       >
         ${y?m:_}
       </span>
-`;return d?f:x}renderPresence(e){var t;if(!this.showPresence||!e)return ye``;let a;const{activity:c,availability:d}=e;switch(d){case"Available":case"AvailableIdle":if("OutOfOffice"===c)a=getSvg(rt.PresenceOofAvailable);else a=getSvg(rt.PresenceAvailable);break;case"Busy":case"BusyIdle":switch(c){case"OutOfOffice":case"OnACall":a=getSvg(rt.PresenceOofBusy);break;default:a=getSvg(rt.PresenceBusy)}break;case"DoNotDisturb":if("OutOfOffice"===c)a=getSvg(rt.PresenceOofDnd);else a=getSvg(rt.PresenceDnd);break;case"Away":if("OutOfOffice"===c)a=getSvg(rt.PresenceOofAway);else a=getSvg(rt.PresenceAway);break;case"BeRightBack":a=getSvg(rt.PresenceAway);break;case"Offline":switch(c){case"Offline":a=getSvg(rt.PresenceOffline);break;case"OutOfOffice":case"OffWork":a=getSvg(rt.PresenceOofAway);break;default:a=getSvg(rt.PresenceStatusUnknown)}break;default:a=getSvg(rt.PresenceStatusUnknown)}const p=ze({"presence-wrapper":!0,noline:this.isNoLine(),oneline:this.isOneLine()}),g=null!==(t=this.strings[c])&&void 0!==t?t:we;return ye`
+`;return d&&this.fireCustomEvent("person-image-rendered"),d?f:x}renderPresence(e){var t;if(!this.showPresence||!e)return ye``;let a;const{activity:c,availability:d}=e;switch(d){case"Available":case"AvailableIdle":if("OutOfOffice"===c)a=getSvg(rt.PresenceOofAvailable);else a=getSvg(rt.PresenceAvailable);break;case"Busy":case"BusyIdle":switch(c){case"OutOfOffice":case"OnACall":a=getSvg(rt.PresenceOofBusy);break;default:a=getSvg(rt.PresenceBusy)}break;case"DoNotDisturb":if("OutOfOffice"===c)a=getSvg(rt.PresenceOofDnd);else a=getSvg(rt.PresenceDnd);break;case"Away":if("OutOfOffice"===c)a=getSvg(rt.PresenceOofAway);else a=getSvg(rt.PresenceAway);break;case"BeRightBack":a=getSvg(rt.PresenceAway);break;case"Offline":switch(c){case"Offline":a=getSvg(rt.PresenceOffline);break;case"OutOfOffice":case"OffWork":a=getSvg(rt.PresenceOofAway);break;default:a=getSvg(rt.PresenceStatusUnknown)}break;default:a=getSvg(rt.PresenceStatusUnknown)}const p=ze({"presence-wrapper":!0,noline:this.isNoLine(),oneline:this.isOneLine()}),g=null!==(t=this.strings[c])&&void 0!==t?t:we;return ye`
       <span
         class="${p}"
         title="${g}"
@@ -415,7 +415,7 @@ const Te={attribute:!0,type:String,converter:X,reflect:!1,hasChanged:f$1},r$2=(e
       <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${!1}>
         <div slot="anchor" class="${p}">${e}</div>
         ${d}
-      </mgt-flyout>`}renderFlyoutContent(e,t,a){return this.renderTemplate("person-card",{person:e,personImage:t})||mgtHtml`
+      </mgt-flyout>`}renderFlyoutContent(e,t,a){return this.fireCustomEvent("flyout-content-rendered"),this.renderTemplate("person-card",{person:e,personImage:t})||mgtHtml`
         <mgt-person-card
           class="mgt-person-card"
           lock-tab-navigation

@@ -6127,7 +6127,7 @@ ${ie("inline-block")} :host {
       >
         ${p?h:C}
       </span>
-`;return n?u:x}renderPresence(e){var t;if(!this.showPresence||!e)return T``;let o,{activity:i,availability:n}=e;switch(n){case"Available":case"AvailableIdle":switch(i){case"OutOfOffice":o=be(D.PresenceOofAvailable);break;case"Available":default:o=be(D.PresenceAvailable);break}break;case"Busy":case"BusyIdle":switch(i){case"OutOfOffice":case"OnACall":o=be(D.PresenceOofBusy);break;case"Busy":case"InACall":case"InAMeeting":case"InAConferenceCall":default:o=be(D.PresenceBusy);break}break;case"DoNotDisturb":switch(i){case"OutOfOffice":o=be(D.PresenceOofDnd);break;case"Presenting":case"Focusing":case"UrgentInterruptionsOnly":default:o=be(D.PresenceDnd);break}break;case"Away":switch(i){case"OutOfOffice":o=be(D.PresenceOofAway);break;case"AwayLastSeenTime":default:o=be(D.PresenceAway);break}break;case"BeRightBack":switch(i){default:o=be(D.PresenceAway);break}break;case"Offline":switch(i){case"Offline":o=be(D.PresenceOffline);break;case"OutOfOffice":case"OffWork":o=be(D.PresenceOofAway);break;default:o=be(D.PresenceStatusUnknown);break}break;default:o=be(D.PresenceStatusUnknown);break}let s=Gt({"presence-wrapper":!0,noline:this.isNoLine(),oneline:this.isOneLine()}),d=(t=this.strings[i])!==null&&t!==void 0?t:ut;return T`
+`;return n&&this.fireCustomEvent("person-image-rendered"),n?u:x}renderPresence(e){var t;if(!this.showPresence||!e)return T``;let o,{activity:i,availability:n}=e;switch(n){case"Available":case"AvailableIdle":switch(i){case"OutOfOffice":o=be(D.PresenceOofAvailable);break;case"Available":default:o=be(D.PresenceAvailable);break}break;case"Busy":case"BusyIdle":switch(i){case"OutOfOffice":case"OnACall":o=be(D.PresenceOofBusy);break;case"Busy":case"InACall":case"InAMeeting":case"InAConferenceCall":default:o=be(D.PresenceBusy);break}break;case"DoNotDisturb":switch(i){case"OutOfOffice":o=be(D.PresenceOofDnd);break;case"Presenting":case"Focusing":case"UrgentInterruptionsOnly":default:o=be(D.PresenceDnd);break}break;case"Away":switch(i){case"OutOfOffice":o=be(D.PresenceOofAway);break;case"AwayLastSeenTime":default:o=be(D.PresenceAway);break}break;case"BeRightBack":switch(i){default:o=be(D.PresenceAway);break}break;case"Offline":switch(i){case"Offline":o=be(D.PresenceOffline);break;case"OutOfOffice":case"OffWork":o=be(D.PresenceOofAway);break;default:o=be(D.PresenceStatusUnknown);break}break;default:o=be(D.PresenceStatusUnknown);break}let s=Gt({"presence-wrapper":!0,noline:this.isNoLine(),oneline:this.isOneLine()}),d=(t=this.strings[i])!==null&&t!==void 0?t:ut;return T`
       <span
         class="${s}"
         title="${d}"
@@ -6167,7 +6167,7 @@ ${ie("inline-block")} :host {
       <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${!1}>
         <div slot="anchor" class="${s}">${e}</div>
         ${n}
-      </mgt-flyout>`}renderFlyoutContent(e,t,o){return this.renderTemplate("person-card",{person:e,personImage:t})||kt`
+      </mgt-flyout>`}renderFlyoutContent(e,t,o){return this.fireCustomEvent("flyout-content-rendered"),this.renderTemplate("person-card",{person:e,personImage:t})||kt`
         <mgt-person-card
           class="mgt-person-card"
           lock-tab-navigation
