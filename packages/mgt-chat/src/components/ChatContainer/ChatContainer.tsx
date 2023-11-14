@@ -17,6 +17,8 @@ interface MgtMessageContainerProps {
 }
 
 const MgtMessageContainer = ({ messageProps, defaultOnRender }: MgtMessageContainerProps) => {
+  // TODO: find out how to render emojis
+  // <p>This is <emoji id=\"cool\" alt=\"😎\" title=\"Cool\"></emoji></p>
   if (isChatMessage(messageProps.message)) {
     const author = messageProps.message?.senderDisplayName ?? '';
     const timestamp = getRelativeDisplayDate(new Date(messageProps.message.createdOn));
@@ -25,6 +27,7 @@ const MgtMessageContainer = ({ messageProps, defaultOnRender }: MgtMessageContai
     const contentType = messageProps.message.contentType;
     const Container = messageContainer(messageProps.message);
 
+    console.log(messageProps);
     switch (contentType) {
       case 'text':
         return (
@@ -34,7 +37,8 @@ const MgtMessageContainer = ({ messageProps, defaultOnRender }: MgtMessageContai
         );
       case 'html':
       case 'richtext/html': {
-        const html = { __html: body };
+        const bodyContent = processEmojiContent(body);
+        const html = { __html: bodyContent };
         return (
           <Container author={author} timestamp={timestamp}>
             <div dangerouslySetInnerHTML={html}></div>
@@ -46,6 +50,31 @@ const MgtMessageContainer = ({ messageProps, defaultOnRender }: MgtMessageContai
     }
   }
   return defaultOnRender ? defaultOnRender(messageProps) : <></>;
+};
+
+/**
+ * Regex to detect and extract emoji alt text
+ *
+ * Pattern breakdown:
+ * (<emoji[^>]+): Captures the opening emoji tag, including any attributes.
+ * alt=["'](\w*[^"']*)["']: Matches and captures the "alt" attribute value within single or double quotes. The value can contain word characters but not quotes.
+ * (.*[^>]): Captures any remaining text within the opening emoji tag, excluding the closing tag.
+ * </emoji>: Matches the closing emoji tag.
+ */
+const emojiRegex = /(<emoji[^>]+)alt=["'](\w*[^"']*)["'](.*[^>])<\/emoji>/;
+
+const emojiMatch = (messageContent: string): RegExpMatchArray | null => {
+  return messageContent.match(emojiRegex);
+};
+
+const processEmojiContent = (messageContent: string): string => {
+  let result = messageContent;
+  let match = emojiMatch(result);
+  while (match) {
+    result = result.replace(emojiRegex, '$2');
+    match = emojiMatch(result);
+  }
+  return result;
 };
 
 export default MgtMessageContainer;
