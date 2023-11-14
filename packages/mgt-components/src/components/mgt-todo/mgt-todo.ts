@@ -639,7 +639,6 @@ export class MgtTodo extends MgtTasksBase {
   private handleTaskCheckKeydown(e: KeyboardEvent, task: TodoTask) {
     if (e.key === 'Enter' && !this.readOnly) {
       this.handleTaskClick(task);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (task.status === 'completed') {
         void this.updateTaskStatus(task, 'notStarted');
       } else {
