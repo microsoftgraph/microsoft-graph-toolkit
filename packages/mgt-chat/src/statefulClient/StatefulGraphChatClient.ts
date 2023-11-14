@@ -1053,6 +1053,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     const unsupportedContentTypes = [
       'application/vnd.microsoft.card.codesnippet',
       'application/vnd.microsoft.card.fluid',
+      'application/vnd.microsoft.card.fluidEmbedCard',
       'reference'
     ];
     const isUnsupported: boolean[] = [];
