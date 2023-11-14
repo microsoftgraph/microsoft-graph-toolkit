@@ -57,7 +57,7 @@ const useStyles = makeStyles({
     ...shorthands.padding('0 !important')
   },
   triggerButton: {
-    ...shorthands.marginInline('8px'),
+    ...shorthands.marginInline('0px', '8px'),
     ...shorthands.paddingInline('0'),
     '--spacingHorizontalSNudge': '2px',
     minWidth: 'unset !important',
