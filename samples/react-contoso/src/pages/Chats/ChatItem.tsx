@@ -28,7 +28,7 @@ const useStyles = makeStyles({
     '--person-line2-text-color': 'var(--colorNeutralForeground4)',
     '& .fui-Persona__primaryText': {
       fontSize: 'var(--fontSizeBase300)',
-      fontWeight: 'var(--fontWeightRegular)',
+      fontWeight: 'var(--fontWeightRegular)'
     },
     '& .fui-Persona__secondaryText': {
       whiteSpace: 'nowrap',
@@ -41,7 +41,7 @@ const useStyles = makeStyles({
     }
   },
   group: {
-    paddingTop: '5px',
+    paddingTop: '5px'
   },
   messagePreview: {
     whiteSpace: 'nowrap',
@@ -62,13 +62,12 @@ interface MessagePreviewProps {
 }
 
 const getMessagePreview = (chat: Chat, userId?: string): string | undefined => {
-
-  let preview = "";
+  let preview = '';
   if (chat?.lastMessagePreview?.from?.user && chat?.lastMessagePreview?.from?.user.id !== userId) {
     preview += chat?.lastMessagePreview?.from?.user.displayName?.split(' ')[0]!;
-    preview += ": ";
+    preview += ': ';
   } else {
-    preview += "You: ";
+    preview += 'You: ';
   }
 
   if (chat?.lastMessagePreview?.body?.contentType === 'text') {
@@ -85,29 +84,32 @@ const getMessagePreview = (chat: Chat, userId?: string): string | undefined => {
 
     if (systemEventMessage || systemCard) return undefined;
 
-    preview += doc.body.textContent || doc.body.innerText || "";
+    preview += doc.body.textContent || doc.body.innerText || '';
 
     if (images) {
       if (Array.from(images.values()).find(i => i.src.includes('.gif'))) {
-        preview += " 📷 GIF";
+        preview += ' 📷 GIF';
       } else {
-        preview += " Sent an image";
+        preview += ' Sent an image';
       }
     }
 
     if (card) {
-      preview = "Sent a card";
+      preview = 'Sent a card';
     }
   }
 
   // Remove all new lines, tabs, and carriage returns
   // Replace all multiple spaces with a single space
-  return preview?.trim().replace(/[\n\t\r]/g, "").replace(/\s+/g, ' ');
+  return preview
+    ?.trim()
+    .replace(/[\n\t\r]/g, '')
+    .replace(/\s+/g, ' ');
 };
 
-export const ChatItem = React.memo(({ chat, userId }: ChatItemProps) => {
+const ChatItemComponent = ({ chat, userId }: ChatItemProps) => {
   const styles = useStyles();
-  const [messagePreview, setMessagePreview] = useState<string | undefined>("");
+  const [messagePreview, setMessagePreview] = useState<string | undefined>('');
 
   const getOtherParticipantId = useCallback(
     (chat: Chat) => {
@@ -124,21 +126,25 @@ export const ChatItem = React.memo(({ chat, userId }: ChatItemProps) => {
     [userId]
   );
 
-  const getGroupTitle = useCallback((chat: Chat) => {
-    const lf = new Intl.ListFormat('en');
-    let groupMembers: string[] = [];
+  const getGroupTitle = useCallback(
+    (chat: Chat) => {
+      const lf = new Intl.ListFormat('en');
+      let groupMembers: string[] = [];
 
-    if (chat.topic) {
-      return chat.topic;
-    } else {
-      chat.members?.filter(member => member["userId"] !== userId)
-        ?.forEach(member => {
-          groupMembers.push(member.displayName?.split(' ')[0]!);
-        });
+      if (chat.topic) {
+        return chat.topic;
+      } else {
+        chat.members
+          ?.filter(member => member['userId'] !== userId)
+          ?.forEach(member => {
+            groupMembers.push(member.displayName?.split(' ')[0]!);
+          });
 
-      return lf.format(groupMembers);
-    }
-  }, [userId]);
+        return lf.format(groupMembers);
+      }
+    },
+    [userId]
+  );
 
   React.useEffect(() => {
     setMessagePreview(getMessagePreview(chat, userId));
@@ -190,16 +196,12 @@ export const ChatItem = React.memo(({ chat, userId }: ChatItemProps) => {
       )}
     </>
   );
-});
+};
 
 const MessagePreview = (props: MgtTemplateProps & ChatItemProps & MessagePreviewProps) => {
   const styles = useStyles();
 
-  return (
-    <>
-      {props.messagePreview && (
-        <span className={styles.messagePreview}>{props.messagePreview}</span>
-      )}
-    </>
-  );
+  return <>{props.messagePreview && <span className={styles.messagePreview}>{props.messagePreview}</span>}</>;
 };
+
+export const ChatItem = React.memo(ChatItemComponent);
