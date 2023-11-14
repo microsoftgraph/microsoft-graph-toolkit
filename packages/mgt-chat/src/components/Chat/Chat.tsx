@@ -26,16 +26,26 @@ const useStyles = makeStyles({
     paddingBlockEnd: '12px'
   },
   chatMessages: {
-    paddingInlineStart: '16px',
     height: 'auto',
+    ...shorthands.paddingInline('20px'),
     ...shorthands.overflow('auto'),
     '& img': {
       maxWidth: '100%',
       height: 'auto'
+    },
+
+    '& ul': {
+      ...shorthands.padding('unset')
+    },
+    '& .ui-chat__item__message': {
+      marginLeft: 'unset',
+      '& ul': {
+        ...shorthands.paddingInline('40px', '0px')
+      }
     }
   },
   chatInput: {
-    ...shorthands.paddingInline('24px'),
+    ...shorthands.paddingInline('16px'),
     ...shorthands.overflow('unset')
   },
   fullHeight: {

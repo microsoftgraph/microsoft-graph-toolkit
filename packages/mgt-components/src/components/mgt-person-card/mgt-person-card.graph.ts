@@ -11,7 +11,8 @@ import { Profile } from '@microsoft/microsoft-graph-types-beta';
 
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { IDynamicPerson } from '../../graph/types';
-import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
+import { MgtPersonCardState } from './mgt-person-card.types';
+import { MgtPersonCardConfig } from './MgtPersonCardConfig';
 
 const userProperties =
   'businessPhones,companyName,department,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,accountEnabled';
@@ -37,8 +38,7 @@ const batchKeys = {
 export const getPersonCardGraphData = async (
   graph: IGraph,
   personDetails: IDynamicPerson,
-  isMe: boolean,
-  config: MgtPersonCardConfig
+  isMe: boolean
 ): Promise<MgtPersonCardState> => {
   const userId = personDetails.id;
   const email = getEmailFromGraphEntity(personDetails);
@@ -51,20 +51,20 @@ export const getPersonCardGraphData = async (
   const batch = graph.createBatch();
 
   if (!isContactOrGroup) {
-    if (config.sections.organization) {
+    if (MgtPersonCardConfig.sections.organization) {
       buildOrgStructureRequest(batch, userId);
 
-      if (typeof config.sections.organization !== 'boolean' && config.sections.organization.showWorksWith) {
+      if (MgtPersonCardConfig.sections.organization.showWorksWith) {
         buildWorksWithRequest(batch, userId);
       }
     }
   }
 
-  if (config.sections.mailMessages && email) {
+  if (MgtPersonCardConfig.sections.mailMessages && email) {
     buildMessagesWithUserRequest(batch, email);
   }
 
-  if (config.sections.files) {
+  if (MgtPersonCardConfig.sections.files) {
     buildFilesRequest(batch, isMe ? null : email);
   }
 
@@ -83,7 +83,7 @@ export const getPersonCardGraphData = async (
     }
   }
 
-  if (!isContactOrGroup && config.sections.profile) {
+  if (!isContactOrGroup && MgtPersonCardConfig.sections.profile) {
     try {
       const profile = await getProfile(graph, userId);
       if (profile) {

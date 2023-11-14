@@ -19,8 +19,8 @@ const useTitleStyles = makeStyles({
     lineHeight: '32px',
     fontSize: '18px',
     fontWeight: 700,
-    marginBlockStart: '10px',
-    marginBlockEnd: '8px',
+    marginBlockStart: '11px',
+    marginBlockEnd: '7px',
     zIndex: 3
   }
 });
