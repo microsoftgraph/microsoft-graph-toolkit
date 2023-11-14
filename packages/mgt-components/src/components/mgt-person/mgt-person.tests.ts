@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { fixture, html, expect, waitUntil } from '@open-wc/testing';
+import { fixture, html, expect, oneEvent } from '@open-wc/testing';
 import { MockProvider, Providers } from '@microsoft/mgt-element';
 import { registerMgtPersonComponent } from './mgt-person';
 
@@ -16,7 +16,7 @@ describe('mgt-person - tests', () => {
 
   it('should render', async () => {
     const person = await fixture(html`<mgt-person person-query="me" view="twoLines"></mgt-person>`);
-    await waitUntil(() => person.shadowRoot.querySelector('img'), 'mgt-person did not update');
+    await oneEvent(person, 'person-image-rendered');
     await expect(person).shadowDom.to.equal(
       `<div class=" person-root twolines " dir="ltr">
         <div class="avatar-wrapper">
@@ -33,7 +33,7 @@ describe('mgt-person - tests', () => {
 
   it('should pop up a flyout on click', async () => {
     const person = await fixture(html`<mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>`);
-    await waitUntil(() => person.shadowRoot.querySelector('img'), 'mgt-person did not update');
+    await oneEvent(person, 'person-image-rendered');
     await expect(person).shadowDom.to.equal(
       `<div class=" person-root twolines " dir="ltr"tabindex="0">
         <mgt-flyout
@@ -67,11 +67,7 @@ describe('mgt-person - tests', () => {
     person.shadowRoot.querySelector('img').click();
     // need to use wait until here because of the dynamic import of the person card
     // this can be flaky due to the dynamic import and timing variance
-    await waitUntil(
-      () => person.shadowRoot.querySelector('div[data-testid="flyout-slot"]'),
-      'mgt-person failed to render flyout',
-      { interval: 500, timeout: 10000 }
-    );
+    await oneEvent(person, 'flyout-content-rendered');
     const flyout = person.shadowRoot.querySelector('div[data-testid="flyout-slot"]');
     await expect(flyout).dom.to.be.equal(`
       <div slot="flyout" data-testid="flyout-slot">
