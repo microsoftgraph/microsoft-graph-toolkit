@@ -266,18 +266,9 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
   :host svg,
   :host svg > path {
-    fill: rgb(255 255 255) !important;
-    fill-rule: nonzero !important;
-    clip-rule: nonzero !important;
-  }
-}
-
-@media (forced-colors: active) and (prefers-color-scheme: dark) {
-  :host svg,
-  :host svg > path {
-    fill: rgb(0 0 0) !important;
-    fill-rule: nonzero !important;
-    clip-rule: nonzero !important;
+    fill: rgb(255 255 255);
+    fill-rule: nonzero;
+    clip-rule: nonzero;
   }
 }
 

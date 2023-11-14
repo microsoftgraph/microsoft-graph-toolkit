@@ -36,6 +36,8 @@ export * from './mgt-get/mgt-get';
 export * from './mgt-login/mgt-login';
 export * from './mgt-people-picker/mgt-people-picker';
 export * from './mgt-people/mgt-people';
+export * from './mgt-person-card/MgtPersonCardConfig';
+export * from './mgt-person-card/getMgtPersonCardScopes';
 export * from './mgt-person-card/mgt-person-card';
 export * from './mgt-person/mgt-person';
 export * from './mgt-person/mgt-person-types';
