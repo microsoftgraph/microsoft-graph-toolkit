@@ -59,18 +59,21 @@ const useStyles = makeStyles({
   }
 });
 
+const getPreviousDate = (months: number) => {
+  const date = new Date();
+  date.setMonth(date.getMonth() - months);
+  return date.toISOString();
+};
+
+const nextResourceUrl = () =>
+  `me/chats?$expand=members,lastMessagePreview&$orderBy=lastMessagePreview/createdDateTime desc&$filter=viewpoint/lastMessageReadDateTime ge ${getPreviousDate(
+    9
+  )}`;
+
 const ChatPage: React.FunctionComponent = () => {
   const styles = useStyles();
 
-  const getPreviousDate = (months: number) => {
-    const date = new Date();
-    date.setMonth(date.getMonth() - months);
-    return date.toISOString();
-  };
-
-  const [resourceUrl, setResourceUrl] = React.useState(`me/chats?$expand=members,lastMessagePreview&$orderBy=lastMessagePreview/createdDateTime desc&$filter=viewpoint/lastMessageReadDateTime ge ${getPreviousDate(
-    9
-  )}`);
+  const [resourceUrl, setResourceUrl] = React.useState(nextResourceUrl);
 
   const [selectedChat, setSelectedChat] = React.useState<GraphChat>();
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
@@ -78,9 +81,7 @@ const ChatPage: React.FunctionComponent = () => {
   const onChatCreated = (e: GraphChat) => {
     if (e.id !== selectedChat?.id && isNewChatOpen) {
       setIsNewChatOpen(false);
-      setResourceUrl(`me/chats?$expand=members,lastMessagePreview&$orderBy=lastMessagePreview/createdDateTime desc&$filter=viewpoint/lastMessageReadDateTime ge ${getPreviousDate(
-        9
-      )}`);
+      setResourceUrl(nextResourceUrl);
     }
     setSelectedChat(e);
   };
@@ -115,7 +116,6 @@ const ChatPage: React.FunctionComponent = () => {
             </Dialog>
           </div>
           <ChatList onChatSelected={setSelectedChat} resourceUrl={resourceUrl}></ChatList>
-
         </div>
         <div className={styles.side}>{selectedChat && <Chat chatId={selectedChat.id!}></Chat>}</div>
       </div>
@@ -130,14 +130,8 @@ interface ChatListProps {
 
 const ChatList = React.memo((props: ChatListProps) => {
   return (
-    <Get
-      resource={props.resourceUrl}
-      scopes={['chat.read']}
-    >
-      <ChatListTemplate
-        template="default"
-        onChatSelected={props.onChatSelected}
-      ></ChatListTemplate>
+    <Get resource={props.resourceUrl} scopes={['chat.read']}>
+      <ChatListTemplate template="default" onChatSelected={props.onChatSelected}></ChatListTemplate>
       <Loading template="loading" message={'Loading your chats...'}></Loading>
     </Get>
   );
