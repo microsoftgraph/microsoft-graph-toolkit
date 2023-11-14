@@ -544,14 +544,12 @@ export class MgtTodo extends MgtTasksBase {
     }
 
     if (this._newTaskDueDate) {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      taskData['dueDateTime'] = {
+      taskData.dueDateTime = {
         dateTime: new Date(this._newTaskDueDate).toLocaleDateString(),
         timeZone: 'UTC'
       };
     } else {
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      taskData['dueDateTime'] = null;
+      taskData.dueDateTime = null;
     }
 
     const updatedTask = await updateTodoTask(this._graph, listId, task.id, taskData);
