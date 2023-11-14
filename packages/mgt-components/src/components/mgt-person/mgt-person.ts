@@ -732,6 +732,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         ${hasInitials ? initials : contactIconTemplate}
       </span>
 `;
+    if (hasImage) this.fireCustomEvent('person-image-rendered');
 
     return hasImage ? imageTemplate : textTemplate;
   }
@@ -1059,6 +1060,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderFlyoutContent(personDetails: IDynamicPerson, image: string, presence: Presence): TemplateResult {
+    this.fireCustomEvent('flyout-content-rendered');
     return (
       this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
       mgtHtml`
