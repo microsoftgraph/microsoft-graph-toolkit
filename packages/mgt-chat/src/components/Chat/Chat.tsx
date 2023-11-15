@@ -160,7 +160,12 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   // render props
                   onRenderAvatar={(userId?: string) => {
                     return (
-                      <Person userId={userId} avatarSize="small" personCardInteraction={PersonCardInteraction.hover} />
+                      <Person
+                        userId={userId}
+                        avatarSize="small"
+                        showPresence={true}
+                        personCardInteraction={PersonCardInteraction.hover}
+                      />
                     );
                   }}
                   styles={messageThreadStyles}

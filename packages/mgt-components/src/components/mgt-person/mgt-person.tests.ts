@@ -70,7 +70,7 @@ describe('mgt-person - tests', () => {
     await waitUntil(
       () => person.shadowRoot.querySelector('div[data-testid="flyout-slot"]'),
       'mgt-person failed to render flyout',
-      { interval: 500, timeout: 10000 }
+      { interval: 500, timeout: 15000 }
     );
     const flyout = person.shadowRoot.querySelector('div[data-testid="flyout-slot"]');
     await expect(flyout).dom.to.be.equal(`

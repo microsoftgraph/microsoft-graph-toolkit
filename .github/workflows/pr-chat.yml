@@ -10,6 +10,9 @@ on:
 jobs:
   react-contoso:
     runs-on: ubuntu-latest
+    # increase node heap size to ensure that the build can succeed
+    env:
+      NODE_OPTIONS: '--max_old_space_size=9182'
 
     strategy:
       matrix:

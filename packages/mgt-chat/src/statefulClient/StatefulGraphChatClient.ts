@@ -1066,6 +1066,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       'application/vnd.microsoft.card.o365connector',
       'application/vnd.microsoft.card.receipt',
       'application/vnd.microsoft.card.thumbnail',
+      'application/vnd.microsoft.card.fluidEmbedCard',
       'reference'
     ];
     const isUnsupported: boolean[] = [];
