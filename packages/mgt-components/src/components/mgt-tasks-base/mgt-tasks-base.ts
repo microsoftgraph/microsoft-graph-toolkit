@@ -6,7 +6,7 @@
  */
 
 import { html, TemplateResult } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
@@ -63,7 +63,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   @property({ attribute: 'initial-id', type: String })
   public initialId: string;
 
-  private _previousMediaQuery: ComponentMediaQuery;
+  @state() private _previousMediaQuery: ComponentMediaQuery;
 
   protected get strings(): Record<string, string> {
     return strings;
@@ -249,7 +249,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   private readonly onResize = () => {
     if (this.mediaQuery !== this._previousMediaQuery) {
       this._previousMediaQuery = this.mediaQuery;
-      this.requestUpdate();
     }
   };
 }

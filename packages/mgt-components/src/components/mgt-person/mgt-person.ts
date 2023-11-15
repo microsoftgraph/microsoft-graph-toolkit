@@ -157,7 +157,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     this._personQuery = value;
     this.personDetailsInternal = null;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -183,7 +183,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -204,7 +204,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     this._userId = value;
     this.personDetailsInternal = null;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -226,7 +226,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._usage = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -277,7 +277,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._fetchedImage = null;
     this._fetchedPresence = null;
 
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
     this.requestUpdate('personDetailsInternal', oldValue);
   }
 
@@ -305,7 +305,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._fetchedImage = null;
     this._fetchedPresence = null;
 
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
     this.requestUpdate('personDetails', oldValue);
   }
 
@@ -400,7 +400,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._avatarType = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**

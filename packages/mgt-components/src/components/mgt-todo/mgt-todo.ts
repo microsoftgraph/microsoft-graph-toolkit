@@ -101,13 +101,13 @@ export class MgtTodo extends MgtTasksBase {
   public static get requiredScopes(): string[] {
     return ['tasks.read', 'tasks.readwrite'];
   }
-  private _tasks: TodoTask[];
+  @state() private _tasks: TodoTask[];
 
-  private _isLoadingTasks: boolean;
-  private _loadingTasks: string[];
+  @state() private _isLoadingTasks: boolean;
+  @state() private _loadingTasks: string[];
   private _newTaskDueDate: Date;
   @state() private _newTaskName: string;
-  private _isNewTaskBeingAdded: boolean;
+  @state() private _isNewTaskBeingAdded: boolean;
   private _graph: IGraph;
   @state() private currentList: TodoTaskList;
   @state() private _isDarkMode = false;
@@ -215,7 +215,6 @@ export class MgtTodo extends MgtTasksBase {
     }
 
     this._isNewTaskBeingAdded = true;
-    this.requestUpdate();
 
     try {
       await this.createNewTask();
@@ -448,7 +447,7 @@ export class MgtTodo extends MgtTasksBase {
       this._graph = graph;
     }
 
-    if (!this.currentList && !this.initialId) {
+    if (!this.currentList && !this.initialId && !this.targetId) {
       const lists = await getTodoTaskLists(this._graph);
       const defaultList = lists?.find(l => l.wellknownListName === 'defaultList');
       if (defaultList) await this.loadTasks(defaultList);
@@ -514,6 +513,7 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
+    this._isNewTaskBeingAdded = false;
   };
 
   private readonly loadTasks = async (list: TodoTaskList): Promise<void> => {
@@ -523,12 +523,10 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = await getTodoTasks(this._graph, list.id);
 
     this._isLoadingTasks = false;
-    this.requestUpdate();
   };
 
   private readonly updateTaskStatus = async (task: TodoTask, taskStatus: TaskStatus): Promise<void> => {
     this._loadingTasks = [...this._loadingTasks, task.id];
-    this.requestUpdate();
 
     // Change the task status
     task.status = taskStatus;
@@ -541,12 +539,10 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks[taskIndex] = task;
 
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
-    this.requestUpdate();
   };
 
   private readonly removeTask = async (taskId: string): Promise<void> => {
     this._tasks = this._tasks.filter(t => t.id !== taskId);
-    this.requestUpdate();
 
     const listId = this.currentList.id;
     await deleteTodoTask(this._graph, listId, taskId);
