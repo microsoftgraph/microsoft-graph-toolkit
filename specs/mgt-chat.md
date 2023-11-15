@@ -8,19 +8,19 @@ The chat component enables the user to have 1:1 or group conversations. This com
 
 ### Priority 0
 
-- [Supporting 1:1 conversations](#000)
-- [Supporting group conversations](#001)
-- [Receiving real-time messages from Teams](#002)
-- [Ensuring all system messages are rendered in the component](#003)
-- [Ensuring DLP policies are respected in the component](#004)
-- [Managing the roster of a group conversation](#005)
-- [Managing the title of the conversation (when a group conversation)](#006)
-- [Navigating to Microsoft Teams from the component](#007)
-- [Rendering the most used content types in the component (rich text, emojis, images, GIFs, mentions, links, adaptive cards)](#008)
-- [Rendering an unsupported card in the component when the component doesn't know about the content type](#009)
-- [Displaying avatars, presence and cards from the users sending messages](#010)
-- [Enabling multiple chat threads in the same page](#011)
--
+- [Rendering 1:1 conversations](#000)
+- [Rendering group conversations](#001)
+- [Sending messages from the component](#002)
+- [Receiving real-time messages from Teams](#003)
+- [Ensuring all system messages are rendered in the component](#004)
+- [Ensuring DLP policies are respected in the component](#005)
+- [Managing the roster of a group conversation](#006)
+- [Managing the title of the conversation (when a group conversation)](#007)
+- [Navigating to Microsoft Teams from the component](#008)
+- [Rendering the most used content types in the component (rich text, emojis, images, GIFs, mentions, links, adaptive cards)](#009)
+- [Rendering an unsupported card in the component when the component doesn't know about the content type](#010)
+- [Displaying avatars, presence and cards from the users sending messages](#011)
+- [Enabling multiple chat threads in the same page](#012)
 
 ### Priority 1
 
@@ -44,29 +44,66 @@ The chat component enables the user to have 1:1 or group conversations. This com
 
 ## Requirements
 
-### Supporting 1:1 conversations <a id="000" />
+### Rendering 1:1 conversations <a id="000"></a>
 
-### Supporting group conversations <a id="001" />
+There are 3 key areas in the component to render 1:1 conversations:
 
-### Receiving real-time messages from Teams <a id="002" />
+1. The header of the component should display the name, the presence and the card of the other user.
+1. The header of the component should also display a button to navigate back to Microsoft Teams.
+1. The body of the component should display the latest messages in the conversation.
 
-### Ensuring all system messages are rendered in the component  <a id="003" />
+![](./images/mgt-chat-001-01.png)
 
-### Ensuring DLP policies are respected in the component  <a id="004" />
+Details:
 
-### Managing the roster of a group conversation  <a id="005" />
+- The component should cache the messages of the conversation to improve performance.
+- The component should load data from Microsoft Graph when the component is rendered and cache is not available.
+- The component should load data from the cache when the component is rendered and cache is available.
+- The component should load data from Microsoft Graph and combine it with the cache when the component is rendered and cache is available but could be outdated.
+- The component should load date from Microsoft Graph when the cache is stale.
+- The component should also display a loading indicator when the messages are being fetched.
 
-### Managing the title of the conversation (when a group conversation)  <a id="006" />
+### Rendering group conversations <a id="001"></a>
 
-### Navigating to Microsoft Teams from the component  <a id="007" />
+There are 4 key areas in the component to render group conversations:
 
-### Rendering the most used content types in the component (rich text, emojis, images, GIFs, mentions, links, adaptive cards)  <a id="008" />
+1. The header of the component should display the name, the presence and the card of the other user.
+1. The header of the component should display a roster management component to add and remove users from the conversation.
+1. The header of the component should also display a button to navigate back to Microsoft Teams.
+1. The body of the component should display the latest messages in the conversation.
 
-### Rendering an unsupported card in the component when the component doesn't know about the content type  <a id="009" />
+![](./images/mgt-chat-001-02.png)
 
-### Displaying avatars, presence and cards from the users sending messages  <a id="010" />
+Details:
 
-### Enabling multiple chat threads in the same page  <a id="011" />
+- The component should cache the messages of the conversation to improve performance.
+- The component should load data from Microsoft Graph when the component is rendered and cache is not available.
+- The component should load data from the cache when the component is rendered and cache is available.
+- The component should load data from Microsoft Graph and combine it with the cache when the component is rendered and cache is available but could be outdated.
+- The component should load date from Microsoft Graph when the cache is stale.
+- The component should also display a loading indicator when the messages are being fetched.
+
+### Sending messages from the component <a id="002"></a>
+
+### Receiving real-time messages from Teams <a id="003"></a>
+
+### Ensuring all system messages are rendered in the component  <a id="004"></a>
+
+### Ensuring DLP policies are respected in the component  <a id="005"></a>
+
+### Managing the roster of a group conversation  <a id="006"></a>
+
+### Managing the title of the conversation (when a group conversation)  <a id="007"></a>
+
+### Navigating to Microsoft Teams from the component  <a id="008"></a>
+
+### Rendering the most used content types in the component (rich text, emojis, images, GIFs, mentions, links, adaptive cards)  <a id="009"></a>
+
+### Rendering an unsupported card in the component when the component doesn't know about the content type  <a id="010"></a>
+
+### Displaying avatars, presence and cards from the users sending messages  <a id="011"></a>
+
+### Enabling multiple chat threads in the same page  <a id="012"></a>
 
 ## Designs
 
