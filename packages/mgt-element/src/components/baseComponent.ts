@@ -81,6 +81,26 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   /**
+   * A flag to check if the component is loading data state.
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  @state() protected isLoadingState: boolean;
+
+  /**
+   * A flag to check if the component has updated once.
+   *
+   * @readonly
+   * @protected
+   * @type {boolean}
+   * @memberof MgtBaseComponent
+   */
+  protected get isFirstUpdated(): boolean {
+    return this._isFirstUpdated;
+  }
+
+  /**
    * returns component strings
    *
    * @readonly
@@ -91,14 +111,7 @@ export abstract class MgtBaseComponent extends LitElement {
     return {};
   }
 
-  /**
-   * determines if login component is in loading state
-   *
-   * @type {boolean}
-   */
-  @state() private _isLoadingState = false;
-
-  @state() private _isFirstUpdated = false;
+  private _isFirstUpdated = false;
   private _currentLoadStatePromise: Promise<unknown>;
 
   constructor() {
@@ -145,6 +158,7 @@ export abstract class MgtBaseComponent extends LitElement {
     this._isFirstUpdated = true;
     Providers.onProviderUpdated(this.handleProviderUpdates);
     Providers.onActiveAccountChanged(this.handleActiveAccountUpdates);
+    // void this.requestStateUpdate();
   }
 
   /**
@@ -159,8 +173,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * Used to clear state in inherited components
    */
   protected clearState(): void {
-    this._isFirstUpdated = false;
-    this._isLoadingState = false;
+    this.isLoadingState = false;
   }
 
   /**
@@ -224,7 +237,7 @@ export abstract class MgtBaseComponent extends LitElement {
     }
 
     // Wait for the current load promise to complete (unless forced).
-    if (this._isLoadingState && !force) {
+    if (this.isLoadingState && !force) {
       await this._currentLoadStatePromise;
     }
 
@@ -269,7 +282,7 @@ export abstract class MgtBaseComponent extends LitElement {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment
         return (this._currentLoadStatePromise =
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          this._isLoadingState && !!this._currentLoadStatePromise && force
+          this.isLoadingState && !!this._currentLoadStatePromise && force
             ? // eslint-disable-next-line @typescript-eslint/no-unsafe-return
               this._currentLoadStatePromise.then(() => loadStatePromise)
             : loadStatePromise);
@@ -278,11 +291,11 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   protected setLoadingState = (value: boolean) => {
-    if (this._isLoadingState === value) {
+    if (this.isLoadingState === value) {
       return;
     }
 
-    this._isLoadingState = value;
+    this.isLoadingState = value;
   };
 
   private readonly handleProviderUpdates = () => {

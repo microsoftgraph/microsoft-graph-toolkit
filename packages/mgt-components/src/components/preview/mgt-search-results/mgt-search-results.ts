@@ -422,7 +422,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    */
   public attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     super.attributeChangedCallback(name, oldValue, newValue);
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**

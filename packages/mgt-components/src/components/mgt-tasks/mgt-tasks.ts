@@ -409,7 +409,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   @property() private _isNewTaskVisible: boolean;
-  @property() private _newTaskBeingAdded: boolean;
+  @state() private _newTaskBeingAdded: boolean;
   @property() private _newTaskName: string;
   @property() private _newTaskDueDate: Date;
   @property() private _newTaskGroupId: string;
@@ -417,15 +417,15 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property() private _newTaskContainerId: string;
   @property() private _groups: ITaskGroup[];
   @property() private _folders: ITaskFolder[];
-  @property() private _tasks: ITask[];
-  @property() private _hiddenTasks: string[];
-  @property() private _loadingTasks: string[];
+  @state() private _tasks: ITask[];
+  @state() private _hiddenTasks: string[];
+  @state() private _loadingTasks: string[];
   @property() private _inTaskLoad: boolean;
   @property() private _hasDoneInitialLoad: boolean;
   @property() private _todoDefaultSet: boolean;
 
-  @property() private _currentGroup: string;
-  @property() private _currentFolder: string;
+  @state() private _currentGroup: string;
+  @state() private _currentFolder: string;
   @state() private _isDarkMode = false;
   @state() private _me: User = null;
   private previousMediaQuery: ComponentMediaQuery;
@@ -481,7 +481,6 @@ export class MgtTasks extends MgtTemplatedComponent {
       }
 
       this.clearState();
-      void this.requestStateUpdate(true);
     }
   }
 
@@ -496,10 +495,13 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._newTaskBeingAdded = false;
 
     this._tasks = [];
+    this._loadingTasks = [];
     this._folders = [];
     this._groups = [];
     this._hiddenTasks = [];
     this._loadingTasks = [];
+    this._currentGroup = null;
+    this._currentFolder = null;
 
     this._hasDoneInitialLoad = false;
     this._inTaskLoad = false;
@@ -815,7 +817,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     if (task) {
       await ts.assignPeopleToTask(task, peopleObj);
-      await this.requestStateUpdate(true);
+      await this.requestStateUpdate();
       this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
     }
   }

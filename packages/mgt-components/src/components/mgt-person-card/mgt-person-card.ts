@@ -172,7 +172,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
 
     this._personDetails = value;
     this.personImage = this.getImage();
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
   /**
    * allows developer to define name of person for component
@@ -213,7 +213,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
     this._userId = value;
     this.personDetails = null;
     this._cardState = null;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -324,6 +324,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
 
   constructor() {
     super();
+    this._chatInput = '';
     this._currentSection = null;
     this._history = [];
     this.sections = [];
@@ -349,7 +350,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
       case 'person-query':
         this.personDetails = null;
         this._cardState = null;
-        void this.requestStateUpdate(true);
+        void this.requestStateUpdate();
         break;
     }
   }
@@ -373,7 +374,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
     this._currentSection = null;
     this.sections = [];
     this._chatInput = '';
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
