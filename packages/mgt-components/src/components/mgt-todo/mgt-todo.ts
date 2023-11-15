@@ -343,6 +343,7 @@ export class MgtTodo extends MgtTasksBase {
               : nothing
           }"
           @change="${this.handleDateChange}"
+          @focus="${(e: KeyboardEvent) => this.updatingTask(e, task)}"
         >
         </fluent-text-field>
       `;
@@ -670,7 +671,10 @@ export class MgtTodo extends MgtTasksBase {
   };
 
   private readonly updatingTask = (e: KeyboardEvent, task: TodoTask) => {
-    if ((e.target as HTMLInputElement).id === task.id) {
+    if (
+      (e.target as HTMLInputElement).id === task.id ||
+      (e.target as HTMLInputElement).id === `${task.id}-taskDate-input`
+    ) {
       this._taskBeingUpdated = task;
     }
   };
@@ -695,6 +699,13 @@ export class MgtTodo extends MgtTasksBase {
       this._newTaskDueDate = new Date(value + 'T17:00');
     } else {
       this._newTaskDueDate = null;
+    }
+
+    const oldValue = new Date(this._taskBeingUpdated.dueDateTime?.dateTime).toLocaleDateString();
+    if (this._taskBeingUpdated && (e.target as HTMLInputElement).id === `${this._taskBeingUpdated.id}-taskDate-input`) {
+      if (value !== oldValue) {
+        void this.updateTask(this._taskBeingUpdated);
+      }
     }
   };
 }
