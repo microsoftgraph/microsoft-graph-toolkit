@@ -689,6 +689,7 @@ export class MgtTodo extends MgtTasksBase {
       ) {
         void this.updateTask(task);
         (target as HTMLInputElement)?.blur();
+        this._taskBeingUpdated = null;
       }
     }
   };
