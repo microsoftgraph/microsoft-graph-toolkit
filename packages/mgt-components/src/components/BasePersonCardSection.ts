@@ -53,7 +53,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent implem
     }
 
     this._personDetails = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**

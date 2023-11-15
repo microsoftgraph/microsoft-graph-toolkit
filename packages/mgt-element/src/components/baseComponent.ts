@@ -167,7 +167,7 @@ export abstract class MgtBaseComponent extends LitElement {
     this._isFirstUpdated = true;
     Providers.onProviderUpdated(this.handleProviderUpdates);
     Providers.onActiveAccountChanged(this.handleActiveAccountUpdates);
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -304,17 +304,22 @@ export abstract class MgtBaseComponent extends LitElement {
       return;
     }
 
+    const oldValue = this._isLoadingState;
+    if (oldValue === value) {
+      return;
+    }
+
     this._isLoadingState = value;
-    this.requestUpdate('isLoadingState');
+    this.requestUpdate('isLoadingState', oldValue);
   };
 
   private readonly handleProviderUpdates = () => {
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   };
 
   private readonly handleActiveAccountUpdates = () => {
     this.clearState();
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   };
 
   private readonly handleLocalizationChanged = () => {

@@ -172,7 +172,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
 
     this._personDetails = value;
     this.personImage = this.getImage();
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
   /**
    * allows developer to define name of person for component
@@ -213,7 +213,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
     this._userId = value;
     this.personDetails = null;
     this._cardState = null;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -307,8 +307,8 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
   @state() private _isStateLoading: boolean;
 
   private _history: MgtPersonCardStateHistory[];
-  private _chatInput: string;
-  private _currentSection: CardSection;
+  @state() private _chatInput: string;
+  @state() private _currentSection: CardSection;
   private _personDetails: IDynamicPerson;
   private _me: User;
   private _smallView: boolean;
@@ -324,7 +324,6 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
 
   constructor() {
     super();
-    this._chatInput = '';
     this._currentSection = null;
     this._history = [];
     this.sections = [];
@@ -350,7 +349,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
       case 'person-query':
         this.personDetails = null;
         this._cardState = null;
-        void this.requestStateUpdate();
+        void this.requestStateUpdate(true);
         break;
     }
   }
@@ -374,7 +373,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
     this._currentSection = null;
     this.sections = [];
     this._chatInput = '';
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -898,7 +897,6 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
           .value=${chatInput}
           @input=${(e: Event) => {
             this._chatInput = (e.target as HTMLInputElement).value;
-            this.requestUpdate();
           }}
           @keydown="${(e: KeyboardEvent) => this.sendQuickMessageOnEnter(e)}">
         </fluent-text-field>
@@ -1236,7 +1234,6 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
 
   private clearInputData() {
     this._chatInput = '';
-    this.requestUpdate();
   }
 
   private getPersonBusinessPhones(person: Person): string[] {
@@ -1261,7 +1258,6 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
       target.scrollTop = 0;
     }
     this._currentSection = section;
-    this.requestUpdate();
   }
 
   private handleSectionScroll(e: WheelEvent) {

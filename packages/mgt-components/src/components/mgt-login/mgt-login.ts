@@ -174,7 +174,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtLogin
    */
-  private _image: string;
+  @state() private _image: string;
 
   /**
    * Suffix for user details key
@@ -183,9 +183,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtLogin
    */
-  private get _userDetailsKey() {
-    return '-userDetails';
-  }
+  @state() private _userDetailsKey: string;
 
   @state() private _arrowKeyLocation = -1;
 
@@ -671,6 +669,8 @@ export class MgtLogin extends MgtTemplatedComponent {
   protected clearState() {
     this.userDetails = null;
     this._image = null;
+    this._userDetailsKey = null;
+    this._isFlyoutOpen = false;
   }
 
   /**

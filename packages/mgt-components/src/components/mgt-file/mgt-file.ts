@@ -95,7 +95,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._fileQuery = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -116,7 +116,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._siteId = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -137,7 +137,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._driveId = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -158,7 +158,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._groupId = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -179,7 +179,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._listId = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -200,7 +200,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._userId = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -221,7 +221,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._itemId = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -242,7 +242,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._itemPath = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -264,7 +264,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._insightType = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -285,7 +285,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._insightId = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -306,7 +306,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._fileDetails = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -327,7 +327,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     this._fileIcon = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**

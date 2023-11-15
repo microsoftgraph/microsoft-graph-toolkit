@@ -237,7 +237,7 @@ export class MgtGet extends MgtTemplatedComponent {
   public attributeChangedCallback(name, oldval, newval) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     super.attributeChangedCallback(name, oldval, newval);
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**

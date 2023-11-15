@@ -92,7 +92,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
       case 'target-id':
       case 'initial-id':
         this.clearState();
-        void this.requestStateUpdate();
+        void this.requestStateUpdate(true);
         break;
     }
   }

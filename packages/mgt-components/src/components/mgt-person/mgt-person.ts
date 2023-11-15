@@ -157,7 +157,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     this._personQuery = value;
     this.personDetailsInternal = null;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -183,7 +183,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -204,7 +204,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     this._userId = value;
     this.personDetailsInternal = null;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -226,7 +226,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._usage = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -268,12 +268,17 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
+    const oldValue = this._personDetailsInternal;
+    if (oldValue === value) {
+      return;
+    }
+
     this._personDetailsInternal = value;
     this._fetchedImage = null;
     this._fetchedPresence = null;
 
-    void this.requestStateUpdate();
-    this.requestUpdate('personDetailsInternal');
+    void this.requestStateUpdate(true);
+    this.requestUpdate('personDetailsInternal', oldValue);
   }
 
   /**
@@ -294,12 +299,14 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
+    const oldValue = this._personDetails;
+
     this._personDetails = value;
     this._fetchedImage = null;
     this._fetchedPresence = null;
 
-    void this.requestStateUpdate();
-    this.requestUpdate('personDetails');
+    void this.requestStateUpdate(true);
+    this.requestUpdate('personDetails', oldValue);
   }
 
   /**
@@ -393,7 +400,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._avatarType = value;
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -532,16 +539,15 @@ export class MgtPerson extends MgtTemplatedComponent {
   @state() private _isInvalidImageSrc: boolean;
   @state() private _personCardShouldRender: boolean;
   @state() private _hasLoadedPersonCard = false;
-
-  private _personDetailsInternal: IDynamicPerson;
-  private _personDetails: IDynamicPerson;
-  private _fallbackDetails: IDynamicPerson;
-  private _personImage: string;
-  private _personPresence: Presence;
-  private _personQuery: string;
-  private _userId: string;
-  private _usage: string;
-  private _avatarType: avatarType;
+  @state() private _personQuery: string;
+  @state() private _userId: string;
+  @state() private _usage: string;
+  @state() private _avatarType: avatarType;
+  @state() private _personDetailsInternal: IDynamicPerson;
+  @state() private _personDetails: IDynamicPerson;
+  @state() private _fallbackDetails: IDynamicPerson;
+  @state() private _personImage: string;
+  @state() private _personPresence: Presence;
 
   private _mouseLeaveTimeout = -1;
   private _mouseEnterTimeout = -1;
@@ -651,8 +657,11 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected clearState(): void {
     this._personImage = '';
     this._personDetailsInternal = null;
+    this._personDetails = null;
+    this._fallbackDetails = null;
     this._fetchedImage = null;
     this._fetchedPresence = null;
+    this._personPresence = null;
   }
 
   /**
@@ -859,28 +868,28 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @param
    * @memberof MgtPersonCard
    */
-  protected renderAvatar(personDetailsInternal: IDynamicPerson, image: string, presence: Presence): TemplateResult {
+  protected renderAvatar(person: IDynamicPerson, image: string, presence: Presence): TemplateResult {
     const hasInitials = !image || this._isInvalidImageSrc || this._avatarType === avatarType.initials;
 
     let title = '';
 
-    if (hasInitials && personDetailsInternal) {
-      title = `${this.strings.initials} ${this.getInitials(personDetailsInternal)}`;
+    if (hasInitials && person) {
+      title = `${this.strings.initials} ${this.getInitials(person)}`;
     } else {
-      title = personDetailsInternal ? personDetailsInternal.displayName || '' : '';
+      title = person ? person.displayName || '' : '';
       if (title !== '') {
         title = `${this.strings.photoFor} ${title}`;
       }
     }
 
     if (title === '') {
-      const emailAddress = getEmailFromGraphEntity(personDetailsInternal);
+      const emailAddress = getEmailFromGraphEntity(person);
       if (emailAddress !== null) {
         title = `${this.strings.emailAddress} ${emailAddress}`;
       }
     }
 
-    const imageTemplate: TemplateResult = this.renderImage(personDetailsInternal, image);
+    const imageTemplate: TemplateResult = this.renderImage(person, image);
     const presenceTemplate: TemplateResult = this.renderPresence(presence);
 
     return html`

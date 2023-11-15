@@ -481,7 +481,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       }
 
       this.clearState();
-      void this.requestStateUpdate();
+      void this.requestStateUpdate(true);
     }
   }
 
@@ -720,7 +720,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     newTask._raw = await ts.addTask(newTask);
     this.fireCustomEvent('taskAdded', newTask);
 
-    await this.requestStateUpdate();
+    await this.requestStateUpdate(true);
     this._newTaskBeingAdded = false;
     this.isNewTaskVisible = false;
   }
@@ -734,7 +734,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     await ts.setTaskComplete(task);
     this.fireCustomEvent('taskChanged', task);
 
-    await this.requestStateUpdate();
+    await this.requestStateUpdate(true);
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
 
@@ -748,7 +748,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     await ts.setTaskIncomplete(task);
     this.fireCustomEvent('taskChanged', task);
 
-    await this.requestStateUpdate();
+    await this.requestStateUpdate(true);
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
 
@@ -762,7 +762,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     await ts.removeTask(task);
     this.fireCustomEvent('taskRemoved', task);
 
-    await this.requestStateUpdate();
+    await this.requestStateUpdate(true);
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
@@ -815,7 +815,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     if (task) {
       await ts.assignPeopleToTask(task, peopleObj);
-      await this.requestStateUpdate();
+      await this.requestStateUpdate(true);
       this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
     }
   }

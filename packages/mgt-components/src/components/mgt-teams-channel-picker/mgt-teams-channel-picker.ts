@@ -247,12 +247,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     const input = wrapper.shadowRoot.querySelector<HTMLInputElement>('input');
     return input;
   }
-  private _inputValue = '';
+  @state() private _inputValue: string;
 
   @state() private _selectedItemState: ChannelPickerItemState;
   private _items: DropdownItem[] | undefined;
   private _treeViewState: ChannelPickerItemState[] = [];
-  private _focusList: ChannelPickerItemState[] = [];
+  @state() private _focusList: ChannelPickerItemState[] = [];
 
   // focus state
   private debouncedSearch: () => void;
@@ -308,7 +308,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (provider && provider.state === ProviderState.SignedIn) {
       // since the component normally handles loading on hover, forces the load for items
       if (!this.items) {
-        await this.requestStateUpdate();
+        await this.requestStateUpdate(true);
       }
 
       for (const item of this._treeViewState) {
@@ -913,12 +913,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   private resetFocusState() {
     this._focusList = this.generateFocusList(this._treeViewState);
-    this.requestUpdate();
   }
 
   private loadTeamsIfNotLoaded() {
     if (!this.items && !this.isLoadingState) {
-      void this.requestStateUpdate();
+      void this.requestStateUpdate(true);
     }
   }
 
@@ -949,7 +948,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._isDropdownVisible = false;
     this.filterList();
     this.toggleChevron();
-    this.requestUpdate();
 
     if (this._selectedItemState !== undefined) {
       this.showCloseIcon();

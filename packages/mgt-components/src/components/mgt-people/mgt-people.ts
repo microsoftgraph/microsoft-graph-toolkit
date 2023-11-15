@@ -244,7 +244,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
     this._fallbackDetails = value;
 
-    void this.requestStateUpdate();
+    void this.requestStateUpdate(true);
   }
 
   /**
