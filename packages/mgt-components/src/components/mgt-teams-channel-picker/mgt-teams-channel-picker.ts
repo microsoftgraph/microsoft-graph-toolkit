@@ -758,6 +758,16 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Clears the selectedItem state.
+   *
+   * @memberof MgtTeamsChannelPicker
+   */
+  clearSelectedItem() {
+    this.removeSelectedChannel(null);
+    this.fireCustomEvent('selectionChanged', this.selectedItem);
+  }
+
+  /**
    * Handles operations that are performed on the DOM when you remove a
    * channel. For example on clicking the X button.
    *
