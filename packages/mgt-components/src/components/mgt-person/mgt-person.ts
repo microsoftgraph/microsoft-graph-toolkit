@@ -570,7 +570,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   public render() {
     // Loading
-    if (this._isLoadingState && !this.personDetails && !this.personDetailsInternal && !this.fallbackDetails) {
+    if (this.isLoadingState && !this.personDetails && !this.personDetailsInternal && !this.fallbackDetails) {
       return this.renderLoading();
     }
 
