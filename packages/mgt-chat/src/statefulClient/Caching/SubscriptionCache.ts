@@ -66,7 +66,7 @@ export class SubscriptionsCache {
       }
       cacheEntry.lastAccessDateTime = new Date().toISOString();
 
-      await store.put(cacheEntry, buildCacheKey(chatId, sessionId));
+      await store.put(cacheEntry, cacheKey);
     });
   }
 
