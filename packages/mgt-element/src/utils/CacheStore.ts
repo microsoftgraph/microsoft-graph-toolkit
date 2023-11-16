@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { openDB } from 'idb';
+import { IDBPObjectStore, openDB } from 'idb';
 import { Providers } from '../providers/Providers';
 import { CacheItem, CacheSchema, Index, dbListKey } from './CacheService';
 
@@ -150,5 +150,17 @@ export class CacheStore<T extends CacheItem> {
   public async queryDb(indexName: string, query: IDBKeyRange | IDBValidKey): Promise<T[]> {
     const db = await this.getDb();
     return (await db.getAllFromIndex(this.store, indexName, query)) as T[];
+  }
+
+  /**
+   * Helper function to get a wrapping transaction for an action function
+   * @param action a function that takes an object store uses it to make changes to the cache
+   */
+  public async transaction(action: (store: IDBPObjectStore<unknown, [string], string, 'readwrite'>) => Promise<void>) {
+    const db = await this.getDb();
+    const tx = db.transaction(this.store, 'readwrite');
+    const store = tx.objectStore(this.store);
+    await action(store);
+    await tx.done;
   }
 }

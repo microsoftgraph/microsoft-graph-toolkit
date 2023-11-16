@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { CacheItem, CacheSchema, CacheService, CacheStore, schemas } from '@microsoft/mgt-react';
+import { CacheItem, CacheSchema, CacheService, CacheStore, log, schemas } from '@microsoft/mgt-react';
 import { Subscription } from '@microsoft/microsoft-graph-types';
 import { isConversationCacheEnabled } from './isConversationCacheEnabled';
-import { cacheEntryIsValid } from './cacheEntryIsValid';
+import { IDBPObjectStore } from 'idb';
 
 type CachedSubscriptionData = CacheItem & {
   chatId: string;
@@ -28,38 +28,46 @@ export class SubscriptionsCache {
   public async loadSubscriptions(chatId: string, sessionId: string): Promise<CachedSubscriptionData | undefined> {
     if (isConversationCacheEnabled()) {
       const cacheKey = buildCacheKey(chatId, sessionId);
-      const data = await this.cache.getValue(cacheKey);
-      if (data && cacheEntryIsValid(data)) {
-        data.lastAccessDateTime = new Date().toISOString();
-        await this.cache.putValue(cacheKey, data);
-        return data;
-      }
+      let data;
+      await this.cache.transaction(async (store: IDBPObjectStore<unknown, [string], string, 'readwrite'>) => {
+        data = (await store.get(cacheKey)) as CachedSubscriptionData | undefined;
+        if (data) {
+          data.lastAccessDateTime = new Date().toISOString();
+          await store.put(data, cacheKey);
+        }
+      });
+      return data || undefined;
     }
     return undefined;
   }
 
   public async cacheSubscription(chatId: string, sessionId: string, subscriptionRecord: Subscription): Promise<void> {
-    let cacheEntry = await this.loadSubscriptions(chatId, sessionId);
-    if (cacheEntry && cacheEntry.chatId === chatId) {
-      const subIndex = cacheEntry.subscriptions.findIndex(s => s.resource === subscriptionRecord.resource);
-      if (subIndex !== -1) {
-        cacheEntry.subscriptions[subIndex] = subscriptionRecord;
-      } else {
-        cacheEntry.subscriptions.push(subscriptionRecord);
-      }
-    } else {
-      cacheEntry = {
-        chatId,
-        sessionId,
-        subscriptions: [subscriptionRecord],
-        // we're cheating a bit here to ensure that we have a defined lastAccessDateTime
-        // but we're updating the value for all cases before storing it.
-        lastAccessDateTime: ''
-      };
-    }
-    cacheEntry.lastAccessDateTime = new Date().toISOString();
+    await this.cache.transaction(async (store: IDBPObjectStore<unknown, [string], string, 'readwrite'>) => {
+      log('cacheSubscription', subscriptionRecord);
+      const cacheKey = buildCacheKey(chatId, sessionId);
 
-    await this.cache.putValue(buildCacheKey(chatId, sessionId), cacheEntry);
+      let cacheEntry = (await store.get(cacheKey)) as CachedSubscriptionData | undefined;
+      if (cacheEntry && cacheEntry.chatId === chatId) {
+        const subIndex = cacheEntry.subscriptions.findIndex(s => s.resource === subscriptionRecord.resource);
+        if (subIndex !== -1) {
+          cacheEntry.subscriptions[subIndex] = subscriptionRecord;
+        } else {
+          cacheEntry.subscriptions.push(subscriptionRecord);
+        }
+      } else {
+        cacheEntry = {
+          chatId,
+          sessionId,
+          subscriptions: [subscriptionRecord],
+          // we're cheating a bit here to ensure that we have a defined lastAccessDateTime
+          // but we're updating the value for all cases before storing it.
+          lastAccessDateTime: ''
+        };
+      }
+      cacheEntry.lastAccessDateTime = new Date().toISOString();
+
+      await store.put(cacheEntry, buildCacheKey(chatId, sessionId));
+    });
   }
 
   public deleteCachedSubscriptions(chatId: string, sessionId: string): Promise<void> {
