@@ -763,7 +763,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @memberof MgtTeamsChannelPicker
    */
   clearSelectedItem() {
-    this.removeSelectedChannel(null);
+    this.removeSelectedChannel(undefined);
     this.fireCustomEvent('selectionChanged', this.selectedItem);
   }
 
