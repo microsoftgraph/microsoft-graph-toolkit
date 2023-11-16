@@ -10,7 +10,7 @@ The chat component enables the user to have 1:1 or group conversations. This com
 
 - [Rendering 1:1 conversations](#000)
 - [Rendering group conversations](#001)
-- [Sending messages from the component](#002)
+- [Sending textual messages from the component](#002)
 - [Receiving real-time messages from Teams](#003)
 - [Ensuring all system messages are rendered in the component](#004)
 - [Ensuring DLP policies are respected in the component](#005)
@@ -52,16 +52,21 @@ There are 3 key areas in the component to render 1:1 conversations:
 1. The header of the component should also display a button to navigate back to Microsoft Teams.
 1. The body of the component should display the latest messages in the conversation.
 
-![](./images/mgt-chat-001-01.png)
+![1:1 conversation](./images/mgt-chat-000.png)
 
-Details:
+#### Details
 
 - The component should cache the messages of the conversation to improve performance.
 - The component should load data from Microsoft Graph when the component is rendered and cache is not available.
 - The component should load data from the cache when the component is rendered and cache is available.
 - The component should load data from Microsoft Graph and combine it with the cache when the component is rendered and cache is available but could be outdated.
-- The component should load date from Microsoft Graph when the cache is stale.
+- The component should load data from Microsoft Graph when the cache is stale.
 - The component should also display a loading indicator when the messages are being fetched.
+
+#### Endpoints
+
+- [Get chat](https://learn.microsoft.com/en-us/graph/api/chat-get?view=graph-rest-1.0&tabs=http)
+- [Get chat messages](https://learn.microsoft.com/en-us/graph/api/chat-list-messages?view=graph-rest-1.0&tabs=http)
 
 ### Rendering group conversations <a id="001"></a>
 
@@ -72,18 +77,39 @@ There are 4 key areas in the component to render group conversations:
 1. The header of the component should also display a button to navigate back to Microsoft Teams.
 1. The body of the component should display the latest messages in the conversation.
 
-![](./images/mgt-chat-001-02.png)
+![Group conversations](./images/mgt-chat-001.png)
 
-Details:
+#### Details
 
 - The component should cache the messages of the conversation to improve performance.
 - The component should load data from Microsoft Graph when the component is rendered and cache is not available.
 - The component should load data from the cache when the component is rendered and cache is available.
 - The component should load data from Microsoft Graph and combine it with the cache when the component is rendered and cache is available but could be outdated.
-- The component should load date from Microsoft Graph when the cache is stale.
+- The component should load data from Microsoft Graph when the cache is stale.
 - The component should also display a loading indicator when the messages are being fetched.
 
-### Sending messages from the component <a id="002"></a>
+#### Endpoints
+
+- [Get chat](https://learn.microsoft.com/en-us/graph/api/chat-get?view=graph-rest-1.0&tabs=http)
+- [Get chat messages](https://learn.microsoft.com/en-us/graph/api/chat-list-messages?view=graph-rest-1.0&tabs=http)
+
+### Sending textual messages from the component <a id="002"></a>
+
+To start with, this component will only support sending textual messages. The component should allow the user to type a message and send it to the conversation. The user can add emojis via the special keyboard shortcut `Win+.`. The component should also allow the user to send a message by pressing `Enter`.
+
+![Sending messages](./images/mgt-chat-002.png)
+
+#### Details
+
+- The component should allow the user to type a message and send it to the conversation.
+- The component should allow the user to send a message by pressing `Enter`.
+- The component should allow the user to add emojis via the special keyboard shortcut `Win+.`.
+- The component should allow the user to send a message by clicking on the send button.
+- The component should send the message via Microsoft Graph.
+
+#### Endpoints
+
+- [Send message](https://learn.microsoft.com/en-us/graph/api/chat-post-messages?view=graph-rest-1.0&tabs=http)
 
 ### Receiving real-time messages from Teams <a id="003"></a>
 
