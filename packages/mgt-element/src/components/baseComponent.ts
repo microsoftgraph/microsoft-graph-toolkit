@@ -86,7 +86,9 @@ export abstract class MgtBaseComponent extends LitElement {
    * @protected
    * @memberof MgtBaseComponent
    */
-  @state() protected isLoadingState: boolean;
+  protected get isLoadingState(): boolean {
+    return this._isLoadingState;
+  }
 
   /**
    * A flag to check if the component has updated once.
@@ -111,7 +113,8 @@ export abstract class MgtBaseComponent extends LitElement {
     return {};
   }
 
-  private _isFirstUpdated = false;
+  @state() private _isFirstUpdated = false;
+  @state() private _isLoadingState = false;
   private _currentLoadStatePromise: Promise<unknown>;
 
   constructor() {
@@ -158,7 +161,6 @@ export abstract class MgtBaseComponent extends LitElement {
     this._isFirstUpdated = true;
     Providers.onProviderUpdated(this.handleProviderUpdates);
     Providers.onActiveAccountChanged(this.handleActiveAccountUpdates);
-    void this.requestStateUpdate();
   }
 
   /**
@@ -173,7 +175,8 @@ export abstract class MgtBaseComponent extends LitElement {
    * Used to clear state in inherited components
    */
   protected clearState(): void {
-    this.isLoadingState = false;
+    this._isLoadingState = false;
+    this._isFirstUpdated = false;
   }
 
   /**
@@ -295,7 +298,7 @@ export abstract class MgtBaseComponent extends LitElement {
       return;
     }
 
-    this.isLoadingState = value;
+    this._isLoadingState = value;
   };
 
   private readonly handleProviderUpdates = () => {
