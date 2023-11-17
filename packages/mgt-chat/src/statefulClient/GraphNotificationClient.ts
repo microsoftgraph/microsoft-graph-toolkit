@@ -369,8 +369,8 @@ export class GraphNotificationClient {
   }
 
   public async subscribeToChatNotifications(chatId: string, sessionId: string) {
-    // if we have a "previous" chat state at present, unsubscribe
-    if (this.chatId && this.sessionId && chatId !== this.chatId && sessionId !== this.sessionId) {
+    // if we have a "previous" chat state at present, unsubscribe for the previous chatId
+    if (this.chatId && this.sessionId && chatId !== this.chatId) {
       await this.unsubscribeFromChatNotifications(this.chatId, this.sessionId);
     }
     this.chatId = chatId;
