@@ -176,7 +176,7 @@ export class MgtTodo extends MgtTasksBase {
     const completedTaskTemplates = repeat(
       completedTasks
         .sort((a, b) => {
-          return new Date(a.lastModifiedDateTime).getTime() - new Date(b.lastModifiedDateTime).getTime();
+          return a.lastModifiedDateTime < b.lastModifiedDateTime ? -1 : 1;
         })
         .filter(task => task.status === 'completed'),
       task => task.id,
@@ -510,9 +510,8 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected updateTask = async (task: TodoTask): Promise<void> => {
     try {
-      if (task.dueDateTime) {
-        this._isChangedDueDate =
-          new Date(task.dueDateTime?.dateTime).toLocaleDateString() !== this._newTaskDueDate?.toLocaleDateString();
+      if (task.dueDateTime && this._newTaskDueDate) {
+        this._isChangedDueDate = new Date(task.dueDateTime.dateTime) !== this._newTaskDueDate;
       } else {
         this._isChangedDueDate = this._newTaskDueDate !== null;
       }
@@ -522,7 +521,6 @@ export class MgtTodo extends MgtTasksBase {
       await this.updateTaskItem(task);
     } finally {
       this.clearNewTaskData();
-      this.requestUpdate();
     }
   };
 
