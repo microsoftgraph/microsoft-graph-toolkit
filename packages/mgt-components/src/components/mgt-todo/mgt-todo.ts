@@ -99,16 +99,18 @@ export class MgtTodo extends MgtTasksBase {
   public static get requiredScopes(): string[] {
     return ['tasks.read', 'tasks.readwrite'];
   }
-  private _tasks: TodoTask[];
+  @state() private _tasks: TodoTask[];
   @state() private _taskBeingUpdated: TodoTask;
+  @state() private _updatingTaskDate: boolean;
+  @state() private _isChangedDueDate = false;
 
-  private _isLoadingTasks: boolean;
-  private _loadingTasks: string[];
-  private _newTaskDueDate: Date;
+  @state() private _isLoadingTasks: boolean;
+  @state() private _loadingTasks: string[];
+  @state() private _newTaskDueDate: Date;
   @state() private _newTaskName: string;
   @state() private _changedTaskName: string;
-  private _isNewTaskBeingAdded: boolean;
-  private _graph: IGraph;
+  @state() private _isNewTaskBeingAdded: boolean;
+  @state() private _graph: IGraph;
   @state() private currentList: TodoTaskList;
   @state() private _isDarkMode = false;
 
@@ -491,14 +493,12 @@ export class MgtTodo extends MgtTasksBase {
     }
 
     this._isNewTaskBeingAdded = true;
-    this.requestUpdate();
 
     try {
       await this.createNewTask();
     } finally {
       this.clearNewTaskData();
       this._isNewTaskBeingAdded = false;
-      this.requestUpdate();
     }
   };
 
@@ -510,14 +510,13 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected updateTask = async (task: TodoTask): Promise<void> => {
     try {
-      let isChangedDueDate: boolean;
       if (task.dueDateTime) {
-        isChangedDueDate =
+        this._isChangedDueDate =
           new Date(task.dueDateTime?.dateTime).toLocaleDateString() !== this._newTaskDueDate?.toLocaleDateString();
       } else {
-        isChangedDueDate = this._newTaskDueDate !== null;
+        this._isChangedDueDate = this._newTaskDueDate !== null;
       }
-      if (!this._changedTaskName && !isChangedDueDate) {
+      if (!this._changedTaskName && !this._isChangedDueDate) {
         return;
       }
       await this.updateTaskItem(task);
@@ -544,13 +543,19 @@ export class MgtTodo extends MgtTasksBase {
       };
     }
 
-    if (this._newTaskDueDate) {
-      taskData.dueDateTime = {
-        dateTime: new Date(this._newTaskDueDate).toLocaleDateString(),
-        timeZone: 'UTC'
-      };
-    } else {
-      taskData.dueDateTime = null;
+    if (this._updatingTaskDate) {
+      if (this._newTaskDueDate) {
+        taskData.dueDateTime = {
+          dateTime: new Date(this._newTaskDueDate).toLocaleDateString(),
+          timeZone: 'UTC'
+        };
+      } else {
+        if (task.dueDateTime) {
+          return;
+        } else {
+          taskData.dueDateTime = null;
+        }
+      }
     }
 
     const updatedTask = await updateTodoTask(this._graph, listId, task.id, taskData);
@@ -570,6 +575,7 @@ export class MgtTodo extends MgtTasksBase {
     this._newTaskDueDate = null;
     this._newTaskName = '';
     this._changedTaskName = '';
+    this._isChangedDueDate = false;
   };
 
   /**
@@ -585,6 +591,7 @@ export class MgtTodo extends MgtTasksBase {
     this._loadingTasks = [];
     this._isLoadingTasks = false;
     this._taskBeingUpdated = null;
+    this._updatingTaskDate = false;
   };
 
   private readonly loadTasks = async (list: TodoTaskList): Promise<void> => {
@@ -594,12 +601,10 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = await getTodoTasks(this._graph, list.id);
 
     this._isLoadingTasks = false;
-    this.requestUpdate();
   };
 
   private readonly updateTaskStatus = async (task: TodoTask, taskStatus: TaskStatus): Promise<void> => {
     this._loadingTasks = [...this._loadingTasks, task.id];
-    this.requestUpdate();
 
     // Change the task status
     task.status = taskStatus;
@@ -612,7 +617,6 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks[taskIndex] = task;
 
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
-    this.requestUpdate();
   };
 
   private readonly removeTask = async (taskId: string): Promise<void> => {
@@ -671,10 +675,11 @@ export class MgtTodo extends MgtTasksBase {
   };
 
   private readonly updatingTask = (e: KeyboardEvent, task: TodoTask) => {
-    if (
-      (e.target as HTMLInputElement).id === task.id ||
-      (e.target as HTMLInputElement).id === `${task.id}-taskDate-input`
-    ) {
+    if ((e.target as HTMLInputElement).id === task.id) {
+      this._taskBeingUpdated = task;
+    }
+    if ((e.target as HTMLInputElement).id === `${task.id}-taskDate-input`) {
+      this._updatingTaskDate = true;
       this._taskBeingUpdated = task;
     }
   };
@@ -690,6 +695,7 @@ export class MgtTodo extends MgtTasksBase {
         void this.updateTask(task);
         (target as HTMLInputElement)?.blur();
         this._taskBeingUpdated = null;
+        this._updatingTaskDate = false;
       }
     }
   };
