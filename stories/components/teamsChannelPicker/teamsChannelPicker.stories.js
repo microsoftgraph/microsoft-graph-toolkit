@@ -86,33 +86,27 @@ export const selectChannel = () => html`
 
 export const clearSelectedItem = () => html`
   <mgt-teams-channel-picker></mgt-teams-channel-picker>
-
-  <button class="get">Get SelectedChannel</button>
   <button class="clear">Clear SelectedChannel</button>
 
   <div class="output"></div>
 
   <script>
-    document.querySelector('.get').addEventListener('click', _ => {
-      const picker = document.querySelector('mgt-teams-channel-picker');
-      const output = document.querySelector('.output');
+    const picker = document.querySelector('mgt-teams-channel-picker');
+    const output = document.querySelector('.output');
+    const clear = document.querySelector('.clear');
 
-      if (picker.selectedItem) {
-        output.innerHTML = '<b>channel:</b> ' + picker.selectedItem.channel.displayName;
-        output.innerHTML += '<br/><b>team:</b> ' + picker.selectedItem.team.displayName;
+    clear.addEventListener('click', _ => {
+      picker.clearSelectedItem();
+    });
+
+    picker.addEventListener('selectionChanged', e => {
+      if (e.detail) {
+        output.innerHTML = '<b>channel:</b> ' + e.detail.channel.displayName;
+        output.innerHTML += '<br/><b>team:</b> ' + e.detail.team.displayName;
       } else {
         output.innerText = 'no channel selected';
       }
-    });
-
-    document.querySelector('.clear').addEventListener('click', _ => {
-      const picker = document.querySelector('mgt-teams-channel-picker');
-      const output = document.querySelector('.output');
-      if (picker.selectedItem) {
-        picker.clearSelectedItem();
-        output.innerText = 'no channel selected';
-      }
-    });
+    })
   </script>
 `;
 
