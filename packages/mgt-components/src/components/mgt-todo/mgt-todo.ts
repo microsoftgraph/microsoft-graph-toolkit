@@ -510,11 +510,6 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected updateTask = async (task: TodoTask): Promise<void> => {
     try {
-      if (task.dueDateTime && this._newTaskDueDate) {
-        this._isChangedDueDate = new Date(task.dueDateTime.dateTime) !== this._newTaskDueDate;
-      } else {
-        this._isChangedDueDate = this._newTaskDueDate !== null;
-      }
       if (!this._changedTaskName && !this._isChangedDueDate) {
         return;
       }
@@ -542,17 +537,18 @@ export class MgtTodo extends MgtTasksBase {
     }
 
     if (this._updatingTaskDate) {
+      if (!this._isChangedDueDate) {
+        return;
+      }
       if (this._newTaskDueDate) {
         taskData.dueDateTime = {
           dateTime: new Date(this._newTaskDueDate).toLocaleDateString(),
           timeZone: 'UTC'
         };
+      } else if (this._isChangedDueDate && !this._newTaskDueDate) {
+        taskData.dueDateTime = null;
       } else {
-        if (task.dueDateTime) {
-          return;
-        } else {
-          taskData.dueDateTime = null;
-        }
+        taskData.dueDateTime = null;
       }
     }
 
@@ -589,7 +585,6 @@ export class MgtTodo extends MgtTasksBase {
     this._loadingTasks = [];
     this._isLoadingTasks = false;
     this._taskBeingUpdated = null;
-    this._updatingTaskDate = false;
   };
 
   private readonly loadTasks = async (list: TodoTaskList): Promise<void> => {
@@ -691,7 +686,7 @@ export class MgtTodo extends MgtTasksBase {
         ((target as HTMLInputElement).id === task.id || (target as HTMLInputElement).id === `${task.id}-taskDate-input`)
       ) {
         void this.updateTask(task);
-        (target as HTMLInputElement)?.blur();
+        (target as HTMLElement)?.blur();
         this._taskBeingUpdated = null;
         this._updatingTaskDate = false;
       }
@@ -706,11 +701,16 @@ export class MgtTodo extends MgtTasksBase {
       this._newTaskDueDate = null;
     }
 
-    const oldValue = new Date(this._taskBeingUpdated.dueDateTime?.dateTime).toLocaleDateString();
-    if (this._taskBeingUpdated && (e.target as HTMLInputElement).id === `${this._taskBeingUpdated.id}-taskDate-input`) {
-      if (value !== oldValue) {
-        void this.updateTask(this._taskBeingUpdated);
-      }
+    const task = this._taskBeingUpdated;
+
+    if (task.dueDateTime && this._newTaskDueDate) {
+      this._isChangedDueDate = new Date(task.dueDateTime.dateTime) !== this._newTaskDueDate;
+    } else if ((task.dueDateTime && !this._newTaskDueDate) || (!task.dueDateTime && this._newTaskDueDate)) {
+      this._isChangedDueDate = true;
+    } else {
+      this._isChangedDueDate = false;
     }
+
+    void this.updateTask(task);
   };
 }
