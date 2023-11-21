@@ -31,22 +31,22 @@ const processEmojiContent = (messageContent: string, replacer = '$2'): string =>
 export const rewriteEmojiContent = (content: string): string =>
   emojiMatch(content) ? processEmojiContent(content) : content;
 
-const emojiHtmlString = (emoji: string, title: string, hasOtherContent?: boolean): string => {
-  const strippedTitle = title.replace(/\s+/g, '').toLowerCase();
-  const size = hasOtherContent ? '20' : '50';
+const emojiHtmlString = (emoji: string, title: string, id: string, hasOtherContent?: boolean): string => {
+  const size = hasOtherContent ? '20' : '50'; // 20px with content, 50px without.
   return `
-    <span contenteditable="false" title="${title}" type="(${strippedTitle})" class="animated-emoticon-${size}-${strippedTitle}">
+    <span contenteditable="false" title="${title}" type="(${id})" class="animated-emoticon-${size}-${id}">
       <img
         itemscope=""
         itemtype="http://schema.skype.com/Emoji"
-        itemid="${strippedTitle}"
-        src="https://statics.teams.cdn.office.net/evergreen-assets/personal-expressions/v2/assets/emoticons/${strippedTitle}/default/${size}_f.png"
+        itemid="${id}"
+        src="https://statics.teams.cdn.office.net/evergreen-assets/personal-expressions/v2/assets/emoticons/${id}/default/${size}_f.png"
         title="${title}"
         alt="${emoji}"
         style="width:${size}px;height:${size}px;" />
     </span>`;
 };
-const emojiRegexForHtml = /(<emoji[^>]+)alt=["'](\w*[^"']*)["']\s+title=["'](\w*[^"']*)["']><\/emoji>/g;
+const emojiRegexForHtml =
+  /(<emoji[^>]+)id=["'](\w*[^"']*)["']\s+alt=["'](\w*[^"']*)["']\s+title=["'](\w*[^"']*)["']><\/emoji>/;
 
 const checkForOtherContent = (content: string, hasAttachments: boolean): boolean => {
   const hasOtherContent = hasAttachments || !emojiMatch(content);
@@ -62,16 +62,16 @@ const checkForOtherContent = (content: string, hasAttachments: boolean): boolean
 };
 
 export const rewriteEmojiContentToHTML = (content: string, hasAttachments: boolean): string => {
-  const matches = content.matchAll(emojiRegexForHtml);
-  let finalContent = '';
   const hasOtherContent = checkForOtherContent(content, hasAttachments);
-  for (const match of matches) {
-    const emoji = match[2];
-    const title = match[3];
-    const htmlString = emojiHtmlString(emoji, title, hasOtherContent);
-    finalContent = processEmojiContent(content, htmlString);
+  let result = content;
+  let match = content.match(emojiRegexForHtml);
+  while (match) {
+    const id = match[2];
+    const emoji = match[3];
+    const title = match[4];
+    const htmlString = emojiHtmlString(emoji, title, id, hasOtherContent);
+    result = result.replace(emojiRegex, htmlString);
+    match = result.match(emojiRegexForHtml);
   }
-  if (finalContent) return finalContent;
-  // fall back to the initial emoji transformation
-  return rewriteEmojiContent(content);
+  return result;
 };
