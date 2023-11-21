@@ -1016,7 +1016,8 @@ detail: ${JSON.stringify(eventDetail)}`);
     }
     let content = graphMessage.body?.content ?? 'undefined';
     let result: MessageConversion = {};
-    content = rewriteEmojiContentToHTML(content);
+    const hasAttachments = Boolean(graphMessage?.attachments?.length);
+    content = rewriteEmojiContentToHTML(content, hasAttachments);
     // Handle any mentions in the content
     content = this.updateMentionsContent(content);
 

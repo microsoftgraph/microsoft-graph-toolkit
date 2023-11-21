@@ -48,13 +48,27 @@ const emojiHtmlString = (emoji: string, title: string, hasOtherContent?: boolean
 };
 const emojiRegexForHtml = /(<emoji[^>]+)alt=["'](\w*[^"']*)["']\s+title=["'](\w*[^"']*)["']><\/emoji>/g;
 
-export const rewriteEmojiContentToHTML = (content: string): string => {
+const checkForOtherContent = (content: string, hasAttachments: boolean): boolean => {
+  const hasOtherContent = hasAttachments || !emojiMatch(content);
+  // using g flag to match all emojis in the content string
+  const matches = content.matchAll(new RegExp(emojiRegex, 'g'));
+  let matchedContentLength = 0;
+  for (const match of matches) {
+    matchedContentLength += match[0].length;
+  }
+  // where <p></p> tags total 7 characters so the matched content + 7 will equal
+  // the length content string for content with emojis only.
+  return hasOtherContent || matchedContentLength + 7 !== content.length;
+};
+
+export const rewriteEmojiContentToHTML = (content: string, hasAttachments: boolean): string => {
   const matches = content.matchAll(emojiRegexForHtml);
   let finalContent = '';
+  const hasOtherContent = checkForOtherContent(content, hasAttachments);
   for (const match of matches) {
     const emoji = match[2];
     const title = match[3];
-    const htmlString = emojiHtmlString(emoji, title, false);
+    const htmlString = emojiHtmlString(emoji, title, hasOtherContent);
     finalContent = processEmojiContent(content, htmlString);
   }
   if (finalContent) return finalContent;
