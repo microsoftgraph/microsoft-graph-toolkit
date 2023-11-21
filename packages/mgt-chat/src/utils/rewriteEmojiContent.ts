@@ -56,8 +56,8 @@ export const rewriteEmojiContentToHTML = (content: string): string => {
     const title = match[3];
     const htmlString = emojiHtmlString(emoji, title, false);
     finalContent = processEmojiContent(content, htmlString);
-    console.log({ emoji, title, htmlString });
   }
   if (finalContent) return finalContent;
-  return content;
+  // fall back to the initial emoji transformation
+  return rewriteEmojiContent(content);
 };
