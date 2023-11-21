@@ -722,7 +722,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     newTask._raw = await ts.addTask(newTask);
     this.fireCustomEvent('taskAdded', newTask);
 
-    await this.requestStateUpdate(true);
+    await this.requestStateUpdate();
     this._newTaskBeingAdded = false;
     this.isNewTaskVisible = false;
   }
@@ -736,7 +736,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     await ts.setTaskComplete(task);
     this.fireCustomEvent('taskChanged', task);
 
-    await this.requestStateUpdate(true);
+    await this.requestStateUpdate();
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
 
@@ -750,7 +750,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     await ts.setTaskIncomplete(task);
     this.fireCustomEvent('taskChanged', task);
 
-    await this.requestStateUpdate(true);
+    await this.requestStateUpdate();
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
 
@@ -764,7 +764,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     await ts.removeTask(task);
     this.fireCustomEvent('taskRemoved', task);
 
-    await this.requestStateUpdate(true);
+    await this.requestStateUpdate();
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 

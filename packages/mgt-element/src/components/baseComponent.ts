@@ -175,8 +175,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * Used to clear state in inherited components
    */
   protected clearState(): void {
-    this._isLoadingState = false;
-    this._isFirstUpdated = false;
+    // no-op
   }
 
   /**
