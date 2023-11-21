@@ -31,6 +31,15 @@ const processEmojiContent = (messageContent: string, replacer = '$2'): string =>
 export const rewriteEmojiContent = (content: string): string =>
   emojiMatch(content) ? processEmojiContent(content) : content;
 
+/**
+ * The emoji HTML string that an <emoji> tag is translated to.
+ *
+ * @param emoji used as the alt value.
+ * @param title used in titles.
+ * @param id used in URLs and id attributes,
+ * @param hasOtherContent determines which size of the emoji to fetch. default 50px.
+ * @returns HTML string.
+ */
 const emojiHtmlString = (emoji: string, title: string, id: string, hasOtherContent?: boolean): string => {
   const size = hasOtherContent ? '20' : '50'; // 20px with content, 50px without.
   return `
@@ -45,9 +54,20 @@ const emojiHtmlString = (emoji: string, title: string, id: string, hasOtherConte
         style="width:${size}px;height:${size}px;" />
     </span>`;
 };
+
+/**
+ * Matches the emoji tag with id in group 2, alt in group 3 and title in group 4.
+ */
 const emojiRegexForHtml =
   /(<emoji[^>]+)id=["'](\w*[^"']*)["']\s+alt=["'](\w*[^"']*)["']\s+title=["'](\w*[^"']*)["']><\/emoji>/;
 
+/**
+ * Perform a check on content and determine whether there is other content
+ * apart from <emoji> tags.
+ * @param content the entire message content.
+ * @param hasAttachments killswitch if there are attachments for the content.
+ * @returns true if there is other content other than <emoji> tags in the content string.
+ */
 const checkForOtherContent = (content: string, hasAttachments: boolean): boolean => {
   const hasOtherContent = hasAttachments || !emojiMatch(content);
   // using g flag to match all emojis in the content string
@@ -61,6 +81,12 @@ const checkForOtherContent = (content: string, hasAttachments: boolean): boolean
   return hasOtherContent || matchedContentLength + 7 !== content.length;
 };
 
+/**
+ * Rewrites the <emoji> tags in content string to standard HTML.
+ * @param content content which may contain <emoji> tags.
+ * @param hasAttachments if the message has attachments to it.
+ * @returns a content string with <emoji> tags translated to standard HTML.
+ */
 export const rewriteEmojiContentToHTML = (content: string, hasAttachments: boolean): string => {
   const hasOtherContent = checkForOtherContent(content, hasAttachments);
   let result = content;
