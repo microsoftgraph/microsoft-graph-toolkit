@@ -758,12 +758,21 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Clears the selectedItem state.
+   *
+   * @memberof MgtTeamsChannelPicker
+   */
+  clearSelectedItem() {
+    this.removeSelectedChannel();
+  }
+
+  /**
    * Handles operations that are performed on the DOM when you remove a
    * channel. For example on clicking the X button.
    *
    * @param item a selected channel item
    */
-  private removeSelectedChannel(item: ChannelPickerItemState) {
+  private removeSelectedChannel(item?: ChannelPickerItemState) {
     this.selectChannel(item);
     const treeItems = this.renderRoot.querySelectorAll('fluent-tree-item');
     if (treeItems) {
@@ -959,7 +968,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.gainedFocus();
   };
 
-  private selectChannel(item: ChannelPickerItemState) {
+  private selectChannel(item?: ChannelPickerItemState) {
     if (item && this._selectedItemState !== item) {
       this._input.setAttribute('disabled', 'true');
     } else {
