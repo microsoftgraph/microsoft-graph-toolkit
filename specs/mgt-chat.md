@@ -113,6 +113,8 @@ To start with, this component will only support sending textual messages. The co
 
 ### Receiving real-time messages from Teams <a id="003"></a>
 
+Using
+
 ### Ensuring all system messages are rendered in the component  <a id="004"></a>
 
 ### Ensuring DLP policies are respected in the component  <a id="005"></a>
