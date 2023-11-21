@@ -221,7 +221,6 @@ export class MgtTodo extends MgtTasksBase {
     } finally {
       this.clearNewTaskData();
       this._isNewTaskBeingAdded = false;
-      this.requestUpdate();
     }
   };
 

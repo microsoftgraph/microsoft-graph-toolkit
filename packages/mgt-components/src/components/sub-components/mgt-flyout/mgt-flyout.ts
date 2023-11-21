@@ -6,7 +6,7 @@
  */
 
 import { html, PropertyValues, TemplateResult } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
@@ -92,7 +92,6 @@ export class MgtFlyout extends MgtBaseComponent {
       }
     });
 
-    this.requestUpdate('isOpen', oldValue);
     this.dispatchEvent(new Event(value ? 'opened' : 'closed'));
   }
 
@@ -120,9 +119,9 @@ export class MgtFlyout extends MgtBaseComponent {
     return this.renderRoot.querySelector('.scout-bottom');
   }
 
-  private _isOpen = false;
-  private _smallView = false;
-  private _windowHeight: number;
+  @state() private _isOpen = false;
+  @state() private _smallView = false;
+  @state() private _windowHeight: number;
 
   constructor() {
     super();

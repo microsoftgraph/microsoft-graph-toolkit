@@ -366,7 +366,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!arraysAreEqual(this._selectedPeople, value)) {
       this._selectedPeople = value;
       this.fireCustomEvent('selectionChanged', this._selectedPeople);
-      this.requestUpdate();
     }
   }
 
@@ -562,21 +561,21 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // if search is still loading don't load "people not found" state
   @state() private _showLoading: boolean;
 
-  private _userIds: string[];
-  private _groupId: string;
-  private _groupIds: string[];
-  private _type: PersonType = PersonType.person;
-  private _groupType: GroupType = GroupType.any;
-  private _userType: UserType = UserType.any;
-  private _userFilters: string;
-  private _groupFilters: string;
-  private _peopleFilters: string;
-  private _defaultSelectedGroupIds: string[];
-  private _defaultSelectedUserIds: string[];
-  private _selectedPeople: IDynamicPerson[] = [];
-  private _showMax: number;
-  private _people: IDynamicPerson[];
-  private _transitiveSearch: boolean;
+  @state() private _userIds: string[];
+  @state() private _groupId: string;
+  @state() private _groupIds: string[];
+  @state() private _type: PersonType = PersonType.person;
+  @state() private _groupType: GroupType = GroupType.any;
+  @state() private _userType: UserType = UserType.any;
+  @state() private _userFilters: string;
+  @state() private _groupFilters: string;
+  @state() private _peopleFilters: string;
+  @state() private _defaultSelectedGroupIds: string[];
+  @state() private _defaultSelectedUserIds: string[];
+  @state() private _selectedPeople: IDynamicPerson[] = [];
+  @state() private _showMax: number;
+  @state() private _people: IDynamicPerson[];
+  @state() private _transitiveSearch: boolean;
 
   private defaultPeople: IDynamicPerson[];
 

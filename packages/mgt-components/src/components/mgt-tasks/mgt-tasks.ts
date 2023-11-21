@@ -408,27 +408,27 @@ export class MgtTasks extends MgtTemplatedComponent {
     ];
   }
 
-  @property() private _isNewTaskVisible: boolean;
+  @state() private _isNewTaskVisible: boolean;
   @state() private _newTaskBeingAdded: boolean;
-  @property() private _newTaskName: string;
-  @property() private _newTaskDueDate: Date;
-  @property() private _newTaskGroupId: string;
-  @property() private _newTaskFolderId: string;
-  @property() private _newTaskContainerId: string;
-  @property() private _groups: ITaskGroup[];
-  @property() private _folders: ITaskFolder[];
+  @state() private _newTaskName: string;
+  @state() private _newTaskDueDate: Date;
+  @state() private _newTaskGroupId: string;
+  @state() private _newTaskFolderId: string;
+  @state() private _newTaskContainerId: string;
+  @state() private _groups: ITaskGroup[];
+  @state() private _folders: ITaskFolder[];
   @state() private _tasks: ITask[];
   @state() private _hiddenTasks: string[];
   @state() private _loadingTasks: string[];
-  @property() private _inTaskLoad: boolean;
-  @property() private _hasDoneInitialLoad: boolean;
-  @property() private _todoDefaultSet: boolean;
+  @state() private _inTaskLoad: boolean;
+  @state() private _hasDoneInitialLoad: boolean;
+  @state() private _todoDefaultSet: boolean;
 
   @state() private _currentGroup: string;
   @state() private _currentFolder: string;
   @state() private _isDarkMode = false;
   @state() private _me: User = null;
-  private previousMediaQuery: ComponentMediaQuery;
+  @state() private previousMediaQuery: ComponentMediaQuery;
 
   constructor() {
     super();
@@ -615,7 +615,6 @@ export class MgtTasks extends MgtTemplatedComponent {
   private readonly onResize = () => {
     if (this.mediaQuery !== this.previousMediaQuery) {
       this.previousMediaQuery = this.mediaQuery;
-      this.requestUpdate();
     }
   };
 
