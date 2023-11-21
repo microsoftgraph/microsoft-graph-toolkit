@@ -42,17 +42,7 @@ export const rewriteEmojiContent = (content: string): string =>
  */
 const emojiHtmlString = (emoji: string, title: string, id: string, hasOtherContent?: boolean): string => {
   const size = hasOtherContent ? '20' : '50'; // 20px with content, 50px without.
-  return `
-    <span contenteditable="false" title="${title}" type="(${id})" class="animated-emoticon-${size}-${id}">
-      <img
-        itemscope=""
-        itemtype="http://schema.skype.com/Emoji"
-        itemid="${id}"
-        src="https://statics.teams.cdn.office.net/evergreen-assets/personal-expressions/v2/assets/emoticons/${id}/default/${size}_f.png"
-        title="${title}"
-        alt="${emoji}"
-        style="width:${size}px;height:${size}px;" />
-    </span>`;
+  return `<span contenteditable="false" title="${title}" type="(${id})" class="animated-emoticon-${size}-${id}"><img itemscope="" itemtype="http://schema.skype.com/Emoji" itemid="${id}" src="https://statics.teams.cdn.office.net/evergreen-assets/personal-expressions/v2/assets/emoticons/${id}/default/${size}_f.png" title="${title}" alt="${emoji}" style="width:${size}px;height:${size}px;"/></span>`;
 };
 
 /**
@@ -77,8 +67,12 @@ const checkForOtherContent = (content: string, hasAttachments: boolean): boolean
     matchedContentLength += match[0].length;
   }
   // where <p></p> tags total 7 characters so the matched content + 7 will equal
-  // the length content string for content with emojis only.
-  return hasOtherContent || matchedContentLength + 7 !== content.length;
+  // the length content string for content with emojis only. Some content might
+  // not have a <p> tag.
+  const contentMatch = content.includes('</p>')
+    ? matchedContentLength + 7 !== content.length
+    : matchedContentLength !== content.length;
+  return hasOtherContent || contentMatch;
 };
 
 /**
