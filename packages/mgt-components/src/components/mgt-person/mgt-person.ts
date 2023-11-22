@@ -156,7 +156,8 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._personQuery = value;
-    this.personDetailsInternal = null;
+    this._personDetailsInternal = null;
+    this._personDetails = null;
     void this.requestStateUpdate();
   }
 
@@ -203,7 +204,8 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._userId = value;
-    this.personDetailsInternal = null;
+    this._personDetailsInternal = null;
+    this._personDetails = null;
     void this.requestStateUpdate();
   }
 
@@ -273,7 +275,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._fetchedPresence = null;
 
     void this.requestStateUpdate();
-    this.requestUpdate('personDetailsInternal');
   }
 
   /**
@@ -299,7 +300,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._fetchedPresence = null;
 
     void this.requestStateUpdate();
-    this.requestUpdate('personDetails');
   }
 
   /**
@@ -321,9 +321,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._isInvalidImageSrc = !value;
-    const oldValue = this._personImage;
     this._personImage = value;
-    this.requestUpdate('personImage', oldValue);
   }
 
   /**
@@ -533,15 +531,15 @@ export class MgtPerson extends MgtTemplatedComponent {
   @state() private _personCardShouldRender: boolean;
   @state() private _hasLoadedPersonCard = false;
 
-  private _personDetailsInternal: IDynamicPerson;
-  private _personDetails: IDynamicPerson;
-  private _fallbackDetails: IDynamicPerson;
-  private _personImage: string;
-  private _personPresence: Presence;
-  private _personQuery: string;
-  private _userId: string;
-  private _usage: string;
-  private _avatarType: avatarType;
+  @state() private _personDetailsInternal: IDynamicPerson;
+  @state() private _personDetails: IDynamicPerson;
+  @state() private _fallbackDetails: IDynamicPerson;
+  @state() private _personImage: string;
+  @state() private _personPresence: Presence;
+  @state() private _personQuery: string;
+  @state() private _userId: string;
+  @state() private _usage: string;
+  @state() private _avatarType: avatarType;
 
   private _mouseLeaveTimeout = -1;
   private _mouseEnterTimeout = -1;
