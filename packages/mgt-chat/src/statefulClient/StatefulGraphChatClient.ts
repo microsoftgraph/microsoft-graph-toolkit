@@ -684,7 +684,8 @@ detail: ${JSON.stringify(eventDetail)}`);
    */
   public sendMessage = async (content: string) => {
     if (!content) return;
-
+    // Hello <msft-mention id="2067b733-8159-4f6e-acb4-960d1307afc2">Isaiah Langer</msft-mention>
+    console.log('sending ', content);
     const pendingId = uuid();
 
     // add a pending message to the state.
