@@ -10,7 +10,7 @@ import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
 import { Person, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
-import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
+import { GraphChatClient, StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { onRenderMessage } from '../../utils/chat';
 import { renderMGTMention } from '../../utils/mentions';
@@ -109,31 +109,32 @@ const messageThreadStyles: MessageThreadStyles = {
     }
   }
 };
-const onSuggestionSelectedCb = (suggested: Mention) => {
-  console.log('suggestion selected ', suggested);
-  return;
-};
-const mentionLookupOptions: MentionLookupOptions = {
-  onQueryUpdated: (query: string): Promise<Mention[]> => {
-    const getUsers = async (): Promise<Mention[]> => {
-      const mentions: Mention[] = [];
-      const users: User[] = await findUsers(graph('mgt-chat'), query);
-      if (users) {
-        users.forEach(user =>
-          mentions.push({ id: user?.id ?? '', displayText: user?.displayName ?? user?.givenName ?? '' })
-        );
-      }
-      return Promise.resolve(mentions);
-    };
-    // NOTE: filter only people in the chat?
-    return getUsers();
-  },
-  onRenderSuggestionItem: (suggestion: Mention, onSuggestionSelected = onSuggestionSelectedCb): JSX.Element => {
-    console.log('suggestion ', suggestion);
-    console.log('selected ', onSuggestionSelected);
-    // NOTE: how do I override the onSuggestionSelected callback
-    return <Person userId={suggestion?.id} view="oneline" onClick={() => onSuggestionSelected}></Person>;
-  }
+
+const mentionLookupOptionsWrapper = (chatState: GraphChatClient): MentionLookupOptions => {
+  return {
+    onQueryUpdated: (query: string): Promise<Mention[]> => {
+      const getUsers = async (): Promise<Mention[]> => {
+        const mentions: Mention[] = [];
+        const users: User[] = await findUsers(graph('mgt-chat'), query);
+        if (users) {
+          users.forEach(user =>
+            mentions.push({ id: user?.id ?? '', displayText: user?.displayName ?? user?.givenName ?? '' })
+          );
+        }
+        return Promise.resolve(mentions);
+      };
+      // NOTE: filter only people in the chat?
+      return getUsers();
+    },
+    onRenderSuggestionItem: (
+      suggestion: Mention,
+      onSuggestionSelected = chatState.onSuggestionSelected
+    ): JSX.Element => {
+      onSuggestionSelected(suggestion);
+      // NOTE: how do I override the onSuggestionSelected callback
+      return <Person userId={suggestion?.id} view={ViewType.oneline}></Person>;
+    }
+  };
 };
 
 export const Chat = ({ chatId }: IMgtChatProps) => {
@@ -193,9 +194,14 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
               </div>
               <div className={styles.chatInput}>
                 <SendBox
+<<<<<<< HEAD
                   mentionLookupOptions={mentionLookupOptions}
                   onSendMessage={chatState.onSendMessage}
                   strings={{ placeholderText }}
+=======
+                  mentionLookupOptions={mentionLookupOptionsWrapper(chatState)}
+                  onSendMessage={chatState.onSendMessage}
+>>>>>>> a381af150 (Move setting mentions to statefulclient)
                 />
               </div>
             </>

@@ -8,6 +8,7 @@
 import {
   ChatMessage as AcsChatMessage,
   ContentSystemMessage,
+  Mention,
   Message,
   MessageThreadProps,
   SendBoxProps,
@@ -111,6 +112,7 @@ export type GraphChatClient = Pick<
     onAddChatMembers: (userIds: string[], history?: Date) => Promise<void>;
     onRemoveChatMember: (membershipId: string) => Promise<void>;
     onRenameChat: (topic: string | null) => Promise<void>;
+    onSuggestionSelected: (suggestion: Mention) => void;
     mentions: NullableOption<ChatMessageMention[]>;
     activeErrorMessages: Error[];
   };
@@ -269,6 +271,10 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   public getState(): GraphChatClient {
     return this._state;
   }
+
+  public onSuggestionSelected = (suggestion: Mention): void => {
+    console.log('onSuggestionSelected ', suggestion);
+  };
 
   /**
    * Update the state of the client when the Login state changes
@@ -684,6 +690,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    */
   public sendMessage = async (content: string) => {
     if (!content) return;
+    const msftMentionRegex = /<msft-mention\s+id=["'](\w*[^"']*)["']>(\w*[^"']*)<\/msft-mention>/;
     // Hello <msft-mention id="2067b733-8159-4f6e-acb4-960d1307afc2">Isaiah Langer</msft-mention>
     console.log('sending ', content);
     const pendingId = uuid();
@@ -703,6 +710,7 @@ detail: ${JSON.stringify(eventDetail)}`);
         status: 'sending'
       };
       draft.messages.push(pendingMessage);
+      draft.mentions = [{ id: 0, mentionText: 'Isaiah Langer Mentioned' }];
     });
     try {
       // send message
@@ -1192,6 +1200,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     onAddChatMembers: this.addChatMembers,
     onRemoveChatMember: this.removeChatMember,
     onRenameChat: this.renameChat,
+    onSuggestionSelected: this.onSuggestionSelected,
     activeErrorMessages: [],
     chat: this._chat
   };
