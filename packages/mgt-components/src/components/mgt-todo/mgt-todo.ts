@@ -703,7 +703,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const task = this._taskBeingUpdated;
 
-    if (task.dueDateTime && this._newTaskDueDate) {
+    if (task && task.dueDateTime && this._newTaskDueDate) {
       this._isChangedDueDate = new Date(task.dueDateTime.dateTime) !== this._newTaskDueDate;
     } else if ((task.dueDateTime && !this._newTaskDueDate) || (!task.dueDateTime && this._newTaskDueDate)) {
       this._isChangedDueDate = true;
