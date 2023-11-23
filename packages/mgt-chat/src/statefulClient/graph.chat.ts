@@ -6,21 +6,15 @@
  */
 
 import {
-  schemas,
   CachePhoto,
+  blobToBase64,
   getPhotoInvalidationTime,
-  storePhotoInCache,
-  blobToBase64
+  schemas,
+  storePhotoInCache
 } from '@microsoft/mgt-components';
 import { CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
-import {
-  AadUserConversationMember,
-  Chat,
-  ChatMessage,
-  ChatMessageMention,
-  NullableOption
-} from '@microsoft/microsoft-graph-types';
+import { AadUserConversationMember, Chat, ChatMessage, ChatMessageMention } from '@microsoft/microsoft-graph-types';
 import { chatOperationScopes } from './chatOperationScopes';
 
 /**
