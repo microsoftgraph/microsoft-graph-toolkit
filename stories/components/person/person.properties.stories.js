@@ -65,7 +65,7 @@ export const changeUserId = () => html`
     const person = document.querySelector('.my-person');
     const button = document.querySelector('.button');
     button.addEventListener('click', () => {
-      person.userId = '5f19638e-44b4-4941-97bf-47216bb0d38c';
+      person.userId = '2804bc07-1e1f-4938-9085-ce6d756a32d2';
     });
   </script>
   `;
