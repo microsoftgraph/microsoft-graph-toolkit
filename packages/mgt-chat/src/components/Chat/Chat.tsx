@@ -111,28 +111,34 @@ const messageThreadStyles: MessageThreadStyles = {
 };
 
 const mentionLookupOptionsWrapper = (chatState: GraphChatClient): MentionLookupOptions => {
+  const participants = chatState.participants ?? [];
+  const matchedResults: Record<string, string> = {};
+
   return {
     onQueryUpdated: (query: string): Promise<Mention[]> => {
-      const getUsers = async (): Promise<Mention[]> => {
-        const mentions: Mention[] = [];
-        const users: User[] = await findUsers(graph('mgt-chat'), query);
-        if (users) {
-          users.forEach(user =>
-            mentions.push({ id: user?.id ?? '', displayText: user?.displayName ?? user?.givenName ?? '' })
-          );
-        }
-        return Promise.resolve(mentions);
-      };
-      // NOTE: filter only people in the chat?
-      return getUsers();
+      const results = participants.filter(p => p.displayName?.toLowerCase()?.includes(query.toLowerCase())) ?? [];
+      const mentions: Mention[] = [];
+      results.forEach((user, id) => {
+        const idStr = `${id}`;
+        mentions.push({ displayText: user?.displayName ?? '', id: idStr });
+        matchedResults[idStr] = user?.id ?? '';
+      });
+      return Promise.resolve(mentions);
     },
     onRenderSuggestionItem: (
       suggestion: Mention,
       onSuggestionSelected = chatState.onSuggestionSelected
     ): JSX.Element => {
-      onSuggestionSelected(suggestion);
       // NOTE: how do I override the onSuggestionSelected callback
-      return <Person userId={suggestion?.id} view={ViewType.oneline}></Person>;
+      const userId = matchedResults[suggestion.id] ?? '';
+      const key = userId ?? `${participants.length + 1}`;
+      console.log('found the user ', userId, suggestion);
+      // return <Person key={key} userId={userId} view={ViewType.oneline}></Person>;
+      return (
+        <p>
+          {suggestion.displayText} - {userId}
+        </p>
+      );
     }
   };
 };
