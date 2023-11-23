@@ -1,10 +1,10 @@
 import {
   FluentThemeProvider,
-  MessageThread,
-  SendBox,
-  MessageThreadStyles,
+  Mention,
   MentionLookupOptions,
-  Mention
+  MessageThread,
+  MessageThreadStyles,
+  SendBox
 } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
@@ -14,11 +14,8 @@ import { GraphChatClient, StatefulGraphChatClient } from '../../statefulClient/S
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { onRenderMessage } from '../../utils/chat';
 import { renderMGTMention } from '../../utils/mentions';
-import { registerAppIcons } from '../styles/registerIcons';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
-import { findUsers } from '@microsoft/mgt-components';
-import { graph } from '../../utils/graph';
-import { User } from '@microsoft/microsoft-graph-types';
+import { registerAppIcons } from '../styles/registerIcons';
 
 registerAppIcons();
 
@@ -112,7 +109,7 @@ const messageThreadStyles: MessageThreadStyles = {
 
 const mentionLookupOptionsWrapper = (chatState: GraphChatClient): MentionLookupOptions => {
   const participants = chatState.participants ?? [];
-  const matchedResults: Record<string, string> = {};
+  // const matchedResults: Record<string, string> = {};
 
   return {
     onQueryUpdated: (query: string): Promise<Mention[]> => {
@@ -121,25 +118,25 @@ const mentionLookupOptionsWrapper = (chatState: GraphChatClient): MentionLookupO
       results.forEach((user, id) => {
         const idStr = `${id}`;
         mentions.push({ displayText: user?.displayName ?? '', id: idStr });
-        matchedResults[idStr] = user?.id ?? '';
+        // matchedResults[idStr] = user?.id ?? '';
       });
       return Promise.resolve(mentions);
-    },
-    onRenderSuggestionItem: (
-      suggestion: Mention,
-      onSuggestionSelected = chatState.onSuggestionSelected
-    ): JSX.Element => {
-      // NOTE: how do I override the onSuggestionSelected callback
-      const userId = matchedResults[suggestion.id] ?? '';
-      const key = userId ?? `${participants.length + 1}`;
-      console.log('found the user ', userId, suggestion);
-      // return <Person key={key} userId={userId} view={ViewType.oneline}></Person>;
-      return (
-        <p>
-          {suggestion.displayText} - {userId}
-        </p>
-      );
     }
+    // onRenderSuggestionItem: (
+    //   suggestion: Mention,
+    //   onSuggestionSelected = chatState.onSuggestionSelected
+    // ): JSX.Element => {
+    //   // NOTE: how do I override the onSuggestionSelected callback
+    //   const userId = matchedResults[suggestion.id] ?? '';
+    //   const key = userId ?? `${participants.length + 1}`;
+    //   console.log('found the user ', userId, suggestion);
+    //   // return <Person key={key} userId={userId} view={ViewType.oneline}></Person>;
+    //   return (
+    //     <p>
+    //       {suggestion.displayText} - {userId}
+    //     </p>
+    //   );
+    // }
   };
 };
 

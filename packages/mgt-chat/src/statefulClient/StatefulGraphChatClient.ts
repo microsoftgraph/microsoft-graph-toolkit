@@ -690,9 +690,37 @@ detail: ${JSON.stringify(eventDetail)}`);
    */
   public sendMessage = async (content: string) => {
     if (!content) return;
+
     const msftMentionRegex = /<msft-mention\s+id=["'](\w*[^"']*)["']>(\w*[^"']*)<\/msft-mention>/;
-    // Hello <msft-mention id="2067b733-8159-4f6e-acb4-960d1307afc2">Isaiah Langer</msft-mention>
-    console.log('sending ', content);
+    let updatedContent = content;
+    const teamsMention = `<at id="$1">$2</at>`;
+    let match = content.match(msftMentionRegex);
+    const chatState = this.getState();
+    const participants = chatState?.participants;
+    const mentions: NullableOption<ChatMessageMention[]> = [];
+    // Change the message from <msft-mention> to <at>. Teams will process and
+    // send back the same which we process back to <msft-mention>. Fun, right?
+    while (match) {
+      const id = match[1];
+      const displayText = match[2];
+      const user = participants.find(u => u.displayName === displayText);
+      if (user) {
+        const mention: ChatMessageMention = {
+          id: parseInt(id, 10),
+          mentionText: displayText,
+          mentioned: {
+            user: {
+              id: user?.userId,
+              displayName: displayText
+            }
+          }
+        };
+        mentions.push(mention);
+      }
+      updatedContent = updatedContent.replace(msftMentionRegex, teamsMention);
+      match = updatedContent.match(msftMentionRegex);
+    }
+
     const pendingId = uuid();
 
     // add a pending message to the state.
@@ -710,11 +738,10 @@ detail: ${JSON.stringify(eventDetail)}`);
         status: 'sending'
       };
       draft.messages.push(pendingMessage);
-      draft.mentions = [{ id: 0, mentionText: 'Isaiah Langer Mentioned' }];
     });
     try {
       // send message
-      const chat: ChatMessage = await sendChatMessage(this.graph, this.chatId, content);
+      const chat: ChatMessage = await sendChatMessage(this.graph, this.chatId, updatedContent, mentions);
       // emit new state
       this.notifyStateChange((draft: GraphChatClient) => {
         const draftIndex = draft.messages.findIndex(m => m.messageId === pendingId);
@@ -722,6 +749,10 @@ detail: ${JSON.stringify(eventDetail)}`);
         // we only need use the current value of the message
         // this message can't have a future value as it's not been sent yet
         if (message) draft.messages.splice(draftIndex, 1, message);
+        const updatedMentions = chat?.mentions ?? [];
+        draft.mentions = draft.mentions?.concat(
+          ...Array.from(updatedMentions as Iterable<ChatMessageMention>)
+        ) as NullableOption<ChatMessageMention[]>;
       });
     } catch (e) {
       this.notifyStateChange((draft: GraphChatClient) => {
