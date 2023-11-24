@@ -197,14 +197,8 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
               </div>
               <div className={styles.chatInput}>
                 <SendBox
-<<<<<<< HEAD
-                  mentionLookupOptions={mentionLookupOptions}
-                  onSendMessage={chatState.onSendMessage}
-                  strings={{ placeholderText }}
-=======
                   mentionLookupOptions={mentionLookupOptionsWrapper(chatState)}
                   onSendMessage={chatState.onSendMessage}
->>>>>>> a381af150 (Move setting mentions to statefulclient)
                 />
               </div>
             </>
