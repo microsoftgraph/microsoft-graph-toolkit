@@ -17,12 +17,17 @@ export const renderMGTMention = (chatState: GraphChatClient) => {
 
     const user = teamsMention?.mentioned?.user as User;
     if (user) {
-      const MGTMention = (_props: MgtTemplateProps) => {
+      const me = user?.id === chatState.userId;
+      const MgtMeMention = (_props: MgtTemplateProps) => {
         return defaultRenderer(mention);
       };
+      const MgtOtherMention = () => {
+        return <p className="otherMention">{mention.displayText}</p>;
+      };
+      const MgtMention = me ? MgtMeMention : MgtOtherMention;
       render = (
         <Person userId={user?.id} personCardInteraction={PersonCardInteraction.hover}>
-          <MGTMention template="default" />
+          <MgtMention />
         </Person>
       );
     }
