@@ -10,6 +10,10 @@
 @import '../../styles/shared-sass-variables';
 @import './mgt-organization.theme';
 
+$coworker-person-avatar-size: var(--coworker-person-avatar-size, 40px);
+$organization-member-person-avatar-size: var(--organization-member-person-avatar-size, 40px);
+$direct-report-person-avatar-size: var(--direct-report-person-avatar-size, 38px);
+
 :host {
   position: relative;
   user-select: none;
@@ -79,6 +83,10 @@
 
       .org-member__person {
         flex-grow: 1;
+
+        .org-member__person-image {
+          --person-avatar-size: #{$organization-member-person-avatar-size};
+        }
       }
 
       .org-member__details {
@@ -120,6 +128,10 @@
         height: 46px;
         border-radius: 46px;
         margin-right: 8px;
+
+        .coworker__person-image {
+          --person-avatar-size: #{$coworker-person-avatar-size};
+        }
       }
     }
 
@@ -132,7 +144,9 @@
         margin-right: 4px;
         display: inline;
 
-        --avatar-size: 38px;
+        .direct-report__person-image {
+          --person-avatar-size: #{$direct-report-person-avatar-size};
+        }
       }
     }
   }

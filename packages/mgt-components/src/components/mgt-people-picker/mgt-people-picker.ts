@@ -998,7 +998,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.renderTemplate('person', { person }, person.id) ||
       mgtHtml`
          <mgt-person
-          class="person"
+          class="person-image-result"
           ?show-presence=${this.showPresence}
           view="twoLines"
           line2-property="jobTitle,mail"
@@ -1021,7 +1021,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return mgtHtml`
        <mgt-person
          tabindex="-1"
-         class="selected-list-item-person"
+         class="person-image-selected"
          .personDetails=${person}
          .fetchImage=${!this.disableImages}
          .view=${ViewType.oneline}

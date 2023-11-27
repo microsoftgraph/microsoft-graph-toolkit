@@ -450,6 +450,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       // query the image from the graph
       mgtHtml`
         <mgt-person
+          class="people-person"
           .personDetails=${person}
           .fetchImage=${true}
           .avatarSize=${avatarSize}
