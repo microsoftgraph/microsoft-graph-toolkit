@@ -1,19 +1,12 @@
-import {
-  FluentThemeProvider,
-  Mention,
-  MentionLookupOptions,
-  MessageThread,
-  MessageThreadStyles,
-  SendBox
-} from '@azure/communication-react';
+import { FluentThemeProvider, MessageThread, MessageThreadStyles, SendBox } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
 import { Person, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
-import { GraphChatClient, StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
+import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { onRenderMessage } from '../../utils/chat';
-import { renderMGTMention } from '../../utils/mentions';
+import { renderMGTMention, mentionLookupOptionsWrapper } from '../../utils/mentions';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
 import { registerAppIcons } from '../styles/registerIcons';
 
@@ -105,39 +98,6 @@ const messageThreadStyles: MessageThreadStyles = {
       ...shorthands.margin('0px')
     }
   }
-};
-
-const mentionLookupOptionsWrapper = (chatState: GraphChatClient): MentionLookupOptions => {
-  const participants = chatState.participants ?? [];
-  // const matchedResults: Record<string, string> = {};
-
-  return {
-    onQueryUpdated: (query: string): Promise<Mention[]> => {
-      const results = participants.filter(p => p.displayName?.toLowerCase()?.includes(query.toLowerCase())) ?? [];
-      const mentions: Mention[] = [];
-      results.forEach((user, id) => {
-        const idStr = `${id}`;
-        mentions.push({ displayText: user?.displayName ?? '', id: idStr });
-        // matchedResults[idStr] = user?.id ?? '';
-      });
-      return Promise.resolve(mentions);
-    }
-    // onRenderSuggestionItem: (
-    //   suggestion: Mention,
-    //   onSuggestionSelected = chatState.onSuggestionSelected
-    // ): JSX.Element => {
-    //   // NOTE: how do I override the onSuggestionSelected callback
-    //   const userId = matchedResults[suggestion.id] ?? '';
-    //   const key = userId ?? `${participants.length + 1}`;
-    //   console.log('found the user ', userId, suggestion);
-    //   // return <Person key={key} userId={userId} view={ViewType.oneline}></Person>;
-    //   return (
-    //     <p>
-    //       {suggestion.displayText} - {userId}
-    //     </p>
-    //   );
-    // }
-  };
 };
 
 export const Chat = ({ chatId }: IMgtChatProps) => {
