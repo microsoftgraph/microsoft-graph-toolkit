@@ -36,6 +36,7 @@ const useStyles = makeStyles({
     gridRowGap: '16px',
     minWidth: '300px',
     '& textarea': {
+      fontSize: 'var(--type-ramp-base-font-size)',
       '::placeholder': {
         fontSize: 'var(--type-ramp-base-font-size)'
       }
