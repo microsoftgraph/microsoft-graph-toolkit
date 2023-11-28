@@ -647,6 +647,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._personDetailsInternal = null;
     this._fetchedImage = null;
     this._fetchedPresence = null;
+    this._personDetails = null;
+    this._personPresence = null;
+    this._usage = null;
+    this._fallbackDetails = null;
   }
 
   /**

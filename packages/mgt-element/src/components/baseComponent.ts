@@ -161,6 +161,7 @@ export abstract class MgtBaseComponent extends LitElement {
     this._isFirstUpdated = true;
     Providers.onProviderUpdated(this.handleProviderUpdates);
     Providers.onActiveAccountChanged(this.handleActiveAccountUpdates);
+    void this.requestStateUpdate();
   }
 
   /**
