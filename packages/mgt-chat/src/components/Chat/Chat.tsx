@@ -10,11 +10,13 @@ import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
+import { GraphConfig } from '../../statefulClient/GraphConfig';
 
 registerAppIcons();
 
 interface IMgtChatProps {
   chatId: string;
+  usePremiumApis?: boolean;
 }
 
 const useStyles = makeStyles({
@@ -91,7 +93,7 @@ const messageThreadStyles: MessageThreadStyles = {
   }
 };
 
-export const Chat = ({ chatId }: IMgtChatProps) => {
+export const Chat = ({ chatId, usePremiumApis }: IMgtChatProps) => {
   const styles = useStyles();
   const chatClient: StatefulGraphChatClient = useGraphChatClient(chatId);
   const [chatState, setChatState] = useState(chatClient.getState());
@@ -101,6 +103,10 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
       chatClient.offStateChange(setChatState);
     };
   }, [chatClient]);
+
+  useEffect(() => {
+    GraphConfig.usePremiumApis = usePremiumApis ?? false;
+  }, [usePremiumApis]);
 
   const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
     chatState.status

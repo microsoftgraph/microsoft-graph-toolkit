@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fluentui/react-components": "^9.19.1",
     "@microsoft/mgt-chat": "*",
     "@microsoft/mgt-msal2-provider": "*",
     "@microsoft/mgt-react": "*",
