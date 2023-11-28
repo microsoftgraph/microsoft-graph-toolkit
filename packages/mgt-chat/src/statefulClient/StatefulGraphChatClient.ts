@@ -610,7 +610,10 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         awaits.push(getUserWithPhoto(this.graph, id));
       }
       const people = await Promise.all(awaits);
-      const userNames = userIds?.map(m => this.getUserName(m, people)).join(', ');
+      const userNames = userIds
+        ?.filter(id => id !== initiatorId)
+        .map(m => this.getUserName(m, people))
+        .join(', ');
       switch (eventDetail['@odata.type']) {
         case '#microsoft.graph.membersAddedEventMessageDetail':
           messageContent = `${this.getUserName(initiatorId, people)} added ${userNames}`;
