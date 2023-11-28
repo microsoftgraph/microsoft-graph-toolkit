@@ -65,21 +65,16 @@ const NewChat: FC<NewChatProps> = ({ mode = 'auto', onChatCreated, onCancelClick
     [mode]
   );
   // chat name data control
-  const [chatName, setChatName] = useState<string>();
-  const onChatNameChanged = useCallback(
-    (_: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, data: InputOnChangeData) => {
-      setChatName(data.value);
-    },
-    []
-  );
+  const [chatName, setChatName] = useState<string>('');
+  const onChatNameChanged = useCallback((_: React.FormEvent<HTMLInputElement>, data: InputOnChangeData) => {
+    setChatName(data.value);
+  }, []);
+
   // initial message data control
-  const [initialMessage, setInitialMessage] = useState<string>();
-  const onInitialMessageChange = useCallback(
-    (event: React.FormEvent<HTMLTextAreaElement>, data: TextareaOnChangeData) => {
-      setInitialMessage(data.value);
-    },
-    []
-  );
+  const [initialMessage, setInitialMessage] = useState<string>('');
+  const onInitialMessageChange = useCallback((_: React.FormEvent<HTMLTextAreaElement>, data: TextareaOnChangeData) => {
+    setInitialMessage(data.value);
+  }, []);
   const createChat = useCallback(() => {
     const graphClient: IGraph = graph('mgt-new-chat');
     setState('creating chat');
