@@ -65,7 +65,7 @@ const NewChat: FC<NewChatProps> = ({ mode = 'auto', onChatCreated, onCancelClick
     [mode]
   );
   // chat name data control
-  const [chatName, setChatName] = useState<string>();
+  const [chatName, setChatName] = useState<string>('');
   const onChatNameChanged = useCallback(
     (_: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, data: InputOnChangeData) => {
       setChatName(data.value);
