@@ -73,7 +73,7 @@ const NewChat: FC<NewChatProps> = ({ mode = 'auto', onChatCreated, onCancelClick
     []
   );
   // initial message data control
-  const [initialMessage, setInitialMessage] = useState<string>();
+  const [initialMessage, setInitialMessage] = useState<string>('');
   const onInitialMessageChange = useCallback(
     (event: React.FormEvent<HTMLTextAreaElement>, data: TextareaOnChangeData) => {
       setInitialMessage(data.value);
