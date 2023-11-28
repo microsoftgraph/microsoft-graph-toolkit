@@ -7,9 +7,14 @@ const HomePage: React.FunctionComponent = () => {
     <>
       <PageHeader title={'Home'} description={'Welcome to Contoso!'}></PageHeader>
       <Person personQuery="me" view={PersonViewType.twolines}></Person>
-      {/* <Login></Login> */}
-      {/* <FileList></FileList> */}
-      {/* <File fileQuery="/me/drive/items/01SJYAGHXIO2UXFBXQABFLA7ESV7PBSXDP"></File> */}
+      <Person
+        personQuery="me"
+        view={PersonViewType.twolines}
+        personCardInteraction={PersonCardInteraction.hover}
+      ></Person>
+      <Login></Login>
+      <FileList></FileList>
+      <File fileQuery="/me/drive/items/01SJYAGHXIO2UXFBXQABFLA7ESV7PBSXDP"></File>
     </>
   );
 };
