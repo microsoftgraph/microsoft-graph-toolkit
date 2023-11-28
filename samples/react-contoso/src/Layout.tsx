@@ -68,7 +68,7 @@ export const Layout: React.FunctionComponent = theme => {
     <FluentProvider theme={appContext.state.theme.fluentTheme}>
       <div className={styles.page}>
         <BrowserRouter basename={process.env.REACT_APP_BASE_DIR ?? '/'}>
-          <Header></Header>
+          {/* <Header></Header> */}
           <div className={styles.main}>
             <div
               className={mergeClasses(
@@ -76,7 +76,7 @@ export const Layout: React.FunctionComponent = theme => {
                 `${appContext.state.sidebar.isMinimized ? styles.minimized : ''}`
               )}
             >
-              <SideNavigation items={navigationItems}></SideNavigation>
+              {/* <SideNavigation items={navigationItems}></SideNavigation> */}
             </div>
             <div className={styles.content}>
               <Routes>

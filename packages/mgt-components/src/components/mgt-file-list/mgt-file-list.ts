@@ -11,7 +11,8 @@ import {
   Providers,
   ProviderState,
   mgtHtml,
-  MgtTemplatedComponent
+  MgtTemplatedComponent,
+  IGraph
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
@@ -115,7 +116,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._fileListQuery = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -175,7 +176,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._fileQueries = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -185,7 +186,17 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    * @memberof MgtFileList
    */
   @property({ type: Object })
-  public files: DriveItem[];
+  public get files(): DriveItem[] {
+    return this._files;
+  }
+  public set files(value: DriveItem[]) {
+    if (arraysAreEqual(this._files, value)) {
+      return;
+    }
+
+    this._files = value;
+    void this.requestStateUpdate();
+  }
 
   /**
    * allows developer to provide site id for a file
@@ -205,7 +216,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._siteId = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -226,7 +237,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._driveId = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -247,7 +258,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._groupId = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -268,7 +279,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._itemId = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -289,7 +300,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._itemPath = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -310,7 +321,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._userId = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -332,7 +343,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._insightType = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -382,7 +393,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._fileExtensions = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -404,7 +415,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._pageSize = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   @property({
@@ -443,7 +454,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._maxFileSize = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -477,7 +488,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._maxUploadFile = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -501,7 +512,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     this._excludedFileExtensions = value;
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 
   /**
@@ -515,22 +526,24 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     return [...new Set([...MgtFile.requiredScopes])];
   }
 
-  private _fileListQuery: string;
-  private _fileQueries: string[];
-  private _siteId: string;
-  private _itemId: string;
-  private _driveId: string;
-  private _itemPath: string;
-  private _groupId: string;
-  private _insightType: OfficeGraphInsightString;
-  private _fileExtensions: string[];
-  private _pageSize: number;
-  private _excludedFileExtensions: string[];
-  private _maxUploadFile: number;
-  private _maxFileSize: number;
-  private _userId: string;
-  private _preloadedFiles: DriveItem[];
-  private pageIterator: GraphPageIterator<DriveItem>;
+  @state() private _files: DriveItem[];
+  @state() private _graph: IGraph;
+  @state() private _fileListQuery: string;
+  @state() private _fileQueries: string[];
+  @state() private _siteId: string;
+  @state() private _itemId: string;
+  @state() private _driveId: string;
+  @state() private _itemPath: string;
+  @state() private _groupId: string;
+  @state() private _insightType: OfficeGraphInsightString;
+  @state() private _fileExtensions: string[];
+  @state() private _pageSize: number;
+  @state() private _excludedFileExtensions: string[];
+  @state() private _maxUploadFile: number;
+  @state() private _maxFileSize: number;
+  @state() private _userId: string;
+  @state() private _preloadedFiles: DriveItem[];
+  @state() private pageIterator: GraphPageIterator<DriveItem>;
   // tracking user arrow key input of selection for accessibility purpose
   private _focusedItemIndex = -1;
 
@@ -538,10 +551,10 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
 
   constructor() {
     super();
-
-    this.pageSize = 10;
+    this.clearState();
+    this._pageSize = 10;
     this.itemView = ViewType.twolines;
-    this.maxUploadFile = 10;
+    this._maxUploadFile = 10;
     this.enableFileUpload = false;
     this._preloadedFiles = [];
   }
@@ -563,7 +576,9 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   protected clearState(): void {
     super.clearState();
-    this.files = null;
+    this._files = null;
+    this._pageSize = 10;
+    this._maxUploadFile = 10;
   }
 
   /**
@@ -838,10 +853,10 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     }
 
     if (provider.state === ProviderState.SignedOut) {
-      this.files = null;
+      this._files = null;
       return;
     }
-    const graph = provider.graph.forComponent(this);
+    this._graph = provider.graph.forComponent(this);
     let files: DriveItem[];
     let pageIterator: GraphPageIterator<DriveItem>;
 
@@ -855,49 +870,49 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       (this.siteId && !this.itemId && !this.itemPath) ||
       (this.userId && !this.insightType && !this.itemId && !this.itemPath)
     ) {
-      this.files = null;
+      this._files = null;
     }
 
     if (!this.files) {
       if (this.fileListQuery) {
-        pageIterator = await getFilesByListQueryIterator(graph, this.fileListQuery, this.pageSize);
+        pageIterator = await getFilesByListQueryIterator(this._graph, this.fileListQuery, this.pageSize);
       } else if (this.fileQueries) {
-        files = await getFilesByQueries(graph, this.fileQueries);
+        files = await getFilesByQueries(this._graph, this.fileQueries);
       } else if (getFromMyDrive) {
         if (this.itemId) {
-          pageIterator = await getFilesByIdIterator(graph, this.itemId, this.pageSize);
+          pageIterator = await getFilesByIdIterator(this._graph, this.itemId, this.pageSize);
         } else if (this.itemPath) {
-          pageIterator = await getFilesByPathIterator(graph, this.itemPath, this.pageSize);
+          pageIterator = await getFilesByPathIterator(this._graph, this.itemPath, this.pageSize);
         } else if (this.insightType) {
-          files = await getMyInsightsFiles(graph, this.insightType);
+          files = await getMyInsightsFiles(this._graph, this.insightType);
         } else {
-          pageIterator = await getFilesIterator(graph, this.pageSize);
+          pageIterator = await getFilesIterator(this._graph, this.pageSize);
         }
       } else if (this.driveId) {
         if (this.itemId) {
-          pageIterator = await getDriveFilesByIdIterator(graph, this.driveId, this.itemId, this.pageSize);
+          pageIterator = await getDriveFilesByIdIterator(this._graph, this.driveId, this.itemId, this.pageSize);
         } else if (this.itemPath) {
-          pageIterator = await getDriveFilesByPathIterator(graph, this.driveId, this.itemPath, this.pageSize);
+          pageIterator = await getDriveFilesByPathIterator(this._graph, this.driveId, this.itemPath, this.pageSize);
         }
       } else if (this.groupId) {
         if (this.itemId) {
-          pageIterator = await getGroupFilesByIdIterator(graph, this.groupId, this.itemId, this.pageSize);
+          pageIterator = await getGroupFilesByIdIterator(this._graph, this.groupId, this.itemId, this.pageSize);
         } else if (this.itemPath) {
-          pageIterator = await getGroupFilesByPathIterator(graph, this.groupId, this.itemPath, this.pageSize);
+          pageIterator = await getGroupFilesByPathIterator(this._graph, this.groupId, this.itemPath, this.pageSize);
         }
       } else if (this.siteId) {
         if (this.itemId) {
-          pageIterator = await getSiteFilesByIdIterator(graph, this.siteId, this.itemId, this.pageSize);
+          pageIterator = await getSiteFilesByIdIterator(this._graph, this.siteId, this.itemId, this.pageSize);
         } else if (this.itemPath) {
-          pageIterator = await getSiteFilesByPathIterator(graph, this.siteId, this.itemPath, this.pageSize);
+          pageIterator = await getSiteFilesByPathIterator(this._graph, this.siteId, this.itemPath, this.pageSize);
         }
       } else if (this.userId) {
         if (this.itemId) {
-          pageIterator = await getUserFilesByIdIterator(graph, this.userId, this.itemId, this.pageSize);
+          pageIterator = await getUserFilesByIdIterator(this._graph, this.userId, this.itemId, this.pageSize);
         } else if (this.itemPath) {
-          pageIterator = await getUserFilesByPathIterator(graph, this.userId, this.itemPath, this.pageSize);
+          pageIterator = await getUserFilesByPathIterator(this._graph, this.userId, this.itemPath, this.pageSize);
         } else if (this.insightType) {
-          files = await getUserInsightsFiles(graph, this.userId, this.insightType);
+          files = await getUserInsightsFiles(this._graph, this.userId, this.insightType);
         }
       }
 
@@ -934,13 +949,13 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       }
 
       if (filteredByFileExtension?.length >= 0) {
-        this.files = filteredByFileExtension;
+        this._files = filteredByFileExtension;
         if (this.pageSize) {
           files = this.files.splice(0, this.pageSize);
-          this.files = files;
+          this._files = files;
         }
       } else {
-        this.files = files;
+        this._files = files;
       }
     }
   }
@@ -978,7 +993,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   protected async renderNextPage() {
     // render next page from cache if exists, or else use iterator
     if (this._preloadedFiles.length > 0) {
-      this.files = [
+      this._files = [
         ...this.files,
         ...this._preloadedFiles.splice(0, Math.min(this.pageSize, this._preloadedFiles.length))
       ];
@@ -1008,11 +1023,9 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
         }
         await fetchNextAndCacheForFilesPageIterator(this.pageIterator);
         this._isLoadingMore = false;
-        this.files = this.pageIterator.value;
+        this._files = this.pageIterator.value;
       }
     }
-
-    this.requestUpdate();
   }
 
   private handleFileClick(file: DriveItem) {
@@ -1073,6 +1086,6 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       void clearFilesCache();
     }
 
-    void this.requestStateUpdate(true);
+    void this.requestStateUpdate();
   }
 }

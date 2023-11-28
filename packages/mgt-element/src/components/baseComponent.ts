@@ -115,12 +115,15 @@ export abstract class MgtBaseComponent extends LitElement {
 
   @state() private _isFirstUpdated = false;
   @state() private _isLoadingState = false;
-  private _currentLoadStatePromise: Promise<unknown>;
+  @state() private _currentLoadStatePromise: Promise<unknown>;
+  @state() private _loadStatePromise: Promise<unknown>;
 
   constructor() {
     super();
     this.handleDirectionChanged();
     this.handleLocalizationChanged();
+    this._currentLoadStatePromise = null;
+    this._loadStatePromise = null;
   }
 
   /**
@@ -260,7 +263,7 @@ export abstract class MgtBaseComponent extends LitElement {
     } else {
       // Signed in, load the internal component state
       // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-async-promise-executor
-      const loadStatePromise = new Promise<void>(async (resolve, reject) => {
+      this._loadStatePromise = new Promise<void>(async (resolve, reject) => {
         try {
           this.setLoadingState(true);
           this.fireCustomEvent('loadingInitiated');
@@ -285,16 +288,16 @@ export abstract class MgtBaseComponent extends LitElement {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment
         return (this._currentLoadStatePromise =
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          this.isLoadingState && !!this._currentLoadStatePromise && force
+          this._isLoadingState && !!this._currentLoadStatePromise && force
             ? // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-              this._currentLoadStatePromise.then(() => loadStatePromise)
-            : loadStatePromise);
+              this._currentLoadStatePromise.then(() => this._loadStatePromise)
+            : this._loadStatePromise);
       });
     }
   }
 
   protected setLoadingState = (value: boolean) => {
-    if (this.isLoadingState === value) {
+    if (this._isLoadingState === value) {
       return;
     }
 
@@ -312,7 +315,6 @@ export abstract class MgtBaseComponent extends LitElement {
 
   private readonly handleLocalizationChanged = () => {
     LocalizationHelper.updateStringsForTag(this.tagName, this.strings);
-    this.requestUpdate();
   };
 
   private readonly handleDirectionChanged = () => {

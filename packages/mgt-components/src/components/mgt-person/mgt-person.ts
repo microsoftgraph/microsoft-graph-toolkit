@@ -5,7 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { MgtTemplatedComponent, ProviderState, Providers, customElementHelper, mgtHtml } from '@microsoft/mgt-element';
+import {
+  IGraph,
+  MgtTemplatedComponent,
+  ProviderState,
+  Providers,
+  customElementHelper,
+  mgtHtml
+} from '@microsoft/mgt-element';
 import { Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -156,7 +163,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._personQuery = value;
-    this.personDetailsInternal = null;
+    this._personDetailsInternal = null;
     void this.requestStateUpdate();
   }
 
@@ -203,7 +210,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._userId = value;
-    this.personDetailsInternal = null;
+    this._personDetailsInternal = null;
     void this.requestStateUpdate();
   }
 
@@ -536,12 +543,14 @@ export class MgtPerson extends MgtTemplatedComponent {
   @state() private _userId: string;
   @state() private _usage: string;
   @state() private _avatarType: avatarType;
+  @state() private _graph: IGraph;
 
-  private _mouseLeaveTimeout = -1;
-  private _mouseEnterTimeout = -1;
+  @state() private _mouseLeaveTimeout = -1;
+  @state() private _mouseEnterTimeout = -1;
 
   constructor() {
     super();
+    this.clearState();
 
     // defaults
     this.personCardInteraction = PersonCardInteraction.none;
@@ -555,6 +564,8 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._isInvalidImageSrc = false;
     this._avatarType = avatarType.photo;
     this.verticalLayout = false;
+    this._personQuery = '';
+    this._userId = '';
   }
 
   /**
@@ -649,8 +660,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._fetchedPresence = null;
     this._personDetails = null;
     this._personPresence = null;
-    this._usage = null;
+    this._usage = '';
     this._fallbackDetails = null;
+    this._personCardShouldRender = false;
   }
 
   /**
@@ -925,9 +937,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const details: TemplateResult[] = [];
+    let text = '';
 
     if (this.view > ViewType.image) {
-      const text = this.getTextFromProperty(person, this.line1Property);
+      text = this.getTextFromProperty(person, this.line1Property);
       if (this.hasTemplate('line1')) {
         // Render the line1 template
         const template = this.renderTemplate('line1', { person });
@@ -947,7 +960,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     if (this.view > ViewType.oneline) {
-      const text = this.getTextFromProperty(person, this.line2Property);
+      text = this.getTextFromProperty(person, this.line2Property);
       if (this.hasTemplate('line2')) {
         // Render the line2 template
         const template = this.renderTemplate('line2', { person });
@@ -967,7 +980,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     if (this.view > ViewType.twolines) {
-      const text = this.getTextFromProperty(person, this.line3Property);
+      text = this.getTextFromProperty(person, this.line3Property);
       if (this.hasTemplate('line3')) {
         // Render the line3 template
         const template = this.renderTemplate('line3', { person });
@@ -987,7 +1000,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     if (this.view > ViewType.threelines) {
-      const text = this.getTextFromProperty(person, this.line4Property);
+      text = this.getTextFromProperty(person, this.line4Property);
       if (this.hasTemplate('line4')) {
         // Render the line4 template
         const template = this.renderTemplate('line4', { person });
@@ -1087,11 +1100,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     if (provider && provider.state === ProviderState.SignedOut) {
-      this.personDetailsInternal = null;
+      this._personDetailsInternal = null;
       return;
     }
 
-    const graph = provider.graph.forComponent(this);
+    this._graph = provider.graph.forComponent(this);
 
     if ((this.verticalLayout && this.view < ViewType.fourlines) || this.fallbackDetails) {
       this.line2Property = 'email';
@@ -1118,9 +1131,9 @@ export class MgtPerson extends MgtTemplatedComponent {
       ) {
         let image: string;
         if ('groupTypes' in details) {
-          image = await getGroupImage(graph, details);
+          image = await getGroupImage(this._graph, details);
         } else {
-          image = await getPersonImage(graph, details, MgtPerson.config.useContactApis);
+          image = await getPersonImage(this._graph, details, MgtPerson.config.useContactApis);
         }
         if (image) {
           details.personImage = image;
@@ -1131,34 +1144,34 @@ export class MgtPerson extends MgtTemplatedComponent {
       // Use userId or 'me' query to get the person and image
       let person: IDynamicPerson;
       if (this._avatarType === avatarType.photo && !this.disableImageFetch) {
-        person = await getUserWithPhoto(graph, this.userId, personProps);
+        person = await getUserWithPhoto(this._graph, this.userId, personProps);
       } else {
         if (this.personQuery === 'me') {
-          person = await getMe(graph, personProps);
+          person = await getMe(this._graph, personProps);
         } else {
-          person = await getUser(graph, this.userId, personProps);
+          person = await getUser(this._graph, this.userId, personProps);
         }
       }
-      this.personDetailsInternal = person;
-      this.personDetails = person;
+      this._personDetailsInternal = person;
+      this._personDetails = person;
       this._fetchedImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
-      let people = await findPeople(graph, this.personQuery, 1);
+      let people = await findPeople(this._graph, this.personQuery, 1);
 
       if (!people || people.length === 0) {
-        people = (await findUsers(graph, this.personQuery, 1)) || [];
+        people = (await findUsers(this._graph, this.personQuery, 1)) || [];
       }
 
       if (people?.length) {
-        this.personDetailsInternal = people[0];
-        this.personDetails = people[0];
+        this._personDetailsInternal = people[0];
+        this._personDetails = people[0];
         if (this._avatarType === avatarType.photo && !this.disableImageFetch) {
-          const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
+          const image = await getPersonImage(this._graph, people[0], MgtPerson.config.useContactApis);
 
           if (image) {
-            this.personDetailsInternal.personImage = image;
-            this.personDetails.personImage = image;
+            this._personDetailsInternal.personImage = image;
+            this._personDetails.personImage = image;
             this._fetchedImage = image;
           }
         }
@@ -1179,7 +1192,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         if (details) {
           // setting userId to 'me' ensures only the presence.read permission is required
           const userId = this.personQuery !== 'me' ? details?.id : null;
-          this._fetchedPresence = await getUserPresence(graph, userId);
+          this._fetchedPresence = await getUserPresence(this._graph, userId);
         } else {
           this._fetchedPresence = defaultPresence;
         }

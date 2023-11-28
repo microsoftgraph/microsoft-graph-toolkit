@@ -7,9 +7,9 @@
 
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { styles } from './mgt-file-css';
-import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
+import { IGraph, MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
 import {
   getDriveItemById,
   getDriveItemByPath,
@@ -337,7 +337,17 @@ export class MgtFile extends MgtTemplatedComponent {
    * @memberof MgtFile
    */
   @property({ type: Object })
-  public driveItem: DriveItem;
+  public get driveItem(): DriveItem {
+    return this._driveItem;
+  }
+  public set driveItem(value: DriveItem) {
+    if (value === this._driveItem) {
+      return;
+    }
+
+    this._driveItem = value;
+    void this.requestStateUpdate();
+  }
 
   /**
    * Sets the property of the file to use for the first line of text.
@@ -346,7 +356,17 @@ export class MgtFile extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtFile
    */
-  @property({ attribute: 'line1-property' }) public line1Property: string;
+  @property({ attribute: 'line1-property' }) public get line1Property(): string {
+    return this._line1Property;
+  }
+  public set line1Property(value: string) {
+    if (value === this._line1Property) {
+      return;
+    }
+
+    this._line1Property = value;
+    void this.requestStateUpdate();
+  }
 
   /**
    * Sets the property of the file to use for the second line of text.
@@ -355,7 +375,17 @@ export class MgtFile extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtFile
    */
-  @property({ attribute: 'line2-property' }) public line2Property: string;
+  @property({ attribute: 'line2-property' }) public get line2Property(): string {
+    return this._line2Property;
+  }
+  public set line2Property(value: string) {
+    if (value === this._line2Property) {
+      return;
+    }
+
+    this._line2Property = value;
+    void this.requestStateUpdate();
+  }
 
   /**
    * Sets the property of the file to use for the second line of text.
@@ -364,7 +394,17 @@ export class MgtFile extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtFile
    */
-  @property({ attribute: 'line3-property' }) public line3Property: string;
+  @property({ attribute: 'line3-property' }) public get line3Property(): string {
+    return this._line3Property;
+  }
+  public set line3Property(value: string) {
+    if (value === this._line3Property) {
+      return;
+    }
+
+    this._line3Property = value;
+    void this.requestStateUpdate();
+  }
 
   /**
    * Sets what data to be rendered (file icon only, oneLine, twoLines threeLines).
@@ -389,7 +429,17 @@ export class MgtFile extends MgtTemplatedComponent {
       }
     }
   })
-  public view: ViewType;
+  public get view(): ViewType {
+    return this._view;
+  }
+  public set view(value: ViewType) {
+    if (value === this._view) {
+      return;
+    }
+
+    this._view = value;
+    void this.requestStateUpdate();
+  }
 
   /**
    * Get the scopes required for file
@@ -402,25 +452,34 @@ export class MgtFile extends MgtTemplatedComponent {
     return [...new Set(['files.read', 'files.read.all', 'sites.read.all'])];
   }
 
-  private _fileQuery: string;
-  private _siteId: string;
-  private _itemId: string;
-  private _driveId: string;
-  private _itemPath: string;
-  private _listId: string;
-  private _groupId: string;
-  private _userId: string;
-  private _insightType: OfficeGraphInsightString;
-  private _insightId: string;
-  private _fileDetails: DriveItem;
-  private _fileIcon: string;
+  @state() private _driveItem: DriveItem;
+  @state() private _view: ViewType;
+  @state() private _line1Property: string;
+  @state() private _line2Property: string;
+  @state() private _line3Property: string;
+  @state() private _graph: IGraph;
+  @state() private _fileQuery: string;
+  @state() private _siteId: string;
+  @state() private _itemId: string;
+  @state() private _driveId: string;
+  @state() private _itemPath: string;
+  @state() private _listId: string;
+  @state() private _groupId: string;
+  @state() private _userId: string;
+  @state() private _insightType: OfficeGraphInsightString;
+  @state() private _insightId: string;
+  @state() private _fileDetails: DriveItem;
+  @state() private _fileIcon: string;
+  @state() private _getFromMyDrive = false;
+  @state() private _propertyList: string[];
+  @state() private _currentPropertyList: string;
 
   constructor() {
     super();
-    this.line1Property = 'name';
-    this.line2Property = 'lastModifiedDateTime';
-    this.line3Property = 'size';
-    this.view = ViewType.threelines;
+    this._line1Property = 'name';
+    this._line2Property = 'lastModifiedDateTime';
+    this._line3Property = 'size';
+    this._view = ViewType.threelines;
   }
 
   public render() {
@@ -533,9 +592,10 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     const details: TemplateResult[] = [];
+    let text = '';
 
     if (this.view > ViewType.image) {
-      const text = this.getTextFromProperty(driveItem, this.line1Property);
+      text = this.getTextFromProperty(driveItem, this.line1Property);
       if (text) {
         details.push(html`
           <div class="line1" aria-label="${text}">${text}</div>
@@ -544,7 +604,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     if (this.view > ViewType.oneline) {
-      const text = this.getTextFromProperty(driveItem, this.line2Property);
+      text = this.getTextFromProperty(driveItem, this.line2Property);
       if (text) {
         details.push(html`
           <div class="line2" aria-label="${text}">${text}</div>
@@ -553,7 +613,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     if (this.view > ViewType.twolines) {
-      const text = this.getTextFromProperty(driveItem, this.line3Property);
+      text = this.getTextFromProperty(driveItem, this.line3Property);
       if (text) {
         details.push(html`
           <div class="line3" aria-label="${text}">${text}</div>
@@ -577,7 +637,7 @@ export class MgtFile extends MgtTemplatedComponent {
    */
   protected async loadState() {
     if (this.fileDetails) {
-      this.driveItem = this.fileDetails;
+      this._driveItem = this.fileDetails;
       return;
     }
 
@@ -587,15 +647,15 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     if (provider.state === ProviderState.SignedOut) {
-      this.driveItem = null;
+      this._driveItem = null;
       return;
     }
 
-    const graph = provider.graph.forComponent(this);
+    this._graph = provider.graph.forComponent(this);
     let driveItem: DriveItem;
 
     // evaluate to true when only item-id or item-path is provided
-    const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
+    this._getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
 
     if (
       // return null when a combination of provided properties are required
@@ -608,44 +668,44 @@ export class MgtFile extends MgtTemplatedComponent {
     ) {
       driveItem = null;
     } else if (this.fileQuery) {
-      driveItem = await getDriveItemByQuery(graph, this.fileQuery);
-    } else if (this.itemId && getFromMyDrive) {
-      driveItem = await getMyDriveItemById(graph, this.itemId);
-    } else if (this.itemPath && getFromMyDrive) {
-      driveItem = await getMyDriveItemByPath(graph, this.itemPath);
+      driveItem = await getDriveItemByQuery(this._graph, this.fileQuery);
+    } else if (this.itemId && this._getFromMyDrive) {
+      driveItem = await getMyDriveItemById(this._graph, this.itemId);
+    } else if (this.itemPath && this._getFromMyDrive) {
+      driveItem = await getMyDriveItemByPath(this._graph, this.itemPath);
     } else if (this.userId) {
       if (this.itemId) {
-        driveItem = await getUserDriveItemById(graph, this.userId, this.itemId);
+        driveItem = await getUserDriveItemById(this._graph, this.userId, this.itemId);
       } else if (this.itemPath) {
-        driveItem = await getUserDriveItemByPath(graph, this.userId, this.itemPath);
+        driveItem = await getUserDriveItemByPath(this._graph, this.userId, this.itemPath);
       } else if (this.insightType && this.insightId) {
-        driveItem = await getUserInsightsDriveItemById(graph, this.userId, this.insightType, this.insightId);
+        driveItem = await getUserInsightsDriveItemById(this._graph, this.userId, this.insightType, this.insightId);
       }
     } else if (this.driveId) {
       if (this.itemId) {
-        driveItem = await getDriveItemById(graph, this.driveId, this.itemId);
+        driveItem = await getDriveItemById(this._graph, this.driveId, this.itemId);
       } else if (this.itemPath) {
-        driveItem = await getDriveItemByPath(graph, this.driveId, this.itemPath);
+        driveItem = await getDriveItemByPath(this._graph, this.driveId, this.itemPath);
       }
     } else if (this.siteId && !this.listId) {
       if (this.itemId) {
-        driveItem = await getSiteDriveItemById(graph, this.siteId, this.itemId);
+        driveItem = await getSiteDriveItemById(this._graph, this.siteId, this.itemId);
       } else if (this.itemPath) {
-        driveItem = await getSiteDriveItemByPath(graph, this.siteId, this.itemPath);
+        driveItem = await getSiteDriveItemByPath(this._graph, this.siteId, this.itemPath);
       }
     } else if (this.listId) {
-      driveItem = await getListDriveItemById(graph, this.siteId, this.listId, this.itemId);
+      driveItem = await getListDriveItemById(this._graph, this.siteId, this.listId, this.itemId);
     } else if (this.groupId) {
       if (this.itemId) {
-        driveItem = await getGroupDriveItemById(graph, this.groupId, this.itemId);
+        driveItem = await getGroupDriveItemById(this._graph, this.groupId, this.itemId);
       } else if (this.itemPath) {
-        driveItem = await getGroupDriveItemByPath(graph, this.groupId, this.itemPath);
+        driveItem = await getGroupDriveItemByPath(this._graph, this.groupId, this.itemPath);
       }
     } else if (this.insightType && !this.userId) {
-      driveItem = await getMyInsightsDriveItemById(graph, this.insightType, this.insightId);
+      driveItem = await getMyInsightsDriveItemById(this._graph, this.insightType, this.insightId);
     }
 
-    this.driveItem = driveItem;
+    this._driveItem = driveItem;
   }
 
   private getTextFromProperty(driveItem: DriveItem, properties: string): string {
@@ -653,13 +713,13 @@ export class MgtFile extends MgtTemplatedComponent {
       return null;
     }
 
-    const propertyList = properties.trim().split(',');
-    let text: string;
+    this._propertyList = properties.trim().split(',');
+    let text = '';
     let i = 0;
 
-    while (!text && i < propertyList.length) {
-      const current = propertyList[i].trim();
-      switch (current) {
+    while (!text && i < this._propertyList.length) {
+      this._currentPropertyList = this._propertyList[i].trim();
+      switch (this._currentPropertyList) {
         case 'size': {
           // convert size to kb, mb, gb
           let size = '0';
@@ -684,7 +744,7 @@ export class MgtFile extends MgtTemplatedComponent {
           break;
         }
         default:
-          text = driveItem[current] as string;
+          text = driveItem[this._currentPropertyList] as string;
       }
       i++;
     }
