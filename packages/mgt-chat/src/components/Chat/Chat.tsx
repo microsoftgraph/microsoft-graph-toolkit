@@ -75,12 +75,18 @@ const messageThreadStyles: MessageThreadStyles = {
     '& p>mgt-person,msft-mention': {
       display: 'inline-block',
       ...shorthands.marginInline('0px', '2px')
+    },
+    '& .otherMention': {
+      color: 'var(--accent-base-color)'
     }
   },
   myChatMessageContainer: {
     '& p>mgt-person,msft-mention': {
       display: 'inline-block',
       ...shorthands.marginInline('0px', '2px')
+    },
+    '& .otherMention': {
+      color: 'var(--accent-base-color)'
     }
   }
 };
