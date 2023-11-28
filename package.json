@@ -114,7 +114,7 @@
     "gulp-util": "^3.0.8",
     "husky": "^4.3.0",
     "lerna": "^7.1.1",
-    "lit": "^2.7.5",
+    "lit": "^3.0.0",
     "monaco-editor": "^0.30.0",
     "monaco-editor-webpack-plugin": "^6.0.0",
     "node-sass": "npm:sass@^1.44.0",

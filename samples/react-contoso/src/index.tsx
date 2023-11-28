@@ -3,6 +3,9 @@ import { App } from './App';
 import { mergeStyles } from '@fluentui/react';
 import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
 import { Providers, LoginType } from '@microsoft/mgt-element';
+import { MgtPersonCardConfig } from '@microsoft/mgt-components/dist/es6/exports';
+
+MgtPersonCardConfig.isSendMessageVisible = false;
 
 // Inject some global styles
 mergeStyles({

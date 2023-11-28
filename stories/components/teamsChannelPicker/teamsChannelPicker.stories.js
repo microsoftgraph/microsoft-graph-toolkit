@@ -84,6 +84,32 @@ export const selectChannel = () => html`
   </script>
 `;
 
+export const clearSelectedItem = () => html`
+  <mgt-teams-channel-picker></mgt-teams-channel-picker>
+  <button class="clear">Clear SelectedChannel</button>
+
+  <div class="output"></div>
+
+  <script>
+    const picker = document.querySelector('mgt-teams-channel-picker');
+    const output = document.querySelector('.output');
+    const clear = document.querySelector('.clear');
+
+    clear.addEventListener('click', _ => {
+      picker.clearSelectedItem();
+    });
+
+    picker.addEventListener('selectionChanged', e => {
+      if (e.detail) {
+        output.innerHTML = '<b>channel:</b> ' + e.detail.channel.displayName;
+        output.innerHTML += '<br/><b>team:</b> ' + e.detail.team.displayName;
+      } else {
+        output.innerText = 'no channel selected';
+      }
+    })
+  </script>
+`;
+
 export const RTL = () => html`
   <body dir="rtl">
     <mgt-teams-channel-picker></mgt-teams-channel-picker>

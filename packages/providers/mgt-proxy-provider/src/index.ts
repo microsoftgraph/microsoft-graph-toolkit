@@ -4,8 +4,5 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { registerMgtProxyProvider } from './mgt-proxy-provider';
-
-registerMgtProxyProvider();
-
+export * from './mgt-proxy-provider';
 export * from './exports';
