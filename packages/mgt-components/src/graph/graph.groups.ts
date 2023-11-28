@@ -12,8 +12,7 @@ import {
   CacheService,
   CacheStore,
   BatchResponse,
-  CollectionResponse,
-  needsAdditionalScopes
+  CollectionResponse
 } from '@microsoft/mgt-element';
 import { Group } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
@@ -152,7 +151,6 @@ export const findGroups = async (
     filterQuery += `${query ? ' and ' : ''}${groupFilters}`;
   }
 
-  const requiredScopes = needsAdditionalScopes(validGroupQueryScopes);
   if (groupTypes !== GroupType.any) {
     const batch = graph.createBatch<CollectionResponse<Group>>();
 
@@ -180,7 +178,7 @@ export const findGroups = async (
 
     filterQuery = filterQuery ? `${filterQuery} and ` : '';
     for (const filter of filterGroups) {
-      batch.get(filter, `/groups?$filter=${filterQuery + filter}`, requiredScopes);
+      batch.get(filter, `/groups?$filter=${filterQuery + filter}`, validGroupQueryScopes);
     }
 
     try {
@@ -207,7 +205,7 @@ export const findGroups = async (
               .top(top)
               .count(true)
               .header('ConsistencyLevel', 'eventual')
-              .middlewareOptions(prepScopes(...requiredScopes))
+              .middlewareOptions(prepScopes(validGroupQueryScopes))
               .get() as Promise<CollectionResponse<Group>>
           );
         }
@@ -224,7 +222,7 @@ export const findGroups = async (
         .top(top)
         .count(true)
         .header('ConsistencyLevel', 'eventual')
-        .middlewareOptions(prepScopes(...requiredScopes))
+        .middlewareOptions(prepScopes(validGroupQueryScopes))
         .get()) as CollectionResponse<Group>;
       if (getIsGroupsCacheEnabled() && result) {
         await cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top });
@@ -303,14 +301,13 @@ export const findGroupsFromGroup = async (
     filterQuery += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
   }
 
-  const requiredScopes = needsAdditionalScopes(validTransitiveGroupMemberScopes);
   const result = (await graph
     .api(apiUrl)
     .filter(filterQuery)
     .count(true)
     .top(top)
     .header('ConsistencyLevel', 'eventual')
-    .middlewareOptions(prepScopes(...requiredScopes))
+    .middlewareOptions(prepScopes(validTransitiveGroupMemberScopes))
     .get()) as CollectionResponse<Group>;
 
   if (getIsGroupsCacheEnabled() && result) {
@@ -353,12 +350,8 @@ export const getGroup = async (graph: IGraph, id: string, requestedProps?: strin
     apiString = apiString + '?$select=' + requestedProps.toString();
   }
 
-  const requiredScopes = needsAdditionalScopes(validGroupQueryScopes);
   // else we must grab it
-  const response = (await graph
-    .api(apiString)
-    .middlewareOptions(prepScopes(...requiredScopes))
-    .get()) as Group;
+  const response = (await graph.api(apiString).middlewareOptions(prepScopes(validGroupQueryScopes)).get()) as Group;
   if (getIsGroupsCacheEnabled()) {
     await cache.putValue(id, { group: JSON.stringify(response) });
   }
@@ -386,7 +379,6 @@ export const getGroupsForGroupIds = async (graph: IGraph, groupIds: string[], fi
     cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groups);
   }
 
-  const requiredScopes = needsAdditionalScopes(validGroupQueryScopes);
   for (const id of groupIds) {
     groupDict[id] = null;
     let group: CacheGroup;
@@ -400,7 +392,7 @@ export const getGroupsForGroupIds = async (graph: IGraph, groupIds: string[], fi
       if (filters) {
         apiUrl = `${apiUrl}?$filters=${filters}`;
       }
-      batch.get(id, apiUrl, requiredScopes);
+      batch.get(id, apiUrl, validGroupQueryScopes);
       notInCache.push(id);
     }
   }

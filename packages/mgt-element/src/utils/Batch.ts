@@ -108,7 +108,7 @@ export class Batch<T = any> implements IBatch<T> {
       });
     }
 
-    const middlewareOptions: MiddlewareOptions[] = this.scopes.length ? prepScopes(...this.scopes) : [];
+    const middlewareOptions: MiddlewareOptions[] = this.scopes.length ? prepScopes(this.scopes) : [];
     const batchRequest = this.graph.api('$batch').middlewareOptions(middlewareOptions);
 
     const batchRequestBody = await batchRequestContent.getContent();

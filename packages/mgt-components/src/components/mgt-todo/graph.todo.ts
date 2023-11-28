@@ -29,7 +29,7 @@ export const getTodoTasks = async (graph: IGraph, listId: string): Promise<TodoT
   const tasks = (await graph
     .api(`/me/todo/lists/${listId}/tasks`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Tasks.Read'))
+    .middlewareOptions(prepScopes(['Tasks.Read']))
     .get()) as CollectionResponse<TodoTask>;
 
   return tasks?.value;
@@ -48,7 +48,7 @@ export const getTodoTask = async (graph: IGraph, listId: string, taskId: string)
   (await graph
     .api(`/me/todo/lists/${listId}/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Tasks.Read'))
+    .middlewareOptions(prepScopes(['Tasks.Read']))
     .get()) as TodoTask;
 
 /**
@@ -62,7 +62,7 @@ export const getTodoTaskLists = async (graph: IGraph): Promise<TodoTaskList[]> =
   const taskLists = (await graph
     .api('/me/todo/lists')
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Tasks.Read'))
+    .middlewareOptions(prepScopes(['Tasks.Read']))
     .get()) as CollectionResponse<TodoTaskList>;
 
   return taskLists?.value;
@@ -80,7 +80,7 @@ export const getTodoTaskList = async (graph: IGraph, listId: string): Promise<To
   (await graph
     .api(`/me/todo/lists/${listId}`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Tasks.Read'))
+    .middlewareOptions(prepScopes(['Tasks.Read']))
     .get()) as TodoTaskList;
 
 /**
@@ -100,7 +100,7 @@ export const createTodoTask = async (
   (await graph
     .api(`/me/todo/lists/${listId}/tasks`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+    .middlewareOptions(prepScopes(['Tasks.ReadWrite']))
     .post(taskData)) as TodoTask;
 
 /**
@@ -115,7 +115,7 @@ export const createTodoTaskList = async (graph: IGraph, listData: { displayName:
   (await graph
     .api('/me/todo/lists')
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+    .middlewareOptions(prepScopes(['Tasks.ReadWrite']))
     .post(listData)) as TodoTaskList;
 
 /**
@@ -131,7 +131,7 @@ export const deleteTodoTask = async (graph: IGraph, listId: string, taskId: stri
   await graph
     .api(`/me/todo/lists/${listId}/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+    .middlewareOptions(prepScopes(['Tasks.ReadWrite']))
     .delete();
 };
 
@@ -147,7 +147,7 @@ export const deleteTodoTaskList = async (graph: IGraph, listId: string): Promise
   await graph
     .api(`/me/todo/lists/${listId}`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+    .middlewareOptions(prepScopes(['Tasks.ReadWrite']))
     .delete();
 };
 
@@ -170,7 +170,7 @@ export const updateTodoTask = async (
   (await graph
     .api(`/me/todo/lists/${listId}/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+    .middlewareOptions(prepScopes(['Tasks.ReadWrite']))
     .patch(taskData)) as TodoTask;
 
 /**
@@ -190,5 +190,5 @@ export const updateTodoTaskList = async (
   (await graph
     .api(`/me/todo/lists/${listId}`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+    .middlewareOptions(prepScopes(['Tasks.ReadWrite']))
     .patch(taskListData)) as TodoTaskList;

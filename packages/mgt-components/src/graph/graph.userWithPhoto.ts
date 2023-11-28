@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { CacheService, IGraph, needsAdditionalScopes, prepScopes } from '@microsoft/mgt-element';
+import { CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 
 import {
   CachePhoto,
@@ -45,12 +45,8 @@ export const getUserWithPhoto = async (
 
   const currentUserValidScopes = ['User.Read', 'User.ReadWrite', ...anyUserValidScopes];
 
-  const requiredUserScopes = userId
-    ? needsAdditionalScopes(anyUserValidScopes)
-    : needsAdditionalScopes(currentUserValidScopes);
-  const requiredPhotoScopes = userId
-    ? needsAdditionalScopes(anyUserValidPhotoScopes)
-    : needsAdditionalScopes(currentUserValidPhotoScopes);
+  const requiredUserScopes = userId ? anyUserValidScopes : currentUserValidScopes;
+  const requiredPhotoScopes = userId ? anyUserValidPhotoScopes : currentUserValidPhotoScopes;
 
   let photo: string;
   let user: IDynamicPerson = null;
@@ -163,7 +159,7 @@ export const getUserWithPhoto = async (
     try {
       const response: IDynamicPerson = (await graph
         .api(fullResource)
-        .middlewareOptions(prepScopes(...requiredUserScopes))
+        .middlewareOptions(prepScopes(requiredUserScopes))
         .get()) as IDynamicPerson;
 
       if (response) {

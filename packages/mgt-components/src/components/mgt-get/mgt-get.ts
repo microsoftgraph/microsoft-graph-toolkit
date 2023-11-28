@@ -364,7 +364,7 @@ export class MgtGet extends MgtTemplatedComponent {
           let request: GraphRequest = graph.api(uri).version(this.version);
 
           if (this.scopes?.length) {
-            request = request.middlewareOptions(prepScopes(...this.scopes));
+            request = request.middlewareOptions(prepScopes(this.scopes));
           }
 
           if (this.type === ResponseType.json) {

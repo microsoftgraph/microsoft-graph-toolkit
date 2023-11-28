@@ -5,15 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  CacheItem,
-  CacheService,
-  CacheStore,
-  CollectionResponse,
-  IGraph,
-  needsAdditionalScopes,
-  prepScopes
-} from '@microsoft/mgt-element';
+import { CacheItem, CacheService, CacheStore, CollectionResponse, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { User } from '@microsoft/microsoft-graph-types';
 
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
@@ -84,9 +76,8 @@ export const getUsers = async (graph: IGraph, userFilters = '', top = 10): Promi
   }
 
   try {
-    const additionalScopes = needsAdditionalScopes(allValidScopes);
     const response = (await graphClient
-      .middlewareOptions(prepScopes(...additionalScopes))
+      .middlewareOptions(prepScopes(allValidScopes))
       .get()) as CollectionResponse<User>;
     if (getIsUsersCacheEnabled() && response) {
       cacheItem.results = response.value.map(userStr => JSON.stringify(userStr));
@@ -129,11 +120,7 @@ export const getMe = async (graph: IGraph, requestedProps?: string[]): Promise<U
   if (requestedProps) {
     apiString = apiString + '?$select=' + requestedProps.toString();
   }
-  const additionalScopes = needsAdditionalScopes(allValidMeScopes);
-  const response = (await graph
-    .api(apiString)
-    .middlewareOptions(prepScopes(...additionalScopes))
-    .get()) as User;
+  const response = (await graph.api(apiString).middlewareOptions(prepScopes(allValidMeScopes)).get()) as User;
   if (getIsUsersCacheEnabled()) {
     await cache.putValue('me', { user: JSON.stringify(response) });
   }
@@ -183,11 +170,7 @@ export const getUser = async (graph: IGraph, userPrincipleName: string, requeste
   // else we must grab it
   let response: User;
   try {
-    const additionalScopes = needsAdditionalScopes(validUserByIdScopes);
-    response = (await graph
-      .api(apiString)
-      .middlewareOptions(prepScopes(...additionalScopes))
-      .get()) as User;
+    response = (await graph.api(apiString).middlewareOptions(prepScopes(validUserByIdScopes)).get()) as User;
     // eslint-disable-next-line no-empty
   } catch (_) {}
 
@@ -226,8 +209,6 @@ export const getUsersForUserIds = async (
     cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
   }
 
-  const additionalUserByIdScopes = needsAdditionalScopes(validUserByIdScopes);
-
   for (const id of userIds) {
     peopleDict[id] = null;
     let apiUrl = `/users/${id}`;
@@ -251,7 +232,7 @@ export const getUsersForUserIds = async (
         if (user) {
           peopleDict[id] = user;
         } else {
-          batch.get(id, apiUrl, additionalUserByIdScopes);
+          batch.get(id, apiUrl, validUserByIdScopes);
           notInCache.push(id);
         }
       }
@@ -263,7 +244,7 @@ export const getUsersForUserIds = async (
         if (userFilters) {
           apiUrl += `${apiUrl}?$filter=${userFilters}`;
         }
-        batch.get(id, apiUrl, additionalUserByIdScopes);
+        batch.get(id, apiUrl, validUserByIdScopes);
         notInCache.push(id);
       }
     }
@@ -363,8 +344,7 @@ export const getUsersForPeopleQueries = async (
       const person = JSON.parse(cacheRes.results[0]) as User;
       people.push(person);
     } else {
-      const additionalScopes = needsAdditionalScopes(allValidPeopleScopes);
-      batch.get(personQuery, `/me/people?$search="${personQuery}"`, additionalScopes, {
+      batch.get(personQuery, `/me/people?$search="${personQuery}"`, allValidPeopleScopes, {
         'X-PeopleQuery-QuerySources': 'Mailbox,Directory'
       });
     }
@@ -449,11 +429,7 @@ export const findUsers = async (graph: IGraph, query: string, top = 10, userFilt
     graphBuilder.filter(userFilters);
   }
   try {
-    const additionalScopes = needsAdditionalScopes(scopes);
-    graphResult = (await graphBuilder
-      .top(top)
-      .middlewareOptions(prepScopes(...additionalScopes))
-      .get()) as CollectionResponse<User>;
+    graphResult = (await graphBuilder.top(top).middlewareOptions(prepScopes(scopes)).get()) as CollectionResponse<User>;
     // eslint-disable-next-line no-empty
   } catch {}
 
@@ -527,14 +503,13 @@ export const findGroupMembers = async (
   if (peopleFilters) {
     filter += query ? ` and ${peopleFilters}` : peopleFilters;
   }
-  const additionalRequiredScopes = needsAdditionalScopes(allValidScopes);
   const graphResult = (await graph
     .api(apiUrl)
     .count(true)
     .top(top)
     .filter(filter)
     .header('ConsistencyLevel', 'eventual')
-    .middlewareOptions(prepScopes(...additionalRequiredScopes))
+    .middlewareOptions(prepScopes(allValidScopes))
     .get()) as CollectionResponse<User>;
 
   if (getIsUsersCacheEnabled() && graphResult) {

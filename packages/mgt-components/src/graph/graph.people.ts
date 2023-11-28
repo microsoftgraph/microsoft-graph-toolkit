@@ -5,15 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  IGraph,
-  prepScopes,
-  CacheItem,
-  CacheService,
-  CacheStore,
-  CacheSchema,
-  needsAdditionalScopes
-} from '@microsoft/mgt-element';
+import { IGraph, prepScopes, CacheItem, CacheService, CacheStore, CacheSchema } from '@microsoft/mgt-element';
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
 import { CollectionResponse } from '@microsoft/mgt-element';
 import { extractEmailAddress } from '../utils/Utils';
@@ -153,7 +145,7 @@ export const findPeople = async (
       .search('"' + query + '"')
       .top(top)
       .filter(filter)
-      .middlewareOptions(prepScopes(...needsAdditionalScopes(validPeopleQueryScopes)));
+      .middlewareOptions(prepScopes(validPeopleQueryScopes));
 
     if (userType !== UserType.contact) {
       // for any type other than Contact, user a wider search
@@ -213,11 +205,7 @@ export const getPeople = async (
 
   let people: CollectionResponse<Person>;
   try {
-    let graphRequest = graph
-      .api(uri)
-      .middlewareOptions(prepScopes(...needsAdditionalScopes(validPeopleQueryScopes)))
-      .top(top)
-      .filter(filter);
+    let graphRequest = graph.api(uri).middlewareOptions(prepScopes(validPeopleQueryScopes)).top(top).filter(filter);
 
     if (userType !== UserType.contact) {
       // for any type other than Contact, user a wider search
@@ -277,7 +265,7 @@ export const findContactsByEmail = async (graph: IGraph, email: string): Promise
   const result = (await graph
     .api('/me/contacts')
     .filter(`emailAddresses/any(a:a/address eq '${encodedEmail}')`)
-    .middlewareOptions(prepScopes(...needsAdditionalScopes(validContactQueryScopes)))
+    .middlewareOptions(prepScopes(validContactQueryScopes))
     .get()) as CollectionResponse<Contact>;
 
   if (getIsPeopleCacheEnabled() && result) {
@@ -319,7 +307,7 @@ export const getPeopleFromResource = async (
   let request = graph.api(resource).version(version);
 
   if (scopes?.length) {
-    request = request.middlewareOptions(prepScopes(...scopes));
+    request = request.middlewareOptions(prepScopes(scopes));
   }
 
   let response = (await request.get()) as CollectionResponse<Person>;

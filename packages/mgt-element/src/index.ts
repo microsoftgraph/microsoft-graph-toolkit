@@ -18,7 +18,7 @@ export * from './components/customElementHelper';
 export * from './providers/IProvider';
 export * from './providers/Providers';
 export * from './providers/SimpleProvider';
-export * from './providers/needsAdditionalScopes';
+// export * from './providers/needsAdditionalScopes';
 
 export * from './utils/CacheItem';
 export * from './utils/CacheSchema';

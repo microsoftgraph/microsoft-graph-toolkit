@@ -5,15 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  IGraph,
-  prepScopes,
-  CacheItem,
-  CacheService,
-  CacheStore,
-  CollectionResponse,
-  needsAdditionalScopes
-} from '@microsoft/mgt-element';
+import { IGraph, prepScopes, CacheItem, CacheService, CacheStore, CollectionResponse } from '@microsoft/mgt-element';
 import { Person, Presence } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
 import { IDynamicPerson } from './types';
@@ -61,12 +53,8 @@ export const getUserPresence = async (graph: IGraph, userId?: string): Promise<P
 
   const validScopes = userId ? ['presence.read', 'presence.read.all'] : ['presence.read.all'];
   const resource = userId ? `/users/${userId}/presence` : '/me/presence';
-  const additionalRequiredScopes = needsAdditionalScopes(validScopes);
 
-  const result = (await graph
-    .api(resource)
-    .middlewareOptions(prepScopes(...additionalRequiredScopes))
-    .get()) as Presence;
+  const result = (await graph.api(resource).middlewareOptions(prepScopes(validScopes)).get()) as Presence;
   if (getIsPresenceCacheEnabled()) {
     await cache.putValue(userId || 'me', { presence: JSON.stringify(result) });
   }
@@ -112,11 +100,9 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
 
   try {
     if (peoplePresenceToQuery.length > 0) {
-      const additionalRequiredScopes = needsAdditionalScopes(validScopes);
-
       const presenceResult = (await graph
         .api('/communications/getPresencesByUserId')
-        .middlewareOptions(prepScopes(...additionalRequiredScopes))
+        .middlewareOptions(prepScopes(validScopes))
         .post({
           ids: peoplePresenceToQuery
         })) as CollectionResponse<Presence>;

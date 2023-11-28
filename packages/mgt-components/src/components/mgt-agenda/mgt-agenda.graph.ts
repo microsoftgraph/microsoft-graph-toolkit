@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { GraphPageIterator, IGraph, needsAdditionalScopes, prepScopes } from '@microsoft/mgt-element';
+import { GraphPageIterator, IGraph, prepScopes } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 /**
@@ -22,10 +22,7 @@ export const getEventsQueryPageIterator = async (
   query: string,
   additionalScopes: string[]
 ): Promise<GraphPageIterator<MicrosoftGraph.Event>> => {
-  const request = graph
-    .api(query)
-    .middlewareOptions(prepScopes(...additionalScopes))
-    .orderby('start/dateTime');
+  const request = graph.api(query).middlewareOptions(prepScopes(additionalScopes)).orderby('start/dateTime');
 
   return GraphPageIterator.create<MicrosoftGraph.Event>(graph, request);
 };
@@ -55,7 +52,6 @@ export const getEventsPageIterator = async (
   const allValidScopes = groupId
     ? ['Group.Read.All', 'Group.ReadWrite.All']
     : ['Calendars.ReadBasic', 'Calendars.Read', 'Calendars.ReadWrite'];
-  const additionalScopes = needsAdditionalScopes(allValidScopes);
 
-  return getEventsQueryPageIterator(graph, uri, additionalScopes);
+  return getEventsQueryPageIterator(graph, uri, allValidScopes);
 };

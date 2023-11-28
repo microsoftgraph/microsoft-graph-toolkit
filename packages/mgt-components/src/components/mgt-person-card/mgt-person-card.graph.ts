@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BatchResponse, IBatch, IGraph, needsAdditionalScopes, prepScopes } from '@microsoft/mgt-element';
+import { BatchResponse, IBatch, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { Profile } from '@microsoft/microsoft-graph-types-beta';
 
@@ -110,7 +110,7 @@ const buildOrgStructureRequest = (batch: IBatch, userId: string) => {
   batch.get(
     batchKeys.person,
     `users/${userId}?$expand=${expandManagers}&$select=${userProperties}&$count=true`,
-    needsAdditionalScopes(validUserByIdScopes),
+    validUserByIdScopes,
     {
       ConsistencyLevel: 'eventual'
     }
@@ -120,19 +120,11 @@ const buildOrgStructureRequest = (batch: IBatch, userId: string) => {
 };
 
 const buildWorksWithRequest = (batch: IBatch, userId: string) => {
-  batch.get(
-    batchKeys.people,
-    `users/${userId}/people?$filter=personType/class eq 'Person'`,
-    needsAdditionalScopes(validUserByIdScopes)
-  );
+  batch.get(batchKeys.people, `users/${userId}/people?$filter=personType/class eq 'Person'`, validUserByIdScopes);
 };
 const validMailSearchScopes = ['Mail.ReadBasic', 'Mail.ReadWrite', 'Mail.Read'];
 const buildMessagesWithUserRequest = (batch: IBatch, emailAddress: string) => {
-  batch.get(
-    batchKeys.messages,
-    `me/messages?$search="from:${emailAddress}"`,
-    needsAdditionalScopes(validMailSearchScopes)
-  );
+  batch.get(batchKeys.messages, `me/messages?$search="from:${emailAddress}"`, validMailSearchScopes);
 };
 
 const buildFilesRequest = (batch: IBatch, emailAddress?: string) => {
@@ -144,7 +136,7 @@ const buildFilesRequest = (batch: IBatch, emailAddress?: string) => {
     request = 'me/insights/used';
   }
 
-  batch.get(batchKeys.files, request, needsAdditionalScopes(validInsightScopes));
+  batch.get(batchKeys.files, request, validInsightScopes);
 };
 
 /**
@@ -158,7 +150,7 @@ const getProfile = async (graph: IGraph, userId: string): Promise<Profile> =>
   (await graph
     .api(`/users/${userId}/profile`)
     .version('beta')
-    .middlewareOptions(prepScopes(...needsAdditionalScopes(validUserByIdScopes)))
+    .middlewareOptions(prepScopes(validUserByIdScopes))
     .get()) as Profile;
 
 const validCreateChatScopes = ['Chat.Create', 'Chat.ReadWrite'];
@@ -190,7 +182,7 @@ export const createChat = async (graph: IGraph, person: string, user: string): P
   return (await graph
     .api('/chats')
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes(...needsAdditionalScopes(validCreateChatScopes)))
+    .middlewareOptions(prepScopes(validCreateChatScopes))
     .post(chatData)) as Chat;
 };
 
@@ -212,5 +204,5 @@ export const sendMessage = async (
   (await graph
     .api(`/chats/${chatId}/messages`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes(...needsAdditionalScopes(validSendChatMessageScopes)))
+    .middlewareOptions(prepScopes(validSendChatMessageScopes))
     .post(messageData)) as ChatMessage;
