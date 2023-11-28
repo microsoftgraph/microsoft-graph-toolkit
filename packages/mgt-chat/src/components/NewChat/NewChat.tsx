@@ -34,7 +34,13 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     gridRowGap: '16px',
-    minWidth: '300px'
+    minWidth: '300px',
+    '& textarea': {
+      fontSize: 'var(--type-ramp-base-font-size)',
+      '::placeholder': {
+        fontSize: 'var(--type-ramp-base-font-size)'
+      }
+    }
   },
   formButtons: {
     display: 'flex',
