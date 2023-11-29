@@ -34,6 +34,7 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * @cssprop --people-overflow-font-color - {Color} the color of the overflow text.
  * @cssprop --people-overflow-font-size - {String} the text color of the overflow text. Default is 12px.
  * @cssprop --people-overflow-font-weight - {String} the font weight of the overflow text. Default is 400.
+ * @cssprop --people-person-avatar-size - {Length} the size of the avatar. Default is 24px.
  */
 
 export const registerMgtPeopleComponent = () => {

@@ -9,7 +9,7 @@
 @import '../../styles/shared-styles';
 @import './mgt-people-picker.theme';
 
-$people-picker-person-avatar-size: var(--people-picker-person-avatar-size, 40px);
+$people-picker-result-person-avatar-size: var(--people-picker-result-person-avatar-size, 40px);
 $people-picker-selected-person-avatar-size: var(--people-picker-selected-person-avatar-size, 24px);
 
 :host {
@@ -143,7 +143,7 @@ $people-picker-selected-person-avatar-size: var(--people-picker-selected-person-
       }
 
       .person-image-result {
-        --person-avatar-size: #{$people-picker-person-avatar-size};
+        --person-avatar-size: #{$people-picker-result-person-avatar-size};
       }
     }
   }

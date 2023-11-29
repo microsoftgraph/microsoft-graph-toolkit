@@ -82,6 +82,7 @@ export const registerMgtLoginComponent = () => {
  * @cssprop --login-command-button-hover-background-color - {Color} the color for the background of the command button on hovering.
  * @cssprop --login-account-item-hover-bg-color - {Color} the background color of the account item on hover.
  * @cssprop --login-flyout-command-text-color - {Color} the color for the text of the flyout command button.
+ * @cssprop --login-person-avatar-size - {Length} the size of the avatar in the person component.
  */
 export class MgtLogin extends MgtTemplatedComponent {
   /**
