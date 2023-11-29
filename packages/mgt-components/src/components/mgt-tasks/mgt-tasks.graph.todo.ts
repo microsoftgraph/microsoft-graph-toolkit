@@ -9,6 +9,9 @@ import { IGraph, prepScopes } from '@microsoft/mgt-element';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
 import { CollectionResponse } from '@microsoft/mgt-element';
 
+const writeTasksScopes = ['Tasks.ReadWrite'];
+const readTasksScopes = ['Tasks.Read'];
+
 /**
  * async promise, allows developer to add new to-do task
  *
@@ -23,13 +26,13 @@ export const addTodoTask = async (graph: IGraph, newTask: OutlookTask): Promise<
     return (await graph
       .api(`/me/outlook/taskFolders/${parentFolderId}/tasks`)
       .header('Cache-Control', 'no-store')
-      .middlewareOptions(prepScopes(['Tasks.ReadWrite']))
+      .middlewareOptions(prepScopes(writeTasksScopes))
       .post(newTask)) as OutlookTask;
   } else {
     return (await graph
       .api('/me/outlook/tasks')
       .header('Cache-Control', 'no-store')
-      .middlewareOptions(prepScopes(['Tasks.ReadWrite']))
+      .middlewareOptions(prepScopes(writeTasksScopes))
       .post(newTask)) as OutlookTask;
   }
 };
@@ -44,7 +47,7 @@ export const getAllMyTodoGroups = async (graph: IGraph): Promise<OutlookTaskGrou
   const groups = (await graph
     .api('/me/outlook/taskGroups')
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes(['Tasks.Read']))
+    .middlewareOptions(prepScopes(readTasksScopes))
     .get()) as CollectionResponse<OutlookTaskGroup>;
 
   return groups?.value;
@@ -61,7 +64,7 @@ export const getAllTodoTasksForFolder = async (graph: IGraph, folderId: string):
   const tasks = (await graph
     .api(`/me/outlook/taskFolders/${folderId}/tasks`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes(['Tasks.Read']))
+    .middlewareOptions(prepScopes(readTasksScopes))
     .get()) as CollectionResponse<OutlookTask>;
 
   return tasks?.value;
@@ -78,7 +81,7 @@ export const getFoldersForTodoGroup = async (graph: IGraph, groupId: string): Pr
   const folders = (await graph
     .api(`/me/outlook/taskGroups/${groupId}/taskFolders`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes(['Tasks.Read']))
+    .middlewareOptions(prepScopes(readTasksScopes))
     .get()) as CollectionResponse<OutlookTaskFolder>;
 
   return folders?.value;
@@ -95,7 +98,7 @@ export const getSingleTodoGroup = async (graph: IGraph, groupId: string): Promis
   (await graph
     .api(`/me/outlook/taskGroups/${groupId}`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes(['Tasks.Read']))
+    .middlewareOptions(prepScopes(readTasksScopes))
     .get()) as OutlookTaskGroup;
 
 /**
@@ -111,7 +114,7 @@ export const removeTodoTask = async (graph: IGraph, taskId: string, eTag: string
     .api(`/me/outlook/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
     .header('If-Match', eTag)
-    .middlewareOptions(prepScopes(['Tasks.ReadWrite']))
+    .middlewareOptions(prepScopes(writeTasksScopes))
     .delete();
 };
 
@@ -174,5 +177,5 @@ export const setTodoTaskDetails = async (
     .api(`/me/outlook/tasks/${taskId}`)
     .header('Cache-Control', 'no-store')
     .header('If-Match', eTag)
-    .middlewareOptions(prepScopes(['Tasks.ReadWrite']))
+    .middlewareOptions(prepScopes(writeTasksScopes))
     .patch(task)) as OutlookTask;
