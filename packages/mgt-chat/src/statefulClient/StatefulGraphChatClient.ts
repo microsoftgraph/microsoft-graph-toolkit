@@ -610,18 +610,22 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         awaits.push(getUserWithPhoto(this.graph, id));
       }
       const people = await Promise.all(awaits);
-      const userNames = userIds?.map(m => this.getUserName(m, people)).join(', ');
+      const userNames = userIds
+        ?.filter(id => id !== initiatorId)
+        .map(m => this.getUserName(m, people))
+        .join(', ');
+      const initiatorUsername = this.getUserName(initiatorId, people);
       switch (eventDetail['@odata.type']) {
         case '#microsoft.graph.membersAddedEventMessageDetail':
-          messageContent = `${this.getUserName(initiatorId, people)} added ${userNames}`;
+          messageContent = `${initiatorUsername} added ${userNames}`;
           break;
         case '#microsoft.graph.membersDeletedEventMessageDetail':
-          messageContent = `${this.getUserName(initiatorId, people)} removed ${userNames}`;
+          messageContent = `${initiatorUsername} removed ${userNames}`;
           break;
         case '#microsoft.graph.chatRenamedEventMessageDetail':
           messageContent = eventDetail.chatDisplayName
-            ? `${this.getUserName(initiatorId, people)} renamed the chat to ${eventDetail.chatDisplayName}`
-            : `${this.getUserName(initiatorId, people)} removed the group name for this conversation`;
+            ? `${initiatorUsername} renamed the chat to ${eventDetail.chatDisplayName}`
+            : `${initiatorUsername} removed the group name for this conversation`;
           break;
         // TODO: move this default case to a console.warn before release and emit an empty message
         // it's here to help us catch messages we have't handled yet
