@@ -26,7 +26,7 @@ const hasOtherContent = (dom: Document, emojisCount: number): boolean => {
  * @param content the HTML string.
  * @returns HTML string with emoji tags changed to the HTML representation.
  */
-export const rewriteEmojiContentToHTMLDOMParsing = (content: string): string => {
+export const rewriteEmojiContentToHTML = (content: string): string => {
   const parser = new DOMParser();
   const dom = parser.parseFromString(content, 'text/html');
   const emojis = dom.querySelectorAll('emoji');
