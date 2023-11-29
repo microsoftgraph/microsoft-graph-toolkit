@@ -1,3 +1,16 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+/**
+ * Checks if DOM content has emojis and other HTML content.
+ * @param dom the html content parsed into HTMLDocument.
+ * @param emojisCount number of emojis in the content.
+ * @returns true if only one emoji is in the content without other content, otherwise false.
+ */
 const hasOtherContent = (dom: Document, emojisCount: number): boolean => {
   const isPtag = dom.body.firstChild?.nodeName === 'P';
   if (isPtag) {
@@ -7,6 +20,12 @@ const hasOtherContent = (dom: Document, emojisCount: number): boolean => {
   return false;
 };
 
+/**
+ * Parses html content string into HTMLDocument, then replaces instances of the
+ * emoji tag.
+ * @param content the HTML string.
+ * @returns HTML string with emoji tags changed to the HTML representation.
+ */
 export const rewriteEmojiContentToHTMLDOMParsing = (content: string): string => {
   const parser = new DOMParser();
   const dom = parser.parseFromString(content, 'text/html');
