@@ -60,7 +60,7 @@ import {
 } from './graph.chat';
 import { updateMessageContentWithImage } from '../utils/updateMessageContentWithImage';
 import { isChatMessage } from '../utils/types';
-import { rewriteEmojiContentToHTML } from '../utils/rewriteEmojiContent';
+import { rewriteEmojiContentToHTMLDOMParsing } from '../utils/rewriteEmojiContent';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -1020,8 +1020,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     }
     let content = graphMessage.body?.content ?? 'undefined';
     let result: MessageConversion = {};
-    const hasAttachments = Boolean(graphMessage?.attachments?.length);
-    content = rewriteEmojiContentToHTML(content, hasAttachments);
+    content = rewriteEmojiContentToHTMLDOMParsing(content);
     // Handle any mentions in the content
     content = this.updateMentionsContent(content);
 
