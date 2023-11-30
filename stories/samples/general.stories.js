@@ -25,7 +25,7 @@ export const Localization = () => html`
   <mgt-login></mgt-login>
   <mgt-people-picker></mgt-people-picker>
   <mgt-teams-channel-picker></mgt-teams-channel-picker>
-  <mgt-tasks></mgt-tasks>
+  <mgt-planner></mgt-planner>
   <mgt-agenda></mgt-agenda>
   <mgt-people></mgt-people>
   <mgt-todo></mgt-todo>
@@ -108,7 +108,7 @@ export const cache = () => html`
 <mgt-people-picker type="group"></mgt-people-picker>
 <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
 <mgt-teams-channel-picker></mgt-teams-channel-picker>
-<mgt-tasks data-source="todo"></mgt-tasks>
+<mgt-planner data-source="todo"></mgt-planner>
 <mgt-agenda group-by-day></mgt-agenda>
 <mgt-people show-presence show-max="10"></mgt-people>
 <mgt-people group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people>

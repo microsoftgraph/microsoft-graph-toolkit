@@ -125,7 +125,7 @@ export class MgtTodo extends MgtTasksBase {
   /**
    * updates provider state
    *
-   * @memberof MgtTasks
+   * @memberof MgtTodo
    */
   public connectedCallback() {
     super.connectedCallback();
@@ -137,7 +137,7 @@ export class MgtTodo extends MgtTasksBase {
   /**
    * removes updates on provider state
    *
-   * @memberof MgtTasks
+   * @memberof MgtTodo
    */
   public disconnectedCallback() {
     window.removeEventListener('darkmodechanged', this.onThemeChanged);
