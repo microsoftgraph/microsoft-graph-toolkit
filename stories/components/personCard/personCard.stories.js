@@ -86,7 +86,8 @@ export const localization = () => html`
       },
       'file-list': {
         filesSectionTitle: 'الملفات',
-        sharedTextSubtitle: 'مشترك'
+        sharedTextSubtitle: 'مشترك',
+        showMoreSubtitle: 'Show more 📂'
       },
       'profile': {
         SkillsAndExperienceSectionTitle: 'المهارات والخبرة',
