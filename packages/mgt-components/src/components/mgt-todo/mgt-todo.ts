@@ -346,17 +346,17 @@ export class MgtTodo extends MgtTasksBase {
           }"
           @change="${this.handleDateUpdate}"
           @focus="${(e: KeyboardEvent) => this.updatingTask(e, task)}"
+          @blur="${this.handleBlur}"
         >
         </fluent-text-field>
       `;
       const changeTaskDetailsTemplate = html`
-        <div class="container" @blur="${this.handleBlur}">
           <fluent-text-field 
             autocomplete="off"
             appearance="outline"
             class="title"
             id=${task.id}
-            .value="${task.title || this._changedTaskName}"
+            .value="${task.title ? task.title : this._taskBeingUpdated === task ? this._changedTaskName : ''}"
             aria-label="${this.strings.editTaskLabel}"
             @keydown="${(e: KeyboardEvent) => this.handleChange(e, task)}"
             @input="${(e: KeyboardEvent) => this.handleChange(e, task)}"
@@ -364,8 +364,7 @@ export class MgtTodo extends MgtTasksBase {
           >
           </fluent-text-field>
           ${task.dueDateTime || this._taskBeingUpdated === task ? html`${calendarTemplate}` : nothing}
-        </div>
-        ${taskDeleteTemplate}
+          ${taskDeleteTemplate}
       `;
 
       taskDetailsTemplate = html`
@@ -402,7 +401,7 @@ export class MgtTodo extends MgtTasksBase {
     const taskCheckContent = isCompleted ? html`${getSvg(SvgIcon.CheckMark)}` : html`${getSvg(SvgIcon.Radio)}`;
 
     return html`
-      <div class=${taskClasses}>
+      <div class=${taskClasses} @blur="${this.handleBlur}">
         <fluent-checkbox 
           id=${task.id} 
           class=${checkboxClasses}
@@ -528,9 +527,9 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected async updateTaskItem(task: TodoTask): Promise<void> {
     const listId = this.currentList.id;
-    let taskData: TodoTask = {};
+    let taskData: TodoTask = null;
 
-    if (this._changedTaskName) {
+    if (this._changedTaskName && this._changedTaskName !== task.title) {
       taskData = {
         title: this._changedTaskName
       };
@@ -552,11 +551,15 @@ export class MgtTodo extends MgtTasksBase {
       }
     }
 
-    const updatedTask = await updateTodoTask(this._graph, listId, task.id, taskData);
-    const taskIndex = this._tasks.findIndex(t => t.id === updatedTask.id);
-    this._tasks[taskIndex] = updatedTask;
+    if (taskData) {
+      const updatedTask = await updateTodoTask(this._graph, listId, task.id, taskData);
+      const taskIndex = this._tasks.findIndex(t => t.id === updatedTask.id);
+      this._tasks[taskIndex] = updatedTask;
 
-    this._loadingTasks = this._loadingTasks.filter(id => id !== updatedTask.id);
+      this._loadingTasks = this._loadingTasks.filter(id => id !== updatedTask.id);
+    } else {
+      return;
+    }
   }
 
   /**
