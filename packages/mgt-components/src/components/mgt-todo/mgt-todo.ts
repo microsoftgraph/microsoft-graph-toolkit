@@ -344,7 +344,7 @@ export class MgtTodo extends MgtTasksBase {
               ? this.dateToInputValue(this._newTaskDueDate)
               : nothing
           }"
-          @change="${this.handleDateChange}"
+          @change="${this.handleDateUpdate}"
           @focus="${(e: KeyboardEvent) => this.updatingTask(e, task)}"
         >
         </fluent-text-field>
@@ -700,17 +700,25 @@ export class MgtTodo extends MgtTasksBase {
     } else {
       this._newTaskDueDate = null;
     }
+  };
 
+  private readonly handleDateUpdate = (e: Event) => {
     const task = this._taskBeingUpdated;
+    if (task) {
+      const value = (e.target as HTMLInputElement).value;
+      if (value) {
+        this._newTaskDueDate = new Date(value + 'T17:00');
+      } else {
+        this._newTaskDueDate = null;
+      }
 
-    if (task?.dueDateTime && this._newTaskDueDate) {
-      this._isChangedDueDate = new Date(task.dueDateTime.dateTime) !== this._newTaskDueDate;
-    } else if ((task?.dueDateTime && !this._newTaskDueDate) || (!task?.dueDateTime && this._newTaskDueDate)) {
-      this._isChangedDueDate = true;
-    } else {
-      this._isChangedDueDate = false;
+      if (task.dueDateTime && this._newTaskDueDate) {
+        this._isChangedDueDate = new Date(task.dueDateTime.dateTime) !== this._newTaskDueDate;
+      } else if ((task.dueDateTime && !this._newTaskDueDate) || (!task.dueDateTime && this._newTaskDueDate)) {
+        this._isChangedDueDate = true;
+      } else {
+        this._isChangedDueDate = false;
+      }
     }
-
-    void this.updateTask(task);
   };
 }
