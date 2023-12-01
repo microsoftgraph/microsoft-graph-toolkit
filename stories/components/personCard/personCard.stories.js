@@ -61,14 +61,10 @@ export const localization = () => html`
   import { LocalizationHelper } from '@microsoft/mgt-element';
   LocalizationHelper.strings = {
     _components: {
-      login: {
-        signInLinkSubtitle: 'تسجيل الدخول',
-        signOutLinkSubtitle: 'خروج'
-      },
       'person-card': {
         showMoreSectionButton: 'أظهر المزيد' // global declaration
       },
-      'person-card-contact': {
+      'contact': {
         contactSectionTitle: 'اتصل',
         emailTitle: 'البريد الإلكتروني',
         chatTitle: 'دردشة',
@@ -78,21 +74,22 @@ export const localization = () => html`
         titleTitle: 'لقب',
         officeLocationTitle: 'موقع المكتب'
       },
-      'person-card-organization': {
+      'organization': {
         reportsToSectionTitle: 'تقارير ل',
         directReportsSectionTitle: 'تقارير مباشرة',
         organizationSectionTitle: 'منظمة',
         youWorkWithSubSectionTitle: 'انت تعمل مع',
         userWorksWithSubSectionTitle: 'يعمل مع'
       },
-      'person-card-messages': {
+      'messages': {
         emailsSectionTitle: 'رسائل البريد الإلكتروني'
       },
-      'person-card-files': {
+      'file-list': {
         filesSectionTitle: 'الملفات',
-        sharedTextSubtitle: 'مشترك'
+        sharedTextSubtitle: 'مشترك',
+        showMoreSubtitle: 'Show more 📂'
       },
-      'person-card-profile': {
+      'profile': {
         SkillsAndExperienceSectionTitle: 'المهارات والخبرة',
         AboutCompactSectionTitle: 'حول',
         SkillsSubSectionTitle: 'مهارات',
