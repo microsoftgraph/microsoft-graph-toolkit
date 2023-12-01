@@ -9,13 +9,13 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-tasks',
-  component: 'tasks',
+  title: 'Components / mgt-planner',
+  component: 'planner',
   decorators: [withCodeEditor],
   tags: ['autodocs'],
   parameters: {
     docs: {
-      source: { code: '<mgt-tasks></mgt-tasks>' }
+      source: { code: '<mgt-planner></mgt-planner>' }
     }
   }
 };
@@ -70,7 +70,7 @@ export const customCSSProperties = () => html`
         --task-icons-width: 32px;
         --task-icons-height: 32px;
         --task-icons-background-color: purple;
-        --task-icons-text-font-color: burlywood;
+        --task-icons-text-font-color: black;
         --task-icons-text-font-size: 16px;
         --task-icons-text-font-weight: 400;
 
@@ -110,5 +110,5 @@ export const customCSSProperties = () => html`
         --task-new-person-icon-color: blue;
       }
   </style>
-  <mgt-tasks class="tasks"></mgt-tasks>
+  <mgt-planner class="tasks"></mgt-planner>
 `;

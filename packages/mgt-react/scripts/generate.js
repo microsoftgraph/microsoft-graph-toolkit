@@ -12,7 +12,7 @@ const gaTags = new Set([
   'login',
   'people-picker',
   'people',
-  'tasks',
+  'planner',
   'teams-channel-picker',
   'todo',
   'file',
@@ -176,13 +176,14 @@ import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
 ${output}
 `;
-
-  if (!fs.existsSync(`${__dirname}/../src/generated`)) {
-    fs.mkdirSync(`${__dirname}/../src/generated`);
-  }
-
   fs.writeFileSync(`${__dirname}/../src/generated/${fileName}.ts`, output);
 };
+
+// clear out the generated folder
+if (fs.existsSync(`${__dirname}/../src/generated`)) {
+  fs.removeSync(`${__dirname}/../src/generated`);
+}
+fs.mkdirSync(`${__dirname}/../src/generated`);
 
 // generate each component to a separate file
 gaTags.forEach(tag => {
