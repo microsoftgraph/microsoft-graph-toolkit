@@ -11,5 +11,10 @@ export const strings = {
   addTaskButtonSubtitle: 'Add',
   due: 'Due ',
   addTaskDate: 'Add the task date',
-  assign: 'Assign'
+  assign: 'Assign',
+  planNotFound: 'Plan not found',
+  plansSelfAssigned: 'All Plans',
+  bucketNotFound: 'Bucket not found',
+  bucketsSelfAssigned: 'All Tasks',
+  baseSelfAssigned: 'Assigned to Me'
 };
