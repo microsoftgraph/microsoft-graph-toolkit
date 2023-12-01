@@ -527,7 +527,7 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected async updateTaskItem(task: TodoTask): Promise<void> {
     const listId = this.currentList.id;
-    let taskData: TodoTask = null;
+    let taskData: TodoTask = {};
 
     if (this._changedTaskName && this._changedTaskName !== task.title) {
       taskData = {
@@ -551,15 +551,14 @@ export class MgtTodo extends MgtTasksBase {
       }
     }
 
-    if (taskData) {
-      const updatedTask = await updateTodoTask(this._graph, listId, task.id, taskData);
-      const taskIndex = this._tasks.findIndex(t => t.id === updatedTask.id);
-      this._tasks[taskIndex] = updatedTask;
-
-      this._loadingTasks = this._loadingTasks.filter(id => id !== updatedTask.id);
-    } else {
+    if (!Object.keys(taskData).length) {
       return;
     }
+    const updatedTask = await updateTodoTask(this._graph, listId, task.id, taskData);
+    const taskIndex = this._tasks.findIndex(t => t.id === updatedTask.id);
+    this._tasks[taskIndex] = updatedTask;
+
+    this._loadingTasks = this._loadingTasks.filter(id => id !== updatedTask.id);
   }
 
   /**
@@ -717,7 +716,7 @@ export class MgtTodo extends MgtTasksBase {
 
       if (task.dueDateTime && this._newTaskDueDate) {
         this._isChangedDueDate = new Date(task.dueDateTime.dateTime) !== this._newTaskDueDate;
-      } else if ((task.dueDateTime && !this._newTaskDueDate) || (!task.dueDateTime && this._newTaskDueDate)) {
+      } else if (task.dueDateTime || this._newTaskDueDate) {
         this._isChangedDueDate = true;
       } else {
         this._isChangedDueDate = false;
