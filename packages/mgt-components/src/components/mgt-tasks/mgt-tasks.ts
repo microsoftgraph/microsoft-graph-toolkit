@@ -408,26 +408,39 @@ export class MgtTasks extends MgtTemplatedComponent {
     ];
   }
 
-  @property() private _isNewTaskVisible: boolean;
-  @property() private _newTaskBeingAdded: boolean;
-  @property() private _newTaskName: string;
-  @property() private _newTaskDueDate: Date;
-  @property() private _newTaskGroupId: string;
-  @property() private _newTaskFolderId: string;
-  @property() private _newTaskContainerId: string;
-  @property() private _groups: ITaskGroup[];
-  @property() private _folders: ITaskFolder[];
-  @property() private _tasks: ITask[];
-  @property() private _hiddenTasks: string[];
-  @property() private _loadingTasks: string[];
-  @property() private _inTaskLoad: boolean;
-  @property() private _hasDoneInitialLoad: boolean;
-  @property() private _todoDefaultSet: boolean;
+  @state() private _isNewTaskVisible: boolean;
+  @state() private _newTaskBeingAdded: boolean;
+  @state() private _newTaskName: string;
+  @state() private _newTaskDueDate: Date;
+  @state() private _newTaskGroupId: string;
+  @state() private _newTaskFolderId: string;
+  @state() private _newTaskContainerId: string;
+  @state() private _groups: ITaskGroup[];
+  @state() private _folders: ITaskFolder[];
+  @state() private _tasks: ITask[];
+  @state() private _hiddenTasks: string[];
+  @state() private _loadingTasks: string[];
+  @state() private _inTaskLoad: boolean;
+  @state() private _hasDoneInitialLoad: boolean;
+  @state() private _todoDefaultSet: boolean;
 
-  @property() private _currentGroup: string;
-  @property() private _currentFolder: string;
+  @state() private _currentGroup: string;
+  @state() private _currentFolder: string;
   @state() private _isDarkMode = false;
   @state() private _me: User = null;
+
+  private get filteredTasks(): ITask[] {
+    const temp = this._tasks
+      .filter(task => this.isTaskInSelectedGroupFilter(task))
+      .filter(task => this.isTaskInSelectedFolderFilter(task))
+      .filter(task => !this._hiddenTasks.includes(task.id));
+
+    if (this.taskFilter) {
+      return temp.filter(task => this.taskFilter(task._raw));
+    }
+    return temp;
+  }
+
   private previousMediaQuery: ComponentMediaQuery;
 
   constructor() {
@@ -554,7 +567,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       <div class="tasks">
         ${this._isNewTaskVisible ? this.renderNewTask() : null} ${loadingTask}
         ${repeat(
-          this._tasks,
+          this.filteredTasks,
           task => task.id,
           task => this.renderTask(task)
         )}
@@ -595,15 +608,6 @@ export class MgtTasks extends MgtTemplatedComponent {
       }
     } else {
       await this._loadAllTasks(ts);
-    }
-
-    this._tasks = this._tasks
-      .filter(task => this.isTaskInSelectedGroupFilter(task))
-      .filter(task => this.isTaskInSelectedFolderFilter(task))
-      .filter(task => !this._hiddenTasks.includes(task.id));
-
-    if (this.taskFilter) {
-      this._tasks = this._tasks.filter(task => this.taskFilter(task._raw));
     }
 
     this._inTaskLoad = false;
