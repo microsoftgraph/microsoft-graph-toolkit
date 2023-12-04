@@ -49,7 +49,16 @@ const useStyles = makeStyles({
   },
   chatInput: {
     ...shorthands.paddingInline('16px'),
-    ...shorthands.overflow('unset')
+    ...shorthands.overflow('unset'),
+    '& [data-ui-id="mention-suggestion-list"]': {
+      ...shorthands.padding('6px'),
+      ...shorthands.overflow('hidden', 'scroll'),
+      ...shorthands.gap('6px'),
+
+      '& mgt-person:hover': {
+        backgroundColor: 'var(--colorSubtleBackgroundHover)'
+      }
+    }
   },
   fullHeight: {
     height: '100%'

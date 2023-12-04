@@ -37,7 +37,7 @@ export const renderMGTMention = (chatState: GraphChatClient) => {
 
 export const mentionLookupOptionsWrapper = (chatState: GraphChatClient): MentionLookupOptions => {
   const participants = chatState.participants ?? [];
-  // const matchedResults: Record<string, string> = {};
+  const matchedResults: Record<string, string> = {};
 
   return {
     onQueryUpdated: (query: string): Promise<Mention[]> => {
@@ -46,27 +46,21 @@ export const mentionLookupOptionsWrapper = (chatState: GraphChatClient): Mention
       results.forEach((user, id) => {
         const idStr = `${id}`;
         mentions.push({ displayText: user?.displayName ?? '', id: idStr });
-        // matchedResults[idStr] = user?.userId ?? '';
+        matchedResults[idStr] = user?.userId ?? '';
       });
       return Promise.resolve(mentions);
+    },
+    onRenderSuggestionItem: (suggestion: Mention, onSuggestionSelected: (suggestion: Mention) => void): JSX.Element => {
+      const userId = matchedResults[suggestion.id] ?? '';
+      const key = userId ?? `${participants.length + 1}`;
+      return (
+        <Person
+          key={key}
+          userId={userId}
+          view={ViewType.oneline}
+          onClick={() => onSuggestionSelected(suggestion)}
+        ></Person>
+      );
     }
-    // onRenderSuggestionItem: (suggestion: Mention, onSuggestionSelected: (suggestion: Mention) => void): JSX.Element => {
-    //   // NOTE: how do I override the onSuggestionSelected callback
-    //   const userId = matchedResults[suggestion.id] ?? '';
-    //   const key = userId ?? `${participants.length + 1}`;
-    //   // return (
-    //   //   <Person
-    //   //     key={key}
-    //   //     userId={userId}
-    //   //     view={ViewType.oneline}
-    //   //     onClick={() => onSuggestionSelected(suggestion)}
-    //   //   ></Person>
-    //   // );
-    //   return (
-    //     <div key={key} onClick={() => onSuggestionSelected(suggestion)}>
-    //       {suggestion.displayText}
-    //     </div>
-    //   );
-    // }
   };
 };
