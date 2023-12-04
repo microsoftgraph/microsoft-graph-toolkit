@@ -1622,7 +1622,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if ([';', ','].includes(keyName)) {
       if (this.allowAnyEmail) {
         event.preventDefault();
-        event.stopPropagation();
         this.userInput = this.input.value;
         this.handleAnyEmail();
       }

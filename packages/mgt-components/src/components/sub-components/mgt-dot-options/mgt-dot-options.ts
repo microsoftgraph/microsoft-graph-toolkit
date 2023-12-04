@@ -14,6 +14,7 @@ import { strings } from './strings';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { styles } from './mgt-dot-options-css';
 import { registerComponent } from '@microsoft/mgt-element';
+import { SvgIcon, getSvg } from '../../../utils/SvgHelper';
 
 /**
  * Defines the event functions passed to the option item.
@@ -93,7 +94,7 @@ export class MgtDotOptions extends MgtBaseComponent {
         aria-label=${this.strings.dotOptionsTitle}
         @click=${this.onDotClick}
         @keydown=${this.onDotKeydown}
-        class="dot-icon">\uE712</fluent-button>
+        class="dot-icon">${getSvg(SvgIcon.Dot)}</fluent-button>
       <fluent-menu class=${classMap({ menu: true, open: this.open })}>
         ${menuOptions.map(opt => this.getMenuOption(opt, this.options[opt]))}
       </fluent-menu>`;
