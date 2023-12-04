@@ -17,6 +17,7 @@
     margin-block: 1px;
     box-shadow: $task-box-shadow;
     width: 100%;
+    display: flex;
     background-color: $task-background-color;
 
     &.new-task {
@@ -25,9 +26,15 @@
     }
 
     &.complete {
-      text-decoration: line-through;
       border: 1px solid $task-border-completed;
       background: $task-background-color-completed;
+
+      .task-details {
+        .title,
+        .task-due {
+          text-decoration: line-through;
+        }
+      }
     }
 
     &.read-only {
@@ -47,6 +54,7 @@
       padding: 2px;
       line-height: 24px;
       border-radius: 4px;
+      width: 100%;
 
       .task {
         > div {
@@ -56,12 +64,13 @@
         }
       }
 
-      .title {
-        flex-grow: 1;
-      }
-
       .task-delete {
         display: flex;
+      }
+
+      .container {
+        display: flex;
+        width: 100%;
       }
 
       .task-due {
@@ -70,21 +79,6 @@
         height: 32px;
         text-decoration: inherit;
         display: flex;
-
-        .task-calendar {
-          display: flex;
-          margin-top: 5px;
-          margin-inline-end: 10px;
-
-          svg {
-            fill: $task-color;
-          }
-        }
-
-        .task-due-date {
-          display: flex;
-          margin-top: 5px;
-        }
       }
     }
   }
@@ -132,16 +126,6 @@
             color: $task-color;
             width: auto;
             cursor: pointer;
-
-            &::after {
-              border-bottom: none;
-            }
-
-            &.dark {
-              &::part(control) {
-                color-scheme: dark;
-              }
-            }
           }
 
           input {
@@ -156,14 +140,30 @@
             border-bottom: 1px solid $task-date-input-hover-color;
           }
 
-          input:active {
-            border-bottom: 1px solid $task-date-input-active-color;
-          }
-
+          input:active,
           input:focus {
             border-bottom: 1px solid $task-date-input-active-color;
           }
         }
+      }
+    }
+
+    &.title {
+      flex-grow: 1;
+      display: inline;
+    }
+
+    &.date {
+      color: $task-detail-color;
+    }
+
+    &::after {
+      border-bottom: none;
+    }
+
+    &.dark {
+      &::part(control) {
+        color-scheme: dark;
       }
     }
   }
@@ -186,35 +186,33 @@
   }
 
   fluent-checkbox {
-    &.task {
-      &.complete {
-        div > svg {
-          .filled {
-            display: block;
-          }
-
-          .regular {
-            display: none;
-          }
-
-          path {
-            fill: $task-radio-background-color;
-          }
-        }
-      }
-
+    &.complete {
       div > svg {
         .filled {
-          display: none;
-        }
-
-        .regular {
           display: block;
         }
 
-        path {
-          fill: $task-background-color;
+        .regular {
+          display: none;
         }
+
+        path {
+          fill: $task-radio-background-color;
+        }
+      }
+    }
+
+    div > svg {
+      .filled {
+        display: none;
+      }
+
+      .regular {
+        display: block;
+      }
+
+      path {
+        fill: $task-background-color;
       }
     }
 

@@ -5,7 +5,7 @@ export * from './get';
 export * from './login';
 export * from './people-picker';
 export * from './people';
-export * from './tasks';
+export * from './planner';
 export * from './teams-channel-picker';
 export * from './todo';
 export * from './file';
