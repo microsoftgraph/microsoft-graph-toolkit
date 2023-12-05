@@ -32,7 +32,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * sets whether the header is rendered
    *
    * @type {boolean}
-   * @memberof MgtTasks
+   * @memberof MgtTasksBase
    */
   @property({ attribute: 'hide-header', type: Boolean })
   public hideHeader: boolean;
@@ -41,7 +41,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * sets whether the options are rendered
    *
    * @type {boolean}
-   * @memberof MgtTasks
+   * @memberof MgtTasksBase
    */
   @property({ attribute: 'hide-options', type: Boolean })
   public hideOptions: boolean;
@@ -84,7 +84,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @param {*} name
    * @param {*} oldValue
    * @param {*} newValue
-   * @memberof MgtTasks
+   * @memberof MgtTasksBase
    */
   public attributeChangedCallback(name: string, oldVal: string, newVal: string) {
     super.attributeChangedCallback(name, oldVal, newVal);
@@ -100,7 +100,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   /**
    * updates provider state
    *
-   * @memberof MgtTasks
+   * @memberof MgtTasksBase
    */
   public connectedCallback() {
     super.connectedCallback();
@@ -110,7 +110,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   /**
    * removes updates on provider state
    *
-   * @memberof MgtTasks
+   * @memberof MgtTasksBase
    */
   public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);

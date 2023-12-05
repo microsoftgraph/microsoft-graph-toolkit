@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { TasksStringResource,TasksSource,TaskFilter,ITask } from '@microsoft/mgt-components/dist/es6/exports';
-import { registerMgtTasksComponent } from '@microsoft/mgt-components/dist/es6/components/components';
+import { TaskFilter,ITask } from '@microsoft/mgt-components/dist/es6/exports';
+import { registerMgtPlannerComponent } from '@microsoft/mgt-components/dist/es6/components/components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
@@ -9,11 +9,9 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
 
-export type TasksProps = {
-	res?: TasksStringResource;
+export type PlannerProps = {
 	isNewTaskVisible?: boolean;
 	readOnly?: boolean;
-	dataSource?: TasksSource;
 	targetId?: string;
 	targetBucketId?: string;
 	initialId?: string;
@@ -31,5 +29,5 @@ export type TasksProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
-export const Tasks = wrapMgt<TasksProps>('tasks', registerMgtTasksComponent);
+export const Planner = wrapMgt<PlannerProps>('planner', registerMgtPlannerComponent);
 
