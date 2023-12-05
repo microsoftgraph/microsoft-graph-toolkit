@@ -25,7 +25,7 @@ export const Localization = () => html`
   <mgt-login></mgt-login>
   <mgt-people-picker></mgt-people-picker>
   <mgt-teams-channel-picker></mgt-teams-channel-picker>
-  <mgt-tasks></mgt-tasks>
+  <mgt-planner></mgt-planner>
   <mgt-agenda></mgt-agenda>
   <mgt-people></mgt-people>
   <mgt-todo></mgt-todo>
@@ -59,24 +59,25 @@ export const Localization = () => html`
         'person-card': {
           showMoreSectionButton: 'أظهر المزيد' // global declaration
         },
-        'person-card-contact': {
+        'contact': {
           contactSectionTitle: 'اتصل'
         },
-        'person-card-organization': {
+        'organization': {
           reportsToSectionTitle: 'تقارير ل',
           directReportsSectionTitle: 'تقارير مباشرة',
           organizationSectionTitle: 'منظمة',
           youWorkWithSubSectionTitle: 'انت تعمل مع',
           userWorksWithSubSectionTitle: 'يعمل مع'
         },
-        'person-card-messages': {
+        'messages': {
           emailsSectionTitle: 'رسائل البريد الإلكتروني'
         },
-        'person-card-files': {
+        'file-list': {
           filesSectionTitle: 'الملفات',
-          sharedTextSubtitle: 'مشترك'
+          sharedTextSubtitle: 'مشترك',
+          showMoreSubtitle: 'Show more 📂'
         },
-        'person-card-profile': {
+        'profile': {
           SkillsAndExperienceSectionTitle: 'المهارات والخبرة',
           AboutCompactSectionTitle: 'حول',
           SkillsSubSectionTitle: 'مهارات',
@@ -108,7 +109,7 @@ export const cache = () => html`
 <mgt-people-picker type="group"></mgt-people-picker>
 <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
 <mgt-teams-channel-picker></mgt-teams-channel-picker>
-<mgt-tasks data-source="todo"></mgt-tasks>
+<mgt-planner data-source="todo"></mgt-planner>
 <mgt-agenda group-by-day></mgt-agenda>
 <mgt-people show-presence show-max="10"></mgt-people>
 <mgt-people group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people>

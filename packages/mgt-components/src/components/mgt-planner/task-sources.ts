@@ -7,8 +7,7 @@
 /* eslint-disable max-classes-per-file */
 
 import { IGraph, BetaGraph } from '@microsoft/mgt-element';
-import { PlannerAssignments, PlannerBucket, PlannerPlan } from '@microsoft/microsoft-graph-types';
-import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup, PlannerTask } from '@microsoft/microsoft-graph-types-beta';
+import { PlannerAssignments, PlannerBucket, PlannerPlan, PlannerTask } from '@microsoft/microsoft-graph-types';
 import {
   addPlannerTask,
   assignPeopleToPlannerTask,
@@ -20,17 +19,7 @@ import {
   removePlannerTask,
   setPlannerTaskComplete,
   setPlannerTaskIncomplete
-} from './mgt-tasks.graph.planner';
-import {
-  addTodoTask,
-  getAllMyTodoGroups,
-  getAllTodoTasksForFolder,
-  getFoldersForTodoGroup,
-  getSingleTodoGroup,
-  removeTodoTask,
-  setTodoTaskComplete,
-  setTodoTaskIncomplete
-} from './mgt-tasks.graph.todo';
+} from './graph.planner';
 
 /**
  * ITask
@@ -98,10 +87,10 @@ export interface ITask {
   /**
    * raw
    *
-   * @type {PlannerTask | OutlookTask}
+   * @type {PlannerTask}
    * @memberof ITask
    */
-  _raw?: PlannerTask | OutlookTask;
+  _raw?: PlannerTask;
 }
 /**
  * container for tasks
@@ -137,7 +126,7 @@ export interface ITaskFolder {
    * @type {*}
    * @memberof ITaskFolder
    */
-  _raw?: PlannerBucket | OutlookTaskFolder;
+  _raw?: PlannerBucket;
 }
 
 /**
@@ -174,7 +163,7 @@ export interface ITaskGroup {
    * @type {*}
    * @memberof ITaskGroup
    */
-  _raw?: PlannerPlan | OutlookTaskGroup;
+  _raw?: PlannerPlan;
 
   /**
    * Plan Container ID. Same as the group ID of the group in the plan.
@@ -260,7 +249,7 @@ export interface ITaskSource {
    * @returns {Promise<any>}
    * @memberof ITaskSource
    */
-  addTask(newTask: ITask): Promise<PlannerTask | OutlookTask>;
+  addTask(newTask: ITask): Promise<PlannerTask>;
 
   /**
    * assign id's to task
@@ -479,180 +468,5 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
   public isAssignedToMe(task: ITask, myId: string): boolean {
     const keys = Object.keys(task.assignments);
     return keys.includes(myId);
-  }
-}
-
-/**
- * determins outlook task group for data source
- *
- * @export
- * @class TodoTaskSource
- * @extends {TaskSourceBase}
- * @implements {ITaskSource}
- */
-export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
-  /**
-   * get all Outlook task groups
-   *
-   * @returns {Promise<ITaskGroup[]>}
-   * @memberof TodoTaskSource
-   */
-  public async getTaskGroups(): Promise<ITaskGroup[]> {
-    const groups: OutlookTaskGroup[] = await getAllMyTodoGroups(this.graph);
-
-    return groups.map(
-      group =>
-        ({
-          _raw: group,
-          id: group.id,
-          secondaryId: group.groupKey,
-          title: group.name
-        }) as ITaskGroup
-    );
-  }
-  /**
-   * get a single OutlookTaskGroup from id
-   *
-   * @param {string} id
-   * @returns {Promise<ITaskGroup>}
-   * @memberof TodoTaskSource
-   */
-  public async getTaskGroup(id: string): Promise<ITaskGroup> {
-    const group: OutlookTaskGroup = await getSingleTodoGroup(this.graph, id);
-
-    return { id: group.id, secondaryId: group.groupKey, title: group.name, _raw: group };
-  }
-  /**
-   * get all OutlookTaskFolder for group by id
-   *
-   * @param {string} id
-   * @returns {Promise<ITaskFolder[]>}
-   * @memberof TodoTaskSource
-   */
-  public async getTaskFoldersForTaskGroup(id: string): Promise<ITaskFolder[]> {
-    const folders: OutlookTaskFolder[] = await getFoldersForTodoGroup(this.graph, id);
-
-    return folders.map(
-      folder =>
-        ({
-          _raw: folder,
-          id: folder.id,
-          name: folder.name,
-          parentId: id
-        }) as ITaskFolder
-    );
-  }
-  /**
-   * gets all tasks for OutLook Task Folder by id
-   *
-   * @param {string} id
-   * @param {string} parId
-   * @returns {Promise<ITask[]>}
-   * @memberof TodoTaskSource
-   */
-  public async getTasksForTaskFolder(id: string, parId: string): Promise<ITask[]> {
-    const tasks: OutlookTask[] = await getAllTodoTasksForFolder(this.graph, id);
-
-    return tasks.map(
-      task =>
-        ({
-          _raw: task,
-          assignments: {},
-          completed: !!task.completedDateTime,
-          dueDate: task.dueDateTime && new Date(task.dueDateTime.dateTime + 'Z'),
-          eTag: task['@odata.etag'] as string,
-          id: task.id,
-          immediateParentId: id,
-          name: task.subject,
-          topParentId: parId
-        }) as ITask
-    );
-  }
-
-  /**
-   * set task in todo to complete state by id
-   *
-   * @param {ITask} task
-   * @returns {Promise<any>}
-   * @memberof TodoTaskSource
-   */
-  public async setTaskComplete(task: ITask): Promise<void> {
-    await setTodoTaskComplete(this.graph, task.id, task.eTag);
-  }
-
-  /**
-   * Assigns people to task in a planner
-   *
-   * @param {ITask} task
-   * @param {PlannerAssignments} people
-   * @returns {Promise<any>}
-   * @memberof PlannerTaskSource
-   */
-  public async assignPeopleToTask(task: ITask, people: PlannerAssignments): Promise<void> {
-    return await assignPeopleToPlannerTask(this.graph, task, people);
-  }
-  /**
-   * set task in planner to incomplete state by id
-   *
-   * @param {ITask} task
-   * @returns {Promise<any>}
-   * @memberof TodoTaskSource
-   */
-  public async setTaskIncomplete(task: ITask): Promise<void> {
-    await setTodoTaskIncomplete(this.graph, task.id, task.eTag);
-  }
-  /**
-   * add new task to planner
-   *
-   * @param {ITask} newTask
-   * @returns {Promise<any>}
-   * @memberof TodoTaskSource
-   */
-  public async addTask(newTask: ITask): Promise<OutlookTask> {
-    const task = {
-      parentFolderId: newTask.immediateParentId,
-      subject: newTask.name
-    } as OutlookTask;
-    if (newTask.dueDate) {
-      task.dueDateTime = {
-        dateTime: newTask.dueDate.toISOString(),
-        timeZone: 'UTC'
-      };
-    }
-    return await addTodoTask(this.graph, task);
-  }
-  /**
-   * remove task from todo by id
-   *
-   * @param {ITask} task
-   * @returns {Promise<any>}
-   * @memberof TodoTaskSource
-   */
-  public async removeTask(task: ITask): Promise<void> {
-    return await removeTodoTask(this.graph, task.id, task.eTag);
-  }
-
-  /**
-   * if task is assigned in to user logged in
-   *
-   * @param {ITask} task
-   * @param {string} myId
-   * @returns {boolean}
-   * @memberof TodoTaskSource
-   */
-  public isAssignedToMe(task: ITask, myId: string): boolean {
-    const keys = Object.keys(task.assignments);
-    return keys.includes(myId);
-  }
-
-  /**
-   * returns promise with all of plans for group id
-   *
-   * @param {string} id
-   * @returns {Promise<ITaskGroup[]>}
-   * @memberof PlannerTaskSource
-   */
-  public async getTaskGroupsForGroup(_id: string): Promise<ITaskGroup[]> {
-    return Promise.resolve<ITaskGroup[]>(undefined);
   }
 }

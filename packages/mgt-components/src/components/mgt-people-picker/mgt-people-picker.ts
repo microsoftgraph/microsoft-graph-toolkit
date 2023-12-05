@@ -1547,6 +1547,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param event - event tracked on user input (keydown)
    */
   private readonly onUserKeyDown = (event: KeyboardEvent): void => {
+    event.stopPropagation();
     const keyName = event.key;
     const selectedList = this.renderRoot.querySelector('.selected-list');
     const isCmdOrCtrlKey = event.getModifierState('Control') || event.getModifierState('Meta');
@@ -1594,7 +1595,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (keyName === 'Enter') {
       if (!event.shiftKey && this._foundPeople) {
         event.preventDefault();
-        event.stopPropagation();
 
         const foundPerson = this._foundPeople[this._arrowSelectionCount];
         if (foundPerson) {
@@ -1612,10 +1612,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
 
-    if (keyName === 'Escape') {
-      event.stopPropagation();
-    }
-
     if (keyName === 'Tab') {
       this.hideFlyout();
     }
@@ -1623,7 +1619,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if ([';', ','].includes(keyName)) {
       if (this.allowAnyEmail) {
         event.preventDefault();
-        event.stopPropagation();
         this.userInput = this.input.value;
         this.handleAnyEmail();
       }
