@@ -10,9 +10,9 @@
 @import '../../styles/shared-sass-variables';
 @import './mgt-organization.theme';
 
-$coworker-person-avatar-size: var(--coworker-person-avatar-size, 40px);
+$organization-coworker-person-avatar-size: var(--organization-coworker-person-avatar-size, 40px);
 $organization-member-person-avatar-size: var(--organization-member-person-avatar-size, 40px);
-$direct-report-person-avatar-size: var(--direct-report-person-avatar-size, 38px);
+$organization-direct-report-person-avatar-size: var(--organization-direct-report-person-avatar-size, 38px);
 
 :host {
   position: relative;
@@ -23,13 +23,12 @@ $direct-report-person-avatar-size: var(--direct-report-person-avatar-size, 38px)
       padding: 0;
 
       .coworker {
-        .coworker__image {
+        .coworker__person-image {
           height: 40px;
           width: 40px;
           border-radius: 40px;
 
-          --avatar-size: 40px;
-          --avatar-size-s: 40px;
+          --person-avatar-size: 40px;
 
           margin-right: 12px;
         }
@@ -130,7 +129,7 @@ $direct-report-person-avatar-size: var(--direct-report-person-avatar-size, 38px)
         margin-right: 8px;
 
         .coworker__person-image {
-          --person-avatar-size: #{$coworker-person-avatar-size};
+          --person-avatar-size: #{$organization-coworker-person-avatar-size};
         }
       }
     }
@@ -145,7 +144,7 @@ $direct-report-person-avatar-size: var(--direct-report-person-avatar-size, 38px)
         display: inline;
 
         .direct-report__person-image {
-          --person-avatar-size: #{$direct-report-person-avatar-size};
+          --person-avatar-size: #{$organization-direct-report-person-avatar-size};
         }
       }
     }
