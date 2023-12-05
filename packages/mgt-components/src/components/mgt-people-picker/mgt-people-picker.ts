@@ -7,6 +7,7 @@
 
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
   findGroups,
@@ -350,6 +351,26 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public showPresence: boolean;
 
   /**
+   * Sets how the person-card is invoked
+   * Set to PersonCardInteraction.none to not show the card
+   *
+   * @type {PersonCardInteraction}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'show-person-card',
+    converter: (value, _type) => {
+      value = value.toLowerCase();
+      if (typeof PersonCardInteraction[value] === 'undefined') {
+        return PersonCardInteraction.hover;
+      } else {
+        return PersonCardInteraction[value] as PersonCardInteraction;
+      }
+    }
+  })
+  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
+
+  /**
    * array of user picked people.
    *
    * @type {IDynamicPerson[]}
@@ -546,7 +567,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   public static get requiredScopes(): string[] {
     return [
-      ...new Set(['user.read.all', 'people.read', 'group.read.all', 'user.readbasic.all', ...MgtPerson.requiredScopes])
+      ...new Set([
+        'user.read.all',
+        'people.read',
+        'group.read.all',
+        'user.readbasic.all',
+        'contacts.read',
+        ...MgtPerson.requiredScopes
+      ])
     ];
   }
 
@@ -960,14 +988,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected renderSearchResults(people: IDynamicPerson[]) {
     const filteredPeople = people.filter(person => person.id);
+    const resultClasses = classMap({
+      'searched-people-list': true,
+      'person-card': this.personCardInteraction !== PersonCardInteraction.none
+    });
     return html`
       <ul
         id="suggestions-list"
-        class="searched-people-list"
+        class=${resultClasses}
         role="listbox"
         aria-live="polite"
         title=${this.strings.suggestionsTitle}
-      >
+        >
          ${repeat(
            filteredPeople,
            person => person.id,
@@ -997,15 +1029,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person', { person }, person.id) ||
       mgtHtml`
-         <mgt-person
+        <mgt-person
           class="person"
           ?show-presence=${this.showPresence}
           view="twoLines"
           line2-property="jobTitle,mail"
           .personDetails=${person}
-          .fetchImage=${!this.disableImages}>
-          .personCardInteraction=${PersonCardInteraction.none}
-        </mgt-person>`
+          .fetchImage=${!this.disableImages}
+          .personCardInteraction=${this.personCardInteraction}
+          .usage=${'people-picker'}
+        ></mgt-person>`
     );
   }
 
@@ -1019,14 +1052,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
     return mgtHtml`
-       <mgt-person
-         tabindex="-1"
-         class="selected-list-item-person"
-         .personDetails=${person}
-         .fetchImage=${!this.disableImages}
-         .view=${ViewType.oneline}
-         .personCardInteraction=${PersonCardInteraction.none}>
-        </mgt-person>
+        <mgt-person
+          tabindex="-1"
+          class="selected-list-item-person"
+          .personDetails=${person}
+          .fetchImage=${!this.disableImages}
+          .view=${ViewType.oneline}
+          .personCardInteraction=${this.personCardInteraction}
+          .usage=${'people-picker'}
+        ></mgt-person>
      `;
   }
 

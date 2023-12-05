@@ -18,6 +18,13 @@ export const showPresence = () => html`
 <mgt-people-picker show-presence></mgt-people-picker>
 `;
 
+export const personCard = () => html`
+   <div class="example">
+     <div style="margin-bottom:10px">Show Person Card</div>
+     <mgt-people-picker show-person-card></mgt-people-picker>
+   </div>
+ `;
+
 export const groupId = () => html`
 <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
 `;

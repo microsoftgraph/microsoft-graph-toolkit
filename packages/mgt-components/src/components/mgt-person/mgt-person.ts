@@ -209,7 +209,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   /**
    * usage property allows you to specify where the component is being used to add
-   * customized personalization for it. Currently only supports "people" as used in
+   * customized personalization for it. Currently only supports "people" and "people-picker" as used in
    * the people component.
    *
    * @type {string}

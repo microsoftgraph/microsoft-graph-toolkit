@@ -137,6 +137,10 @@
         background: $dropdown-result-focus-bg-color;
       }
     }
+
+    &.person-card {
+      width: 400px;
+    }
   }
 
   .message-parent {
