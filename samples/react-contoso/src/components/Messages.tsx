@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     },
     'mgt-person': {
       '--font-size': '12px',
-      '--avatar-size-s': '16px'
+      '--person-avatar-size': '16px'
     }
   },
 

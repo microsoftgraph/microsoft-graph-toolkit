@@ -51,8 +51,6 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
         justify-content: center;
         align-items: center;
         margin-inline-start: 0;
-
-        --person-avatar-size: 72px;
       }
     }
   }
@@ -70,10 +68,40 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
         width: $person-avatar-size;
         height: $person-avatar-size;
       }
+
+      .initials,
+      .contact-icon {
+        font-size: calc(#{$person-avatar-size} * 0.4);
+      }
+
+      .presence-wrapper {
+        svg {
+          width: calc(#{$person-avatar-size} * 0.28);
+          height: calc(#{$person-avatar-size} * 0.28);
+        }
+      }
     }
 
     &.noline,
     &.oneline {
+      .avatar-wrapper {
+        min-width: $person-avatar-size;
+        width: $person-avatar-size;
+        height: $person-avatar-size;
+
+        .initials,
+        .contact-icon {
+          font-size: calc(#{$person-avatar-size} * 0.4);
+        }
+
+        .presence-wrapper {
+          svg {
+            width: calc(#{$person-avatar-size} * 0.28);
+            height: calc(#{$person-avatar-size} * 0.28);
+          }
+        }
+      }
+
       .presence-basic {
         border-width: 1px;
         position: relative;
@@ -122,7 +150,8 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       }
     }
 
-    &.fourlines {
+    &.fourlines,
+    &.vertical {
       .avatar-wrapper {
         min-width: $person-avatar-size-72;
         width: $person-avatar-size-72;
@@ -146,24 +175,6 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       flex-direction: column;
       justify-content: center;
       align-items: center;
-
-      .avatar-wrapper {
-        min-width: $person-avatar-size-72;
-        width: $person-avatar-size-72;
-        height: $person-avatar-size-72;
-
-        .initials,
-        .contact-icon {
-          font-size: calc(#{$person-avatar-size-72} * 0.4);
-        }
-
-        .presence-wrapper {
-          svg {
-            width: calc(#{$person-avatar-size-72} * 0.28);
-            height: calc(#{$person-avatar-size-72} * 0.28);
-          }
-        }
-      }
     }
 
     .avatar-wrapper {
