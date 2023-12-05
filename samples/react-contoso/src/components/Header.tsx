@@ -157,11 +157,11 @@ const HeaderComponent: React.FunctionComponent = () => {
         </div>
       </div>
       <div className={styles.search}>
-        <SearchBox
+        {/* <SearchBox
           className={styles.searchBox}
           searchTermChanged={onSearchTermChanged}
           searchTerm={appContext.state.searchTerm !== '*' ? appContext.state.searchTerm : ''}
-        ></SearchBox>
+        ></SearchBox> */}
       </div>
 
       <div className={styles.login}>

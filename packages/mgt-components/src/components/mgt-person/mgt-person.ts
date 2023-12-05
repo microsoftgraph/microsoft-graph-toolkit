@@ -28,6 +28,7 @@ import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
 import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
+import { Task } from '@lit/task';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -281,14 +282,14 @@ export class MgtPerson extends MgtTemplatedComponent {
    *
    * @type {IDynamicPerson}
    */
-  @property({
-    attribute: 'person-details',
-    type: Object
-  })
   public get personDetails(): IDynamicPerson {
     return this._personDetails;
   }
 
+  @property({
+    attribute: 'person-details',
+    type: Object
+  })
   public set personDetails(value: IDynamicPerson) {
     if (this._personDetails === value) {
       return;
@@ -396,27 +397,24 @@ export class MgtPerson extends MgtTemplatedComponent {
     void this.requestStateUpdate();
   }
 
+  @property({
+    attribute: 'person-presence',
+    type: Object
+  })
+  public set personPresence(value: Presence) {
+    if (value === this._personPresence) {
+      return;
+    }
+    this._personPresence = value;
+  }
   /**
    * Gets or sets presence of person
    *
    * @type {MicrosoftGraph.Presence}
    * @memberof MgtPerson
    */
-  @property({
-    attribute: 'person-presence',
-    type: Object
-  })
   public get personPresence(): Presence {
     return this._personPresence || this._fetchedPresence;
-  }
-  public set personPresence(value: Presence) {
-    if (value === this._personPresence) {
-      return;
-    }
-
-    const oldValue = this._personPresence;
-    this._personPresence = value;
-    this.requestUpdate('personPresence', oldValue);
   }
 
   /**
@@ -569,11 +567,14 @@ export class MgtPerson extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   public render() {
-    // Loading
-    if (this.isLoadingState && !this.personDetails && !this.personDetailsInternal && !this.fallbackDetails) {
-      return this.renderLoading();
-    }
+    return this._personTask.render({
+      pending: () => this.renderLoading(),
+      complete: () => this.renderPerson(),
+      error: e => html`<p>Error: ${e}</p>`
+    });
+  }
 
+  private renderPerson() {
     // Prep data
     const person = this.personDetails || this.personDetailsInternal || this.fallbackDetails;
     const image = this.getImage();
@@ -735,7 +736,11 @@ export class MgtPerson extends MgtTemplatedComponent {
         ${hasInitials ? initials : contactIconTemplate}
       </span>
 `;
-    if (hasImage) this.fireCustomEvent('person-image-rendered');
+    if (hasImage) {
+      this.fireCustomEvent('person-image-rendered');
+    } else {
+      this.fireCustomEvent('person-icon-rendered');
+    }
 
     return hasImage ? imageTemplate : textTemplate;
   }
@@ -1084,6 +1089,50 @@ export class MgtPerson extends MgtTemplatedComponent {
         </mgt-person-card>`
     );
   }
+
+  // Tracked state
+  // provider.state
+  // this.personDetailsInternal (?? possibly just an output.)
+  // this.verticalLayout
+  // this.view
+  // this.fallbackDetails
+  // this.lineNProperty
+  // this.fetchImage
+  // this._avatarType
+  // this.personImage
+  // this._fetchedImage
+  // this.personDetailsInternal
+  // this.personDetails
+  // this.userId
+  // this.personQuery
+  // this.disableImageFetch
+  // this.showPresence
+  // this.personPresence
+  // this._fetchedPresence
+
+  private readonly _personTask = new Task(this, {
+    task: async () => {
+      await this.loadState();
+    },
+    args: () => [
+      this.providerState,
+      this.verticalLayout,
+      this.view,
+      this.fallbackDetails,
+      this.line1Property,
+      this.line2Property,
+      this.line3Property,
+      this.line4Property,
+      this.fetchImage,
+      this._avatarType,
+      this.userId,
+      this.personQuery,
+      this.disableImageFetch,
+      this.showPresence,
+      this.personPresence,
+      this.personDetails
+    ]
+  });
 
   /**
    * load state into the component.

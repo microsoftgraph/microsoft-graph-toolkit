@@ -44,6 +44,8 @@ export enum ComponentMediaQuery {
  * @extends {LitElement}
  */
 export abstract class MgtBaseComponent extends LitElement {
+  @state()
+  protected providerState: ProviderState = ProviderState.Loading;
   /**
    * Exposes the semver of the library the component is part of
    *
@@ -271,7 +273,8 @@ export abstract class MgtBaseComponent extends LitElement {
           this.setLoadingState(true);
           this.fireCustomEvent('loadingInitiated');
 
-          await this.loadState();
+          // await this.loadState();
+          await Promise.resolve();
 
           this.setLoadingState(false);
           this.fireCustomEvent('loadingCompleted');
@@ -305,10 +308,11 @@ export abstract class MgtBaseComponent extends LitElement {
     }
 
     this._isLoadingState = value;
-    this.requestUpdate('isLoadingState');
+    // this.requestUpdate('isLoadingState');
   };
 
   private readonly handleProviderUpdates = () => {
+    this.providerState = Providers.globalProvider?.state ?? ProviderState.Loading;
     void this.requestStateUpdate();
   };
 

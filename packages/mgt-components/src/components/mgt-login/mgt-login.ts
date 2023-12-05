@@ -27,6 +27,7 @@ import '../../styles/style-helper';
 import { fluentListbox, fluentProgressRing, fluentButton, fluentCard } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { registerComponent } from '@microsoft/mgt-element';
+import { Task } from '@lit/task';
 
 /**
  * loginViewType describes the enum strings that can be passed in to determine
@@ -262,13 +263,22 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    */
   protected render(): TemplateResult {
-    return html`
+    return this._loadStateTask.render({
+      pending: () => html`...`,
+      complete: () => html`
       <div class="login-root">
         ${this.renderButton()}
         ${this.renderFlyout()}
       </div>
-    `;
+    `,
+      error: e => html`<p>Error: ${e}</p>`
+    });
   }
+
+  private readonly _loadStateTask = new Task(this, {
+    task: async () => this.loadState(),
+    args: () => [this.providerState]
+  });
 
   /**
    * Load state into the component.
