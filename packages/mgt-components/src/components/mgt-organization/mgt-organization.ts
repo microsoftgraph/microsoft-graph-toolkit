@@ -194,6 +194,7 @@ export class MgtOrganization extends BasePersonCardSection {
       >
         <div class="org-member__person">
           <mgt-person
+            class="org-member__person-image"
             .personDetails=${person}
             .fetchImage=${true}
             .view=${ViewType.twolines}
@@ -263,6 +264,7 @@ export class MgtOrganization extends BasePersonCardSection {
             >
               <div class="org-member__person">
                 <mgt-person
+                  class="org-member__person-image"
                   .personDetails=${person}
                   .fetchImage=${true}
                   .showPresence=${true}
@@ -303,6 +305,7 @@ export class MgtOrganization extends BasePersonCardSection {
               @click=${() => this.navigateCard(person)}
             >
               <mgt-person
+                class="direct-report__person-image"
                 .personDetails=${person}
                 .fetchImage=${true}
                 .showPresence=${true}
@@ -328,6 +331,7 @@ export class MgtOrganization extends BasePersonCardSection {
        <div class="org-member org-member--target">
          <div class="org-member__person">
            <mgt-person
+              class="org-member__person-image"
              .personDetails=${person}
              .fetchImage=${true}
              .showPresence=${true}
@@ -357,6 +361,7 @@ export class MgtOrganization extends BasePersonCardSection {
       >
         <div class="coworker__person">
           <mgt-person
+            class="coworker__person-image"
             .personDetails=${person}
             .fetchImage=${true}
             .showPresence=${true}

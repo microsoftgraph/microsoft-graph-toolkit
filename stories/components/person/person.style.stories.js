@@ -79,5 +79,7 @@ export const customCSSProperties = () => html`
 
   <mgt-person class="person" person-query="me" view="fourlines" id="online" show-presence></mgt-person>
   <br>
-  <mgt-person class="person vertical" person-query="me" view="fourlines" avatar-type="initials" id="dnd" show-presence vertical-layout></mgt-person>
+  <!-- Vertical layout -->
+  <mgt-person class="person" vertical-layout person-query="me" view="fourlines" avatar-type="initials" id="dnd"
+    show-presence></mgt-person>
 `;

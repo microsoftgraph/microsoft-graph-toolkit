@@ -235,7 +235,7 @@ export const eventTemplate = () => html`
     }
 
     mgt-person {
-      --avatar-size-s: 16px;
+      --person-avatar-size: 16px;
       margin-right: 4px;
       display: inline-block;
     }

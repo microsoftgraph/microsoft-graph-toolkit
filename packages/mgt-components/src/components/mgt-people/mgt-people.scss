@@ -9,6 +9,8 @@
 @import '../../styles/shared-styles';
 @import './mgt-people.theme';
 
+$people-person-avatar-size: var(--people-person-avatar-size, 24px);
+
 :host .people-list {
   list-style: none;
   margin: var(--people-list-margin, 8px 4px 8px 8px);
@@ -16,6 +18,10 @@
   display: flex;
   align-items: center;
   gap: var(--people-avatar-gap, 4px);
+
+  .people-person {
+    --person-avatar-size: #{$people-person-avatar-size};
+  }
 }
 
 :host .overflow {
