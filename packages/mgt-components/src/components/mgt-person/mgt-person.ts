@@ -145,7 +145,9 @@ export class MgtPerson extends MgtTemplatedComponent {
   public static config: MgtPersonConfig = {
     useContactApis: true
   };
-
+  public get personQuery(): string {
+    return this._personQuery;
+  }
   /**
    * allows developer to define name of person for component
    *
@@ -154,9 +156,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({
     attribute: 'person-query'
   })
-  public get personQuery(): string {
-    return this._personQuery;
-  }
   public set personQuery(value: string) {
     if (value === this._personQuery) {
       return;
@@ -167,6 +166,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     void this.requestStateUpdate();
   }
 
+  public get fallbackDetails(): IDynamicPerson {
+    return this._fallbackDetails;
+  }
   /**
    * Fallback when no user is found
    *
@@ -176,9 +178,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'fallback-details',
     type: Object
   })
-  public get fallbackDetails(): IDynamicPerson {
-    return this._fallbackDetails;
-  }
   public set fallbackDetails(value: IDynamicPerson) {
     if (value === this._fallbackDetails) {
       return;
@@ -193,6 +192,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     void this.requestStateUpdate();
   }
 
+  public get userId(): string {
+    return this._userId;
+  }
   /**
    * user-id property allows developer to use id value to determine person
    *
@@ -201,9 +203,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({
     attribute: 'user-id'
   })
-  public get userId(): string {
-    return this._userId;
-  }
   public set userId(value: string) {
     if (value === this._userId) {
       return;
@@ -214,6 +213,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     void this.requestStateUpdate();
   }
 
+  public get usage(): string {
+    return this._usage;
+  }
   /**
    * usage property allows you to specify where the component is being used to add
    * customized personalization for it. Currently only supports "people" as used in
@@ -224,9 +226,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({
     attribute: 'usage'
   })
-  public get usage(): string {
-    return this._usage;
-  }
   public set usage(value: string) {
     if (value === this._usage) {
       return;
@@ -259,6 +258,9 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public avatarSize: AvatarSize;
 
+  private get personDetailsInternal(): IDynamicPerson {
+    return this._personDetailsInternal;
+  }
   /**
    * object containing Graph details on person
    * a copy of person-details attribute
@@ -266,10 +268,6 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @type {IDynamicPerson}
    */
   @state()
-  private get personDetailsInternal(): IDynamicPerson {
-    return this._personDetailsInternal;
-  }
-
   private set personDetailsInternal(value: IDynamicPerson) {
     if (this._personDetailsInternal === value) {
       return;
@@ -282,6 +280,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     void this.requestStateUpdate();
   }
 
+  public get personDetails(): IDynamicPerson {
+    return this._personDetails;
+  }
   /**
    * object containing Graph details on person
    *
@@ -291,10 +292,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'person-details',
     type: Object
   })
-  public get personDetails(): IDynamicPerson {
-    return this._personDetails;
-  }
-
   public set personDetails(value: IDynamicPerson) {
     if (this._personDetails === value) {
       return;
@@ -307,6 +304,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     void this.requestStateUpdate();
   }
 
+  public get personImage(): string {
+    return this._personImage || this._fetchedImage;
+  }
   /**
    * Set the image of the person
    *
@@ -317,9 +317,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'person-image',
     type: String
   })
-  public get personImage(): string {
-    return this._personImage || this._fetchedImage;
-  }
   public set personImage(value: string) {
     if (value === this._personImage) {
       return;
@@ -369,6 +366,9 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public verticalLayout: boolean;
 
+  public get avatarType(): avatarType {
+    return this._avatarType;
+  }
   /**
    * Determines and sets person avatar
    *
@@ -387,9 +387,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       return avatarType.photo;
     }
   })
-  public get avatarType(): avatarType {
-    return this._avatarType;
-  }
   public set avatarType(value: avatarType) {
     if (value === this._avatarType) {
       return;
@@ -399,6 +396,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     void this.requestStateUpdate();
   }
 
+  public get personPresence(): Presence {
+    return this._personPresence || this._fetchedPresence;
+  }
   /**
    * Gets or sets presence of person
    *
@@ -409,9 +409,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'person-presence',
     type: Object
   })
-  public get personPresence(): Presence {
-    return this._personPresence || this._fetchedPresence;
-  }
   public set personPresence(value: Presence) {
     if (value === this._personPresence) {
       return;
@@ -534,19 +531,19 @@ export class MgtPerson extends MgtTemplatedComponent {
   @state() private _personCardShouldRender: boolean;
   @state() private _hasLoadedPersonCard = false;
 
-  @state() private _personDetailsInternal: IDynamicPerson;
-  @state() private _personDetails: IDynamicPerson;
-  @state() private _fallbackDetails: IDynamicPerson;
-  @state() private _personImage: string;
-  @state() private _personPresence: Presence;
-  @state() private _personQuery: string;
-  @state() private _userId: string;
-  @state() private _usage: string;
-  @state() private _avatarType: avatarType;
-  @state() private _graph: IGraph;
+  private _personDetailsInternal: IDynamicPerson;
+  private _personDetails: IDynamicPerson;
+  private _fallbackDetails: IDynamicPerson;
+  private _personImage: string;
+  private _personPresence: Presence;
+  private _personQuery: string;
+  private _userId: string;
+  private _usage: string;
+  private _avatarType: avatarType;
+  private _graph: IGraph;
 
-  @state() private _mouseLeaveTimeout = -1;
-  @state() private _mouseEnterTimeout = -1;
+  private _mouseLeaveTimeout = -1;
+  private _mouseEnterTimeout = -1;
 
   constructor() {
     super();
