@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { createHash } = require('crypto');
 
 function fixTitle(filePath, title) {
   const htmlDocumentPath = path.resolve(__dirname, filePath);
@@ -25,6 +26,51 @@ function addSeoTags(filePath, title) {
   fs.writeFileSync(htmlDocumentPath, updatedHtmlDocument);
 }
 
+function readHashesForMatch(htmlDocument, match, endMatch, hashes) {
+  let start = 0;
+  while (htmlDocument.indexOf(match, start) > -1) {
+    start = htmlDocument.indexOf(match, start);
+    const end = htmlDocument.indexOf(endMatch, start);
+    const script = htmlDocument.substring(start + match.length, end);
+    const hash = Buffer.from(createHash('sha256').update(script).digest()).toString('base64');
+    hashes.push(`'sha256-${hash}'`);
+    start = end;
+  }
+}
+
+function addCspTag(filePath) {
+  const htmlDocumentPath = path.resolve(__dirname, filePath);
+  const htmlDocument = fs.readFileSync(htmlDocumentPath, 'utf-8');
+  const hashes = [];
+  let match = '<script>';
+  let endMatch = '</script>';
+  readHashesForMatch(htmlDocument, match, endMatch, hashes);
+  match = '<script type="module">';
+  readHashesForMatch(htmlDocument, match, endMatch, hashes);
+
+  const styleHashes = [];
+  // const styleMatch = '<style>';
+  // const styleEndMatch = '</style>';
+  // readHashesForMatch(htmlDocument, styleMatch, styleEndMatch, styleHashes);
+
+  const cspTag = `<meta
+  http-equiv="Content-Security-Policy"
+  content="script-src-elem  'strict-dynamic' 'report-sample' ${hashes.join(
+    ' '
+  )} 'self';style-src 'report-sample' 'unsafe-inline' ${styleHashes.join(
+    ' '
+  )} 'self';font-src static2.sharepointonline.com 'self';default-src 'self'; base-uri 'self'; upgrade-insecure-requests; form-action 'self';report-to https://csp.microsoft.com/report/MGT-Playground"
+/>`;
+  const updatedHtmlDocument = htmlDocument.replace(
+    /<head>/,
+    `<head>
+      ${cspTag}
+`
+  );
+  fs.writeFileSync(htmlDocumentPath, updatedHtmlDocument);
+  console.log(`CSP tag added.\n${cspTag}`);
+}
+
 try {
   const args = process.argv.slice(2);
   const [title, distPath] = args;
@@ -42,6 +88,9 @@ try {
   fixTitle(iframePath, title);
 
   console.log('Title rewrite complete.');
+
+  console.log('Adding CSP tag to index.html');
+  addCspTag(indexPath);
 } catch (error) {
   console.log('Title rewrite failed.');
   console.error(error);
