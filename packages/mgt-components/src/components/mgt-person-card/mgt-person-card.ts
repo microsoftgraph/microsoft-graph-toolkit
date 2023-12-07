@@ -116,6 +116,46 @@ export const registerMgtPersonCardComponent = () => {
  * @cssprop --person-card-fluent-background-color-hover - {Color} The hover background color of the fluent buttons in person card component
  * @cssprop --person-card-chat-input-hover-color - {Color} The chat input hover color
  * @cssprop --person-card-chat-input-focus-color - {Color} The chat input focus color
+ * @cssprop --contact-title-color - {Color} The color of the contact title in the contact section of the person card component
+ * @cssprop --contact-value-color - {Color} The color of the contact value in the contact section of the person card component
+ * @cssprop --contact-link-color - {Color} The color of the contact link in the contact section of the person card component
+ * @cssprop --contact-link-hover-color - {Color} The hover color of the contact link in the contact section of the person card component
+ * @cssprop --contact-background-color - {Color} The background color of the contact section in person card component
+ * @cssprop --contact-copy-icon-color - {Color} The color of the copy icon in the contact section of the person card component
+ * @cssprop --message-subject-font-size - {Length} The font size of the message subject in the message section of the person card component
+ * @cssprop --message-subject-font-weight - {FontWeight} The font weight of the message subject in the message section of the person card component
+ * @cssprop --message-subject-line-height - {Length} The line height of the message subject in the message section of the person card component
+ * @cssprop --message-from-font-size - {Length} The font size of the message sender in the message section of the person card component
+ * @cssprop --message-from-font-weight - {FontWeight} The font weight of the message sender in the message section of the person card component
+ * @cssprop --message-subject-color - {Color} The color of the message subject in the message section of the person card component
+ * @cssprop --message-from-color - {Color} The color of the message sender in the message section of the person card component
+ * @cssprop --message-color - {Color} The color of the message in the message section of the person card component
+ * @cssprop --message-hover-color - {Color} The hover color of the message section of the person card component
+ * @cssprop --message-date-color - {Color} The color of the message date in the message section of the person card component
+ * @cssprop --message-from-line-height - {Length} The line height of the message sender in the message section of the person card component
+ * @cssprop --profile-background-color - {Color} The background color of the profile section in the person card component
+ * @cssprop --profile-title-color - {Color} The color of the profile title in the profile section of the person card component
+ * @cssprop --profile-section-title-color - {Color} The color of the profile section title in the profile section of the person card component
+ * @cssprop --profile-token-item-color - {Color} The color of the profile token item in the profile section of the person card component
+ * @cssprop --profile-token-item-background-color - {Color} The background color of the profile token item in the profile section of the person card component
+ * @cssprop --profile-token-overflow-color - {Color} The color of the profile token overflow in the profile section of the person card component
+ * @cssprop --organization-active-org-member-border-color - {Color} The border color of the active organization member in the organization section of the person card component
+ * @cssprop --organization-active-org-member-target-background-color - {Color} The background color of the active organization member target in the organization section of the person card component
+ * @cssprop --organization-coworker-hover-color - {Color} The hover color of the coworker in the organization section of the person card component
+ * @cssprop --organization-coworker-border-color - {Color} The border color of the coworker in the organization section of the person card component
+ * @cssprop --organization-coworker-person-avatar-size - {Length} The avatar size of the coworker in the organization section of the person card component
+ * @cssprop --organization-member-person-avatar-size - {Length} The avatar size of the member in the organization section of the person card component
+ * @cssprop --organization-direct-report-person-avatar-size - {Length} The avatar size of the direct report in the organization section of the person card component
+ * @cssprop --organization-title-color - {Color} The color of the organization title in the organization section of the person card component
+ * @cssprop --organization-sub-title-color - {Color} The color of the organization sub-title in the organization section of the person card component
+ * @cssprop --organization-hover-color - {Color} The hover color of the organization section of the person card component
+ * @cssprop --profile-background-color - {Color} The background color of the profile section in the person card component
+ * @cssprop --profile-title-color - {Color} The color of the profile title in the profile section of the person card component
+ * @cssprop --profile-section-title-color - {Color} The color of the profile section title of the person card component
+ * @cssprop --profile-token-item-color - {Color} The color of the token item in the profile section of the person card component
+ * @cssprop --profile-token-item-background-color - {Color} The background color of the token item in the profile section of the person card component
+ * @cssprop --profile-token-overflow-color - {Color} The color of the token overflow in the profile section of the person card component
+ *
  */
 export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClearer, IExpandable {
   /**

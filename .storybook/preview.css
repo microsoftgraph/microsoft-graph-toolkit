@@ -1,0 +1,152 @@
+a {
+    text-decoration: underline !important;
+}
+
+html,
+body,
+#root,
+#storybook-root {
+    height: 100%;
+    width: 100%;
+    font-family: var(--default-font-family, 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+    'Helvetica Neue', sans-serif);
+    padding: 0!important;
+}
+
+.docs-img-centered {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body {
+    margin: 0;
+}
+
+/* code editor add-on styling */
+.story-mgt-root {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    display: flex;
+    overflow: hidden;
+}
+
+.story-mgt-preview {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+.story-mgt-preview-wrapper {
+    position: relative;
+    height: 100%;
+    width: 50%;
+    float: left;
+    background-color: #fff;
+}
+
+.story-mgt-editor {
+    width: calc(50% - 1px);
+    height: 100%;
+    position: relative;
+    float: left;
+    overflow: hidden;
+    border-left: 1px solid #e7e7e7;
+}
+
+.story-mgt-separator {
+    cursor: ew-resize;
+    background-color: rgb(37  37 38);
+    position: relative;
+    height: 100%;
+    float: left;
+
+    /* prevent browser's built-in drag from interfering */
+    /* stylelint-disable-next-line property-no-vendor-prefix */
+    -moz-user-select: none;
+    /* stylelint-disable-next-line property-no-vendor-prefix */
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.story-mgt-separator::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 8px;
+    position: absolute;
+    left: -3px;
+    z-index: 10;
+}
+
+/* End code editor add-on styling */
+
+/* fixes link color and attribute value colors in storybook inline code blocks */
+.sbdocs-a,
+.css-zj0253 * .token.attr-value {
+    color: #0360B9 !important;
+}
+
+/* fix attribute names in html rendering */
+.mtk4, .css-zj0253 * .token.attr-name {
+    color: #e50000 !important;
+}
+
+/* fix number colors in monaco editor */
+.mtk7 {
+    color: #088155 !important;
+}
+
+.css-3ltsna:focus-visible {
+    outline: auto;
+}
+
+/* changes to eliminate padding/margins inside embedded stories in docs page */
+.docs-story > div {
+    padding: 0;
+    margin: 0;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.css-1wjen9k .innerZoomElementWrapper > div {
+    border: 0!important;
+}
+
+/* responsive fixes for small screens */
+@media (width <= 768px) {
+    .story-mgt-root {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .story-mgt-preview-wrapper {
+        height: 50%;
+        width: 100%;
+    }
+
+    .story-mgt-editor {
+        height: calc(50% - 1px);
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #e7e7e7;
+    }
+
+    .story-mgt-separator {
+        cursor: ns-resize;
+        width: 100%;
+        height: 0;
+    }
+
+    .story-mgt-separator::after {
+        content: '';
+        display: block;
+        height: 8px;
+        width: 100%;
+        top: -3px;
+    }
+}

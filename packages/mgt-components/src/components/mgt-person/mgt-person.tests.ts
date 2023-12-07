@@ -40,7 +40,7 @@ describe('mgt-person - tests', () => {
           class="flyout"
           light-dismiss=""
         >
-          <div slot="anchor">
+          <div slot="anchor" class=" twolines ">
             <div class="avatar-wrapper">
               <img alt="Photo for Megan Bowen">
             </div>

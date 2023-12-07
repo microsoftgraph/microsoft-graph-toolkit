@@ -670,6 +670,9 @@ export class MgtPerson extends MgtTemplatedComponent {
       'avatar-icon': true,
       vertical: this.isVertical(),
       small: !this.isLargeAvatar(),
+      noline: this.isNoLine(),
+      oneline: this.isOneLine(),
+      twolines: this.isTwoLines(),
       threeLines: this.isThreeLines(),
       fourLines: this.isFourLines()
     };
@@ -1040,6 +1043,13 @@ export class MgtPerson extends MgtTemplatedComponent {
         : html``;
 
     const slotClasses = classMap({
+      small: !this.isThreeLines() && !this.isFourLines() && !this.isLargeAvatar(),
+      large: this.avatarSize !== 'auto' && this.isLargeAvatar(),
+      noline: this.isNoLine(),
+      oneline: this.isOneLine(),
+      twolines: this.isTwoLines(),
+      threelines: this.isThreeLines(),
+      fourlines: this.isFourLines(),
       vertical: this.isVertical()
     });
 
