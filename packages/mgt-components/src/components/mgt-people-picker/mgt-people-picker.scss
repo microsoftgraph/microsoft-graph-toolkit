@@ -121,6 +121,7 @@ $people-picker-selected-person-avatar-size: var(--people-picker-selected-person-
   fluent-card {
     margin-top: 4px;
     background-color: $dropdown-card-color;
+    overflow: auto;
   }
 
   .searched-people-list {

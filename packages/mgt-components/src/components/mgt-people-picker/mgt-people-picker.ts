@@ -370,7 +370,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
   })
-  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
+  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
 
   /**
    * array of user picked people.
@@ -1009,8 +1009,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             <li
               id="${person.id}"
               class="searched-people-list-result"
-              role="option"
-              @click="${() => this.handleSuggestionClick(person)}">
+              role="option">
                 ${this.renderPersonResult(person)}
             </li>
           `
@@ -1032,8 +1031,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.renderTemplate('person', { person }, person.id) ||
       mgtHtml`
          <mgt-person
+          @click="${() => this.handleSuggestionClick(person)}"
+          tabindex="1"
           class="person-image-result"
-
           ?show-presence=${this.showPresence}
           view="twoLines"
           line2-property="jobTitle,mail"
@@ -1056,7 +1056,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
     return mgtHtml`
         <mgt-person
-          tabindex="-1"
+          tabindex="1"
           class="person-image-selected"
           .personDetails=${person}
           .fetchImage=${!this.disableImages}
@@ -1590,7 +1590,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const selectedList = this.renderRoot.querySelector('.selected-list');
     const isCmdOrCtrlKey = event.getModifierState('Control') || event.getModifierState('Meta');
     if (isCmdOrCtrlKey && selectedList) {
-      const selectedPeople = selectedList.querySelectorAll('mgt-person.selected-list-item-person');
+      const selectedPeople = selectedList.querySelectorAll('mgt-person.person-image-selected');
       this.hideFlyout();
       if (isCmdOrCtrlKey && keyName === 'ArrowLeft') {
         this._currentHighlightedUserPos =
@@ -1827,15 +1827,20 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         p.setAttribute('aria-selected', 'false');
         p.blur();
         p.removeAttribute('tabindex');
+        p.querySelector<MgtPerson>('mgt-person')?.hidePersonCard();
       }
 
       // set selected background
       // set aria-selected to true
       const focusedItem = peopleList.children[this._arrowSelectionCount] as HTMLElement;
+      const mgtPerson = focusedItem?.querySelector<MgtPerson>('mgt-person');
 
-      if (focusedItem) {
+      if (focusedItem && mgtPerson) {
         focusedItem.setAttribute('tabindex', '0');
         focusedItem.focus();
+        if (this.personCardInteraction !== PersonCardInteraction.none) {
+          mgtPerson?.showPersonCard();
+        }
         focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         focusedItem.setAttribute('aria-selected', 'true');
         this.input.setAttribute('aria-activedescendant', focusedItem?.id);
