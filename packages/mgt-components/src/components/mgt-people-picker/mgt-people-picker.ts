@@ -89,6 +89,8 @@ export const registerMgtPeoplePickerComponent = () => {
  * @cssprop --people-picker-input-placeholder-text-color - {Color} the placeholder text color.
  * @cssprop --people-picker-search-icon-color - {Color} the search icon color
  * @cssprop --people-picker-remove-selected-close-icon-color - {Color} the remove selected person close icon color.
+ * @cssprop --people-picker-result-person-avatar-size - {Length} the avatar size of the person in the result. Default is 40px.
+ * @cssprop --people-picker-selected-person-avatar-size - {Length} the avatar size of the selected person. Default is 24px.
  */
 export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
@@ -1029,8 +1031,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person', { person }, person.id) ||
       mgtHtml`
-        <mgt-person
-          class="person"
+         <mgt-person
+          class="person-image-result"
+
           ?show-presence=${this.showPresence}
           view="twoLines"
           line2-property="jobTitle,mail"
@@ -1054,7 +1057,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return mgtHtml`
         <mgt-person
           tabindex="-1"
-          class="selected-list-item-person"
+          class="person-image-selected"
           .personDetails=${person}
           .fetchImage=${!this.disableImages}
           .view=${ViewType.oneline}

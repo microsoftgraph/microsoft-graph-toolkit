@@ -88,7 +88,7 @@ export const GetEmail = () => html`
 
     .email mgt-person {
       --font-size: 10px;
-      --avatar-size-s: 12px;
+      --person-avatar-size: 12px;
     }
 
     .email .preview {
