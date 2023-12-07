@@ -531,15 +531,15 @@ export class MgtPerson extends MgtTemplatedComponent {
   @state() private _personCardShouldRender: boolean;
   @state() private _hasLoadedPersonCard = false;
 
-  @state() private _personDetailsInternal: IDynamicPerson;
-  @state() private _personDetails: IDynamicPerson;
-  @state() private _fallbackDetails: IDynamicPerson;
-  @state() private _personImage: string;
-  @state() private _personPresence: Presence;
-  @state() private _personQuery: string;
-  @state() private _userId: string;
-  @state() private _usage: string;
-  @state() private _avatarType: avatarType;
+  private _personDetailsInternal: IDynamicPerson;
+  private _personDetails: IDynamicPerson;
+  private _fallbackDetails: IDynamicPerson;
+  private _personImage: string;
+  private _personPresence: Presence;
+  private _personQuery: string;
+  private _userId: string;
+  private _usage: string;
+  private _avatarType: avatarType;
 
   private _mouseLeaveTimeout = -1;
   private _mouseEnterTimeout = -1;
