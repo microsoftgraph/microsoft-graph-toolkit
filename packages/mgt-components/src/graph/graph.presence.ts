@@ -51,7 +51,7 @@ export const getUserPresence = async (graph: IGraph, userId?: string): Promise<P
     }
   }
 
-  const validScopes = userId ? ['presence.read', 'presence.read.all'] : ['presence.read.all'];
+  const validScopes = userId ? ['presence.read.all'] : ['presence.read', 'presence.read.all'];
   const resource = userId ? `/users/${userId}/presence` : '/me/presence';
 
   const result = (await graph.api(resource).middlewareOptions(prepScopes(validScopes)).get()) as Presence;

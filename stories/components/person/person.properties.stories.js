@@ -44,6 +44,32 @@ export const setPersonDetails = () => html`
    </script>
  `;
 
+export const changePersonQuery = () => html`
+  <mgt-person class="my-person" person-query="me" view="threelines"></mgt-person>
+
+  <button class="button">Change person-query </button>
+  <script>
+    const person = document.querySelector('.my-person');
+    const button = document.querySelector('.button');
+    button.addEventListener('click', () => {
+      person.personQuery = 'Isaiah';
+    });
+  </script>
+  `;
+
+export const changeUserId = () => html`
+  <mgt-person class="my-person" person-query="me" view="threelines"></mgt-person>
+
+  <button class="button">Change user-id </button>
+  <script>
+    const person = document.querySelector('.my-person');
+    const button = document.querySelector('.button');
+    button.addEventListener('click', () => {
+      person.userId = '2804bc07-1e1f-4938-9085-ce6d756a32d2';
+    });
+  </script>
+  `;
+
 export const personFallbackDetails = () => html`
    <div class="example">
    <mgt-person person-query="mbowen" view="twoLines" show-presence fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
