@@ -62,11 +62,11 @@ export abstract class IProvider implements AuthenticationProvider {
   }
 
   public hasAtLeastOneApprovedScope(requiredScopeSet: string[]): boolean {
-    return requiredScopeSet.some(s => this.approvedScopes.includes(s.toLowerCase()));
+    return requiredScopeSet.some(s => this.approvedScopes.includes(s.toLowerCase().trim()));
   }
 
   public hasAllOneApprovedScope(requiredScopeSet: string[]): boolean {
-    return requiredScopeSet.some(s => !this.approvedScopes.includes(s.toLowerCase()));
+    return requiredScopeSet.some(s => !this.approvedScopes.includes(s.toLowerCase().trim()));
   }
 
   /**
@@ -78,7 +78,7 @@ export abstract class IProvider implements AuthenticationProvider {
   public needsAdditionalScopes(requiredScopeSet: string[]): string[] {
     const reqScopes: string[] = [];
     if (requiredScopeSet.length && !this.hasAtLeastOneApprovedScope(requiredScopeSet)) {
-      reqScopes.push(requiredScopeSet[0]);
+      reqScopes.push(requiredScopeSet[0].trim());
     }
     return reqScopes;
   }
