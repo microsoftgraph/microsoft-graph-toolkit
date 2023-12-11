@@ -38,8 +38,8 @@ export const getUserWithPhoto = async (
   const anyUserValidScopes = [
     'User.ReadBasic.All',
     'User.Read.All',
-    'User.ReadWrite.All',
     'Directory.Read.All',
+    'User.ReadWrite.All',
     'Directory.ReadWrite.All'
   ];
 

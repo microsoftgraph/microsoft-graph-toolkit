@@ -103,8 +103,8 @@ const validTransitiveGroupMemberScopes = [
   'GroupMember.Read.All',
   'Group.Read.All',
   'Directory.Read.All',
-  'Group.ReadWrite.All',
-  'GroupMember.ReadWrite.All'
+  'GroupMember.ReadWrite.All',
+  'Group.ReadWrite.All'
 ];
 
 /**

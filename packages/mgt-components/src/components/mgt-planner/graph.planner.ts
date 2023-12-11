@@ -11,7 +11,7 @@ import { CollectionResponse } from '@microsoft/mgt-element';
 import { ITask } from './task-sources';
 
 const writePlannerDataScopes = ['Tasks.ReadWrite', 'Group.ReadWrite.All'];
-const readPlannerDataScopes = ['Tasks.Read', 'Group.Read.All', 'Group.ReadWrite.All', 'Tasks.ReadWrite'];
+const readPlannerDataScopes = ['Tasks.Read', 'Group.Read.All', 'Tasks.ReadWrite', 'Group.ReadWrite.All'];
 
 /**
  * async promise, allows developer to create new Planner task

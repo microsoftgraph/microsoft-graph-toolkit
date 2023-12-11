@@ -53,8 +53,8 @@ export const getUsers = async (graph: IGraph, userFilters = '', top = 10): Promi
   const allValidScopes = [
     'User.ReadBasic.All',
     'User.Read.All',
-    'User.ReadWrite.All',
     'Directory.Read.All',
+    'User.ReadWrite.All',
     'Directory.ReadWrite.All'
   ];
   const apiString = '/users';
@@ -130,8 +130,8 @@ export const getMe = async (graph: IGraph, requestedProps?: string[]): Promise<U
 export const validUserByIdScopes = [
   'User.ReadBasic.All',
   'User.Read.All',
-  'User.ReadWrite.All',
   'Directory.Read.All',
+  'User.ReadWrite.All',
   'Directory.ReadWrite.All'
 ];
 /**
@@ -463,9 +463,9 @@ export const findGroupMembers = async (
   const allValidScopes = [
     'GroupMember.Read.All',
     'Group.Read.All',
+    'Directory.Read.All',
     'GroupMember.ReadWrite.All',
-    'Group.ReadWrite.All',
-    'Directory.Read.All'
+    'Group.ReadWrite.All'
   ];
   const item = { maxResults: top, results: null };
 

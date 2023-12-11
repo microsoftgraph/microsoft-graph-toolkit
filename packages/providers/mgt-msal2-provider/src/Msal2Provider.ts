@@ -424,7 +424,6 @@ export class Msal2Provider extends IProvider {
 
   private readonly handleMsalEvent = (message: EventMessage): void => {
     // eslint-disable-next-line no-console
-    console.log('graff: ', message);
     if (message.eventType === 'msal:acquireTokenSuccess' && 'scopes' in message.payload) {
       this.approvedScopes = message.payload.scopes;
     }

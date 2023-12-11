@@ -122,7 +122,7 @@ const buildOrgStructureRequest = (batch: IBatch, userId: string) => {
 const buildWorksWithRequest = (batch: IBatch, userId: string) => {
   batch.get(batchKeys.people, `users/${userId}/people?$filter=personType/class eq 'Person'`, validUserByIdScopes);
 };
-const validMailSearchScopes = ['Mail.ReadBasic', 'Mail.ReadWrite', 'Mail.Read'];
+const validMailSearchScopes = ['Mail.ReadBasic', 'Mail.Read', 'Mail.ReadWrite'];
 const buildMessagesWithUserRequest = (batch: IBatch, emailAddress: string) => {
   batch.get(batchKeys.messages, `me/messages?$search="from:${emailAddress}"`, validMailSearchScopes);
 };
@@ -186,7 +186,7 @@ export const createChat = async (graph: IGraph, person: string, user: string): P
     .post(chatData)) as Chat;
 };
 
-const validSendChatMessageScopes = ['ChannelMessage.Send', 'ChatMessage.Send', 'Chat.ReadWrite', 'Group.ReadWrite.All'];
+const validSendChatMessageScopes = ['ChatMessage.Send', 'Chat.ReadWrite'];
 
 /**
  * Send a chat message to a user
