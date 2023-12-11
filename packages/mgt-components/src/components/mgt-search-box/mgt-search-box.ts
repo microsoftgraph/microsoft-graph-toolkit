@@ -9,10 +9,10 @@ import { CSSResult, html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { MgtBaseComponent } from '@microsoft/mgt-element';
 import { fluentSearch } from '@fluentui/web-components';
-import { registerFluentComponents } from '../../../utils/FluentComponents';
+import { registerFluentComponents } from '../../utils/FluentComponents';
 import { strings } from './strings';
 import { styles } from './mgt-search-box-css';
-import { debounce } from '../../../utils/Utils';
+import { debounce } from '../../utils/Utils';
 import { registerComponent } from '@microsoft/mgt-element';
 
 export const registerMgtSearchBoxComponent = () => {
@@ -96,9 +96,6 @@ export class MgtSearchBox extends MgtBaseComponent {
 
   constructor() {
     super();
-    console.warn(
-      '🦒: <mgt-search-box> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
-    );
     this.debounceDelay = 300;
   }
 
