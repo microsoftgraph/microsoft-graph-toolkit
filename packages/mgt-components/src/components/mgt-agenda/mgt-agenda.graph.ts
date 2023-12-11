@@ -48,7 +48,7 @@ export const getEventsPageIterator = async (
 
   const uri: string = groupId
     ? `groups/${groupId}/calendar/calendarview?${sdt}&${edt}`
-    : 'me/calendarview?${sdt}&${edt}';
+    : `me/calendarview?${sdt}&${edt}`;
   const allValidScopes = groupId
     ? ['Group.Read.All', 'Group.ReadWrite.All']
     : ['Calendars.ReadBasic', 'Calendars.Read', 'Calendars.ReadWrite'];
