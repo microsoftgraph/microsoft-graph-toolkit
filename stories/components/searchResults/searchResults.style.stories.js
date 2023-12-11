@@ -6,10 +6,10 @@
  */
 
 import { html } from 'lit';
-import { withCodeEditor } from '../../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Preview / mgt-search-results / Style',
+  title: 'Components / mgt-search-results / Style',
   component: 'search-results',
   decorators: [withCodeEditor]
 };
