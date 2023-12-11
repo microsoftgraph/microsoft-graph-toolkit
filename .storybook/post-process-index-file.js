@@ -53,14 +53,15 @@ function addCspTag(filePath) {
   // const styleEndMatch = '</style>';
   // readHashesForMatch(htmlDocument, styleMatch, styleEndMatch, styleHashes);
 
-  const cspTag = `<meta
-  http-equiv="Content-Security-Policy"
-  content="script-src-elem  'strict-dynamic' 'report-sample' ${hashes.join(
-    ' '
-  )} 'self';style-src 'report-sample' 'unsafe-inline' ${styleHashes.join(
-    ' '
-  )} 'self';font-src static2.sharepointonline.com 'self';default-src 'self'; base-uri 'self'; upgrade-insecure-requests; form-action 'self';report-to https://csp.microsoft.com/report/MGT-Playground"
-/>`;
+  const cspTag = `
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="script-src-elem  'strict-dynamic' 'report-sample' ${hashes.join(
+      ' '
+    )} 'self';style-src 'report-sample' 'unsafe-inline' ${styleHashes.join(
+      ' '
+    )} 'self';font-src static2.sharepointonline.com 'self';connect-src https://cdn.graph.office.net https://login.microsoftonline.com https://graph.microsoft.com https://mgt.dev 'self';img-src data: https: 'self';frame-src https://login.microsoftonline.com 'self';default-src 'self'; base-uri 'self'; upgrade-insecure-requests; form-action 'self';report-to https://csp.microsoft.com/report/MGT-Playground"
+  />`;
   const updatedHtmlDocument = htmlDocument.replace(
     /<head>/,
     `<head>
