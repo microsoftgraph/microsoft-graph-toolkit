@@ -249,12 +249,26 @@ export class MgtPicker extends MgtTemplatedTaskComponent {
         placeholder=${this.placeholder}>
           ${this.response.map(
             item => html`
-            <fluent-option value=${item.id} @click=${(e: MouseEvent) => this.handleClick(e, item)}> ${
-              item[this.keyName]
-            } </fluent-option>`
+            <fluent-option value=${item.id} @click=${(e: MouseEvent) =>
+              this.handleClick(e, item)}> ${this.getNestedPropertyValue(item, this.keyName)} </fluent-option>`
           )}
       </fluent-combobox>
      `;
+  }
+
+  private getNestedPropertyValue(item: Entity, keyName: string) {
+    const keys = keyName.split('.');
+    let value: Entity | object | string = item;
+
+    for (const key of keys) {
+      value = value[key] as object | string;
+
+      if (value === undefined) {
+        return '';
+      }
+    }
+
+    return value;
   }
 
   /**
