@@ -9,34 +9,10 @@ import { property, state } from 'lit/decorators.js';
 import { html, PropertyValueMap, PropertyValues, TemplateResult } from 'lit';
 
 import { equals } from '../utils/equals';
-import { MgtBaseComponent } from './baseComponent';
 import { TemplateContext } from '../utils/TemplateContext';
 import { TemplateHelper } from '../utils/TemplateHelper';
-
-/**
- * Lookup for rendered component templates and contexts by slot name.
- */
-export type RenderedTemplates = Record<
-  string,
-  {
-    /**
-     * Reference to the data context used to render the slot.
-     */
-    context: Record<string, unknown>;
-    /**
-     * Reference to the rendered DOM element corresponding to the slot.
-     */
-    slot: HTMLElement;
-  }
->;
-
-export interface TemplateRenderedData {
-  templateType: string;
-  context: Record<string, unknown>;
-  element: HTMLElement;
-}
-
-export type OrderedHtmlTemplate = HTMLTemplateElement & { templateOrder: number };
+import { MgtBaseTaskComponent } from './baseTaskComponent';
+import { OrderedHtmlTemplate, RenderedTemplates, TemplateRenderedData } from './templatedComponent';
 
 /**
  * An abstract class that defines a templatable web component
@@ -48,7 +24,7 @@ export type OrderedHtmlTemplate = HTMLTemplateElement & { templateOrder: number 
  *
  * @fires {CustomEvent<MgtElement.TemplateRenderedData>} templateRendered - fires when a template is rendered
  */
-export abstract class MgtTemplatedComponent extends MgtBaseComponent {
+export abstract class MgtTemplatedTaskComponent extends MgtBaseTaskComponent {
   /**
    * Additional data context to be used in template binding
    * Use this to add event listeners or value converters
@@ -84,6 +60,17 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
 
     this.templateContext = this.templateContext || {};
   }
+
+  /**
+   * Render the loading state
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtFile
+   */
+  protected renderLoading = (): TemplateResult => {
+    return this.renderTemplate('loading', null) || html``;
+  };
 
   /**
    * Updates the element. This method reflects property values to attributes.
@@ -197,17 +184,17 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    *
    * @returns
    */
-  protected renderError(): TemplateResult {
+  protected renderError = (e: unknown): TemplateResult => {
     if (this.hasTemplate('error')) {
-      return this.renderTemplate('error', this.error);
+      return this.renderTemplate('error', e as object);
     }
 
     return html`
       <div class="error">
-        ${this.error}
+        ${e}
       </div>
     `;
-  }
+  };
 
   private removeUnusedSlottedElements() {
     if (this._renderedSlots) {

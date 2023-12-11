@@ -8,7 +8,7 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { Providers, ProviderState, MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
+import { Providers, ProviderState, mgtHtml, MgtTemplatedTaskComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
@@ -54,7 +54,7 @@ export const registerMgtAgendaComponent = () => {
   registerComponent('agenda', MgtAgenda);
 };
 
-export class MgtAgenda extends MgtTemplatedComponent {
+export class MgtAgenda extends MgtTemplatedTaskComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -72,17 +72,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     attribute: 'date',
     type: String
   })
-  public get date(): string {
-    return this._date;
-  }
-  public set date(value) {
-    if (this._date === value) {
-      return;
-    }
-
-    this._date = value;
-    void this.reloadState();
-  }
+  public date: string;
 
   /**
    * determines if agenda events come from specific group
@@ -93,17 +83,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     attribute: 'group-id',
     type: String
   })
-  public get groupId(): string {
-    return this._groupId;
-  }
-  public set groupId(value) {
-    if (this._groupId === value) {
-      return;
-    }
-
-    this._groupId = value;
-    void this.reloadState();
-  }
+  public groupId: string;
 
   /**
    * sets number of days until end date, 3 is the default
@@ -114,17 +94,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     attribute: 'days',
     type: Number
   })
-  public get days(): number {
-    return this._days;
-  }
-  public set days(value) {
-    if (this._days === value) {
-      return;
-    }
-
-    this._days = value;
-    void this.reloadState();
-  }
+  public days = 3;
 
   /**
    * allows developer to specify a different graph query that retrieves events
@@ -135,17 +105,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     attribute: 'event-query',
     type: String
   })
-  public get eventQuery(): string {
-    return this._eventQuery;
-  }
-  public set eventQuery(value) {
-    if (this._eventQuery === value) {
-      return;
-    }
-
-    this._eventQuery = value;
-    void this.reloadState();
-  }
+  public eventQuery: string;
 
   /**
    * array containing events from user agenda.
@@ -154,7 +114,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'events',
-    type: Array
+    type: Array,
+    hasChanged: (newVal: [], oldVal: []) => {
+      return newVal !== oldVal;
+    }
   })
   public events: MicrosoftGraph.Event[];
 
@@ -192,17 +155,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     attribute: 'preferred-timezone',
     type: String
   })
-  public get preferredTimezone(): string {
-    return this._preferredTimezone;
-  }
-  public set preferredTimezone(value) {
-    if (this._preferredTimezone === value) {
-      return;
-    }
-
-    this._preferredTimezone = value;
-    void this.reloadState();
-  }
+  public preferredTimezone: string;
 
   /**
    * Get the scopes required for agenda
@@ -221,12 +174,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @type {boolean}
    */
   @property({ attribute: false }) private _isNarrow: boolean;
-
-  private _eventQuery: string;
-  private _days = 3;
-  private _groupId: string;
-  private _date: string;
-  private _preferredTimezone: string;
 
   /**
    * Determines width available if resize is necessary, adds onResize event listener to window
@@ -256,12 +203,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtAgenda
    */
-  public render(): TemplateResult {
-    // Loading
-    if (!this.events && this.isLoadingState) {
-      return this.renderLoading();
-    }
-
+  public renderContent = (): TemplateResult => {
     // No data
     if (!this.events || this.events.length === 0) {
       return this.renderNoData();
@@ -285,10 +227,9 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <div dir=${this.direction} class="${classMap(agendaClasses)}">
         ${this.groupByDay ? this.renderGroups(events) : this.renderEvents(events)}
-        ${this.isLoadingState ? this.renderLoading() : html``}
       </div>
     `;
-  }
+  };
 
   /**
    * Reloads the component with its current settings and potential new data
@@ -306,7 +247,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtAgenda
    */
-  protected renderLoading(): TemplateResult {
+  protected renderLoading = (): TemplateResult => {
     return (
       this.renderTemplate('loading', null) ||
       html`
@@ -328,7 +269,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
           </div>
         </fluent-card>`
     );
-  }
+  };
 
   /**
    * Clears state of the component
@@ -535,6 +476,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
         )}`;
   }
 
+  protected args() {
+    return [this.providerState, this.preferredTimezone, this.eventQuery, this.date, this.groupId, this.days];
+  }
+
   /**
    * Load state into the component
    *
@@ -551,11 +496,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
     if (events?.length > 0) {
       this.events = events;
     }
-  }
-
-  private async reloadState() {
-    this.events = null;
-    await this.requestStateUpdate(true);
   }
 
   private readonly onResize = () => {

@@ -5,35 +5,15 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, PropertyValueMap, PropertyValues } from 'lit';
+import { Task } from '@lit/task';
+
+import { LitElement, PropertyValueMap, PropertyValues, TemplateResult, html } from 'lit';
 import { state } from 'lit/decorators.js';
 import { ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
 import { PACKAGE_VERSION } from '../utils/version';
-
-/**
- * Defines media query based on component width
- *
- * @export
- * @enum {string}
- */
-export enum ComponentMediaQuery {
-  /**
-   * devices with width < 768
-   */
-  mobile = '',
-
-  /**
-   * devices with width < 1200
-   */
-  tablet = 'tablet',
-
-  /**
-   * devices with width > 1200
-   */
-  desktop = 'desktop'
-}
+import { ComponentMediaQuery } from './baseComponent';
 
 /**
  * BaseComponent extends LitElement adding mgt specific features to all components
@@ -43,9 +23,14 @@ export enum ComponentMediaQuery {
  * @class MgtBaseComponent
  * @extends {LitElement}
  */
-export abstract class MgtBaseComponent extends LitElement {
-  @state()
-  protected providerState: ProviderState = ProviderState.Loading;
+export abstract class MgtBaseTaskComponent extends LitElement {
+  /**
+   * Supplies the component with a reactive property based on the current provider state
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  @state() protected providerState: ProviderState = ProviderState.Loading;
   /**
    * Exposes the semver of the library the component is part of
    *
@@ -83,16 +68,6 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   /**
-   * A flag to check if the component is loading data state.
-   *
-   * @protected
-   * @memberof MgtBaseComponent
-   */
-  protected get isLoadingState(): boolean {
-    return this._isLoadingState;
-  }
-
-  /**
    * A flag to check if the component has updated once.
    *
    * @readonly
@@ -115,15 +90,7 @@ export abstract class MgtBaseComponent extends LitElement {
     return {};
   }
 
-  /**
-   * determines if login component is in loading state
-   *
-   * @type {boolean}
-   */
-  private _isLoadingState = false;
-
   private _isFirstUpdated = false;
-  private _currentLoadStatePromise: Promise<unknown>;
 
   constructor() {
     super();
@@ -169,15 +136,6 @@ export abstract class MgtBaseComponent extends LitElement {
     this._isFirstUpdated = true;
     Providers.onProviderUpdated(this.handleProviderUpdates);
     Providers.onActiveAccountChanged(this.handleActiveAccountUpdates);
-    void this.requestStateUpdate();
-  }
-
-  /**
-   * load state into the component.
-   * Override this function to provide additional loading logic.
-   */
-  protected loadState(): Promise<void> {
-    return Promise.resolve();
   }
 
   /**
@@ -210,7 +168,6 @@ export abstract class MgtBaseComponent extends LitElement {
       bubbles,
       cancelable,
       composed,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       detail
     });
     return this.dispatchEvent(event);
@@ -227,97 +184,137 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   protected updated(changedProperties: PropertyValues) {
     super.updated(changedProperties);
-    const event = new CustomEvent('updated', {
-      bubbles: true,
-      cancelable: true
-    });
-    this.dispatchEvent(event);
+    this.fireCustomEvent('updated', undefined, true, false);
   }
 
   /**
-   * Request to reload the state.
-   * Use reload instead of load to ensure loading events are fired.
-   *
-   * @protected
-   * @memberof MgtBaseComponent
+   * load state into the component.
+   * Override this function to provide actual loading logic.
    */
-  protected async requestStateUpdate(force = false): Promise<unknown> {
-    // the component is still bootstraping - wait until first updated
-    if (!this._isFirstUpdated) {
-      return;
-    }
-
-    // Wait for the current load promise to complete (unless forced).
-    if (this.isLoadingState && !force) {
-      await this._currentLoadStatePromise;
-    }
-
-    const provider = Providers.globalProvider;
-
-    if (!provider) {
-      return Promise.resolve();
-    }
-
-    if (provider.state === ProviderState.SignedOut) {
-      // Signed out, clear the component state
-      this.clearState();
-      return;
-    } else if (provider.state === ProviderState.Loading) {
-      // The provider state is indeterminate. Do nothing.
-      return Promise.resolve();
-    } else {
-      // Signed in, load the internal component state
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-async-promise-executor
-      const loadStatePromise = new Promise<void>(async (resolve, reject) => {
-        try {
-          this.setLoadingState(true);
-          this.fireCustomEvent('loadingInitiated');
-
-          await this.loadState();
-
-          this.setLoadingState(false);
-          this.fireCustomEvent('loadingCompleted');
-          resolve();
-        } catch (e) {
-          // Loading failed. Clear any partially set data.
-          this.clearState();
-
-          this.setLoadingState(false);
-          this.fireCustomEvent('loadingFailed');
-          reject(e);
-        }
-
-        // Return the load state promise.
-        // If loading + forced, chain the promises.
-        // This is to account for the lack of a cancellation token concept.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment
-        return (this._currentLoadStatePromise =
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          this.isLoadingState && !!this._currentLoadStatePromise && force
-            ? // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-              this._currentLoadStatePromise.then(() => loadStatePromise)
-            : loadStatePromise);
-      });
-    }
+  protected async loadState() {
+    return Promise.resolve();
   }
 
-  protected setLoadingState = (value: boolean) => {
-    if (this._isLoadingState === value) {
-      return;
-    }
+  /**
+   * Override this function to provide the actual list of properties to trigger the task to run.
+   * @returns {unknown[]} the properties when changed which trigger the Task to run
+   */
+  protected args(): unknown[] {
+    return [];
+  }
 
-    this._isLoadingState = value;
-    this.requestUpdate('isLoadingState');
+  /**
+   * Task that is run whenever one of the args changes
+   * By default this task will call loadState
+   */
+  protected _task = new Task(this, {
+    task: () => this.loadState(),
+    args: () => this.args()
+  });
+
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
+   */
+  protected render() {
+    return this._task.render({
+      pending: this.renderLoading,
+      complete: this.renderContent,
+      error: this.renderError
+    });
+  }
+
+  /**
+   * A default loading template.
+   * @returns default loading template
+   */
+  protected renderLoading = (): TemplateResult => {
+    return html`<span>Loading...</span>`;
   };
+
+  protected renderError = (e: unknown): TemplateResult => {
+    return html`<p>Error: ${e}</p>`;
+  };
+
+  protected renderContent = (): TemplateResult => {
+    return html`<!-- baseTaskComponent, please implement renderContent -->`;
+  };
+
+  // /**
+  //  * Request to reload the state.
+  //  * Use reload instead of load to ensure loading events are fired.
+  //  *
+  //  * @protected
+  //  * @memberof MgtBaseComponent
+  //  */
+  // protected async requestStateUpdate(force = false): Promise<unknown> {
+  //   // the component is still bootstraping - wait until first updated
+  //   if (!this._isFirstUpdated) {
+  //     return;
+  //   }
+
+  //   // Wait for the current load promise to complete (unless forced).
+  //   if (this.isLoadingState && !force) {
+  //     await this._currentLoadStatePromise;
+  //   }
+
+  //   const provider = Providers.globalProvider;
+
+  //   if (!provider) {
+  //     return Promise.resolve();
+  //   }
+
+  //   if (provider.state === ProviderState.SignedOut) {
+  //     // Signed out, clear the component state
+  //     this.clearState();
+  //     return;
+  //   } else if (provider.state === ProviderState.Loading) {
+  //     // The provider state is indeterminate. Do nothing.
+  //     return Promise.resolve();
+  //   } else {
+  //     // Signed in, load the internal component state
+  //     // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-async-promise-executor
+  //     const loadStatePromise = new Promise<void>(async (resolve, reject) => {
+  //       try {
+  //         this.setLoadingState(true);
+  //         this.fireCustomEvent('loadingInitiated');
+
+  //         // await this.loadState();
+  //         await Promise.resolve();
+
+  //         this.setLoadingState(false);
+  //         this.fireCustomEvent('loadingCompleted');
+  //         resolve();
+  //       } catch (e) {
+  //         // Loading failed. Clear any partially set data.
+  //         this.clearState();
+
+  //         this.setLoadingState(false);
+  //         this.fireCustomEvent('loadingFailed');
+  //         reject(e);
+  //       }
+
+  //       // Return the load state promise.
+  //       // If loading + forced, chain the promises.
+  //       // This is to account for the lack of a cancellation token concept.
+  //       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment
+  //       return (this._currentLoadStatePromise =
+  //         // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  //         this.isLoadingState && !!this._currentLoadStatePromise && force
+  //           ? // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  //             this._currentLoadStatePromise.then(() => loadStatePromise)
+  //           : loadStatePromise);
+  //     });
+  //   }
+  // }
 
   private readonly handleProviderUpdates = () => {
     this.providerState = Providers.globalProvider?.state ?? ProviderState.Loading;
-    void this.requestStateUpdate();
   };
 
   private readonly handleActiveAccountUpdates = () => {
     this.clearState();
-    void this.requestStateUpdate();
   };
 
   private readonly handleLocalizationChanged = () => {

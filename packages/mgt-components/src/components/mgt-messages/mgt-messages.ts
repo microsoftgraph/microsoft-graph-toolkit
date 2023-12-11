@@ -96,9 +96,7 @@ export class MgtMessages extends BasePersonCardSection {
   public renderCompactView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if (!this._messages?.length) {
+    if (!this._messages?.length) {
       contentTemplate = this.renderNoData();
     } else {
       const messageTemplates = this._messages
@@ -126,9 +124,7 @@ export class MgtMessages extends BasePersonCardSection {
   protected renderFullView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if (!this._messages?.length) {
+    if (!this._messages?.length) {
       contentTemplate = this.renderNoData();
     } else {
       contentTemplate = html`

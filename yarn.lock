@@ -5549,6 +5549,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@microsoft/mgt-element@workspace:packages/mgt-element"
   dependencies:
+    "@lit/task": ^1.0.0
     "@microsoft/microsoft-graph-client": 3.0.2
     idb: 6.0.0
     lit: ^3.0.0
