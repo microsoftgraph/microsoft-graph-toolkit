@@ -97,8 +97,6 @@ const validGroupQueryScopes = [
   'Directory.ReadWrite.All'
 ];
 
-// TODO: investigate why these two sets of permissions are so different?
-
 const validTransitiveGroupMemberScopes = [
   'GroupMember.Read.All',
   'Group.Read.All',
