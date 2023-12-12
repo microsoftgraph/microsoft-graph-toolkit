@@ -62,7 +62,7 @@ export const useGraphChatClient = (chatId: string): StatefulGraphChatClient => {
   useEffect(() => {
     return () => {
       log('invoked clean up effect');
-      void chatClient.tearDown();
+      chatClient.tearDown();
     };
   }, [chatClient]);
 
