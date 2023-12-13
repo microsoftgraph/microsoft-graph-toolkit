@@ -18,6 +18,7 @@ import type {
 import { GraphConfig } from './GraphConfig';
 import { SubscriptionsCache } from './Caching/SubscriptionCache';
 import { Timer } from '../utils/Timer';
+import { getOrGenerateGroupId } from './getOrGenerateGroupId';
 
 export const appSettings = {
   defaultSubscriptionLifetimeInMinutes: 10,
@@ -188,7 +189,7 @@ export class GraphNotificationClient {
     ).toISOString();
     const subscriptionDefinition: Subscription = {
       changeType: changeTypes.join(','),
-      notificationUrl: `${GraphConfig.webSocketsPrefix}?groupId=${this.chatId}`,
+      notificationUrl: `${GraphConfig.webSocketsPrefix}?groupId=${getOrGenerateGroupId(this.chatId)}`,
       resource: resourcePath,
       expirationDateTime,
       includeResourceData: true,
