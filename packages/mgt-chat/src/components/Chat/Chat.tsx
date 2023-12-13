@@ -15,6 +15,7 @@ registerAppIcons();
 
 interface IMgtChatProps {
   chatId: string;
+  iteration?: number;
 }
 
 const useStyles = makeStyles({
@@ -91,7 +92,7 @@ const messageThreadStyles: MessageThreadStyles = {
   }
 };
 
-export const Chat = ({ chatId }: IMgtChatProps) => {
+export const Chat = ({ chatId, iteration }: IMgtChatProps) => {
   const styles = useStyles();
   const chatClient: StatefulGraphChatClient = useGraphChatClient(chatId);
   const [chatState, setChatState] = useState(chatClient.getState());
@@ -112,7 +113,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
         <div className={styles.chat}>
           {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
-              <ChatHeader chatState={chatState} />
+              <ChatHeader chatState={chatState} iteration={iteration} />
               <div className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}
@@ -134,8 +135,10 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                       <Person
                         userId={userId}
                         avatarSize="small"
-                        showPresence={true}
                         personCardInteraction={PersonCardInteraction.hover}
+                        showPresence={true}
+                        fetchImage={true}
+                        iteration={iteration}
                       />
                     );
                   }}

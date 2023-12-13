@@ -1,7 +1,8 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useState, useEffect } from 'react';
 import './App.css';
 import { Get, Login } from '@microsoft/mgt-react';
 import { Chat, NewChat } from '@microsoft/mgt-chat';
+import { CacheService, log } from '@microsoft/mgt-element';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import ChatListTemplate from './components/ChatListTemplate/ChatListTemplate';
 
@@ -25,6 +26,31 @@ function App() {
     setShowNewChat(false);
   }, []);
 
+  // start a timer to force a re-render of presence
+  const refreshIntervalForPresence = 2 * 60 * 1000;
+  const [iteration, setIteration] = useState(0);
+  useEffect(() => {
+    // setup caching
+    CacheService.config.users.isEnabled = true;
+    CacheService.config.photos.isEnabled = true;
+    CacheService.config.presence.isEnabled = true;
+
+    // exit if no refresh interval for presence
+    if (!refreshIntervalForPresence) return;
+
+    // set the invalidation period to half the refresh interval
+    CacheService.config.presence.invalidationPeriod = refreshIntervalForPresence / 2;
+
+    // start refresh timer for presence
+    log(`starting refresh timer for presence every ${refreshIntervalForPresence}ms`);
+    const intervalId = setInterval(() => {
+      setIteration(prevIteration => prevIteration + 1);
+    }, refreshIntervalForPresence);
+
+    // clear interval on unmount
+    return () => clearInterval(intervalId);
+  }, [refreshIntervalForPresence]);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -47,7 +73,7 @@ function App() {
           )}
         </div>
 
-        <div className="chat-pane">{chatId && <Chat chatId={chatId} />}</div>
+        <div className="chat-pane">{chatId && <Chat chatId={chatId} iteration={iteration} />}</div>
       </main>
     </div>
   );

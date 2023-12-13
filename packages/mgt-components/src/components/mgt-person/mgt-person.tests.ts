@@ -7,11 +7,12 @@
 import { fixture, html, expect, waitUntil } from '@open-wc/testing';
 import { MockProvider, Providers } from '@microsoft/mgt-element';
 import { registerMgtPersonComponent } from './mgt-person';
+import { useConfig } from '../../graph/graph.presence.mock';
 
 describe('mgt-person - tests', () => {
   before(() => {
     registerMgtPersonComponent();
-    Providers.globalProvider = new MockProvider(true);
+    Providers.globalProvider = new MockProvider(true, [{ id: '48d31887-5fad-4d73-a9f5-3c356e68a038' }]);
   });
 
   it('should render', async () => {
@@ -28,6 +29,52 @@ describe('mgt-person - tests', () => {
         </div>
       </div>`,
       { ignoreAttributes: ['src'] }
+    );
+  });
+
+  it('should render with presence', async () => {
+    useConfig({
+      default: 'Available',
+      3: 'Busy',
+      4: 'Busy',
+      5: 'Busy'
+    });
+
+    const person = await fixture(
+      html`<mgt-person person-query="me" show-presence="true" view="twoLines"></mgt-person>`
+    );
+    await waitUntil(() => person.shadowRoot.querySelector('span.presence-wrapper'), 'no presence span');
+    await expect(person).shadowDom.to.equal(
+      `<div class=" person-root twolines " dir="ltr">
+        <div class="avatar-wrapper">
+          <img alt="Photo for Megan Bowen" src="">
+          <span
+            aria-label="Available"
+            class="presence-wrapper"
+            role="img"
+            title="Available"
+          >
+          </span>
+        </div>
+        <div class=" details-wrapper ">
+              <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+              <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+        </div>
+      </div>`,
+      { ignoreAttributes: ['src'] }
+    );
+  });
+
+  it('unknown user should render with a default icon', async () => {
+    // purposely throws browser error "Error: Invalid userId"
+    const person = await fixture(
+      html`<mgt-person user-id="2004BC77-F054-4678-8883-768ADA7B00EC" view="twoLines"></mgt-person>`
+    );
+    await waitUntil(() => person.shadowRoot.querySelector('svg'), 'no svg was populated');
+    await expect(person).shadowDom.to.equal(
+      `<i class="avatar-icon" icon="no-data">
+        <svg />
+      </i>`
     );
   });
 
@@ -175,5 +222,130 @@ describe('mgt-person - tests', () => {
         personType: {}
       })}' view="twoLines"></mgt-person>`);
     await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('FV');
+  });
+
+  it('should support a change in presence', async () => {
+    useConfig({
+      default: 'Available',
+      3: 'Busy',
+      4: 'Busy',
+      5: 'Busy'
+    });
+
+    const person = await fixture(
+      html`<mgt-person person-query="me" show-presence="true" view="twoLines" iteration="0"></mgt-person>`
+    );
+    await waitUntil(() => person.shadowRoot.querySelector('span.presence-wrapper'), 'no presence span');
+
+    // starts as Available
+    await expect(person).shadowDom.to.equal(
+      `<div class=" person-root twolines " dir="ltr">
+        <div class="avatar-wrapper">
+          <img alt="Photo for Megan Bowen" src="">
+          <span
+            aria-label="Available"
+            class="presence-wrapper"
+            role="img"
+            title="Available"
+          >
+          </span>
+        </div>
+        <div class=" details-wrapper ">
+              <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+              <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+        </div>
+      </div>`,
+      { ignoreAttributes: ['src'] }
+    );
+
+    // refresh
+    person.setAttribute('iteration', '1');
+    await waitUntil(() => person.shadowRoot.querySelector('span[title="Busy"]'), 'did not update to busy');
+
+    // now Busy
+    await expect(person).shadowDom.to.equal(
+      `<div class=" person-root twolines " dir="ltr">
+        <div class="avatar-wrapper">
+          <img alt="Photo for Megan Bowen" src="">
+          <span
+            aria-label="Busy"
+            class="presence-wrapper"
+            role="img"
+            title="Busy"
+          >
+          </span>
+        </div>
+        <div class=" details-wrapper ">
+              <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+              <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+        </div>
+      </div>`,
+      { ignoreAttributes: ['src'] }
+    );
+  });
+
+  it('should be Offline on error', async () => {
+    useConfig({
+      default: 'Available',
+      3: new Error('error on getting presence')
+    });
+
+    const person = await fixture(
+      html`<mgt-person person-query="me" show-presence="true" view="twoLines" iteration="0"></mgt-person>`
+    );
+    await waitUntil(() => person.shadowRoot.querySelector('img'), 'mgt-person did not update');
+    await waitUntil(() => person.shadowRoot.querySelector('span.presence-wrapper'), 'no presence span');
+
+    const available = `<div class=" person-root twolines " dir="ltr">
+      <div class="avatar-wrapper">
+        <img alt="Photo for Megan Bowen" src="">
+        <span
+          aria-label="Available"
+          class="presence-wrapper"
+          role="img"
+          title="Available"
+        >
+        </span>
+      </div>
+      <div class=" details-wrapper ">
+            <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+            <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+      </div>
+    </div>`;
+
+    // starts as Available
+    await expect(person).shadowDom.to.equal(available, { ignoreAttributes: ['src'] });
+
+    // refresh
+    person.setAttribute('iteration', '1');
+    await waitUntil(() => person.shadowRoot.querySelector('span[title="Offline"]'), 'did not update to offline');
+
+    // moves to Offline due to error
+    await expect(person).shadowDom.to.equal(
+      `<div class=" person-root twolines " dir="ltr">
+        <div class="avatar-wrapper">
+          <img alt="Photo for Megan Bowen" src="">
+          <span
+            aria-label="Offline"
+            class="presence-wrapper"
+            role="img"
+            title="Offline"
+          >
+          </span>
+        </div>
+        <div class=" details-wrapper ">
+              <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+              <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+        </div>
+      </div>`,
+      { ignoreAttributes: ['src'] }
+    );
+
+    // refresh
+    person.setAttribute('iteration', '2');
+    await waitUntil(() => person.shadowRoot.querySelector('span[title="Available"]'), 'did not update to available');
+
+    // goes back to Available
+    await expect(person).shadowDom.to.equal(available, { ignoreAttributes: ['src'] });
   });
 });

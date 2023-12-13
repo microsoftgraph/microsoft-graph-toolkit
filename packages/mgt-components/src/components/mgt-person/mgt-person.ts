@@ -527,11 +527,30 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public view: ViewType | PersonViewType;
 
+  /**
+   * Changing the iteration forces the component to re-render. Currently this is only effective to
+   * get an updated presence icon for a user.
+   */
+  @property({ attribute: 'iteration' })
+  public get iteration(): number {
+    return this._iteration;
+  }
+  public set iteration(value: number) {
+    if (value === this._iteration) {
+      return;
+    }
+
+    this._fetchedPresence = null;
+    this._iteration = value;
+    void this.requestStateUpdate();
+  }
+
   @state() private _fetchedImage: string;
   @state() private _fetchedPresence: Presence;
   @state() private _isInvalidImageSrc: boolean;
   @state() private _personCardShouldRender: boolean;
   @state() private _hasLoadedPersonCard = false;
+  @state() private _iteration: number;
 
   private _personDetailsInternal: IDynamicPerson;
   private _personDetails: IDynamicPerson;
@@ -639,7 +658,22 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderLoading(): TemplateResult {
-    return this.renderTemplate('loading', null) || html``;
+    const loadingTemplate = this.renderTemplate('loading', null);
+    if (loadingTemplate) {
+      return loadingTemplate;
+    }
+
+    const avatarClasses = {
+      'avatar-icon': true,
+      vertical: this.isVertical(),
+      small: !this.isLargeAvatar(),
+      threeLines: this.isThreeLines(),
+      fourLines: this.isFourLines()
+    };
+
+    return html`
+      <i class=${classMap(avatarClasses)} icon='loading'>${this.renderLoadingIcon()}</i>
+    `;
   }
 
   /**
@@ -677,8 +711,19 @@ export class MgtPerson extends MgtTemplatedComponent {
     };
 
     return html`
-       <i class=${classMap(avatarClasses)}></i>
-     `;
+      <i class=${classMap(avatarClasses)} icon='no-data'>${this.renderPersonIcon()}</i>
+    `;
+  }
+
+  /**
+   * Render a loading icon.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtPerson
+   */
+  protected renderLoadingIcon() {
+    return getSvg(SvgIcon.Loading);
   }
 
   /**

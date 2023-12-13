@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     '--person-alignment': 'center'
   }
 });
-export const OneToOneChatHeader = ({ chat, currentUserId }: ChatHeaderProps) => {
+export const OneToOneChatHeader = ({ chat, currentUserId, iteration }: ChatHeaderProps) => {
   const styles = useStyles();
   const id = getOtherParticipantUserId(chat, currentUserId);
   return id ? (
@@ -24,6 +24,8 @@ export const OneToOneChatHeader = ({ chat, currentUserId }: ChatHeaderProps) => 
       avatarSize="small"
       personCardInteraction={PersonCardInteraction.hover}
       showPresence={true}
+      fetchImage={true}
+      iteration={iteration}
     />
   ) : null;
 };

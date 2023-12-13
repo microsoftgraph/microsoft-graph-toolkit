@@ -3,6 +3,7 @@ www/
 lib/
 assets/mgt.storybook.js
 assets/mgt.preview.storybook.js
+.yarn/
 
 *~
 *.sw[mnpcod]

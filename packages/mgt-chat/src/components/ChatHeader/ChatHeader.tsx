@@ -26,15 +26,21 @@ const useHeaderStyles = makeStyles({
 });
 interface ChatHeaderProps {
   chatState: GraphChatClient;
+  iteration?: number;
 }
-const ChatHeader = ({ chatState }: ChatHeaderProps) => {
+const ChatHeader = ({ chatState, iteration }: ChatHeaderProps) => {
   const styles = useHeaderStyles();
   const commonStyles = useCommonHeaderStyles();
   const chatWebUrl = chatState?.chat?.webUrl ?? 'https://teams.microsoft.com/v2';
 
   return (
     <div className={styles.chatHeader}>
-      <ChatTitle chat={chatState.chat} currentUserId={chatState.userId} onRenameChat={chatState.onRenameChat} />
+      <ChatTitle
+        chat={chatState.chat}
+        currentUserId={chatState.userId}
+        iteration={iteration}
+        onRenameChat={chatState.onRenameChat}
+      />
       <Divider appearance="subtle" />
       <div className={mergeClasses(styles.secondRow, commonStyles.row)}>
         {chatState.participants?.length > 0 && chatState.chat?.chatType === 'group' && (

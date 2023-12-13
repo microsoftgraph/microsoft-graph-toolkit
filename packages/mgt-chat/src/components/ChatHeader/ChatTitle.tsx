@@ -8,6 +8,7 @@ import { GroupChatHeader } from './GroupChatHeader';
 export interface ChatHeaderProps {
   chat?: Chat;
   currentUserId?: string;
+  iteration?: number;
   onRenameChat: (newName: string | null) => Promise<void>;
 }
 
@@ -31,7 +32,7 @@ const useTitleStyles = makeStyles({
  * For group chats with no topic it will show the first names of other participants comma separated.
  * For 1:1 chats it will show the first name of the other participant.
  */
-const ChatTitle = ({ chat, currentUserId, onRenameChat }: ChatHeaderProps) => {
+const ChatTitle = ({ chat, currentUserId, iteration, onRenameChat }: ChatHeaderProps) => {
   const styles = useTitleStyles();
   const commonStyles = useCommonHeaderStyles();
   return (
@@ -39,7 +40,12 @@ const ChatTitle = ({ chat, currentUserId, onRenameChat }: ChatHeaderProps) => {
       {chat?.chatType !== 'oneOnOne' ? (
         <GroupChatHeader chat={chat} currentUserId={currentUserId} onRenameChat={onRenameChat} />
       ) : (
-        <OneToOneChatHeader chat={chat} currentUserId={currentUserId} onRenameChat={onRenameChat} />
+        <OneToOneChatHeader
+          chat={chat}
+          currentUserId={currentUserId}
+          onRenameChat={onRenameChat}
+          iteration={iteration}
+        />
       )}
     </div>
   );
