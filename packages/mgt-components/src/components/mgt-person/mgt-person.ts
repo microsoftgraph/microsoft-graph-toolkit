@@ -162,6 +162,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
     }
 
     this._personQuery = value;
+    this._personDetails = null;
     this.personDetailsInternal = null;
   }
 
@@ -207,6 +208,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
 
     this._userId = value;
     this.personDetailsInternal = null;
+    this._personDetails = null;
   }
 
   /**
