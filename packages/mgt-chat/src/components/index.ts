@@ -6,5 +6,6 @@
  */
 
 import { Chat } from './Chat/Chat';
+import { ChatList } from './ChatList/ChatList';
 import { NewChat } from './NewChat/NewChat';
-export { Chat, NewChat };
+export { Chat, ChatList, NewChat };
