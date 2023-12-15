@@ -84,19 +84,16 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
 
   // Copied and modified from the sample ChatItem.tsx
   // Determines the title in the case of 1:1 and self chats
-  const inferTitle = useCallback(
-    (chatObj: Chat) => {
-      if (myId && chatObj.chatType === 'oneOnOne' && chatObj.members) {
-        const other = chatObj.members.find(m => (m as AadUserConversationMember).userId !== myId);
-        const me = chatObj.members.find(m => (m as AadUserConversationMember).userId === myId);
-        return other
-          ? `${other?.displayName || (other as AadUserConversationMember)?.email || other?.id}`
-          : `${me} (You)`;
-      }
-      return chatObj.topic || chatObj.chatType;
-    },
-    [myId]
-  );
+  const inferTitle = (chatObj: Chat) => {
+    if (myId && chatObj.chatType === 'oneOnOne' && chatObj.members) {
+      const other = chatObj.members.find(m => (m as AadUserConversationMember).userId !== myId);
+      const me = chatObj.members.find(m => (m as AadUserConversationMember).userId === myId);
+      return other
+        ? `${other?.displayName || (other as AadUserConversationMember)?.email || other?.id}`
+        : `${me} (You)`;
+    }
+    return chatObj.topic || chatObj.chatType;
+  };
 
   const extractTimestamp = (timestamp: NullableOption<string> | undefined): string => {
     if (timestamp === undefined || timestamp === null) return '';
@@ -133,28 +130,25 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     }
   };
 
-  const enrichPreviewMessage = useCallback(
-    (previewMessage: NullableOption<ChatMessageInfo> | undefined) => {
-      if (myId && previewMessage?.from?.user?.id === myId) {
-        return 'You: ' + previewMessage?.body?.content;
+  const enrichPreviewMessage = (previewMessage: NullableOption<ChatMessageInfo> | undefined) => {
+    if (myId && previewMessage?.from?.user?.id === myId) {
+      return 'You: ' + previewMessage?.body?.content;
+    }
+    if (previewMessage?.from?.user?.displayName) {
+      return previewMessage?.from?.user?.displayName + ': ' + previewMessage?.body?.content;
+    }
+    const membersAddedEventMessageDetail = previewMessage?.eventDetail as MembersAddedEventMessageDetail;
+    if (membersAddedEventMessageDetail) {
+      const initiator = membersAddedEventMessageDetail.initiator;
+      const addedMembers = membersAddedEventMessageDetail.members?.map(m => m.displayName).join(', ');
+      if (myId && initiator?.user?.id === myId) {
+        return `You added ${addedMembers}.`;
       }
-      if (previewMessage?.from?.user?.displayName) {
-        return previewMessage?.from?.user?.displayName + ': ' + previewMessage?.body?.content;
-      }
-      const membersAddedEventMessageDetail = previewMessage?.eventDetail as MembersAddedEventMessageDetail;
-      if (membersAddedEventMessageDetail) {
-        const initiator = membersAddedEventMessageDetail.initiator;
-        const addedMembers = membersAddedEventMessageDetail.members?.map(m => m.displayName).join(', ');
-        if (myId && initiator?.user?.id === myId) {
-          return `You added ${addedMembers}.`;
-        }
-        return `${initiator?.user?.displayName} added ${addedMembers}.`;
-      }
+      return `${initiator?.user?.displayName} added ${addedMembers}.`;
+    }
 
-      return previewMessage?.body?.content;
-    },
-    [myId]
-  );
+    return previewMessage?.body?.content;
+  };
 
   return (
     <Button

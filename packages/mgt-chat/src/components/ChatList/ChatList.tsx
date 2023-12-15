@@ -34,6 +34,7 @@ export const ChatList = (chatSelected: { chatSelected: (e: GraphChat) => void })
       : undefined;
 
   return (
+    // This is a temporary approach to render the chatlist items. This should be replaced.
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme}>
         <ChatListItem chat={SampleChats.group.SampleGroupChat} myId={myId} onSelected={chatSelected} />
