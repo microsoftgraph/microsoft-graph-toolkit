@@ -79,6 +79,11 @@ const useStyles = makeStyles({
 export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps & IChatListItemInteractionProps) => {
   const styles = useStyles();
 
+  // shortcut if no valid user
+  if (!myId) {
+    return <></>;
+  }
+
   // Copied and modified from the sample ChatItem.tsx
   // Determines the title in the case of 1:1 and self chats
   const inferTitle = (chatObj: Chat) => {
