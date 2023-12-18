@@ -7,7 +7,7 @@
 
 import { MgtTemplatedTaskComponent, customElementHelper, mgtHtml } from '@microsoft/mgt-element';
 import { html, TemplateResult } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 
 import { IDynamicPerson } from '../graph/types';
 import { MgtPersonCard } from './mgt-person-card/mgt-person-card';
@@ -75,6 +75,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedTaskComponent im
     return this._isCompact;
   }
 
+  @state()
   private _isCompact: boolean;
 
   constructor() {
@@ -100,7 +101,6 @@ export abstract class BasePersonCardSection extends MgtTemplatedTaskComponent im
    */
   public asCompactView() {
     this._isCompact = true;
-    this.requestUpdate();
     return this;
   }
 
@@ -112,7 +112,6 @@ export abstract class BasePersonCardSection extends MgtTemplatedTaskComponent im
    */
   public asFullView() {
     this._isCompact = false;
-    this.requestUpdate();
     return this;
   }
 
