@@ -11,8 +11,8 @@ import { error } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
 
-interface IChatListItemInteractionProps {
-  onSelected: { chatSelected: (e: Chat) => void };
+export interface IChatListItemInteractionProps {
+  onSelected: (e: Chat) => void;
 }
 
 interface IMgtChatListItemProps {
@@ -92,7 +92,7 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
       const me = chatObj.members.find(m => (m as AadUserConversationMember).userId === myId);
       return other
         ? `${other?.displayName || (other as AadUserConversationMember)?.email || other?.id}`
-        : `${me} (You)`;
+        : `${me?.displayName} (You)`;
     }
     return chatObj.topic || chatObj.chatType;
   };
@@ -132,31 +132,51 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     }
   };
 
+  const removeHTMLTags = (str: string) => {
+    return str.replace(/<[^>]*>/g, '');
+  };
+
   const enrichPreviewMessage = (previewMessage: NullableOption<ChatMessageInfo> | undefined) => {
-    if (myId && previewMessage?.from?.user?.id === myId) {
-      return 'You: ' + previewMessage?.body?.content;
+    let previewString = '';
+
+    // this should be refactored
+    // handle general chats from people and bots
+    if (previewMessage?.from?.user?.id === myId) {
+      previewString = 'You: ' + previewMessage?.body?.content;
+    } else if (previewMessage?.from?.user?.displayName) {
+      previewString = previewMessage?.from?.user?.displayName + ': ' + previewMessage?.body?.content;
+    } else if (previewMessage?.from?.application?.displayName) {
+      previewString = previewMessage?.from?.application?.displayName + ': ' + previewMessage?.body?.content;
     }
-    if (previewMessage?.from?.user?.displayName) {
-      return previewMessage?.from?.user?.displayName + ': ' + previewMessage?.body?.content;
-    }
-    const membersAddedEventMessageDetail = previewMessage?.eventDetail as MembersAddedEventMessageDetail;
-    if (membersAddedEventMessageDetail) {
-      const initiator = membersAddedEventMessageDetail.initiator;
-      const addedMembers = membersAddedEventMessageDetail.members?.map(m => m.displayName).join(', ');
-      if (myId && initiator?.user?.id === myId) {
-        return `You added ${addedMembers}.`;
+    // TODO: use the StatefulGraphChatClient to handle all the events
+    // handle MembersAdded events
+    if (previewMessage?.eventDetail as MembersAddedEventMessageDetail) {
+      const membersAddedEventMessageDetail = previewMessage?.eventDetail as MembersAddedEventMessageDetail;
+      if (membersAddedEventMessageDetail) {
+        const initiator = membersAddedEventMessageDetail.initiator;
+        const addedMembers = membersAddedEventMessageDetail.members?.map(m => m.displayName).join(', ');
+        if (initiator?.user?.id === myId) {
+          previewString = `You added ${addedMembers}.`;
+        } else if (previewMessage?.from?.application?.displayName) {
+          previewString = `${previewMessage?.from?.application?.displayName} added ${addedMembers}.`;
+        } else {
+          previewString = `${initiator?.user?.displayName} added ${addedMembers}.`;
+        }
+      } else {
+        if (previewMessage?.body?.content) {
+          previewString = previewMessage?.body?.content as string;
+        }
       }
-      return `${initiator?.user?.displayName} added ${addedMembers}.`;
     }
 
-    return previewMessage?.body?.content;
+    return removeHTMLTags(previewString);
   };
 
   return (
     <Button
       className={styles.chatListItem}
       onClick={() => {
-        onSelected.chatSelected(chat);
+        onSelected(chat);
       }}
     >
       {getDefaultProfileImage()}

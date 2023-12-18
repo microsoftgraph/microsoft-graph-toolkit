@@ -5,19 +5,17 @@ import { Chat, ChatList, NewChat } from '@microsoft/mgt-chat';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import ChatListTemplate from './components/ChatListTemplate/ChatListTemplate';
 
-// commented out to use the stub now.
-// const ChatList = memo(({ chatSelected }: { chatSelected: (e: GraphChat) => void }) => {
-//   return (
-//     <Get resource="me/chats?$expand=members" scopes={['chat.read']} cacheEnabled={false}>
-//       <ChatListTemplate template="default" onSelected={chatSelected} />
-//     </Get>
-//   );
-// });
-
-// define onselected callback
-const onSelected = (selected: GraphChat) => {};
-
-// default values for fluentui theme
+const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => void }) => {
+  return (
+    <Get
+      resource="me/chats?$expand=members,lastMessagePreview&orderby=lastMessagePreview/createdDateTime desc"
+      scopes={['chat.read']}
+      cacheEnabled={false}
+    >
+      <ChatList onSelected={onSelected} />
+    </Get>
+  );
+});
 
 function App() {
   // Copied from the sample ChatItem.tsx
@@ -43,7 +41,7 @@ function App() {
       </header>
       <main className="main">
         <div className="chat-selector">
-          <ChatList chatSelected={chatSelected} />
+          <ChatListWrapper onSelected={chatSelected} />
           <br />
           <button onClick={() => setChatId('')}>Clear selected chat</button>
           <br />
