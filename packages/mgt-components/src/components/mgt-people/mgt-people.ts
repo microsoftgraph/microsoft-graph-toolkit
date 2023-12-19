@@ -13,7 +13,7 @@ import { getPeople, getPeopleFromResource, PersonType } from '../../graph/graph.
 import { getUsersPresenceByPeople } from '../../graph/graph.presence';
 import { findGroupMembers, getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual, mgtHtml } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedTaskComponent, mgtHtml } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
@@ -27,7 +27,7 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  *
  * @export
  * @class MgtPeople
- * @extends {MgtTemplatedComponent}
+ * @extends {MgtTemplatedTaskComponent}
  *
  * @cssprop --people-list-margin- {String} the margin around the list of people. Default is 8px 4px 8px 8px.
  * @cssprop --people-avatar-gap - {String} the gap between the people in the list. Default is 4px.
@@ -42,7 +42,7 @@ export const registerMgtPeopleComponent = () => {
   registerComponent('people', MgtPeople);
 };
 
-export class MgtPeople extends MgtTemplatedComponent {
+export class MgtPeople extends MgtTemplatedTaskComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -60,16 +60,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     attribute: 'group-id',
     type: String
   })
-  public get groupId(): string {
-    return this._groupId;
-  }
-  public set groupId(value) {
-    if (this._groupId === value) {
-      return;
-    }
-    this._groupId = value;
-    void this.requestStateUpdate(true);
-  }
+  public groupId: string;
 
   /**
    * user id array
@@ -82,16 +73,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       return value.split(',').map(v => v.trim());
     }
   })
-  public get userIds(): string[] {
-    return this._userIds;
-  }
-  public set userIds(value: string[]) {
-    if (arraysAreEqual(this._userIds, value)) {
-      return;
-    }
-    this._userIds = value;
-    void this.requestStateUpdate(true);
-  }
+  public userIds: string[];
 
   /**
    * containing array of people used in the component.
@@ -116,16 +98,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       return value.split(',').map(v => v.trim());
     }
   })
-  public get peopleQueries(): string[] {
-    return this._peopleQueries;
-  }
-  public set peopleQueries(value: string[]) {
-    if (arraysAreEqual(this._peopleQueries, value)) {
-      return;
-    }
-    this._peopleQueries = value;
-    void this.requestStateUpdate(true);
-  }
+  public peopleQueries: string[];
 
   /**
    * developer determined max people shown in component
@@ -179,16 +152,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     attribute: 'resource',
     type: String
   })
-  public get resource(): string {
-    return this._resource;
-  }
-  public set resource(value) {
-    if (this._resource === value) {
-      return;
-    }
-    this._resource = value;
-    void this.requestStateUpdate(true);
-  }
+  public resource: string;
 
   /**
    * Api version to use for request
@@ -200,16 +164,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     attribute: 'version',
     type: String
   })
-  public get version(): string {
-    return this._version;
-  }
-  public set version(value) {
-    if (this._version === value) {
-      return;
-    }
-    this._version = value;
-    void this.requestStateUpdate(true);
-  }
+  public version = 'v1.0';
 
   /**
    * The scopes to request
@@ -235,18 +190,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     attribute: 'fallback-details',
     type: Array
   })
-  public get fallbackDetails(): IDynamicPerson[] {
-    return this._fallbackDetails;
-  }
-  public set fallbackDetails(value: IDynamicPerson[]) {
-    if (value === this._fallbackDetails) {
-      return;
-    }
-
-    this._fallbackDetails = value;
-
-    void this.requestStateUpdate();
-  }
+  public fallbackDetails: IDynamicPerson[];
 
   /**
    * Get the scopes required for people
@@ -268,13 +212,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     ];
   }
 
-  private _groupId: string;
-  private _userIds: string[];
-  private _peopleQueries: string[];
   private _peoplePresence: Record<string, MicrosoftGraph.Presence> = {};
-  private _resource: string;
-  private _version = 'v1.0';
-  private _fallbackDetails: IDynamicPerson[];
   @state() private _arrowKeyLocation = -1;
 
   constructor() {
@@ -292,18 +230,17 @@ export class MgtPeople extends MgtTemplatedComponent {
     this.people = null;
   }
 
-  /**
-   * Request to reload the state.
-   * Use reload instead of load to ensure loading events are fired.
-   *
-   * @protected
-   * @memberof MgtBaseComponent
-   */
-  protected requestStateUpdate(force?: boolean) {
-    if (force) {
-      this.people = null;
-    }
-    return super.requestStateUpdate(force);
+  protected args(): unknown[] {
+    return [
+      this.providerState,
+      this.groupId,
+      this.userIds,
+      this.peopleQueries,
+      this.showMax,
+      this.resource,
+      this.version,
+      this.fallbackDetails
+    ];
   }
 
   /**
@@ -311,17 +248,13 @@ export class MgtPeople extends MgtTemplatedComponent {
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-  protected render() {
-    if (this.isLoadingState) {
-      return this.renderLoading();
-    }
-
+  protected renderContent = () => {
     if (!this.people || this.people.length === 0) {
       return this.renderNoData();
     }
 
     return this.renderTemplate('default', { people: this.people, max: this.showMax }) || this.renderPeople();
-  }
+  };
 
   /**
    * Render the loading state.
@@ -330,9 +263,9 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtPeople
    */
-  protected renderLoading() {
+  protected renderLoading = () => {
     return this.renderTemplate('loading', null) || html``;
-  }
+  };
 
   /**
    * Render the list of people.
@@ -494,8 +427,8 @@ export class MgtPeople extends MgtTemplatedComponent {
           this.people = await findGroupMembers(graph, null, this.groupId, this.showMax, PersonType.person);
         } else if (this.userIds || this.peopleQueries) {
           this.people = this.userIds
-            ? await getUsersForUserIds(graph, this.userIds, '', '', this._fallbackDetails)
-            : await getUsersForPeopleQueries(graph, this.peopleQueries, this._fallbackDetails);
+            ? await getUsersForUserIds(graph, this.userIds, '', '', this.fallbackDetails)
+            : await getUsersForPeopleQueries(graph, this.peopleQueries, this.fallbackDetails);
         } else if (this.resource) {
           this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);
         } else {
