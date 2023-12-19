@@ -7,9 +7,9 @@
 
 import type * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Position } from '../../graph/types';
-import { html, TemplateResult } from 'lit';
+import { html, PropertyValueMap, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
+import { MgtTemplatedTaskComponent, mgtHtml } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
@@ -37,14 +37,14 @@ export const registerMgtTaxonomyPickerComponent = () => {
  * @fires {CustomEvent<MicrosoftGraph.TermStore.Term>} selectionChanged - Fired when an option is clicked/selected
  * @export
  * @class MgtTaxonomyPicker
- * @extends {MgtTemplatedComponent}
+ * @extends {MgtTemplatedTaskComponent}
  *
  * @cssprop --taxonomy-picker-background-color - {Color} Picker component background color
  * @cssprop --taxonomy-picker-list-max-height - {String} max height for options list. Default value is 380px.
  * @cssprop --taxonomy-picker-placeholder-color - {Color} Text color for the placeholder in the picker
  * @cssprop --taxonomy-picker-placeholder-hover-color - {Color} Text color for the placeholder in the picker on hover
  */
-export class MgtTaxonomyPicker extends MgtTemplatedComponent {
+export class MgtTaxonomyPicker extends MgtTemplatedTaskComponent {
   /**
    * The strings to be used for localizing the component.
    *
@@ -145,9 +145,8 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     converter: (value: Position): Position => {
       if (value === 'above') {
         return 'above';
-      } else {
-        return 'below';
       }
+      return 'below';
     }
   })
   public position: Position = 'below';
@@ -162,15 +161,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     attribute: 'default-selected-term-id',
     type: String
   })
-  public get defaultSelectedTermId(): string {
-    return this._defaultSelectedTermId;
-  }
-  public set defaultSelectedTermId(value: string) {
-    if (value !== this._defaultSelectedTermId) {
-      this._defaultSelectedTermId = value;
-      void this.requestStateUpdate(true);
-    }
-  }
+  public defaultSelectedTermId: string;
 
   /**
    * The selected term.
@@ -182,12 +173,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     attribute: 'selected-term',
     type: Object
   })
-  public get selectedTerm(): MicrosoftGraph.TermStore.Term {
-    return this._selectedTerm;
-  }
-  public set selectedTerm(value: MicrosoftGraph.TermStore.Term) {
-    this._selectedTerm = value;
-  }
+  public selectedTerm: MicrosoftGraph.TermStore.Term | null = null;
 
   /**
    * Determines whether component should be disabled or not
@@ -226,10 +212,6 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   })
   public cacheInvalidationPeriod = 0;
 
-  private isRefreshing: boolean;
-  private _selectedTerm: MicrosoftGraph.TermStore.Term;
-  private _defaultSelectedTermId: string;
-
   @state() private terms: MicrosoftGraph.TermStore.Term[];
   @state() private noTerms: boolean;
   // @state() private error: object;
@@ -237,7 +219,6 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   constructor() {
     super();
     this.placeholder = this.strings.comboboxPlaceholder;
-    this.isRefreshing = false;
     this.noTerms = false;
   }
 
@@ -250,11 +231,9 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    * @memberof MgtTaxonomyPicker
    */
   public refresh(hardRefresh = false) {
-    this.isRefreshing = true;
     if (hardRefresh) {
       this.clearState();
     }
-    void this.requestStateUpdate(hardRefresh);
   }
 
   /**
@@ -268,18 +247,36 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
     this.error = null;
     this.noTerms = false;
   }
+  /**
+   * Renders loading spinner while terms are fetched from the Graph
+   *
+   * @protected
+   * @returns
+   * @memberof MgtTaxonomyPicker
+   */
+  protected renderLoading = () => {
+    if (!this.terms) {
+      return (
+        this.renderTemplate('loading', null, 'loading') ||
+        mgtHtml`
+        <div class="message-parent">
+          <mgt-spinner></mgt-spinner>
+          <div label="loading-text" aria-label="loading">
+            ${this.strings.loadingMessage}
+          </div>
+        </div>
+      `
+      );
+    }
+    return this.renderContent();
+  };
 
   /**
    * Invoked on each update to perform rendering the picker. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-  public render() {
-    // if loading state, render loading template
-    if (this.isLoadingState && !this.terms) {
-      return this.renderLoading();
-    }
-
+  public renderContent = () => {
     // if error state, render error template
     if (this.error) {
       return this.renderError();
@@ -292,28 +289,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
 
     // if terms are found, render picker else render get
     return this.terms?.length > 0 ? this.renderTaxonomyPicker() : this.renderGet();
-  }
-
-  /**
-   * Renders loading spinner while terms are fetched from the Graph
-   *
-   * @protected
-   * @returns
-   * @memberof MgtTaxonomyPicker
-   */
-  protected renderLoading(): TemplateResult {
-    return (
-      this.renderTemplate('loading', null, 'loading') ||
-      mgtHtml`
-        <div class="message-parent">
-          <mgt-spinner></mgt-spinner>
-          <div label="loading-text" aria-label="loading">
-            ${this.strings.loadingMessage}
-          </div>
-        </div>
-      `
-    );
-  }
+  };
 
   /**
    * Render the no-data state.
@@ -322,16 +298,8 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtTaxonomyPicker
    */
-  protected renderError(): TemplateResult {
-    return (
-      this.renderTemplate('error', null, 'error') ||
-      html`
-              <span>
-                ${this.error}
-            </span>
-          `
-    );
-  }
+  protected renderError = (): TemplateResult =>
+    this.renderTemplate('error', null, 'error') || html`<span>${this.error}</span>`;
   /**
    * Render the no-data state.
    *
@@ -340,14 +308,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
    * @memberof MgtTaxonomyPicker
    */
   protected renderNoData(): TemplateResult {
-    return (
-      this.renderTemplate('no-data', null) ||
-      html`
-            <span>
-              ${this.strings.noTermsFound}
-            </span>
-          `
-    );
+    return this.renderTemplate('no-data', null) || html`<span>${this.strings.noTermsFound}</span>`;
   }
 
   /**
@@ -394,11 +355,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
   protected renderGet(): TemplateResult {
     // if termsetId is not specified, return error message
     if (!this.termsetId) {
-      return html`
-            <span>
-                ${this.strings.termsetIdRequired}
-            </span>
-            `;
+      return html`<span>${this.strings.termsetIdRequired}</span>`;
     }
 
     let resource = `/termStore/sets/${this.termsetId}/children`;
@@ -427,21 +384,10 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
       </mgt-get>`;
   }
 
-  /**
-   * load state into the component.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtTaxonomyPicker
-   */
-  protected async loadState() {
-    if (!this.terms) {
-      const parent = this.renderRoot.querySelector('.mgt-get');
-      parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
-    }
-    this.isRefreshing = false;
-    // hack to maintain method signature contract
-    await Promise.resolve();
+  protected firstUpdated(changedProperties: PropertyValueMap<unknown> | Map<PropertyKey, unknown>): void {
+    super.firstUpdated(changedProperties);
+    const parent = this.renderRoot;
+    parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
   }
 
   private handleDataChange(e: CustomEvent<DataChangedDetail>): void {

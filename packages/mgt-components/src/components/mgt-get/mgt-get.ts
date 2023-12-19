@@ -303,7 +303,7 @@ export class MgtGet extends MgtTemplatedTaskComponent {
       const defaultContent = this.renderTemplate('default', this.response);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
-      if (this.templates['value'].templateOrder > this.templates['default'].templateOrder) {
+      if ((this.templates['value']?.templateOrder ?? 999) > this.templates['default'].templateOrder) {
         return html`
           ${defaultContent}${valueContent}
         `;
