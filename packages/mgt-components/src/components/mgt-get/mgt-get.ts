@@ -11,7 +11,7 @@ import {
   CacheService,
   CacheStore,
   equals,
-  MgtTemplatedComponent,
+  MgtTemplatedTaskComponent,
   prepScopes,
   Providers,
   ProviderState,
@@ -94,7 +94,7 @@ export const registerMgtGetComponent = () => registerComponent('get', MgtGet);
  * @class mgt-get
  * @extends {MgtTemplatedComponent}
  */
-export class MgtGet extends MgtTemplatedComponent {
+export class MgtGet extends MgtTemplatedTaskComponent {
   /**
    * The resource to get
    *
@@ -227,20 +227,6 @@ export class MgtGet extends MgtTemplatedComponent {
   private isRefreshing = false;
 
   /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtPersonCard
-   */
-  public attributeChangedCallback(name, oldval, newval) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    super.attributeChangedCallback(name, oldval, newval);
-    void this.requestStateUpdate();
-  }
-
-  /**
    * Refresh the data
    *
    * @param {boolean} [hardRefresh=false]
@@ -253,7 +239,7 @@ export class MgtGet extends MgtTemplatedComponent {
     if (hardRefresh) {
       this.clearState();
     }
-    void this.requestStateUpdate(hardRefresh);
+    void this._task.run();
   }
 
   /**
@@ -266,54 +252,68 @@ export class MgtGet extends MgtTemplatedComponent {
     this.response = null;
   }
 
+  protected args(): unknown[] {
+    return [
+      this.providerState,
+      this.resource,
+      this.scopes,
+      this.version,
+      this.pollingRate,
+      this.type,
+      this.maxPages,
+      this.cacheEnabled,
+      this.cacheInvalidationPeriod
+    ];
+  }
+
+  protected renderLoading = () => {
+    const loading = this.renderTemplate('loading', null);
+    return isCollectionResponse(this.response)
+      ? this.renderValueContentWithDefaultTemplate(
+          html`${this.response.value.map(v => this.renderTemplate('value', v, v.id))} ${loading} `
+        )
+      : loading;
+  };
+
   /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-  protected render() {
-    if (this.isLoadingState && !this.response) {
-      return this.renderTemplate('loading', null);
-    } else if (this.error) {
-      return this.renderTemplate('error', this.error);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
-    } else if (this.hasTemplate('value') && isCollectionResponse(this.response)) {
-      let valueContent: TemplateResult;
+  protected renderContent = () => {
+    if (this.hasTemplate('value') && isCollectionResponse(this.response)) {
+      const valueContent: TemplateResult = isCollectionResponse(this.response)
+        ? html`
+          ${this.response.value.map(v => this.renderTemplate('value', v, v.id))}
+        `
+        : this.renderTemplate('value', this.response);
 
-      if (isCollectionResponse(this.response)) {
-        let loading = null;
-        if (this.isLoadingState && !this.isPolling) {
-          loading = this.renderTemplate('loading', null);
-        }
-        valueContent = html`
-          ${this.response.value.map(v => this.renderTemplate('value', v, v.id))} ${loading}
-        `;
-      } else {
-        valueContent = this.renderTemplate('value', this.response);
-      }
-
-      if (this.hasTemplate('default')) {
-        const defaultContent = this.renderTemplate('default', this.response);
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
-        if (this.templates['value'].templateOrder > this.templates['default'].templateOrder) {
-          return html`
-            ${defaultContent}${valueContent}
-          `;
-        } else {
-          return html`
-            ${valueContent}${defaultContent}
-          `;
-        }
-      } else {
-        return valueContent;
-      }
+      return this.renderValueContentWithDefaultTemplate(valueContent);
     } else if (this.response) {
       return this.renderTemplate('default', this.response) || html``;
     } else if (this.hasTemplate('no-data')) {
       return this.renderTemplate('no-data', null);
     } else {
       return html``;
+    }
+  };
+
+  private renderValueContentWithDefaultTemplate(valueContent: TemplateResult) {
+    if (this.hasTemplate('default')) {
+      const defaultContent = this.renderTemplate('default', this.response);
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
+      if (this.templates['value'].templateOrder > this.templates['default'].templateOrder) {
+        return html`
+          ${defaultContent}${valueContent}
+        `;
+      } else {
+        return html`
+          ${valueContent}${defaultContent}
+        `;
+      }
+    } else {
+      return valueContent;
     }
   }
 
