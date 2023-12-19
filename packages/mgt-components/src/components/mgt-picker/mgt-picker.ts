@@ -264,6 +264,7 @@ export class MgtPicker extends MgtTemplatedTaskComponent {
       value = value[key] as object | string;
 
       if (value === undefined) {
+        console.warn(`mgt-picker: Key '${key}' is undefined.`);
         return '';
       }
     }
