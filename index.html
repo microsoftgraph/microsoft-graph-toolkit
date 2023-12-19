@@ -19,32 +19,34 @@
     <script type="module" src="./packages/providers/mgt-mock-provider/dist/es6/index.js"></script>
     <script type="module">
       import { registerMgtComponents } from './packages/mgt-components/dist/es6/index.js';
-      import { Msal2Provider } from './packages/providers/mgt-msal2-provider/dist/es6/index.js';
+      // import { Msal2Provider } from './packages/providers/mgt-msal2-provider/dist/es6/index.js';
       import { Providers } from './packages/mgt-element/dist/es6/index.js';
-      Providers.globalProvider = new Msal2Provider({
-        clientId: '2dfea037-938a-4ed8-9b35-c05708a1b241',
-        redirectUri: "http://localhost:3000",
-        scopes: [
-          'user.read',
-          'user.read.all',
-          'mail.readBasic',
-          'people.read',
-          'people.read.all',
-          'sites.read.all',
-          'user.readbasic.all',
-          'contacts.read',
-          'presence.read',
-          'presence.read.all',
-          'tasks.readwrite',
-          'tasks.read',
-          'calendars.read',
-          'group.read.all',
-          'files.read',
-          'files.read.all',
-          'files.readwrite',
-          'files.readwrite.all'
-        ]
-      });
+      import { MockProvider } from './packages/mgt-element/dist/es6/index.js';
+      Providers.globalProvider = new MockProvider(true);
+      // Providers.globalProvider = new Msal2Provider({
+      //   clientId: '2dfea037-938a-4ed8-9b35-c05708a1b241',
+      //   redirectUri: "http://localhost:3000",
+      //   scopes: [
+      //     'user.read',
+      //     'user.read.all',
+      //     'mail.readBasic',
+      //     'people.read',
+      //     'people.read.all',
+      //     'sites.read.all',
+      //     'user.readbasic.all',
+      //     'contacts.read',
+      //     'presence.read',
+      //     'presence.read.all',
+      //     'tasks.readwrite',
+      //     'tasks.read',
+      //     'calendars.read',
+      //     'group.read.all',
+      //     'files.read',
+      //     'files.read.all',
+      //     'files.readwrite',
+      //     'files.readwrite.all'
+      //   ]
+      // });
       registerMgtComponents();
     </script>
     
@@ -89,6 +91,7 @@
       <!-- <mgt-login></mgt-login> -->
       <!-- <h2>mgt-person me query two lines card on click with presence</h2> -->
       <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
+      <mgt-person-card person-query="me"></mgt-person-card>
       <!-- <mgt-person-card person-query="me"></mgt-person-card> -->
       <!-- <h2>mgt-people-picker</h2>
       <mgt-people-picker selection-mode="single" show-max="6"></mgt-people-picker>

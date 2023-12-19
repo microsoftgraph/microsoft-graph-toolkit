@@ -287,7 +287,7 @@ export class MgtPicker extends MgtTemplatedTaskComponent {
     if (parent) {
       parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
     } else {
-      console.error('🦒: mgt-picker component requires a child mgt-get component. Something has gone horribly wrong.');
+      console.error('🦒: mgt-picker component requires a renderRoot. Something has gone horribly wrong.');
     }
   }
 

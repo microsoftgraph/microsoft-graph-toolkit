@@ -12,7 +12,7 @@ const useStyles = makeStyles({
       borderLeftStyle: 'solid',
       paddingLeft: '6px'
     },
-    'mgt-person': {
+    '& mgt-person': {
       '--font-size': '12px',
       '--person-avatar-size': '16px'
     }
