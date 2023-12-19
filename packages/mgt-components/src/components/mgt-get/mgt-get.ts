@@ -88,7 +88,7 @@ export const registerMgtGetComponent = () => registerComponent('get', MgtGet);
 /**
  * Custom element for making Microsoft Graph get queries
  *
- * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes
+ * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes bubbles, composed, and is not cancelable.
  *
  * @export
  * @class mgt-get
@@ -456,7 +456,7 @@ export class MgtGet extends MgtTemplatedTaskComponent {
       this.response = null;
     }
     this.isRefreshing = false;
-    this.fireCustomEvent('dataChange', { response: this.response, error: this.error });
+    this.fireCustomEvent('dataChange', { response: this.response, error: this.error }, true, false, true);
   }
 
   private shouldRetrieveCache(): boolean {

@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, TemplateResult } from 'lit';
+import { html, PropertyValueMap, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
+import { MgtTemplatedTaskComponent, mgtHtml } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
@@ -26,17 +26,18 @@ export const registerMgtPickerComponent = () => {
 };
 
 /**
- * Web component that allows a single entity pick from a generic endpoint from Graph. Uses mgt-get.
+ * Web component that allows a single entity pick from a generic endpoint from Graph. Is a thin wrapper over mgt-get.
+ * Does not load any state itself, only received state from mgt-get via events.
  *
  * @fires {CustomEvent<any>} selectionChanged - Fired when an option is clicked/selected
  * @export
  * @class MgtPicker
- * @extends {MgtTemplatedComponent}
+ * @extends {MgtTemplatedTaskComponent}
  *
  * @cssprop --picker-background-color - {Color} Picker component background color
  * @cssprop --picker-list-max-height - {String} max height for options list. Default value is 380px.
  */
-export class MgtPicker extends MgtTemplatedComponent {
+export class MgtPicker extends MgtTemplatedTaskComponent {
   protected get strings() {
     return strings;
   }
@@ -171,8 +172,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   })
   public selectedValue: string;
 
-  private isRefreshing: boolean;
-
   @state() private response: Entity[];
 
   constructor() {
@@ -180,7 +179,6 @@ export class MgtPicker extends MgtTemplatedComponent {
     this.placeholder = this.strings.comboboxPlaceholder;
     this.entityType = null;
     this.keyName = null;
-    this.isRefreshing = false;
   }
 
   /**
@@ -192,11 +190,10 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @memberof MgtPicker
    */
   public refresh(hardRefresh = false) {
-    this.isRefreshing = true;
     if (hardRefresh) {
       this.clearState();
     }
-    void this.requestStateUpdate(hardRefresh);
+    void this._task.run();
   }
 
   /**
@@ -210,23 +207,28 @@ export class MgtPicker extends MgtTemplatedComponent {
     this.error = null;
   }
 
+  public renderLoading = (): TemplateResult => {
+    if (!this.response) {
+      return this.renderTemplate('loading', null);
+    }
+    return this.renderContent();
+  };
+
   /**
    * Invoked on each update to perform rendering the picker. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-  public render() {
-    if (this.isLoadingState && !this.response) {
-      return this.renderTemplate('loading', null);
-    } else if (this.hasTemplate('error')) {
-      const error = this.error ? (this.error as Error) : null;
+  public renderContent = () => {
+    const error = this.error ? (this.error as Error) : null;
+    if (error && this.hasTemplate('error')) {
       return this.renderTemplate('error', { error }, 'error');
     } else if (this.hasTemplate('no-data')) {
       return this.renderTemplate('no-data', null);
     }
 
     return this.response?.length > 0 ? this.renderPicker() : this.renderGet();
-  }
+  };
 
   /**
    * Render picker.
@@ -276,26 +278,17 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   /**
-   * load state into the component.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtPicker
+   * When the component is first updated wire up the event listeners.
+   * @param changedProperties a map of changed properties with old values
    */
-  protected async loadState() {
-    if (!this.response) {
-      const parent = this.renderRoot.querySelector('.mgt-get');
-      if (parent) {
-        parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
-      } else {
-        console.error(
-          '🦒: mgt-picker component requires a child mgt-get component. Something has gone horribly wrong.'
-        );
-      }
+  protected firstUpdated(changedProperties: PropertyValueMap<unknown> | Map<PropertyKey, unknown>): void {
+    super.firstUpdated(changedProperties);
+    const parent = this.renderRoot;
+    if (parent) {
+      parent.addEventListener('dataChange', (e: CustomEvent<DataChangedDetail>): void => this.handleDataChange(e));
+    } else {
+      console.error('🦒: mgt-picker component requires a child mgt-get component. Something has gone horribly wrong.');
     }
-    this.isRefreshing = false;
-    // hack to maintain method signature contract
-    await Promise.resolve();
   }
 
   private handleDataChange(e: CustomEvent<DataChangedDetail>): void {
@@ -305,7 +298,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     this.error = error;
   }
 
-  private handleClick(e: MouseEvent, item: Entity) {
+  private handleClick(_e: MouseEvent, item: Entity) {
     this.fireCustomEvent('selectionChanged', item, true, false, true);
   }
 

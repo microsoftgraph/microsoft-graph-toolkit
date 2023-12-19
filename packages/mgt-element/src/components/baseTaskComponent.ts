@@ -197,10 +197,11 @@ export abstract class MgtBaseTaskComponent extends LitElement {
 
   /**
    * Override this function to provide the actual list of properties to trigger the task to run.
+   * The default implementation returns an array with the providerState.
    * @returns {unknown[]} the properties when changed which trigger the Task to run
    */
   protected args(): unknown[] {
-    return [];
+    return [this.providerState];
   }
 
   /**
