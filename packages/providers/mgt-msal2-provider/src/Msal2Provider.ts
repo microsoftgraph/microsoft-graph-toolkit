@@ -496,7 +496,18 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public setActiveAccount(user: IProviderAccount) {
-    this._publicClientApplication.setActiveAccount(this._publicClientApplication.getAccountByHomeId(user.id));
+    const accountToSet = this._publicClientApplication.getAccountByHomeId(user.id);
+    const activeAccount = this._publicClientApplication.getActiveAccount();
+    const storedAccount = this.getStoredAccount();
+    // exit early if the account is already active and stored
+    if (
+      storedAccount &&
+      storedAccount.homeAccountId === accountToSet.homeAccountId &&
+      activeAccount.homeAccountId === accountToSet.homeAccountId
+    ) {
+      return;
+    }
+    this._publicClientApplication.setActiveAccount(accountToSet);
     this.setStoredAccount();
     super.setActiveAccount(user);
   }
