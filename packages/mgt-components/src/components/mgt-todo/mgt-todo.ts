@@ -104,8 +104,6 @@ export class MgtTodo extends MgtTasksBase {
   @state() private _updatingTaskDate: boolean;
   @state() private _isChangedDueDate = false;
 
-  @state() private _isLoadingTasks: boolean;
-  @state() private _loadingTasks: string[];
   @state() private _newTaskDueDate: Date;
   @state() private _newTaskName: string;
   @state() private _changedTaskName: string;
@@ -119,8 +117,6 @@ export class MgtTodo extends MgtTasksBase {
     this._graph = null;
     this._newTaskDueDate = null;
     this._tasks = [];
-    this._loadingTasks = [];
-    this._isLoadingTasks = false;
     this.addEventListener('selectionChanged', this.handleSelectionChanged);
     this.addEventListener('blur', this.handleBlur);
   }
@@ -155,10 +151,6 @@ export class MgtTodo extends MgtTasksBase {
    * Render the list of todo tasks
    */
   protected renderTasks(): TemplateResult {
-    if (this._isLoadingTasks) {
-      return this.renderLoadingTask();
-    }
-
     let tasks = this._tasks;
     if (tasks && this.taskFilter) {
       tasks = tasks.filter(task => this.taskFilter(task));
@@ -430,7 +422,6 @@ export class MgtTodo extends MgtTasksBase {
       return;
     }
 
-    this._isLoadingTasks = true;
     if (!this._graph) {
       const graph = provider.graph.forComponent(this);
       this._graph = graph;
@@ -451,7 +442,6 @@ export class MgtTodo extends MgtTasksBase {
       this.currentList = await getTodoTaskList(this._graph, this.initialId);
       this._tasks = await getTodoTasks(this._graph, this.initialId);
     }
-    this._isLoadingTasks = false;
   };
 
   /**
@@ -557,8 +547,6 @@ export class MgtTodo extends MgtTasksBase {
     const updatedTask = await updateTodoTask(this._graph, listId, task.id, taskData);
     const taskIndex = this._tasks.findIndex(t => t.id === updatedTask.id);
     this._tasks[taskIndex] = updatedTask;
-
-    this._loadingTasks = this._loadingTasks.filter(id => id !== updatedTask.id);
   }
 
   /**
@@ -584,23 +572,16 @@ export class MgtTodo extends MgtTasksBase {
     super.clearState();
     this.currentList = null;
     this._tasks = [];
-    this._loadingTasks = [];
-    this._isLoadingTasks = false;
     this._taskBeingUpdated = null;
   };
 
   private readonly loadTasks = async (list: TodoTaskList): Promise<void> => {
-    this._isLoadingTasks = true;
     this.currentList = list;
 
     this._tasks = await getTodoTasks(this._graph, list.id);
-
-    this._isLoadingTasks = false;
   };
 
   private readonly updateTaskStatus = async (task: TodoTask, taskStatus: TaskStatus): Promise<void> => {
-    this._loadingTasks = [...this._loadingTasks, task.id];
-
     // Change the task status
     task.status = taskStatus;
 
@@ -610,8 +591,6 @@ export class MgtTodo extends MgtTasksBase {
 
     const taskIndex = this._tasks.findIndex(t => t.id === task.id);
     this._tasks[taskIndex] = task;
-
-    this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   };
 
   private readonly removeTask = async (taskId: string): Promise<void> => {
