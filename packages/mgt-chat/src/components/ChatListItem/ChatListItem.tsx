@@ -148,25 +148,10 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     } else if (previewMessage?.from?.application?.displayName) {
       previewString = previewMessage?.from?.application?.displayName + ': ' + previewMessage?.body?.content;
     }
-    // TODO: use the StatefulGraphChatClient to handle all the events
-    // handle MembersAdded events
-    if (previewMessage?.eventDetail as MembersAddedEventMessageDetail) {
-      const membersAddedEventMessageDetail = previewMessage?.eventDetail as MembersAddedEventMessageDetail;
-      if (membersAddedEventMessageDetail) {
-        const initiator = membersAddedEventMessageDetail.initiator;
-        const addedMembers = membersAddedEventMessageDetail.members?.map(m => m.displayName).join(', ');
-        if (initiator?.user?.id === myId) {
-          previewString = `You added ${addedMembers}.`;
-        } else if (previewMessage?.from?.application?.displayName) {
-          previewString = `${previewMessage?.from?.application?.displayName} added ${addedMembers}.`;
-        } else {
-          previewString = `${initiator?.user?.displayName} added ${addedMembers}.`;
-        }
-      } else {
-        if (previewMessage?.body?.content) {
-          previewString = previewMessage?.body?.content as string;
-        }
-      }
+
+    // handle all events
+    if (previewMessage?.eventDetail) {
+      previewString = previewMessage?.body?.content as string;
     }
 
     return removeHTMLTags(previewString);
