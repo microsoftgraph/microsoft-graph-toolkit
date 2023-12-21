@@ -239,13 +239,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
     return this._items;
   }
 
-  private get _inputWrapper(): HTMLElement {
-    return this.renderRoot.querySelector<HTMLElement>('fluent-text-field');
+  private get _inputWrapper(): HTMLInputElement | null {
+    return this.renderRoot.querySelector<HTMLInputElement>('fluent-text-field');
   }
   // User input in search
-  private get _input(): HTMLInputElement {
-    const wrapper: HTMLElement = this._inputWrapper;
-    const input = wrapper.shadowRoot.querySelector<HTMLInputElement>('input');
+  private get _input(): HTMLInputElement | null {
+    const wrapper = this._inputWrapper;
+    const input = wrapper?.shadowRoot.querySelector<HTMLInputElement>('input');
     return input;
   }
   private _inputValue = '';
@@ -957,10 +957,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
   };
 
   private readonly lostFocus = () => {
-    this._input.value = this._inputValue = '';
-    this._input.textContent = '';
-    const wrapper = this._inputWrapper as HTMLInputElement;
-    wrapper.value = '';
+    this._inputValue = '';
+    if (this._input) {
+      this._input.value = this._inputValue;
+      this._input.textContent = '';
+    }
+    const wrapper = this._inputWrapper;
+    if (wrapper) wrapper.value = '';
 
     this._isDropdownVisible = false;
     this.filterList();
@@ -979,9 +982,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
 
   private selectChannel(item?: ChannelPickerItemState) {
     if (item && this._selectedItemState !== item) {
-      this._input.setAttribute('disabled', 'true');
+      this._input?.setAttribute('disabled', 'true');
     } else {
-      this._input.removeAttribute('disabled');
+      this._input?.removeAttribute('disabled');
     }
     this._selectedItemState = item;
     this.lostFocus();
