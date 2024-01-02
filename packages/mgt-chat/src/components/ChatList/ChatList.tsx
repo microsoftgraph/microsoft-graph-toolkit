@@ -7,12 +7,34 @@ import { FluentTheme } from '@fluentui/react';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
-import { makeStyles, shorthands } from '@fluentui/react-components';
+import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
+
+const useStyles = makeStyles({
+  headerContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+    ...shorthands.padding('10px')
+  },
+  linkContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+    ...shorthands.padding('10px')
+  },
+  a: {
+    textDecorationLine: 'none',
+    fontSize: '1.2em',
+    fontWeight: 'bold',
+    '&:hover': {
+      textDecorationLine: 'none' // This removes the underline when hovering
+    }
+  }
+});
 
 // this is a stub to move the logic here that should end up here.
 export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps) => {
   const styles = useStyles();
-
   // TODO: change this to use StatefulGraphChatListClient
   const chatClient: StatefulGraphChatClient = useGraphChatClient('');
   const [chatState, setChatState] = useState(chatClient.getState());
