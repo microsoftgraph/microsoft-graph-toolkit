@@ -26,7 +26,7 @@ import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types'
 import { strings } from './strings';
 import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
+import { buildComponentName, registerComponent, presenceSvc } from '@microsoft/mgt-element';
 import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
@@ -527,30 +527,11 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public view: ViewType | PersonViewType;
 
-  /**
-   * Changing the iteration forces the component to re-render. Currently this is only effective to
-   * get an updated presence icon for a user.
-   */
-  @property({ attribute: 'iteration' })
-  public get iteration(): number {
-    return this._iteration;
-  }
-  public set iteration(value: number) {
-    if (value === this._iteration) {
-      return;
-    }
-
-    this._fetchedPresence = null;
-    this._iteration = value;
-    void this.requestStateUpdate();
-  }
-
   @state() private _fetchedImage: string;
   @state() private _fetchedPresence: Presence;
   @state() private _isInvalidImageSrc: boolean;
   @state() private _personCardShouldRender: boolean;
   @state() private _hasLoadedPersonCard = false;
-  @state() private _iteration: number;
 
   private _personDetailsInternal: IDynamicPerson;
   private _personDetails: IDynamicPerson;
@@ -1211,6 +1192,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
+
+    if (this.showPresence) {
+      // PresenceService.register(this);
+    }
 
     // populate presence
     const defaultPresence: Presence = {

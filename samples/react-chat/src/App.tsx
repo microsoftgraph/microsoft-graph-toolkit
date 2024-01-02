@@ -26,31 +26,6 @@ function App() {
     setShowNewChat(false);
   }, []);
 
-  // start a timer to force a re-render of presence
-  const refreshIntervalForPresence = 2 * 60 * 1000;
-  const [iteration, setIteration] = useState(0);
-  useEffect(() => {
-    // setup caching
-    CacheService.config.users.isEnabled = true;
-    CacheService.config.photos.isEnabled = true;
-    CacheService.config.presence.isEnabled = true;
-
-    // exit if no refresh interval for presence
-    if (!refreshIntervalForPresence) return;
-
-    // set the invalidation period to half the refresh interval
-    CacheService.config.presence.invalidationPeriod = refreshIntervalForPresence / 2;
-
-    // start refresh timer for presence
-    log(`starting refresh timer for presence every ${refreshIntervalForPresence}ms`);
-    const intervalId = setInterval(() => {
-      setIteration(prevIteration => prevIteration + 1);
-    }, refreshIntervalForPresence);
-
-    // clear interval on unmount
-    return () => clearInterval(intervalId);
-  }, [refreshIntervalForPresence]);
-
   return (
     <div className="App">
       <header className="App-header">
@@ -73,7 +48,7 @@ function App() {
           )}
         </div>
 
-        <div className="chat-pane">{chatId && <Chat chatId={chatId} iteration={iteration} />}</div>
+        <div className="chat-pane">{chatId && <Chat chatId={chatId} />}</div>
       </main>
     </div>
   );

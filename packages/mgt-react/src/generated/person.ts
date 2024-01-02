@@ -31,7 +31,6 @@ export type PersonProps = {
 	view?: ViewType | PersonViewType;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	iteration?: number;
 	line1clicked?: (e: CustomEvent<IDynamicPerson>) => void;
 	line2clicked?: (e: CustomEvent<IDynamicPerson>) => void;
 	line3clicked?: (e: CustomEvent<IDynamicPerson>) => void;
