@@ -132,8 +132,8 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     }
   };
 
-  const removeHTMLTags = (str: string) => {
-    return str.replace(/<[^>]*>/g, '');
+  const removeHtmlPTags = (str: string) => {
+    return str.replace(/<\/?p[^>]*>/g, '');
   };
 
   const enrichPreviewMessage = (previewMessage: NullableOption<ChatMessageInfo> | undefined) => {
@@ -154,7 +154,7 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
       previewString = previewMessage?.body?.content as string;
     }
 
-    return removeHTMLTags(previewString);
+    return removeHtmlPTags(previewString);
   };
 
   return (
