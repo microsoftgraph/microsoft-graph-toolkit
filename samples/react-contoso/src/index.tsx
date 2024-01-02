@@ -24,6 +24,7 @@ Providers.globalProvider = new Msal2Provider({
   scopes: [
     'Bookmark.Read.All',
     'Calendars.Read',
+    'Channel.ReadBasic.All',
     'ExternalItem.Read.All',
     'Files.Read',
     'Files.Read.All',
