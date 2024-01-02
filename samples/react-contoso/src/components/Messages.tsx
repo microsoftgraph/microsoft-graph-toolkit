@@ -72,7 +72,7 @@ export function Messages(props: MgtTemplateProps) {
         <div className={styles.header}>
           <div>
             <Person
-              personQuery={email.sender.emailAddress.address}
+              personQuery={email.sender?.emailAddress?.address}
               view={PersonViewType.oneline}
               personCardInteraction={PersonCardInteraction.hover}
             />
