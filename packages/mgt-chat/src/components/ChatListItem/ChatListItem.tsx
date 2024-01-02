@@ -133,7 +133,7 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
   };
 
   const removeHtmlPTags = (str: string) => {
-    return str.replace(/<\/?p[^>]*>/g, '');
+    return str.replace(/<\/?p>/g, '');
   };
 
   const enrichPreviewMessage = (previewMessage: NullableOption<ChatMessageInfo> | undefined) => {
