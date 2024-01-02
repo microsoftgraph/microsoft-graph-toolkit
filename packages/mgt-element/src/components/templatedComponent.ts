@@ -45,6 +45,7 @@ export type OrderedHtmlTemplate = HTMLTemplateElement & { templateOrder: number 
  * @abstract
  * @class MgtTemplatedComponent
  * @extends {MgtBaseComponent}
+ * @deprecated Use MgtTemplatedTaskComponent instead
  *
  * @fires {CustomEvent<MgtElement.TemplateRenderedData>} templateRendered - fires when a template is rendered
  */

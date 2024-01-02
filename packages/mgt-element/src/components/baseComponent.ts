@@ -42,6 +42,7 @@ export enum ComponentMediaQuery {
  * @abstract
  * @class MgtBaseComponent
  * @extends {LitElement}
+ * @deprecated Use MgtBaseTaskComponent instead
  */
 export abstract class MgtBaseComponent extends LitElement {
   @state()

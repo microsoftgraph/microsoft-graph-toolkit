@@ -19,8 +19,8 @@ import { OrderedHtmlTemplate, RenderedTemplates, TemplateRenderedData } from './
  *
  * @export
  * @abstract
- * @class MgtTemplatedComponent
- * @extends {MgtBaseComponent}
+ * @class MgtTemplatedTaskComponent
+ * @extends {MgtBaseTaskComponent}
  *
  * @fires {CustomEvent<MgtElement.TemplateRenderedData>} templateRendered - fires when a template is rendered
  */
@@ -30,7 +30,7 @@ export abstract class MgtTemplatedTaskComponent extends MgtBaseTaskComponent {
    * Use this to add event listeners or value converters
    *
    * @type {MgtElement.TemplateContext}
-   * @memberof MgtTemplatedComponent
+   * @memberof MgtTemplatedTaskComponent
    */
   @property({ attribute: false }) public templateContext: TemplateContext;
 
@@ -47,7 +47,7 @@ export abstract class MgtTemplatedTaskComponent extends MgtBaseTaskComponent {
    * Holds all templates defined by developer
    *
    * @protected
-   * @memberof MgtTemplatedComponent
+   * @memberof MgtTemplatedTaskComponent
    */
   protected templates: Record<string, OrderedHtmlTemplate> = {};
 
@@ -153,7 +153,7 @@ export abstract class MgtTemplatedTaskComponent extends MgtBaseTaskComponent {
    * @protected
    * @param {string} templateName
    * @returns {boolean}
-   * @memberof MgtTemplatedComponent
+   * @memberof MgtTemplatedTaskComponent
    */
   protected hasTemplate(templateName: string): boolean {
     return Boolean(this.templates?.[templateName]);

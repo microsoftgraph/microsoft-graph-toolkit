@@ -18,9 +18,9 @@ import { ComponentMediaQuery } from './baseComponent';
 /**
  * BaseComponent extends LitElement adding mgt specific features to all components
  *
- * @export  MgtBaseComponent
+ * @export  MgtBaseTaskComponent
  * @abstract
- * @class MgtBaseComponent
+ * @class MgtBaseTaskComponent
  * @extends {LitElement}
  */
 export abstract class MgtBaseTaskComponent extends LitElement {
@@ -28,7 +28,7 @@ export abstract class MgtBaseTaskComponent extends LitElement {
    * Supplies the component with a reactive property based on the current provider state
    *
    * @protected
-   * @memberof MgtBaseComponent
+   * @memberof MgtBaseTaskComponent
    */
   @state() protected providerState: ProviderState = ProviderState.Loading;
   /**
@@ -36,7 +36,7 @@ export abstract class MgtBaseTaskComponent extends LitElement {
    *
    * @readonly
    * @static
-   * @memberof MgtBaseComponent
+   * @memberof MgtBaseTaskComponent
    */
   public static get packageVersion() {
     return PACKAGE_VERSION;
@@ -46,7 +46,7 @@ export abstract class MgtBaseTaskComponent extends LitElement {
    * Gets or sets the direction of the component
    *
    * @protected
-   * @memberof MgtBaseComponent
+   * @memberof MgtBaseTaskComponent
    */
   @state() protected direction: 'ltr' | 'rtl' | 'auto' = 'ltr';
 
@@ -55,7 +55,7 @@ export abstract class MgtBaseTaskComponent extends LitElement {
    *
    * @readonly
    * @type {MgtElement.ComponentMediaQuery}
-   * @memberof MgtBaseComponent
+   * @memberof MgtBaseTaskComponent
    */
   public get mediaQuery(): ComponentMediaQuery {
     if (this.offsetWidth < 768) {
@@ -73,7 +73,7 @@ export abstract class MgtBaseTaskComponent extends LitElement {
    * @readonly
    * @protected
    * @type {boolean}
-   * @memberof MgtBaseComponent
+   * @memberof MgtBaseTaskComponent
    */
   protected get isFirstUpdated(): boolean {
     return this._isFirstUpdated;
@@ -84,7 +84,7 @@ export abstract class MgtBaseTaskComponent extends LitElement {
    *
    * @readonly
    * @protected
-   * @memberof MgtBaseComponent
+   * @memberof MgtBaseTaskComponent
    */
   protected get strings(): Record<string, string> {
     return {};
@@ -101,7 +101,7 @@ export abstract class MgtBaseTaskComponent extends LitElement {
   /**
    * Invoked each time the custom element is appended into a document-connected element
    *
-   * @memberof MgtBaseComponent
+   * @memberof MgtBaseTaskComponent
    */
   public connectedCallback() {
     super.connectedCallback();
@@ -112,7 +112,7 @@ export abstract class MgtBaseTaskComponent extends LitElement {
   /**
    * Invoked each time the custom element is removed from a document-connected element
    *
-   * @memberof MgtBaseComponent
+   * @memberof MgtBaseTaskComponent
    */
   public disconnectedCallback() {
     super.disconnectedCallback();
@@ -155,7 +155,7 @@ export abstract class MgtBaseTaskComponent extends LitElement {
    * @param {boolean} [cancelable=false]
    * @param {boolean} [composed=false]
    * @return {*}  {boolean}
-   * @memberof MgtBaseComponent
+   * @memberof MgtBaseTaskComponent
    */
   protected fireCustomEvent(
     eventName: string,
@@ -241,74 +241,6 @@ export abstract class MgtBaseTaskComponent extends LitElement {
   protected renderContent = (): TemplateResult => {
     return html`<!-- baseTaskComponent, please implement renderContent -->`;
   };
-
-  // /**
-  //  * Request to reload the state.
-  //  * Use reload instead of load to ensure loading events are fired.
-  //  *
-  //  * @protected
-  //  * @memberof MgtBaseComponent
-  //  */
-  // protected async requestStateUpdate(force = false): Promise<unknown> {
-  //   // the component is still bootstraping - wait until first updated
-  //   if (!this._isFirstUpdated) {
-  //     return;
-  //   }
-
-  //   // Wait for the current load promise to complete (unless forced).
-  //   if (this.isLoadingState && !force) {
-  //     await this._currentLoadStatePromise;
-  //   }
-
-  //   const provider = Providers.globalProvider;
-
-  //   if (!provider) {
-  //     return Promise.resolve();
-  //   }
-
-  //   if (provider.state === ProviderState.SignedOut) {
-  //     // Signed out, clear the component state
-  //     this.clearState();
-  //     return;
-  //   } else if (provider.state === ProviderState.Loading) {
-  //     // The provider state is indeterminate. Do nothing.
-  //     return Promise.resolve();
-  //   } else {
-  //     // Signed in, load the internal component state
-  //     // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-async-promise-executor
-  //     const loadStatePromise = new Promise<void>(async (resolve, reject) => {
-  //       try {
-  //         this.setLoadingState(true);
-  //         this.fireCustomEvent('loadingInitiated');
-
-  //         // await this.loadState();
-  //         await Promise.resolve();
-
-  //         this.setLoadingState(false);
-  //         this.fireCustomEvent('loadingCompleted');
-  //         resolve();
-  //       } catch (e) {
-  //         // Loading failed. Clear any partially set data.
-  //         this.clearState();
-
-  //         this.setLoadingState(false);
-  //         this.fireCustomEvent('loadingFailed');
-  //         reject(e);
-  //       }
-
-  //       // Return the load state promise.
-  //       // If loading + forced, chain the promises.
-  //       // This is to account for the lack of a cancellation token concept.
-  //       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment
-  //       return (this._currentLoadStatePromise =
-  //         // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  //         this.isLoadingState && !!this._currentLoadStatePromise && force
-  //           ? // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  //             this._currentLoadStatePromise.then(() => loadStatePromise)
-  //           : loadStatePromise);
-  //     });
-  //   }
-  // }
 
   private readonly handleProviderUpdates = () => {
     this.providerState = Providers.globalProvider?.state ?? ProviderState.Loading;

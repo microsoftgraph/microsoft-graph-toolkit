@@ -250,7 +250,7 @@ export class MgtFlyout extends MgtBaseTaskComponent {
   /**
    * Updates the position of the flyout.
    * Makes a second recursive call to ensure the flyout is positioned correctly.
-   * This is needed as the width of the flyout is not settled until afer the first render.
+   * This is needed as the width of the flyout is not settled until after the first render.
    *
    * @private
    * @param {boolean} [firstPass=true]
