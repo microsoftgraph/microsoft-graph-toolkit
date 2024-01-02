@@ -3,7 +3,6 @@ import './App.css';
 import { Get, Login } from '@microsoft/mgt-react';
 import { Chat, ChatList, NewChat } from '@microsoft/mgt-chat';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
-import ChatListTemplate from './components/ChatListTemplate/ChatListTemplate';
 
 const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => void }) => {
   return (

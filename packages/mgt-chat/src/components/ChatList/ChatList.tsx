@@ -7,29 +7,16 @@ import { FluentTheme } from '@fluentui/react';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
-import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
+import { makeStyles, shorthands } from '@fluentui/react-components';
 
 const useStyles = makeStyles({
-  headerContainer: {
+  chatList: {
     display: 'flex',
-    justifyContent: 'center',
-    width: '300px',
-    ...shorthands.padding('10px')
-  },
-  linkContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '300px',
-    ...shorthands.padding('10px')
-  },
-  a: {
-    textDecorationLine: 'none',
-    fontSize: '1.2em',
-    fontWeight: 'bold',
-    '&:hover': {
-      textDecorationLine: 'none' // This removes the underline when hovering
-    }
+    flexDirection: 'column',
+    maxWidth: '300px',
+    width: '100%',
+    height: '100%',
+    ...shorthands.overflow('hidden')
   }
 });
 

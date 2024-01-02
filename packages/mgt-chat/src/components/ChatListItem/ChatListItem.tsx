@@ -23,24 +23,28 @@ interface IMgtChatListItemProps {
 const useStyles = makeStyles({
   chatListItem: {
     display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between', // Add this if you want to push the timestamp to the end
+    width: '100%',
     ...shorthands.padding('10px'),
     ...shorthands.borderBottom('1px solid #ccc')
   },
   profileImage: {
-    width: '60px', // Increase the width for a bigger image
-    height: '60px', // Increase the height for a bigger image
+    flexGrow: 0,
+    flexShrink: 0,
+    flexBasis: '35px',
     ...shorthands.borderRadius('50%'), // This will make it round
     marginRight: '10px',
     objectFit: 'cover', // This ensures the image covers the area without stretching
-    position: 'relative', // Ensures the ::before pseudo-element is positioned relative to the profileImg
     display: 'flex',
-    ...shorthands.overflow('hidden'), // Ensures no part of the ::before spills out
     alignItems: 'center', // This will vertically center the image
     justifyContent: 'center' // This will horizontally center the image
   },
   chatInfo: {
+    flexGrow: 2,
+    flexShrink: 2,
+    minWidth: 0,
     alignSelf: 'left',
     alignItems: 'center',
     ...shorthands.padding('5px')
@@ -53,7 +57,8 @@ const useStyles = makeStyles({
     textOverflow: 'ellipsis',
     ...shorthands.overflow('hidden'),
     whiteSpace: 'nowrap',
-    width: '300px'
+    maxWidth: '300px',
+    width: 'auto'
   },
   chatMessage: {
     textAlign: 'left',
@@ -63,16 +68,18 @@ const useStyles = makeStyles({
     textOverflow: 'ellipsis',
     ...shorthands.overflow('hidden'),
     whiteSpace: 'nowrap',
-    width: '300px'
+    // maxWidth: '300px',
+    width: 'auto'
   },
   chatTimestamp: {
+    flexShrink: 0,
+    flexBasis: '20px',
     textAlign: 'right',
     alignSelf: 'start',
     marginLeft: 'auto',
     paddingLeft: '10px',
     fontSize: '0.8em',
-    color: '#999',
-    width: '60px'
+    color: '#999'
   }
 });
 
@@ -113,6 +120,10 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
       return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     }
 
+    if (currentYear !== year) {
+      return date.toLocaleDateString([], { month: 'numeric', day: 'numeric', year: 'numeric' });
+    }
+
     return date.toLocaleDateString([], { month: 'numeric', day: 'numeric' });
   };
 
@@ -132,8 +143,8 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     }
   };
 
-  const removeHTMLTags = (str: string) => {
-    return str.replace(/<[^>]*>/g, '');
+  const removeHtmlPTags = (str: string) => {
+    return str.replace(/<\/?p>/g, '');
   };
 
   const enrichPreviewMessage = (previewMessage: NullableOption<ChatMessageInfo> | undefined) => {
@@ -154,7 +165,7 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
       previewString = previewMessage?.body?.content as string;
     }
 
-    return removeHTMLTags(previewString);
+    return removeHtmlPTags(previewString);
   };
 
   return (
@@ -164,7 +175,7 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
         onSelected(chat);
       }}
     >
-      {getDefaultProfileImage()}
+      <div className={styles.profileImage}>{getDefaultProfileImage()}</div>
       <div className={styles.chatInfo}>
         <h3 className={styles.chatTitle}>{inferTitle(chat)}</h3>
         <p className={styles.chatMessage}>{enrichPreviewMessage(chat.lastMessagePreview)}</p>

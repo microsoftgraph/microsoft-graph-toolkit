@@ -61,8 +61,7 @@
     "version:tsc": "tsc -v",
     "wtr": "wtr --puppeteer",
     "wtr:coverage": "wtr --playwright --coverage",
-    "wtr:watch": "wtr --puppeteer --watch",
-    "test-ct": "playwright test -c playwright-ct.config.ts"
+    "wtr:watch": "wtr --puppeteer --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.12.8",
@@ -78,7 +77,6 @@
     "@octokit/rest": "^18.5.3",
     "@open-wc/testing": "^3.2.0",
     "@open-wc/testing-helpers": "^2.3.0",
-    "@playwright/experimental-ct-react17": "^1.40.1",
     "@storybook/addon-a11y": "^7.4.5",
     "@storybook/addon-actions": "^7.4.5",
     "@storybook/addon-docs": "^7.4.5",
