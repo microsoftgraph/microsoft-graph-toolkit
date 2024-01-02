@@ -10,17 +10,6 @@ import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatC
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { makeStyles, shorthands } from '@fluentui/react-components';
 
-const useStyles = makeStyles({
-  chatList: {
-    display: 'flex',
-    flexDirection: 'column',
-    maxWidth: '300px',
-    width: '100%',
-    height: '100%',
-    ...shorthands.overflow('hidden')
-  }
-});
-
 // this is a stub to move the logic here that should end up here.
 export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps) => {
   // TODO: change this to use StatefulGraphChatListClient
