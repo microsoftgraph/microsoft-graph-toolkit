@@ -1,16 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { ChatListItem, IChatListItemInteractionProps } from '../ChatListItem/ChatListItem';
-import { SampleChats } from '../ChatListItem/sampleData';
 import { MgtTemplateProps } from '@microsoft/mgt-react';
-import { FluentProvider, webLightTheme } from '@fluentui/react-components';
+import { makeStyles, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
+import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
+
+const useStyles = makeStyles({
+  headerContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '300px',
+    ...shorthands.padding('10px')
+  },
+  linkContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '300px',
+    ...shorthands.padding('10px')
+  },
+  a: {
+    textDecorationLine: 'none',
+    fontSize: '1.2em',
+    fontWeight: 'bold',
+    '&:hover': {
+      textDecorationLine: 'none' // This removes the underline when hovering
+    }
+  }
+});
 
 // this is a stub to move the logic here that should end up here.
 export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps) => {
+  const styles = useStyles();
+
   // TODO: change this to use StatefulGraphChatListClient
   const chatClient: StatefulGraphChatClient = useGraphChatClient('');
   const [chatState, setChatState] = useState(chatClient.getState());
@@ -28,9 +54,19 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
     // This is a temporary approach to render the chatlist items. This should be replaced.
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme}>
-        {chats.map(c => (
-          <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
-        ))}
+        <div>
+          <div className={styles.headerContainer}>
+            <ChatListHeader />
+          </div>
+          {chats.map(c => (
+            <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
+          ))}
+          <div className={styles.linkContainer}>
+            <Link href="#" className={styles.a}>
+              load more
+            </Link>
+          </div>
+        </div>
       </FluentProvider>
     </FluentThemeProvider>
   );
