@@ -144,13 +144,12 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     let lastMessageTime = new Date(lastMessageTimeString);
     let lastUpdatedTime = new Date(lastUpdatedTimeString);
 
-    if (lastMessageTime || lastUpdatedTime) {
-      // if both times are defined, choose the latest one
-      // if only one time is defined, choose that one
-      timestamp =
-        lastMessageTime && lastUpdatedTime
-          ? new Date(Math.max(lastMessageTime.getTime(), lastUpdatedTime.getTime()))
-          : lastMessageTime || lastUpdatedTime;
+    if (lastMessageTime && lastUpdatedTime) {
+      timestamp = new Date(Math.max(lastMessageTime.getTime(), lastUpdatedTime.getTime()));
+    } else if (lastMessageTime) {
+      timestamp = lastMessageTime;
+    } else if (lastUpdatedTime) {
+      timestamp = lastUpdatedTime;
     }
 
     return String(timestamp);
