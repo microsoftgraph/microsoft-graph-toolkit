@@ -23,7 +23,7 @@ const menuProps: Partial<MenuProps> = {
 
 const ellipsisMenuStyles = makeStyles({
   menuPopover: {
-    zIndex: 2,
+    zIndex: 10,
 
     '& .fui-MenuItemLink__content': {
       fontFamily: 'Segoe UI',
@@ -50,9 +50,7 @@ const EllipsisMenu = (props: MenuItemsProps) => {
       <MenuPopover className={styles.menuPopover}>
         <MenuList>
           {menuItems.map(menuItem => (
-            <MenuItemLink href="" icon={menuItem.icon}>
-              {menuItem.displayText}
-            </MenuItemLink>
+            <MenuItemLink href="">{menuItem.displayText}</MenuItemLink>
           ))}
         </MenuList>
       </MenuPopover>

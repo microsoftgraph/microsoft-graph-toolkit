@@ -1,7 +1,7 @@
 import React from 'react';
 import { MgtTemplateProps, Login } from '@microsoft/mgt-react';
 import { ChatAdd24Filled, ChatAdd24Regular, bundleIcon } from '@fluentui/react-icons';
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, shorthands, Button } from '@fluentui/react-components';
 import { Circle } from '../Circle/Circle';
 import { EllipsisMenu } from './EllipsisMenu';
 const ChatAddIconBundle = bundleIcon(ChatAdd24Filled, ChatAdd24Regular);
@@ -13,15 +13,37 @@ const useStyles = makeStyles({
     justifyContent: 'space-between', // This distributes the space evenly
     alignItems: 'center',
     width: '100%'
+  },
+  chatAddIcon: {
+    flexGrow: 0,
+    flexShrink: 0,
+    flexBasis: '35px',
+    ...shorthands.borderRadius('50%'), // This will make it round
+    marginRight: '10px',
+    objectFit: 'cover', // This ensures the image covers the area without stretching
+    display: 'flex',
+    alignItems: 'center', // This will vertically center the image
+    justifyContent: 'center' // This will horizontally center the image
+  },
+  button: {
+    ...shorthands.border('none'),
+    ...shorthands.padding(0), // Remove padding
+    minWidth: 0, // Allow the button to shrink to the size of its content
+    '&:hover': {
+      backgroundColor: 'transparent'
+    }
   }
 });
 
 export const ChatAddIcon = (): JSX.Element => {
+  const classes = useStyles();
   const iconColor = 'var(--colorBrandForeground2)';
   return (
-    <Circle>
-      <ChatAddIconBundle color={iconColor} />
-    </Circle>
+    <div className={classes.chatAddIcon}>
+      <Circle>
+        <ChatAddIconBundle color={iconColor} />
+      </Circle>
+    </div>
   );
 };
 
@@ -32,7 +54,9 @@ export const ChatListHeader = (props: MgtTemplateProps) => {
   return (
     <div className={classes.headerContainer}>
       <div>
-        <ChatAddIcon />
+        <Button className={classes.button}>
+          <ChatAddIcon />
+        </Button>
       </div>
       <div>
         <Login showPresence={true} loginView="avatar" />
