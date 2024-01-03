@@ -35,7 +35,6 @@ export * from './utils/mgtHtml';
 export * from './utils/CustomElement';
 export * from './utils/Logging';
 export * from './utils/registerComponent';
-export * from './utils/presenceSvc';
 
 export { PACKAGE_VERSION } from './utils/version';
 

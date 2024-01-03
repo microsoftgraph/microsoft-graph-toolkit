@@ -5,10 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { error } from './Logging';
 import { ProviderState, Providers } from '@microsoft/mgt-element';
-import { MgtPerson, getUsersPresenceByPeople } from '@microsoft/mgt-components';
-// import { getUsersPresenceByPeople } from '@microsoft/mgt-components/dist/es6/graph/graph.presence';
+import { getUsersPresenceByPeople } from '../graph/graph.presence';
 import { Presence } from '@microsoft/microsoft-graph-types';
 
 /**
@@ -27,6 +25,11 @@ export interface PresenceConfig {
   timeout: number;
 }
 
+export interface PresenceAwareComponent {
+  get presenceId(): string | undefined;
+  onPresenceChange(presence: Presence): void;
+}
+
 /**
  * Class in charge of managing presence across all users and components.
  *
@@ -34,7 +37,7 @@ export interface PresenceConfig {
  * @class PresenceService
  */
 export class PresenceService {
-  private static readonly components = new Set<MgtPerson>();
+  private static readonly components = new Set<PresenceAwareComponent>();
   private static readonly presenceByUserId = new Map<string, Presence | undefined>();
   private static initPromise: Promise<void> | null = null;
 
@@ -45,8 +48,7 @@ export class PresenceService {
    * @param {MgtPerson} component
    * @memberof PresenceService
    */
-  public static register(component: MgtPerson) {
-    // init if needed
+  public static register(component: PresenceAwareComponent) {
     if (!this.initPromise) {
       this.initPromise = this.init();
     }
@@ -64,7 +66,7 @@ export class PresenceService {
    * @param {MgtPerson} component
    * @memberof PresenceService
    */
-  public static unregister(component: MgtPerson) {
+  public static unregister(component: PresenceAwareComponent) {
     this.components.delete(component);
   }
 
@@ -78,18 +80,20 @@ export class PresenceService {
   private static async init(): Promise<void> {
     const loop = async () => {
       while (true) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
         console.log('start loop !!!!!!!!!');
+
         // get a valid graph provider
         const provider = Providers.globalProvider;
         if (!provider || provider.state === ProviderState.Loading) {
-          return;
+          continue;
         }
 
         // get full list of users
         for (const component of this.components) {
-          const details = component.personDetails || component.fallbackDetails;
-          if (details.id && !this.presenceByUserId.has(details.id)) {
-            this.presenceByUserId.set(details.id, undefined);
+          const id = component.presenceId;
+          if (id && !this.presenceByUserId.has(id)) {
+            this.presenceByUserId.set(id, undefined);
           }
         }
 
@@ -109,22 +113,22 @@ export class PresenceService {
 
         // update components
         for (const component of this.components) {
-          const details = component.personDetails || component.fallbackDetails;
-          if (details.id) {
-            const presence = this.presenceByUserId.get(details.id);
+          const id = component.presenceId;
+          console.log('id ::: ' + id);
+          if (id) {
+            const presence = this.presenceByUserId.get(id);
             if (presence) {
-              component.personPresence = presence;
+              component.onPresenceChange(presence);
             }
           }
         }
 
         // wait
         console.log('stop loop !!!!!!!!!');
-        await new Promise(resolve => setTimeout(resolve, 1000));
       }
     };
 
-    setTimeout(loop, 1000);
+    loop(); // start loop without waiting for end
     return Promise.resolve();
   }
 }

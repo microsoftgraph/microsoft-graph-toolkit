@@ -26,8 +26,9 @@ import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types'
 import { strings } from './strings';
 import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { buildComponentName, registerComponent, presenceSvc } from '@microsoft/mgt-element';
+import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
 import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
+import {} from '../../utils/PresenceService';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -107,7 +108,7 @@ export const registerMgtPersonComponent = () => {
  *
  * @cssprop --person-details-wrapper-width - {Length} the minimum width of the details section. Default is 168px.
  */
-export class MgtPerson extends MgtTemplatedComponent {
+export class MgtPerson extends MgtTemplatedComponent implements PresenceAwareComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -239,6 +240,17 @@ export class MgtPerson extends MgtTemplatedComponent {
     type: Boolean
   })
   public showPresence: boolean;
+
+  /**
+   * determines if person component refreshes presence
+   *
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'refresh-presence',
+    type: Boolean
+  })
+  public refreshPresence: boolean = true;
 
   /**
    * determines person component avatar size and apply presence badge accordingly.
@@ -1193,10 +1205,6 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
 
-    if (this.showPresence) {
-      // PresenceService.register(this);
-    }
-
     // populate presence
     const defaultPresence: Presence = {
       activity: 'Offline',
@@ -1217,6 +1225,10 @@ export class MgtPerson extends MgtTemplatedComponent {
         // set up a default Presence in case beta api changes or getting error code
         this._fetchedPresence = defaultPresence;
       }
+    }
+
+    if (this.showPresence && this.refreshPresence) {
+      PresenceService.register(this);
     }
   }
 
@@ -1405,4 +1417,12 @@ export class MgtPerson extends MgtTemplatedComponent {
       flyout.open();
     }
   };
+
+  public get presenceId(): string | undefined {
+    return this.personDetailsInternal?.id || this.personDetails?.id || this.fallbackDetails?.id;
+  }
+
+  public onPresenceChange(presence: Presence): void {
+    this.personPresence = presence;
+  }
 }
