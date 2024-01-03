@@ -41,7 +41,9 @@ $people-picker-selected-person-avatar-size: var(--people-picker-selected-person-
     }
 
     &::part(control) {
-      width: min-content;
+      width: auto;
+      flex-grow: 1;
+      min-width: 25%;
       height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
       word-spacing: inherit;
       text-indent: inherit;

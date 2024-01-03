@@ -21,7 +21,7 @@ import {
   CollectionResponse
 } from '@microsoft/mgt-element';
 
-import { schemas } from '../../../graph/cacheStores';
+import { schemas } from '../../graph/cacheStores';
 import { strings } from './strings';
 import { styles } from './mgt-search-results-css';
 import {
@@ -46,14 +46,14 @@ import {
   getResponseInvalidationTime,
   sanitizeSummary,
   trimFileExtension
-} from '../../../utils/Utils';
-import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
+} from '../../utils/Utils';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { fluentSkeleton, fluentButton, fluentTooltip, fluentDivider } from '@fluentui/web-components';
-import { registerFluentComponents } from '../../../utils/FluentComponents';
-import { CacheResponse } from '../../CacheResponse';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+import { CacheResponse } from '../CacheResponse';
 import { registerComponent } from '@microsoft/mgt-element';
-import { registerMgtFileComponent } from '../../mgt-file/mgt-file';
-import { registerMgtPersonComponent } from '../../mgt-person/mgt-person';
+import { registerMgtFileComponent } from '../mgt-file/mgt-file';
+import { registerMgtPersonComponent } from '../mgt-person/mgt-person';
 
 /**
  * Object representing a thumbnail
@@ -407,9 +407,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    console.warn(
-      '🦒: <mgt-search-results> is a preview component and may change prior to becoming generally available. See more information https://aka.ms/mgt/preview-components'
-    );
   }
 
   /**
