@@ -350,6 +350,14 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
   }
 
   /**
+   * Called from the base class while the _task is in a pending state
+   * This calls to the renderContent method as the loading indicator is nested inside the dropdown
+   * This ensures that the component shows a control immediately and only shows a loading indicator
+   * if the user interacts with the component while the _task is pending.
+   */
+  protected renderLoading = () => this.renderContent();
+
+  /**
    * Invoked by the render method when the _task has been completed
    *
    * @returns
@@ -587,7 +595,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
    */
   protected renderDropdown() {
     if (this._task.status === TaskStatus.PENDING || !this._treeViewState) {
-      return this.renderLoading();
+      return this.renderLoadingIndicator();
     }
 
     if (this._treeViewState) {
@@ -706,7 +714,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
    * @returns
    * @memberof MgtTeamsChannelPicker
    */
-  protected renderLoading = (): TemplateResult => {
+  protected renderLoadingIndicator = (): TemplateResult => {
     const template = this.renderTemplate('loading', null, 'loading');
 
     return (

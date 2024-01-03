@@ -11,7 +11,8 @@ import {
   People,
   Get,
   ThemeToggle,
-  Picker
+  Picker,
+  TeamsChannelPicker
 } from '@microsoft/mgt-react';
 import { Messages } from '../components/Messages';
 import { Loading } from '../components/Loading';
@@ -21,6 +22,7 @@ const HomePage: React.FunctionComponent = () => {
   return (
     <>
       <ThemeToggle />
+      <TeamsChannelPicker />
       <Picker
         resource="me/todo/lists"
         scopes={['tasks.read', 'tasks.readwrite']}
@@ -28,7 +30,7 @@ const HomePage: React.FunctionComponent = () => {
         keyName="displayName"
       />
       <FileList />
-      <Get resource="/me/messages" maxPages={10}>
+      <Get resource="/me/messages" maxPages={1}>
         <GetDefaultContent template="default" />
         <Messages template="value"></Messages>
         <Loading template="loading" message={'Loading your focused inbox...'}></Loading>
