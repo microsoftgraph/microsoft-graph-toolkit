@@ -1,6 +1,5 @@
 import { ErrorBarProps } from '@azure/communication-react';
 import { graph } from '../utils/graph';
-//import { MessageCache } from './Caching/MessageCache';
 import { GraphConfig } from './GraphConfig';
 import { GraphNotificationClient } from './GraphNotificationClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
