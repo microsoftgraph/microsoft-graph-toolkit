@@ -6,10 +6,10 @@
  */
 
 import { html } from 'lit';
-import { withCodeEditor } from '../../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Preview / mgt-search-box',
+  title: 'Components / mgt-search-box',
   component: 'search-box',
   decorators: [withCodeEditor],
   tags: ['autodocs'],
