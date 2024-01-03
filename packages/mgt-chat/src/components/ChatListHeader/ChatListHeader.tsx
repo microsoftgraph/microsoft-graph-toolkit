@@ -3,7 +3,7 @@ import { MgtTemplateProps, Login } from '@microsoft/mgt-react';
 import { ChatAdd24Filled, ChatAdd24Regular, bundleIcon } from '@fluentui/react-icons';
 import { makeStyles, shorthands, Button } from '@fluentui/react-components';
 import { Circle } from '../Circle/Circle';
-import { EllipsisMenu } from './EllipsisMenu';
+import { IChatListMenuItemsProps, EllipsisMenu } from './EllipsisMenu';
 const ChatAddIconBundle = bundleIcon(ChatAdd24Filled, ChatAdd24Regular);
 
 const useStyles = makeStyles({
@@ -48,7 +48,7 @@ export const ChatAddIcon = (): JSX.Element => {
 };
 
 // this is a stub to move the logic here that should end up here.
-export const ChatListHeader = (props: MgtTemplateProps) => {
+export const ChatListHeader = (props: MgtTemplateProps & IChatListMenuItemsProps) => {
   const classes = useStyles();
 
   return (
@@ -62,13 +62,7 @@ export const ChatListHeader = (props: MgtTemplateProps) => {
         <Login showPresence={true} loginView="avatar" />
       </div>
       <div>
-        <EllipsisMenu
-          items={[
-            {
-              displayText: 'Mark all as read'
-            }
-          ]}
-        />
+        <EllipsisMenu menuItems={props.menuItems} />
       </div>
     </div>
   );

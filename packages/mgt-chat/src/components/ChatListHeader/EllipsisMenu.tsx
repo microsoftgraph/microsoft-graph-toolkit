@@ -24,7 +24,6 @@ const menuProps: Partial<MenuProps> = {
 const ellipsisMenuStyles = makeStyles({
   menuPopover: {
     zIndex: 10,
-
     '& .fui-MenuItemLink__content': {
       fontFamily: 'Segoe UI',
       fontSize: '12px',
@@ -33,14 +32,14 @@ const ellipsisMenuStyles = makeStyles({
     }
   }
 });
-interface MenuItemsProps {
-  items: MenuItem[];
+export interface IChatListMenuItemsProps {
+  menuItems?: MenuItem[];
 }
 
-const EllipsisMenu = (props: MenuItemsProps) => {
+const EllipsisMenu = (props: IChatListMenuItemsProps) => {
   const styles = ellipsisMenuStyles();
 
-  const menuItems: MenuItem[] = props.items;
+  const menuItems: MenuItem[] = props.menuItems === undefined ? [] : props.menuItems;
 
   return (
     <Menu {...menuProps}>
@@ -50,7 +49,9 @@ const EllipsisMenu = (props: MenuItemsProps) => {
       <MenuPopover className={styles.menuPopover}>
         <MenuList>
           {menuItems.map(menuItem => (
-            <MenuItemLink href="">{menuItem.displayText}</MenuItemLink>
+            <MenuItemLink href="" onSelect={menuItem.onSelected}>
+              {menuItem.displayText}
+            </MenuItemLink>
           ))}
         </MenuList>
       </MenuPopover>

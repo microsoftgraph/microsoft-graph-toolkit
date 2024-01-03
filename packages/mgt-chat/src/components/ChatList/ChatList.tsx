@@ -8,6 +8,7 @@ import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
+import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 
 const useStyles = makeStyles({
   headerContainer: {
@@ -33,7 +34,7 @@ const useStyles = makeStyles({
 });
 
 // this is a stub to move the logic here that should end up here.
-export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps) => {
+export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps & IChatListMenuItemsProps) => {
   const styles = useStyles();
   // TODO: change this to use StatefulGraphChatListClient
   const chatClient: StatefulGraphChatClient = useGraphChatClient('');
@@ -48,13 +49,19 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
   const { value } = props.dataContext as { value: GraphChat[] };
   const chats: GraphChat[] = value;
 
+  const chatListMenuItems = props.menuItems === undefined ? [] : props.menuItems;
+  chatListMenuItems.unshift({
+    displayText: 'Mark all as read',
+    onSelected: () => {}
+  });
+
   return (
     // This is a temporary approach to render the chatlist items. This should be replaced.
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme}>
         <div>
           <div className={styles.headerContainer}>
-            <ChatListHeader />
+            <ChatListHeader menuItems={chatListMenuItems} />
           </div>
           {chats.map(c => (
             <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
