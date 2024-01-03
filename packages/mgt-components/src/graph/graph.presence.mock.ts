@@ -7,6 +7,7 @@
 
 import { IGraph } from '@microsoft/mgt-element';
 import { Presence } from '@microsoft/microsoft-graph-types';
+import { IDynamicPerson } from './types';
 
 const globalObject = typeof window !== 'undefined' ? window : global;
 
@@ -36,6 +37,7 @@ export const useConfig = (config: CallConfig | status = 'Available') => {
  * @returns {(Promise<Presence>)}
  * @memberof Graph
  */
+/*
 export const getUserPresence = async (_graph: IGraph, _userId?: string): Promise<Presence> => {
   const config = (globalObject['unit-test:presence-config'] as CallConfig) || { default: 'Available' };
   const index = config.calls || 0;
@@ -52,5 +54,30 @@ export const getUserPresence = async (_graph: IGraph, _userId?: string): Promise
       activity: value,
       statusMessage: null
     });
+  }
+};
+*/
+
+export const getUserPresence = async (_graph: IGraph, _userId?: string): Promise<Presence> => {
+  return Promise.reject(new Error());
+};
+
+export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicPerson[], _ = true) => {
+  const config = (globalObject['unit-test:presence-config'] as CallConfig) || { default: 'Available' };
+  const index = config.calls || 0;
+  const value = config[index] || config.default;
+  config.calls = index + 1;
+  if (value instanceof Error) {
+    return Promise.reject(value);
+  } else {
+    const peoplePresence: Record<string, Presence> = {};
+    for (const person of people || []) {
+      peoplePresence[person.id] = {
+        id: person.id,
+        availability: value,
+        activity: value
+      };
+    }
+    return Promise.resolve(peoplePresence);
   }
 };

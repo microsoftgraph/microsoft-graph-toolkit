@@ -28,7 +28,7 @@ import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
 import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
-import {} from '../../utils/PresenceService';
+import { PresenceService, PresenceAwareComponent } from '../../utils/PresenceService';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -250,7 +250,7 @@ export class MgtPerson extends MgtTemplatedComponent implements PresenceAwareCom
     attribute: 'refresh-presence',
     type: Boolean
   })
-  public refreshPresence: boolean = true;
+  public refreshPresence = true;
 
   /**
    * determines person component avatar size and apply presence badge accordingly.
@@ -1205,14 +1205,16 @@ export class MgtPerson extends MgtTemplatedComponent implements PresenceAwareCom
 
     details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
 
-    // populate presence
     const defaultPresence: Presence = {
       activity: 'Offline',
       availability: 'Offline',
       id: null
     };
 
-    if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
+    if (this.showPresence && this.refreshPresence) {
+      this._fetchedPresence = defaultPresence;
+      PresenceService.register(this);
+    } else if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
       try {
         if (details) {
           // setting userId to 'me' ensures only the presence.read permission is required
@@ -1225,10 +1227,6 @@ export class MgtPerson extends MgtTemplatedComponent implements PresenceAwareCom
         // set up a default Presence in case beta api changes or getting error code
         this._fetchedPresence = defaultPresence;
       }
-    }
-
-    if (this.showPresence && this.refreshPresence) {
-      PresenceService.register(this);
     }
   }
 
@@ -1418,10 +1416,24 @@ export class MgtPerson extends MgtTemplatedComponent implements PresenceAwareCom
     }
   };
 
+  /**
+   * gets the id of the person that presence updates are needed for
+   *
+   * @memberof MgtPerson
+   * @implements {PresenceAwareComponent}
+   * @returns {string | undefined}
+   **/
   public get presenceId(): string | undefined {
     return this.personDetailsInternal?.id || this.personDetails?.id || this.fallbackDetails?.id;
   }
 
+  /**
+   * fires when the presence for the user is changed
+   *
+   * @memberof MgtPerson
+   * @implements {PresenceAwareComponent}
+   * @param {Presence} [presence]
+   **/
   public onPresenceChange(presence: Presence): void {
     this.personPresence = presence;
   }

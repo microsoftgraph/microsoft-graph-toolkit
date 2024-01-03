@@ -71,7 +71,7 @@ export const getUserPresence = async (graph: IGraph, userId?: string): Promise<P
  * @returns {}
  * @memberof BetaGraph
  */
-export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicPerson[]) => {
+export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicPerson[], allowCache = true) => {
   if (!people || people.length === 0) {
     return {};
   }
@@ -81,7 +81,7 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
   const scopes = ['presence.read.all'];
   let cache: CacheStore<CachePresence>;
 
-  if (getIsPresenceCacheEnabled()) {
+  if (allowCache && getIsPresenceCacheEnabled()) {
     cache = CacheService.getCache(schemas.presence, schemas.presence.stores.presence);
   }
 
@@ -90,10 +90,15 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
       const id = person.id;
       peoplePresence[id] = null;
       let presence: CachePresence;
-      if (getIsPresenceCacheEnabled()) {
+      if (allowCache && getIsPresenceCacheEnabled()) {
         presence = await cache.getValue(id);
       }
-      if (getIsPresenceCacheEnabled() && presence && getPresenceInvalidationTime() > Date.now() - presence.timeCached) {
+      if (
+        allowCache &&
+        getIsPresenceCacheEnabled() &&
+        presence &&
+        getPresenceInvalidationTime() > Date.now() - presence.timeCached
+      ) {
         peoplePresence[id] = JSON.parse(presence.presence) as Presence;
       } else {
         peoplePresenceToQuery.push(id);
@@ -112,7 +117,7 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
 
       for (const r of presenceResult.value) {
         peoplePresence[r.id] = r;
-        if (getIsPresenceCacheEnabled()) {
+        if (allowCache && getIsPresenceCacheEnabled()) {
           await cache.putValue(r.id, { presence: JSON.stringify(r) });
         }
       }
