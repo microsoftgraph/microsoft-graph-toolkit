@@ -4,28 +4,35 @@ import { ChatAdd24Filled, ChatAdd24Regular, bundleIcon } from '@fluentui/react-i
 import { makeStyles } from '@fluentui/react-components';
 import { Circle } from '../Circle/Circle';
 import { EllipsisMenu } from './EllipsisMenu';
-const ChatAddIcon = bundleIcon(ChatAdd24Filled, ChatAdd24Regular);
+const ChatAddIconBundle = bundleIcon(ChatAdd24Filled, ChatAdd24Regular);
 
 const useStyles = makeStyles({
   headerContainer: {
     display: 'flex',
+    flexDirection: 'row',
     justifyContent: 'space-between', // This distributes the space evenly
     alignItems: 'center',
-    width: '300px'
+    width: '100%'
   }
 });
+
+export const ChatAddIcon = (): JSX.Element => {
+  const iconColor = 'var(--colorBrandForeground2)';
+  return (
+    <Circle>
+      <ChatAddIconBundle color={iconColor} />
+    </Circle>
+  );
+};
 
 // this is a stub to move the logic here that should end up here.
 export const ChatListHeader = (props: MgtTemplateProps) => {
   const classes = useStyles();
-  const iconColor = 'var(--colorBrandForeground2)';
 
   return (
     <div className={classes.headerContainer}>
       <div>
-        <Circle>
-          <ChatAddIcon color={iconColor} />
-        </Circle>
+        <ChatAddIcon />
       </div>
       <div>
         <Login showPresence={true} loginView="avatar" />
