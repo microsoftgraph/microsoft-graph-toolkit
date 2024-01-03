@@ -5,8 +5,7 @@ import { makeStyles, Link, FluentProvider, shorthands, webLightTheme } from '@fl
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
-import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
-import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
+import { StatefulGraphChatListClient } from '../../statefulClient/StatefulGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 
@@ -37,7 +36,7 @@ const useStyles = makeStyles({
 export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps & IChatListMenuItemsProps) => {
   const styles = useStyles();
   // TODO: change this to use StatefulGraphChatListClient
-  const chatClient: StatefulGraphChatClient = useGraphChatClient('');
+  const [chatClient] = useState<StatefulGraphChatListClient>(() => new StatefulGraphChatListClient());
   const [chatState, setChatState] = useState(chatClient.getState());
   useEffect(() => {
     chatClient.onStateChange(setChatState);
