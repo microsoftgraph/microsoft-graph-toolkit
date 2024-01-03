@@ -14,6 +14,10 @@ export default {
   decorators: [withCodeEditor]
 };
 
+export const setPlaceholder = () => html`
+<mgt-people-picker placeholder="Select people"></mgt-people-picker>
+`;
+
 export const showPresence = () => html`
 <mgt-people-picker show-presence></mgt-people-picker>
 `;
