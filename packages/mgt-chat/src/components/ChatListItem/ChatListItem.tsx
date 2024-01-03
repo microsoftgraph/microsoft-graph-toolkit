@@ -33,7 +33,7 @@ const useStyles = makeStyles({
   profileImage: {
     flexGrow: 0,
     flexShrink: 0,
-    flexBasis: '35px',
+    flexBasis: 'auto',
     ...shorthands.borderRadius('50%'), // This will make it round
     marginRight: '10px',
     objectFit: 'cover', // This ensures the image covers the area without stretching
@@ -42,8 +42,9 @@ const useStyles = makeStyles({
     justifyContent: 'center' // This will horizontally center the image
   },
   chatInfo: {
-    flexGrow: 2,
+    flexGrow: 1,
     flexShrink: 2,
+    flexBasis: 'auto',
     minWidth: 0,
     alignSelf: 'left',
     alignItems: 'center',
@@ -73,7 +74,7 @@ const useStyles = makeStyles({
   },
   chatTimestamp: {
     flexShrink: 0,
-    flexBasis: '20px',
+    flexBasis: 'auto',
     textAlign: 'right',
     alignSelf: 'start',
     marginLeft: 'auto',
@@ -104,6 +105,7 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     return chatObj.topic || chatObj.chatType;
   };
 
+  // Derives the timestamp to display
   const extractTimestamp = (timestamp: NullableOption<string> | undefined): string => {
     if (timestamp === undefined || timestamp === null) return '';
     const currentDate = new Date();
@@ -116,15 +118,41 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
       currentDate.getFullYear()
     ];
 
+    // if the message was sent today, return the time
     if (currentDay === day && currentMonth === month && currentYear === year) {
-      return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      return date.toLocaleTimeString(navigator.language, { hour: 'numeric', minute: '2-digit' });
     }
 
+    // if the message was sent in a previous year, include the year
     if (currentYear !== year) {
-      return date.toLocaleDateString([], { month: 'numeric', day: 'numeric', year: 'numeric' });
+      return date.toLocaleDateString(navigator.language, { month: 'numeric', day: 'numeric', year: 'numeric' });
     }
 
-    return date.toLocaleDateString([], { month: 'numeric', day: 'numeric' });
+    // otherwise, return the month and day
+    return date.toLocaleDateString(navigator.language, { month: 'numeric', day: 'numeric' });
+  };
+
+  // Chooses the correct timestamp to display
+  const determineCorrectTimestamp = (chat: Chat) => {
+    let timestamp: Date | undefined = undefined;
+
+    // lastMessageTime is the time of the last message sent in the chat
+    // lastUpdatedTime is Date and time at which the chat was renamed or list of members were last changed.
+    let lastMessageTimeString = chat.lastMessagePreview?.createdDateTime as string;
+    let lastUpdatedTimeString = chat.lastUpdatedDateTime as string;
+
+    let lastMessageTime = new Date(lastMessageTimeString);
+    let lastUpdatedTime = new Date(lastUpdatedTimeString);
+
+    if (lastMessageTime && lastUpdatedTime) {
+      timestamp = new Date(Math.max(lastMessageTime.getTime(), lastUpdatedTime.getTime()));
+    } else if (lastMessageTime) {
+      timestamp = lastMessageTime;
+    } else if (lastUpdatedTime) {
+      timestamp = lastUpdatedTime;
+    }
+
+    return String(timestamp);
   };
 
   const getDefaultProfileImage = () => {
@@ -150,7 +178,6 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
   const enrichPreviewMessage = (previewMessage: NullableOption<ChatMessageInfo> | undefined) => {
     let previewString = '';
 
-    // this should be refactored
     // handle general chats from people and bots
     if (previewMessage?.from?.user?.id === myId) {
       previewString = 'You: ' + previewMessage?.body?.content;
@@ -180,7 +207,7 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
         <h3 className={styles.chatTitle}>{inferTitle(chat)}</h3>
         <p className={styles.chatMessage}>{enrichPreviewMessage(chat.lastMessagePreview)}</p>
       </div>
-      <div className={styles.chatTimestamp}>{extractTimestamp(chat.lastUpdatedDateTime)}</div>
+      <div className={styles.chatTimestamp}>{extractTimestamp(determineCorrectTimestamp(chat))}</div>
     </Button>
   );
 };
