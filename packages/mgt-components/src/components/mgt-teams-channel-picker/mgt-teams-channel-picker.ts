@@ -22,7 +22,7 @@ import '../sub-components/mgt-spinner/mgt-spinner';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
 import { styles } from './mgt-teams-channel-picker-css';
-import { getAllMyTeams, getTeamsPhotosforPhotoIds } from './mgt-teams-channel-picker.graph';
+import { getAllMyTeams, getTeamsPhotosForPhotoIds } from './mgt-teams-channel-picker.graph';
 import { strings } from './strings';
 import { repeat } from 'lit/directives/repeat.js';
 import { registerFluentComponents } from '../../utils/FluentComponents';
@@ -733,7 +733,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       const beta = BetaGraph.fromGraph(graph);
 
       const teamsIds = teams.map(t => t.id);
-      this.teamsPhotos = await getTeamsPhotosforPhotoIds(beta, teamsIds);
+      this.teamsPhotos = await getTeamsPhotosForPhotoIds(beta, teamsIds);
 
       const batch = graph.createBatch<CollectionResponse<MicrosoftGraph.Channel>>();
 

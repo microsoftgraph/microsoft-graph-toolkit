@@ -19,7 +19,7 @@ import { TagMultipleRegular, TagRegular } from '@fluentui/react-icons';
 export const TaxonomyExplorer: React.FunctionComponent = () => {
   return (
     <>
-      <Get resource="termStore/groups" version="beta">
+      <Get resource="termStore/groups" version="beta" scopes={["TermStore.Read.All"]}>
         <GroupTemplate template="default" />
       </Get>
     </>
@@ -81,7 +81,7 @@ const GroupTemplate = (props: MgtTemplateProps) => {
         <AccordionItem value={group.id} key={group.id}>
           <AccordionHeader icon={<TagMultipleRegular />}>{group.displayName}</AccordionHeader>
           <AccordionPanel className={styles.groupPanel}>
-            <Get resource={`termStore/groups/${group.id}/sets`} version="beta">
+            <Get resource={`termStore/groups/${group.id}/sets`} version="beta" scopes={["TermStore.Read.All"]}>
               <SetTemplate template="default" />
             </Get>
           </AccordionPanel>
