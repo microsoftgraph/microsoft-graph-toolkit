@@ -48,8 +48,8 @@ const EllipsisMenu = (props: IChatListMenuItemsProps) => {
       </MenuTrigger>
       <MenuPopover className={styles.menuPopover}>
         <MenuList>
-          {menuItems.map(menuItem => (
-            <MenuItemLink href="" onSelect={menuItem.onSelected}>
+          {menuItems.map((menuItem, index) => (
+            <MenuItemLink href="" key={index} onSelect={menuItem.onSelected}>
               {menuItem.displayText}
             </MenuItemLink>
           ))}

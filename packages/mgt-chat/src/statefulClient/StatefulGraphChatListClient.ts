@@ -1,13 +1,24 @@
 import { MessageThreadProps, ErrorBarProps } from '@azure/communication-react';
 import { ActiveAccountChanged, LoginChangedEvent, ProviderState, Providers } from '@microsoft/mgt-element';
+import { GraphError } from '@microsoft/microsoft-graph-client';
 import { produce } from 'immer';
 import { currentUserId, currentUserName } from '../utils/currentUser';
 import { graph } from '../utils/graph';
 import { GraphConfig } from './GraphConfig';
-import { GraphNotificationClient } from './GraphNotificationClient';
+import { GraphNotificationUserClient } from './GraphNotificationUserClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
 // defines the type of the state object returned from the StatefulGraphChatClient
-export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & Pick<ErrorBarProps, 'activeErrorMessages'>;
+export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
+  status:
+    | 'initial'
+    | 'creating server connections'
+    | 'subscribing to notifications'
+    | 'loading messages'
+    | 'no session id'
+    | 'no messages'
+    | 'ready'
+    | 'error';
+} & Pick<ErrorBarProps, 'activeErrorMessages'>;
 
 interface StatefulClient<T> {
   /**
@@ -29,7 +40,7 @@ interface StatefulClient<T> {
 }
 
 class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient> {
-  private readonly _notificationClient: GraphNotificationClient;
+  private readonly _notificationClient: GraphNotificationUserClient;
   private readonly _eventEmitter: ThreadEventEmitter;
   private _subscribers: ((state: GraphChatListClient) => void)[] = [];
 
@@ -40,7 +51,10 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     Providers.globalProvider.onStateChanged(this.onLoginStateChanged);
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
-    this._notificationClient = new GraphNotificationClient(this._eventEmitter, graph('mgt-chat', GraphConfig.version));
+    this._notificationClient = new GraphNotificationUserClient(
+      this._eventEmitter,
+      graph('mgt-chat', GraphConfig.version)
+    );
   }
 
   /**
@@ -76,6 +90,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   }
 
   private readonly _initialState: GraphChatListClient = {
+    status: 'initial',
     activeErrorMessages: [],
     userId: ''
   };
@@ -124,9 +139,9 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         // load messages?
         // configure subscriptions
         // emit new state;
-        // if (this.chatId) {
-        //   void this.updateFollowedChat();
-        // }
+        if (this.userId) {
+          void this.updateUserSubscription();
+        }
         return;
       case ProviderState.SignedOut:
         // clear userId
@@ -155,8 +170,14 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
 
     this.updateUserInfo();
     // by updating the followed chat the notification client will reconnect to SignalR
-    // await this.updateFollowedChat();
+    await this.updateUserSubscription();
   };
+
+  private clearCurrentUserMessages() {
+    this.notifyStateChange((draft: GraphChatListClient) => {
+      draft.status = 'initial'; // no message?
+    });
+  }
 
   private updateUserInfo() {
     this.updateCurrentUserId();
@@ -200,6 +221,58 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this.notifyStateChange((draft: GraphChatListClient) => {
       draft.userId = userId;
     });
+  }
+
+  private _sessionId: string | undefined;
+
+  public subscribeToUser(sessionId: string) {
+    this._sessionId = sessionId;
+    void this.updateUserSubscription();
+  }
+
+  /**
+   * A helper to co-ordinate the loading of a chat and its messages, and the subscription to notifications for that chat
+   *
+   * @private
+   * @memberof StatefulGraphChatClient
+   */
+  private async updateUserSubscription() {
+    // avoid subscribing to a resource with an empty chatId
+    if (this.userId && this._sessionId) {
+      // reset state to initial
+      this.notifyStateChange((draft: GraphChatListClient) => {
+        draft.status = 'initial';
+        // draft.messages = [];
+        // draft.mentions = [];
+        // draft.chat = undefined;
+        // draft.participants = [];
+      });
+      // Subscribe to notifications for messages
+      this.notifyStateChange((draft: GraphChatListClient) => {
+        draft.status = 'creating server connections';
+      });
+      try {
+        // Prefer sequential promise resolving to catch loading message errors
+        // TODO: in parallel promise resolving, find out how to trigger different
+        // TODO: state for failed subscriptions in GraphChatClient.onSubscribeFailed
+        const tasks: Promise<unknown>[] = [];
+        // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
+        // this client will then load the chat and messages when that event listener is called
+        tasks.push(this._notificationClient.subscribeToUserNotifications(this._userId, this._sessionId));
+        await Promise.all(tasks);
+      } catch (e) {
+        console.error('Failed to load chat data or subscribe to notications: ', e);
+        if (e instanceof GraphError) {
+          this.notifyStateChange((draft: GraphChatListClient) => {
+            draft.status = 'no messages';
+          });
+        }
+      }
+    } else {
+      this.notifyStateChange((draft: GraphChatListClient) => {
+        draft.status = 'no session id';
+      });
+    }
   }
 }
 
