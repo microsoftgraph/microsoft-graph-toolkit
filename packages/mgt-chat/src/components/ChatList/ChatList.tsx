@@ -23,7 +23,7 @@ const useStyles = makeStyles({
     width: '100%',
     ...shorthands.padding('10px')
   },
-  a: {
+  loadMore: {
     textDecorationLine: 'none',
     fontSize: '1.2em',
     fontWeight: 'bold',
@@ -66,7 +66,7 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
             <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
           ))}
           <div className={styles.linkContainer}>
-            <Link href="#" className={styles.a}>
+            <Link href="#" className={styles.loadMore}>
               load more
             </Link>
           </div>

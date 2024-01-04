@@ -16,7 +16,7 @@ const EllipsisIcon = bundleIcon(MoreHorizontal24Filled, MoreHorizontal24Regular)
 
 const menuProps: Partial<MenuProps> = {
   inline: true,
-  hasIcons: true,
+  hasIcons: false,
   closeOnScroll: true,
   positioning: 'below-start'
 };
@@ -49,9 +49,7 @@ const EllipsisMenu = (props: IChatListMenuItemsProps) => {
       <MenuPopover className={styles.menuPopover}>
         <MenuList>
           {menuItems.map((menuItem, index) => (
-            <MenuItemLink href="" key={index} onSelect={menuItem.onSelected}>
-              {menuItem.displayText}
-            </MenuItemLink>
+            <MenuItemLink content={menuItem.displayText} href="" key={index} onSelect={menuItem.onSelected} />
           ))}
         </MenuList>
       </MenuPopover>
