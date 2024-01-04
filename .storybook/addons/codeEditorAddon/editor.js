@@ -83,10 +83,10 @@ export class EditorElement extends LitElement {
     return this.internalFiles;
   }
 
-  constructor() {
+  constructor(fileTypes) {
     super();
     this.internalFiles = [];
-    this.fileTypes = ['html', 'js', 'css'];
+    this.fileTypes = fileTypes ?? ['html', 'js', 'css'];
     this.autoFormat = true;
 
     this.editorRoot = document.createElement('div');
@@ -120,10 +120,14 @@ export class EditorElement extends LitElement {
       html: {
         model: monaco.editor.createModel('', 'html'),
         state: null
+      },
+      react: {
+        model: monaco.editor.createModel('', 'typescript'),
+        state: null
       }
     };
 
-    this.currentEditorState = this.editorState.html;
+    this.currentEditorState = this.editorState[this.fileTypes[0]];
 
     this.editor = monaco.editor.create(htmlElement, {
       model: this.currentEditorState.model,
@@ -185,7 +189,7 @@ export class EditorElement extends LitElement {
   }
 
   showTab(type) {
-    this.editor.updateOptions({ readOnly: false });
+    this.editor.updateOptions({ readOnly: type === 'react' });
 
     this.currentType = type;
     if (this.files && typeof this.files[type] !== 'undefined') {
@@ -262,7 +266,7 @@ export class EditorElement extends LitElement {
               role="tabpanel"
               id="${`tab-${type}`}"
               aria-labelledby="${type}"
-              tabindex=0 
+              tabindex=0
               hidden
             ></div>
           `

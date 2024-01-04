@@ -213,7 +213,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   public async login(): Promise<void> {
     const provider = Providers.globalProvider;
-    if (!provider.isMultiAccountSupportedAndEnabled && (this.userDetails || !this.fireCustomEvent('loginInitiated'))) {
+    if ((this.userDetails || !this.fireCustomEvent('loginInitiated')) && !provider.isMultiAccountSupportedAndEnabled) {
       return;
     }
     if (provider?.login) {
@@ -353,9 +353,9 @@ export class MgtLogin extends MgtTemplatedComponent {
         light-dismiss
         @opened=${this.flyoutOpened}
         @closed=${this.flyoutClosed}>
-        <fluent-card 
-          slot="flyout" 
-          tabindex="0" 
+        <fluent-card
+          slot="flyout"
+          tabindex="0"
           class="flyout-card"
           @keydown=${this.onUserKeyDown}
           >

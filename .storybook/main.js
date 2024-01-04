@@ -17,7 +17,8 @@ module.exports = {
   addons: [
     getAbsolutePath('storybook-version'),
     getAbsolutePath('@storybook/addon-docs'),
-    getAbsolutePath('@storybook/addon-mdx-gfm')
+    getAbsolutePath('@storybook/addon-mdx-gfm'),
+    getAbsolutePath("@storybook/addon-mdx-gfm")
   ],
 
   webpackFinal: async (config, { configType }) => {

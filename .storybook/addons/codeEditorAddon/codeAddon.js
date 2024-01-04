@@ -61,6 +61,7 @@ const setupEditorResize = (first, separator, last, dragComplete) => {
   };
 };
 
+let reactRegex = /<react\b[^>]*>([\s\S]*?)<\/react>/gm;
 let scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
 let styleRegex = /<style\b[^>]*>([\s\S]*?)<\/style>/gm;
 
@@ -74,6 +75,7 @@ export const withCodeEditor = makeDecorator({
       ['Custom CSS Properties', 'Theme'].includes(context.name) || context.title.toLowerCase().includes('templating');
     const forContext = context && title;
     const disableThemeToggle = forOptions || forContext;
+    let fileTypes = ['html', 'js', 'css'];
     let story = getStory(context);
 
     let storyHtml;
@@ -89,20 +91,27 @@ export const withCodeEditor = makeDecorator({
     let scriptMatches = scriptRegex.exec(storyHtml);
     let scriptCode = scriptMatches && scriptMatches.length > 1 ? scriptMatches[1].trim() : '';
 
+    let reactMatches = reactRegex.exec(storyHtml);
+    let reactCode = reactMatches && reactMatches.length > 1 ? reactMatches[1].trim() : '';
+
     let styleMatches = styleRegex.exec(storyHtml);
     let styleCode = styleMatches && styleMatches.length > 1 ? styleMatches[1].trim() : '';
 
     storyHtml = storyHtml
-      .replace(styleRegex, '')
-      .replace(scriptRegex, '')
-      .replace(/\n?<!---->\n?/g, '')
-      .trim();
+      ?.replace(styleRegex, '')
+      ?.replace(reactRegex, '')
+      ?.replace(scriptRegex, '')
+      ?.replace(/\n?<!---->\n?/g, '')
+      ?.trim();
 
-    let editor = new EditorElement();
-    editor.files = {
-      html: storyHtml,
-      js: scriptCode,
-      css: styleCode
+    if (reactCode) {
+      fileTypes = ['react', 'js', 'css'];
+    }
+
+    let editor = new EditorElement(fileTypes);
+
+    const isEditorEnabled = () => {
+      return !context.parameters.docs?.editor?.hidden;
     };
 
     const getContent = async (url, json) => {
@@ -207,12 +216,7 @@ export const withCodeEditor = makeDecorator({
             redirectUri: "${window.location.origin}/${AUTH_PAGE}"
           });`;
       }
-
-      loadEditorContent();
     });
-
-    const componentRegistration = `
-    `;
 
     const loadEditorContent = () => {
       const storyElement = document.createElement('iframe');
@@ -229,30 +233,30 @@ export const withCodeEditor = makeDecorator({
           );
 
           const docContent = `
-          <html>
-            <head>
-              <script type="module" src="${mgtScriptName}"></script>
-              <script type="module">
-                import { registerMgtComponents } from "${mgtScriptName}";
-                registerMgtComponents();
-              </script>
-              <script type="module">
-                ${providerInitCode}
-              </script>
-              <style>
-                ${themeToggleCss}
-                ${css}
-              </style>
-            </head>
-            <body>
-              ${themeToggle}
-              ${html}
-              <script type="module">
-                ${js}
-              </script>
-            </body>
-          </html>
-        `;
+            <html>
+              <head>
+                <script type="module" src="${mgtScriptName}"></script>
+                <script type="module">
+                  import { registerMgtComponents } from "${mgtScriptName}";
+                  registerMgtComponents();
+                </script>
+                <script type="module">
+                  ${providerInitCode}
+                </script>
+                <style>
+                  ${themeToggleCss}
+                  ${css}
+                </style>
+              </head>
+              <body>
+                ${themeToggle}
+                ${html}
+                <script type="module">
+                  ${js}
+                </script>
+              </body>
+            </html>
+          `;
 
           doc.open();
           doc.write(docContent);
@@ -274,13 +278,17 @@ export const withCodeEditor = makeDecorator({
     setupEditorResize(storyElementWrapper, separator, editor, () => editor.layout());
 
     root.className = 'story-mgt-root';
-    storyElementWrapper.className = 'story-mgt-preview-wrapper';
+
+    storyElementWrapper.className = isEditorEnabled() ? 'story-mgt-preview-wrapper' : 'story-mgt-preview-wrapper-full';
     separator.className = 'story-mgt-separator';
     editor.className = 'story-mgt-editor';
 
     root.appendChild(storyElementWrapper);
     root.appendChild(separator);
-    root.appendChild(editor);
+
+    if (isEditorEnabled()) {
+      root.appendChild(editor);
+    }
 
     window.addEventListener('resize', () => {
       storyElementWrapper.style.height = null;
@@ -288,6 +296,13 @@ export const withCodeEditor = makeDecorator({
       editor.style.height = null;
       editor.style.width = null;
     });
+
+    editor.files = {
+      html: storyHtml,
+      react: reactCode,
+      js: scriptCode,
+      css: styleCode
+    };
 
     return root;
   }
