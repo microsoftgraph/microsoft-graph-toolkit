@@ -107,9 +107,6 @@ export class GraphNotificationUserClient {
     if (isMessageNotification(notification)) {
       this.processMessageNotification(notification, emitter);
     }
-    // } else {
-    //   this.processChatPropertiesNotification(notification, emitter);
-    // }
     // Need to return a status code string of 200 so that graph knows the message was received and doesn't re-send the notification
     const ackMessage: unknown = { StatusCode: '200' };
     return GraphConfig.ackAsString ? JSON.stringify(ackMessage) : ackMessage;
