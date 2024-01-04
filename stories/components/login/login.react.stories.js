@@ -17,10 +17,9 @@ export default {
 export const Login = () => html`
   <mgt-login></mgt-login>
 <react>
-import * as React from "react";
 import { Login } from '@microsoft/mgt-react';
 
-export const Default = () => (
+export default () => (
   <Login></Login>
 );
 </react>
@@ -29,10 +28,9 @@ export const Default = () => (
 export const CompactLogin = () => html`
   <mgt-login login-view="compact"></mgt-login>
 <react>
-import * as React from "react";
 import { Login } from '@microsoft/mgt-react';
 
-export const Default = () => (
+export default () => (
   <Login loginView='compact'></Login>
 );
 </react>
@@ -41,10 +39,9 @@ export const Default = () => (
 export const AvatarLogin = () => html`
   <mgt-login login-view="avatar"></mgt-login>
 <react>
-import * as React from "react";
 import { Login } from '@microsoft/mgt-react';
 
-export const Default = () => (
+export default () => (
   <Login loginView='avatar'></Login>
 );
 </react>
@@ -53,10 +50,9 @@ export const Default = () => (
 export const ShowPresenceLogin = () => html`
   <mgt-login show-presence login-view="full"></mgt-login>
   <react>
-import * as React from "react";
 import { Login } from '@microsoft/mgt-react';
 
-export const Default = () => (
+export default () => (
   <Login showPresence={true} loginView='full'></Login>
 );
 </react>
@@ -67,11 +63,11 @@ export const RightAligned = () => html`
     <mgt-login login-view="compact"></mgt-login>
 </div>
 <react>
-import * as React from "react";
 import { Login } from '@microsoft/mgt-react';
+import './App.css';
 
-export const Default = () => (
-  <div class="right">
+export default () => (
+  <div className="right">
     <Login loginView='compact'></Login>
   </div>
 );
@@ -83,44 +79,4 @@ export const Default = () => (
   justify-content: flex-end;
 }
 </style>
-`;
-
-export const RTL = () => html`
-  <body dir="rtl">
-    <mgt-login></mgt-login>
-  </body>
-<react>
-import * as React from "react";
-import { Login } from '@microsoft/mgt-react';
-
-export const Default = () => (
-  <body dir="rtl">
-    <Login></Login>
-  </body>
-);
-</react>
-`;
-
-export const Localization = () => html`
-  <mgt-login></mgt-login>
-<react>
-import * as React from "react";
-import { Login } from '@microsoft/mgt-react';
-
-export const Default = () => (
-  <Login></Login>
-);
-</react>
-<script>
-import { LocalizationHelper } from '@microsoft/mgt-element';
-LocalizationHelper.strings = {
-  _components: {
-    login: {
-      signInLinkSubtitle: 'Sign In 🤗',
-      signOutLinkSubtitle: 'Sign Out 🙋‍♀️',
-      signInWithADifferentAccount: 'Use another account'
-    },
-  }
-}
-</script>
 `;

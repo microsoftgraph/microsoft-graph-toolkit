@@ -105,7 +105,7 @@ export const withCodeEditor = makeDecorator({
       ?.trim();
 
     if (reactCode) {
-      fileTypes = ['react', 'js', 'css'];
+      fileTypes = ['react', 'css'];
     }
 
     let editor = new EditorElement(fileTypes);
@@ -218,6 +218,11 @@ export const withCodeEditor = makeDecorator({
       }
     });
 
+    const getFullReactCode = (code, context) => {
+      const snippetName = `${context?.component}-${context?.name?.replace(/ /g, '-').toLowerCase()}`;
+      return (code += `\n\n// Edit in StackBlitz: https://stackblitz.com/edit/${snippetName}?file=src%2FApp.tsx`);
+    };
+
     const loadEditorContent = () => {
       const storyElement = document.createElement('iframe');
 
@@ -299,7 +304,7 @@ export const withCodeEditor = makeDecorator({
 
     editor.files = {
       html: storyHtml,
-      react: reactCode,
+      react: getFullReactCode(reactCode, context),
       js: scriptCode,
       css: styleCode
     };

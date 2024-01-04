@@ -16,13 +16,8 @@ import { Msal2Provider } from '../packages/providers/mgt-msal2-provider/dist/es6
 import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from './env';
 import { MockProvider } from '@microsoft/mgt-element';
 import { PACKAGE_VERSION } from '../packages/mgt-element/dist/es6/utils/version';
-import { registerMgtPersonComponent } from '../packages/mgt-components/dist/es6/components/mgt-person/mgt-person';
-import { registerMgtLoginComponent } from '../packages/mgt-components/dist/es6/components/mgt-login/mgt-login';
 import { Login, Person } from '../packages/mgt-react/src/generated/react';
 import './manager.css';
-
-/*registerMgtPersonComponent();
-registerMgtLoginComponent();*/
 
 const getClientId = () => {
   const urlParams = new window.URL(window.location.href).searchParams;
