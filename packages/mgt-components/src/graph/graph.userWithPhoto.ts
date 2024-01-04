@@ -9,6 +9,8 @@ import { CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 
 import {
   CachePhoto,
+  anyUserValidPhotoScopes,
+  currentUserValidPhotoScopes,
   getIsPhotosCacheEnabled,
   getPhotoForResource,
   getPhotoFromCache,
@@ -33,6 +35,19 @@ export const getUserWithPhoto = async (
   userId?: string,
   requestedProps?: string[]
 ): Promise<IDynamicPerson> => {
+  const anyUserValidScopes = [
+    'User.ReadBasic.All',
+    'User.Read.All',
+    'Directory.Read.All',
+    'User.ReadWrite.All',
+    'Directory.ReadWrite.All'
+  ];
+
+  const currentUserValidScopes = ['User.Read', 'User.ReadWrite', ...anyUserValidScopes];
+
+  const requiredUserScopes = userId ? anyUserValidScopes : currentUserValidScopes;
+  const requiredPhotoScopes = userId ? anyUserValidPhotoScopes : currentUserValidPhotoScopes;
+
   let photo: string;
   let user: IDynamicPerson = null;
 
@@ -41,8 +56,6 @@ export const getUserWithPhoto = async (
 
   const resource = userId ? `users/${userId}` : 'me';
   const fullResource = resource + (requestedProps ? `?$select=${requestedProps.toString()}` : '');
-
-  const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
 
   // attempt to get user and photo from cache if enabled
   if (getIsUsersCacheEnabled()) {
@@ -78,7 +91,6 @@ export const getUserWithPhoto = async (
       } catch (e: unknown) {
         if (isGraphError(e)) {
           // if 404 received (photo not found) but user already in cache, update timeCache value to prevent repeated 404 error / graph calls on each page refresh
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (e.code === 'ErrorItemNotFound' || e.code === 'ImageNotFound') {
             await storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag: null, photo: null });
           }
@@ -94,13 +106,15 @@ export const getUserWithPhoto = async (
     // batch calls
     const batch = graph.createBatch();
     if (userId) {
-      batch.get('user', `/users/${userId}${requestedProps ? '?$select=' + requestedProps.toString() : ''}`, [
-        'user.readbasic.all'
-      ]);
-      batch.get('photo', `users/${userId}/photo/$value`, ['user.readbasic.all']);
+      batch.get(
+        'user',
+        `/users/${userId}${requestedProps ? '?$select=' + requestedProps.toString() : ''}`,
+        requiredUserScopes
+      );
+      batch.get('photo', `users/${userId}/photo/$value`, requiredPhotoScopes);
     } else {
-      batch.get('user', 'me', ['user.read']);
-      batch.get('photo', 'me/photo/$value', ['user.read']);
+      batch.get('user', 'me', requiredUserScopes);
+      batch.get('photo', 'me/photo/$value', requiredPhotoScopes);
     }
     const response = await batch.executeAll();
 
@@ -127,7 +141,7 @@ export const getUserWithPhoto = async (
   } else if (!cachedPhoto) {
     try {
       // if only photo or user is not cached, get it individually
-      const response = await getPhotoForResource(graph, resource, scopes);
+      const response = await getPhotoForResource(graph, resource, requiredPhotoScopes);
       if (response) {
         if (getIsPhotosCacheEnabled()) {
           await storePhotoInCache(userId || 'me', schemas.photos.stores.users, {
@@ -145,7 +159,7 @@ export const getUserWithPhoto = async (
     try {
       const response: IDynamicPerson = (await graph
         .api(fullResource)
-        .middlewareOptions(prepScopes(...scopes))
+        .middlewareOptions(prepScopes(requiredUserScopes))
         .get()) as IDynamicPerson;
 
       if (response) {

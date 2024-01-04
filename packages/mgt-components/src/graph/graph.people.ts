@@ -94,6 +94,9 @@ const getPeopleInvalidationTime = (): number => {
  */
 const getIsPeopleCacheEnabled = (): boolean => CacheService.config.people.isEnabled && CacheService.config.isEnabled;
 
+const validPeopleQueryScopes = ['People.Read', 'People.Read.All'];
+const validContactQueryScopes = ['Contacts.Read', 'Contacts.ReadWrite'];
+
 /**
  * async promise, returns all Graph people who are most relevant contacts to the signed in user.
  *
@@ -109,8 +112,6 @@ export const findPeople = async (
   userType: UserType = UserType.any,
   filters = ''
 ): Promise<Person[]> => {
-  const scopes = 'people.read';
-
   const cacheKey = `${query}:${top}:${userType}`;
   let cache: CacheStore<CachePeopleQuery>;
   if (getIsPeopleCacheEnabled()) {
@@ -144,7 +145,7 @@ export const findPeople = async (
       .search('"' + query + '"')
       .top(top)
       .filter(filter)
-      .middlewareOptions(prepScopes(scopes));
+      .middlewareOptions(prepScopes(validPeopleQueryScopes));
 
     if (userType !== UserType.contact) {
       // for any type other than Contact, user a wider search
@@ -176,8 +177,6 @@ export const getPeople = async (
   peopleFilters = '',
   top = 10
 ): Promise<Person[]> => {
-  const scopes = 'people.read';
-
   let cache: CacheStore<CachePeopleQuery>;
   const cacheKey = `${peopleFilters ? peopleFilters : `*:${userType}`}:${top}`;
 
@@ -206,7 +205,7 @@ export const getPeople = async (
 
   let people: CollectionResponse<Person>;
   try {
-    let graphRequest = graph.api(uri).middlewareOptions(prepScopes(scopes)).top(top).filter(filter);
+    let graphRequest = graph.api(uri).middlewareOptions(prepScopes(validPeopleQueryScopes)).top(top).filter(filter);
 
     if (userType !== UserType.contact) {
       // for any type other than Contact, user a wider search
@@ -251,7 +250,6 @@ export const getEmailFromGraphEntity = (entity: IDynamicPerson): string => {
  * @memberof Graph
  */
 export const findContactsByEmail = async (graph: IGraph, email: string): Promise<Contact[]> => {
-  const scopes = 'contacts.read';
   let cache: CacheStore<CachePerson>;
   if (getIsPeopleCacheEnabled()) {
     cache = CacheService.getCache<CachePerson>(schemas.people, schemas.people.stores.contacts);
@@ -267,7 +265,7 @@ export const findContactsByEmail = async (graph: IGraph, email: string): Promise
   const result = (await graph
     .api('/me/contacts')
     .filter(`emailAddresses/any(a:a/address eq '${encodedEmail}')`)
-    .middlewareOptions(prepScopes(scopes))
+    .middlewareOptions(prepScopes(validContactQueryScopes))
     .get()) as CollectionResponse<Contact>;
 
   if (getIsPeopleCacheEnabled() && result) {
@@ -281,7 +279,12 @@ export const findContactsByEmail = async (graph: IGraph, email: string): Promise
  * async promise, returns Graph people matching the Graph query specified
  * in the resource param
  *
- * @param {string} resource
+ * @param {IGraph} graph - the graph instance to use for making requests
+ * @param {string} version - the graph version url segment to use when making requests
+ * @param {string} resource - the resource segment of the graph url to be requested
+ * @param {string[]} scopes - an array of scopes that are required to make the underlying graph request,
+ *  if any scope provided is not currently consented then the user will be prompted for consent prior to
+ *  making the graph request to load data.
  * @returns {(Promise<Person[]>)}
  * @memberof Graph
  */
@@ -304,7 +307,7 @@ export const getPeopleFromResource = async (
   let request = graph.api(resource).version(version);
 
   if (scopes?.length) {
-    request = request.middlewareOptions(prepScopes(...scopes));
+    request = request.middlewareOptions(prepScopes(scopes));
   }
 
   let response = (await request.get()) as CollectionResponse<Person>;
@@ -315,7 +318,7 @@ export const getPeopleFromResource = async (
     while (page?.['@odata.nextLink']) {
       const nextLink = page['@odata.nextLink'] as string;
       const nextResource = nextLink.split(version)[1];
-      page = (await graph.client.api(nextResource).version(version).get()) as CollectionResponse<Person>;
+      page = (await graph.api(nextResource).version(version).get()) as CollectionResponse<Person>;
       if (page?.value?.length) {
         page.value = response.value.concat(page.value);
         response = page;

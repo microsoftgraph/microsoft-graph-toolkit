@@ -63,8 +63,7 @@ $organization-direct-report-person-avatar-size: var(--organization-direct-report
       padding: 12px;
       display: flex;
       align-items: center;
-      margin-left: 20px;
-      margin-right: 20px;
+      margin-inline: 20px;
 
       &.org-member--target {
         background-color: $organization-active-org-member-target-background-color;
@@ -138,10 +137,18 @@ $organization-direct-report-person-avatar-size: var(--organization-direct-report
       padding: 12px 20px;
 
       .direct-report {
-        cursor: pointer;
-        width: 38px;
         margin-right: 4px;
-        display: inline;
+      }
+    }
+
+    .direct-report-list {
+      border: 1px solid $organization-coworker-border-color;
+      margin-inline: 20px;
+
+      .org-member--direct-report {
+        border: none;
+        cursor: pointer;
+        margin-inline: 0;
 
         .direct-report__person-image {
           --person-avatar-size: #{$organization-direct-report-person-avatar-size};

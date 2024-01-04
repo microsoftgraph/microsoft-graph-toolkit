@@ -50,6 +50,13 @@ export const getIsUsersCacheEnabled = (): boolean =>
   CacheService.config.users.isEnabled && CacheService.config.isEnabled;
 
 export const getUsers = async (graph: IGraph, userFilters = '', top = 10): Promise<User[]> => {
+  const allValidScopes = [
+    'User.ReadBasic.All',
+    'User.Read.All',
+    'Directory.Read.All',
+    'User.ReadWrite.All',
+    'Directory.ReadWrite.All'
+  ];
   const apiString = '/users';
   let cache: CacheStore<CacheUserQuery>;
   const cacheKey = `${userFilters === '' ? '*' : userFilters}:${top}`;
@@ -69,7 +76,9 @@ export const getUsers = async (graph: IGraph, userFilters = '', top = 10): Promi
   }
 
   try {
-    const response = (await graphClient.middlewareOptions(prepScopes('user.read')).get()) as CollectionResponse<User>;
+    const response = (await graphClient
+      .middlewareOptions(prepScopes(allValidScopes))
+      .get()) as CollectionResponse<User>;
     if (getIsUsersCacheEnabled() && response) {
       cacheItem.results = response.value.map(userStr => JSON.stringify(userStr));
       await cache.putValue(userFilters, cacheItem);
@@ -79,6 +88,7 @@ export const getUsers = async (graph: IGraph, userFilters = '', top = 10): Promi
   } catch (error) {}
 };
 
+const allValidMeScopes = ['User.Read', 'User.ReadWrite'];
 /**
  * async promise, returns Graph User data relating to the user logged in
  *
@@ -86,6 +96,8 @@ export const getUsers = async (graph: IGraph, userFilters = '', top = 10): Promi
  * @memberof Graph
  */
 export const getMe = async (graph: IGraph, requestedProps?: string[]): Promise<User> => {
+  // for the /me call we'll only use the single User.Read and User.ReadWrite permissions
+  // as they are explicitly scoped to the current user
   let cache: CacheStore<CacheUser>;
   if (getIsUsersCacheEnabled()) {
     cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
@@ -108,13 +120,20 @@ export const getMe = async (graph: IGraph, requestedProps?: string[]): Promise<U
   if (requestedProps) {
     apiString = apiString + '?$select=' + requestedProps.toString();
   }
-  const response = (await graph.api(apiString).middlewareOptions(prepScopes('user.read')).get()) as User;
+  const response = (await graph.api(apiString).middlewareOptions(prepScopes(allValidMeScopes)).get()) as User;
   if (getIsUsersCacheEnabled()) {
     await cache.putValue('me', { user: JSON.stringify(response) });
   }
   return response;
 };
 
+export const validUserByIdScopes = [
+  'User.ReadBasic.All',
+  'User.Read.All',
+  'Directory.Read.All',
+  'User.ReadWrite.All',
+  'Directory.ReadWrite.All'
+];
 /**
  * async promise, returns all Graph users associated with the userPrincipleName provided
  *
@@ -123,7 +142,6 @@ export const getMe = async (graph: IGraph, requestedProps?: string[]): Promise<U
  * @memberof Graph
  */
 export const getUser = async (graph: IGraph, userPrincipleName: string, requestedProps?: string[]): Promise<User> => {
-  const scopes = 'user.readbasic.all';
   let cache: CacheStore<CacheUser>;
 
   if (getIsUsersCacheEnabled()) {
@@ -152,7 +170,7 @@ export const getUser = async (graph: IGraph, userPrincipleName: string, requeste
   // else we must grab it
   let response: User;
   try {
-    response = (await graph.api(apiString).middlewareOptions(prepScopes(scopes)).get()) as User;
+    response = (await graph.api(apiString).middlewareOptions(prepScopes(validUserByIdScopes)).get()) as User;
     // eslint-disable-next-line no-empty
   } catch (_) {}
 
@@ -214,19 +232,19 @@ export const getUsersForUserIds = async (
         if (user) {
           peopleDict[id] = user;
         } else {
-          batch.get(id, apiUrl, ['user.readbasic.all']);
+          batch.get(id, apiUrl, validUserByIdScopes);
           notInCache.push(id);
         }
       }
     } else if (id !== '') {
-      if (id.toString() === 'me') {
+      if (id === 'me') {
         peopleDict[id] = await getMe(graph);
       } else {
         apiUrl = `/users/${id}`;
         if (userFilters) {
           apiUrl += `${apiUrl}?$filter=${userFilters}`;
         }
-        batch.get(id, apiUrl, ['user.readbasic.all']);
+        batch.get(id, apiUrl, validUserByIdScopes);
         notInCache.push(id);
       }
     }
@@ -300,6 +318,7 @@ export const getUsersForPeopleQueries = async (
   peopleQueries: string[],
   fallbackDetails?: IDynamicPerson[]
 ): Promise<User[]> => {
+  const allValidPeopleScopes = ['People.Read', 'People.Read.All'];
   if (!peopleQueries || peopleQueries.length === 0) {
     return [];
   }
@@ -325,7 +344,7 @@ export const getUsersForPeopleQueries = async (
       const person = JSON.parse(cacheRes.results[0]) as User;
       people.push(person);
     } else {
-      batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read'], {
+      batch.get(personQuery, `/me/people?$search="${personQuery}"`, allValidPeopleScopes, {
         'X-PeopleQuery-QuerySources': 'Mailbox,Directory'
       });
     }
@@ -384,7 +403,7 @@ export const getUsersForPeopleQueries = async (
  * @returns {Promise<User[]>}
  */
 export const findUsers = async (graph: IGraph, query: string, top = 10, userFilters = ''): Promise<User[]> => {
-  const scopes = 'User.ReadBasic.All';
+  const scopes = validUserByIdScopes;
   const item = { maxResults: top, results: null };
   const cacheKey = `${query}:${top}:${userFilters}`;
   let cache: CacheStore<CacheUserQuery>;
@@ -441,7 +460,13 @@ export const findGroupMembers = async (
   userFilters = '',
   peopleFilters = ''
 ): Promise<User[]> => {
-  const scopes = ['GroupMember.Read.All'];
+  const allValidScopes = [
+    'GroupMember.Read.All',
+    'Group.Read.All',
+    'Directory.Read.All',
+    'GroupMember.ReadWrite.All',
+    'Group.ReadWrite.All'
+  ];
   const item = { maxResults: top, results: null };
 
   let cache: CacheStore<CacheUserQuery>;
@@ -478,14 +503,13 @@ export const findGroupMembers = async (
   if (peopleFilters) {
     filter += query ? ` and ${peopleFilters}` : peopleFilters;
   }
-
   const graphResult = (await graph
     .api(apiUrl)
     .count(true)
     .top(top)
     .filter(filter)
     .header('ConsistencyLevel', 'eventual')
-    .middlewareOptions(prepScopes(...scopes))
+    .middlewareOptions(prepScopes(allValidScopes))
     .get()) as CollectionResponse<User>;
 
   if (getIsUsersCacheEnabled() && graphResult) {
