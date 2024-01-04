@@ -746,7 +746,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       for (const team of teams) {
         const channelsForTeam = responses.get(team.id);
         // skip over any teams that don't have channels
-        if (!channelsForTeam.content?.value?.length) continue;
+        if (!channelsForTeam?.content?.value?.length) continue;
         this.items.push({
           item: team,
           channels: channelsForTeam.content.value.map(c => ({ item: c }))
