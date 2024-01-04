@@ -364,7 +364,7 @@ export class MgtGet extends MgtTemplatedComponent {
           let request: GraphRequest = graph.api(uri).version(this.version);
 
           if (this.scopes?.length) {
-            request = request.middlewareOptions(prepScopes(...this.scopes));
+            request = request.middlewareOptions(prepScopes(this.scopes));
           }
 
           if (this.type === ResponseType.json) {
@@ -390,7 +390,7 @@ export class MgtGet extends MgtTemplatedComponent {
               ) {
                 pageCount++;
                 const nextResource = (page['@odata.nextLink'] as string).split(this.version)[1];
-                page = (await graph.client.api(nextResource).version(this.version).get()) as CollectionResponse<Entity>;
+                page = (await graph.api(nextResource).version(this.version).get()) as CollectionResponse<Entity>;
                 if (page?.value?.length) {
                   page.value = response.value.concat(page.value);
                   response = page;

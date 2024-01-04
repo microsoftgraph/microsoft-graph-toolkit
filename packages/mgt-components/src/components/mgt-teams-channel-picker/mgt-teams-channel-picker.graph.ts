@@ -26,7 +26,7 @@ export const getAllMyTeams = async (graph: IGraph, scopes: string[]): Promise<Te
   const teams = (await graph
     .api('/me/joinedTeams')
     .select(['displayName', 'id', 'isArchived'])
-    .middlewareOptions(prepScopes(...scopes))
+    .middlewareOptions(prepScopes(scopes))
     .get()) as CollectionResponse<Team>;
 
   return teams?.value;
@@ -42,7 +42,7 @@ type CachePhotos = Record<string, CachePhoto>;
  * @param teamIds {string[]}
  * @returns {Promise<CachePhotos>}
  */
-export const getTeamsPhotosforPhotoIds = async (graph: BetaGraph, teamIds: string[]): Promise<CachePhotos> => {
+export const getTeamsPhotosForPhotoIds = async (graph: BetaGraph, teamIds: string[]): Promise<CachePhotos> => {
   let cache: CacheStore<CachePhoto>;
   let photos: CachePhotos = {};
 

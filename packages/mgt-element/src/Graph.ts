@@ -107,8 +107,8 @@ export class Graph implements IGraph {
 
     if (this._componentName) {
       request.middlewareOptions = (options: MiddlewareOptions[]): GraphRequest => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/dot-notation
-        request['_middlewareOptions'] = request['_middlewareOptions'].concat(options);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/dot-notation
+        request['_middlewareOptions'] = (request['_middlewareOptions'] as MiddlewareOptions[]).concat(options);
         return request;
       };
       request = request.middlewareOptions([new ComponentMiddlewareOptions(this._componentName)]);
