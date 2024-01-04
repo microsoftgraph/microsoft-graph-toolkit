@@ -1,9 +1,11 @@
 import { MessageThreadProps, ErrorBarProps } from '@azure/communication-react';
 import { ActiveAccountChanged, LoginChangedEvent, ProviderState, Providers } from '@microsoft/mgt-element';
 import { GraphError } from '@microsoft/microsoft-graph-client';
+import { ChatMessage } from '@microsoft/microsoft-graph-types';
 import { produce } from 'immer';
 import { currentUserId, currentUserName } from '../utils/currentUser';
 import { graph } from '../utils/graph';
+import { MessageCache } from './Caching/MessageCache';
 import { GraphConfig } from './GraphConfig';
 import { GraphNotificationUserClient } from './GraphNotificationUserClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
@@ -42,6 +44,7 @@ interface StatefulClient<T> {
 class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient> {
   private readonly _notificationClient: GraphNotificationUserClient;
   private readonly _eventEmitter: ThreadEventEmitter;
+  private readonly _cache: MessageCache;
   private _subscribers: ((state: GraphChatListClient) => void)[] = [];
 
   private _userDisplayName = '';
@@ -51,6 +54,8 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     Providers.globalProvider.onStateChanged(this.onLoginStateChanged);
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
+    this.registerEventListeners();
+    this._cache = new MessageCache();
     this._notificationClient = new GraphNotificationUserClient(
       this._eventEmitter,
       graph('mgt-chat', GraphConfig.version)
@@ -113,6 +118,15 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this._state = produce(this._state, recipe);
     this._subscribers.forEach(handler => handler(this._state));
   }
+
+  /*
+   * Event handler to be called when a new message is received by the notification service
+   */
+  private readonly onMessageReceived = async (message: ChatMessage) => {
+    if (message.chatId) {
+      await this._cache.cacheMessage(message.chatId, message);
+    }
+  };
 
   /**
    * Return the current state of the chat client
@@ -273,6 +287,13 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         draft.status = 'no session id';
       });
     }
+  }
+
+  /**
+   * Register event listeners for chat events to be triggered from the notification service
+   */
+  private registerEventListeners() {
+    this._eventEmitter.on('chatMessageReceived', (message: ChatMessage) => void this.onMessageReceived(message));
   }
 }
 
