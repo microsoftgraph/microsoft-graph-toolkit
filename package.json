@@ -54,9 +54,9 @@
     "setLicense": "gulp setLicense",
     "test": "npm run wtr:coverage",
     "version:tsc": "tsc -v",
-    "wtr": "wtr --puppeteer",
+    "wtr": "wtr --playwright",
     "wtr:coverage": "wtr --playwright --coverage",
-    "wtr:watch": "wtr --puppeteer --watch"
+    "wtr:watch": "wtr --playwright --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.12.8",
