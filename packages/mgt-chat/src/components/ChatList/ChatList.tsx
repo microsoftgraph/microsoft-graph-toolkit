@@ -30,7 +30,7 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme}>
         {chats.map(c => (
-          <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
+          <ChatListItem key={c.id} chat={{ id: c.id }} myId={chatState.userId} onSelected={props.onSelected} />
         ))}
       </FluentProvider>
     </FluentThemeProvider>

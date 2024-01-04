@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { makeStyles, shorthands, Button } from '@fluentui/react-components';
 import {
   Chat,
@@ -10,6 +10,7 @@ import {
 import { error } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
+import { loadChatWithPreview } from '../../statefulClient/graph.chat';
 
 export interface IChatListItemInteractionProps {
   onSelected: (e: Chat) => void;
@@ -87,6 +88,9 @@ const useStyles = makeStyles({
 export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps & IChatListItemInteractionProps) => {
   const styles = useStyles();
 
+  // manage the internal state of the chat
+  const [chatInternal, setChatInternal] = useState(chat);
+
   // shortcut if no valid user
   if (!myId) {
     return <></>;
@@ -144,11 +148,11 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     let lastMessageTime = new Date(lastMessageTimeString);
     let lastUpdatedTime = new Date(lastUpdatedTimeString);
 
-    if (lastMessageTime && lastUpdatedTime) {
+    if (lastMessageTimeString && lastUpdatedTimeString) {
       timestamp = new Date(Math.max(lastMessageTime.getTime(), lastUpdatedTime.getTime()));
-    } else if (lastMessageTime) {
+    } else if (lastMessageTimeString) {
       timestamp = lastMessageTime;
-    } else if (lastUpdatedTime) {
+    } else if (lastUpdatedTimeString) {
       timestamp = lastUpdatedTime;
     }
 
@@ -195,19 +199,41 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     return removeHtmlPTags(previewString);
   };
 
+  // if chat changes, update the internal state to match
+  useEffect(() => {
+    setChatInternal(chat);
+  }, [chat]);
+
+  // enrich the chat if necessary
+  useEffect(() => {
+    if (chatInternal.id && (chatInternal.chatType == null || chatInternal.members == null)) {
+      const provider = Providers.globalProvider;
+      if (provider && provider.state === ProviderState.SignedIn) {
+        const graph = provider.graph.forComponent('ChatListItem');
+        const load = async (id: string): Promise<Chat> => {
+          return await loadChatWithPreview(graph, id);
+        };
+        load(chatInternal.id).then(
+          c => setChatInternal(c),
+          e => error(e)
+        );
+      }
+    }
+  }, [chatInternal]);
+
   return (
     <Button
       className={styles.chatListItem}
       onClick={() => {
-        onSelected(chat);
+        onSelected(chatInternal);
       }}
     >
       <div className={styles.profileImage}>{getDefaultProfileImage()}</div>
       <div className={styles.chatInfo}>
-        <h3 className={styles.chatTitle}>{inferTitle(chat)}</h3>
-        <p className={styles.chatMessage}>{enrichPreviewMessage(chat.lastMessagePreview)}</p>
+        <h3 className={styles.chatTitle}>{inferTitle(chatInternal)}</h3>
+        <p className={styles.chatMessage}>{enrichPreviewMessage(chatInternal.lastMessagePreview)}</p>
       </div>
-      <div className={styles.chatTimestamp}>{extractTimestamp(determineCorrectTimestamp(chat))}</div>
+      <div className={styles.chatTimestamp}>{extractTimestamp(determineCorrectTimestamp(chatInternal))}</div>
     </Button>
   );
 };
