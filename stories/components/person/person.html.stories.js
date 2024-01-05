@@ -9,15 +9,9 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-person',
+  title: 'Components / mgt-person / HTML',
   component: 'person',
-  decorators: [withCodeEditor],
-  tags: ['autodocs'],
-  parameters: {
-    docs: {
-      source: { code: '<mgt-person person-query="me" view="twoLines"></mgt-person>' }
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const person = () => html`
