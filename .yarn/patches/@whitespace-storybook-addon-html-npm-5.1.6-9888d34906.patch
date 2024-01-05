@@ -1,0 +1,62 @@
+diff --git a/dist/esm/Panel.js b/dist/esm/Panel.js
+index 0d26a69f0fcdf303ddb41d22200dca9fd98d7136..ff82b5530359cae82ad620839d4378ce258a1285 100644
+--- a/dist/esm/Panel.js
++++ b/dist/esm/Panel.js
+@@ -10,13 +10,13 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
+ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+ function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+-import React, { useMemo } from "react";
+-import { useAddonState, useChannel, useParameter } from "@storybook/api";
++import React, { useState, useEffect } from "react";
++import { useAddonState, useChannel, useParameter } from "@storybook/manager-api";
+ import { AddonPanel } from "@storybook/components";
+ import { ADDON_ID, EVENTS, PARAM_KEY } from "./constants";
+ import { PanelContent } from "./components/PanelContent";
+ import { format as prettierFormat } from "prettier/standalone";
+-import prettierHtml from "prettier/parser-html";
++import * as prettierHtml from "prettier/plugins/html";
+ export var Panel = function Panel(props) {
+   // https://storybook.js.org/docs/react/addons/addons-api#useaddonstate
+   var _useAddonState = useAddonState(ADDON_ID, {
+@@ -51,9 +51,15 @@ export var Panel = function Panel(props) {
+     parser: "html",
+     plugins: [prettierHtml]
+   });
+-  var formattedCode = useMemo(function () {
+-    return code && prettierFormat(code, prettierConfig);
+-  }, [code, prettierConfig]);
++  const [formattedCode, setFormattedCode] = useState(null);
++  useEffect(() => {
++    const formatCode = async () => {
++      const prettierFormattedCode = code && await prettierFormat(code, prettierConfig);
++      setFormattedCode(prettierFormattedCode);
++    }
++    formatCode().catch(e => console.error(e));
++    }, [code, prettierConfig]
++  );
+   return /*#__PURE__*/React.createElement(AddonPanel, props, /*#__PURE__*/React.createElement(PanelContent, {
+     code: formattedCode,
+     showLineNumbers: showLineNumbers,
+diff --git a/package.json b/package.json
+index 34ef114920720e922094148145c9f4062ac1a5ac..33b5d71f9a53ef20626c961e2535571f5c317a0b 100644
+--- a/package.json
++++ b/package.json
+@@ -63,7 +63,7 @@
+     "eslint-plugin-import": "^2.26.0",
+     "eslint-plugin-react": "^7.31.11",
+     "npm-run-all": "^4.1.5",
+-    "prettier": "^2.8.1",
++    "prettier": "^3.0.2",
+     "prop-types": "^15.8.1",
+     "react": "^17.0.2",
+     "react-dom": "^17.0.2",
+@@ -79,7 +79,7 @@
+     "@storybook/components": "^6.5.8 || ^7.0.12",
+     "@storybook/core-events": "^6.5.8 || ^7.0.12",
+     "@storybook/theming": "^6.5.8 || ^7.0.12",
+-    "prettier": "^2.0.0",
++    "prettier": "^3.0.0",
+     "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0",
+     "react-syntax-highlighter": "^15.0.0"

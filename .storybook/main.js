@@ -17,6 +17,8 @@ module.exports = {
   addons: [
     getAbsolutePath('storybook-version'),
     getAbsolutePath('@storybook/addon-docs'),
+    getAbsolutePath('@storybook/addon-controls'),
+    getAbsolutePath('@whitespace/storybook-addon-html'),
     getAbsolutePath('@storybook/addon-mdx-gfm')
   ],
 

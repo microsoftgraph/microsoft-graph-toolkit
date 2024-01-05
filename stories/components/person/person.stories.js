@@ -21,15 +21,15 @@ export default {
 };
 
 export const person = () => html`
-  <mgt-person person-query="me"></mgt-person>
-  <br>
-  <mgt-person person-query="me" view="oneLine"></mgt-person>
-  <br>
-  <mgt-person person-query="me" view="twoLines"></mgt-person>
-  <br>
-  <mgt-person person-query="me" view="threeLines"></mgt-person>
-  <br>
-  <mgt-person person-query="me" view="fourLines"></mgt-person>
+<mgt-person person-query="me"></mgt-person>
+<br>
+<mgt-person person-query="me" view="oneLine"></mgt-person>
+<br>
+<mgt-person person-query="me" view="twoLines"></mgt-person>
+<br>
+<mgt-person person-query="me" view="threeLines"></mgt-person>
+<br>
+<mgt-person person-query="me" view="fourLines"></mgt-person>
 `;
 
 export const events = () => html`

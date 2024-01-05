@@ -73,12 +73,12 @@
     "@open-wc/testing": "^3.2.0",
     "@open-wc/testing-helpers": "^2.3.0",
     "@storybook/addon-a11y": "^7.4.5",
-    "@storybook/addon-actions": "^7.4.5",
+    "@storybook/addon-controls": "^7.4.5",
     "@storybook/addon-docs": "^7.4.5",
     "@storybook/addon-knobs": "^7.0.2",
     "@storybook/addon-links": "^7.4.5",
     "@storybook/addon-mdx-gfm": "^7.4.5",
-    "@storybook/addon-storysource": "^7.4.5",
+    "@storybook/addon-storysource": "^7.6.7",
     "@storybook/cli": "^7.4.5",
     "@storybook/web-components": "^7.4.5",
     "@storybook/web-components-webpack5": "^7.4.5",
@@ -95,6 +95,7 @@
     "@web/test-runner-playwright": "^0.10.2",
     "@web/test-runner-puppeteer": "^0.14.0",
     "@webcomponents/webcomponentsjs": "^2.5.0",
+    "@whitespace/storybook-addon-html": "^5.1.6",
     "babel-loader": "^8.2.1",
     "core-js": "^3.31.0",
     "cpx": "^1.5.0",
@@ -125,6 +126,7 @@
     "prettier": "3.0.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-syntax-highlighter": "^15.5.0",
     "regenerator-runtime": "^0.13.7",
     "rollup": "2.46.0",
     "rollup-plugin-babel": "^4.4.0",
@@ -156,7 +158,8 @@
     }
   },
   "resolutions": {
-    "responselike": "2.0.0"
+    "responselike": "2.0.0",
+    "@whitespace/storybook-addon-html@^5.1.6": "patch:@whitespace/storybook-addon-html@npm%3A5.1.6#./.yarn/patches/@whitespace-storybook-addon-html-npm-5.1.6-9888d34906.patch"
   },
   "packageManager": "yarn@3.6.3"
 }
