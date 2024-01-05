@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ChatListItem, IChatListItemInteractionProps } from '../ChatListItem/ChatListItem';
 import { SampleChats } from '../ChatListItem/sampleData';
 import { MgtTemplateProps } from '@microsoft/mgt-react';
@@ -15,12 +15,26 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
   // TODO: change this to use StatefulGraphChatListClient
   const chatClient: StatefulGraphChatClient = useGraphChatClient('');
   const [chatState, setChatState] = useState(chatClient.getState());
+  const [selectedItem, setSelectedItem] = useState<string>();
+  const [readItems, setReadItems] = useState<string[]>([]);
+
   useEffect(() => {
     chatClient.onStateChange(setChatState);
     return () => {
       chatClient.offStateChange(setChatState);
     };
   }, [chatClient]);
+
+  const updateSelectedChatListItem = useCallback((selectedItem: string) => {
+    setSelectedItem(selectedItem);
+  }, []);
+
+  const updateReadItems = useCallback(
+    (readItem: string) => {
+      setReadItems([...readItems, readItem]);
+    },
+    [readItems]
+  );
 
   const { value } = props.dataContext as { value: GraphChat[] };
   const chats: GraphChat[] = value;
@@ -30,7 +44,16 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme}>
         {chats.map(c => (
-          <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
+          <ChatListItem
+            key={c.id}
+            chat={c}
+            myId={chatState.userId}
+            onSelected={props.onSelected}
+            isSelected={c.id === selectedItem}
+            isRead={readItems.includes(c.id ?? '')}
+            onChatItemSelected={updateSelectedChatListItem}
+            onRead={updateReadItems}
+          />
         ))}
       </FluentProvider>
     </FluentThemeProvider>

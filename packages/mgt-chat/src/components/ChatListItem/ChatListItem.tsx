@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { makeStyles, shorthands, Button } from '@fluentui/react-components';
+import React, { useCallback, useState } from 'react';
+import { makeStyles, mergeClasses, shorthands, Button } from '@fluentui/react-components';
 import {
   Chat,
   AadUserConversationMember,
@@ -18,9 +18,34 @@ export interface IChatListItemInteractionProps {
 interface IMgtChatListItemProps {
   chat: Chat;
   myId: string | undefined;
+  isSelected: boolean;
+  isRead: boolean;
+}
+
+interface IChatListItemStyles {
+  onChatItemSelected: (e: string) => void;
+  onRead: (e: string) => void;
 }
 
 const useStyles = makeStyles({
+  // highlight selection
+  isSelected: {
+    backgroundColor: '#e6f7ff'
+  },
+
+  isUnSelected: {
+    backgroundColor: '#ffffff'
+  },
+
+  // highlight text
+  isBold: {
+    fontWeight: 'bold'
+  },
+
+  isNormal: {
+    fontWeight: 'normal'
+  },
+
   chatListItem: {
     display: 'flex',
     flexDirection: 'row',
@@ -84,7 +109,15 @@ const useStyles = makeStyles({
   }
 });
 
-export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps & IChatListItemInteractionProps) => {
+export const ChatListItem = ({
+  chat,
+  myId,
+  onSelected,
+  isSelected,
+  onRead,
+  isRead,
+  onChatItemSelected
+}: IMgtChatListItemProps & IChatListItemInteractionProps & IChatListItemStyles) => {
   const styles = useStyles();
 
   // shortcut if no valid user
@@ -195,16 +228,27 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     return removeHtmlPTags(previewString);
   };
 
+  const chatListItemStyle = mergeClasses(
+      styles.chatListItem,
+      isSelected ? styles.isSelected : styles.isUnSelected,
+      isRead ? styles.isNormal : styles.isBold
+    );
+
   return (
     <Button
-      className={styles.chatListItem}
+      className={chatListItemStyle}
       onClick={() => {
-        onSelected(chat);
+        // set selected state only once per click event
+        if (!isSelected) {
+          onChatItemSelected(chat.id ?? '');
+          onRead(chat.id ?? '');
+          onSelected(chat);
+        }
       }}
     >
       <div className={styles.profileImage}>{getDefaultProfileImage()}</div>
       <div className={styles.chatInfo}>
-        <h3 className={styles.chatTitle}>{inferTitle(chat)}</h3>
+        <p className={styles.chatTitle}>{inferTitle(chat)}</p>
         <p className={styles.chatMessage}>{enrichPreviewMessage(chat.lastMessagePreview)}</p>
       </div>
       <div className={styles.chatTimestamp}>{extractTimestamp(determineCorrectTimestamp(chat))}</div>
