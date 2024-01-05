@@ -15,10 +15,10 @@ export default {
   tags: ['autodocs', 'hidden'],
   parameters: {
     docs: {
-      source: { code: '<mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>' }
-    },
-    editor: {
-      hidden: true
+      source: { code: '<mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>' },
+      editor: {
+        hidden: true
+      }
     }
   }
 };

@@ -28,22 +28,25 @@ export default () => (
 export const events = () => html`
   <!-- Inspect to view log -->
   <mgt-picker resource="me/messages" scopes="mail.read" placeholder="Select a message" key-name="subject" max-pages="2"></mgt-picker>
-  <react>
+<react>
+import { useCallback } from 'react';
 import { Picker } from '@microsoft/mgt-react';
 
-const onSelectionChanged = (e: CustomEvent<any>) => {
-  console.log('selectedItem', e.detail);
-}
+export default () => {
+  const onSelectionChanged = useCallback((e: CustomEvent<any>) => {
+    console.log('selectedItem', e.detail);
+  }, []);
 
-export default () => (
-  <Picker
-    resource='me/messages'
-    scopes={['mail.read']}
-    placeholder="Select a message"
-    keyName="subject"
-    maxPages={2}
-    selectionChanged={onSelectionChanged}></Picker>
-);
+  return (
+    <Picker
+      resource='me/messages'
+      scopes={['mail.read']}
+      placeholder="Select a message"
+      keyName="subject"
+      maxPages={2}
+      selectionChanged={onSelectionChanged}></Picker>
+  );
+};
 </react>
   <script>
     document.querySelector('mgt-picker').addEventListener('selectionChanged', e => {

@@ -31,15 +31,16 @@ export const events = () => html`
 
   <mgt-person-card person-query="me"></mgt-person-card>
 <react>
+import { useCallback } from 'react';
 import { PersonCard } from '@microsoft/mgt-react';
 
-const onExpanded = (e: CustomEvent<null>) => {
-  console.log("expanded");
-}
+export default () => {
+  const onExpanded = useCallback((e: CustomEvent<null>) => {
+    console.log("expanded");
+  }, []);
 
-export default () => (
-  <PersonCard personQuery="me" expanded={onExpanded}></PersonCard>
-);
+  return <PersonCard personQuery="me" expanded={onExpanded}></PersonCard>;
+};
 </react>
   <script>
     const personCard = document.querySelector('mgt-person-card');

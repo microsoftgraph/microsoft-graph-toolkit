@@ -11,13 +11,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 export default {
   title: 'Components / mgt-file-list / HTML',
   component: 'file-list',
-  decorators: [withCodeEditor],
-  tags: ['autodocs'],
-  parameters: {
-    docs: {
-      source: { code: '<mgt-file-list></mgt-file-list>' }
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const fileList = () => html`

@@ -1,10 +1,6 @@
 import sdk from '@stackblitz/sdk';
 import * as beautify from 'js-beautify';
 
-export const generateProject = async (title, files) => {
-  files.react ? await openReactProject(title, files) : await openHtmlProject(title, files);
-};
-
 const REACT_TEMPLATE_PATH = '/stackblitz/react/';
 const REACT_TEMPLATE_FILES = [
   { name: 'package.json', type: 'json' },
@@ -24,6 +20,10 @@ const HTML_TEMPLATE_FILES = [
   { name: 'package.json', type: 'json' },
   { name: 'style.css', type: 'css' }
 ];
+
+export const generateProject = async (title, files) => {
+  files.react ? await openReactProject(title, files) : await openHtmlProject(title, files);
+};
 
 let openReactProject = async (title, files) => {
   const snippets = [

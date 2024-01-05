@@ -22,10 +22,10 @@ export default {
     <pre>{{ JSON.stringify(value, null, 2) }}</pre>
   </template>
 </mgt-get>`
+      },
+      editor: {
+        hidden: true
       }
-    },
-    editor: {
-      hidden: true
     }
   }
 };

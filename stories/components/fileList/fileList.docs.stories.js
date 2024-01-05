@@ -15,10 +15,10 @@ export default {
   tags: ['autodocs', 'hidden'],
   parameters: {
     docs: {
-      source: { code: '<mgt-file-list></mgt-file-list>' }
-    },
-    editor: {
-      hidden: true
+      source: { code: '<mgt-file-list></mgt-file-list>' },
+      editor: {
+        hidden: true
+      }
     }
   }
 };
