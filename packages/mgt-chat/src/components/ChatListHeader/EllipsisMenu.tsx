@@ -1,7 +1,7 @@
 import {
   Button,
   Menu,
-  MenuItemLink,
+  MenuItem,
   MenuList,
   MenuPopover,
   MenuProps,
@@ -10,7 +10,7 @@ import {
 } from '@fluentui/react-components';
 import { MoreHorizontal24Filled, MoreHorizontal24Regular, bundleIcon } from '@fluentui/react-icons';
 import React from 'react';
-import { MenuItem } from './MenuItem';
+import { ChatListMenuItem } from './ChatListMenuItem';
 
 const EllipsisIcon = bundleIcon(MoreHorizontal24Filled, MoreHorizontal24Regular);
 
@@ -33,13 +33,13 @@ const ellipsisMenuStyles = makeStyles({
   }
 });
 export interface IChatListMenuItemsProps {
-  menuItems?: MenuItem[];
+  menuItems?: ChatListMenuItem[];
 }
 
 const EllipsisMenu = (props: IChatListMenuItemsProps) => {
   const styles = ellipsisMenuStyles();
 
-  const menuItems: MenuItem[] = props.menuItems === undefined ? [] : props.menuItems;
+  const menuItems: ChatListMenuItem[] = props.menuItems === undefined ? [] : props.menuItems;
 
   return (
     <Menu {...menuProps}>
@@ -48,8 +48,8 @@ const EllipsisMenu = (props: IChatListMenuItemsProps) => {
       </MenuTrigger>
       <MenuPopover className={styles.menuPopover}>
         <MenuList>
-          {menuItems.map(menuItem => (
-            <MenuItemLink content={menuItem.displayText} href="" onSelect={menuItem.onSelected} />
+          {menuItems.map((menuItem, index) => (
+            <MenuItem key={index} content={menuItem.displayText} onClick={menuItem.onClick} />
           ))}
         </MenuList>
       </MenuPopover>
