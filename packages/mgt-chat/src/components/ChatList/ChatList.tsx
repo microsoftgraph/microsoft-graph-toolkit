@@ -24,7 +24,7 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
     };
   }, [chatClient]);
 
-  const updateSelectedChatListItem = useCallback((selectedItem: string) => {
+  const updateSelectedItem = useCallback((selectedItem: string) => {
     setSelectedItem(selectedItem);
   }, []);
 
@@ -43,7 +43,7 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
             onSelected={props.onSelected}
             isSelected={c.id === selectedItem}
             isRead={false}
-            onChatItemSelected={updateSelectedChatListItem}
+            updateSelectedItem={updateSelectedItem}
           />
         ))}
       </FluentProvider>

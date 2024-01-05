@@ -20,10 +20,7 @@ interface IMgtChatListItemProps {
   myId: string | undefined;
   isSelected: boolean;
   isRead: boolean;
-}
-
-interface IChatListItemStyles {
-  onChatItemSelected: (e: string) => void;
+  updateSelectedItem: (e: string) => void;
 }
 
 const useStyles = makeStyles({
@@ -114,8 +111,8 @@ export const ChatListItem = ({
   onSelected,
   isSelected,
   isRead,
-  onChatItemSelected
-}: IMgtChatListItemProps & IChatListItemInteractionProps & IChatListItemStyles) => {
+  updateSelectedItem
+}: IMgtChatListItemProps & IChatListItemInteractionProps) => {
   const styles = useStyles();
 
   // shortcut if no valid user
@@ -240,7 +237,7 @@ export const ChatListItem = ({
       onClick={() => {
         // set selected state only once per click event
         if (!isSelected) {
-          onChatItemSelected(chat.id ?? '');
+          updateSelectedItem(chat.id ?? '');
           setRead(true);
           onSelected(chat);
         }
