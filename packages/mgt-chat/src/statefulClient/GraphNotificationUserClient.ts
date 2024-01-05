@@ -39,6 +39,8 @@ type ReceivedNotification = Notification<Chat> | Notification<ChatMessage> | Not
 
 const isMessageNotification = (o: Notification<Entity>): o is Notification<ChatMessage> =>
   o.resource.includes('/messages(');
+const isMembershipNotification = (o: Notification<Entity>): o is Notification<AadUserConversationMember> =>
+  o.resource.includes('/members');
 
 export class GraphNotificationUserClient {
   private connection?: HubConnection = undefined;
@@ -106,6 +108,10 @@ export class GraphNotificationUserClient {
     if (!notification.resourceData) throw new Error('Message did not contain resourceData');
     if (isMessageNotification(notification)) {
       this.processMessageNotification(notification, emitter);
+    } else if (isMembershipNotification(notification)) {
+      this.processMembershipNotification(notification, emitter);
+    } else {
+      this.processChatPropertiesNotification(notification, emitter);
     }
     // Need to return a status code string of 200 so that graph knows the message was received and doesn't re-send the notification
     const ackMessage: unknown = { StatusCode: '200' };
@@ -124,6 +130,37 @@ export class GraphNotificationUserClient {
         return;
       case 'deleted':
         emitter?.chatMessageDeleted(message);
+        return;
+      default:
+        throw new Error('Unknown change type');
+    }
+  }
+
+  private processMembershipNotification(
+    notification: Notification<AadUserConversationMember>,
+    emitter: ThreadEventEmitter | undefined
+  ) {
+    const member = notification.resourceData;
+    switch (notification.changeType) {
+      case 'created':
+        emitter?.participantAdded(member);
+        return;
+      case 'deleted':
+        emitter?.participantRemoved(member);
+        return;
+      default:
+        throw new Error('Unknown change type');
+    }
+  }
+
+  private processChatPropertiesNotification(notification: Notification<Chat>, emitter: ThreadEventEmitter | undefined) {
+    const chat = notification.resourceData;
+    switch (notification.changeType) {
+      case 'updated':
+        emitter?.chatThreadPropertiesUpdated(chat);
+        return;
+      case 'deleted':
+        emitter?.chatThreadDeleted(chat);
         return;
       default:
         throw new Error('Unknown change type');

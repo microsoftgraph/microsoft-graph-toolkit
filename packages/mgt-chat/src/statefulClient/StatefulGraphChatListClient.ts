@@ -1,4 +1,5 @@
 import {
+  ChatMessage as AcsChatMessage,
   ContentSystemMessage,
   MessageThreadProps,
   ErrorBarProps,
@@ -16,14 +17,14 @@ import {
 } from '@microsoft/mgt-element';
 import { GraphError } from '@microsoft/microsoft-graph-client';
 import {
-  ChatMessageAttachment,
   ChatMessage,
+  ChatMessageAttachment,
   ChatRenamedEventMessageDetail,
   MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail
 } from '@microsoft/microsoft-graph-types';
 import { produce } from 'immer';
-import { currentUserId, currentUserName } from '../utils/currentUser';
+import { currentUserId } from '../utils/currentUser';
 import { graph } from '../utils/graph';
 import { MessageCache } from './Caching/MessageCache';
 import { GraphConfig } from './GraphConfig';
@@ -131,6 +132,18 @@ interface MessageConversion {
   futureValue?: Promise<GraphChatMessage>;
 }
 
+export interface ChatListEvent {
+  type:
+    | 'chatMessageReceived'
+    | 'chatMessageDeleted'
+    | 'chatMessageEdited'
+    | 'chatRenamed'
+    | 'memberAdded'
+    | 'memberRemoved'
+    | 'systemEvent';
+  message: ChatMessage;
+}
+
 /**
  * Regex to detect and replace image urls using graph requests to supply the image content
  */
@@ -140,9 +153,8 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   private readonly _notificationClient: GraphNotificationUserClient;
   private readonly _eventEmitter: ThreadEventEmitter;
   private readonly _cache: MessageCache;
-  private _subscribers: ((state: GraphChatListClient) => void)[] = [];
-
-  private _userDisplayName = '';
+  private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
+  private _messageSubscribers: ((messageEvent: ChatListEvent) => void)[] = [];
 
   constructor() {
     this.updateUserInfo();
@@ -165,14 +177,39 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   }
 
   /**
+   * Register a callback to receive chat message updates
+   *
+   * @param {(messageEvent: ChatListEvent) => void} handler
+   * @memberof StatefulGraphChatListClient
+   */
+  public onChatListEvent(handler: (messageEvent: ChatListEvent) => void): void {
+    if (!this._messageSubscribers.includes(handler)) {
+      this._messageSubscribers.push(handler);
+    }
+  }
+
+  /**
+   * Unregister a callback from receiving chat message updates
+   *
+   * @param {(messageEvent: ChatListEvent) => void} handler
+   * @memberof StatefulGraphChatListClient
+   */
+  public offChatListEvent(handler: (messageEvent: ChatListEvent) => void): void {
+    const index = this._messageSubscribers.indexOf(handler);
+    if (index !== -1) {
+      this._messageSubscribers = this._messageSubscribers.splice(index, 1);
+    }
+  }
+
+  /**
    * Register a callback to receive state updates
    *
    * @param {(state: GraphChatClient) => void} handler
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   public onStateChange(handler: (state: GraphChatListClient) => void): void {
-    if (!this._subscribers.includes(handler)) {
-      this._subscribers.push(handler);
+    if (!this._stateSubscribers.includes(handler)) {
+      this._stateSubscribers.push(handler);
     }
   }
 
@@ -180,12 +217,12 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    * Unregister a callback from receiving state updates
    *
    * @param {(state: GraphChatClient) => void} handler
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   public offStateChange(handler: (state: GraphChatListClient) => void): void {
-    const index = this._subscribers.indexOf(handler);
+    const index = this._stateSubscribers.indexOf(handler);
     if (index !== -1) {
-      this._subscribers = this._subscribers.splice(index, 1);
+      this._stateSubscribers = this._stateSubscribers.splice(index, 1);
     }
   }
 
@@ -212,7 +249,14 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    */
   private notifyStateChange(recipe: (draft: GraphChatListClient) => void) {
     this._state = produce(this._state, recipe);
-    this._subscribers.forEach(handler => handler(this._state));
+    this._stateSubscribers.forEach(handler => handler(this._state));
+  }
+
+  /**
+   * Calls each subscriber with the next state to be emitted
+   */
+  private notifyChatMessageEventChange(message: ChatListEvent) {
+    this._messageSubscribers.forEach(handler => handler(message));
   }
 
   /**
@@ -323,10 +367,39 @@ detail: ${JSON.stringify(eventDetail)}`);
   }
 
   /*
+   * Helper method to set the content of a message to show deletion
+   */
+  private readonly setDeletedContent = (message: AcsChatMessage) => {
+    message.content = '<em>This message has been deleted.</em>';
+    message.contentType = 'html';
+  };
+
+  private getSystemMessageType(message: ChatMessage) {
+    // check if this is a SystemEvent
+    if (message.messageType === 'systemEventMessage') {
+      const eventDetail = message.eventDetail as ChatMessageEvents;
+      switch (eventDetail['@odata.type']) {
+        case '#microsoft.graph.membersAddedEventMessageDetail':
+          return 'memberAdded';
+        case '#microsoft.graph.membersDeletedEventMessageDetail':
+          return 'memberRemoved';
+        case '#microsoft.graph.chatRenamedEventMessageDetail':
+          return 'chatRenamed';
+        default:
+          return 'systemEvent';
+      }
+    }
+
+    return 'chatMessageReceived';
+  }
+
+  /*
    * Event handler to be called when a new message is received by the notification service
    */
   private readonly onMessageReceived = async (message: ChatMessage) => {
     if (message.chatId) {
+      this.notifyChatMessageEventChange({ message, type: this.getSystemMessageType(message) });
+
       await this._cache.cacheMessage(message.chatId, message);
       const messageConversion = this.convertChatMessage(message);
       const acsMessage = messageConversion.currentValue;
@@ -344,12 +417,14 @@ detail: ${JSON.stringify(eventDetail)}`);
    */
   private readonly onMessageDeleted = (message: ChatMessage) => {
     if (message.chatId) {
+      this.notifyChatMessageEventChange({ message, type: 'chatMessageDeleted' });
+
       void this._cache.deleteMessage(message.chatId, message);
-      // this.notifyStateChange((draft: GraphChatListClient) => {
-      // const draftMessage = draft.messages.find(m => m.messageId === message.id) as AcsChatMessage;
-      // TODO: confirm if we should show the deleted content message in all cases or only when the message was deleted by the current user
-      // if (draftMessage) this.setDeletedContent(draftMessage);
-      // });
+      this.notifyStateChange((draft: GraphChatListClient) => {
+        const draftMessage = draft.messages.find(m => m.messageId === message.id) as AcsChatMessage;
+        // TODO: confirm if we should show the deleted content message in all cases or only when the message was deleted by the current user
+        if (draftMessage) this.setDeletedContent(draftMessage);
+      });
     }
   };
 
@@ -358,6 +433,8 @@ detail: ${JSON.stringify(eventDetail)}`);
    */
   private readonly onMessageEdited = async (message: ChatMessage) => {
     if (message.chatId) {
+      this.notifyChatMessageEventChange({ message, type: 'chatMessageEdited' });
+
       await this._cache.cacheMessage(message.chatId, message);
       const messageConversion = this.convertChatMessage(message);
       this.updateMessages(messageConversion.currentValue);
@@ -436,14 +513,6 @@ detail: ${JSON.stringify(eventDetail)}`);
 
   private updateUserInfo() {
     this.updateCurrentUserId();
-    this.updateCurrentUserName();
-  }
-
-  /**
-   * Changes the userDisplayName to the current value.
-   */
-  private updateCurrentUserName() {
-    this._userDisplayName = currentUserName();
   }
 
   /**

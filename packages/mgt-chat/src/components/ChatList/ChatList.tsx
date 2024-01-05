@@ -5,7 +5,7 @@ import { makeStyles, Link, FluentProvider, shorthands, webLightTheme } from '@fl
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
-import { StatefulGraphChatListClient } from '../../statefulClient/StatefulGraphChatListClient';
+import { ChatListEvent, StatefulGraphChatListClient } from '../../statefulClient/StatefulGraphChatListClient';
 import { useGraphChatListClient } from '../../statefulClient/useGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
@@ -42,18 +42,29 @@ export const ChatList = (
       buttonItems?: ChatListButtonItem[];
     }
 ) => {
+  const { value } = props.dataContext as { value: GraphChat[] };
+  const chats: GraphChat[] = value;
+
   const styles = useStyles();
   const chatClient: StatefulGraphChatListClient = useGraphChatListClient();
   const [chatState, setChatState] = useState(chatClient.getState());
+  const [chatThreads, setChatThreads] = useState<GraphChat[]>(chats);
+
+  const onChatListEvent = (state: ChatListEvent) => {
+    // TODO: implementation will happen later, right now, we just need to make sure messages are coming thru in console logs.
+
+    console.log(state.type);
+    console.log(state.message);
+  };
+
   useEffect(() => {
+    chatClient.onChatListEvent(onChatListEvent);
     chatClient.onStateChange(setChatState);
     return () => {
+      chatClient.offChatListEvent(onChatListEvent);
       chatClient.offStateChange(setChatState);
     };
   }, [chatClient]);
-
-  const { value } = props.dataContext as { value: GraphChat[] };
-  const chats: GraphChat[] = value;
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
   const chatListMenuItems = props.menuItems === undefined ? [] : props.menuItems;
@@ -70,7 +81,7 @@ export const ChatList = (
           <div className={styles.headerContainer}>
             <ChatListHeader buttonItems={chatListButtonItems} menuItems={chatListMenuItems} />
           </div>
-          {chats.map(c => (
+          {chatThreads.map(c => (
             <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
           ))}
           <div className={styles.linkContainer}>
