@@ -1,10 +1,9 @@
 import React from 'react';
 import { MgtTemplateProps, Login } from '@microsoft/mgt-react';
-import { ChatAdd24Filled, ChatAdd24Regular, bundleIcon } from '@fluentui/react-icons';
 import { makeStyles, shorthands, Button } from '@fluentui/react-components';
+import { EllipsisMenu, IChatListMenuItemsProps } from './EllipsisMenu';
+import { ChatListButtonItem } from './ChatListButtonItem';
 import { Circle } from '../Circle/Circle';
-import { IChatListMenuItemsProps, EllipsisMenu } from './EllipsisMenu';
-const ChatAddIconBundle = bundleIcon(ChatAdd24Filled, ChatAdd24Regular);
 
 const useStyles = makeStyles({
   headerContainer: {
@@ -14,7 +13,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
     width: '100%'
   },
-  chatAddIcon: {
+  buttonIcon: {
     flexGrow: 0,
     flexShrink: 0,
     flexBasis: '35px',
@@ -35,28 +34,26 @@ const useStyles = makeStyles({
   }
 });
 
-export const ChatAddIcon = (): JSX.Element => {
-  const classes = useStyles();
-  const iconColor = 'var(--colorBrandForeground2)';
-  return (
-    <div className={classes.chatAddIcon}>
-      <Circle>
-        <ChatAddIconBundle color={iconColor} />
-      </Circle>
-    </div>
-  );
-};
-
 // this is a stub to move the logic here that should end up here.
-export const ChatListHeader = (props: MgtTemplateProps & IChatListMenuItemsProps) => {
+export const ChatListHeader = (
+  props: MgtTemplateProps &
+    IChatListMenuItemsProps & {
+      buttonItems?: ChatListButtonItem[];
+    }
+) => {
   const classes = useStyles();
 
+  const buttonItems: ChatListButtonItem[] = props.buttonItems === undefined ? [] : props.buttonItems;
   return (
     <div className={classes.headerContainer}>
       <div>
-        <Button className={classes.button}>
-          <ChatAddIcon />
-        </Button>
+        {buttonItems.map((buttonItem, index) => (
+          <Button key={index} className={classes.button} onClick={buttonItem.onClick}>
+            <div className={classes.buttonIcon}>
+              <Circle>{buttonItem.renderIcon()}</Circle>
+            </div>
+          </Button>
+        ))}
       </div>
       <div>
         <Login showPresence={true} loginView="avatar" />

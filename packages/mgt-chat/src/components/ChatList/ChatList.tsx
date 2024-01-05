@@ -9,6 +9,7 @@ import { StatefulGraphChatListClient } from '../../statefulClient/StatefulGraphC
 import { useGraphChatListClient } from '../../statefulClient/useGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
+import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
 
 const useStyles = makeStyles({
   headerContainer: {
@@ -34,7 +35,13 @@ const useStyles = makeStyles({
 });
 
 // this is a stub to move the logic here that should end up here.
-export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps & IChatListMenuItemsProps) => {
+export const ChatList = (
+  props: MgtTemplateProps &
+    IChatListItemInteractionProps &
+    IChatListMenuItemsProps & {
+      buttonItems?: ChatListButtonItem[];
+    }
+) => {
   const styles = useStyles();
   const chatClient: StatefulGraphChatListClient = useGraphChatListClient();
   const [chatState, setChatState] = useState(chatClient.getState());
@@ -48,10 +55,11 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
   const { value } = props.dataContext as { value: GraphChat[] };
   const chats: GraphChat[] = value;
 
+  const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
   const chatListMenuItems = props.menuItems === undefined ? [] : props.menuItems;
   chatListMenuItems.unshift({
     displayText: 'Mark all as read',
-    onSelected: () => {}
+    onClick: () => {}
   });
 
   return (
@@ -60,7 +68,7 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
       <FluentProvider theme={webLightTheme}>
         <div>
           <div className={styles.headerContainer}>
-            <ChatListHeader menuItems={chatListMenuItems} />
+            <ChatListHeader buttonItems={chatListButtonItems} menuItems={chatListMenuItems} />
           </div>
           {chats.map(c => (
             <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
