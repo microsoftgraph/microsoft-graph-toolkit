@@ -106,12 +106,12 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
         ? `${other?.displayName || (other as AadUserConversationMember)?.email || other?.id}`
         : `${me?.displayName} (You)`;
     }
-    return chatObj.topic || chatObj.chatType;
+    return chatObj.topic || chatObj.chatType || chatObj.id;
   };
 
   // Derives the timestamp to display
-  const extractTimestamp = (timestamp: NullableOption<string> | undefined): string => {
-    if (timestamp === undefined || timestamp === null) return '';
+  const extractTimestamp = (timestamp: NullableOption<string>): string => {
+    if (!timestamp) return '';
     const currentDate = new Date();
     const date = new Date(timestamp);
 
@@ -138,7 +138,7 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
 
   // Chooses the correct timestamp to display
   const determineCorrectTimestamp = (chat: Chat) => {
-    let timestamp: Date | undefined = undefined;
+    let timestamp: NullableOption<string>;
 
     // lastMessageTime is the time of the last message sent in the chat
     // lastUpdatedTime is Date and time at which the chat was renamed or list of members were last changed.
@@ -148,15 +148,19 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     let lastMessageTime = new Date(lastMessageTimeString);
     let lastUpdatedTime = new Date(lastUpdatedTimeString);
 
-    if (lastMessageTimeString && lastUpdatedTimeString) {
-      timestamp = new Date(Math.max(lastMessageTime.getTime(), lastUpdatedTime.getTime()));
+    if (lastMessageTime > lastUpdatedTime) {
+      timestamp = String(lastMessageTime);
+    } else if (lastUpdatedTime > lastMessageTime) {
+      timestamp = String(lastUpdatedTime);
     } else if (lastMessageTimeString) {
-      timestamp = lastMessageTime;
+      timestamp = String(lastMessageTime);
     } else if (lastUpdatedTimeString) {
-      timestamp = lastUpdatedTime;
+      timestamp = String(lastUpdatedTime);
+    } else {
+      timestamp = null;
     }
 
-    return String(timestamp);
+    return timestamp;
   };
 
   const getDefaultProfileImage = () => {
@@ -170,7 +174,6 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
       case chat.chatType === 'group':
         return GroupProfilePicture;
       default:
-        error(`Error: Unexpected chatType: ${chat.chatType}`);
         return oneOnOneProfilePicture;
     }
   };
@@ -206,7 +209,7 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
 
   // enrich the chat if necessary
   useEffect(() => {
-    if (chatInternal.id && (chatInternal.chatType == null || chatInternal.members == null)) {
+    if (chatInternal.id && (!chatInternal.chatType || !chatInternal.members)) {
       const provider = Providers.globalProvider;
       if (provider && provider.state === ProviderState.SignedIn) {
         const graph = provider.graph.forComponent('ChatListItem');
