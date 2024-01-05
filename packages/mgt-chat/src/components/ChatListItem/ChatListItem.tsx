@@ -229,10 +229,10 @@ export const ChatListItem = ({
   };
 
   const chatListItemStyle = mergeClasses(
-      styles.chatListItem,
-      isSelected ? styles.isSelected : styles.isUnSelected,
-      isRead ? styles.isNormal : styles.isBold
-    );
+    styles.chatListItem,
+    isSelected ? styles.isSelected : styles.isUnSelected,
+    isRead ? styles.isNormal : styles.isBold
+  );
 
   return (
     <Button
