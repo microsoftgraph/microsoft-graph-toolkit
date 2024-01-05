@@ -9,17 +9,9 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-picker',
+  title: 'Components / mgt-picker / HTML',
   component: 'picker',
-  decorators: [withCodeEditor],
-  tags: ['autodocs'],
-  parameters: {
-    docs: {
-      source: {
-        code: '<mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite" placeholder="Select a task list" key-name="displayName"></mgt-picker>'
-      }
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const picker = () => html`
@@ -42,7 +34,7 @@ export const events = () => html`
   <mgt-picker resource="me/messages" scopes="mail.read" placeholder="Select a message" key-name="subject" max-pages="2"></mgt-picker>
   <script>
     document.querySelector('mgt-picker').addEventListener('selectionChanged', e => {
-      console.log('selectedItem:', e.detail)
+      console.log('selectedItem:', e.detail);
     });
   </script>
 `;

@@ -9,15 +9,9 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-person-card',
+  title: 'Components / mgt-person-card / HTML',
   component: 'person-card',
-  decorators: [withCodeEditor],
-  tags: ['autodocs'],
-  parameters: {
-    docs: {
-      source: { code: '<mgt-person-card person-query="me" id="online" show-presence></mgt-person-card>' }
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const personCard = () => html`
