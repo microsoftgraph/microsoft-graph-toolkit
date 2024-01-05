@@ -1,7 +1,7 @@
 {
   "name": "vite-starter",
   "private": true,
-  "version": "3.1.3-pr.2934.9916e0f",
+  "version": "3.1.3-pr.2934.43eb934",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@microsoft/mgt": "3.1.3-pr.2934.9916e0f"
+    "@microsoft/mgt": "3.1.3-pr.2934.43eb934"
   },
   "devDependencies": {
     "vite": "^5.0.8"
