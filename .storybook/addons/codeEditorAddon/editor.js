@@ -1,5 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { generateProject } from './projectBuilder';
 
 let debounce = (func, wait, immediate) => {
   var timeout;
@@ -48,6 +49,10 @@ export class EditorElement extends LitElement {
         user-select: none;
         margin: 0px -2px 0px 0px;
         border: 1px solid transparent;
+      }
+
+      .tab-right {
+        float: right;
       }
 
       .tab[aria-selected='true'] {
@@ -249,6 +254,21 @@ export class EditorElement extends LitElement {
               </button>
             `
           )}
+
+          ${
+            this.files &&
+            html`
+          <button
+            @click="${_ => generateProject(this.title, this.files)}"
+            id="project"
+            role="tab"
+            class="tab tab-right"
+            title="Edit in StackBlitz"
+          >
+            <svg viewBox="0 0 14 14" width="14px" height="14px" class="css-149xqrd"><path d="M2 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7.5a.5.5 0 0 0-1 0V12H2V2h4.5a.5.5 0 0 0 0-1H2Z"></path><path d="M7.35 7.36 12 2.7v1.8a.5.5 0 0 0 1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 0 0 1h1.8L6.64 6.64a.5.5 0 1 0 .7.7Z"></path></svg>
+          </button>`
+          }
+
         </div>
         <div
           class="editor-root"

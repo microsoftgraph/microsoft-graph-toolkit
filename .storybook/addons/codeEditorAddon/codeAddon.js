@@ -218,9 +218,14 @@ export const withCodeEditor = makeDecorator({
       }
     });
 
-    const getFullReactCode = (code, context) => {
+    /*const getFullReactCode = (code, context) => {
       const snippetName = `${context?.component}-${context?.name?.replace(/ /g, '-').toLowerCase()}`;
       return (code += `\n\n// Edit in StackBlitz: https://stackblitz.com/edit/${snippetName}?file=src%2FApp.tsx`);
+    };*/
+
+    const getStoryTitle = context => {
+      const storyTitle = `${context?.title} - ${context?.story}`;
+      return storyTitle;
     };
 
     const loadEditorContent = () => {
@@ -304,10 +309,12 @@ export const withCodeEditor = makeDecorator({
 
     editor.files = {
       html: storyHtml,
-      react: getFullReactCode(reactCode, context),
+      react: reactCode,
       js: scriptCode,
       css: styleCode
     };
+
+    editor.title = getStoryTitle(context);
 
     return root;
   }

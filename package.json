@@ -158,5 +158,9 @@
   "resolutions": {
     "responselike": "2.0.0"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "yarn@3.6.3",
+  "dependencies": {
+    "@stackblitz/sdk": "^1.9.0",
+    "js-beautify": "^1.14.11"
+  }
 }

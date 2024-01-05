@@ -9,22 +9,9 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-get',
+  title: 'Components / mgt-get / HTML',
   component: 'get',
-  decorators: [withCodeEditor],
-  tags: ['autodocs'],
-  parameters: {
-    docs: {
-      source: {
-        code: `
-<mgt-get resource="/me/messages" scopes="mail.read">
-  <template>
-    <pre>{{ JSON.stringify(value, null, 2) }}</pre>
-  </template>
-</mgt-get>`
-      }
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const Get = () => html`
