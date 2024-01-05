@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles, mergeClasses, shorthands, Button } from '@fluentui/react-components';
 import {
   Chat,
@@ -24,7 +24,6 @@ interface IMgtChatListItemProps {
 
 interface IChatListItemStyles {
   onChatItemSelected: (e: string) => void;
-  onRead: (e: string) => void;
 }
 
 const useStyles = makeStyles({
@@ -114,7 +113,6 @@ export const ChatListItem = ({
   myId,
   onSelected,
   isSelected,
-  onRead,
   isRead,
   onChatItemSelected
 }: IMgtChatListItemProps & IChatListItemInteractionProps & IChatListItemStyles) => {
@@ -124,6 +122,8 @@ export const ChatListItem = ({
   if (!myId) {
     return <></>;
   }
+
+  const [read, setRead] = useState<boolean>(isRead);
 
   // Copied and modified from the sample ChatItem.tsx
   // Determines the title in the case of 1:1 and self chats
@@ -231,7 +231,7 @@ export const ChatListItem = ({
   const chatListItemStyle = mergeClasses(
     styles.chatListItem,
     isSelected ? styles.isSelected : styles.isUnSelected,
-    isRead ? styles.isNormal : styles.isBold
+    read ? styles.isNormal : styles.isBold
   );
 
   return (
@@ -241,7 +241,7 @@ export const ChatListItem = ({
         // set selected state only once per click event
         if (!isSelected) {
           onChatItemSelected(chat.id ?? '');
-          onRead(chat.id ?? '');
+          setRead(true);
           onSelected(chat);
         }
       }}

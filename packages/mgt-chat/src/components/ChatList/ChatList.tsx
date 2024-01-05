@@ -16,7 +16,6 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
   const chatClient: StatefulGraphChatClient = useGraphChatClient('');
   const [chatState, setChatState] = useState(chatClient.getState());
   const [selectedItem, setSelectedItem] = useState<string>();
-  const [readItems, setReadItems] = useState<string[]>([]);
 
   useEffect(() => {
     chatClient.onStateChange(setChatState);
@@ -28,13 +27,6 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
   const updateSelectedChatListItem = useCallback((selectedItem: string) => {
     setSelectedItem(selectedItem);
   }, []);
-
-  const updateReadItems = useCallback(
-    (readItem: string) => {
-      setReadItems([...readItems, readItem]);
-    },
-    [readItems]
-  );
 
   const { value } = props.dataContext as { value: GraphChat[] };
   const chats: GraphChat[] = value;
@@ -50,9 +42,8 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
             myId={chatState.userId}
             onSelected={props.onSelected}
             isSelected={c.id === selectedItem}
-            isRead={readItems.includes(c.id ?? '')}
+            isRead={false}
             onChatItemSelected={updateSelectedChatListItem}
-            onRead={updateReadItems}
           />
         ))}
       </FluentProvider>
