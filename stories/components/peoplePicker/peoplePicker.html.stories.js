@@ -9,15 +9,9 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-people-picker',
+  title: 'Components / mgt-people-picker / HTML',
   component: 'people-picker',
-  decorators: [withCodeEditor],
-  tags: ['autodocs'],
-  parameters: {
-    docs: {
-      source: { code: '<mgt-people-picker></mgt-people-picker>' }
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const peoplePicker = () => html`
