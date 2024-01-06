@@ -1,17 +1,34 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ChatListItem, IChatListItemInteractionProps } from '../ChatListItem/ChatListItem';
+import { ChatListItem } from '../ChatListItem/ChatListItem';
 import { SampleChats } from '../ChatListItem/sampleData';
 import { MgtTemplateProps } from '@microsoft/mgt-react';
-import { FluentProvider, webLightTheme } from '@fluentui/react-components';
+import { FluentProvider, webLightTheme, Button, makeStyles, shorthands } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
-import { makeStyles, shorthands } from '@fluentui/react-components';
+
+export interface IChatListItemInteractionProps {
+  onSelected: (e: GraphChat) => void;
+}
+
+const useStyles = makeStyles({
+  chatListItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Add this if you want to push the timestamp to the end
+    width: '100%',
+    ...shorthands.padding('10px'),
+    ...shorthands.borderBottom('1px solid #ccc')
+  }
+});
 
 // this is a stub to move the logic here that should end up here.
 export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps) => {
+  const styles = useStyles();
+
   // TODO: change this to use StatefulGraphChatListClient
   const chatClient: StatefulGraphChatClient = useGraphChatClient('');
   const [chatState, setChatState] = useState(chatClient.getState());
@@ -24,10 +41,6 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
     };
   }, [chatClient]);
 
-  const updateSelectedItem = useCallback((selectedItem: string) => {
-    setSelectedItem(selectedItem);
-  }, []);
-
   const { value } = props.dataContext as { value: GraphChat[] };
   const chats: GraphChat[] = value;
 
@@ -36,15 +49,25 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme}>
         {chats.map(c => (
-          <ChatListItem
+          <Button
+            className={styles.chatListItem}
             key={c.id}
-            chat={c}
-            myId={chatState.userId}
-            onSelected={props.onSelected}
-            isSelected={c.id === selectedItem}
-            isRead={false}
-            updateSelectedItem={updateSelectedItem}
-          />
+            onClick={() => {
+              // set selected state only once per click event
+              if (c.id !== selectedItem) {
+                setSelectedItem(c.id);
+                props.onSelected(c);
+              }
+            }}
+          >
+            <ChatListItem
+              key={c.id}
+              chat={c}
+              myId={chatState.userId}
+              isSelected={c.id === selectedItem}
+              isRead={false}
+            />
+          </Button>
         ))}
       </FluentProvider>
     </FluentThemeProvider>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, mergeClasses, shorthands, Button } from '@fluentui/react-components';
 import {
   Chat,
@@ -11,16 +11,11 @@ import { error } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
 
-export interface IChatListItemInteractionProps {
-  onSelected: (e: Chat) => void;
-}
-
 interface IMgtChatListItemProps {
   chat: Chat;
   myId: string | undefined;
   isSelected: boolean;
   isRead: boolean;
-  updateSelectedItem: (e: string) => void;
 }
 
 const useStyles = makeStyles({
@@ -105,14 +100,7 @@ const useStyles = makeStyles({
   }
 });
 
-export const ChatListItem = ({
-  chat,
-  myId,
-  onSelected,
-  isSelected,
-  isRead,
-  updateSelectedItem
-}: IMgtChatListItemProps & IChatListItemInteractionProps) => {
+export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListItemProps) => {
   const styles = useStyles();
 
   // shortcut if no valid user
@@ -121,6 +109,12 @@ export const ChatListItem = ({
   }
 
   const [read, setRead] = useState<boolean>(isRead);
+
+  useEffect(() => {
+    if (isSelected) {
+      setRead(true);
+    }
+  }, [isSelected]);
 
   // Copied and modified from the sample ChatItem.tsx
   // Determines the title in the case of 1:1 and self chats
@@ -225,30 +219,19 @@ export const ChatListItem = ({
     return removeHtmlPTags(previewString);
   };
 
-  const chatListItemStyle = mergeClasses(
-    styles.chatListItem,
+  const state = mergeClasses(
     isSelected ? styles.isSelected : styles.isUnSelected,
     read ? styles.isNormal : styles.isBold
   );
 
   return (
-    <Button
-      className={chatListItemStyle}
-      onClick={() => {
-        // set selected state only once per click event
-        if (!isSelected) {
-          updateSelectedItem(chat.id ?? '');
-          setRead(true);
-          onSelected(chat);
-        }
-      }}
-    >
+    <div className={state}>
       <div className={styles.profileImage}>{getDefaultProfileImage()}</div>
       <div className={styles.chatInfo}>
         <p className={styles.chatTitle}>{inferTitle(chat)}</p>
         <p className={styles.chatMessage}>{enrichPreviewMessage(chat.lastMessagePreview)}</p>
       </div>
       <div className={styles.chatTimestamp}>{extractTimestamp(determineCorrectTimestamp(chat))}</div>
-    </Button>
+    </div>
   );
 };
