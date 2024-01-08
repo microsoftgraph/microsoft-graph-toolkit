@@ -14,8 +14,7 @@ export interface IChatListItemInteractionProps {
 }
 
 const useStyles = makeStyles({
-  chatListItem: {
-    display: 'flex',
+  button: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between', // Add this if you want to push the timestamp to the end
@@ -50,7 +49,7 @@ export const ChatList = (props: MgtTemplateProps & IChatListItemInteractionProps
       <FluentProvider theme={webLightTheme}>
         {chats.map(c => (
           <Button
-            className={styles.chatListItem}
+            className={styles.button}
             key={c.id}
             onClick={() => {
               // set selected state only once per click event

@@ -39,7 +39,6 @@ const useStyles = makeStyles({
 
   chatListItem: {
     display: 'flex',
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between', // Add this if you want to push the timestamp to the end
     width: '100%',
@@ -219,13 +218,14 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     return removeHtmlPTags(previewString);
   };
 
-  const state = mergeClasses(
+  const container = mergeClasses(
+    styles.chatListItem,
     isSelected ? styles.isSelected : styles.isUnSelected,
     read ? styles.isNormal : styles.isBold
   );
 
   return (
-    <div className={state}>
+    <div className={container}>
       <div className={styles.profileImage}>{getDefaultProfileImage()}</div>
       <div className={styles.chatInfo}>
         <p className={styles.chatTitle}>{inferTitle(chat)}</p>
