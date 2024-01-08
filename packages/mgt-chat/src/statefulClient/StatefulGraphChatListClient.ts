@@ -26,7 +26,10 @@ import {
 import { produce } from 'immer';
 import { currentUserId } from '../utils/currentUser';
 import { graph } from '../utils/graph';
-import { MessageCache } from './Caching/MessageCache';
+// TODO: MessageCache is added here for the purpose of following the convention of StatefulGraphChatClient. However, StatefulGraphChatClient
+//       is also leveraging the same cache and performing the same actions which would have resulted in race conditions against the same messages
+//       in the cache. To avoid this, I have commented out the code. We should revisit this and determine if we need to use the cache.
+// import { MessageCache } from './Caching/MessageCache';
 import { GraphConfig } from './GraphConfig';
 import { GraphNotificationUserClient } from './GraphNotificationUserClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
@@ -152,7 +155,7 @@ const graphImageUrlRegex = /(<img[^>]+)src=(["']https:\/\/graph\.microsoft\.com[
 class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient> {
   private readonly _notificationClient: GraphNotificationUserClient;
   private readonly _eventEmitter: ThreadEventEmitter;
-  private readonly _cache: MessageCache;
+  // private readonly _cache: MessageCache;
   private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
   private _messageSubscribers: ((messageEvent: ChatListEvent) => void)[] = [];
 
@@ -162,7 +165,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
-    this._cache = new MessageCache();
+    // this._cache = new MessageCache();
     this._notificationClient = new GraphNotificationUserClient(
       this._eventEmitter,
       graph('mgt-chat', GraphConfig.version)
@@ -400,7 +403,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     if (message.chatId) {
       this.notifyChatMessageEventChange({ message, type: this.getSystemMessageType(message) });
 
-      await this._cache.cacheMessage(message.chatId, message);
+      // await this._cache.cacheMessage(message.chatId, message);
       const messageConversion = this.convertChatMessage(message);
       const acsMessage = messageConversion.currentValue;
       this.updateMessages(acsMessage);
@@ -419,7 +422,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     if (message.chatId) {
       this.notifyChatMessageEventChange({ message, type: 'chatMessageDeleted' });
 
-      void this._cache.deleteMessage(message.chatId, message);
+      // void this._cache.deleteMessage(message.chatId, message);
       this.notifyStateChange((draft: GraphChatListClient) => {
         const draftMessage = draft.messages.find(m => m.messageId === message.id) as AcsChatMessage;
         // TODO: confirm if we should show the deleted content message in all cases or only when the message was deleted by the current user
@@ -435,7 +438,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     if (message.chatId) {
       this.notifyChatMessageEventChange({ message, type: 'chatMessageEdited' });
 
-      await this._cache.cacheMessage(message.chatId, message);
+      // await this._cache.cacheMessage(message.chatId, message);
       const messageConversion = this.convertChatMessage(message);
       this.updateMessages(messageConversion.currentValue);
       if (messageConversion.futureValue) {

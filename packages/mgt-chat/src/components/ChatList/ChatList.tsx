@@ -10,6 +10,7 @@ import { useGraphChatListClient } from '../../statefulClient/useGraphChatListCli
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
+import ChatListMenuItem from '../ChatListHeader/ChatListMenuItem';
 
 const useStyles = makeStyles({
   headerContainer: {
@@ -49,6 +50,7 @@ export const ChatList = (
   const chatClient: StatefulGraphChatListClient = useGraphChatListClient();
   const [chatState, setChatState] = useState(chatClient.getState());
   const [chatThreads, setChatThreads] = useState<GraphChat[]>(chats);
+  const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
 
   const onChatListEvent = (state: ChatListEvent) => {
     // TODO: implementation will happen later, right now, we just need to make sure messages are coming thru in console logs.
@@ -67,11 +69,16 @@ export const ChatList = (
   }, [chatClient]);
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
-  const chatListMenuItems = props.menuItems === undefined ? [] : props.menuItems;
-  chatListMenuItems.unshift({
-    displayText: 'Mark all as read',
-    onClick: () => {}
-  });
+
+  useEffect(() => {
+    const markAllAsRead = {
+      displayText: 'Mark all as read',
+      onClick: () => {}
+    };
+
+    menuItems.unshift(markAllAsRead);
+    setMenuItems(menuItems);
+  }, []);
 
   return (
     // This is a temporary approach to render the chatlist items. This should be replaced.
@@ -79,7 +86,7 @@ export const ChatList = (
       <FluentProvider theme={webLightTheme}>
         <div>
           <div className={styles.headerContainer}>
-            <ChatListHeader buttonItems={chatListButtonItems} menuItems={chatListMenuItems} />
+            <ChatListHeader buttonItems={chatListButtonItems} menuItems={menuItems} />
           </div>
           {chatThreads.map(c => (
             <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
