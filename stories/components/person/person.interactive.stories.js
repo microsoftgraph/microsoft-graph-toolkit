@@ -9,21 +9,30 @@ import { html } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
 
 const PersonArgs = {
+  'avatar-size': 'auto',
   view: 'twoLines',
-  personQuery: 'me'
+  'person-query': 'me',
+  'person-card': 'none',
+  'show-presence': true
 };
 
 const PersonArgTypes = {
+  'avatar-size': {
+    options: ['auto', 'small', 'large'],
+    control: { type: 'select' }
+  },
   view: {
     options: ['image', 'oneLine', 'twoLines', 'threeLines', 'fourLines'],
     control: { type: 'inline-radio' }
   },
-  personCardInteraction: {
+  'person-card': {
     options: ['none', 'hover', 'click'],
     control: { type: 'inline-radio' }
   },
-  personQuery: { control: { type: 'text' } },
-  showPresence: { control: { type: 'boolean' } }
+  'person-query': { control: { type: 'text' } },
+  'show-presence': {
+    control: { type: 'boolean' }
+  }
 };
 
 export default {
@@ -40,8 +49,15 @@ export default {
     },
     options: { showPanel: true }
   },
-  render: ({ view, personQuery, personCardInteraction, showPresence }) => html`
-    <mgt-person 
+  render: ({
+    'avatar-size': avatarSize,
+    view,
+    'person-query': personQuery,
+    'person-card': personCardInteraction,
+    'show-presence': showPresence
+  }) => html`
+    <mgt-person
+      avatar-size="${ifDefined(avatarSize)}"
       view="${ifDefined(view)}" 
       person-query="${ifDefined(personQuery)}"
       person-card="${ifDefined(personCardInteraction)}"
@@ -51,5 +67,3 @@ export default {
 };
 
 export const interactive = { args: PersonArgs };
-
-export const showPresenceFoo = { args: { ...PersonArgs, showPresence: true } };

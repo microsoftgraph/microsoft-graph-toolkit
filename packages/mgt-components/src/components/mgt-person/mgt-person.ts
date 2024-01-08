@@ -22,7 +22,7 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
+import { MgtPersonConfig, avatarType } from './mgt-person-types';
 import { strings } from './strings';
 import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -240,11 +240,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'show-presence',
     type: Boolean
   })
-  public showPresence: boolean;
+  public showPresence = false;
 
   /**
-   * determines person component avatar size and apply presence badge accordingly.
-   * Default is "auto". When you set the view > 1, it will default to "auto".
+   * determines person component avatar and presence badge size.
+   * Default is "auto". When you set the view to `twolines` or `threelines` avatar-size is set to "auto".
+   *
+   * @default "auto"
    *
    * @type {AvatarSize}
    */
@@ -252,7 +254,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'avatar-size',
     type: String
   })
-  public avatarSize: AvatarSize;
+  public avatarSize: AvatarSize = 'auto';
 
   /**
    * object containing Graph details on person
@@ -339,8 +341,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   public fetchImage: boolean;
 
   /**
-   * Sets whether to disable the person image fetch
-   * from the Microsoft Graph
+   * Sets whether to disable the person image fetch from the Microsoft Graph
    *
    * @type {boolean}
    * @memberof MgtPerson
@@ -349,7 +350,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'disable-image-fetch',
     type: Boolean
   })
-  public disableImageFetch: boolean;
+  public disableImageFetch = false;
 
   /**
    * Sets the vertical layout of
@@ -366,7 +367,6 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   /**
    * Determines and sets person avatar
-   *
    *
    * @type {string}
    * @memberof MgtPerson
@@ -419,8 +419,9 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   /**
    * Sets how the person-card is invoked
-   * Set to PersonCardInteraction.none to not show the card
+   * Default is "none". Set to PersonCardInteraction.none to not show the card
    *
+   * @default PersonCardInteraction.none
    * @type {PersonCardInteraction}
    * @memberof MgtPerson
    */
@@ -435,7 +436,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
   })
-  public personCardInteraction: PersonCardInteraction;
+  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
 
   /**
    * Get the scopes required for person
@@ -502,10 +503,10 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({ attribute: 'line4-property' }) public line4Property: string;
 
   /**
-   * Sets what data to be rendered (image only, oneLine, twoLines).
-   * Default is 'image'.
+   * Sets how much data should be rendered
    *
-   * @type {ViewType | PersonViewType}
+   * @default ViewType.image
+   * @type {ViewType}
    * @memberof MgtPerson
    */
   @property({
@@ -523,7 +524,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
   })
-  public view: ViewType | PersonViewType;
+  public view: ViewType = ViewType.image;
 
   @state() private _fetchedImage: string;
   @state() private _fetchedPresence: Presence;
@@ -548,13 +549,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     super();
 
     // defaults
-    this.personCardInteraction = PersonCardInteraction.none;
     this.line1Property = 'displayName';
     this.line2Property = 'jobTitle';
     this.line3Property = 'department';
     this.line4Property = 'email';
     this.view = ViewType.image;
-    this.avatarSize = 'auto';
     this.disableImageFetch = false;
     this._isInvalidImageSrc = false;
     this._avatarType = avatarType.photo;
@@ -917,7 +916,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns
    */
   protected renderDetails(personProps: IDynamicPerson, presence?: Presence): TemplateResult {
-    if (!personProps || this.view === ViewType.image || this.view === PersonViewType.avatar) {
+    if (!personProps || this.view === ViewType.image) {
       return html``;
     }
 
