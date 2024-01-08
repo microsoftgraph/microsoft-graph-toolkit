@@ -7,5 +7,7 @@
 
 import { Chat } from './Chat/Chat';
 import { ChatList } from './ChatList/ChatList';
+import { ChatListButtonItem } from './ChatListHeader/ChatListButtonItem';
+import { ChatListMenuItem } from './ChatListHeader/ChatListMenuItem';
 import { NewChat } from './NewChat/NewChat';
-export { Chat, ChatList, NewChat };
+export { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem };
