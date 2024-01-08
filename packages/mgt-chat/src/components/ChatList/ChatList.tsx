@@ -17,10 +17,7 @@ const useStyles = makeStyles({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Add this if you want to push the timestamp to the end
-    width: '100%',
-    ...shorthands.padding('10px'),
-    ...shorthands.borderBottom('1px solid #ccc')
+    width: '100%'
   }
 });
 

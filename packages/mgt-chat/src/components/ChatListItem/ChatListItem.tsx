@@ -109,6 +109,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
   const [read, setRead] = useState<boolean>(isRead);
 
+  // when isSelected changes to true, setRead to true
   useEffect(() => {
     if (isSelected) {
       setRead(true);
