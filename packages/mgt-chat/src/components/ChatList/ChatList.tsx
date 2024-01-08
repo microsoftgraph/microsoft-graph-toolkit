@@ -4,7 +4,7 @@ import { MgtTemplateProps, ProviderState, Providers } from '@microsoft/mgt-react
 import { makeStyles, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
-import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
+import { ChatMessageInfo, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { ChatListEvent, StatefulGraphChatListClient } from '../../statefulClient/StatefulGraphChatListClient';
 import { useGraphChatListClient } from '../../statefulClient/useGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
@@ -35,6 +35,10 @@ const useStyles = makeStyles({
     }
   }
 });
+
+interface EventMessageDetail {
+  chatDisplayName: string;
+}
 
 // this is a stub to move the logic here that should end up here.
 export const ChatList = (
@@ -73,8 +77,6 @@ export const ChatList = (
       setNextLink(nextLinkUrl);
     }
 
-    console.log('chatThreadCollection:' + chatThreadCollection.value);
-
     let uniqeChatThreads = chatThreadCollection.value.filter(c => chatThreads.findIndex(t => t.id === c.id) === -1);
     setChatThreads(chatThreads.concat(uniqeChatThreads));
   };
@@ -93,8 +95,25 @@ export const ChatList = (
   useEffect(loadDataOnlyOnce, []);
 
   const onChatListEvent = (state: ChatListEvent) => {
-    // TODO: implementation will happen later, right now, we just need to make sure messages are coming thru in console logs.
+    if (state.type === 'chatRenamed' && state.message.eventDetail) {
+      console.log(state.message.chatId);
+      let eventDetail = state.message.eventDetail as EventMessageDetail;
+      let chatThread = chatThreads.find(c => c.id === state.message.chatId);
+      if (chatThread) {
+        chatThread.topic = eventDetail.chatDisplayName;
+      }
+    }
 
+    if (state.type === 'chatMessageReceived') {
+      let chatThread = chatThreads.find(c => c.id === state.message.chatId);
+      if (chatThread) {
+        let msgInfo = state.message as ChatMessageInfo;
+        chatThread.lastMessagePreview = msgInfo;
+      } else {
+      }
+    }
+
+    // TODO: implementation will happen later, right now, we just need to make sure messages are coming thru in console logs.
     console.log(state.type);
     console.log(state.message);
   };
