@@ -106,7 +106,7 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
         ? `${other?.displayName || (other as AadUserConversationMember)?.email || other?.id}`
         : `${me?.displayName} (You)`;
     }
-    return chatObj.topic || chatObj.chatType || chatObj.id;
+    return chatObj.topic || chatObj.id;
   };
 
   // Derives the timestamp to display
@@ -213,8 +213,8 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
       const provider = Providers.globalProvider;
       if (provider && provider.state === ProviderState.SignedIn) {
         const graph = provider.graph.forComponent('ChatListItem');
-        const load = async (id: string): Promise<Chat> => {
-          return await loadChatWithPreview(graph, id);
+        const load = (id: string): Promise<Chat> => {
+          return loadChatWithPreview(graph, id);
         };
         load(chatInternal.id).then(
           c => setChatInternal(c),
