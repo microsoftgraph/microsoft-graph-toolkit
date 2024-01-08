@@ -27,13 +27,7 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => vo
   ];
 
   return (
-    <Get
-      resource="me/chats?$expand=members,lastMessagePreview&orderby=lastMessagePreview/createdDateTime desc"
-      scopes={['chat.read']}
-      cacheEnabled={false}
-    >
-      <ChatList menuItems={menus} buttonItems={buttons} onSelected={onSelected} />
-    </Get>
+      <ChatList chatThreadsPerPage={3} menuItems={menus} buttonItems={buttons} onSelected={onSelected} />
   );
 });
 
