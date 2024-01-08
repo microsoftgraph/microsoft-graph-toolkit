@@ -26,7 +26,7 @@ import {
 import { produce } from 'immer';
 import { currentUserId } from '../utils/currentUser';
 import { graph } from '../utils/graph';
-// TODO: MessageCache is added here for the purpose of following the convention of StatefulGraphChatClient. However, StatefulGraphChatClient
+// TODO: MessageCache is added here for the purpose of following the convention of StatefulGraphChatClient. However, StatefulGraphChatListClient
 //       is also leveraging the same cache and performing the same actions which would have resulted in race conditions against the same messages
 //       in the cache. To avoid this, I have commented out the code. We should revisit this and determine if we need to use the cache.
 // import { MessageCache } from './Caching/MessageCache';
@@ -68,7 +68,7 @@ const isChatMemberChangeEvent = (
   );
 };
 
-// defines the type of the state object returned from the StatefulGraphChatClient
+// defines the type of the state object returned from the StatefulGraphChatListClient
 export type GraphChatListClient = Pick<MessageThreadProps, 'userId' | 'messages'> & {
   status:
     | 'initial'
@@ -272,7 +272,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    * @private
    * @param {ChatMessage} message
    * @return {*}  {MessageConversion}
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   private convertChatMessage(message: ChatMessage): MessageConversion {
     switch (message.messageType) {
@@ -452,7 +452,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * Return the current state of the chat client
    *
    * @return {{GraphChatClient}
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   public getState(): GraphChatListClient {
     return this._state;
@@ -463,7 +463,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    *
    * @private
    * @param {LoginChangedEvent} e The event that triggered the change
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   private readonly onLoginStateChanged = (e: LoginChangedEvent) => {
     switch (e.detail) {
@@ -561,7 +561,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * A helper to co-ordinate the loading of a chat and its messages, and the subscription to notifications for that chat
    *
    * @private
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   private async updateUserSubscription() {
     // avoid subscribing to a resource with an empty chatId
@@ -605,7 +605,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * @private
    * @param {(GraphChatMessage)} [message]
    * @return {*}
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   private updateMessages(message?: GraphChatMessage) {
     if (!message) return;
@@ -762,7 +762,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * @readonly
    * @private
    * @type {IGraph}
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   private get graph(): IGraph {
     return graph('mgt-chat');
