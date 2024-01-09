@@ -40,7 +40,9 @@ const useStyles = makeStyles({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
+    ...shorthands.padding('0px'),
+    ...shorthands.border('none')
   }
 });
 
@@ -114,7 +116,7 @@ export const ChatList = (
               >
                 <ChatListItem
                   key={c.id}
-                  chat={{ id: c.id }} // NOTE: this is just for this PR, it can be reverted to c
+                  chat={c}
                   myId={chatState.userId}
                   isSelected={c.id === selectedItem}
                   isRead={false}
