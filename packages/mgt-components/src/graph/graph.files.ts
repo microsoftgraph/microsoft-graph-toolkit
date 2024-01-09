@@ -104,6 +104,18 @@ export const getFileListInvalidationTime = (): number =>
 export const getIsFileListsCacheEnabled = (): boolean =>
   CacheService.config.fileLists.isEnabled && CacheService.config.isEnabled;
 
+const validDriveItemScopes = [
+  'Files.Read',
+  'Files.ReadWrite',
+  'Files.Read.All',
+  'Files.ReadWrite.All',
+  'Group.Read.All',
+  'Group.ReadWrite.All',
+  'Sites.Read.All',
+  'Sites.ReadWrite.All'
+];
+export const validInsightScopes = ['Sites.Read.All', 'Sites.ReadWrite.All'];
+const validFileUploadScopes = ['Files.ReadWrite', 'Files.ReadWrite.All', 'Sites.ReadWrite.All'];
 /**
  * Load a DriveItem give and arbitrary query
  *
@@ -115,7 +127,7 @@ export const getDriveItemByQuery = async (
   graph: IGraph,
   resource: string,
   storeName: string = schemas.files.stores.fileQueries,
-  scopes = 'files.read'
+  scopes = validDriveItemScopes
 ): Promise<DriveItem> => {
   // get from cache
   const cache: CacheStore<CacheFile> = CacheService.getCache<CacheFile>(schemas.files, storeName);
@@ -217,7 +229,7 @@ export const getMyInsightsDriveItemById = async (
   id: string
 ): Promise<DriveItem> => {
   const endpoint = `/me/insights/${insightType}/${id}/resource`;
-  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.insightFiles, 'sites.read.all');
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.insightFiles, validInsightScopes);
 };
 
 // GET /users/{id or userPrincipalName}/insights/{trending or used or shared}/{id}/resource
@@ -228,14 +240,13 @@ export const getUserInsightsDriveItemById = async (
   id: string
 ): Promise<DriveItem> => {
   const endpoint = `/users/${userId}/insights/${insightType}/${id}/resource`;
-  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.insightFiles, 'sites.read.all');
+  return getDriveItemByQuery(graph, endpoint, schemas.files.stores.insightFiles, validInsightScopes);
 };
 
 const getIterator = async (
   graph: IGraph,
   endpoint: string,
   storeName: string,
-  scopes: string[],
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> => {
   let filesPageIterator: GraphPageIterator<DriveItem>;
@@ -252,7 +263,7 @@ const getIterator = async (
   // get iterator from graph request
   let request: GraphRequest;
   try {
-    request = graph.api(endpoint).middlewareOptions(prepScopes(...scopes));
+    request = graph.api(endpoint).middlewareOptions(prepScopes(validDriveItemScopes));
     if (top) {
       request.top(top);
     }
@@ -274,7 +285,7 @@ const getIterator = async (
 export const getFilesIterator = async (graph: IGraph, top?: number): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = '/me/drive/root/children';
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+  return getIterator(graph, endpoint, cacheStore, top);
 };
 
 // GET /drives/{drive-id}/items/{item-id}/children
@@ -286,7 +297,7 @@ export const getDriveFilesByIdIterator = async (
 ): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/drives/${driveId}/items/${itemId}/children`;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+  return getIterator(graph, endpoint, cacheStore, top);
 };
 
 // GET /drives/{drive-id}/root:/{item-path}:/children
@@ -298,7 +309,7 @@ export const getDriveFilesByPathIterator = async (
 ): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/drives/${driveId}/root:/${itemPath}:/children`;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+  return getIterator(graph, endpoint, cacheStore, top);
 };
 
 // GET /groups/{group-id}/drive/items/{item-id}/children
@@ -310,7 +321,7 @@ export const getGroupFilesByIdIterator = async (
 ): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/groups/${groupId}/drive/items/${itemId}/children`;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+  return getIterator(graph, endpoint, cacheStore, top);
 };
 
 // GET /groups/{group-id}/drive/root:/{item-path}:/children
@@ -322,7 +333,7 @@ export const getGroupFilesByPathIterator = async (
 ): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/groups/${groupId}/drive/root:/${itemPath}:/children`;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+  return getIterator(graph, endpoint, cacheStore, top);
 };
 
 // GET /me/drive/items/{item-id}/children
@@ -333,7 +344,7 @@ export const getFilesByIdIterator = async (
 ): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/me/drive/items/${itemId}/children`;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+  return getIterator(graph, endpoint, cacheStore, top);
 };
 
 // GET /me/drive/root:/{item-path}:/children
@@ -344,7 +355,7 @@ export const getFilesByPathIterator = async (
 ): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/me/drive/root:/${itemPath}:/children`;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+  return getIterator(graph, endpoint, cacheStore, top);
 };
 
 // GET /sites/{site-id}/drive/items/{item-id}/children
@@ -356,7 +367,7 @@ export const getSiteFilesByIdIterator = async (
 ): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/sites/${siteId}/drive/items/${itemId}/children`;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+  return getIterator(graph, endpoint, cacheStore, top);
 };
 
 // GET /sites/{site-id}/drive/root:/{item-path}:/children
@@ -368,7 +379,7 @@ export const getSiteFilesByPathIterator = async (
 ): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/sites/${siteId}/drive/root:/${itemPath}:/children`;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+  return getIterator(graph, endpoint, cacheStore, top);
 };
 
 // GET /users/{user-id}/drive/items/{item-id}/children
@@ -380,7 +391,7 @@ export const getUserFilesByIdIterator = async (
 ): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/users/${userId}/drive/items/${itemId}/children`;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+  return getIterator(graph, endpoint, cacheStore, top);
 };
 
 // GET /users/{user-id}/drive/root:/{item-path}:/children
@@ -392,7 +403,7 @@ export const getUserFilesByPathIterator = async (
 ): Promise<GraphPageIterator<DriveItem>> => {
   const endpoint = `/users/${userId}/drive/root:/${itemPath}:/children`;
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, endpoint, cacheStore, ['files.read'], top);
+  return getIterator(graph, endpoint, cacheStore, top);
 };
 
 export const getFilesByListQueryIterator = async (
@@ -401,7 +412,7 @@ export const getFilesByListQueryIterator = async (
   top?: number
 ): Promise<GraphPageIterator<DriveItem>> => {
   const cacheStore = schemas.fileLists.stores.fileLists;
-  return getIterator(graph, listQuery, cacheStore, ['files.read', 'sites.read.all'], top);
+  return getIterator(graph, listQuery, cacheStore, top);
 };
 
 // GET /me/insights/{trending	| used | shared}
@@ -418,18 +429,17 @@ export const getMyInsightsFiles = async (graph: IGraph, insightType: string): Pr
   }
 
   // get files from graph request
-  const scopes = ['sites.read.all'];
   let insightResponse: CollectionResponse<Insight>;
   try {
     insightResponse = (await graph
       .api(endpoint)
       .filter("resourceReference/type eq 'microsoft.graph.driveItem'")
-      .middlewareOptions(prepScopes(...scopes))
+      .middlewareOptions(prepScopes(validInsightScopes))
       .get()) as CollectionResponse<Insight>;
     // eslint-disable-next-line no-empty
   } catch {}
 
-  const result = await getDriveItemsByInsights(graph, insightResponse, scopes);
+  const result = await getDriveItemsByInsights(graph, insightResponse, validInsightScopes);
   if (getIsFileListsCacheEnabled()) {
     await cache.putValue(endpoint, { files: result.map(file => JSON.stringify(file)) });
   }
@@ -465,19 +475,18 @@ export const getUserInsightsFiles = async (
   }
 
   // get files from graph request
-  const scopes = ['sites.read.all'];
   let insightResponse: CollectionResponse<Insight>;
 
   try {
     insightResponse = (await graph
       .api(endpoint)
       .filter(filter)
-      .middlewareOptions(prepScopes(...scopes))
+      .middlewareOptions(prepScopes(validInsightScopes))
       .get()) as CollectionResponse<Insight>;
     // eslint-disable-next-line no-empty
   } catch {}
 
-  const result = await getDriveItemsByInsights(graph, insightResponse, scopes);
+  const result = await getDriveItemsByInsights(graph, insightResponse, validInsightScopes);
   if (getIsFileListsCacheEnabled()) {
     await cache.putValue(endpoint, { files: result.map(file => JSON.stringify(file)) });
   }
@@ -492,7 +501,6 @@ export const getFilesByQueries = async (graph: IGraph, fileQueries: string[]): P
 
   const batch = graph.createBatch();
   const files: DriveItem[] = [];
-  const scopes = ['files.read'];
   let cache: CacheStore<CacheFile>;
   let cachedFile: CacheFile;
   if (getIsFilesCacheEnabled()) {
@@ -507,7 +515,7 @@ export const getFilesByQueries = async (graph: IGraph, fileQueries: string[]): P
     if (getIsFilesCacheEnabled() && cachedFile && getFileInvalidationTime() > Date.now() - cachedFile.timeCached) {
       files.push(JSON.parse(cachedFile.file) as DriveItem);
     } else if (fileQuery !== '') {
-      batch.get(fileQuery, fileQuery, scopes);
+      batch.get(fileQuery, fileQuery, validDriveItemScopes);
     }
   }
 
@@ -586,7 +594,7 @@ const getDriveItemsByInsights = async (
             async insightItem =>
               (await graph
                 .api(insightItem.resourceReference.id)
-                .middlewareOptions(prepScopes(...scopes))
+                .middlewareOptions(prepScopes(scopes))
                 .get()) as DriveItem
           )
       );
@@ -682,7 +690,7 @@ export const getDocumentThumbnail = async (
     const response = (await graph
       .api(resource)
       .responseType(ResponseType.RAW)
-      .middlewareOptions(prepScopes(...scopes))
+      .middlewareOptions(prepScopes(scopes))
       .get()) as Response;
 
     if (response.status === 404) {
@@ -711,9 +719,8 @@ export const getDocumentThumbnail = async (
  */
 export const getGraphfile = async (graph: IGraph, resource: string): Promise<DriveItem> => {
   // get from graph request
-  const scopes = 'files.read';
   try {
-    const response = (await graph.api(resource).middlewareOptions(prepScopes(scopes)).get()) as DriveItem;
+    const response = (await graph.api(resource).middlewareOptions(prepScopes(validDriveItemScopes)).get()) as DriveItem;
     return response || null;
     // eslint-disable-next-line no-empty
   } catch {}
@@ -735,7 +742,6 @@ export const getUploadSession = async (
 ): Promise<UploadSession> => {
   try {
     // get from graph request
-    const scopes = 'files.readwrite';
     const sessionOptions = {
       item: {
         '@microsoft.graph.conflictBehavior': conflictBehavior === 0 || conflictBehavior === null ? 'rename' : 'replace'
@@ -745,7 +751,7 @@ export const getUploadSession = async (
     try {
       response = (await graph
         .api(resource)
-        .middlewareOptions(prepScopes(scopes))
+        .middlewareOptions(prepScopes(validFileUploadScopes))
         .post(JSON.stringify(sessionOptions))) as UploadSession;
       // eslint-disable-next-line no-empty
     } catch {}
@@ -773,16 +779,17 @@ export const sendFileChunk = async (
 ): Promise<UploadSession | DriveItem> => {
   try {
     // get from graph request
-    const scopes = 'files.readwrite';
     const header = {
       'Content-Length': contentLength,
       'Content-Range': contentRange
     };
     let response: UploadSession | DriveItem;
     try {
-      response = (await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).headers(header).put(file)) as
-        | UploadSession
-        | DriveItem;
+      response = (await graph.client
+        .api(resource)
+        .middlewareOptions(prepScopes(validFileUploadScopes))
+        .headers(header)
+        .put(file)) as UploadSession | DriveItem;
       // eslint-disable-next-line no-empty
     } catch {}
 
@@ -803,10 +810,12 @@ export const sendFileChunk = async (
 export const sendFileContent = async (graph: IGraph, resource: string, file: File): Promise<DriveItem> => {
   try {
     // get from graph request
-    const scopes = 'files.readwrite';
     let response: DriveItem;
     try {
-      response = (await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).put(file)) as DriveItem;
+      response = (await graph.client
+        .api(resource)
+        .middlewareOptions(prepScopes(validFileUploadScopes))
+        .put(file)) as DriveItem;
       // eslint-disable-next-line no-empty
     } catch {}
 
@@ -824,9 +833,8 @@ export const sendFileContent = async (graph: IGraph, resource: string, file: Fil
  * @returns
  */
 export const deleteSessionFile = async (graph: IGraph, resource: string): Promise<void> => {
-  const scopes = 'files.readwrite';
   try {
-    await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).delete();
+    await graph.client.api(resource).middlewareOptions(prepScopes(validFileUploadScopes)).delete();
   } catch {
     // TODO: re-examine the error handling here
     // DELETE returns a 204 on success so void makes sense to return on the happy path
