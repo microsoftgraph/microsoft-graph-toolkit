@@ -207,7 +207,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /**
    * Register a callback to receive state updates
    *
-   * @param {(state: GraphChatClient) => void} handler
+   * @param {(state: GraphChatListClient) => void} handler
    * @memberof StatefulGraphChatListClient
    */
   public onStateChange(handler: (state: GraphChatListClient) => void): void {
@@ -219,7 +219,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /**
    * Unregister a callback from receiving state updates
    *
-   * @param {(state: GraphChatClient) => void} handler
+   * @param {(state: GraphChatListClient) => void} handler
    * @memberof StatefulGraphChatListClient
    */
   public offStateChange(handler: (state: GraphChatListClient) => void): void {
@@ -240,7 +240,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    * State of the chat client with initial values set
    *
    * @private
-   * @type {GraphChatClientList}
+   * @type {GraphChatListClient}
    * @memberof StatefulGraphChatListClient
    */
   private _state: GraphChatListClient = { ...this._initialState };
@@ -451,7 +451,7 @@ detail: ${JSON.stringify(eventDetail)}`);
   /**
    * Return the current state of the chat client
    *
-   * @return {{GraphChatClient}
+   * @return {{GraphChatListClient}
    * @memberof StatefulGraphChatListClient
    */
   public getState(): GraphChatListClient {
