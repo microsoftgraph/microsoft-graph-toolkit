@@ -16,26 +16,28 @@ export default {
 
 export const peoplePicker = () => html`
    <mgt-people-picker></mgt-people-picker>
-<react>
-import { PeoplePicker } from '@microsoft/mgt-react';
+  <react>
+    import { PeoplePicker } from '@microsoft/mgt-react';
 
-export default () => (
-  <PeoplePicker></PeoplePicker>
-);
-</react>
+    export default () => (
+      <PeoplePicker></PeoplePicker>
+    );
+  </react>
  `;
 
 export const selectionChangedEvent = () => html`
-   <mgt-people-picker></mgt-people-picker>
-<react>
-import { useCallback } from 'react';
-import { PeoplePicker, IDynamicPerson } from '@microsoft/mgt-react';
+  <mgt-people-picker></mgt-people-picker>
+  <react>
+    // Check the console tab for the event to fire
+    import { useCallback } from 'react';
+    import { PeoplePicker, IDynamicPerson } from '@microsoft/mgt-react';
 
-export default () => {
-  const onSelectionChanged = useCallback((e: CustomEvent<IDynamicPerson[]>) => {
-    console.log(e.detail);
-  }, []);
+    export default () => {
+      const onSelectionChanged = useCallback((e: CustomEvent<IDynamicPerson[]>) => {
+        console.log(e.detail);
+      }, []);
 
-  return <PeoplePicker selectionChanged={onSelectionChanged}></PeoplePicker>;
-</react>
- `;
+      return <PeoplePicker selectionChanged={onSelectionChanged}></PeoplePicker>;
+    };
+  </react>
+`;

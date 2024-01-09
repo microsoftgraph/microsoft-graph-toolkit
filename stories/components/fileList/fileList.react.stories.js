@@ -16,11 +16,11 @@ export default {
 
 export const fileList = () => html`
   <mgt-file-list></mgt-file-list>
-<react>
-import { FileList } from '@microsoft/mgt-react';
+  <react>
+    import { FileList } from '@microsoft/mgt-react';
 
-export default () => (
-  <FileList></FileList>
-);
-</react>
+    export default () => (
+      <FileList></FileList>
+    );
+  </react>
 `;

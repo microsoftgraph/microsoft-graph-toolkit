@@ -3,6 +3,7 @@ import { addons, makeDecorator } from '@storybook/preview-api';
 import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/IProvider';
 import { EditorElement } from './editor';
 import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from '../../env';
+import { beautifyContent } from '../../utils/utils';
 
 const mgtScriptName = './mgt.storybook.js';
 
@@ -308,10 +309,10 @@ export const withCodeEditor = makeDecorator({
     });
 
     editor.files = {
-      html: storyHtml,
-      react: reactCode,
-      js: scriptCode,
-      css: styleCode
+      html: beautifyContent('html', storyHtml),
+      react: beautifyContent('js', reactCode),
+      js: beautifyContent('js', scriptCode),
+      css: beautifyContent('css', styleCode)
     };
 
     editor.title = getStoryTitle(context);

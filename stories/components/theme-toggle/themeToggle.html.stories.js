@@ -9,19 +9,13 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-theme-toggle',
+  title: 'Components / mgt-theme-toggle / HTML',
   component: 'theme-toggle',
   decorators: [
     withCodeEditor({
       disableThemeToggle: true
     })
-  ],
-  tags: ['autodocs'],
-  parameters: {
-    docs: {
-      source: { code: '<mgt-theme-toggle></mgt-theme-toggle>' }
-    }
-  }
+  ]
 };
 
 export const userPreferenceDriven = () => html`
@@ -61,7 +55,7 @@ export const themingWithoutToggle = () => html`
 <p>
   This page has the provided light theme applied by calling <code>applyTheme('light')</code>.
   and applying some basic css rules to the body tag<br/>
-  This function uses a default value of document for the second optional element parameter, 
+  This function uses a default value of document for the second optional element parameter,
   which is used below to set the dark theme.<br/>
   Refer to the CSS and JS tabs for details.
 </p>

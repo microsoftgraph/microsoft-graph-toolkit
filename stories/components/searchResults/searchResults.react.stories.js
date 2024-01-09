@@ -9,18 +9,22 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-file / React',
-  component: 'file',
+  title: 'Components / mgt-search-results / React',
+  component: 'search-results',
   decorators: [withCodeEditor]
 };
 
-export const file = () => html`
-  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
+export const searchResults = () => html`
+  <mgt-search-results
+    entity-types="driveItem"
+    fetch-thumbnail="true"
+    query-string="contoso">
+  </mgt-search-results>
   <react>
-    import { File } from '@microsoft/mgt-react';
+    import { SearchResults } from '@microsoft/mgt-react';
 
     export default () => (
-      <File fileQuery='/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2'></File>
+      <SearchResults entityTypes={['driveItem']} fetchThumbnail={true} queryString="contoso"></SearchResults>
     );
   </react>
 `;

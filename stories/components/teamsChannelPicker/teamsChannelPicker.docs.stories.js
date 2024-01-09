@@ -9,18 +9,20 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-file / React',
-  component: 'file',
-  decorators: [withCodeEditor]
+  title: 'Components / mgt-teams-channel-picker',
+  component: 'teams-channel-picker',
+  decorators: [withCodeEditor],
+  tags: ['autodocs', 'hidden'],
+  parameters: {
+    docs: {
+      source: {
+        code: '<mgt-teams-channel-picker></mgt-teams-channel-picker>'
+      },
+      editor: { hidden: true }
+    }
+  }
 };
 
-export const file = () => html`
-  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
-  <react>
-    import { File } from '@microsoft/mgt-react';
-
-    export default () => (
-      <File fileQuery='/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2'></File>
-    );
-  </react>
+export const teamsChannelPicker = () => html`
+  <mgt-teams-channel-picker></mgt-teams-channel-picker>
 `;

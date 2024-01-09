@@ -9,44 +9,43 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-person-card / React',
-  component: 'person-card',
+  title: 'Components / mgt-search-box / React',
+  component: 'search-box',
   decorators: [withCodeEditor]
 };
 
-export const personCard = () => html`
-  <mgt-person-card person-query="me"></mgt-person-card>
+export const searchBox = () => html`
+  <mgt-search-box></mgt-search-box>
   <react>
-    import { PersonCard } from '@microsoft/mgt-react';
+    import { SearchBox } from '@microsoft/mgt-react';
 
     export default () => (
-      <PersonCard personQuery="me"></PersonCard>
+      <SearchBox></SearchBox>
     );
   </react>
 `;
 
 export const events = () => html`
-  <!-- Open dev console and click on an event -->
+  <!-- Open dev console and change the search box value -->
   <!-- See js tab for event subscription -->
-
-  <mgt-person-card person-query="me"></mgt-person-card>
+  <mgt-search-box></mgt-search-box>
   <react>
     // Check the console tab for the event to fire
     import { useCallback } from 'react';
-    import { PersonCard } from '@microsoft/mgt-react';
+    import { SearchBox } from '@microsoft/mgt-react';
 
     export default () => {
-      const onExpanded = useCallback((e: CustomEvent<null>) => {
-        console.log("expanded");
+      const onSearchTermChanged = useCallback((e: CustomEvent<string>) => {
+        console.log(e.detail);
       }, []);
 
-      return <PersonCard personQuery="me" expanded={onExpanded}></PersonCard>;
+      return <SearchBox searchTermChanged={onSearchTermChanged}></SearchBox>;
     };
   </react>
   <script>
-    const personCard = document.querySelector('mgt-person-card');
-    personCard.addEventListener('expanded', () => {
-      console.log("expanded");
-    })
+    const searchBox = document.querySelector('mgt-search-box');
+    searchBox.addEventListener('searchTermChanged', (e) => {
+      console.log(e.detail);
+    });
   </script>
 `;

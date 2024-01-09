@@ -9,15 +9,9 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-todo',
+  title: 'Components / mgt-todo / HTML',
   component: 'todo',
-  decorators: [withCodeEditor],
-  tags: ['autodocs'],
-  parameters: {
-    docs: {
-      source: { code: '<mgt-todo></mgt-todo>' }
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const todos = () => html`

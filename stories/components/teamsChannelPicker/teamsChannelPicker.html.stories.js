@@ -9,17 +9,9 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-teams-channel-picker',
+  title: 'Components / mgt-teams-channel-picker / HTML',
   component: 'teams-channel-picker',
-  decorators: [withCodeEditor],
-  tags: ['autodocs'],
-  parameters: {
-    docs: {
-      source: {
-        code: '<mgt-teams-channel-picker></mgt-teams-channel-picker>'
-      }
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const teamsChannelPicker = () => html`

@@ -9,18 +9,18 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-file / React',
-  component: 'file',
+  title: 'Components / mgt-todo / React',
+  component: 'todo',
   decorators: [withCodeEditor]
 };
 
-export const file = () => html`
-  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
+export const todos = () => html`
+  <mgt-todo></mgt-todo>
   <react>
-    import { File } from '@microsoft/mgt-react';
+    import { Todo } from '@microsoft/mgt-react';
 
     export default () => (
-      <File fileQuery='/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2'></File>
+      <Todo></Todo>
     );
   </react>
 `;

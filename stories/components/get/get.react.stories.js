@@ -20,20 +20,20 @@ export const Get = () => html`
     <pre>{{ JSON.stringify(value, null, 2) }}</pre>
   </template>
 </mgt-get>
-<react>
-import { Get, MgtTemplateProps } from '@microsoft/mgt-react';
+  <react>
+    import { Get, MgtTemplateProps } from '@microsoft/mgt-react';
 
-export function Messages(props: MgtTemplateProps) {
-  const value = props.dataContext;
-  return (
-    <pre>{ JSON.stringify(value, null, 2) }</pre>
-  );
-}
+    export function Messages(props: MgtTemplateProps) {
+      const value = props.dataContext;
+      return (
+        <pre>{ JSON.stringify(value, null, 2) }</pre>
+      );
+    }
 
-export default () => (
-  <Get resource='/me/messages' scopes={['mail.read']}>
-    <Messages template="default"></Messages>
-  </Get>
-);
-</react>
+    export default () => (
+      <Get resource='/me/messages' scopes={['mail.read']}>
+        <Messages template="default"></Messages>
+      </Get>
+    );
+  </react>
 `;

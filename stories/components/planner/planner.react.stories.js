@@ -16,11 +16,11 @@ export default {
 
 export const planner = () => html`
   <mgt-planner></mgt-planner>
-<react>
-import { Planner } from '@microsoft/mgt-react';
+  <react>
+    import { Planner } from '@microsoft/mgt-react';
 
-export default () => (
-  <Planner></Planner>
-);
-</react>
+    export default () => (
+      <Planner></Planner>
+    );
+  </react>
 `;

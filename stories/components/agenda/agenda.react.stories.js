@@ -19,13 +19,13 @@ export default {
 
 export const Agenda = () => html`
   <mgt-agenda></mgt-agenda>
-<react>
-import { Agenda } from '@microsoft/mgt-react';
+  <react>
+    import { Agenda } from '@microsoft/mgt-react';
 
-export default () => (
-  <Agenda></Agenda>
-);
-</react>
+    export default () => (
+      <Agenda></Agenda>
+    );
+  </react>
 `;
 
 export const getByEventQuery = () => html`

@@ -24,23 +24,23 @@ export const person = () => html`
   <mgt-person person-query="me" view="threeLines"></mgt-person>
   <br>
   <mgt-person person-query="me" view="fourLines"></mgt-person>
-<react>
-import { Person } from '@microsoft/mgt-react';
+  <react>
+    import { Person } from '@microsoft/mgt-react';
 
-export default () => (
-  <>
-    <Person personQuery="me"></Person>
-    <br />
-    <Person personQuery="me" view={ViewType.oneline}></Person>
-    <br />
-    <Person personQuery="me" view={ViewType.twolines}></Person>
-    <br />
-    <Person personQuery="me" view={ViewType.threelines}></Person>
-    <br />
-    <Person personQuery="me" view={ViewType.fourlines}></Person>
-  </>
-);
-</react>
+    export default () => (
+      <>
+        <Person personQuery="me"></Person>
+        <br />
+        <Person personQuery="me" view={ViewType.oneline}></Person>
+        <br />
+        <Person personQuery="me" view={ViewType.twolines}></Person>
+        <br />
+        <Person personQuery="me" view={ViewType.threelines}></Person>
+        <br />
+        <Person personQuery="me" view={ViewType.fourlines}></Person>
+      </>
+    );
+  </react>
 `;
 
 export const events = () => html`
@@ -48,26 +48,25 @@ export const events = () => html`
   <div class="example">
     <mgt-person person-query="me" view="fourlines"></mgt-person>
   </div>
-<react>
-import { Person, ViewType, IDynamicPerson } from '@microsoft/mgt-react';
+  <react>
+    // Check the console tab for the event to fire
+    import { useCallback } from 'react';
+    import { Person, ViewType, IDynamicPerson } from '@microsoft/mgt-react';
 
-const onLineClicked = (e: CustomEvent<IDynamicPerson>) => {
-  console.log(e.detail);
-}
+    export default () => {
+      const onLineClicked = useCallback((e: CustomEvent<IDynamicPerson>) => {
+        console.log(e.detail);
+      }, []);
 
-export default () => (
-    <Person
-      personQuery="me"
-      view={ViewType.fourlines}
-      line1clicked={onLineClicked}
-      line2clicked={onLineClicked}
-      line3clicked={onLineClicked}
-      line4clicked={onLineClicked}></Person>
-);
-</react>
-  <style>
-    .example {
-      margin-bottom: 20px;
-    }
-  </style>
+      return (
+        <Person
+          personQuery="me"
+          view={ViewType.fourlines}
+          line1clicked={onLineClicked}
+          line2clicked={onLineClicked}
+          line3clicked={onLineClicked}
+          line4clicked={onLineClicked}></Person>
+      );
+    };
+  </react>
 `;

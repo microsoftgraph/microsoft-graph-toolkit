@@ -1,5 +1,5 @@
 import sdk from '@stackblitz/sdk';
-import * as beautify from 'js-beautify';
+import { beautifyContent } from '../../utils/utils';
 
 const REACT_TEMPLATE_PATH = '/stackblitz/react/';
 const REACT_TEMPLATE_FILES = [
@@ -69,7 +69,7 @@ let buildFiles = async (templatePath, files, snippets) => {
   await Promise.all(
     files.map(async file => {
       const fileContent = await loadFile(templatePath + file.name);
-      stackblitzFiles[file.name] = beautifyContent(file, fileContent);
+      stackblitzFiles[file.name] = beautifyContent(file.type, fileContent);
     })
   );
 
@@ -83,50 +83,11 @@ let buildFiles = async (templatePath, files, snippets) => {
       }
     }
 
-    fileContent = beautifyContent(file, fileContent);
+    fileContent = beautifyContent(file.type, fileContent);
     stackblitzFiles[file.name] = fileContent;
   });
 
   return stackblitzFiles;
-};
-
-let beautifyContent = (file, content) => {
-  const options = {
-    indent_size: '2',
-    indent_char: ' ',
-    max_preserve_newlines: '0',
-    preserve_newlines: true,
-    keep_array_indentation: true,
-    break_chained_methods: false,
-    indent_scripts: 'separate',
-    brace_style: 'collapse,preserve-inline',
-    space_before_conditional: false,
-    unescape_strings: false,
-    jslint_happy: false,
-    end_with_newline: true,
-    wrap_line_length: '120',
-    indent_inner_html: true,
-    comma_first: false,
-    e4x: true,
-    indent_empty_lines: false
-  };
-
-  let beautifiedContent = content;
-  switch (file.type) {
-    case 'html':
-      beautifiedContent = beautify.default.html(content, options);
-      break;
-    case 'js':
-    case 'json':
-      beautifiedContent = beautify.default.js(content, options);
-      break;
-    case 'css':
-      beautifiedContent = beautify.default.css(content, options);
-      break;
-    default:
-      break;
-  }
-  return beautifiedContent;
 };
 
 let loadFile = async fileUrl => {

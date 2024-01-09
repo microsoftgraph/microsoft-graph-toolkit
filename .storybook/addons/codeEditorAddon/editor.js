@@ -92,7 +92,6 @@ export class EditorElement extends LitElement {
     super();
     this.internalFiles = [];
     this.fileTypes = fileTypes ?? ['html', 'js', 'css'];
-    this.autoFormat = true;
 
     this.editorRoot = document.createElement('div');
     this.editorRoot.setAttribute('slot', 'editor');
@@ -203,10 +202,6 @@ export class EditorElement extends LitElement {
       this.currentEditorState = this.editorState[type];
       this.editor.setModel(this.currentEditorState.model);
       this.editor.restoreViewState(this.currentEditorState.state);
-    }
-
-    if (this.autoFormat) {
-      this.editor.getAction('editor.action.formatDocument').run();
     }
   }
 

@@ -16,67 +16,84 @@ export default {
 
 export const Login = () => html`
   <mgt-login></mgt-login>
-<react>
-import { Login } from '@microsoft/mgt-react';
+  <react>
+    import { Login } from '@microsoft/mgt-react';
 
-export default () => (
-  <Login></Login>
-);
-</react>
+    export default () => (
+      <Login></Login>
+    );
+  </react>
 `;
 
-export const CompactLogin = () => html`
+export const LoginView = () => html`
   <mgt-login login-view="compact"></mgt-login>
-<react>
-import { Login } from '@microsoft/mgt-react';
+  <react>
+    import { Login } from '@microsoft/mgt-react';
 
-export default () => (
-  <Login loginView='compact'></Login>
-);
-</react>
-`;
-
-export const AvatarLogin = () => html`
-  <mgt-login login-view="avatar"></mgt-login>
-<react>
-import { Login } from '@microsoft/mgt-react';
-
-export default () => (
-  <Login loginView='avatar'></Login>
-);
-</react>
+    export default () => (
+      <Login loginView='compact'></Login>
+    );
+  </react>
 `;
 
 export const ShowPresenceLogin = () => html`
   <mgt-login show-presence login-view="full"></mgt-login>
   <react>
-import { Login } from '@microsoft/mgt-react';
+    import { Login } from '@microsoft/mgt-react';
 
-export default () => (
-  <Login showPresence={true} loginView='full'></Login>
-);
-</react>
+    export default () => (
+      <Login showPresence={true} loginView='full'></Login>
+    );
+  </react>
 `;
 
-export const RightAligned = () => html`
-<div class="right">
-    <mgt-login login-view="compact"></mgt-login>
-</div>
-<react>
-import { Login } from '@microsoft/mgt-react';
-import './App.css';
+export const Events = () => html`
+  <mgt-login></mgt-login>
+  <react>
+    // Check the console tab for the event to fire
+    import { useCallback } from 'react';
+    import { Login } from '@microsoft/mgt-react';
 
-export default () => (
-  <div className="right">
-    <Login loginView='compact'></Login>
-  </div>
-);
-</react>
-<style>
-.right {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-}
-</style>
+    export default () => {
+      const onLoginInitiated = useCallback((e: CustomEvent<undefined>) => {
+        console.log("Login Initiated");
+      }, []);
+
+      const onLoginCompleted = useCallback((e: CustomEvent<undefined>) => {
+        console.log("Login Completed");
+      }, []);
+
+      const onLogoutInitiated = useCallback((e: CustomEvent<undefined>) => {
+        console.log("Logout Initiated");
+      }, []);
+
+      const onLogoutCompleted = useCallback((e: CustomEvent<undefined>) => {
+        console.log("Logout Completed");
+      }, []);
+
+      return (
+        <Login
+          loginInitiated={onLoginInitiated}
+          loginCompleted={onLoginCompleted}
+          logoutInitiated={onLogoutInitiated}
+          logoutCompleted={onLogoutCompleted}>
+        </Login>
+      );
+    };
+  </react>
+  <script>
+    const login = document.querySelector('mgt-login');
+    login.addEventListener('loginInitiated', (e) => {
+      console.log("Login Initiated");
+    })
+    login.addEventListener('loginCompleted', (e) => {
+      console.log("Login Completed");
+    })
+    login.addEventListener('logoutInitiated', (e) => {
+      console.log("Logout Initiated");
+    })
+    login.addEventListener('logoutCompleted', (e) => {
+      console.log("Logout Completed");
+    })
+  </script>
 `;

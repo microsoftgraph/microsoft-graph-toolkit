@@ -16,11 +16,11 @@ export default {
 
 export const People = () => html`
   <mgt-people show-max="5"></mgt-people>
-<react>
-import { People } from '@microsoft/mgt-react';
+  <react>
+    import { People } from '@microsoft/mgt-react';
 
-export default () => (
-  <People></People>
-);
-</react>
+    export default () => (
+      <People></People>
+    );
+  </react>
 `;

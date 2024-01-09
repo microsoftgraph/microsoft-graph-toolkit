@@ -9,15 +9,9 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-search-box',
+  title: 'Components / mgt-search-box / HTML',
   component: 'search-box',
-  decorators: [withCodeEditor],
-  tags: ['autodocs'],
-  parameters: {
-    docs: {
-      source: { code: '<mgt-search-box></mgt-search-box>' }
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const searchBox = () => html`
@@ -44,12 +38,10 @@ export const events = () => html`
   <!-- See js tab for event subscription -->
 
   <mgt-search-box></mgt-search-box>
-  <mgt-search-results entity-types="driveItem"></mgt-search-results>
   <script>
     const searchBox = document.querySelector('mgt-search-box');
-    const searchResults = document.querySelector('mgt-search-results');
     searchBox.addEventListener('searchTermChanged', (e) => {
-      searchResults.queryString = e.detail;
+      console.log(e.detail);
     });
   </script>
 `;

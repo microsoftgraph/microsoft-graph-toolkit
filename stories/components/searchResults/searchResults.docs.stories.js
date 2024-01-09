@@ -12,10 +12,11 @@ export default {
   title: 'Components / mgt-search-results',
   component: 'search-results',
   decorators: [withCodeEditor],
-  tags: ['autodocs'],
+  tags: ['autodocs', 'hidden'],
   parameters: {
     docs: {
-      source: { code: '<mgt-search-results></mgt-search-results>' }
+      source: { code: '<mgt-search-results></mgt-search-results>' },
+      editor: { hidden: true }
     }
   }
 };
@@ -26,23 +27,4 @@ export const searchResults = () => html`
     fetch-thumbnail="true"
     query-string="contoso">
   </mgt-search-results>
-`;
-
-export const localization = () => html`
-  <mgt-search-results entity-types="driveItem" query-string="contoso">
-  </mgt-search-results>
-  <script>
-  import { LocalizationHelper } from '@microsoft/mgt-element';
-  LocalizationHelper.strings = {
-    _components: {
-      'search-results': {
-        modified: 'edited on',
-        back: 'Previous',
-        next: 'Next one',
-        pages: 'sheets',
-        page: 'Sheet'
-      },
-    }
-  }
-  </script>
 `;
