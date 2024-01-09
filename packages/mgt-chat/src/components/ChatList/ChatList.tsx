@@ -5,11 +5,12 @@ import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } f
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
-import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
-import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
+import { ChatListEvent, StatefulGraphChatListClient } from '../../statefulClient/StatefulGraphChatListClient';
+import { useGraphChatListClient } from '../../statefulClient/useGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
+import ChatListMenuItem from '../ChatListHeader/ChatListMenuItem';
 
 export interface IChatListItemInteractionProps {
   onSelected: (e: GraphChat) => void;
@@ -51,28 +52,44 @@ export const ChatList = (
       buttonItems?: ChatListButtonItem[];
     }
 ) => {
+  const { value } = props.dataContext as { value: GraphChat[] };
+  const chats: GraphChat[] = value;
+
   const styles = useStyles();
-  // TODO: change this to use StatefulGraphChatListClient
-  const chatClient: StatefulGraphChatClient = useGraphChatClient('');
+  const chatClient: StatefulGraphChatListClient = useGraphChatListClient();
   const [chatState, setChatState] = useState(chatClient.getState());
+  const [chatThreads, setChatThreads] = useState<GraphChat[]>(chats);
+  const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
+
+  const onChatListEvent = (state: ChatListEvent) => {
+    // TODO: implementation will happen later, right now, we just need to make sure messages are coming thru in console logs.
+
+    console.log(state.type);
+    console.log(state.message);
+  };
+
   const [selectedItem, setSelectedItem] = useState<string>();
 
   useEffect(() => {
+    chatClient.onChatListEvent(onChatListEvent);
     chatClient.onStateChange(setChatState);
     return () => {
+      chatClient.offChatListEvent(onChatListEvent);
       chatClient.offStateChange(setChatState);
     };
   }, [chatClient]);
 
-  const { value } = props.dataContext as { value: GraphChat[] };
-  const chats: GraphChat[] = value;
-
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
-  const chatListMenuItems = props.menuItems === undefined ? [] : props.menuItems;
-  chatListMenuItems.unshift({
-    displayText: 'Mark all as read',
-    onClick: () => {}
-  });
+
+  useEffect(() => {
+    const markAllAsRead = {
+      displayText: 'Mark all as read',
+      onClick: () => {}
+    };
+
+    menuItems.unshift(markAllAsRead);
+    setMenuItems(menuItems);
+  }, []);
 
   return (
     // This is a temporary approach to render the chatlist items. This should be replaced.
@@ -80,33 +97,35 @@ export const ChatList = (
       <FluentProvider theme={webLightTheme}>
         <div>
           <div className={styles.headerContainer}>
-            <ChatListHeader buttonItems={chatListButtonItems} menuItems={chatListMenuItems} />
+            <ChatListHeader buttonItems={chatListButtonItems} menuItems={menuItems} />
           </div>
-          {chats.map(c => (
-            <Button
-              className={styles.button}
-              key={c.id}
-              onClick={() => {
-                // set selected state only once per click event
-                if (c.id !== selectedItem) {
-                  setSelectedItem(c.id);
-                  props.onSelected(c);
-                }
-              }}
-            >
-              <ChatListItem
+          <div>
+            {chatThreads.map(c => (
+              <Button
+                className={styles.button}
                 key={c.id}
-                chat={c}
-                myId={chatState.userId}
-                isSelected={c.id === selectedItem}
-                isRead={false}
-              />
-            </Button>
-          ))}
-          <div className={styles.linkContainer}>
-            <Link href="#" className={styles.loadMore}>
-              load more
-            </Link>
+                onClick={() => {
+                  // set selected state only once per click event
+                  if (c.id !== selectedItem) {
+                    setSelectedItem(c.id);
+                    props.onSelected(c);
+                  }
+                }}
+              >
+                <ChatListItem
+                  key={c.id}
+                  chat={c}
+                  myId={chatState.userId}
+                  isSelected={c.id === selectedItem}
+                  isRead={false}
+                />
+              </Button>
+            ))}
+            <div className={styles.linkContainer}>
+              <Link href="#" className={styles.loadMore}>
+                load more
+              </Link>
+            </div>
           </div>
         </div>
       </FluentProvider>
