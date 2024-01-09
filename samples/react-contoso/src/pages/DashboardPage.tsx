@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { PageHeader } from '../components/PageHeader';
-import { Providers, Todo } from '@microsoft/mgt-react';
+import { Todo } from '@microsoft/mgt-react';
 import { DirectReports } from '../components/DirectReports';
 import {
   SelectTabData,
@@ -21,21 +21,11 @@ const useStyles = makeStyles({
 const DashboardPage: React.FunctionComponent = () => {
   const styles = useStyles();
 
-  const [taskListId, setTaskListId] = React.useState<string>('');
   const [selectedTab, setSelectedTab] = React.useState<TabValue>('tasks');
 
   const onTabSelect = (event: SelectTabEvent, data: SelectTabData) => {
     setSelectedTab(data.value);
   };
-
-  React.useEffect(() => {
-    const fetchTaskList = async () => {
-      const taskList = await Providers.globalProvider.graph.client.api('/me/todo/lists?$top=1').get();
-      setTaskListId(taskList.value[0].id);
-    };
-
-    fetchTaskList();
-  }, []);
 
   return (
     <>
@@ -49,7 +39,7 @@ const DashboardPage: React.FunctionComponent = () => {
           <Tab value="directReports">My Direct Reports</Tab>
         </TabList>
         <div className={styles.panels}>
-          {selectedTab === 'tasks' && taskListId && <Todo initialId={taskListId}></Todo>}
+          {selectedTab === 'tasks' && <Todo></Todo>}
           {selectedTab === 'directReports' && <DirectReports />}
         </div>
       </div>

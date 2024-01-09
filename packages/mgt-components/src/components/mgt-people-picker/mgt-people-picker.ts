@@ -1607,24 +1607,28 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if (this.hasMaxSelections) {
             this.disableTextInput();
           }
+          return;
         }
-      } else if (this.allowAnyEmail) {
+      }
+
+      if (this.allowAnyEmail) {
         this.handleAnyEmail();
       } else {
         this.showFlyout();
       }
     }
 
-    if (keyName === 'Tab') {
-      this.hideFlyout();
-    }
-
-    if ([';', ','].includes(keyName)) {
+    if ([';', ',', 'Tab'].includes(keyName)) {
       if (this.allowAnyEmail) {
-        event.preventDefault();
+        // need to ensure the tab key does tab things
+        if ('Tab' !== keyName) event.preventDefault();
         this.userInput = this.input.value;
         this.handleAnyEmail();
       }
+    }
+    // need to ensure that the tab key hides the flyout even if the input doesn't have an email address
+    if (keyName === 'Tab') {
+      this.hideFlyout();
     }
   };
 

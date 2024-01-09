@@ -17,12 +17,13 @@ import { Providers } from '../providers/Providers';
  * @returns
  */
 
-export const prepScopes = (...scopes: string[]) => {
+export const prepScopes = (scopes: string[], provider = Providers.globalProvider) => {
+  const additionalScopes = provider.needsAdditionalScopes(scopes);
   const authProviderOptions = {
-    scopes
+    scopes: additionalScopes
   };
 
-  if (!Providers.globalProvider.isIncrementalConsentDisabled) {
+  if (!provider.isIncrementalConsentDisabled) {
     return [new AuthenticationHandlerOptions(undefined, authProviderOptions)];
   } else {
     return [];
