@@ -88,13 +88,15 @@ export const ChatList = (
           <div className={styles.headerContainer}>
             <ChatListHeader buttonItems={chatListButtonItems} menuItems={menuItems} />
           </div>
-          {chatThreads.map(c => (
-            <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
-          ))}
-          <div className={styles.linkContainer}>
-            <Link href="#" className={styles.loadMore}>
-              load more
-            </Link>
+          <div>
+            {chatThreads.map(c => (
+              <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
+            ))}
+            <div className={styles.linkContainer}>
+              <Link href="#" className={styles.loadMore}>
+                load more
+              </Link>
+            </div>
           </div>
         </div>
       </FluentProvider>
