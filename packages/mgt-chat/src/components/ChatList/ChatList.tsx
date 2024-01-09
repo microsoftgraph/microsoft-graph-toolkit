@@ -114,7 +114,7 @@ export const ChatList = (
               >
                 <ChatListItem
                   key={c.id}
-                  chat={c}
+                  chat={{ id: c.id }} // NOTE: this is just for this PR, it can be reverted to c
                   myId={chatState.userId}
                   isSelected={c.id === selectedItem}
                   isRead={false}
