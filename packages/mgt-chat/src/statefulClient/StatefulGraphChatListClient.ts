@@ -33,10 +33,12 @@ import { graph } from '../utils/graph';
 import { GraphConfig } from './GraphConfig';
 import { GraphNotificationUserClient } from './GraphNotificationUserClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
-import { loadChatImage } from './graph.chat';
+import { loadChatImage, ChatThreadCollection, loadChatThreads, loadChatThreadsByPage } from './graph.chat';
 import { updateMessageContentWithImage } from '../utils/updateMessageContentWithImage';
 import { isChatMessage } from '../utils/types';
 import { rewriteEmojiContent } from '../utils/rewriteEmojiContent';
+import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
+import { error } from '@microsoft/mgt-element';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -79,6 +81,8 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId' | 'messages'
     | 'no messages'
     | 'ready'
     | 'error';
+  chatThreads: GraphChat[];
+  nextLink: string;
 } & Pick<ErrorBarProps, 'activeErrorMessages'>;
 
 interface StatefulClient<T> {
@@ -98,6 +102,10 @@ interface StatefulClient<T> {
    * @param handler Callback to be unregistered
    */
   offStateChange(handler: (state: T) => void): void;
+
+  chatThreadsPerPage: number;
+
+  loadMoreChatThreads(): void;
 }
 
 interface CreatedOn {
@@ -158,19 +166,20 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   // private readonly _cache: MessageCache;
   private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
   private _messageSubscribers: ((messageEvent: ChatListEvent) => void)[] = [];
-
-  constructor() {
+  private readonly _graph: IGraph | undefined;
+  constructor(chatThreadsPerPage: number) {
     this.updateUserInfo();
     Providers.globalProvider.onStateChanged(this.onLoginStateChanged);
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
     // this._cache = new MessageCache();
-    this._notificationClient = new GraphNotificationUserClient(
-      this._eventEmitter,
-      graph('mgt-chat', GraphConfig.version)
-    );
+    this._graph = graph('mgt-chat', GraphConfig.version);
+    this.chatThreadsPerPage = chatThreadsPerPage;
+    this._notificationClient = new GraphNotificationUserClient(this._eventEmitter, this._graph);
   }
+
+  public chatThreadsPerPage: number;
 
   /**
    * Provides a method to clean up any resources being used internally when a consuming component is being removed from the DOM
@@ -189,6 +198,24 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     if (!this._messageSubscribers.includes(handler)) {
       this._messageSubscribers.push(handler);
     }
+  }
+
+  public loadMoreChatThreads(): void {
+    if (this._graph === undefined) {
+      return;
+    }
+
+    const state = this.getState();
+
+    if (state.nextLink === '') {
+      return;
+    }
+
+    const filter = state.nextLink.split('?')[1];
+    void loadChatThreadsByPage(this._graph, filter).then(
+      chats => this.handleChatThreads(chats),
+      e => error(e)
+    );
   }
 
   /**
@@ -233,7 +260,9 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     status: 'initial',
     activeErrorMessages: [],
     messages: [],
-    userId: ''
+    userId: '',
+    chatThreads: [],
+    nextLink: ''
   };
 
   /**
@@ -458,6 +487,21 @@ detail: ${JSON.stringify(eventDetail)}`);
     return this._state;
   }
 
+  private readonly handleChatThreads = (chatThreadCollection: ChatThreadCollection) => {
+    this.notifyStateChange((draft: GraphChatListClient) => {
+      draft.nextLink = '';
+
+      const nextLinkUrl = chatThreadCollection['@odata.nextLink'];
+      if (nextLinkUrl && nextLinkUrl !== '') {
+        draft.nextLink = nextLinkUrl;
+      }
+      const uniqeChatThreads = chatThreadCollection.value.filter(
+        c => draft.chatThreads.findIndex(t => t.id === c.id) === -1
+      );
+      draft.chatThreads = draft.chatThreads.concat(uniqeChatThreads);
+    });
+  };
+
   /**
    * Update the state of the client when the Login state changes
    *
@@ -475,6 +519,13 @@ detail: ${JSON.stringify(eventDetail)}`);
         // emit new state;
         if (this.userId) {
           void this.updateUserSubscription();
+
+          if (this._graph !== undefined) {
+            loadChatThreads(this._graph, this.chatThreadsPerPage).then(
+              chats => this.handleChatThreads(chats),
+              err => error(err)
+            );
+          }
         }
         return;
       case ProviderState.SignedOut:

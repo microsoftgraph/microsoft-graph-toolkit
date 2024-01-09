@@ -16,7 +16,7 @@ import { log } from '@microsoft/mgt-element';
 export const useGraphChatListClient = (): StatefulGraphChatListClient => {
   // sessionId is going to be used to lookup subscription and we need to ensure the same subscription is used across tabs.
   const sessionId = 'default';
-  const [chatClient] = useState<StatefulGraphChatListClient>(() => new StatefulGraphChatListClient());
+  const [chatClient] = useState<StatefulGraphChatListClient>(() => new StatefulGraphChatListClient(30));
 
   // when chatId or sessionId changes this effect subscribes or unsubscribes
   // the component to/from web socket based notifications for the given chatId
