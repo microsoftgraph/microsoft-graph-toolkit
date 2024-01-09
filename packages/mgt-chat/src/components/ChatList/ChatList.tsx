@@ -68,18 +68,6 @@ export const ChatList = (
     });
   }, []);
 
-  // subscribe (from useGraphChatListClient)
-  useEffect(() => {
-    chatClient?.subscribeToUser('default');
-  }, [chatClient]);
-
-  // tear down (from useGraphChatListClient)
-  useEffect(() => {
-    return () => {
-      void chatClient?.tearDown();
-    };
-  }, [chatClient]);
-
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
 
   const onChatListEvent = (state: ChatListEvent) => {
@@ -115,7 +103,9 @@ export const ChatList = (
     if (chatClient) {
       chatClient.onChatListEvent(onChatListEvent);
       chatClient.onStateChange(setChatState);
+      chatClient.subscribeToUser('default');
       return () => {
+        void chatClient.tearDown();
         chatClient.offChatListEvent(onChatListEvent);
         chatClient.offStateChange(setChatState);
       };
