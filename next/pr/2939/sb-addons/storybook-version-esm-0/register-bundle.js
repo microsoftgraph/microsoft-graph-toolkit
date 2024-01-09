@@ -1,0 +1,17 @@
+try{
+var U=__STORYBOOKADDONS__,{addons:p,types:d,mockChannel:W}=__STORYBOOKADDONS__;var O="storybook/version",h="storybook/tool/version",b="version";var m=__REACT__,{Children:re,Component:oe,Fragment:ne,Profiler:ae,PureComponent:se,StrictMode:ce,Suspense:ie,__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:ue,cloneElement:le,createContext:me,createElement:_e,createFactory:fe,createRef:pe,forwardRef:ye,isValidElement:de,lazy:Oe,memo:he,useCallback:be,useContext:ve,useDebugValue:Se,useEffect:Te,useImperativeHandle:Ae,useLayoutEffect:ge,useMemo:xe,useReducer:De,useRef:Re,useState:Ee,version:Ce}=__REACT__;var Me=__STORYBOOKAPI__,{ActiveTabs:je,Consumer:Le,ManagerContext:Ve,Provider:Ke,addons:Ye,combineParameters:Be,controlOrMetaKey:we,controlOrMetaSymbol:Ge,eventMatchesShortcut:He,eventToShortcut:ze,isMacLike:Fe,isShortcutTaken:Ue,keyToSymbol:We,merge:$e,mockChannel:qe,optionOrAltSymbol:Je,shortcutMatchesShortcut:Qe,shortcutToHumanString:Xe,types:Ze,useAddonState:et,useArgTypes:tt,useArgs:rt,useChannel:ot,useGlobalTypes:nt,useGlobals:at,useParameter:v,useSharedState:st,useStoryPrepared:ct,useStorybookApi:it,useStorybookState:ut}=__STORYBOOKAPI__;var pt=__STORYBOOKTHEMING__,{CacheProvider:yt,ClassNames:dt,Global:Ot,ThemeProvider:ht,background:bt,color:vt,convert:St,create:Tt,createCache:At,createGlobal:gt,createReset:xt,css:S,darken:Dt,ensure:Rt,ignoreSsrWarning:Et,isPropValid:Ct,jsx:It,keyframes:kt,lighten:Pt,styled:T,themes:Nt,typography:Mt,useTheme:jt,withTheme:Lt}=__STORYBOOKTHEMING__;var A,g;function x(e,t){return t||(t=e.slice(0)),Object.freeze(Object.defineProperties(e,{raw:{value:Object.freeze(t)}}))}function M(e,t){return K(e)||V(e,t)||L(e,t)||j()}function j(){throw new TypeError(`Invalid attempt to destructure non-iterable instance.
+In order to be iterable, non-array objects must have a [Symbol.iterator]() method.`)}function L(e,t){if(e){if(typeof e=="string")return D(e,t);var r=Object.prototype.toString.call(e).slice(8,-1);if(r==="Object"&&e.constructor&&(r=e.constructor.name),r==="Map"||r==="Set")return Array.from(e);if(r==="Arguments"||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r))return D(e,t)}}function D(e,t){(t==null||t>e.length)&&(t=e.length);for(var r=0,o=new Array(t);r<t;r++)o[r]=e[r];return o}function V(e,t){var r=e&&(typeof Symbol<"u"&&e[Symbol.iterator]||e["@@iterator"]);if(r!=null){var o=[],c=!0,i=!1,u,l;try{for(r=r.call(e);!(c=(u=r.next()).done)&&(o.push(u.value),!(t&&o.length===t));c=!0);}catch(_){i=!0,l=_}finally{try{!c&&r.return!=null&&r.return()}finally{if(i)throw l}}return o}}function K(e){if(Array.isArray(e))return e}var Y=function(){var t=v(b,null);if(t===null)return null;var r=t.major,o=t.minor,c=t.patch,i=t.postfix,u=t.style,l="".concat(r,".").concat(o,".").concat(c),_=i?"-".concat(i):"",f="".concat(l).concat(_),E=u&&Object.entries(u).map(function(k){var y=M(k,2),P=y[0],N=y[1];return"".concat(P,": ").concat(N,";")}),C=S(A||(A=x([`
+    align-self: center;
+    border-radius: 0.25em;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 20px;
+    padding: 0 0.5em;
+    text-decoration: none;
+    text-transform: uppercase;
+    user-select: none;
+    `,`
+  `])),E),I=T.span(g||(g=x([`
+    `,`
+  `])),C);return m.createElement(m.Fragment,null,m.createElement(I,{key:f,title:f},f))},R=Y;p.register(O,function(){p.add(h,{type:d.TOOL,title:"Version",match:function(){return!0},render:R})});
+}catch(e){ console.error("[Storybook] One of your manager-entries failed: " + import.meta.url, e); }
