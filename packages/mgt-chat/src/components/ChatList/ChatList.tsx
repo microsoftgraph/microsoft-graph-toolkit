@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ChatListItem, IChatListItemInteractionProps } from '../ChatListItem/ChatListItem';
+import { ChatListItem } from '../ChatListItem/ChatListItem';
 import { MgtTemplateProps } from '@microsoft/mgt-react';
-import { makeStyles, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
+import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
@@ -10,6 +10,10 @@ import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
+
+export interface IChatListItemInteractionProps {
+  onSelected: (e: GraphChat) => void;
+}
 
 const useStyles = makeStyles({
   headerContainer: {
@@ -31,6 +35,11 @@ const useStyles = makeStyles({
     '&:hover': {
       textDecorationLine: 'none' // This removes the underline when hovering
     }
+  },
+  button: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%'
   }
 });
 
@@ -46,6 +55,8 @@ export const ChatList = (
   // TODO: change this to use StatefulGraphChatListClient
   const chatClient: StatefulGraphChatClient = useGraphChatClient('');
   const [chatState, setChatState] = useState(chatClient.getState());
+  const [selectedItem, setSelectedItem] = useState<string>();
+
   useEffect(() => {
     chatClient.onStateChange(setChatState);
     return () => {
@@ -72,7 +83,25 @@ export const ChatList = (
             <ChatListHeader buttonItems={chatListButtonItems} menuItems={chatListMenuItems} />
           </div>
           {chats.map(c => (
-            <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
+            <Button
+              className={styles.button}
+              key={c.id}
+              onClick={() => {
+                // set selected state only once per click event
+                if (c.id !== selectedItem) {
+                  setSelectedItem(c.id);
+                  props.onSelected(c);
+                }
+              }}
+            >
+              <ChatListItem
+                key={c.id}
+                chat={c}
+                myId={chatState.userId}
+                isSelected={c.id === selectedItem}
+                isRead={false}
+              />
+            </Button>
           ))}
           <div className={styles.linkContainer}>
             <Link href="#" className={styles.loadMore}>

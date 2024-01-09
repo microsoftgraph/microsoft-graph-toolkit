@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { makeStyles, shorthands, Button } from '@fluentui/react-components';
+import React, { useState, useEffect } from 'react';
+import { makeStyles, mergeClasses, shorthands, Button } from '@fluentui/react-components';
 import {
   Chat,
   AadUserConversationMember,
@@ -11,19 +11,34 @@ import { error } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
 
-export interface IChatListItemInteractionProps {
-  onSelected: (e: Chat) => void;
-}
-
 interface IMgtChatListItemProps {
   chat: Chat;
   myId: string | undefined;
+  isSelected: boolean;
+  isRead: boolean;
 }
 
 const useStyles = makeStyles({
+  // highlight selection
+  isSelected: {
+    backgroundColor: '#e6f7ff'
+  },
+
+  isUnSelected: {
+    backgroundColor: '#ffffff'
+  },
+
+  // highlight text
+  isBold: {
+    fontWeight: 'bold'
+  },
+
+  isNormal: {
+    fontWeight: 'normal'
+  },
+
   chatListItem: {
     display: 'flex',
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between', // Add this if you want to push the timestamp to the end
     width: '100%',
@@ -84,13 +99,22 @@ const useStyles = makeStyles({
   }
 });
 
-export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps & IChatListItemInteractionProps) => {
+export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListItemProps) => {
   const styles = useStyles();
 
   // shortcut if no valid user
   if (!myId) {
     return <></>;
   }
+
+  const [read, setRead] = useState<boolean>(isRead);
+
+  // when isSelected changes to true, setRead to true
+  useEffect(() => {
+    if (isSelected) {
+      setRead(true);
+    }
+  }, [isSelected]);
 
   // Copied and modified from the sample ChatItem.tsx
   // Determines the title in the case of 1:1 and self chats
@@ -195,19 +219,20 @@ export const ChatListItem = ({ chat, myId, onSelected }: IMgtChatListItemProps &
     return removeHtmlPTags(previewString);
   };
 
+  const container = mergeClasses(
+    styles.chatListItem,
+    isSelected ? styles.isSelected : styles.isUnSelected,
+    read ? styles.isNormal : styles.isBold
+  );
+
   return (
-    <Button
-      className={styles.chatListItem}
-      onClick={() => {
-        onSelected(chat);
-      }}
-    >
+    <div className={container}>
       <div className={styles.profileImage}>{getDefaultProfileImage()}</div>
       <div className={styles.chatInfo}>
-        <h3 className={styles.chatTitle}>{inferTitle(chat)}</h3>
+        <p className={styles.chatTitle}>{inferTitle(chat)}</p>
         <p className={styles.chatMessage}>{enrichPreviewMessage(chat.lastMessagePreview)}</p>
       </div>
       <div className={styles.chatTimestamp}>{extractTimestamp(determineCorrectTimestamp(chat))}</div>
-    </Button>
+    </div>
   );
 };
