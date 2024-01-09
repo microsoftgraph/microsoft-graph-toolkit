@@ -5,7 +5,11 @@ import { makeStyles, Link, FluentProvider, shorthands, webLightTheme } from '@fl
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { ChatMessageInfo, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
-import { ChatListEvent, StatefulGraphChatListClient } from '../../statefulClient/StatefulGraphChatListClient';
+import {
+  ChatListEvent,
+  StatefulGraphChatListClient,
+  GraphChatListClient
+} from '../../statefulClient/StatefulGraphChatListClient';
 import { useGraphChatListClient } from '../../statefulClient/useGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
@@ -13,6 +17,7 @@ import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
 import { ChatThreadCollection, loadChatThreads, loadChatThreadsByPage } from '../../statefulClient/graph.chat';
 import { error } from '@microsoft/mgt-element';
 import ChatListMenuItem from '../ChatListHeader/ChatListMenuItem';
+import { set } from 'immer/dist/internal';
 
 const useStyles = makeStyles({
   headerContainer: {
@@ -51,10 +56,50 @@ export const ChatList = (
     }
 ) => {
   const styles = useStyles();
-  const chatClient: StatefulGraphChatListClient = useGraphChatListClient();
-  const [chatState, setChatState] = useState(chatClient.getState());
+
+  const [chatClient, setChatClient] = useState<StatefulGraphChatListClient | undefined>();
+  const [chatState, setChatState] = useState<GraphChatListClient | undefined>();
   const [chatThreads, setChatThreads] = useState<GraphChat[]>([]);
   const [nextLink, setNextLink] = useState<string>('');
+
+  // wait for provider to be ready before setting client and state
+  useEffect(() => {
+    const provider = Providers.globalProvider;
+    provider.onStateChanged(evt => {
+      if (evt.detail === ProviderState.SignedIn) {
+        const client = new StatefulGraphChatListClient();
+        setChatClient(client);
+        setChatState(client.getState());
+      }
+    });
+  }, []);
+
+  // load threads once there is a valid state
+  useEffect(() => {
+    // NOTE: take a look at states in writeMessagesToState
+    // if (chatState?.status === 'ready') {
+    const provider = Providers.globalProvider;
+    if (provider && provider.state === ProviderState.SignedIn) {
+      const graph = provider.graph.forComponent('mgt-chat');
+      loadChatThreads(graph, props.chatThreadsPerPage).then(
+        chats => handleChatThreads(chats),
+        e => error(e)
+      );
+    }
+    // }
+  }, [chatState]);
+
+  // subscribe (from useGraphChatListClient)
+  useEffect(() => {
+    chatClient?.subscribeToUser('default');
+  }, [chatClient]);
+
+  // tear down (from useGraphChatListClient)
+  useEffect(() => {
+    return () => {
+      void chatClient?.tearDown();
+    };
+  }, [chatClient]);
 
   const loadMore = () => {
     if (nextLink && nextLink !== '') {
@@ -82,7 +127,7 @@ export const ChatList = (
     setChatThreads(chatThreads.concat(uniqeChatThreads));
   };
 
-  const loadDataOnlyOnce = useCallback(() => {
+  useEffect(() => {
     const provider = Providers.globalProvider;
     if (provider && provider.state === ProviderState.SignedIn) {
       console.log('loadDataOnlyOnce invoked');
@@ -93,9 +138,7 @@ export const ChatList = (
         e => error(e)
       );
     }
-  }, [chatThreads]);
-
-  useEffect(loadDataOnlyOnce, []);
+  }, []);
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
 
   const onChatListEvent = (state: ChatListEvent) => {
@@ -122,12 +165,14 @@ export const ChatList = (
   };
 
   useEffect(() => {
-    chatClient.onChatListEvent(onChatListEvent);
-    chatClient.onStateChange(setChatState);
-    return () => {
-      chatClient.offChatListEvent(onChatListEvent);
-      chatClient.offStateChange(setChatState);
-    };
+    if (chatClient) {
+      chatClient.onChatListEvent(onChatListEvent);
+      chatClient.onStateChange(setChatState);
+      return () => {
+        chatClient.offChatListEvent(onChatListEvent);
+        chatClient.offStateChange(setChatState);
+      };
+    }
   }, [chatClient]);
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
@@ -152,7 +197,7 @@ export const ChatList = (
           </div>
           <div>
             {chatThreads.map(c => (
-              <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
+              <ChatListItem key={c.id} chat={c} myId={chatState?.userId} onSelected={props.onSelected} />
             ))}
             {nextLink !== '' && (
               <div className={styles.linkContainer}>
