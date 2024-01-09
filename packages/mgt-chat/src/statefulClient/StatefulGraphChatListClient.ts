@@ -26,7 +26,10 @@ import {
 import { produce } from 'immer';
 import { currentUserId } from '../utils/currentUser';
 import { graph } from '../utils/graph';
-import { MessageCache } from './Caching/MessageCache';
+// TODO: MessageCache is added here for the purpose of following the convention of StatefulGraphChatClient. However, StatefulGraphChatListClient
+//       is also leveraging the same cache and performing the same actions which would have resulted in race conditions against the same messages
+//       in the cache. To avoid this, I have commented out the code. We should revisit this and determine if we need to use the cache.
+// import { MessageCache } from './Caching/MessageCache';
 import { GraphConfig } from './GraphConfig';
 import { GraphNotificationUserClient } from './GraphNotificationUserClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
@@ -65,7 +68,7 @@ const isChatMemberChangeEvent = (
   );
 };
 
-// defines the type of the state object returned from the StatefulGraphChatClient
+// defines the type of the state object returned from the StatefulGraphChatListClient
 export type GraphChatListClient = Pick<MessageThreadProps, 'userId' | 'messages'> & {
   status:
     | 'initial'
@@ -152,7 +155,7 @@ const graphImageUrlRegex = /(<img[^>]+)src=(["']https:\/\/graph\.microsoft\.com[
 class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient> {
   private readonly _notificationClient: GraphNotificationUserClient;
   private readonly _eventEmitter: ThreadEventEmitter;
-  private readonly _cache: MessageCache;
+  // private readonly _cache: MessageCache;
   private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
   private _messageSubscribers: ((messageEvent: ChatListEvent) => void)[] = [];
 
@@ -162,7 +165,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
-    this._cache = new MessageCache();
+    // this._cache = new MessageCache();
     this._notificationClient = new GraphNotificationUserClient(
       this._eventEmitter,
       graph('mgt-chat', GraphConfig.version)
@@ -204,7 +207,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /**
    * Register a callback to receive state updates
    *
-   * @param {(state: GraphChatClient) => void} handler
+   * @param {(state: GraphChatListClient) => void} handler
    * @memberof StatefulGraphChatListClient
    */
   public onStateChange(handler: (state: GraphChatListClient) => void): void {
@@ -216,7 +219,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /**
    * Unregister a callback from receiving state updates
    *
-   * @param {(state: GraphChatClient) => void} handler
+   * @param {(state: GraphChatListClient) => void} handler
    * @memberof StatefulGraphChatListClient
    */
   public offStateChange(handler: (state: GraphChatListClient) => void): void {
@@ -237,7 +240,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    * State of the chat client with initial values set
    *
    * @private
-   * @type {GraphChatClientList}
+   * @type {GraphChatListClient}
    * @memberof StatefulGraphChatListClient
    */
   private _state: GraphChatListClient = { ...this._initialState };
@@ -269,7 +272,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    * @private
    * @param {ChatMessage} message
    * @return {*}  {MessageConversion}
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   private convertChatMessage(message: ChatMessage): MessageConversion {
     switch (message.messageType) {
@@ -400,7 +403,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     if (message.chatId) {
       this.notifyChatMessageEventChange({ message, type: this.getSystemMessageType(message) });
 
-      await this._cache.cacheMessage(message.chatId, message);
+      // await this._cache.cacheMessage(message.chatId, message);
       const messageConversion = this.convertChatMessage(message);
       const acsMessage = messageConversion.currentValue;
       this.updateMessages(acsMessage);
@@ -419,7 +422,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     if (message.chatId) {
       this.notifyChatMessageEventChange({ message, type: 'chatMessageDeleted' });
 
-      void this._cache.deleteMessage(message.chatId, message);
+      // void this._cache.deleteMessage(message.chatId, message);
       this.notifyStateChange((draft: GraphChatListClient) => {
         const draftMessage = draft.messages.find(m => m.messageId === message.id) as AcsChatMessage;
         // TODO: confirm if we should show the deleted content message in all cases or only when the message was deleted by the current user
@@ -435,7 +438,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     if (message.chatId) {
       this.notifyChatMessageEventChange({ message, type: 'chatMessageEdited' });
 
-      await this._cache.cacheMessage(message.chatId, message);
+      // await this._cache.cacheMessage(message.chatId, message);
       const messageConversion = this.convertChatMessage(message);
       this.updateMessages(messageConversion.currentValue);
       if (messageConversion.futureValue) {
@@ -448,8 +451,8 @@ detail: ${JSON.stringify(eventDetail)}`);
   /**
    * Return the current state of the chat client
    *
-   * @return {{GraphChatClient}
-   * @memberof StatefulGraphChatClient
+   * @return {{GraphChatListClient}
+   * @memberof StatefulGraphChatListClient
    */
   public getState(): GraphChatListClient {
     return this._state;
@@ -460,7 +463,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    *
    * @private
    * @param {LoginChangedEvent} e The event that triggered the change
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   private readonly onLoginStateChanged = (e: LoginChangedEvent) => {
     switch (e.detail) {
@@ -558,7 +561,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * A helper to co-ordinate the loading of a chat and its messages, and the subscription to notifications for that chat
    *
    * @private
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   private async updateUserSubscription() {
     // avoid subscribing to a resource with an empty chatId
@@ -602,7 +605,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * @private
    * @param {(GraphChatMessage)} [message]
    * @return {*}
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   private updateMessages(message?: GraphChatMessage) {
     if (!message) return;
@@ -759,7 +762,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * @readonly
    * @private
    * @type {IGraph}
-   * @memberof StatefulGraphChatClient
+   * @memberof StatefulGraphChatListClient
    */
   private get graph(): IGraph {
     return graph('mgt-chat');

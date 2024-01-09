@@ -12,6 +12,7 @@ import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
 import { ChatThreadCollection, loadChatThreads, loadChatThreadsByPage } from '../../statefulClient/graph.chat';
 import { error } from '@microsoft/mgt-element';
+import ChatListMenuItem from '../ChatListHeader/ChatListMenuItem';
 
 const useStyles = makeStyles({
   headerContainer: {
@@ -62,7 +63,7 @@ export const ChatList = (
         let filter = nextLink.split('?')[1];
         setNextLink(''); // reset
 
-        const graph = provider.graph.forComponent('ChatList');
+        const graph = provider.graph.forComponent('mgt-chat');
         loadChatThreadsByPage(graph, filter).then(
           chats => handleChatThreads(chats),
           e => error(e)
@@ -84,7 +85,9 @@ export const ChatList = (
   const loadDataOnlyOnce = useCallback(() => {
     const provider = Providers.globalProvider;
     if (provider && provider.state === ProviderState.SignedIn) {
-      const graph = provider.graph.forComponent('ChatList');
+      console.log('loadDataOnlyOnce invoked');
+
+      const graph = provider.graph.forComponent('mgt-chat');
       loadChatThreads(graph, props.chatThreadsPerPage).then(
         chats => handleChatThreads(chats),
         e => error(e)
@@ -93,10 +96,10 @@ export const ChatList = (
   }, [chatThreads]);
 
   useEffect(loadDataOnlyOnce, []);
+  const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
 
   const onChatListEvent = (state: ChatListEvent) => {
     if (state.type === 'chatRenamed' && state.message.eventDetail) {
-      console.log(state.message.chatId);
       let eventDetail = state.message.eventDetail as EventMessageDetail;
       let chatThread = chatThreads.find(c => c.id === state.message.chatId);
       if (chatThread) {
@@ -128,11 +131,16 @@ export const ChatList = (
   }, [chatClient]);
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
-  const chatListMenuItems = props.menuItems === undefined ? [] : props.menuItems;
-  chatListMenuItems.unshift({
-    displayText: 'Mark all as read',
-    onClick: () => {}
-  });
+
+  useEffect(() => {
+    const markAllAsRead = {
+      displayText: 'Mark all as read',
+      onClick: () => {}
+    };
+
+    menuItems.unshift(markAllAsRead);
+    setMenuItems(menuItems);
+  }, []);
 
   return (
     // This is a temporary approach to render the chatlist items. This should be replaced.
@@ -140,18 +148,20 @@ export const ChatList = (
       <FluentProvider theme={webLightTheme}>
         <div>
           <div className={styles.headerContainer}>
-            <ChatListHeader buttonItems={chatListButtonItems} menuItems={chatListMenuItems} />
+            <ChatListHeader buttonItems={chatListButtonItems} menuItems={menuItems} />
           </div>
-          {chatThreads.map(c => (
-            <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
-          ))}
-          {nextLink !== '' && (
-            <div className={styles.linkContainer}>
-              <Link onClick={loadMore} href="#" className={styles.loadMore}>
-                load more
-              </Link>
-            </div>
-          )}
+          <div>
+            {chatThreads.map(c => (
+              <ChatListItem key={c.id} chat={c} myId={chatState.userId} onSelected={props.onSelected} />
+            ))}
+            {nextLink !== '' && (
+              <div className={styles.linkContainer}>
+                <Link onClick={loadMore} href="#" className={styles.loadMore}>
+                  load more
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </FluentProvider>
     </FluentThemeProvider>
