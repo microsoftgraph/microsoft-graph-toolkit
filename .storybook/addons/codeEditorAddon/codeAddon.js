@@ -162,9 +162,9 @@ export const withCodeEditor = makeDecorator({
             ]).then(values => {
               //editor.autoFormat = false;
               editor.files = {
-                html: values[0],
-                js: values[1],
-                css: values[2]
+                html: beautifyContent('html', values[0]),
+                js: beautifyContent('js', values[1]),
+                css: beautifyContent('css', values[2])
               };
             });
           });
@@ -219,11 +219,6 @@ export const withCodeEditor = makeDecorator({
       }
     });
 
-    /*const getFullReactCode = (code, context) => {
-      const snippetName = `${context?.component}-${context?.name?.replace(/ /g, '-').toLowerCase()}`;
-      return (code += `\n\n// Edit in StackBlitz: https://stackblitz.com/edit/${snippetName}?file=src%2FApp.tsx`);
-    };*/
-
     const getStoryTitle = context => {
       const storyTitle = `${context?.title} - ${context?.story}`;
       return storyTitle;
@@ -239,7 +234,7 @@ export const withCodeEditor = makeDecorator({
 
           let { html, css, js } = editor.files;
           js = js.replace(
-            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt\x2d([^\}]+)['"];/gm,
+            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt\x2d.*['"];/gm,
             `import {$1} from '${mgtScriptName}';`
           );
 
