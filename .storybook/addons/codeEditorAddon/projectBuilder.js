@@ -22,7 +22,7 @@ const HTML_TEMPLATE_FILES = [
 ];
 
 export const generateProject = async (title, files) => {
-  files.react ? await openReactProject(title, files) : await openHtmlProject(title, files);
+  files.react && files.react !== '\n' ? await openReactProject(title, files) : await openHtmlProject(title, files);
 };
 
 let openReactProject = async (title, files) => {

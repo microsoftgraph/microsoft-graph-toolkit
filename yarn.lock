@@ -3066,9 +3066,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@custom-elements-manifest/analyzer@npm:^0.8.3":
-  version: 0.8.4
-  resolution: "@custom-elements-manifest/analyzer@npm:0.8.4"
+"@custom-elements-manifest/analyzer@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@custom-elements-manifest/analyzer@npm:0.9.0"
   dependencies:
     "@custom-elements-manifest/find-dependencies": ^0.0.5
     "@github/catalyst": ^1.6.0
@@ -3083,7 +3083,7 @@ __metadata:
   bin:
     cem: cem.js
     custom-elements-manifest: cem.js
-  checksum: f9b378368640c2288d175b0f8a2573d6287f7563e2265d8bbb4adcc6c733ef2da37f6ce45086f71d47e3abd6bfe6366abcec1e0c4a7b40fe56b822cb2938be3a
+  checksum: 37f480d827a9fd10abbc7f9df03b08bafff96cee2cdde40f9798c0cb63d01e1a304e60a9f5afc1aee33cf987e06bb8c5f185db284cf8253968a8f1fa71315a8e
   languageName: node
   linkType: hard
 
@@ -34429,7 +34429,7 @@ __metadata:
     "@babel/preset-env": ^7.22.20
     "@babel/preset-react": ^7.12.7
     "@babel/preset-typescript": ^7.23.0
-    "@custom-elements-manifest/analyzer": ^0.8.3
+    "@custom-elements-manifest/analyzer": ^0.9.0
     "@esm-bundle/chai": ^4.3.4-fix.0
     "@microsoft/eslint-config-msgraph": ^2.0.0
     "@octokit/rest": ^18.5.3

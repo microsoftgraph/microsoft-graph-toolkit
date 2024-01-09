@@ -11,7 +11,7 @@
   },
   "scripts": {
     "init": "yarn && yarn build",
-    "analyze": "custom-elements-manifest analyze --globs \"./packages/*/src/**/*.ts\"",
+    "analyze": "custom-elements-manifest analyze --litelement --globs \"./packages/*/src/**/*.ts\"",
     "build": "npm run prettier:check && npm run clean && lerna run build --scope '@microsoft/*'",
     "build:dev": "npm run prettier:check && lerna run build --scope '@microsoft/*' --ignore '@microsoft/mgt' --ignore '@microsoft/mgt-spf*' --ignore '@microsoft/mgt-sharepoint-provider' --ignore '@microsoft/mgt-electron-provider' --ignore '@microsoft/mgt-teamsfx-provider' --ignore '@microsoft/mgt-proxy-provider'",
     "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope '@microsoft/*'",
@@ -66,12 +66,13 @@
     "@babel/preset-env": "^7.22.20",
     "@babel/preset-react": "^7.12.7",
     "@babel/preset-typescript": "^7.23.0",
-    "@custom-elements-manifest/analyzer": "^0.8.3",
+    "@custom-elements-manifest/analyzer": "^0.9.0",
     "@esm-bundle/chai": "^4.3.4-fix.0",
     "@microsoft/eslint-config-msgraph": "^2.0.0",
     "@octokit/rest": "^18.5.3",
     "@open-wc/testing": "^3.2.0",
     "@open-wc/testing-helpers": "^2.3.0",
+    "@stackblitz/sdk": "^1.9.0",
     "@storybook/addon-a11y": "^7.6.7",
     "@storybook/addon-actions": "^7.6.7",
     "@storybook/addon-docs": "^7.6.7",
@@ -114,6 +115,7 @@
     "gulp-sass": "^5.1.0",
     "gulp-util": "^3.0.8",
     "husky": "^4.3.0",
+    "js-beautify": "^1.14.11",
     "lerna": "^7.1.1",
     "lit": "^3.0.0",
     "monaco-editor": "^0.30.0",
@@ -158,9 +160,5 @@
   "resolutions": {
     "responselike": "2.0.0"
   },
-  "packageManager": "yarn@3.6.3",
-  "dependencies": {
-    "@stackblitz/sdk": "^1.9.0",
-    "js-beautify": "^1.14.11"
-  }
+  "packageManager": "yarn@3.6.3"
 }
