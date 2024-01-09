@@ -6,47 +6,16 @@
  */
 
 import { useEffect, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import { StatefulGraphChatListClient } from './StatefulGraphChatListClient';
 import { log } from '@microsoft/mgt-element';
-
-/**
- * The key name to use for storing the sessionId in session storage
- */
-const keyName = 'mgt-chat-session-id';
-
-/**
- * reads a string from session storage, or if there is no string for the keyName, generate a new uuid and place in storage
- */
-const getOrGenerateSessionId = () => {
-  const value = sessionStorage.getItem(keyName);
-
-  if (value) {
-    return value;
-  } else {
-    const newValue = uuid();
-    sessionStorage.setItem(keyName, newValue);
-    return newValue;
-  }
-};
-
-/**
- * Provides a stable sessionId for the lifetime of the browser tab.
- * @returns a string that is either read from session storage or generated and placed in session storage
- */
-const useSessionId = (): string => {
-  // when a function is passed to useState, it is only invoked on the first render
-  const [sessionId] = useState<string>(getOrGenerateSessionId);
-
-  return sessionId;
-};
 
 /**
  * Custom hook to abstract the creation of a stateful graph chat list client.
  * @returns {StatefulGraphChatClient} a stateful graph chat client that is subscribed to the given chatId
  */
 export const useGraphChatListClient = (): StatefulGraphChatListClient => {
-  const sessionId = useSessionId();
+  // sessionId is going to be used to lookup subscription and we need to ensure the same subscription is used across tabs.
+  const sessionId = 'default';
   const [chatClient] = useState<StatefulGraphChatListClient>(() => new StatefulGraphChatListClient());
 
   // when chatId or sessionId changes this effect subscribes or unsubscribes
