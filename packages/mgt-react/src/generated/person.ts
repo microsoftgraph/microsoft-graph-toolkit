@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { IDynamicPerson,AvatarSize,PersonCardInteraction,ViewType,PersonViewType } from '@microsoft/mgt-components/dist/es6/exports';
+import { IDynamicPerson,AvatarSize,PersonCardInteraction,ViewType } from '@microsoft/mgt-components/dist/es6/exports';
 import { registerMgtPersonComponent } from '@microsoft/mgt-components/dist/es6/components/components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -28,7 +28,7 @@ export type PersonProps = {
 	line2Property?: string;
 	line3Property?: string;
 	line4Property?: string;
-	view?: ViewType | PersonViewType;
+	view?: ViewType;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	line1clicked?: (e: CustomEvent<IDynamicPerson>) => void;
