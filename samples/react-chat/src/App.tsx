@@ -1,17 +1,38 @@
 import React, { memo, useCallback, useState } from 'react';
 import './App.css';
 import { Get, Login } from '@microsoft/mgt-react';
-import { Chat, ChatList, NewChat } from '@microsoft/mgt-chat';
+import { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem } from '@microsoft/mgt-chat';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
+import { ChatAdd24Filled, ChatAdd24Regular, bundleIcon } from '@fluentui/react-icons';
+
+const ChatAddIconBundle = bundleIcon(ChatAdd24Filled, ChatAdd24Regular);
+
+export const ChatAddIcon = (): JSX.Element => {
+  const iconColor = 'var(--colorBrandForeground2)';
+  return <ChatAddIconBundle color={iconColor} />;
+};
 
 const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => void }) => {
+  const buttons: ChatListButtonItem[] = [
+    {
+      renderIcon: () => <ChatAddIcon />,
+      onClick: () => console.log('Add chat clicked')
+    }
+  ];
+  const menus: ChatListMenuItem[] = [
+    {
+      displayText: 'My custom menu item',
+      onClick: () => console.log('My custom menu item clicked')
+    }
+  ];
+
   return (
     <Get
       resource="me/chats?$expand=members,lastMessagePreview&orderby=lastMessagePreview/createdDateTime desc"
       scopes={['chat.read']}
       cacheEnabled={false}
     >
-      <ChatList onSelected={onSelected} />
+      <ChatList menuItems={menus} buttonItems={buttons} onSelected={onSelected} />
     </Get>
   );
 });
