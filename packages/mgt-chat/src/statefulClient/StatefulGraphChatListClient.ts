@@ -166,7 +166,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   // private readonly _cache: MessageCache;
   private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
   private _messageSubscribers: ((messageEvent: ChatListEvent) => void)[] = [];
-  private readonly _graph: IGraph | undefined;
+  private readonly _graph: IGraph;
   constructor(chatThreadsPerPage: number) {
     this.updateUserInfo();
     Providers.globalProvider.onStateChanged(this.onLoginStateChanged);
