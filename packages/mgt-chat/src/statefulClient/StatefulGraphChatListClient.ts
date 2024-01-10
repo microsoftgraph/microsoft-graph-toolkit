@@ -71,7 +71,7 @@ const isChatMemberChangeEvent = (
 };
 
 // defines the type of the state object returned from the StatefulGraphChatListClient
-export type GraphChatListClient = Pick<MessageThreadProps, 'userId' | 'messages'> & {
+export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
   status:
     | 'initial'
     | 'creating server connections'
@@ -107,18 +107,6 @@ interface StatefulClient<T> {
 
   loadMoreChatThreads(): void;
 }
-
-interface CreatedOn {
-  createdOn: Date;
-}
-
-/**
- * Simple object comparator function for sorting by createdOn date
- *
- * @param {CreatedOn} a
- * @param {CreatedOn} b
- */
-const MessageCreatedComparator = (a: CreatedOn, b: CreatedOn) => a.createdOn.getTime() - b.createdOn.getTime();
 
 type MessageEventType =
   | '#microsoft.graph.membersAddedEventMessageDetail'
@@ -233,7 +221,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   private readonly _initialState: GraphChatListClient = {
     status: 'initial',
     activeErrorMessages: [],
-    messages: [],
     userId: '',
     chatThreads: [],
     nextLink: ''
@@ -418,19 +405,19 @@ detail: ${JSON.stringify(eventDetail)}`);
   /*
    * Event handler to be called when a new message is received by the notification service
    */
-  private readonly onMessageReceived = async (message: ChatMessage) => {
+  private readonly onMessageReceived = (message: ChatMessage) => {
     if (message.chatId) {
       this.notifyChatMessageEventChange({ message, type: this.getSystemMessageType(message) });
 
       // await this._cache.cacheMessage(message.chatId, message);
-      const messageConversion = this.convertChatMessage(message);
-      const acsMessage = messageConversion.currentValue;
-      this.updateMessages(acsMessage);
-      if (messageConversion.futureValue) {
-        // if we have a future value then we need to wait for it to resolve before we can send the read receipt
-        const futureMessageState = await messageConversion.futureValue;
-        this.updateMessages(futureMessageState);
-      }
+      // const messageConversion = this.convertChatMessage(message);
+      // const acsMessage = messageConversion.currentValue;
+      // this.updateMessages(acsMessage);
+      // if (messageConversion.futureValue) {
+      //   // if we have a future value then we need to wait for it to resolve before we can send the read receipt
+      //   const futureMessageState = await messageConversion.futureValue;
+      //   this.updateMessages(futureMessageState);
+      // }
     }
   };
 
@@ -442,28 +429,23 @@ detail: ${JSON.stringify(eventDetail)}`);
       this.notifyChatMessageEventChange({ message, type: 'chatMessageDeleted' });
 
       // void this._cache.deleteMessage(message.chatId, message);
-      this.notifyStateChange((draft: GraphChatListClient) => {
-        const draftMessage = draft.messages.find(m => m.messageId === message.id) as AcsChatMessage;
-        // TODO: confirm if we should show the deleted content message in all cases or only when the message was deleted by the current user
-        if (draftMessage) this.setDeletedContent(draftMessage);
-      });
     }
   };
 
   /*
    * Event handler to be called when a message edit is received by the notification service
    */
-  private readonly onMessageEdited = async (message: ChatMessage) => {
+  private readonly onMessageEdited = (message: ChatMessage) => {
     if (message.chatId) {
       this.notifyChatMessageEventChange({ message, type: 'chatMessageEdited' });
 
       // await this._cache.cacheMessage(message.chatId, message);
-      const messageConversion = this.convertChatMessage(message);
-      this.updateMessages(messageConversion.currentValue);
-      if (messageConversion.futureValue) {
-        const eventualState = await messageConversion.futureValue;
-        this.updateMessages(eventualState);
-      }
+      // const messageConversion = this.convertChatMessage(message);
+      // this.updateMessages(messageConversion.currentValue);
+      // if (messageConversion.futureValue) {
+      //   const eventualState = await messageConversion.futureValue;
+      //   this.updateMessages(eventualState);
+      // }
     }
   };
 
@@ -550,7 +532,6 @@ detail: ${JSON.stringify(eventDetail)}`);
 
   private clearCurrentUserMessages() {
     this.notifyStateChange((draft: GraphChatListClient) => {
-      draft.messages = [];
       draft.status = 'initial'; // no message?
     });
   }
@@ -607,7 +588,6 @@ detail: ${JSON.stringify(eventDetail)}`);
       // reset state to initial
       this.notifyStateChange((draft: GraphChatListClient) => {
         draft.status = 'initial';
-        draft.messages = [];
       });
       // Subscribe to notifications for messages
       this.notifyStateChange((draft: GraphChatListClient) => {
@@ -637,28 +617,29 @@ detail: ${JSON.stringify(eventDetail)}`);
     }
   }
 
-  /**
-   * Update the state with given message either replacing an existing message matching on the id or adding to the list
-   *
-   * @private
-   * @param {(GraphChatMessage)} [message]
-   * @return {*}
-   * @memberof StatefulGraphChatListClient
-   */
-  private updateMessages(message?: GraphChatMessage) {
-    if (!message) return;
-    this.notifyStateChange((draft: GraphChatListClient) => {
-      const index = draft.messages.findIndex(m => m.messageId === message.messageId);
-      // this message is not already in thread so just add it
-      if (index === -1) {
-        // sort to ensure that messages are in the correct order should we get messages out of order
-        draft.messages = draft.messages.concat(message).sort(MessageCreatedComparator);
-      } else {
-        // replace the existing version of the message with the new one
-        draft.messages.splice(index, 1, message);
-      }
-    });
-  }
+  // /**
+  //  * Update the state with given message either replacing an existing message matching on the id or adding to the list
+  //  *
+  //  * @private
+  //  * @param {(GraphChatMessage)} [message]
+  //  * @return {*}
+  //  * @memberof StatefulGraphChatListClient
+  //  */
+  // private updateMessages(message?: GraphChatMessage) {
+  //   // TODO: We don't directly manipulate messages. This can be removed if unused.
+  //   if (!message) return;
+  //   this.notifyStateChange((draft: GraphChatListClient) => {
+  //     const index = draft.messages.findIndex(m => m.messageId === message.messageId);
+  //     // this message is not already in thread so just add it
+  //     if (index === -1) {
+  //       // sort to ensure that messages are in the correct order should we get messages out of order
+  //       draft.messages = draft.messages.concat(message).sort(MessageCreatedComparator);
+  //     } else {
+  //       // replace the existing version of the message with the new one
+  //       draft.messages.splice(index, 1, message);
+  //     }
+  //   });
+  // }
 
   private graphImageMatch(messageContent: string): RegExpMatchArray | null {
     return messageContent.match(graphImageUrlRegex);
