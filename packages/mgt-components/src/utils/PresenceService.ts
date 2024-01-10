@@ -96,6 +96,7 @@ export class PresenceService {
 
   /**
    * Unregisters a component with the presence service so that it no longer receives updates.
+   * There is no error if the component was not registered.
    *
    * @static
    * @param {MgtPerson} component
@@ -132,7 +133,7 @@ export class PresenceService {
 
         // get a valid graph provider
         const provider = Providers.globalProvider;
-        if (!provider || provider.state === ProviderState.Loading) {
+        if (!provider || provider.state === ProviderState.Loading || provider.state === ProviderState.SignedOut) {
           continue;
         }
 
@@ -153,7 +154,7 @@ export class PresenceService {
           const presences = await getUsersPresenceByPeople(
             provider.graph,
             Array.from(this.presenceByUserId.keys()).map(userId => ({ id: userId })),
-            false // bypass cache
+            true // bypassCacheRead
           );
           if (presences) {
             for (const presence of Object.values(presences)) {

@@ -15,6 +15,7 @@ export type PersonProps = {
 	userId?: string;
 	usage?: string;
 	showPresence?: boolean;
+	disablePresenceRefresh?: boolean;
 	avatarSize?: AvatarSize;
 	personDetails?: IDynamicPerson;
 	personImage?: string;
@@ -29,6 +30,7 @@ export type PersonProps = {
 	line3Property?: string;
 	line4Property?: string;
 	view?: ViewType | PersonViewType;
+	presenceId?: string | undefined;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	line1clicked?: (e: CustomEvent<IDynamicPerson>) => void;

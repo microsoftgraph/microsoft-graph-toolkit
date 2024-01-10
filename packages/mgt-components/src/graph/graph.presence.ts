@@ -66,12 +66,13 @@ export const getUserPresence = async (graph: IGraph, userId?: string): Promise<P
 };
 
 /**
- * async promise, allows developer to get person presense by providing array of IDynamicPerson
+ * Async promise, allows developer to get person presense by providing array of IDynamicPerson.
+ * BypassCacheRead forces all presence to be queried from the graph but will still update the cache.
  *
  * @returns {}
  * @memberof BetaGraph
  */
-export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicPerson[], allowCache = true) => {
+export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicPerson[], bypassCacheRead = false) => {
   if (!people || people.length === 0) {
     return {};
   }
@@ -81,7 +82,7 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
   const scopes = ['presence.read.all'];
   let cache: CacheStore<CachePresence>;
 
-  if (allowCache && getIsPresenceCacheEnabled()) {
+  if (getIsPresenceCacheEnabled()) {
     cache = CacheService.getCache(schemas.presence, schemas.presence.stores.presence);
   }
 
@@ -90,11 +91,11 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
       const id = person.id;
       peoplePresence[id] = null;
       let presence: CachePresence;
-      if (allowCache && getIsPresenceCacheEnabled()) {
+      if (!bypassCacheRead && getIsPresenceCacheEnabled()) {
         presence = await cache.getValue(id);
       }
       if (
-        allowCache &&
+        !bypassCacheRead &&
         getIsPresenceCacheEnabled() &&
         presence &&
         getPresenceInvalidationTime() > Date.now() - presence.timeCached
@@ -117,7 +118,7 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
 
       for (const r of presenceResult.value) {
         peoplePresence[r.id] = r;
-        if (allowCache && getIsPresenceCacheEnabled()) {
+        if (getIsPresenceCacheEnabled()) {
           await cache.putValue(r.id, { presence: JSON.stringify(r) });
         }
       }

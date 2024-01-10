@@ -200,8 +200,8 @@ describe('mgt-person - tests', () => {
       5: 'Busy'
     });
 
-    PresenceService.config.initial = 1000;
-    PresenceService.config.refresh = 2000;
+    PresenceService.config.initial = 100;
+    PresenceService.config.refresh = 200;
 
     const person = await fixture(
       html`<mgt-person person-query="me" show-presence="true" view="twoLines" iteration="0"></mgt-person>`

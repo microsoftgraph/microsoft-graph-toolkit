@@ -1,8 +1,7 @@
-import React, { memo, useCallback, useState, useEffect } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import './App.css';
 import { Get, Login } from '@microsoft/mgt-react';
 import { Chat, NewChat } from '@microsoft/mgt-chat';
-import { CacheService, log } from '@microsoft/mgt-element';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import ChatListTemplate from './components/ChatListTemplate/ChatListTemplate';
 

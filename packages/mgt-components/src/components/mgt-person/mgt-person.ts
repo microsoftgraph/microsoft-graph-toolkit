@@ -247,10 +247,10 @@ export class MgtPerson extends MgtTemplatedComponent implements PresenceAwareCom
    * @type {boolean}
    */
   @property({
-    attribute: 'refresh-presence',
+    attribute: 'disable-presence-refresh',
     type: Boolean
   })
-  public refreshPresence = true;
+  public disablePresenceRefresh;
 
   /**
    * determines person component avatar size and apply presence badge accordingly.
@@ -573,6 +573,19 @@ export class MgtPerson extends MgtTemplatedComponent implements PresenceAwareCom
     this._isInvalidImageSrc = false;
     this._avatarType = avatarType.photo;
     this.verticalLayout = false;
+  }
+
+  /**
+   * Unregisters from presence service if necessary. Note, it does not cause an error
+   * if the component was not registered.
+   *
+   * @memberof MgtAgenda
+   */
+  public disconnectedCallback() {
+    if (this.showPresence && !this.disablePresenceRefresh) {
+      PresenceService.unregister(this);
+    }
+    super.disconnectedCallback();
   }
 
   /**
@@ -1211,7 +1224,7 @@ export class MgtPerson extends MgtTemplatedComponent implements PresenceAwareCom
       id: null
     };
 
-    if (this.showPresence && this.refreshPresence) {
+    if (this.showPresence && !this.disablePresenceRefresh) {
       this._fetchedPresence = defaultPresence;
       PresenceService.register(this);
     } else if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
