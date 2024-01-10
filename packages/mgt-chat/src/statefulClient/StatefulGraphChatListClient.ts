@@ -601,11 +601,8 @@ detail: ${JSON.stringify(eventDetail)}`);
     });
   }
 
-  private _sessionId: string | undefined;
-
-  public subscribeToUser(sessionId: string) {
-    this._sessionId = sessionId;
-    void this.updateUserSubscription();
+  public get sessionId(): string {
+    return 'default';
   }
 
   /**
@@ -615,8 +612,8 @@ detail: ${JSON.stringify(eventDetail)}`);
    * @memberof StatefulGraphChatListClient
    */
   private async updateUserSubscription() {
-    // avoid subscribing to a resource with an empty chatId
-    if (this.userId && this._sessionId) {
+    // avoid subscribing to a resource with an empty userId
+    if (this.userId) {
       // reset state to initial
       this.notifyStateChange((draft: GraphChatListClient) => {
         draft.status = 'initial';
@@ -633,7 +630,7 @@ detail: ${JSON.stringify(eventDetail)}`);
         const tasks: Promise<unknown>[] = [];
         // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
         // this client will then load the chat and messages when that event listener is called
-        tasks.push(this._notificationClient.subscribeToUserNotifications(this._userId, this._sessionId));
+        tasks.push(this._notificationClient.subscribeToUserNotifications(this._userId, this.sessionId));
         await Promise.all(tasks);
       } catch (e) {
         console.error('Failed to load chat data or subscribe to notications: ', e);

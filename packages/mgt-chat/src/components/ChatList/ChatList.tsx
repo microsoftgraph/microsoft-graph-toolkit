@@ -103,7 +103,6 @@ export const ChatList = (
     if (chatClient) {
       chatClient.onChatListEvent(onChatListEvent);
       chatClient.onStateChange(setChatState);
-      chatClient.subscribeToUser('default');
       return () => {
         void chatClient.tearDown();
         chatClient.offChatListEvent(onChatListEvent);
@@ -117,7 +116,9 @@ export const ChatList = (
   useEffect(() => {
     const markAllAsRead = {
       displayText: 'Mark all as read',
-      onClick: () => {}
+      onClick: () => {
+        console.log('mark all as read');
+      }
     };
 
     menuItems.unshift(markAllAsRead);
