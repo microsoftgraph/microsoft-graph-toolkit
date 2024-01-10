@@ -46,7 +46,6 @@ export interface PresenceAwareComponent {
  */
 export class PresenceService {
   private static readonly components = new Set<PresenceAwareComponent>();
-  private static readonly presenceByUserId = new Map<string, Presence | undefined>();
   private static initPromise: Promise<void> | null = null;
   private static registerPromise: (value: unknown) => void;
   private static isStopped = false;
@@ -139,12 +138,13 @@ export class PresenceService {
 
         // log attempt
         log(`updating presence for ${this.components.size} components.`);
+        const presenceByUserId = new Map<string, Presence | undefined>();
 
         // get full list of users
         for (const component of this.components) {
           const id = component.presenceId;
-          if (id && !this.presenceByUserId.has(id)) {
-            this.presenceByUserId.set(id, undefined);
+          if (id && !presenceByUserId.has(id)) {
+            presenceByUserId.set(id, undefined);
           }
         }
 
@@ -153,13 +153,13 @@ export class PresenceService {
         try {
           const presences = await getUsersPresenceByPeople(
             provider.graph,
-            Array.from(this.presenceByUserId.keys()).map(userId => ({ id: userId })),
+            Array.from(presenceByUserId.keys()).map(userId => ({ id: userId })),
             true // bypassCacheRead
           );
           if (presences) {
             for (const presence of Object.values(presences)) {
               if (presence.id) {
-                this.presenceByUserId.set(presence.id, presence);
+                presenceByUserId.set(presence.id, presence);
                 listOfIds.push(`${presence.id}=${presence.availability}/${presence.activity}`);
               }
             }
@@ -176,7 +176,7 @@ export class PresenceService {
         for (const component of this.components) {
           const id = component.presenceId;
           if (id) {
-            const presence = this.presenceByUserId.get(id);
+            const presence = presenceByUserId.get(id);
             if (presence) {
               component.onPresenceChange(presence);
             }

@@ -132,7 +132,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   onRenderAvatar={(userId?: string) => {
                     return (
                       <Person
-                        userId="9eb5efe7-b31a-4fa2-afa8-1ae5a4923e61"
+                        userId={userId}
                         avatarSize="small"
                         personCardInteraction={PersonCardInteraction.hover}
                         showPresence={true}
