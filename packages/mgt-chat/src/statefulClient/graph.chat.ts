@@ -14,9 +14,8 @@ import {
 } from '@microsoft/mgt-components';
 import { CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
-import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import { AadUserConversationMember, Chat, ChatMessage, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { chatOperationScopes } from './chatOperationScopes';
-
 /**
  * Generic collection response from graph
  */
@@ -30,6 +29,7 @@ export interface GraphCollection<T = any> {
  * Object representing a collection of chat messages
  */
 export type MessageCollection = GraphCollection<ChatMessage>;
+export type ChatThreadCollection = GraphCollection<GraphChat>;
 
 /**
  * Load the specified chat from graph with the members expanded
@@ -325,3 +325,27 @@ export const updateChatTopic = async (graph: IGraph, chatId: string, topic: stri
     .middlewareOptions(prepScopes(...chatOperationScopes.updateChatMessage))
     .patch({ topic });
 };
+
+/**
+ * Load the chat threads from graph with the members and last message expanded
+ *
+ * @param graph authenticated graph client from mgt
+ * @returns {Promise<GraphChat>}
+ */
+export const loadChatThreads = async (graph: IGraph, maxPage: number): Promise<ChatThreadCollection> =>
+  (await graph
+    .api(`me/chats?$top=${maxPage}&$expand=members,lastMessagePreview&orderby=lastMessagePreview/createdDateTime desc`)
+    .middlewareOptions(prepScopes(...chatOperationScopes.loadChat))
+    .get()) as ChatThreadCollection;
+
+/**
+ * Load the chat threads from graph with the members and last message expanded by next page link.
+ *
+ * @param graph authenticated graph client from mgt
+ * @returns {Promise<GraphChat>}
+ */
+export const loadChatThreadsByPage = async (graph: IGraph, filter: string): Promise<ChatThreadCollection> =>
+  (await graph
+    .api(`me/chats?${filter}`)
+    .middlewareOptions(prepScopes(...chatOperationScopes.loadChat))
+    .get()) as ChatThreadCollection;

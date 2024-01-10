@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ChatListItem } from '../ChatListItem/ChatListItem';
-import { MgtTemplateProps } from '@microsoft/mgt-react';
+import { MgtTemplateProps, ProviderState, Providers } from '@microsoft/mgt-react';
 import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
-import { ChatListEvent, StatefulGraphChatListClient } from '../../statefulClient/StatefulGraphChatListClient';
-import { useGraphChatListClient } from '../../statefulClient/useGraphChatListClient';
+import { StatefulGraphChatListClient, GraphChatListClient } from '../../statefulClient/StatefulGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
@@ -52,46 +51,52 @@ export const ChatList = (
     IChatListItemInteractionProps &
     IChatListMenuItemsProps & {
       buttonItems?: ChatListButtonItem[];
+      chatThreadsPerPage: number;
     }
 ) => {
-  const { value } = props.dataContext as { value: GraphChat[] };
-  const chats: GraphChat[] = value;
-
   const styles = useStyles();
-  const chatClient: StatefulGraphChatListClient = useGraphChatListClient();
-  const [chatState, setChatState] = useState(chatClient.getState());
-  const [chatThreads, setChatThreads] = useState<GraphChat[]>(chats);
+  const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
+  const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
+  const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
-
-  const onChatListEvent = (state: ChatListEvent) => {
-    // TODO: implementation will happen later, right now, we just need to make sure messages are coming thru in console logs.
-
-    console.log(state.type);
-    console.log(state.message);
-  };
-
   const [selectedItem, setSelectedItem] = useState<string>();
 
-  useEffect(() => {
-    chatClient.onChatListEvent(onChatListEvent);
-    chatClient.onStateChange(setChatState);
-    return () => {
-      chatClient.offChatListEvent(onChatListEvent);
-      chatClient.offStateChange(setChatState);
-    };
-  }, [chatClient]);
+  // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
+  const loadMore = () => {
+    chatListClient?.loadMoreChatThreads();
+  };
 
-  const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
-
+  // wait for provider to be ready before setting client and state
   useEffect(() => {
+    const provider = Providers.globalProvider;
+    provider.onStateChanged(evt => {
+      if (evt.detail === ProviderState.SignedIn) {
+        const client = new StatefulGraphChatListClient(props.chatThreadsPerPage);
+        setChatListClient(client);
+        setChatListState(client.getState());
+      }
+    });
+
     const markAllAsRead = {
       displayText: 'Mark all as read',
-      onClick: () => {}
+      onClick: () => {
+        console.log('mark all as read');
+      }
     };
 
     menuItems.unshift(markAllAsRead);
     setMenuItems(menuItems);
   }, []);
+
+  useEffect(() => {
+    if (chatListClient) {
+      chatListClient.onStateChange(setChatListState);
+      return () => {
+        void chatListClient.tearDown();
+        chatListClient.offStateChange(setChatListState);
+      };
+    }
+  }, [chatListClient]);
 
   return (
     // This is a temporary approach to render the chatlist items. This should be replaced.
@@ -102,7 +107,7 @@ export const ChatList = (
             <ChatListHeader buttonItems={chatListButtonItems} menuItems={menuItems} />
           </div>
           <div>
-            {chatThreads.map(c => (
+            {chatListState?.chatThreads.map(c => (
               <Button
                 className={styles.button}
                 key={c.id}
@@ -117,17 +122,19 @@ export const ChatList = (
                 <ChatListItem
                   key={c.id}
                   chat={c}
-                  myId={chatState.userId}
+                  myId={chatListState.userId}
                   isSelected={c.id === selectedItem}
                   isRead={false}
                 />
               </Button>
             ))}
-            <div className={styles.linkContainer}>
-              <Link href="#" className={styles.loadMore}>
-                load more
-              </Link>
-            </div>
+            {chatListState?.nextLink !== '' && (
+              <div className={styles.linkContainer}>
+                <Link onClick={loadMore} href="#" className={styles.loadMore}>
+                  load more
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </FluentProvider>
