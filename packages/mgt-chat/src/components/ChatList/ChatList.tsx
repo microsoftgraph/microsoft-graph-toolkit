@@ -55,9 +55,16 @@ export const ChatList = (
     }
 ) => {
   const styles = useStyles();
-
   const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
+  const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
+  const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
+  const [selectedItem, setSelectedItem] = useState<string>();
+
+  // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
+  const loadMore = () => {
+    chatListClient?.loadMoreChatThreads();
+  };
 
   // wait for provider to be ready before setting client and state
   useEffect(() => {
@@ -69,29 +76,7 @@ export const ChatList = (
         setChatListState(client.getState());
       }
     });
-  }, []);
 
-  const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
-  const [selectedItem, setSelectedItem] = useState<string>();
-
-  // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
-  const loadMore = () => {
-    chatListClient?.loadMoreChatThreads();
-  };
-
-  useEffect(() => {
-    if (chatListClient) {
-      chatListClient.onStateChange(setChatListState);
-      return () => {
-        void chatListClient.tearDown();
-        chatListClient.offStateChange(setChatListState);
-      };
-    }
-  }, [chatListClient]);
-
-  const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
-
-  useEffect(() => {
     const markAllAsRead = {
       displayText: 'Mark all as read',
       onClick: () => {
@@ -102,6 +87,16 @@ export const ChatList = (
     menuItems.unshift(markAllAsRead);
     setMenuItems(menuItems);
   }, []);
+
+  useEffect(() => {
+    if (chatListClient) {
+      chatListClient.onStateChange(setChatListState);
+      return () => {
+        void chatListClient.tearDown();
+        chatListClient.offStateChange(setChatListState);
+      };
+    }
+  }, [chatListClient]);
 
   return (
     // This is a temporary approach to render the chatlist items. This should be replaced.
