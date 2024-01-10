@@ -1,7 +1,10 @@
 import sdk from '@stackblitz/sdk';
 import { beautifyContent } from '../../utils/beautifyContent';
 
-const REACT_TEMPLATE_PATH = '/stackblitz/react/';
+const TEMPLATE_PATH = [window.location.protocol, '//', window.location.host, window.location.pathname]
+  .join('')
+  .replace('iframe.html', '');
+const REACT_TEMPLATE_PATH = TEMPLATE_PATH + 'stackblitz/react/';
 const REACT_TEMPLATE_FILES = [
   { name: 'package.json', type: 'json' },
   { name: 'index.html', type: 'html' },
@@ -12,7 +15,7 @@ const REACT_TEMPLATE_FILES = [
   { name: 'src/main.css', type: 'css' },
   { name: 'src/main.tsx', type: 'js' }
 ];
-const HTML_TEMPLATE_PATH = '/stackblitz/html/';
+const HTML_TEMPLATE_PATH = TEMPLATE_PATH + 'stackblitz/html/';
 const HTML_TEMPLATE_FILES = [
   { name: 'index.html', type: 'html' },
   { name: 'main.css', type: 'css' },
