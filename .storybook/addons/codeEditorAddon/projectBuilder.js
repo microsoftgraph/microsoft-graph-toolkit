@@ -1,5 +1,5 @@
 import sdk from '@stackblitz/sdk';
-import { beautifyContent } from '../../utils/utils';
+import { beautifyContent } from '../../utils/beautifyContent';
 
 const REACT_TEMPLATE_PATH = '/stackblitz/react/';
 const REACT_TEMPLATE_FILES = [

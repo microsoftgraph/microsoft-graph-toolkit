@@ -23,12 +23,12 @@ export const Get = () => html`
   <react>
     import { Get, MgtTemplateProps } from '@microsoft/mgt-react';
 
-    export function Messages(props: MgtTemplateProps) {
+    export const Messages = (props: MgtTemplateProps) => {
       const value = props.dataContext;
       return (
         <pre>{ JSON.stringify(value, null, 2) }</pre>
       );
-    }
+    };
 
     export default () => (
       <Get resource='/me/messages' scopes={['mail.read']}>

@@ -3,7 +3,7 @@ import { addons, makeDecorator } from '@storybook/preview-api';
 import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/IProvider';
 import { EditorElement } from './editor';
 import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from '../../env';
-import { beautifyContent } from '../../utils/utils';
+import { beautifyContent } from '../../utils/beautifyContent';
 
 const mgtScriptName = './mgt.storybook.js';
 
@@ -76,7 +76,6 @@ export const withCodeEditor = makeDecorator({
       ['Custom CSS Properties', 'Theme'].includes(context.name) || context.title.toLowerCase().includes('templating');
     const forContext = context && title;
     const disableThemeToggle = forOptions || forContext;
-    let fileTypes = ['html', 'js', 'css'];
     let story = getStory(context);
 
     let storyHtml;
@@ -105,9 +104,7 @@ export const withCodeEditor = makeDecorator({
       ?.replace(/\n?<!---->\n?/g, '')
       ?.trim();
 
-    if (reactCode) {
-      fileTypes = ['react', 'css'];
-    }
+    const fileTypes = reactCode ? ['react', 'css'] : ['html', 'js', 'css'];
 
     let editor = new EditorElement(fileTypes);
 
@@ -303,14 +300,16 @@ export const withCodeEditor = makeDecorator({
       editor.style.width = null;
     });
 
-    editor.files = {
-      html: beautifyContent('html', storyHtml),
-      react: beautifyContent('js', reactCode),
-      js: beautifyContent('js', scriptCode),
-      css: beautifyContent('css', styleCode)
-    };
+    if (isEditorEnabled()) {
+      editor.files = {
+        html: beautifyContent('html', storyHtml),
+        react: beautifyContent('js', reactCode),
+        js: beautifyContent('js', scriptCode),
+        css: beautifyContent('css', styleCode)
+      };
 
-    editor.title = getStoryTitle(context);
+      editor.title = getStoryTitle(context);
+    }
 
     return root;
   }

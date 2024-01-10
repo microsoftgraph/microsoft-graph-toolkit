@@ -11,10 +11,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 export default {
   title: 'Components / mgt-agenda / React',
   component: 'agenda',
-  decorators: [withCodeEditor],
-  parameters: {
-    mgtStackBlitz: { disable: false }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const Agenda = () => html`
