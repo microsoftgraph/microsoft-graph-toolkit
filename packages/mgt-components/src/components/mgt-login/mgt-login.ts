@@ -213,6 +213,8 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   public async login(): Promise<void> {
     const provider = Providers.globalProvider;
+    // (If we have user details or the consumer doesn't cancel the loginInitiated event) and the provider doesn't support multi-account, we don't have to login.
+    // This condition is to prevent the login popup from showing up when the user is already logged in while still ensuring the loginIntiated event is raised
     if ((this.userDetails || !this.fireCustomEvent('loginInitiated')) && !provider.isMultiAccountSupportedAndEnabled) {
       return;
     }
