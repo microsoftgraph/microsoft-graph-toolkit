@@ -37,7 +37,7 @@ import { loadChatImage, ChatThreadCollection, loadChatThreads, loadChatThreadsBy
 import { updateMessageContentWithImage } from '../utils/updateMessageContentWithImage';
 import { isChatMessage } from '../utils/types';
 import { rewriteEmojiContent } from '../utils/rewriteEmojiContent';
-import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
+import { ChatMessageInfo, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { error } from '@microsoft/mgt-element';
 
 // 1x1 grey pixel
@@ -143,6 +143,10 @@ interface MessageConversion {
   futureValue?: Promise<GraphChatMessage>;
 }
 
+interface EventMessageDetail {
+  chatDisplayName: string;
+}
+
 export interface ChatListEvent {
   type:
     | 'chatMessageReceived'
@@ -165,7 +169,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   private readonly _eventEmitter: ThreadEventEmitter;
   // private readonly _cache: MessageCache;
   private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
-  private _messageSubscribers: ((messageEvent: ChatListEvent) => void)[] = [];
   private readonly _graph: IGraph;
   constructor(chatThreadsPerPage: number) {
     this.updateUserInfo();
@@ -188,23 +191,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     await this._notificationClient.tearDown();
   }
 
-  /**
-   * Register a callback to receive chat message updates
-   *
-   * @param {(messageEvent: ChatListEvent) => void} handler
-   * @memberof StatefulGraphChatListClient
-   */
-  public onChatListEvent(handler: (messageEvent: ChatListEvent) => void): void {
-    if (!this._messageSubscribers.includes(handler)) {
-      this._messageSubscribers.push(handler);
-    }
-  }
-
   public loadMoreChatThreads(): void {
-    if (this._graph === undefined) {
-      return;
-    }
-
     const state = this.getState();
 
     if (state.nextLink === '') {
@@ -216,19 +203,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       chats => this.handleChatThreads(chats),
       e => error(e)
     );
-  }
-
-  /**
-   * Unregister a callback from receiving chat message updates
-   *
-   * @param {(messageEvent: ChatListEvent) => void} handler
-   * @memberof StatefulGraphChatListClient
-   */
-  public offChatListEvent(handler: (messageEvent: ChatListEvent) => void): void {
-    const index = this._messageSubscribers.indexOf(handler);
-    if (index !== -1) {
-      this._messageSubscribers = this._messageSubscribers.splice(index, 1);
-    }
   }
 
   /**
@@ -285,10 +259,26 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   }
 
   /**
-   * Calls each subscriber with the next state to be emitted
+   * Handle ChatListEvent event types.
    */
   private notifyChatMessageEventChange(message: ChatListEvent) {
-    this._messageSubscribers.forEach(handler => handler(message));
+    this.notifyStateChange((draft: GraphChatListClient) => {
+      if (message.type === 'chatRenamed' && message.message.eventDetail) {
+        const eventDetail = message.message.eventDetail as EventMessageDetail;
+        const chatThread = draft.chatThreads.find(c => c.id === message.message.chatId);
+        if (chatThread) {
+          chatThread.topic = eventDetail.chatDisplayName;
+        }
+      }
+
+      if (message.type === 'chatMessageReceived') {
+        const chatThread = draft.chatThreads.find(c => c.id === message.message.chatId);
+        if (chatThread) {
+          const msgInfo = message.message as ChatMessageInfo;
+          chatThread.lastMessagePreview = msgInfo;
+        }
+      }
+    });
   }
 
   /**

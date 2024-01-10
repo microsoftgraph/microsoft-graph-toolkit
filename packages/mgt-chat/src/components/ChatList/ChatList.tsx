@@ -4,12 +4,8 @@ import { MgtTemplateProps, ProviderState, Providers } from '@microsoft/mgt-react
 import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
-import { ChatMessageInfo, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
-import {
-  ChatListEvent,
-  StatefulGraphChatListClient,
-  GraphChatListClient
-} from '../../statefulClient/StatefulGraphChatListClient';
+import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
+import { StatefulGraphChatListClient, GraphChatListClient } from '../../statefulClient/StatefulGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
@@ -49,10 +45,6 @@ const useStyles = makeStyles({
   }
 });
 
-interface EventMessageDetail {
-  chatDisplayName: string;
-}
-
 // this is a stub to move the logic here that should end up here.
 export const ChatList = (
   props: MgtTemplateProps &
@@ -80,49 +72,22 @@ export const ChatList = (
   }, []);
 
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
-
-  const onChatListEvent = (state: ChatListEvent) => {
-    if (chatState !== undefined) {
-      if (state.type === 'chatRenamed' && state.message.eventDetail) {
-        let eventDetail = state.message.eventDetail as EventMessageDetail;
-        let chatThread = chatState.chatThreads.find(c => c.id === state.message.chatId);
-        if (chatThread) {
-          chatThread.topic = eventDetail.chatDisplayName;
-        }
-      }
-
-      if (state.type === 'chatMessageReceived') {
-        let chatThread = chatState.chatThreads.find(c => c.id === state.message.chatId);
-        if (chatThread) {
-          let msgInfo = state.message as ChatMessageInfo;
-          chatThread.lastMessagePreview = msgInfo;
-        } else {
-        }
-      }
-    }
-
-    // TODO: implementation will happen later, right now, we just need to make sure messages are coming thru in console logs.
-    console.log(state.type);
-    console.log(state.message);
-  };
-
   const [selectedItem, setSelectedItem] = useState<string>();
 
+  // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
   const loadMore = () => {
     chatClient?.loadMoreChatThreads();
   };
 
   useEffect(() => {
     if (chatClient) {
-      chatClient.onChatListEvent(onChatListEvent);
       chatClient.onStateChange(setChatState);
       return () => {
         void chatClient.tearDown();
-        chatClient.offChatListEvent(onChatListEvent);
         chatClient.offStateChange(setChatState);
       };
     }
-  }, [chatClient]);
+  }, [chatState]);
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
 
