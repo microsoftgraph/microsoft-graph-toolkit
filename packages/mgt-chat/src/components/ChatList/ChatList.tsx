@@ -87,7 +87,7 @@ export const ChatList = (
         chatClient.offStateChange(setChatState);
       };
     }
-  }, [chatState]);
+  }, [chatClient]);
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
 
