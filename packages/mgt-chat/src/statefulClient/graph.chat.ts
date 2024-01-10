@@ -45,6 +45,19 @@ export const loadChat = async (graph: IGraph, chatId: string): Promise<Chat> =>
     .get()) as Chat;
 
 /**
+ * Load the specified chat from graph with the members and last message expanded
+ *
+ * @param graph authenticated graph client from mgt
+ * @param chatId the id of the chat to load
+ * @returns {Promise<Chat>}
+ */
+export const loadChatWithPreview = async (graph: IGraph, chatId: string): Promise<Chat> =>
+  (await graph
+    .api(`/chats/${chatId}?$expand=members,lastMessagePreview`)
+    .middlewareOptions(prepScopes(...chatOperationScopes.loadChat))
+    .get()) as Chat;
+
+/**
  * Load the first page of messages from the specified chat
  * Will provide a nextLink to load more messages if there are more than the specified messageCount
  *

@@ -38,6 +38,7 @@
   "author": "Microsoft",
   "license": "MIT",
   "devDependencies": {
+    "@types/html-to-text": "^9.0.4",
     "@types/react": "^17.0.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
@@ -63,6 +64,7 @@
     "@microsoft/microsoft-graph-types": "^2.0.0",
     "@microsoft/microsoft-graph-types-beta": "^0.16.0-preview",
     "@microsoft/signalr": "^7.0.4",
+    "html-to-text": "^9.0.5",
     "immer": "^9.0.6",
     "opencrypto": "1.5.5",
     "uuid": "^9.0.0",
