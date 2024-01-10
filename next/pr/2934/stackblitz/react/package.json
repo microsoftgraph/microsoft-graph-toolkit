@@ -1,7 +1,7 @@
 {
   "name": "mgt-react-snippet",
   "private": true,
-  "version": "3.1.3-pr.2934.30de76e",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@microsoft/mgt-element": "3.1.3-pr.2934.30de76e",
-    "@microsoft/mgt-react": "3.1.3-pr.2934.30de76e",
+    "@microsoft/mgt-element": "*",
+    "@microsoft/mgt-react": "*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
