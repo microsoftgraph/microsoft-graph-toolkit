@@ -56,8 +56,8 @@ export const ChatList = (
 ) => {
   const styles = useStyles();
 
-  const [chatClient, setChatClient] = useState<StatefulGraphChatListClient | undefined>();
-  const [chatState, setChatState] = useState<GraphChatListClient | undefined>();
+  const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
+  const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
 
   // wait for provider to be ready before setting client and state
   useEffect(() => {
@@ -65,8 +65,8 @@ export const ChatList = (
     provider.onStateChanged(evt => {
       if (evt.detail === ProviderState.SignedIn) {
         const client = new StatefulGraphChatListClient(props.chatThreadsPerPage);
-        setChatClient(client);
-        setChatState(client.getState());
+        setChatListClient(client);
+        setChatListState(client.getState());
       }
     });
   }, []);
@@ -76,18 +76,18 @@ export const ChatList = (
 
   // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
   const loadMore = () => {
-    chatClient?.loadMoreChatThreads();
+    chatListClient?.loadMoreChatThreads();
   };
 
   useEffect(() => {
-    if (chatClient) {
-      chatClient.onStateChange(setChatState);
+    if (chatListClient) {
+      chatListClient.onStateChange(setChatListState);
       return () => {
-        void chatClient.tearDown();
-        chatClient.offStateChange(setChatState);
+        void chatListClient.tearDown();
+        chatListClient.offStateChange(setChatListState);
       };
     }
-  }, [chatClient]);
+  }, [chatListClient]);
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
 
@@ -112,7 +112,7 @@ export const ChatList = (
             <ChatListHeader buttonItems={chatListButtonItems} menuItems={menuItems} />
           </div>
           <div>
-            {chatState?.chatThreads.map(c => (
+            {chatListState?.chatThreads.map(c => (
               <Button
                 className={styles.button}
                 key={c.id}
@@ -127,13 +127,13 @@ export const ChatList = (
                 <ChatListItem
                   key={c.id}
                   chat={c}
-                  myId={chatState.userId}
+                  myId={chatListState.userId}
                   isSelected={c.id === selectedItem}
                   isRead={false}
                 />
               </Button>
             ))}
-            {chatState?.nextLink !== '' && (
+            {chatListState?.nextLink !== '' && (
               <div className={styles.linkContainer}>
                 <Link onClick={loadMore} href="#" className={styles.loadMore}>
                   load more
