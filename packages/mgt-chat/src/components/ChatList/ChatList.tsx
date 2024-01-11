@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ChatListItem } from '../ChatListItem/ChatListItem';
-import { MgtTemplateProps, ProviderState, Providers } from '@microsoft/mgt-react';
+import { MgtTemplateProps, ProviderState, Providers, log } from '@microsoft/mgt-react';
 import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
@@ -9,10 +9,14 @@ import { StatefulGraphChatListClient, GraphChatListClient } from '../../stateful
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
-import ChatListMenuItem from '../ChatListHeader/ChatListMenuItem';
+import { ChatListMenuItem } from '../ChatListHeader/ChatListMenuItem';
+import { LastReadCache } from '../../statefulClient/Caching/LastReadCache';
 
-export interface IChatListItemInteractionProps {
+export interface IChatListItemProps {
   onSelected: (e: GraphChat) => void;
+  buttonItems?: ChatListButtonItem[];
+  chatThreadsPerPage: number;
+  lastReadTimeInterval?: number;
 }
 
 const useStyles = makeStyles({
@@ -46,20 +50,17 @@ const useStyles = makeStyles({
 });
 
 // this is a stub to move the logic here that should end up here.
-export const ChatList = (
-  props: MgtTemplateProps &
-    IChatListItemInteractionProps &
-    IChatListMenuItemsProps & {
-      buttonItems?: ChatListButtonItem[];
-      chatThreadsPerPage: number;
-    }
-) => {
+export const ChatList = ({
+  lastReadTimeInterval = 30000, // default to 30 seconds
+  ...props
+}: MgtTemplateProps & IChatListItemProps & IChatListMenuItemsProps) => {
   const styles = useStyles();
   const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
   const [selectedItem, setSelectedItem] = useState<string>();
+  const cache = new LastReadCache();
 
   // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
   const loadMore = () => {
@@ -87,6 +88,22 @@ export const ChatList = (
     menuItems.unshift(markAllAsRead);
     setMenuItems(menuItems);
   }, []);
+
+  // Store last read time in cache so that when the user comes back to the chat list,
+  // we know what messages they are likely to have not read. This is not perfect because
+  // the user could have read messages in another client (for instance, the Teams client).
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (selectedItem) {
+        log(`caching the last-read timestamp of now to chat ID '${selectedItem}'...`);
+        cache.cacheLastReadTime(selectedItem, new Date());
+      }
+    }, lastReadTimeInterval);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [selectedItem]);
 
   useEffect(() => {
     if (chatListClient) {
