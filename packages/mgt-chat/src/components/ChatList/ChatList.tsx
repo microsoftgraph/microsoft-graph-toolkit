@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ChatListItem } from '../ChatListItem/ChatListItem';
-import { MgtTemplateProps, ProviderState, Providers } from '@microsoft/mgt-react';
+import { MgtTemplateProps, ProviderState, Providers, log } from '@microsoft/mgt-react';
 import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
@@ -89,13 +89,11 @@ export const ChatList = (
   }, []);
 
   useEffect(() => {
-    if (chatListClient) {
-      chatListClient.onStateChange(setChatListState);
-      return () => {
-        void chatListClient.tearDown();
-        chatListClient.offStateChange(setChatListState);
-      };
-    }
+    chatListClient?.onStateChange(setChatListState);
+    return () => {
+      void chatListClient?.tearDown();
+      chatListClient?.offStateChange(setChatListState);
+    };
   }, [chatListClient]);
 
   return (

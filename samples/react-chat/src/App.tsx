@@ -26,7 +26,7 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => vo
     }
   ];
 
-  return <ChatList chatThreadsPerPage={3} menuItems={menus} buttonItems={buttons} onSelected={onSelected} />;
+  return <ChatList chatThreadsPerPage={10} menuItems={menus} buttonItems={buttons} onSelected={onSelected} />;
 });
 
 function App() {

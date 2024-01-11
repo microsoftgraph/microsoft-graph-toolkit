@@ -80,7 +80,7 @@ export class GraphNotificationUserClient {
    * i.e
    */
   public async tearDown() {
-    log('cleaning up graph notification resources');
+    log('cleaning up user graph notification resources');
     if (this.cleanupInterval) this.timer.clearInterval(this.cleanupInterval);
     if (this.renewalInterval) this.timer.clearInterval(this.renewalInterval);
     this.timer.close();
@@ -326,7 +326,7 @@ export class GraphNotificationUserClient {
   };
 
   private readonly cleanupTimer = async () => {
-    log(`running cleanup timer`);
+    log(`running user cleanup timer`);
     const offset = Math.min(
       appSettings.removalThreshold * 1000,
       appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
