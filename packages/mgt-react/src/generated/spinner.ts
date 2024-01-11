@@ -7,7 +7,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
 
-export type SpinnerProps = Record<string, never>
+type SpinnerProps = Record<string, never>
 
 export const Spinner = wrapMgt<SpinnerProps>('spinner', registerMgtSpinnerComponent);
 

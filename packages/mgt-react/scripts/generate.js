@@ -151,7 +151,7 @@ const generateTags = (tags, fileName) => {
     if (propsType) {
       output += `\nexport type ${className}Props = {\n${propsType}}\n`;
     } else {
-      output += `\nexport type ${className}Props = Record<string, never>\n`;
+      output += `\ntype ${className}Props = Record<string, never>\n`;
     }
   }
 
