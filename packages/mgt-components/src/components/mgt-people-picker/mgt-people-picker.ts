@@ -251,7 +251,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * The type of user to search for. Default is any.
    *
-   * @readonly
    * @type {UserType}
    * @memberof MgtPeoplePicker
    */

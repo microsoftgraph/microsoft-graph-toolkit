@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { TaskFilter,ITask } from '@microsoft/mgt-components/dist/es6/exports';
-import { registerMgtPlannerComponent } from '@microsoft/mgt-components/dist/es6/components/components';
-import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
+import { TaskFilter,ITask } from '@microsoft/mgt-components';
+import { registerMgtPlannerComponent } from '@microsoft/mgt-components';
+import { TemplateContext,TemplateRenderedData } from '@microsoft/mgt-element';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -21,7 +21,6 @@ export type PlannerProps = {
 	groupId?: string;
 	taskFilter?: TaskFilter;
 	templateContext?: TemplateContext;
-	mediaQuery?: ComponentMediaQuery;
 	taskAdded?: (e: CustomEvent<ITask>) => void;
 	taskChanged?: (e: CustomEvent<ITask>) => void;
 	taskClick?: (e: CustomEvent<ITask>) => void;

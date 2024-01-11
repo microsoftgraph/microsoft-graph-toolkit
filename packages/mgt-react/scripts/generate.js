@@ -102,7 +102,7 @@ const generateTags = (tags, fileName) => {
       const prop = tag.members[i];
       let type = prop.type?.text;
 
-      if (type && prop.kind === 'field' && prop.privacy === 'public' && !prop.static) {
+      if (type && prop.kind === 'field' && prop.privacy === 'public' && !prop.static && !prop.readonly) {
         if (prop.name) {
           props[prop.name] = type;
         }
@@ -148,8 +148,11 @@ const generateTags = (tags, fileName) => {
         }
       }
     }
-
-    output += `\nexport type ${className}Props = {\n${propsType}}\n`;
+    if (propsType) {
+      output += `\nexport type ${className}Props = {\n${propsType}}\n`;
+    } else {
+      output += `\nexport type ${className}Props = Record<string, never>\n`;
+    }
   }
 
   for (const wrapper of wrappers) {
@@ -160,16 +163,18 @@ const generateTags = (tags, fileName) => {
 
   const componentTypeImports = Array.from(mgtComponentImports).join(',');
   const initialLine = componentTypeImports
-    ? `import { ${componentTypeImports} } from '@microsoft/mgt-components/dist/es6/exports';
+    ? `import { ${componentTypeImports} } from '@microsoft/mgt-components';
 `
     : '';
   output = `/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-${initialLine}import { ${Array.from(registrationFunctions).join(
-    ','
-  )} } from '@microsoft/mgt-components/dist/es6/components/components';
-import { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+${initialLine}import { ${Array.from(registrationFunctions).join(',')} } from '@microsoft/mgt-components';
+${
+  mgtElementImports.size > 0
+    ? `import { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
+`
+    : ''
+}// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
