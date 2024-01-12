@@ -28,6 +28,9 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => vo
   const onAllMessagesRead = useCallback((chatIds: string[]) => {
     console.log(`Number of chats marked as read: ${chatIds.length}`);
   }, []);
+  const onLoaded = () => {
+    console.log('Chat threads loaded.');
+  };
 
   return (
     <ChatList
@@ -35,6 +38,7 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => vo
       menuItems={menus}
       buttonItems={buttons}
       onSelected={onSelected}
+      onLoaded={onLoaded}
       onAllMessagesRead={onAllMessagesRead}
     />
   );

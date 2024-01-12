@@ -47,10 +47,11 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
     | 'loading messages'
     | 'no session id'
     | 'no messages'
+    | 'chat threads loaded'
     | 'ready'
     | 'error';
   chatThreads: GraphChat[];
-  nextLink: string;
+  moreChatThreadsToLoad: boolean | undefined;
 } & Pick<ErrorBarProps, 'activeErrorMessages'>;
 
 interface StatefulClient<T> {
@@ -140,16 +141,47 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    */
   public loadMoreChatThreads(): void {
     const state = this.getState();
+    const items: GraphChat[] = [];
+    this.loadAndAppendChatThreads('', items, state.chatThreads.length + this.chatThreadsPerPage);
+  }
 
-    if (state.nextLink === '') {
+  private loadAndAppendChatThreads(nextLink: string, items: GraphChat[], maxItems: number): void {
+    if (maxItems < 1) {
+      error('maxItem is invalid: ' + maxItems);
       return;
     }
 
-    const filter = state.nextLink.split('?')[1];
-    void loadChatThreadsByPage(this._graph, filter).then(
-      chats => this.handleChatThreads(chats),
-      e => error(e)
-    );
+    const handler = (latestChatThreads: ChatThreadCollection) => {
+      items = items.concat(latestChatThreads.value);
+
+      const handlerNextLink = latestChatThreads['@odata.nextLink'];
+      if (items.length >= maxItems) {
+        if (items.length > maxItems) {
+          // return exact page size
+          this.handleChatThreads(items.slice(0, maxItems), 'more');
+          return;
+        }
+
+        this.handleChatThreads(items, handlerNextLink);
+        return;
+      }
+
+      if (handlerNextLink && handlerNextLink !== '') {
+        this.loadAndAppendChatThreads(handlerNextLink, items, maxItems);
+        return;
+      }
+
+      this.handleChatThreads(items, handlerNextLink);
+    };
+
+    if (nextLink === '') {
+      // max page count cannot exceed 50 per documentation
+      const pageCount = maxItems > 50 ? 50 : maxItems;
+      loadChatThreads(this._graph, pageCount).then(handler, err => error(err));
+    } else {
+      const filter = nextLink.split('?')[1];
+      loadChatThreadsByPage(this._graph, filter).then(handler, err => error(err));
+    }
   }
 
   /**
@@ -182,7 +214,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     activeErrorMessages: [],
     userId: '',
     chatThreads: [],
-    nextLink: ''
+    moreChatThreadsToLoad: undefined
   };
 
   /**
@@ -293,18 +325,11 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /*
    * Event handler to be called when we need to load more chat threads.
    */
-  private readonly handleChatThreads = (chatThreadCollection: ChatThreadCollection) => {
+  private readonly handleChatThreads = (chatThreads: GraphChat[], nextLink: string | undefined) => {
     this.notifyStateChange((draft: GraphChatListClient) => {
-      draft.nextLink = '';
-
-      const nextLinkUrl = chatThreadCollection['@odata.nextLink'];
-      if (nextLinkUrl && nextLinkUrl !== '') {
-        draft.nextLink = nextLinkUrl;
-      }
-      const uniqeChatThreads = chatThreadCollection.value.filter(
-        c => draft.chatThreads.findIndex(t => t.id === c.id) === -1
-      );
-      draft.chatThreads = draft.chatThreads.concat(uniqeChatThreads);
+      draft.status = 'chat threads loaded';
+      draft.chatThreads = chatThreads;
+      draft.moreChatThreadsToLoad = nextLink !== undefined && nextLink !== '';
     });
   };
 
@@ -325,13 +350,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         // emit new state;
         if (this.userId) {
           void this.updateUserSubscription();
-
-          if (this._graph !== undefined) {
-            loadChatThreads(this._graph, this.chatThreadsPerPage).then(
-              chats => this.handleChatThreads(chats),
-              err => error(err)
-            );
-          }
+          this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
         }
         return;
       case ProviderState.SignedOut:

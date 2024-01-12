@@ -14,6 +14,7 @@ import { LastReadCache } from '../../statefulClient/Caching/LastReadCache';
 
 export interface IChatListItemProps {
   onSelected: (e: GraphChat) => void;
+  onLoaded?: () => void;  
   onAllMessagesRead: (e: string[]) => void;
   buttonItems?: ChatListButtonItem[];
   chatThreadsPerPage: number;
@@ -101,6 +102,11 @@ export const ChatList = ({
   useEffect(() => {
     if (chatListClient) {
       chatListClient.onStateChange(setChatListState);
+      chatListClient.onStateChange(state => {
+        if (state.status === 'chat threads loaded' && props.onLoaded) {
+          props.onLoaded();
+        }
+      });
       return () => {
         void chatListClient.tearDown();
         chatListClient.offStateChange(setChatListState);
@@ -183,7 +189,7 @@ export const ChatList = ({
                 />
               </Button>
             ))}
-            {chatListState?.nextLink !== '' && (
+            {chatListState?.moreChatThreadsToLoad === true && (
               <div className={styles.linkContainer}>
                 <Link onClick={loadMore} href="#" className={styles.loadMore}>
                   load more
