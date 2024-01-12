@@ -119,12 +119,17 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
   // manage the internal state of the chat
   const [chatInternal, setChatInternal] = useState(chat);
-  const [read, setRead] = useState<boolean>(isRead);
+  const [read, setRead] = useState<boolean>();
 
   // shortcut if no valid user
   if (!myId) {
     return <></>;
   }
+
+  // when isRead changes, setRead to match
+  useEffect(() => {
+    setRead(isRead);
+  }, [isRead]);
 
   // when isSelected changes to true, setRead to true
   useEffect(() => {

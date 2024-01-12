@@ -25,8 +25,19 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => vo
       onClick: () => console.log('My custom menu item clicked')
     }
   ];
+  const onAllMessagesRead = useCallback((chatIds: string[]) => {
+    console.log(`Number of chats marked as read: ${chatIds.length}`);
+  }, []);
 
-  return <ChatList chatThreadsPerPage={3} menuItems={menus} buttonItems={buttons} onSelected={onSelected} />;
+  return (
+    <ChatList
+      chatThreadsPerPage={3}
+      menuItems={menus}
+      buttonItems={buttons}
+      onSelected={onSelected}
+      onAllMessagesRead={onAllMessagesRead}
+    />
+  );
 });
 
 function App() {

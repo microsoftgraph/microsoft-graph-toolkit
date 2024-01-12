@@ -14,6 +14,7 @@ import { LastReadCache } from '../../statefulClient/Caching/LastReadCache';
 
 export interface IChatListItemProps {
   onSelected: (e: GraphChat) => void;
+  onAllMessagesRead: (e: string[]) => void;
   buttonItems?: ChatListButtonItem[];
   chatThreadsPerPage: number;
   lastReadTimeInterval?: number;
@@ -60,6 +61,8 @@ export const ChatList = ({
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
   const [selectedItem, setSelectedItem] = useState<string>();
+  const [readItems, setReadItems] = useState<string[]>([]);
+
   const cache = new LastReadCache();
 
   // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
@@ -77,16 +80,6 @@ export const ChatList = ({
         setChatListState(client.getState());
       }
     });
-
-    const markAllAsRead = {
-      displayText: 'Mark all as read',
-      onClick: () => {
-        console.log('mark all as read');
-      }
-    };
-
-    menuItems.unshift(markAllAsRead);
-    setMenuItems(menuItems);
   }, []);
 
   // Store last read time in cache so that when the user comes back to the chat list,
@@ -115,6 +108,47 @@ export const ChatList = ({
     }
   }, [chatListClient]);
 
+  useEffect(() => {
+    // when chat threads are updated, add markAllAsRead callback to menuItems
+    const chatThreads = chatListState?.chatThreads;
+    if (chatThreads && chatThreads.length > 0) {
+      log("chatThreads updated, adding 'mark all as read' to menu...");
+      const markAllAsRead = {
+        displayText: 'Mark all as read',
+        onClick: () => {
+          var itemsMarkedAsRead = chatThreads
+            .map(c => (c.id && c.id !== selectedItem ? c.id : ''))
+            .filter(id => id !== '');
+          // loop through readItems and cache the last read time
+          if (selectedItem && readItems.includes(selectedItem)) {
+            // add selected item to itemsMarkedAsRead
+            itemsMarkedAsRead.push(selectedItem);
+          }
+          log(`marking all ${itemsMarkedAsRead?.length} chat threads as read...`);
+          setReadItems(itemsMarkedAsRead);
+          props.onAllMessagesRead(itemsMarkedAsRead);
+          itemsMarkedAsRead.forEach(id => {
+            cache.cacheLastReadTime(id, new Date());
+          });
+        }
+      };
+      // clone the menuItems array
+      const updatedMenuItems = [...menuItems];
+      const markAllAsReadIndex = menuItems.findIndex(m => m.displayText === markAllAsRead.displayText);
+      if (markAllAsReadIndex === -1) {
+        // adds read menu item only once
+        log(`adding 'mark all as read' to menu...`);
+        updatedMenuItems.unshift(markAllAsRead);
+        setMenuItems(updatedMenuItems);
+      } else {
+        // adds latest updated chat threads to scope of mark as read menu item
+        log(`updating 'mark all as read' menu...`);
+        updatedMenuItems[markAllAsReadIndex] = markAllAsRead;
+        setMenuItems(updatedMenuItems);
+      }
+    }
+  }, [chatListState, selectedItem]);
+
   return (
     // This is a temporary approach to render the chatlist items. This should be replaced.
     <FluentThemeProvider fluentTheme={FluentTheme}>
@@ -130,9 +164,13 @@ export const ChatList = ({
                 key={c.id}
                 onClick={() => {
                   // set selected state only once per click event
-                  if (c.id !== selectedItem) {
+                  if (c.id && c.id !== selectedItem) {
                     setSelectedItem(c.id);
                     props.onSelected(c);
+                    if (!readItems.includes(c.id)) {
+                      setReadItems([...readItems, c.id]);
+                      cache.cacheLastReadTime(c.id, new Date());
+                    }
                   }
                 }}
               >
@@ -141,7 +179,7 @@ export const ChatList = ({
                   chat={c}
                   myId={chatListState.userId}
                   isSelected={c.id === selectedItem}
-                  isRead={false}
+                  isRead={readItems.includes(c.id ?? '')}
                 />
               </Button>
             ))}
