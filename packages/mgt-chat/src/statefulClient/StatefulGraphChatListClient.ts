@@ -296,7 +296,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         };
         draft.chatThreads.unshift(newChatThread);
       } else {
-        error(`received unrecognized event type '${event.type}' from the user subscription.`);
+        log(`received unrecognized event type '${event.type}' from the user subscription.`);
       }
     });
   }
