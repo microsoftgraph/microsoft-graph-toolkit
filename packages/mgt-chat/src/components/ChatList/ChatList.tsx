@@ -14,7 +14,7 @@ import { LastReadCache } from '../../statefulClient/Caching/LastReadCache';
 
 export interface IChatListItemProps {
   onSelected: (e: GraphChat) => void;
-  onLoaded?: () => void;  
+  onLoaded?: () => void;
   onAllMessagesRead: (e: string[]) => void;
   buttonItems?: ChatListButtonItem[];
   chatThreadsPerPage: number;
