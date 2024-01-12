@@ -104,6 +104,17 @@ export const ChatList = ({
       chatListClient.onStateChange(setChatListState);
       chatListClient.onStateChange(state => {
         if (state.status === 'chat threads loaded' && props.onLoaded) {
+          log(`adding 'mark all as read' to menu...`);
+          // log length of chat threads
+          log(`chat threads loaded: ${state.chatThreads.length}`);
+          const markAllAsRead = {
+            displayText: 'Mark all as read',
+            onClick: () => markAllItemsAsRead(state.chatThreads ?? [])
+          };
+          // clone the menuItems array
+          const updatedMenuItems = [...menuItems];
+          updatedMenuItems.unshift(markAllAsRead);
+          setMenuItems(updatedMenuItems);
           props.onLoaded();
         }
       });
@@ -114,46 +125,22 @@ export const ChatList = ({
     }
   }, [chatListClient]);
 
-  useEffect(() => {
-    // when chat threads are updated, add markAllAsRead callback to menuItems
-    const chatThreads = chatListState?.chatThreads;
-    if (chatThreads && chatThreads.length > 0) {
-      log("chatThreads updated, adding 'mark all as read' to menu...");
-      const markAllAsRead = {
-        displayText: 'Mark all as read',
-        onClick: () => {
-          var itemsMarkedAsRead = chatThreads
-            .map(c => (c.id && c.id !== selectedItem ? c.id : ''))
-            .filter(id => id !== '');
-          // loop through readItems and cache the last read time
-          if (selectedItem && readItems.includes(selectedItem)) {
-            // add selected item to itemsMarkedAsRead
-            itemsMarkedAsRead.push(selectedItem);
-          }
-          log(`marking all ${itemsMarkedAsRead?.length} chat threads as read...`);
-          setReadItems(itemsMarkedAsRead);
-          props.onAllMessagesRead(itemsMarkedAsRead);
-          itemsMarkedAsRead.forEach(id => {
-            cache.cacheLastReadTime(id, new Date());
-          });
-        }
-      };
-      // clone the menuItems array
-      const updatedMenuItems = [...menuItems];
-      const markAllAsReadIndex = menuItems.findIndex(m => m.displayText === markAllAsRead.displayText);
-      if (markAllAsReadIndex === -1) {
-        // adds read menu item only once
-        log(`adding 'mark all as read' to menu...`);
-        updatedMenuItems.unshift(markAllAsRead);
-        setMenuItems(updatedMenuItems);
-      } else {
-        // adds latest updated chat threads to scope of mark as read menu item
-        log(`updating 'mark all as read' menu...`);
-        updatedMenuItems[markAllAsReadIndex] = markAllAsRead;
-        setMenuItems(updatedMenuItems);
+  var markAllItemsAsRead = function (chatThreads: GraphChat[]) {
+    var itemsMarkedAsRead = chatThreads.map(c => (c.id && c.id !== selectedItem ? c.id : '')).filter(id => id !== '');
+    if (itemsMarkedAsRead) {
+      // loop through readItems and cache the last read time
+      if (selectedItem && readItems.includes(selectedItem)) {
+        // add selected item to itemsMarkedAsRead
+        itemsMarkedAsRead.push(selectedItem);
       }
+      log(`marking all ${itemsMarkedAsRead?.length} chat threads as read...`);
+      setReadItems(itemsMarkedAsRead);
+      props.onAllMessagesRead(itemsMarkedAsRead);
+      itemsMarkedAsRead.forEach(id => {
+        cache.cacheLastReadTime(id, new Date());
+      });
     }
-  }, [chatListState, selectedItem]);
+  };
 
   return (
     // This is a temporary approach to render the chatlist items. This should be replaced.
