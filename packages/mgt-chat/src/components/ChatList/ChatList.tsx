@@ -104,16 +104,14 @@ export const ChatList = ({
       chatListClient.onStateChange(setChatListState);
       chatListClient.onStateChange(state => {
         if (state.status === 'chat threads loaded' && props.onLoaded) {
-          log(`adding 'mark all as read' to menu...`);
-          // log length of chat threads
-          log(`chat threads loaded: ${state.chatThreads.length}`);
           const markAllAsRead = {
             displayText: 'Mark all as read',
-            onClick: () => markAllItemsAsRead(state.chatThreads ?? [])
+            onClick: () => markAllItemsAsRead(state.chatThreads)
           };
           // clone the menuItems array
           const updatedMenuItems = [...menuItems];
           updatedMenuItems.unshift(markAllAsRead);
+          // updates markAllAsRead with latest chatThreads
           setMenuItems(updatedMenuItems);
           props.onLoaded();
         }
@@ -126,9 +124,8 @@ export const ChatList = ({
   }, [chatListClient]);
 
   var markAllItemsAsRead = function (chatThreads: GraphChat[]) {
-    var itemsMarkedAsRead = chatThreads.map(c => (c.id && c.id !== selectedItem ? c.id : '')).filter(id => id !== '');
+    var itemsMarkedAsRead = chatThreads?.map(c => (c.id && c.id !== selectedItem ? c.id : '')).filter(id => id !== '');
     if (itemsMarkedAsRead) {
-      // loop through readItems and cache the last read time
       if (selectedItem && readItems.includes(selectedItem)) {
         // add selected item to itemsMarkedAsRead
         itemsMarkedAsRead.push(selectedItem);
