@@ -11,7 +11,7 @@ import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
 import { Error } from '../Error/Error';
-import { LoadingMessagesErrorIcon } from '../Error/LoadingMessageError';
+import { LoadingMessagesErrorIcon } from '../Error/LoadingMessageErrorIcon';
 
 registerAppIcons();
 
@@ -165,11 +165,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 </div>
               )}
               {chatState.status === 'no messages' && (
-                <Error
-                  icon={LoadingMessagesErrorIcon}
-                  message="No messages were found."
-                  subheading="This is because you havent chatted anyone"
-                ></Error>
+                <Error icon={LoadingMessagesErrorIcon} message="No messages were found."></Error>
               )}
               {chatState.status === 'no chat id' && (
                 <ChatMessageBar messageBarType={MessageBarType.error} message={'A valid chat id is required.'} />

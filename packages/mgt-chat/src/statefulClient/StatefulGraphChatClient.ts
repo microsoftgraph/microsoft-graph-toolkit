@@ -474,7 +474,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       await this.writeMessagesToState(updatedState);
     } else {
       const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
-      await this._cache.cacheMessages(this._chatId, [], true, messages.nextLink);
+      await this._cache.cacheMessages(this._chatId, messages.value, true, messages.nextLink);
       await this.writeMessagesToState(messages);
     }
   }
