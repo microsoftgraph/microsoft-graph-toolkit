@@ -14,7 +14,7 @@ import {
   SendBoxProps,
   SystemMessage
 } from '@azure/communication-react';
-import { IDynamicPerson, getUserWithPhoto } from '@microsoft/mgt-components';
+import { IDynamicPerson, getUserWithPhoto } from '@microsoft/mgt-react';
 import {
   ActiveAccountChanged,
   IGraph,

@@ -1,6 +1,5 @@
 import React from 'react';
-import { PersonCardInteraction } from '@microsoft/mgt-components';
-import { MgtTemplateProps, Person } from '@microsoft/mgt-react';
+import { MgtTemplateProps, Person, PersonCardInteraction } from '@microsoft/mgt-react';
 import { ChatMessageMention, User } from '@microsoft/microsoft-graph-types';
 import { GraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
 import { Mention } from '@azure/communication-react';

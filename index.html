@@ -11,13 +11,23 @@
 
     <script src="https://unpkg.com/@microsoft/teams-js@2/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
 
-    <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script>
+    <!--script src="./packages/mgt/dist/bundle/mgt-loader.js"></script-->
 
-    <!-- <script type="module" src="./packages/mgt-element/dist/es6/index.js"></script>
-    <script type="module" src="./packages/mgt-components/dist/es6/index.js"></script>
-    <script type="module" src="./packages/providers/mgt-msal2-provider/dist/es6/index.js"></script>
-    <script type="module" src="./packages/providers/mgt-mock-provider/dist/es6/index.js"></script> -->
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script type="module" src="packages/mgt-element/dist/es6/index.js"></script>
+    <script type="module" src="packages/mgt-components/dist/es6/index.js"></script>
+    <script type="module" src="packages/mgt-react/dist/es6/index.js"></script>
+    <script type="module" src="packages/mgt-chat/dist/es6/index.js"></script>
+    <script type="module" src="packages/providers/mgt-msal2-provider/dist/es6/index.js"></script>
+    <script type="module" src="packages/providers/mgt-mock-provider/dist/es6/index.js"></script>
 
+    <script type="module">
+      import { registerMgtComponents } from "@microsoft/mgt-components";
+      import { Chat } from "@microsoft/mgt-chat";
+      registerMgtComponents();
+      //registerMgtChatComponent();
+    </script>
     <style>
       header {
         display: flex;

@@ -10,8 +10,16 @@ import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
+import r2wc from '@r2wc/react-to-web-component';
+import { registerComponent } from '@microsoft/mgt-element';
 
 registerAppIcons();
+
+export const registerMgtChatComponent = () => {
+  // register self
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
+  registerComponent('chat', r2wc(Chat));
+};
 
 interface IMgtChatProps {
   chatId: string;

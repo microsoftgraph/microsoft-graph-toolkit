@@ -5,13 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  schemas,
-  CachePhoto,
-  getPhotoInvalidationTime,
-  storePhotoInCache,
-  blobToBase64
-} from '@microsoft/mgt-components';
+import { schemas, CachePhoto, getPhotoInvalidationTime, storePhotoInCache, blobToBase64 } from '@microsoft/mgt-react';
 import { CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microsoft-graph-types';

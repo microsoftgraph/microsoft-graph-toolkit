@@ -1668,6 +1668,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/plugin-transform-react-display-name@npm:^7.23.3":
+  version: 7.23.3
+  resolution: "@babel/plugin-transform-react-display-name@npm:7.23.3"
+  dependencies:
+    "@babel/helper-plugin-utils": ^7.22.5
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 7f86964e8434d3ddbd3c81d2690c9b66dbf1cd8bd9512e2e24500e9fa8cf378bc52c0853270b3b82143aba5965aec04721df7abdb768f952b44f5c6e0b198779
+  languageName: node
+  linkType: hard
+
 "@babel/plugin-transform-react-jsx-development@npm:^7.22.5":
   version: 7.22.5
   resolution: "@babel/plugin-transform-react-jsx-development@npm:7.22.5"
@@ -1703,6 +1714,18 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 092021c4f404e267002099ec20b3f12dd730cb90b0d83c5feed3dc00dbe43b9c42c795a18e7c6c7d7bddea20c7dd56221b146aec81b37f2e7eb5137331c61120
+  languageName: node
+  linkType: hard
+
+"@babel/plugin-transform-react-pure-annotations@npm:^7.23.3":
+  version: 7.23.3
+  resolution: "@babel/plugin-transform-react-pure-annotations@npm:7.23.3"
+  dependencies:
+    "@babel/helper-annotate-as-pure": ^7.22.5
+    "@babel/helper-plugin-utils": ^7.22.5
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 9ea3698b1d422561d93c0187ac1ed8f2367e4250b10e259785ead5aa643c265830fd0f4cf5087a5bedbc4007444c06da2f2006686613220acf0949895f453666
   languageName: node
   linkType: hard
 
@@ -1978,7 +2001,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:^7.12.5, @babel/preset-react@npm:^7.12.7, @babel/preset-react@npm:^7.16.0":
+"@babel/preset-react@npm:^7.12.5, @babel/preset-react@npm:^7.16.0":
   version: 7.22.15
   resolution: "@babel/preset-react@npm:7.22.15"
   dependencies:
@@ -1991,6 +2014,22 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: c3ef99dfa2e9f57d2e08603e883aa20f47630a826c8e413888a93ae6e0084b5016871e463829be125329d40a1ba0a89f7c43d77b6dab52083c225cb43e63d10e
+  languageName: node
+  linkType: hard
+
+"@babel/preset-react@npm:^7.12.7":
+  version: 7.23.3
+  resolution: "@babel/preset-react@npm:7.23.3"
+  dependencies:
+    "@babel/helper-plugin-utils": ^7.22.5
+    "@babel/helper-validator-option": ^7.22.15
+    "@babel/plugin-transform-react-display-name": ^7.23.3
+    "@babel/plugin-transform-react-jsx": ^7.22.15
+    "@babel/plugin-transform-react-jsx-development": ^7.22.5
+    "@babel/plugin-transform-react-pure-annotations": ^7.23.3
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 2d90961e7e627a74b44551e88ad36a440579e283e8dc27972bf2f50682152bbc77228673a3ea22c0e0d005b70cbc487eccd64897c5e5e0384e5ce18f300b21eb
   languageName: node
   linkType: hard
 
@@ -5940,13 +5979,13 @@ __metadata:
     "@fluentui/react-components": ^9.19.1
     "@fluentui/react-icons": ^2.0.210
     "@fluentui/react-northstar": ^0.66.4
-    "@microsoft/mgt-components": "*"
     "@microsoft/mgt-element": "*"
     "@microsoft/mgt-msal2-provider": "*"
     "@microsoft/mgt-react": "*"
     "@microsoft/microsoft-graph-types": ^2.0.0
     "@microsoft/microsoft-graph-types-beta": ^0.16.0-preview
     "@microsoft/signalr": ^7.0.4
+    "@r2wc/react-to-web-component": ^1.0
     "@types/react": ^17.0.0
     immer: ^9.0.6
     opencrypto: 1.5.5
@@ -5967,12 +6006,10 @@ __metadata:
   resolution: "@microsoft/mgt-components@workspace:packages/mgt-components"
   dependencies:
     "@fluentui/web-components": ^2.5.12
-    "@microsoft/mgt-chat": "*"
     "@microsoft/mgt-element": "*"
     "@microsoft/microsoft-graph-client": 3.0.2
     "@microsoft/microsoft-graph-types": ^2.0.0
     "@microsoft/microsoft-graph-types-beta": ^0.29.0-preview
-    "@r2wc/react-to-web-component": ^2.0.3
     lit: ^3.0.0
     office-ui-fabric-core: ^11.0.0
   languageName: unknown
@@ -6034,10 +6071,9 @@ __metadata:
     "@microsoft/mgt-element": "*"
     "@microsoft/microsoft-graph-types": ^2.0.0
     "@microsoft/microsoft-graph-types-beta": ^0.29.0-preview
-    wc-react: ^0.5.0
-  peerDependencies:
     react: ^17.0.1 || ^18.0.0
     react-dom: ^17.0.1 || ^18.0.0
+    wc-react: ^0.5.0
   languageName: unknown
   linkType: soft
 
@@ -7259,15 +7295,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@r2wc/react-to-web-component@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "@r2wc/react-to-web-component@npm:2.0.3"
+"@r2wc/react-to-web-component@npm:^1.0":
+  version: 1.0.0
+  resolution: "@r2wc/react-to-web-component@npm:1.0.0"
   dependencies:
     "@r2wc/core": ^1.0.0
   peerDependencies:
-    react: ^18.0.0
-    react-dom: ^18.0.0
-  checksum: 762bbd07d0f0d1476e4874a8f7533321e92af8a1033c7e1ec5cf9a4085bcc361fccf67e66e347baf8228b77dc33f59e4f8b63197044a3b529ac5ff0387db1cd8
+    react: ^16.0.0 || ^17.0.0
+    react-dom: ^16.0.0 || ^17.0.0
+  checksum: 85455f59ba20e9de6070afca26920c30be3ef44b292fe1373265963c6ded01a0ba3b8555648b158bb733d84143aacb49dd11c430a98b74dd90c698b37575da00
   languageName: node
   linkType: hard
 
@@ -33001,6 +33037,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dom@npm:^17.0.1 || ^18.0.0":
+  version: 18.2.0
+  resolution: "react-dom@npm:18.2.0"
+  dependencies:
+    loose-envify: ^1.1.0
+    scheduler: ^0.23.0
+  peerDependencies:
+    react: ^18.2.0
+  checksum: 7d323310bea3a91be2965f9468d552f201b1c27891e45ddc2d6b8f717680c95a75ae0bc1e3f5cf41472446a2589a75aed4483aee8169287909fcd59ad149e8cc
+  languageName: node
+  linkType: hard
+
 "react-error-overlay@npm:^6.0.11":
   version: 6.0.11
   resolution: "react-error-overlay@npm:6.0.11"
@@ -33286,7 +33334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.0":
+"react@npm:^17.0.1 || ^18.0.0, react@npm:^18.0":
   version: 18.2.0
   resolution: "react@npm:18.2.0"
   dependencies:
@@ -34884,6 +34932,15 @@ __metadata:
     loose-envify: ^1.1.0
     object-assign: ^4.1.1
   checksum: c4b35cf967c8f0d3e65753252d0f260271f81a81e427241295c5a7b783abf4ea9e905f22f815ab66676f5313be0a25f47be582254db8f9241b259213e999b8fc
+  languageName: node
+  linkType: hard
+
+"scheduler@npm:^0.23.0":
+  version: 0.23.0
+  resolution: "scheduler@npm:0.23.0"
+  dependencies:
+    loose-envify: ^1.1.0
+  checksum: d79192eeaa12abef860c195ea45d37cbf2bbf5f66e3c4dcd16f54a7da53b17788a70d109ee3d3dde1a0fd50e6a8fc171f4300356c5aee4fc0171de526bf35f8a
   languageName: node
   linkType: hard
 
