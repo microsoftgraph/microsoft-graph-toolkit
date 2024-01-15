@@ -442,6 +442,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
             draft.status = 'no messages';
           });
         }
+        // else show a generic error message. 'generic error' status
       }
     } else {
       this.notifyStateChange((draft: GraphChatClient) => {
@@ -455,8 +456,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       draft.status = 'loading messages';
     });
     try {
-      // this._chat = await loadChat(this.graph, this.chatId);
-      this._chat = undefined;
+      this._chat = await loadChat(this.graph, this.chatId);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -474,7 +474,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       await this.writeMessagesToState(updatedState);
     } else {
       const messages: MessageCollection = await loadChatThread(this.graph, this._chatId, this._messagesPerCall);
-      await this._cache.cacheMessages(this._chatId, messages.value, true, messages.nextLink);
+      await this._cache.cacheMessages(this._chatId, [], true, messages.nextLink);
       await this.writeMessagesToState(messages);
     }
   }

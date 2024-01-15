@@ -10,7 +10,8 @@ import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
-import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
+import { Error } from '../Error/Error';
+import { LoadingMessagesErrorIcon } from '../Error/LoadingMessageError';
 
 registerAppIcons();
 
@@ -156,6 +157,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
             </>
           ) : (
             <>
+              <ChatHeader chatState={chatState} />
               {isLoading && (
                 <div className={styles.spinner}>
                   <Spinner /> <br />
@@ -163,15 +165,18 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 </div>
               )}
               {chatState.status === 'no messages' && (
-                // <ChatMessageBar
-                //   messageBarType={MessageBarType.error}
-                //   message={`No messages were found for the id ${chatId}.`}
-                // />
-                <ErrorMessage></ErrorMessage>
+                <Error
+                  icon={LoadingMessagesErrorIcon}
+                  message="No messages were found."
+                  subheading="This is because you havent chatted anyone"
+                ></Error>
               )}
               {chatState.status === 'no chat id' && (
                 <ChatMessageBar messageBarType={MessageBarType.error} message={'A valid chat id is required.'} />
               )}
+              <div className={styles.chatInput}>
+                <SendBox onSendMessage={chatState.onSendMessage} />
+              </div>
             </>
           )}
         </div>
