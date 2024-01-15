@@ -5,11 +5,11 @@ import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
-import { onRenderMessage } from '../../utils/chat';
+import { ChatHeader } from '../ChatHeader/ChatHeader';
 import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
+import { onRenderMessage } from '../../utils/onRenderMessage';
 import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
-import { ChatHeader } from '../ChatHeader/ChatHeader';
 
 registerAppIcons();
 
@@ -23,7 +23,11 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     height: '100%',
     ...shorthands.overflow('auto'),
-    paddingBlockEnd: '12px'
+    paddingBlockEnd: '12px',
+
+    '& p': {
+      ...shorthands.margin('unset')
+    }
   },
   chatMessages: {
     height: 'auto',
@@ -69,6 +73,37 @@ const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
     '& .ui-box': {
       zIndex: 'unset'
+    },
+    '& .fui-ChatMessage': {
+      marginLeft: 'unset',
+      width: '100%'
+    },
+    '& .fui-ChatMessage__author': {
+      fontWeight: 'var(--fontWeightSemibold)',
+      color: 'var(--colorNeutralForeground1)',
+      ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
+    },
+    '& .fui-ChatMessage__timestamp,.fui-ChatMessage__details': {
+      fontWeight: 'var(--fontWeightRegular)',
+      color: 'var(--colorNeutralForeground3)',
+      ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
+    },
+    '& .fui-ChatMyMessage': {
+      gridTemplateColumns: 'auto auto',
+      columnGap: 'unset'
+    },
+    '& .fui-ChatMyMessage__body': {
+      background: '#c7e0f4' // No token found for this color, yet.
+    },
+    '& .fui-ChatMyMessage__author': {
+      fontWeight: 'var(--fontWeightSemibold)',
+      color: 'var(--colorNeutralForeground1)',
+      ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
+    },
+    '& span.fui-ChatMyMessage__timestamp,.fui-ChatMyMessage__details': {
+      fontWeight: 'var(--fontWeightRegular)',
+      color: 'var(--colorNeutralForeground3)',
+      ...shorthands.margin('0px', '0px', 'var(--spacingVerticalXL)', '0px')
     }
   },
   chatMessageContainer: {

@@ -14,7 +14,7 @@ import {
   SendBoxProps,
   SystemMessage
 } from '@azure/communication-react';
-import { IDynamicPerson, getUserWithPhoto } from '@microsoft/mgt-components';
+import { getUserWithPhoto } from '@microsoft/mgt-components';
 import {
   ActiveAccountChanged,
   IGraph,
@@ -24,6 +24,7 @@ import {
   log,
   warn
 } from '@microsoft/mgt-element';
+import { IDynamicPerson } from '@microsoft/mgt-react';
 import { GraphError } from '@microsoft/microsoft-graph-client';
 import {
   AadUserConversationMember,
@@ -175,6 +176,7 @@ type MessageEventType =
  * Extended Message type with additional properties.
  */
 export type GraphChatMessage = Message & {
+  attachments?: ChatMessageAttachment[];
   hasUnsupportedContent: boolean;
   rawChatUrl: string;
 };
@@ -921,7 +923,6 @@ detail: ${JSON.stringify(eventDetail)}`);
    *
    * @private
    * @param {(GraphChatMessage)} [message]
-   * @return {*}
    * @memberof StatefulGraphChatClient
    */
   private updateMessages(message?: GraphChatMessage) {
@@ -1053,10 +1054,22 @@ detail: ${JSON.stringify(eventDetail)}`);
     return content;
   }
 
+  /**
+   * Checks through a list of attachments if they are supported. It checks
+   * the content if it has unsupported text formats when there are no attachments.
+   * @param content to be rendered.
+   * @param attachments in the chat.
+   * @returns {boolean}
+   */
   private hasUnsupportedContent(content: string, attachments: ChatMessageAttachment[]): boolean {
     const unsupportedContentTypes = [
       'application/vnd.microsoft.card.codesnippet',
       'application/vnd.microsoft.card.fluid',
+      'application/vnd.microsoft.card.list',
+      'application/vnd.microsoft.card.hero',
+      'application/vnd.microsoft.card.o365connector',
+      'application/vnd.microsoft.card.receipt',
+      'application/vnd.microsoft.card.thumbnail',
       'application/vnd.microsoft.card.fluidEmbedCard',
       'reference'
     ];
@@ -1083,10 +1096,10 @@ detail: ${JSON.stringify(eventDetail)}`);
     content: string
   ): GraphChatMessage {
     const senderId = graphMessage.from?.user?.id || undefined;
+    const attachments = graphMessage?.attachments ?? [];
     const chatId = graphMessage?.chatId ?? '';
     const id = graphMessage?.id ?? '';
     const chatUrl = `https://teams.microsoft.com/l/message/${chatId}/${id}?context={"contextType":"chat"}`;
-    const attachments = graphMessage?.attachments ?? [];
 
     let messageData: GraphChatMessage = {
       messageId,
@@ -1100,6 +1113,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       mine: senderId === currentUser,
       status: 'seen',
       attached: 'top',
+      attachments,
       hasUnsupportedContent: this.hasUnsupportedContent(content, attachments),
       rawChatUrl: chatUrl
     };

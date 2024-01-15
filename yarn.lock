@@ -2940,6 +2940,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui-contrib/react-chat@npm:^0.1.7":
+  version: 0.1.7
+  resolution: "@fluentui-contrib/react-chat@npm:0.1.7"
+  dependencies:
+    "@swc/helpers": ~0.5.1
+  peerDependencies:
+    "@fluentui/react-components": ">=9.25.1 <10.0.0"
+    "@fluentui/react-icons": ">=2.0.204 <3.0.0"
+    "@types/react": ">=16.8.0 <19.0.0"
+    "@types/react-dom": ">=16.8.0 <19.0.0"
+    react: ">=16.8.0 <19.0.0"
+    react-dom: ">=16.8.0 <19.0.0"
+  checksum: 41b1a4be48409d1bfe15f881cf5b6c104b4f445c94e3f5a1d0fb08fa15c8e0f0bc405782c66ac8cf79b27776b2420d800fac866e564befbe4cb093816482a0e9
+  languageName: node
+  linkType: hard
+
 "@fluentui/accessibility@npm:^0.66.5":
   version: 0.66.5
   resolution: "@fluentui/accessibility@npm:0.66.5"
@@ -5947,12 +5963,17 @@ __metadata:
     "@microsoft/microsoft-graph-types": ^2.0.0
     "@microsoft/microsoft-graph-types-beta": ^0.16.0-preview
     "@microsoft/signalr": ^7.0.4
+    "@types/markdown-it": ^13.0.2
     "@types/react": ^17.0.0
+    adaptivecards: ^3.0.1
+    adaptivecards-designer: ^2.4.3
     immer: ^9.0.6
+    markdown-it: ^13.0.2
     opencrypto: 1.5.5
     react: ^17.0.0
     react-dom: ^17.0.0
     react-scripts: 5.0.1
+    swiper: ^10.3.1
     typescript: ^4.9.5
     uuid: ^9.0.0
     web-vitals: ^2.1.4
@@ -9786,7 +9807,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/helpers@npm:^0.5.1":
+"@swc/helpers@npm:^0.5.1, @swc/helpers@npm:~0.5.1":
   version: 0.5.3
   resolution: "@swc/helpers@npm:0.5.3"
   dependencies:
@@ -10430,6 +10451,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/linkify-it@npm:*":
+  version: 3.0.3
+  resolution: "@types/linkify-it@npm:3.0.3"
+  checksum: a734becc4e7476833b0e6951ec133c006a34809639c722d3e28b7cf88f5f6ccbb433f195788be5e56209b1e9e6e0778879291dd2db401acee3bb585c44dcc329
+  languageName: node
+  linkType: hard
+
 "@types/lodash@npm:4.14.117":
   version: 4.14.117
   resolution: "@types/lodash@npm:4.14.117"
@@ -10444,12 +10472,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/markdown-it@npm:^13.0.2":
+  version: 13.0.2
+  resolution: "@types/markdown-it@npm:13.0.2"
+  dependencies:
+    "@types/linkify-it": "*"
+    "@types/mdurl": "*"
+  checksum: fe1f6a12ee8ad2246359376431a30d22c9b603e63e93e3e27d6920840934b9764034679a4d0b01ec54b0693c8d5c42012ec34715cba4f5b0736b8a4b66db4c74
+  languageName: node
+  linkType: hard
+
 "@types/mdast@npm:^3.0.0":
   version: 3.0.14
   resolution: "@types/mdast@npm:3.0.14"
   dependencies:
     "@types/unist": ^2
   checksum: f4d0457f585bebe4cfe54e8ba171c6d8cf86ed910ac7013b92c44262756a68b0dff97435ea9b1db5d4ecd7824db893ac710fe285a2db2edb682f43fb2902a9de
+  languageName: node
+  linkType: hard
+
+"@types/mdurl@npm:*":
+  version: 1.0.3
+  resolution: "@types/mdurl@npm:1.0.3"
+  checksum: 5bbed4f0eb9f60040fa26be77aa2158ca468b6423876cec0d2043e7f8298e83b8e5b95fb66056327b02d747c4d376aed16c11ff3fdc4cb3dca327a6931a71f18
   languageName: node
   linkType: hard
 
@@ -12848,6 +12893,37 @@ __metadata:
   bin:
     acorn: bin/acorn
   checksum: 818450408684da89423e3daae24e4dc9b68692db8ab49ea4569c7c5abb7a3f23669438bf129cc81dfdada95e1c9b944ee1bfca2c57a05a4dc73834a612fbf6a7
+  languageName: node
+  linkType: hard
+
+"adaptivecards-controls@npm:^0.10.1":
+  version: 0.10.1
+  resolution: "adaptivecards-controls@npm:0.10.1"
+  checksum: a6bec984894e35f647b3f6ccdcccbf4d8e263e0970534c007a268e2c044c90a63cb18c43d3c72d953760dfd0d261fcad925527e85941889606028095a7375874
+  languageName: node
+  linkType: hard
+
+"adaptivecards-designer@npm:^2.4.3":
+  version: 2.4.3
+  resolution: "adaptivecards-designer@npm:2.4.3"
+  dependencies:
+    adaptivecards-controls: ^0.10.1
+    clipboard: ^2.0.1
+  peerDependencies:
+    adaptive-expressions: ^4.11.0
+    adaptivecards: ^2.10.0
+    adaptivecards-templating: ^2.2.0
+    monaco-editor: ^0.29.1
+  checksum: 0428c2eb9458f14d6b9f3e61dc9ae4670fec65bb35ecca06c35012845a6c23f4183b8b4982663e8515f88d2c148d9a991e5fa7df349781fbae3ca232d87b85bd
+  languageName: node
+  linkType: hard
+
+"adaptivecards@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "adaptivecards@npm:3.0.1"
+  peerDependencies:
+    swiper: ^8.2.6
+  checksum: b87c2ba37d129dc1f732c3101029b670d0f2b39c0b672f67307e5a46a0b2ea6aa780b43451b8819275f51d48d8b0156fa80b424ba9b3cee8e1806b3b93de9c28
   languageName: node
   linkType: hard
 
@@ -15854,6 +15930,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clipboard@npm:^2.0.1":
+  version: 2.0.11
+  resolution: "clipboard@npm:2.0.11"
+  dependencies:
+    good-listener: ^1.2.2
+    select: ^1.1.2
+    tiny-emitter: ^2.0.0
+  checksum: 413055a6038e43898e0e895216b58ed54fbf386f091cb00188875ef35b186cefbd258acdf4cb4b0ac87cbc00de936f41b45dde9fe1fd1a57f7babb28363b8748
+  languageName: node
+  linkType: hard
+
 "cliui@npm:^3.2.0":
   version: 3.2.0
   resolution: "cliui@npm:3.2.0"
@@ -17835,6 +17922,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"delegate@npm:^3.1.2":
+  version: 3.2.0
+  resolution: "delegate@npm:3.2.0"
+  checksum: d943058fe05897228b158cbd1bab05164df28c8f54127873231d6b03b0a5acc1b3ee1f98ac70ccc9b79cd84aa47118a7de111fee2923753491583905069da27d
+  languageName: node
+  linkType: hard
+
 "delegates@npm:^1.0.0":
   version: 1.0.0
   resolution: "delegates@npm:1.0.0"
@@ -18617,6 +18711,13 @@ __metadata:
   version: 4.5.0
   resolution: "entities@npm:4.5.0"
   checksum: 853f8ebd5b425d350bffa97dd6958143179a5938352ccae092c62d1267c4e392a039be1bae7d51b6e4ffad25f51f9617531fedf5237f15df302ccfb452cbf2d7
+  languageName: node
+  linkType: hard
+
+"entities@npm:~3.0.1":
+  version: 3.0.1
+  resolution: "entities@npm:3.0.1"
+  checksum: aaf7f12033f0939be91f5161593f853f2da55866db55ccbf72f45430b8977e2b79dbd58c53d0fdd2d00bd7d313b75b0968d09f038df88e308aa97e39f9456572
   languageName: node
   linkType: hard
 
@@ -21922,6 +22023,15 @@ __metadata:
   dependencies:
     sparkles: ^1.0.0
   checksum: 6defe24bbe0536b844ffcf0d7a546a51440b3757b9770ef994a7558172ad51d5aa1fefef357a54fc2a3a691e3d06d921195faf75bb493484d69718db431701b5
+  languageName: node
+  linkType: hard
+
+"good-listener@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "good-listener@npm:1.2.2"
+  dependencies:
+    delegate: ^3.1.2
+  checksum: f39fb82c4e41524f56104cfd2d7aef1a88e72f3f75139115fbdf98cc7d844e0c1b39218b2e83438c6188727bf904ed78c7f0f2feff67b32833bc3af7f0202b33
   languageName: node
   linkType: hard
 
@@ -26569,6 +26679,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"linkify-it@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "linkify-it@npm:4.0.1"
+  dependencies:
+    uc.micro: ^1.0.1
+  checksum: 3e0a29921269c14eb7ac6f5db2da68d4854ea9acca6e9014a323f75f2dd39b197ffab57c1fbd6a906ceb021aad3ee6d7ba7d0181236dd9630ffc452b392f7f71
+  languageName: node
+  linkType: hard
+
 "lit-element@npm:^2.2.1":
   version: 2.5.1
   resolution: "lit-element@npm:2.5.1"
@@ -27391,6 +27510,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"markdown-it@npm:^13.0.2":
+  version: 13.0.2
+  resolution: "markdown-it@npm:13.0.2"
+  dependencies:
+    argparse: ^2.0.1
+    entities: ~3.0.1
+    linkify-it: ^4.0.1
+    mdurl: ^1.0.1
+    uc.micro: ^1.0.5
+  bin:
+    markdown-it: bin/markdown-it.js
+  checksum: bb4bf2cb3e5d77a7f3dc9cf48e17d050fbcd26d37992204eaa5812220752858fe9debe439b2ae1de06e749a3bba537c0baf6ce7510307cf7163a70f04fafe672
+  languageName: node
+  linkType: hard
+
 "markdown-table@npm:^3.0.0":
   version: 3.0.3
   resolution: "markdown-table@npm:3.0.3"
@@ -27631,6 +27765,13 @@ __metadata:
   version: 2.0.4
   resolution: "mdn-data@npm:2.0.4"
   checksum: add3c95e6d03d301b8a8bcfee3de33f4d07e4c5eee5b79f18d6d737de717e22472deadf67c1a8563983c0b603e10d7df40aa8e5fddf18884dfe118ccec7ae329
+  languageName: node
+  linkType: hard
+
+"mdurl@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "mdurl@npm:1.0.1"
+  checksum: 71731ecba943926bfbf9f9b51e28b5945f9411c4eda80894221b47cc105afa43ba2da820732b436f0798fd3edbbffcd1fc1415843c41a87fea08a41cc1e3d02b
   languageName: node
   linkType: hard
 
@@ -34538,6 +34679,7 @@ __metadata:
     "@babel/preset-typescript": ^7.23.0
     "@custom-elements-manifest/analyzer": ^0.8.3
     "@esm-bundle/chai": ^4.3.4-fix.0
+    "@fluentui-contrib/react-chat": ^0.1.7
     "@microsoft/eslint-config-msgraph": ^2.0.0
     "@octokit/rest": ^18.5.3
     "@open-wc/testing": ^3.2.0
@@ -34926,6 +35068,13 @@ __metadata:
   version: 2.0.0
   resolution: "select-hose@npm:2.0.0"
   checksum: d7e5fcc695a4804209d232a1b18624a5134be334d4e1114b0721f7a5e72bd73da483dcf41528c1af4f4f4892ad7cfd6a1e55c8ffb83f9c9fe723b738db609dbb
+  languageName: node
+  linkType: hard
+
+"select@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "select@npm:1.1.2"
+  checksum: 4346151e94f226ea6131e44e68e6d837f3fdee64831b756dd657cc0b02f4cb5107f867cb34a1d1216ab7737d0bf0645d44546afb030bbd8d64e891f5e4c4814e
   languageName: node
   linkType: hard
 
@@ -36757,6 +36906,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"swiper@npm:^10.3.1":
+  version: 10.3.1
+  resolution: "swiper@npm:10.3.1"
+  checksum: 9a785930ca0ab0683d7e5e116c25a38e1f8818d6f9e93848125bdf3e1874e12a6c3b9f4e9c54668e4accc2440a6f031de98cfc01a1b0068c77f8de4115034e4d
+  languageName: node
+  linkType: hard
+
 "symbol-tree@npm:^3.2.2, symbol-tree@npm:^3.2.4":
   version: 3.2.4
   resolution: "symbol-tree@npm:3.2.4"
@@ -37251,6 +37407,13 @@ __metadata:
   version: 0.3.0
   resolution: "timsort@npm:0.3.0"
   checksum: 1a66cb897dacabd7dd7c91b7e2301498ca9e224de2edb9e42d19f5b17c4b6dc62a8d4cbc64f28be82aaf1541cb5a78ab49aa818f42a2989ebe049a64af731e2a
+  languageName: node
+  linkType: hard
+
+"tiny-emitter@npm:^2.0.0":
+  version: 2.1.0
+  resolution: "tiny-emitter@npm:2.1.0"
+  checksum: fbcfb5145751a0e3b109507a828eb6d6d4501352ab7bb33eccef46e22e9d9ad3953158870a6966a59e57ab7c3f9cfac7cab8521db4de6a5e757012f4677df2dd
   languageName: node
   linkType: hard
 
@@ -37968,7 +38131,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uc.micro@npm:^1.0.1":
+"uc.micro@npm:^1.0.1, uc.micro@npm:^1.0.5":
   version: 1.0.6
   resolution: "uc.micro@npm:1.0.6"
   checksum: 6898bb556319a38e9cf175e3628689347bd26fec15fc6b29fa38e0045af63075ff3fea4cf1fdba9db46c9f0cbf07f2348cd8844889dd31ebd288c29fe0d27e7a

@@ -73,6 +73,7 @@
     "@babel/preset-typescript": "^7.23.0",
     "@custom-elements-manifest/analyzer": "^0.8.3",
     "@esm-bundle/chai": "^4.3.4-fix.0",
+    "@fluentui-contrib/react-chat": "^0.1.7",
     "@microsoft/eslint-config-msgraph": "^2.0.0",
     "@octokit/rest": "^18.5.3",
     "@open-wc/testing": "^3.2.0",
