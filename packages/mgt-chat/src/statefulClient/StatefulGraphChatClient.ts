@@ -455,7 +455,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       draft.status = 'loading messages';
     });
     try {
-      this._chat = await loadChat(this.graph, this.chatId);
+      // this._chat = await loadChat(this.graph, this.chatId);
+      this._chat = undefined;
     } catch (error) {
       return Promise.reject(error);
     }

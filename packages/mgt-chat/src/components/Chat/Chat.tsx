@@ -10,6 +10,7 @@ import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
+import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 
 registerAppIcons();
 
@@ -162,10 +163,11 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 </div>
               )}
               {chatState.status === 'no messages' && (
-                <ChatMessageBar
-                  messageBarType={MessageBarType.error}
-                  message={`No messages were found for the id ${chatId}.`}
-                />
+                // <ChatMessageBar
+                //   messageBarType={MessageBarType.error}
+                //   message={`No messages were found for the id ${chatId}.`}
+                // />
+                <ErrorMessage></ErrorMessage>
               )}
               {chatState.status === 'no chat id' && (
                 <ChatMessageBar messageBarType={MessageBarType.error} message={'A valid chat id is required.'} />

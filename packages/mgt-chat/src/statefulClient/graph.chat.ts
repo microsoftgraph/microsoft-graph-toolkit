@@ -58,15 +58,16 @@ export const loadChatThread = async (
   chatId: string,
   messageCount: number
 ): Promise<MessageCollection> => {
-  const response = (await graph
-    .api(`/chats/${chatId}/messages`)
-    .orderby('createdDateTime DESC')
-    .top(messageCount)
-    .middlewareOptions(prepScopes(...chatOperationScopes.loadChatMessages))
-    .get()) as MessageCollection;
-  // split the nextLink on version to maintain a relative path
-  response.nextLink = response['@odata.nextLink']?.split(graph.version)[1];
-  return response;
+  // const response = (await graph
+  //   .api(`/chats/${chatId}/messages`)
+  //   .orderby('createdDateTime DESC')
+  //   .top(messageCount)
+  //   .middlewareOptions(prepScopes(...chatOperationScopes.loadChatMessages))
+  //   .get()) as MessageCollection;
+  // // split the nextLink on version to maintain a relative path
+  // response.nextLink = response['@odata.nextLink']?.split(graph.version)[1];
+  // return response;
+  return [] as MessageCollection;
 };
 
 /**
