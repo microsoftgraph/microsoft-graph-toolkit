@@ -5967,10 +5967,12 @@ __metadata:
   resolution: "@microsoft/mgt-components@workspace:packages/mgt-components"
   dependencies:
     "@fluentui/web-components": ^2.5.12
+    "@microsoft/mgt-chat": "*"
     "@microsoft/mgt-element": "*"
     "@microsoft/microsoft-graph-client": 3.0.2
     "@microsoft/microsoft-graph-types": ^2.0.0
     "@microsoft/microsoft-graph-types-beta": ^0.29.0-preview
+    "@r2wc/react-to-web-component": ^2.0.3
     lit: ^3.0.0
     office-ui-fabric-core: ^11.0.0
   languageName: unknown
@@ -7247,6 +7249,25 @@ __metadata:
   bin:
     browsers: lib/cjs/main-cli.js
   checksum: 29569dd8a8a41737bb0dd40cce6279cfc8764afc6242d2f9d8ae610bed7e466fc77eeb27b9b3ac53dd04927a1a0e26389f282f6ba057210979b36ab455009d64
+  languageName: node
+  linkType: hard
+
+"@r2wc/core@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "@r2wc/core@npm:1.0.1"
+  checksum: 0c71090e887cc9e295efe5ed2c038d937be870dfd2c409b5100cd91a662e5ac0ba938687aa33bdf98a874b4056a8af26f66357a8f8ac8a371334da99cb4d8400
+  languageName: node
+  linkType: hard
+
+"@r2wc/react-to-web-component@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@r2wc/react-to-web-component@npm:2.0.3"
+  dependencies:
+    "@r2wc/core": ^1.0.0
+  peerDependencies:
+    react: ^18.0.0
+    react-dom: ^18.0.0
+  checksum: 762bbd07d0f0d1476e4874a8f7533321e92af8a1033c7e1ec5cf9a4085bcc361fccf67e66e347baf8228b77dc33f59e4f8b63197044a3b529ac5ff0387db1cd8
   languageName: node
   linkType: hard
 

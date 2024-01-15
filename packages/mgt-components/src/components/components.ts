@@ -6,6 +6,7 @@
  */
 
 import './mgt-agenda/mgt-agenda';
+import './mgt-chat/mgt-chat';
 import './mgt-file/mgt-file';
 import './mgt-file-list/mgt-file-list';
 import './mgt-picker/mgt-picker';
@@ -28,6 +29,7 @@ import './mgt-theme-toggle/mgt-theme-toggle';
 import './sub-components/mgt-spinner/mgt-spinner';
 
 export * from './mgt-agenda/mgt-agenda';
+export * from './mgt-chat/mgt-chat';
 export * from './mgt-file/mgt-file';
 export * from './mgt-file-list/mgt-file-list';
 export * from './mgt-picker/mgt-picker';

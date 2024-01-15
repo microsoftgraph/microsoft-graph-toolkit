@@ -41,10 +41,12 @@
   ],
   "dependencies": {
     "@fluentui/web-components": "^2.5.12",
+    "@microsoft/mgt-chat": "*",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "3.0.2",
     "@microsoft/microsoft-graph-types": "^2.0.0",
     "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
+    "@r2wc/react-to-web-component": "^2.0.3",
     "lit": "^3.0.0",
     "office-ui-fabric-core": "^11.0.0"
   },
