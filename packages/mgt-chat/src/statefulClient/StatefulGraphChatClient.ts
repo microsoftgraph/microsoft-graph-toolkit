@@ -212,8 +212,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
-    this._cache = new MessageCache();
     this._notificationClient = new GraphNotificationClient(this._eventEmitter, graph('mgt-chat', GraphConfig.version));
+    this._cache = new MessageCache();
   }
 
   /**
@@ -405,6 +405,13 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     }
   }
 
+  public setStatus(status: GraphChatClient['status']) {
+    this.notifyStateChange((draft: GraphChatClient) => {
+      draft.status = status;
+      draft.chat = { topic: 'Unknown' };
+    });
+  }
+
   /**
    * A helper to co-ordinate the loading of a chat and its messages, and the subscription to notifications for that chat
    *
@@ -447,6 +454,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     } else {
       this.notifyStateChange((draft: GraphChatClient) => {
         draft.status = 'no chat id';
+        draft.chat = { topic: 'Unknown' };
       });
     }
   }

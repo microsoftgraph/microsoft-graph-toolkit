@@ -16,6 +16,7 @@ const ChatList = memo(({ chatSelected }: { chatSelected: (e: GraphChat) => void 
 function App() {
   const [chatId, setChatId] = useState<string>('');
   const chatSelected = useCallback((e: GraphChat) => {
+    console.log('App setting id ', e.id);
     setChatId(e.id ?? '');
   }, []);
 
@@ -47,6 +48,7 @@ function App() {
           )}
         </div>
 
+        {/* NOTE: removed the chatId guard as this case has an error state. */}
         <div className="chat-pane">{chatId && <Chat chatId={chatId} />}</div>
       </main>
     </div>

@@ -55,6 +55,7 @@ export const useGraphChatClient = (chatId: string): StatefulGraphChatClient => {
   useEffect(() => {
     // we must have both a chatId & sessionId to subscribe.
     if (chatId && sessionId) chatClient.subscribeToChat(chatId, sessionId);
+    else chatClient.setStatus('no chat id');
   }, [chatId, sessionId, chatClient]);
 
   // Returns a cleanup function to call tearDown on the chatClient

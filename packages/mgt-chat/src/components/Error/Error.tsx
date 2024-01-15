@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { makeStyles, shorthands } from '@fluentui/react-components';
+import { GenericErrorIcon } from './GenericErrorIcon';
 
 const useStyles = makeStyles({
   container: {
@@ -50,7 +51,7 @@ const useStyles = makeStyles({
  * Error message component props
  */
 interface IMGTErrorProps {
-  icon: React.FC;
+  icon?: React.FC;
   message: string;
   subheading?: string;
 }
@@ -59,7 +60,7 @@ interface IMGTErrorProps {
  * Renders a full screen error message.
  * @returns
  */
-const Error = ({ icon, message, subheading }: IMGTErrorProps): JSX.Element => {
+const Error = ({ icon = GenericErrorIcon, message, subheading }: IMGTErrorProps): JSX.Element => {
   const styles = useStyles();
   const IconTemplate = icon;
 

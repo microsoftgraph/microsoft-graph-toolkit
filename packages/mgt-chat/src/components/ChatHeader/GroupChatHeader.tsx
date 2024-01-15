@@ -65,6 +65,7 @@ export const GroupChatHeader = ({ chat, currentUserId, onRenameChat }: ChatHeade
   const chatTitle = chat?.topic
     ? chat.topic
     : reduceToFirstNamesList(chat?.members as AadUserConversationMember[], currentUserId);
+  console.log(chatTitle);
   const trapFocus = true;
   const popoverProps: Partial<PopoverProps> = {
     trapFocus,
@@ -78,26 +79,28 @@ export const GroupChatHeader = ({ chat, currentUserId, onRenameChat }: ChatHeade
     <>
       <ChatIcon chatType={chat?.chatType} />
       <span className={styles.chatTitle}>{chatTitle}</span>
-      <Popover {...popoverProps}>
-        <PopoverTrigger>
-          <Button appearance="transparent" icon={<EditIcon />} aria-label="Name group chat"></Button>
-        </PopoverTrigger>
-        <PopoverSurface>
-          <div className={styles.container}>
-            <Field label="Group name">
-              <Input placeholder="Enter group name" onChange={onChatNameChanged} value={chatName || ''} />
-            </Field>
-            <div className={styles.formButtons}>
-              <Button appearance="secondary" onClick={onCancelClicked}>
-                Cancel
-              </Button>
-              <Button appearance="primary" disabled={chatName === chat?.topic} onClick={renameChat}>
-                Send
-              </Button>
+      {chat?.id && (
+        <Popover {...popoverProps}>
+          <PopoverTrigger>
+            <Button appearance="transparent" icon={<EditIcon />} aria-label="Name group chat"></Button>
+          </PopoverTrigger>
+          <PopoverSurface>
+            <div className={styles.container}>
+              <Field label="Group name">
+                <Input placeholder="Enter group name" onChange={onChatNameChanged} value={chatName || ''} />
+              </Field>
+              <div className={styles.formButtons}>
+                <Button appearance="secondary" onClick={onCancelClicked}>
+                  Cancel
+                </Button>
+                <Button appearance="primary" disabled={chatName === chat?.topic} onClick={renameChat}>
+                  Send
+                </Button>
+              </div>
             </div>
-          </div>
-        </PopoverSurface>
-      </Popover>
+          </PopoverSurface>
+        </Popover>
+      )}
     </>
   );
 };

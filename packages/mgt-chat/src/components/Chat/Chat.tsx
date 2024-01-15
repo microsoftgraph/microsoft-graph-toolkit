@@ -1,12 +1,11 @@
 import { ErrorBar, FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
-import { FluentTheme, MessageBarType } from '@fluentui/react';
+import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { onRenderMessage } from '../../utils/chat';
-import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
@@ -165,13 +164,17 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 </div>
               )}
               {chatState.status === 'no messages' && (
-                <Error icon={LoadingMessagesErrorIcon} message="No messages were found."></Error>
+                <Error
+                  icon={LoadingMessagesErrorIcon}
+                  message="No messages were found."
+                  subheading="Type a new message and send."
+                ></Error>
               )}
               {chatState.status === 'no chat id' && (
-                <ChatMessageBar messageBarType={MessageBarType.error} message={'A valid chat id is required.'} />
+                <Error message="No chat ID has been provided." subheading="A valid chat id is required."></Error>
               )}
               <div className={styles.chatInput}>
-                <SendBox onSendMessage={chatState.onSendMessage} />
+                <SendBox disabled={true} onSendMessage={chatState.onSendMessage} />
               </div>
             </>
           )}
