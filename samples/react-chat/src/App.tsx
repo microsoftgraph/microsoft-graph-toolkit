@@ -12,7 +12,7 @@ export const ChatAddIcon = (): JSX.Element => {
   return <ChatAddIconBundle color={iconColor} />;
 };
 
-const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => void }) => {
+const ChatListWrapper = memo(({ onSelected, selectedChatId }: { onSelected: (e: GraphChat) => void, selectedChatId?: string }) => {
   const buttons: ChatListButtonItem[] = [
     {
       renderIcon: () => <ChatAddIcon />,
@@ -39,6 +39,7 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => vo
       menuItems={menus}
       buttonItems={buttons}
       onSelected={onSelected}
+      selectedChatId={selectedChatId}
       onMessageReceived={onMessageReceived}
     />
   );
@@ -68,7 +69,7 @@ function App() {
       </header>
       <main className="main">
         <div className="chat-selector">
-          <ChatListWrapper onSelected={chatSelected} />
+          <ChatListWrapper onSelected={chatSelected} selectedChatId={chatId} />
           <br />
           <button onClick={() => setChatId('')}>Clear selected chat</button>
           <br />
