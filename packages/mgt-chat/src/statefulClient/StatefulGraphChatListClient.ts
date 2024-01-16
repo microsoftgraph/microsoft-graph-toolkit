@@ -88,6 +88,18 @@ interface StatefulClient<T> {
    * @param handler Callback to be unregistered
    */
   offStateChange(handler: (state: T) => void): void;
+  /**
+   * Register a callback to receive ChatList events
+   *
+   * @param handler Callback to receive ChatList events
+   */
+  onChatListEvent(handler: (event: ChatListEvent) => void): void;
+  /**
+   * Remove a callback to receive ChatList events
+   *
+   * @param handler Callback to be unregistered
+   */
+  offChatListEvent(handler: (event: ChatListEvent) => void): void;
 
   chatThreadsPerPage: number;
 
@@ -128,6 +140,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   private readonly _eventEmitter: ThreadEventEmitter;
   // private readonly _cache: MessageCache;
   private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
+  private _chatListEventSubscribers: ((state: ChatListEvent) => void)[] = [];
   private readonly _graph: IGraph;
   constructor(chatThreadsPerPage: number) {
     this.updateUserInfo();
@@ -223,6 +236,31 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     const index = this._stateSubscribers.indexOf(handler);
     if (index !== -1) {
       this._stateSubscribers = this._stateSubscribers.splice(index, 1);
+    }
+  }
+
+  /**
+   * Register a callback to receive ChatList events
+   *
+   * @param {(event: ChatListEvent) => void} handler
+   * @memberof StatefulGraphChatListClient
+   */
+  public onChatListEvent(handler: (event: ChatListEvent) => void): void {
+    if (!this._chatListEventSubscribers.includes(handler)) {
+      this._chatListEventSubscribers.push(handler);
+    }
+  }
+
+  /**
+   * Unregister a callback from receiving ChatList events
+   *
+   * @param {(event: ChatListEvent) => void} handler
+   * @memberof StatefulGraphChatListClient
+   */
+  public offChatListEvent(handler: (event: ChatListEvent) => void): void {
+    const index = this._chatListEventSubscribers.indexOf(handler);
+    if (index !== -1) {
+      this._chatListEventSubscribers = this._chatListEventSubscribers.splice(index, 1);
     }
   }
 

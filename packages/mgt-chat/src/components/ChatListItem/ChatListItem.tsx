@@ -8,18 +8,24 @@ import {
   ChatMessageInfo,
   TeamworkApplicationIdentity
 } from '@microsoft/microsoft-graph-types';
-import { MgtTemplateProps, Person, PersonCardInteraction } from '@microsoft/mgt-react';
-import { ProviderState, Providers, error, log } from '@microsoft/mgt-element';
+import { Person, PersonCardInteraction, log } from '@microsoft/mgt-react';
+import { ProviderState, Providers, error } from '@microsoft/mgt-element';
 import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
 import { rewriteEmojiContent } from '../../utils/rewriteEmojiContent';
 import { convert } from 'html-to-text';
 import { loadChatWithPreview } from '../../statefulClient/graph.chat';
+import { DefaultProfileIcon } from './DefaultProfileIcon';
+import { LastReadCache } from '../../statefulClient/Caching/LastReadCache';
 
 interface IMgtChatListItemProps {
   chat: Chat;
   myId: string | undefined;
   isSelected: boolean;
   isRead: boolean;
+}
+
+interface EventMessageDetailWithType {
+  '@odata.type': string;
 }
 
 const useStyles = makeStyles({
@@ -123,11 +129,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   // manage the internal state of the chat
   const [chatInternal, setChatInternal] = useState(chat);
   const [read, setRead] = useState<boolean>(isRead);
-
-  // shortcut if no valid user
-  if (!myId) {
-    return <></>;
-  }
+  const cache = new LastReadCache();
 
   // when isSelected changes to true, setRead to true
   useEffect(() => {
@@ -139,44 +141,79 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   // if chat changes, update the internal state to match
   useEffect(() => {
     setChatInternal(chat);
+    if (isLoaded()) {
+      checkWhetherToMarkAsRead(chat);
+    }
   }, [chat]);
 
   // enrich the chat if necessary
   useEffect(() => {
-    if (chatInternal.id && (!chatInternal.chatType || !chatInternal.members)) {
+    if (isLoaded()) {
       const provider = Providers.globalProvider;
       if (provider && provider.state === ProviderState.SignedIn) {
         const graph = provider.graph.forComponent('ChatListItem');
         const load = (id: string): Promise<Chat> => {
           return loadChatWithPreview(graph, id);
         };
-        load(chatInternal.id).then(
-          c => setChatInternal(c),
+        load(chatInternal.id!).then(
+          c => {
+            setChatInternal(c);
+            checkWhetherToMarkAsRead(c);
+          },
           e => error(e)
         );
       }
     }
   }, [chatInternal]);
 
+  const isLoaded = () => {
+    return chatInternal.id && (!chatInternal.chatType || !chatInternal.members);
+  };
+
+  // check whether to mark the chat as read or not
+  const checkWhetherToMarkAsRead = async (c: Chat) => {
+    await cache
+      .loadLastReadTime(c.id!)
+      .then(lastReadData => {
+        if (lastReadData) {
+          const lastUpdatedDateTime = new Date(c.lastUpdatedDateTime!);
+          const lastMessagePreviewCreatedDateTime = new Date(c.lastMessagePreview?.createdDateTime as string);
+          const lastReadTime = new Date(lastReadData.lastReadTime as string);
+          const isRead = !(
+            lastUpdatedDateTime > lastReadTime ||
+            lastMessagePreviewCreatedDateTime > lastReadTime ||
+            !lastReadData.lastReadTime
+          );
+          setRead(isRead);
+        }
+      })
+      .catch(e => error(e));
+  };
+
+  // shortcut if no valid user
+  if (!myId) {
+    return <></>;
+  }
+
   // Copied and modified from the sample ChatItem.tsx
   // Determines the title in the case of 1:1 and self chats
   // Self Chats are not possible, however, 1:1 chats with a bot will show no other members other than self.
-  const inferTitle = (chat: Chat) => {
+  const inferTitle = (c: Chat) => {
     const name = (member: ConversationMember): string => {
       return `${member?.displayName || (member as AadUserConversationMember)?.email || member?.id}`;
     };
 
     // build others array
-    const others = (chat.members || []).filter(m => (m as AadUserConversationMember).userId !== myId);
-    const application = chat.lastMessagePreview?.from?.application as TeamworkApplicationIdentity;
+    const others = (c.members || []).filter(m => (m as AadUserConversationMember).userId !== myId);
+    const application = c.lastMessagePreview?.from?.application as TeamworkApplicationIdentity;
 
     // return the appropriate title
-    if (chat.topic) {
-      return chat.topic;
+    if (c.topic) {
+      return c.topic;
     } else if (others.length === 0 && application) {
       return application.displayName ? `${application.displayName} (bot)` : `${application.id} (bot)`;
     } else if (others.length === 0) {
-      const me = chat.members?.find(m => (m as AadUserConversationMember).userId === myId);
+      const me = c.members?.find(m => (m as AadUserConversationMember).userId === myId);
       return me ? name(me) : 'Me';
     } else if (others.length === 1) {
       return name(others[0]);
@@ -185,11 +222,11 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     } else if (others.length === 3) {
       return others.map(m => m.displayName?.split(' ')[0]).join(', ');
     } else if (others.length > 3) {
-      let firstThreeMembersSlice = others.slice(0, 3);
-      let remainingMembersCount = others.length - 3 + 1; // +1 for the current user
+      const firstThreeMembersSlice = others.slice(0, 3);
+      const remainingMembersCount = others.length - 3 + 1; // +1 for the current user
       return firstThreeMembersSlice.map(m => m.displayName?.split(' ')[0]).join(', ') + ' +' + remainingMembersCount;
     } else {
-      return chat.id;
+      return c.id;
     }
   };
 
@@ -221,15 +258,15 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   };
 
   // Chooses the correct timestamp to display
-  const determineCorrectTimestamp = (chat: Chat) => {
+  const determineCorrectTimestamp = (c: Chat) => {
     let timestamp: NullableOption<string>;
 
     // lastMessageTime is the time of the last message sent in the chat
     // lastUpdatedTime is Date and time at which the chat was renamed or list of members were last changed.
-    const lastMessageTime = chat.lastMessagePreview?.createdDateTime
-      ? new Date(chat.lastMessagePreview.createdDateTime)
+    const lastMessageTime = c.lastMessagePreview?.createdDateTime
+      ? new Date(c.lastMessagePreview.createdDateTime)
       : null;
-    const lastUpdatedTime = chat.lastUpdatedDateTime ? new Date(chat.lastUpdatedDateTime) : null;
+    const lastUpdatedTime = c.lastUpdatedDateTime ? new Date(c.lastUpdatedDateTime) : null;
 
     if (lastMessageTime && lastUpdatedTime && lastMessageTime > lastUpdatedTime) {
       timestamp = String(lastMessageTime);
@@ -246,37 +283,28 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     return timestamp;
   };
 
-  const getDefaultProfileImage = (chat: Chat) => {
+  const getDefaultProfileImage = (c: Chat) => {
     // define the JSX for FluentUI Icons + Styling
     const oneOnOneProfilePicture = <ChatListItemIcon chatType="oneOnOne" />;
     const GroupProfilePicture = <ChatListItemIcon chatType="group" />;
 
-    const other = chat.members?.find(m => (m as AadUserConversationMember).userId !== myId);
+    const other = c.members?.find(m => (m as AadUserConversationMember).userId !== myId);
     const otherAad = other as AadUserConversationMember;
-    const application = chat.lastMessagePreview?.from?.application as TeamworkApplicationIdentity;
-    let iconId: string | undefined;
+
     switch (true) {
-      case chat.chatType === 'oneOnOne':
-        if (!otherAad && application?.id) {
-          iconId = application.id;
-        } else {
-          iconId = otherAad?.userId as string;
-        }
-        const Default = (props: MgtTemplateProps) => {
-          return <div className={styles.defaultProfileImage}>{oneOnOneProfilePicture}</div>;
-        };
+      case c.chatType === 'oneOnOne':
         return (
           <Person
             className={styles.person}
-            userId={iconId}
+            userId={otherAad?.userId ?? undefined}
             avatarSize="small"
             showPresence={true}
             personCardInteraction={PersonCardInteraction.hover}
           >
-            <Default template="no-data" />
+            <DefaultProfileIcon template="no-data" />
           </Person>
         );
-      case chat.chatType === 'group':
+      case c.chatType === 'group':
         return GroupProfilePicture;
       default:
         return oneOnOneProfilePicture;
@@ -285,7 +313,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
   const enrichPreviewMessage = (previewMessage: NullableOption<ChatMessageInfo> | undefined) => {
     let previewString = '';
-    let content = previewMessage?.body?.content as string;
+    let content = previewMessage?.body?.content;
 
     // handle null or undefined content
     if (!content) {
@@ -332,13 +360,11 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
        */
       const systemEventMessage = content.match(systemEventTagRegex);
       if (systemEventMessage) {
-        const eventDetail: any = previewMessage?.eventDetail;
-        if (eventDetail && eventDetail['@odata.type']) {
-          switch (eventDetail['@odata.type'] as string) {
-            case '#microsoft.graph.membersAddedEventMessageDetail':
-              content = 'User added';
-              break;
-          }
+        const type = (previewMessage?.eventDetail as EventMessageDetailWithType)?.['@odata.type'];
+        switch (type) {
+          case '#microsoft.graph.membersAddedEventMessageDetail':
+            content = 'User added';
+            break;
         }
       }
 
@@ -366,6 +392,10 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     read ? styles.isNormal : styles.isBold
   );
 
+  // short cut if the id is not defined
+  if (!myId) {
+    return <></>;
+  }
   return (
     <div className={container}>
       <div className={styles.profileImage}>{getDefaultProfileImage(chatInternal)}</div>
