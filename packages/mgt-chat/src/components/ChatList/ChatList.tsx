@@ -163,7 +163,7 @@ export const ChatList = ({
                   chat={c}
                   myId={chatListState.userId}
                   isSelected={c.id === selectedItem}
-                  isRead={false}
+                  isRead={c.id === selectedItem}
                 />
               </Button>
             ))}
