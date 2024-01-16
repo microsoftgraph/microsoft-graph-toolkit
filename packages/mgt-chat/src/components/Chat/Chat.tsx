@@ -152,7 +152,6 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
               <div className={styles.chatInput}>
                 <SendBox onSendMessage={chatState.onSendMessage} />
               </div>
-              <ErrorBar activeErrorMessages={chatState.activeErrorMessages} />
             </>
           ) : (
             <>
@@ -173,8 +172,17 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
               {chatState.status === 'no chat id' && (
                 <Error message="No chat ID has been provided." subheading="A valid chat id is required."></Error>
               )}
+              {chatState.status === 'error' && (
+                <Error
+                  message="We're sorry—we've run into an issue.."
+                  subheading="If the problem continues, open Teams app to view the issue."
+                ></Error>
+              )}
               <div className={styles.chatInput}>
-                <SendBox disabled={!chatId} onSendMessage={chatState.onSendMessage} />
+                <SendBox
+                  disabled={!chatId || !chatState.activeErrorMessages.length}
+                  onSendMessage={chatState.onSendMessage}
+                />
               </div>
             </>
           )}

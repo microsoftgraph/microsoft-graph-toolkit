@@ -65,7 +65,6 @@ export const GroupChatHeader = ({ chat, currentUserId, onRenameChat }: ChatHeade
   const chatTitle = chat?.topic
     ? chat.topic
     : reduceToFirstNamesList(chat?.members as AadUserConversationMember[], currentUserId);
-  console.log(chatTitle);
   const trapFocus = true;
   const popoverProps: Partial<PopoverProps> = {
     trapFocus,

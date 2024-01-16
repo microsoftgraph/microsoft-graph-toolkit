@@ -8,7 +8,6 @@
 import {
   ChatMessage as AcsChatMessage,
   ContentSystemMessage,
-  ErrorBarProps,
   Message,
   MessageThreadProps,
   SendBoxProps,
@@ -21,10 +20,10 @@ import {
   LoginChangedEvent,
   ProviderState,
   Providers,
+  error,
   log,
   warn
 } from '@microsoft/mgt-element';
-import { GraphError } from '@microsoft/microsoft-graph-client';
 import {
   AadUserConversationMember,
   Chat,
@@ -104,8 +103,7 @@ export type GraphChatClient = Pick<
   | 'onUpdateMessage'
   | 'onDeleteMessage'
 > &
-  Pick<SendBoxProps, 'onSendMessage'> &
-  Pick<ErrorBarProps, 'activeErrorMessages'> & {
+  Pick<SendBoxProps, 'onSendMessage'> & {
     status:
       | 'initial'
       | 'creating server connections'
@@ -122,6 +120,7 @@ export type GraphChatClient = Pick<
     onRemoveChatMember: (membershipId: string) => Promise<void>;
     onRenameChat: (topic: string | null) => Promise<void>;
     mentions: NullableOption<ChatMessageMention[]>;
+    activeErrorMessages: Error[];
   };
 
 interface StatefulClient<T> {
@@ -455,13 +454,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         tasks.push(this._notificationClient.subscribeToChatNotifications(this._chatId, this._sessionId));
         await Promise.all(tasks);
       } catch (e) {
-        console.error('Failed to load chat data or subscribe to notications: ', e);
-        if (e instanceof GraphError) {
-          this.notifyStateChange((draft: GraphChatClient) => {
-            draft.status = 'no messages';
-          });
-        }
-        // else show a generic error message. 'generic error' status
+        this.updateErrorState(e as Error);
       }
     } else {
       this.notifyStateChange((draft: GraphChatClient) => {
@@ -477,8 +470,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     });
     try {
       this._chat = await loadChat(this.graph, this.chatId);
-    } catch (error) {
-      return Promise.reject(error);
+    } catch (e) {
+      return Promise.reject(e);
     }
     const cachedMessages = await this._cache.loadMessages(this._chatId);
     if (cachedMessages) {
@@ -1151,7 +1144,27 @@ detail: ${JSON.stringify(eventDetail)}`);
     // this._eventEmitter.on('chatThreadDeleted', this.onChatDeleted);
     this._eventEmitter.on('participantAdded', this.onParticipantAdded);
     this._eventEmitter.on('participantRemoved', this.onParticipantRemoved);
+    this._eventEmitter.on('graphNotificationClientError', this.onGraphNotificationClientError);
   }
+
+  /**
+   * Handles the GraphNotificationClient emitted errors.
+   */
+  private readonly onGraphNotificationClientError = (e: Error) => {
+    this.updateErrorState(e);
+  };
+
+  /**
+   * Emits the error state to the stateful client.
+   */
+  private readonly updateErrorState = (e: Error) => {
+    error(e?.message);
+    this.notifyStateChange((draft: GraphChatClient) => {
+      draft.status = 'error';
+      draft.activeErrorMessages = [...draft.activeErrorMessages, e];
+      draft.chat = { topic: 'Unknown' };
+    });
+  };
 
   /**
    * Provided the graph instance for the component with the correct SDK version decoration
