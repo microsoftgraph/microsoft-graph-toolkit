@@ -14,10 +14,12 @@ import { LastReadCache } from '../../statefulClient/Caching/LastReadCache';
 
 export interface IChatListItemProps {
   onSelected: (e: GraphChat) => void;
+  onUnselected?: (e: GraphChat) => void;
   onLoaded?: () => void;
   buttonItems?: ChatListButtonItem[];
   chatThreadsPerPage: number;
   lastReadTimeInterval?: number;
+  selectedItemId?: string;
 }
 
 const useStyles = makeStyles({
@@ -53,6 +55,7 @@ const useStyles = makeStyles({
 // this is a stub to move the logic here that should end up here.
 export const ChatList = ({
   lastReadTimeInterval = 30000, // default to 30 seconds
+  selectedItemId,
   ...props
 }: MgtTemplateProps & IChatListItemProps & IChatListMenuItemsProps) => {
   const styles = useStyles();
@@ -60,7 +63,6 @@ export const ChatList = ({
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
-  const [selectedItem, setSelectedItem] = useState<string>();
   const cache = new LastReadCache();
 
   // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
@@ -95,16 +97,16 @@ export const ChatList = ({
   // the user could have read messages in another client (for instance, the Teams client).
   useEffect(() => {
     const timer = setInterval(() => {
-      if (selectedItem) {
-        log(`caching the last-read timestamp of now to chat ID '${selectedItem}'...`);
-        cache.cacheLastReadTime(selectedItem, new Date());
+      if (selectedItemId) {
+        log(`caching the last-read timestamp of now to chat ID '${selectedItemId}'...`);
+        void cache.cacheLastReadTime(selectedItemId, new Date());
       }
     }, lastReadTimeInterval);
 
     return () => {
       clearInterval(timer);
     };
-  }, [selectedItem]);
+  }, [selectedItemId]);
 
   useEffect(() => {
     if (chatListClient) {
@@ -121,6 +123,21 @@ export const ChatList = ({
     }
   }, [chatListClient]);
 
+  const onClickChatListItem = (chatListItem: GraphChat) => {
+    // set selected state only once per click event
+    if (chatListItem.id !== selectedItemId) {
+      props.onSelected(chatListItem);
+
+      // trigger an unselect event for the previously selected item
+      if (selectedItemId && props.onUnselected) {
+        const previouslySelectedChatListItem = chatListState?.chatThreads.filter(c => c.id === selectedItemId);
+        if (previouslySelectedChatListItem?.length === 1) {
+          props.onUnselected(previouslySelectedChatListItem[0]);
+        }
+      }
+    }
+  };
+
   return (
     // This is a temporary approach to render the chatlist items. This should be replaced.
     <FluentThemeProvider fluentTheme={FluentTheme}>
@@ -131,22 +148,12 @@ export const ChatList = ({
           </div>
           <div>
             {chatListState?.chatThreads.map(c => (
-              <Button
-                className={styles.button}
-                key={c.id}
-                onClick={() => {
-                  // set selected state only once per click event
-                  if (c.id !== selectedItem) {
-                    setSelectedItem(c.id);
-                    props.onSelected(c);
-                  }
-                }}
-              >
+              <Button className={styles.button} key={c.id} onClick={() => onClickChatListItem(c)}>
                 <ChatListItem
                   key={c.id}
                   chat={c}
                   myId={chatListState.userId}
-                  isSelected={c.id === selectedItem}
+                  isSelected={c.id === selectedItemId}
                   isRead={false}
                 />
               </Button>
