@@ -1161,7 +1161,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     error(e?.message);
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.status = 'error';
-      draft.activeErrorMessages = [...draft.activeErrorMessages, e];
+      draft.activeErrorMessages = [e];
       draft.chat = { topic: 'Unknown' };
     });
   };

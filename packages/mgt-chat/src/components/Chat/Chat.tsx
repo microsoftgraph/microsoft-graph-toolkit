@@ -114,9 +114,9 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.chat}>
+          <ChatHeader chatState={chatState} />
           {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
-              <ChatHeader chatState={chatState} />
               <div className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}
@@ -153,12 +153,11 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 />
               </div>
               <div className={styles.chatInput}>
-                <SendBox onSendMessage={chatState.onSendMessage} />
+                <SendBox onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />
               </div>
             </>
           ) : (
             <>
-              <ChatHeader chatState={chatState} />
               {isLoading && (
                 <div className={styles.spinner}>
                   <Spinner /> <br />
