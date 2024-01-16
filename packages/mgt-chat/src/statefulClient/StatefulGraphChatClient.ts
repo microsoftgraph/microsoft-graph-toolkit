@@ -439,6 +439,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         draft.mentions = [];
         draft.chat = undefined;
         draft.participants = [];
+        draft.activeErrorMessages = [];
       });
       // Subscribe to notifications for messages
       this.notifyStateChange((draft: GraphChatClient) => {

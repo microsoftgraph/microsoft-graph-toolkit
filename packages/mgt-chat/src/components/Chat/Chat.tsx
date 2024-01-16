@@ -24,7 +24,8 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     height: '100%',
     ...shorthands.overflow('auto'),
-    paddingBlockEnd: '12px'
+    paddingBlockEnd: '12px',
+    backgroundColor: 'var(--Neutral-Background-2-Rest, #FAFAFA)'
   },
   chatMessages: {
     height: 'auto',
@@ -43,6 +44,9 @@ const useStyles = makeStyles({
       '& ul': {
         ...shorthands.paddingInline('40px', '0px')
       }
+    },
+    '& .fui-Chat': {
+      maxWidth: 'unset'
     }
   },
   chatInput: {
@@ -107,12 +111,12 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
     chatState.status
   );
 
-  const disabled = !chatId || !chatState.activeErrorMessages.length;
+  const disabled = !chatId || !!chatState.activeErrorMessages.length;
   const placeholderText = disabled ? 'You cannot send a message' : 'Type a message...';
 
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
-      <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
+      <FluentProvider id="fluentui" theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.chat}>
           <ChatHeader chatState={chatState} />
           {chatState.userId && chatId && chatState.messages.length > 0 ? (
