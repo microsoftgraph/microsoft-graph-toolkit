@@ -195,9 +195,10 @@ interface MessageConversion {
 const graphImageUrlRegex = /(<img[^>]+)src=(["']https:\/\/graph\.microsoft\.com[^"']*["'])/;
 
 class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
-  private readonly _notificationClient: GraphNotificationClient;
   private readonly _eventEmitter: ThreadEventEmitter;
   private readonly _cache: MessageCache;
+  private _graph: IGraph = Providers.globalProvider.graph;
+  private _notificationClient: GraphNotificationClient;
   private _subscribers: ((state: GraphChatClient) => void)[] = [];
   private get _messagesPerCall() {
     return 5;
@@ -212,15 +213,25 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
-    this._notificationClient = new GraphNotificationClient(this._eventEmitter, graph('mgt-chat', GraphConfig.version));
+    this._notificationClient = new GraphNotificationClient(this._eventEmitter, this._graph);
     this._cache = new MessageCache();
+  }
+
+  /**
+   * Updates the provider graph SDK client and the notification client. By now,
+   * an assumption is made that the Providers.globalProvider.graph is available
+   * and won't throw a TypeError when you access graph.forComponent.
+   */
+  private updateGraphNotificationClient() {
+    this._graph = graph('mgt-chat', GraphConfig.version);
+    this._notificationClient = new GraphNotificationClient(this._eventEmitter, this.graph);
   }
 
   /**
    * Provides a method to clean up any resources being used internally when a consuming component is being removed from the DOM
    */
   public async tearDown() {
-    await this._notificationClient.tearDown();
+    await this._notificationClient?.tearDown();
   }
 
   /**
@@ -280,6 +291,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       case ProviderState.SignedIn:
         // update userId and displayName
         this.updateUserInfo();
+        this.updateGraphNotificationClient();
         // load messages?
         // configure subscriptions
         // emit new state;
