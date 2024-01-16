@@ -10,14 +10,20 @@ import { Subscription } from '@microsoft/microsoft-graph-types';
 import { isConversationCacheEnabled } from './isConversationCacheEnabled';
 import { IDBPObjectStore } from 'idb';
 
+export enum ComponentType {
+  User = 'user',
+  Chat = 'chat'
+}
+
 type CachedSubscriptionData = CacheItem & {
-  chatId: string;
+  componentEntityId: string;
   sessionId: string;
   subscriptions: Subscription[];
   lastAccessDateTime: string;
+  componentType: ComponentType;
 };
 
-const buildCacheKey = (chatId: string, sessionId: string): string => `${chatId}:${sessionId}`;
+const buildCacheKey = (componentEntityId: string, sessionId: string): string => `${componentEntityId}:${sessionId}`;
 
 export class SubscriptionsCache {
   private get cache(): CacheStore<CachedSubscriptionData> {
@@ -25,9 +31,12 @@ export class SubscriptionsCache {
     return CacheService.getCache<CachedSubscriptionData>(conversation, conversation.stores.subscriptions);
   }
 
-  public async loadSubscriptions(chatId: string, sessionId: string): Promise<CachedSubscriptionData | undefined> {
+  public async loadSubscriptions(
+    componentEntityId: string,
+    sessionId: string
+  ): Promise<CachedSubscriptionData | undefined> {
     if (isConversationCacheEnabled()) {
-      const cacheKey = buildCacheKey(chatId, sessionId);
+      const cacheKey = buildCacheKey(componentEntityId, sessionId);
       let data;
       await this.cache.transaction(async (store: IDBPObjectStore<unknown, [string], string, 'readwrite'>) => {
         data = (await store.get(cacheKey)) as CachedSubscriptionData | undefined;
@@ -41,13 +50,18 @@ export class SubscriptionsCache {
     return undefined;
   }
 
-  public async cacheSubscription(chatId: string, sessionId: string, subscriptionRecord: Subscription): Promise<void> {
+  public async cacheSubscription(
+    componentEntityId: string,
+    componentType: ComponentType,
+    sessionId: string,
+    subscriptionRecord: Subscription
+  ): Promise<void> {
     await this.cache.transaction(async (store: IDBPObjectStore<unknown, [string], string, 'readwrite'>) => {
       log('cacheSubscription', subscriptionRecord);
-      const cacheKey = buildCacheKey(chatId, sessionId);
+      const cacheKey = buildCacheKey(componentEntityId, sessionId);
 
       let cacheEntry = (await store.get(cacheKey)) as CachedSubscriptionData | undefined;
-      if (cacheEntry && cacheEntry.chatId === chatId) {
+      if (cacheEntry && cacheEntry.componentEntityId === componentEntityId) {
         const subIndex = cacheEntry.subscriptions.findIndex(s => s.resource === subscriptionRecord.resource);
         if (subIndex !== -1) {
           cacheEntry.subscriptions[subIndex] = subscriptionRecord;
@@ -56,7 +70,8 @@ export class SubscriptionsCache {
         }
       } else {
         cacheEntry = {
-          chatId,
+          componentEntityId,
+          componentType,
           sessionId,
           subscriptions: [subscriptionRecord],
           // we're cheating a bit here to ensure that we have a defined lastAccessDateTime
@@ -70,11 +85,20 @@ export class SubscriptionsCache {
     });
   }
 
-  public deleteCachedSubscriptions(chatId: string, sessionId: string): Promise<void> {
-    return this.cache.delete(buildCacheKey(chatId, sessionId));
+  public deleteCachedSubscriptions(componentEntityId: string, sessionId: string): Promise<void> {
+    return this.cache.delete(buildCacheKey(componentEntityId, sessionId));
   }
 
-  public loadInactiveSubscriptions(inactivityThreshold: string): Promise<CachedSubscriptionData[]> {
-    return this.cache.queryDb('lastAccessDateTime', IDBKeyRange.upperBound(inactivityThreshold));
+  public loadInactiveSubscriptions(
+    inactivityThreshold: string,
+    componentType: ComponentType
+  ): Promise<CachedSubscriptionData[]> {
+    return this.cache
+      .queryDb('lastAccessDateTime', IDBKeyRange.upperBound(inactivityThreshold))
+      .then((data: CachedSubscriptionData[]) => data.filter(d => d.componentType === componentType))
+      .catch(err => {
+        // propogate the error back to the call of this function
+        throw err;
+      });
   }
 }
