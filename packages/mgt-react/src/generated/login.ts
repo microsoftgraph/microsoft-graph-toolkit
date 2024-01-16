@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { IDynamicPerson,LoginViewType } from '@microsoft/mgt-components/dist/es6/exports';
-import { registerMgtLoginComponent } from '@microsoft/mgt-components/dist/es6/components/components';
-import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
+import { IDynamicPerson,LoginViewType } from '@microsoft/mgt-components';
+import { registerMgtLoginComponent } from '@microsoft/mgt-components';
+import { TemplateContext,TemplateRenderedData } from '@microsoft/mgt-element';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,7 +14,6 @@ export type LoginProps = {
 	showPresence?: boolean;
 	loginView?: LoginViewType;
 	templateContext?: TemplateContext;
-	mediaQuery?: ComponentMediaQuery;
 	loginInitiated?: (e: CustomEvent<undefined>) => void;
 	loginCompleted?: (e: CustomEvent<undefined>) => void;
 	loginFailed?: (e: CustomEvent<undefined>) => void;
