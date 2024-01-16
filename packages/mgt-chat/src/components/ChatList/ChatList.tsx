@@ -23,7 +23,7 @@ export interface IChatListItemProps {
   buttonItems?: ChatListButtonItem[];
   chatThreadsPerPage: number;
   lastReadTimeInterval?: number;
-  selectedItemId?: string;
+  selectedChatId?: string;
   onMessageReceived?: () => void;
 }
 
@@ -60,7 +60,7 @@ const useStyles = makeStyles({
 // this is a stub to move the logic here that should end up here.
 export const ChatList = ({
   lastReadTimeInterval = 30000, // default to 30 seconds
-  selectedItemId,
+  selectedChatId,
   ...props
 }: MgtTemplateProps & IChatListItemProps & IChatListMenuItemsProps) => {
   const styles = useStyles();
@@ -96,16 +96,16 @@ export const ChatList = ({
   // the user could have read messages in another client (for instance, the Teams client).
   useEffect(() => {
     const timer = setInterval(() => {
-      if (selectedItemId) {
-        log(`caching the last-read timestamp of now to chat ID '${selectedItemId}'...`);
-        void cache.cacheLastReadTime(selectedItemId, new Date());
+      if (selectedChatId) {
+        log(`caching the last-read timestamp of now to chat ID '${selectedChatId}'...`);
+        void cache.cacheLastReadTime(selectedChatId, new Date());
       }
     }, lastReadTimeInterval);
 
     return () => {
       clearInterval(timer);
     };
-  }, [selectedItemId]);
+  }, [selectedChatId]);
 
   useEffect(() => {
     // handles events emitted from the chat list client
@@ -134,12 +134,12 @@ export const ChatList = ({
 
   const onClickChatListItem = (chatListItem: GraphChat) => {
     // set selected state only once per click event
-    if (chatListItem.id !== selectedItemId) {
+    if (chatListItem.id !== selectedChatId) {
       props.onSelected(chatListItem);
 
       // trigger an unselect event for the previously selected item
-      if (selectedItemId && props.onUnselected) {
-        const previouslySelectedChatListItem = chatListState?.chatThreads.filter(c => c.id === selectedItemId);
+      if (selectedChatId && props.onUnselected) {
+        const previouslySelectedChatListItem = chatListState?.chatThreads.filter(c => c.id === selectedChatId);
         if (previouslySelectedChatListItem?.length === 1) {
           props.onUnselected(previouslySelectedChatListItem[0]);
         }
@@ -169,8 +169,8 @@ export const ChatList = ({
                   key={c.id}
                   chat={c}
                   myId={chatListState.userId}
-                  isSelected={c.id === selectedItemId}
-                  isRead={c.id === selectedItem}
+                  isSelected={c.id === selectedChatId}
+                  isRead={c.id === selectedChatId}
                 />
               </Button>
             ))}
