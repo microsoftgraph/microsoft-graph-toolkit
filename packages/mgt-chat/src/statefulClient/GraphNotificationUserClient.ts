@@ -9,7 +9,7 @@ import type {
   AadUserConversationMember
 } from '@microsoft/microsoft-graph-types';
 import { GraphConfig } from './GraphConfig';
-import { SubscriptionsCache } from './Caching/SubscriptionCache';
+import { SubscriptionsCache, ComponentType } from './Caching/SubscriptionCache';
 import { Timer } from '../utils/Timer';
 
 export const appSettings = {
@@ -80,7 +80,7 @@ export class GraphNotificationUserClient {
    * i.e
    */
   public async tearDown() {
-    log('cleaning up graph notification resources');
+    log('cleaning up user graph notification resources');
     if (this.cleanupInterval) this.timer.clearInterval(this.cleanupInterval);
     if (this.renewalInterval) this.timer.clearInterval(this.renewalInterval);
     this.timer.close();
@@ -170,7 +170,7 @@ export class GraphNotificationUserClient {
   private readonly cacheSubscription = async (subscriptionRecord: Subscription): Promise<void> => {
     log(subscriptionRecord);
 
-    await this.subscriptionCache.cacheSubscription(this.userId, this.sessionId, subscriptionRecord);
+    await this.subscriptionCache.cacheSubscription(this.userId, ComponentType.User, this.sessionId, subscriptionRecord);
 
     // only start timer once. -1 for renewalInterval is semaphore it has stopped.
     if (this.renewalInterval === undefined) this.startRenewalTimer();
@@ -326,13 +326,13 @@ export class GraphNotificationUserClient {
   };
 
   private readonly cleanupTimer = async () => {
-    log(`running cleanup timer`);
+    log(`running user cleanup timer`);
     const offset = Math.min(
       appSettings.removalThreshold * 1000,
       appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
     );
     const threshold = new Date(new Date().getTime() - offset).toISOString();
-    const inactiveSubs = await this.subscriptionCache.loadInactiveSubscriptions(threshold);
+    const inactiveSubs = await this.subscriptionCache.loadInactiveSubscriptions(threshold, ComponentType.User);
     let tasks: Promise<unknown>[] = [];
     for (const inactive of inactiveSubs) {
       tasks.push(this.removeSubscriptions(inactive.subscriptions));
@@ -340,7 +340,7 @@ export class GraphNotificationUserClient {
     await Promise.all(tasks);
     tasks = [];
     for (const inactive of inactiveSubs) {
-      tasks.push(this.subscriptionCache.deleteCachedSubscriptions(inactive.chatId, inactive.sessionId));
+      tasks.push(this.subscriptionCache.deleteCachedSubscriptions(inactive.componentEntityId, inactive.sessionId));
     }
   };
 

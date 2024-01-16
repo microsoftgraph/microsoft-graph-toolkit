@@ -2,23 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles, mergeClasses, shorthands } from '@fluentui/react-components';
 import {
   Chat,
+  ConversationMember,
   AadUserConversationMember,
   NullableOption,
   ChatMessageInfo,
   TeamworkApplicationIdentity
 } from '@microsoft/microsoft-graph-types';
-import { MgtTemplateProps, Person, PersonCardInteraction } from '@microsoft/mgt-react';
+import { Person, PersonCardInteraction } from '@microsoft/mgt-react';
 import { ProviderState, Providers, error } from '@microsoft/mgt-element';
 import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
 import { rewriteEmojiContent } from '../../utils/rewriteEmojiContent';
 import { convert } from 'html-to-text';
 import { loadChatWithPreview } from '../../statefulClient/graph.chat';
+import { DefaultProfileIcon } from './DefaultProfileIcon';
 
 interface IMgtChatListItemProps {
   chat: Chat;
   myId: string | undefined;
   isSelected: boolean;
   isRead: boolean;
+}
+
+interface EventMessageDetailWithType {
+  '@odata.type': string;
 }
 
 const useStyles = makeStyles({
@@ -111,8 +117,10 @@ const useStyles = makeStyles({
   }
 });
 
-// Regex to detect and replace image urls using graph requests to supply the image content
-const graphImageUrlRegex = /(<img[^>]+)/;
+// regex to match different tags
+const imageTagRegex = /(<img[^>]+)/;
+const attachmentTagRegex = /(<attachment[^>]+)/;
+const systemEventTagRegex = /(<systemEventMessage[^>]+)/;
 
 export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListItemProps) => {
   const styles = useStyles();
@@ -160,42 +168,44 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     }
   }, [chatInternal]);
 
+  // shortcut if no valid user
+  if (!myId) {
+    return <></>;
+  }
+
   // Copied and modified from the sample ChatItem.tsx
   // Determines the title in the case of 1:1 and self chats
   // Self Chats are not possible, however, 1:1 chats with a bot will show no other members other than self.
-  const inferTitle = (chatObj: Chat) => {
-    if (myId && chatObj.chatType === 'oneOnOne' && chatObj.members) {
-      const other = chatObj.members.find(m => (m as AadUserConversationMember).userId !== myId);
-      const me = chatObj.members.find(m => (m as AadUserConversationMember).userId === myId);
-      const application = chatObj.lastMessagePreview?.from?.application as TeamworkApplicationIdentity;
-      // if there is no other member, return the application display name
-      if (other) {
-        return `${other?.displayName || (other as AadUserConversationMember)?.email || other?.id}`;
-      } else if (application && me) {
-        return `${application?.displayName}` || `${application?.id}`;
-      }
+  const inferTitle = (c: Chat) => {
+    const name = (member: ConversationMember): string => {
+      return `${member?.displayName || (member as AadUserConversationMember)?.email || member?.id}`;
+    };
+
+    // build others array
+    const others = (c.members || []).filter(m => (m as AadUserConversationMember).userId !== myId);
+    const application = c.lastMessagePreview?.from?.application as TeamworkApplicationIdentity;
+
+    // return the appropriate title
+    if (c.topic) {
+      return c.topic;
+    } else if (others.length === 0 && application) {
+      return application.displayName ? `${application.displayName} (bot)` : `${application.id} (bot)`;
+    } else if (others.length === 0) {
+      const me = c.members?.find(m => (m as AadUserConversationMember).userId === myId);
+      return me ? name(me) : 'Me';
+    } else if (others.length === 1) {
+      return name(others[0]);
+    } else if (others.length === 2) {
+      return others.map(m => m.displayName?.split(' ')[0]).join(' and ');
+    } else if (others.length === 3) {
+      return others.map(m => m.displayName?.split(' ')[0]).join(', ');
+    } else if (others.length > 3) {
+      const firstThreeMembersSlice = others.slice(0, 3);
+      const remainingMembersCount = others.length - 3 + 1; // +1 for the current user
+      return firstThreeMembersSlice.map(m => m.displayName?.split(' ')[0]).join(', ') + ' +' + remainingMembersCount;
+    } else {
+      return c.id;
     }
-    if (chatObj.chatType === 'group' && chatObj.members) {
-      const others = chatObj.members.filter(m => (m as AadUserConversationMember).userId !== myId);
-      // if there are 3 or less members, display all members' first names
-      if (chatObj.members.length <= 3) {
-        return (
-          chatObj.topic ||
-          others.map(m => (m as AadUserConversationMember).displayName?.split(' ')[0]).join(', ') ||
-          chatObj.chatType
-        );
-        // if there are more than 3 members, display the first 3 members' first names and a count of the remaining members
-      } else if (chatObj.members.length > 3) {
-        let firstThreeMembersSlice = others.slice(0, 3);
-        let remainingMembersCount = chatObj.members.length - 3;
-        let groupMembersString =
-          firstThreeMembersSlice.map(m => (m as AadUserConversationMember).displayName?.split(' ')[0]).join(', ') +
-          ' +' +
-          remainingMembersCount;
-        return chatObj.topic || groupMembersString || chatObj.chatType;
-      }
-    }
-    return chatObj.topic || chatObj.id;
   };
 
   // Derives the timestamp to display
@@ -226,17 +236,19 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   };
 
   // Chooses the correct timestamp to display
-  const determineCorrectTimestamp = (chat: Chat) => {
+  const determineCorrectTimestamp = (c: Chat) => {
     let timestamp: NullableOption<string>;
 
     // lastMessageTime is the time of the last message sent in the chat
     // lastUpdatedTime is Date and time at which the chat was renamed or list of members were last changed.
-    const lastMessageTime = new Date(chat.lastMessagePreview?.createdDateTime as string);
-    const lastUpdatedTime = new Date(chat.lastUpdatedDateTime as string);
+    const lastMessageTime = c.lastMessagePreview?.createdDateTime
+      ? new Date(c.lastMessagePreview.createdDateTime)
+      : null;
+    const lastUpdatedTime = c.lastUpdatedDateTime ? new Date(c.lastUpdatedDateTime) : null;
 
-    if (lastMessageTime > lastUpdatedTime) {
+    if (lastMessageTime && lastUpdatedTime && lastMessageTime > lastUpdatedTime) {
       timestamp = String(lastMessageTime);
-    } else if (lastUpdatedTime > lastMessageTime) {
+    } else if (lastMessageTime && lastUpdatedTime && lastUpdatedTime > lastMessageTime) {
       timestamp = String(lastUpdatedTime);
     } else if (lastMessageTime) {
       timestamp = String(lastMessageTime);
@@ -249,37 +261,28 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     return timestamp;
   };
 
-  const getDefaultProfileImage = (chat: Chat) => {
+  const getDefaultProfileImage = (c: Chat) => {
     // define the JSX for FluentUI Icons + Styling
     const oneOnOneProfilePicture = <ChatListItemIcon chatType="oneOnOne" />;
     const GroupProfilePicture = <ChatListItemIcon chatType="group" />;
 
-    const other = chat.members?.find(m => (m as AadUserConversationMember).userId !== myId);
+    const other = c.members?.find(m => (m as AadUserConversationMember).userId !== myId);
     const otherAad = other as AadUserConversationMember;
-    const application = chat.lastMessagePreview?.from?.application as TeamworkApplicationIdentity;
-    let iconId: string | undefined;
+
     switch (true) {
-      case chat.chatType === 'oneOnOne':
-        if (!otherAad && application?.id) {
-          iconId = application.id;
-        } else {
-          iconId = otherAad?.userId as string;
-        }
-        const Default = (props: MgtTemplateProps) => {
-          return <div className={styles.defaultProfileImage}>{oneOnOneProfilePicture}</div>;
-        };
+      case c.chatType === 'oneOnOne':
         return (
           <Person
             className={styles.person}
-            userId={iconId}
+            userId={otherAad?.userId ?? undefined}
             avatarSize="small"
             showPresence={true}
             personCardInteraction={PersonCardInteraction.hover}
           >
-            <Default template="no-data" />
+            <DefaultProfileIcon template="no-data" />
           </Person>
         );
-      case chat.chatType === 'group':
+      case c.chatType === 'group':
         return GroupProfilePicture;
       default:
         return oneOnOneProfilePicture;
@@ -288,31 +291,64 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
   const enrichPreviewMessage = (previewMessage: NullableOption<ChatMessageInfo> | undefined) => {
     let previewString = '';
-    let content = previewMessage?.body?.content as string;
+    let content = previewMessage?.body?.content;
 
     // handle null or undefined content
     if (!content) {
-      if (previewMessage?.from?.user?.id === myId) {
+      if (previewMessage?.isDeleted) {
+        previewString = 'This message was deleted';
+      } else if (previewMessage?.from?.user?.id === myId) {
         previewString = 'You: Sent a message';
       } else if (previewMessage?.from?.user?.displayName) {
-        previewString = previewMessage?.from?.user?.displayName + ': Sent a message';
+        previewString = `${previewMessage.from.user.displayName}: Sent a message`;
       } else if (previewMessage?.from?.application?.displayName) {
-        previewString = previewMessage?.from?.application?.displayName + ': Sent a message';
+        previewString = `${previewMessage.from.application.displayName}: Sent a message`;
       }
       return previewString;
     }
 
-    // handle emojis
-    content = rewriteEmojiContent(content);
+    // handle HTML
+    if (previewMessage?.body?.contentType === 'html') {
+      // handle emojis
+      content = rewriteEmojiContent(content);
 
-    // handle images
-    const imageMatch = content.match(graphImageUrlRegex);
-    if (imageMatch) {
-      content = 'Sent an image';
+      // handle images
+      const imageMatch = content.match(imageTagRegex);
+      if (imageMatch) {
+        content = 'Sent an image';
+      }
+
+      /* handle attachments
+       *
+       * NOTE: There is a discrepency between what the Graph API returns and what the Graph subscription
+       * notification sends in the case of attachments. The Graph API returns an empty content string so
+       * the preview will be 'Sent a message' whereas the Graph subscription notification returns HTML
+       * content with an attachment and will display 'Sent a file'. To make this consistent, we could
+       * change the below to 'Sent a message', however, the Teams client uses 'Sent a file'.
+       */
+      const attachmentMatch = content.match(attachmentTagRegex);
+      if (attachmentMatch) {
+        content = 'Sent a file';
+      }
+
+      /* handle system events
+       *
+       * NOTE: While Graph subscription notifications send events for both users being added and removed,
+       * the Graph API only returns a message for users being added.
+       */
+      const systemEventMessage = content.match(systemEventTagRegex);
+      if (systemEventMessage) {
+        const type = (previewMessage?.eventDetail as EventMessageDetailWithType)?.['@odata.type'];
+        switch (type) {
+          case '#microsoft.graph.membersAddedEventMessageDetail':
+            content = 'User added';
+            break;
+        }
+      }
+
+      // convert html to text
+      content = convert(content);
     }
-
-    // convert html to text
-    content = convert(content);
 
     // handle general chats from people and bots
     if (previewMessage?.from?.user?.id === myId) {
@@ -321,11 +357,8 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
       previewString = previewMessage?.from?.user?.displayName + ': ' + content;
     } else if (previewMessage?.from?.application?.displayName) {
       previewString = previewMessage?.from?.application?.displayName + ': ' + content;
-    }
-
-    // handle all events
-    if (previewMessage?.eventDetail) {
-      previewString = content as string;
+    } else {
+      previewString = content;
     }
 
     return previewString;
