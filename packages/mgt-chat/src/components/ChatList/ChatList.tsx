@@ -62,7 +62,7 @@ export const ChatList = ({
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
   const [selectedItem, setSelectedItem] = useState<string>();
-  const [readItems, setReadItems] = useState<string[]>([]);
+  const [markAllItemsAsRead, setMarkAllItemsAsRead] = useState<boolean>(false);
 
   const cache = new LastReadCache();
 
@@ -104,18 +104,18 @@ export const ChatList = ({
       chatListClient.onStateChange(setChatListState);
       chatListClient.onStateChange(state => {
         if (state.status === 'chat threads loaded' && props.onLoaded) {
-          const markAllAsRead = {
-            displayText: 'Mark all as read',
-            onClick: () => markAllItemsAsRead(state.chatThreads)
-          };
-          // clone the menuItems array
-          const updatedMenuItems = [...menuItems];
-          updatedMenuItems.unshift(markAllAsRead);
-          // updates markAllAsRead with latest chatThreads
-          setMenuItems(updatedMenuItems);
+          setMarkAllItemsAsRead(false);
           props.onLoaded();
         }
       });
+      const markAllAsRead = {
+        displayText: 'Mark all as read',
+        onClick: () => setMarkAllItemsAsRead(true) 
+      };
+      // clone the menuItems array
+      const updatedMenuItems = [...menuItems];
+      updatedMenuItems.unshift(markAllAsRead);
+      setMenuItems(updatedMenuItems);
       return () => {
         void chatListClient.tearDown();
         chatListClient.offStateChange(setChatListState);
@@ -123,21 +123,16 @@ export const ChatList = ({
     }
   }, [chatListClient]);
 
-  var markAllItemsAsRead = function (chatThreads: GraphChat[]) {
-    var itemsMarkedAsRead = chatThreads?.map(c => (c.id && c.id !== selectedItem ? c.id : '')).filter(id => id !== '');
-    if (itemsMarkedAsRead) {
-      if (selectedItem && readItems.includes(selectedItem)) {
-        // add selected item to itemsMarkedAsRead
-        itemsMarkedAsRead.push(selectedItem);
-      }
-      log(`marking all ${itemsMarkedAsRead?.length} chat threads as read...`);
-      setReadItems(itemsMarkedAsRead);
-      props.onAllMessagesRead(itemsMarkedAsRead);
-      itemsMarkedAsRead.forEach(id => {
-        cache.cacheLastReadTime(id, new Date());
-      });
+  var isRead = function (id: string): boolean {
+    if (markAllItemsAsRead) {
+      log(`Marking all messages as read for chat ID '${id}'...`);
+      cache.cacheLastReadTime(id, new Date());
+      return true;
     }
-  };
+
+    // TODO: Replace with a call to cache to determine if the chat is read
+    return false;
+  }
 
   return (
     // This is a temporary approach to render the chatlist items. This should be replaced.
@@ -156,11 +151,8 @@ export const ChatList = ({
                   // set selected state only once per click event
                   if (c.id && c.id !== selectedItem) {
                     setSelectedItem(c.id);
+                    cache.cacheLastReadTime(c.id, new Date());
                     props.onSelected(c);
-                    if (!readItems.includes(c.id)) {
-                      setReadItems([...readItems, c.id]);
-                      cache.cacheLastReadTime(c.id, new Date());
-                    }
                   }
                 }}
               >
@@ -169,7 +161,7 @@ export const ChatList = ({
                   chat={c}
                   myId={chatListState.userId}
                   isSelected={c.id === selectedItem}
-                  isRead={readItems.includes(c.id ?? '')}
+                  isRead={c.id === selectedItem ? true : isRead(c.id ?? '')}
                 />
               </Button>
             ))}
