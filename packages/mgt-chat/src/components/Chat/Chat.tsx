@@ -107,6 +107,9 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
     chatState.status
   );
 
+  const disabled = !chatId || !chatState.activeErrorMessages.length;
+  const placeholderText = disabled ? 'You cannot send a message' : 'Type a message...';
+
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
@@ -179,10 +182,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 ></Error>
               )}
               <div className={styles.chatInput}>
-                <SendBox
-                  disabled={!chatId || !chatState.activeErrorMessages.length}
-                  onSendMessage={chatState.onSendMessage}
-                />
+                <SendBox disabled={disabled} onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />
               </div>
             </>
           )}
