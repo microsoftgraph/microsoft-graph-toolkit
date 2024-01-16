@@ -52,7 +52,7 @@ export class PresenceService {
 
   private static readonly presenceConfig: PresenceConfig = {
     initial: 1000,
-    refresh: 20000
+    refresh: 30000
   };
 
   /**

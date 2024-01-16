@@ -313,6 +313,24 @@ export const personDisableImageFetch = () => html`
    <mgt-person person-query="me" disable-image-fetch></mgt-person>
  `;
 
+export const personDisablePresenceRefresh = () => html`
+    <script>
+      const person = document.querySelector('.enabled');
+      let isAvailable = true;
+      setInterval(() => {
+        isAvailable = !isAvailable;
+        person.personPresence = isAvailable ?
+          { activity: 'Available', availability: 'Available', id: null } :
+          { activity: 'Busy', availability: 'Busy', id: null };
+      }, 2000);
+    </script>
+    <div>Refreshing presence</div>
+    <mgt-person class="enabled" avatar-size="large" person-query="me" show-presence></mgt-person>
+    <br/>
+    <div>Refreshing presence disabled</div>
+    <mgt-person class="disabled" avatar-size="large" person-query="me" show-presence disable-presence></mgt-person>
+ `;
+
 export const moreExamples = () => html`
    <style>
      .example {
