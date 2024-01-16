@@ -174,7 +174,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 <Error message="No chat ID has been provided." subheading="A valid chat id is required."></Error>
               )}
               <div className={styles.chatInput}>
-                <SendBox disabled={true} onSendMessage={chatState.onSendMessage} />
+                <SendBox disabled={!chatId} onSendMessage={chatState.onSendMessage} />
               </div>
             </>
           )}
