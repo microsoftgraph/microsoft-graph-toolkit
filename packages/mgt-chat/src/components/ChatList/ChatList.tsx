@@ -5,7 +5,11 @@ import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } f
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
-import { StatefulGraphChatListClient, GraphChatListClient } from '../../statefulClient/StatefulGraphChatListClient';
+import {
+  StatefulGraphChatListClient,
+  GraphChatListClient,
+  ChatListEvent
+} from '../../statefulClient/StatefulGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
@@ -18,6 +22,7 @@ export interface IChatListItemProps {
   buttonItems?: ChatListButtonItem[];
   chatThreadsPerPage: number;
   lastReadTimeInterval?: number;
+  onMessageReceived?: () => void;
 }
 
 const useStyles = makeStyles({
@@ -58,15 +63,9 @@ export const ChatList = ({
   const styles = useStyles();
   const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
-  const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
   const [selectedItem, setSelectedItem] = useState<string>();
   const cache = new LastReadCache();
-
-  // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
-  const loadMore = () => {
-    chatListClient?.loadMoreChatThreads();
-  };
 
   // wait for provider to be ready before setting client and state
   useEffect(() => {
@@ -107,6 +106,14 @@ export const ChatList = ({
   }, [selectedItem]);
 
   useEffect(() => {
+    // handles events emitted from the chat list client
+    const handleChatListEvent = (event: ChatListEvent) => {
+      if (event.type === 'chatMessageReceived') {
+        if (props.onMessageReceived) {
+          props.onMessageReceived();
+        }
+      }
+    };
     if (chatListClient) {
       chatListClient.onStateChange(setChatListState);
       chatListClient.onStateChange(state => {
@@ -114,12 +121,21 @@ export const ChatList = ({
           props.onLoaded();
         }
       });
+      chatListClient.onChatListEvent(handleChatListEvent);
       return () => {
-        void chatListClient.tearDown();
         chatListClient.offStateChange(setChatListState);
+        chatListClient.offChatListEvent(handleChatListEvent);
+        void chatListClient.tearDown();
       };
     }
   }, [chatListClient]);
+
+  const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
+
+  // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
+  const loadMore = () => {
+    chatListClient?.loadMoreChatThreads();
+  };
 
   return (
     // This is a temporary approach to render the chatlist items. This should be replaced.
@@ -164,5 +180,3 @@ export const ChatList = ({
     </FluentThemeProvider>
   );
 };
-
-export default ChatList;
