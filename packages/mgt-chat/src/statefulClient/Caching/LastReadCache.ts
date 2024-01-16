@@ -40,7 +40,7 @@ export class LastReadCache {
     if (lastReadTime instanceof Date) {
       lastReadTime = lastReadTime.toISOString();
     }
-    const data = { chatId, lastReadTime: lastReadTime };
+    const data = { chatId, lastReadTime };
     await this.cache.putValue(chatId, data);
     return data;
   }

@@ -16,7 +16,7 @@ import type {
   AadUserConversationMember
 } from '@microsoft/microsoft-graph-types';
 import { GraphConfig } from './GraphConfig';
-import { SubscriptionsCache } from './Caching/SubscriptionCache';
+import { SubscriptionsCache, ComponentType } from './Caching/SubscriptionCache';
 import { Timer } from '../utils/Timer';
 
 export const appSettings = {
@@ -177,7 +177,7 @@ export class GraphNotificationClient {
   private readonly cacheSubscription = async (subscriptionRecord: Subscription): Promise<void> => {
     log(subscriptionRecord);
 
-    await this.subscriptionCache.cacheSubscription(this.chatId, this.sessionId, subscriptionRecord);
+    await this.subscriptionCache.cacheSubscription(this.chatId, ComponentType.Chat, this.sessionId, subscriptionRecord);
 
     // only start timer once. undefined for renewalInterval is semaphore it has stopped.
     if (this.renewalTimeout === undefined) this.startRenewalTimer();
@@ -344,7 +344,7 @@ export class GraphNotificationClient {
       appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
     );
     const threshold = new Date(new Date().getTime() - offset).toISOString();
-    const inactiveSubs = await this.subscriptionCache.loadInactiveSubscriptions(threshold);
+    const inactiveSubs = await this.subscriptionCache.loadInactiveSubscriptions(threshold, ComponentType.Chat);
     let tasks: Promise<unknown>[] = [];
     for (const inactive of inactiveSubs) {
       tasks.push(this.removeSubscriptions(inactive.subscriptions));
@@ -352,7 +352,7 @@ export class GraphNotificationClient {
     await Promise.all(tasks);
     tasks = [];
     for (const inactive of inactiveSubs) {
-      tasks.push(this.subscriptionCache.deleteCachedSubscriptions(inactive.chatId, inactive.sessionId));
+      tasks.push(this.subscriptionCache.deleteCachedSubscriptions(inactive.componentEntityId, inactive.sessionId));
     }
     this.startCleanupTimer();
   };
