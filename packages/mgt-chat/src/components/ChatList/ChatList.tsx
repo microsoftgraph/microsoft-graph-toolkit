@@ -80,6 +80,14 @@ export const ChatList = ({
         setChatListState(client.getState());
       }
     });
+    const markAllAsRead = {
+      displayText: 'Mark all as read',
+      onClick: () => setMarkAllItemsAsRead(true)
+    };
+    // clone the menuItems array
+    const updatedMenuItems = [...menuItems];
+    updatedMenuItems.unshift(markAllAsRead);
+    setMenuItems(updatedMenuItems);
   }, []);
 
   // Store last read time in cache so that when the user comes back to the chat list,
@@ -116,14 +124,6 @@ export const ChatList = ({
         }
       });
       chatListClient.onChatListEvent(handleChatListEvent);
-      const markAllAsRead = {
-        displayText: 'Mark all as read',
-        onClick: () => setMarkAllItemsAsRead(true) 
-      };
-      // clone the menuItems array
-      const updatedMenuItems = [...menuItems];
-      updatedMenuItems.unshift(markAllAsRead);
-      setMenuItems(updatedMenuItems);
       return () => {
         chatListClient.offStateChange(setChatListState);
         chatListClient.offChatListEvent(handleChatListEvent);
@@ -141,7 +141,7 @@ export const ChatList = ({
 
     // TODO: Replace with a call to cache to determine if the chat is read
     return false;
-  }
+  };
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
 
   // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
