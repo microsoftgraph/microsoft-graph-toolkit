@@ -113,7 +113,7 @@ export const ChatList = ({
         if (state.status === 'chat threads loaded' && props.onLoaded) {
           const markAllAsRead = {
             displayText: 'Mark all as read',
-            onClick: () => markAllThreadsAsRead()
+            onClick: () => markAllThreadsAsRead(state.chatThreads)
           };
           // clone the menuItems array
           const updatedMenuItems = [...menuItems];
@@ -122,6 +122,7 @@ export const ChatList = ({
           props.onLoaded();
         }
       });
+
       chatListClient.onChatListEvent(handleChatListEvent);
       return () => {
         chatListClient.offStateChange(setChatListState);
@@ -131,8 +132,15 @@ export const ChatList = ({
     }
   }, [chatListClient]);
 
-  const markAllThreadsAsRead = () => {
+  const markAllThreadsAsRead = (chatThreads: GraphChatThread[]) => {
     chatListClient?.markAllChatThreadsAsRead();
+    // for each chat thread, cache the last read time as now
+    chatThreads.forEach(c => {
+      if (c.id) {
+        cache.cacheLastReadTime(c.id, new Date());
+      }
+    });
+    props.onAllMessagesRead(chatThreads.map(c => c.id).filter(id => id !== undefined) as string[]);
   };
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;

@@ -222,9 +222,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
 
   public markAllChatThreadsAsRead = () => {
     this.notifyStateChange((draft: GraphChatListClient) => {
-      // log the ids of the chat threads
-      log("marking all as read");
-     // set isread to true for all chatThreads
+      log('marking all as read');
       draft.chatThreads = this._state.chatThreads.map((chatThread: GraphChatThread) => {
         return {
           ...chatThread,
@@ -232,7 +230,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         };
       });
     });
-  }
+  };
 
   /**
    * Register a callback to receive state updates
