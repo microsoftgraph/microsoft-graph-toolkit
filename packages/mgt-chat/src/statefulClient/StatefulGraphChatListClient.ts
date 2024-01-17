@@ -273,8 +273,8 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
           const lastMessagePreviewCreatedDateTime = new Date(chatThread.lastMessagePreview?.createdDateTime!);
           const lastReadTime = new Date(lastReadData.lastReadTime);
           const isRead = !(
-            lastUpdatedDateTime > lastReadTime ||
-            lastMessagePreviewCreatedDateTime > lastReadTime ||
+            (lastUpdatedDateTime && lastUpdatedDateTime > lastReadTime) ||
+            (lastMessagePreviewCreatedDateTime && lastMessagePreviewCreatedDateTime > lastReadTime) ||
             !lastReadData.lastReadTime
           );
           return {
@@ -528,7 +528,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    * @param {LoginChangedEvent} e The event that triggered the change
    * @memberof StatefulGraphChatListClient
    */
-  private readonly onLoginStateChanged = async (e: LoginChangedEvent) => {
+  private readonly onLoginStateChanged = (e: LoginChangedEvent) => {
     switch (e.detail) {
       case ProviderState.SignedIn:
         // update userId and displayName
@@ -538,7 +538,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         // emit new state;
         if (this.userId) {
           void this.updateUserSubscription();
-          await this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
+          this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
         }
         return;
       case ProviderState.SignedOut:
