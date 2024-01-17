@@ -108,14 +108,20 @@ interface StatefulClient<T> {
   offChatListEvent(handler: (event: ChatListEvent) => void): void;
 
   chatThreadsPerPage: number;
-
-  loadMoreChatThreads(): Promise<void>;
-
-  markChatThreadsAsRead(readChatThreads: string[]): string[];
+  /**
+   * Method for loading more chat threads
+   */
+  loadMoreChatThreads(): void;
+  /**
+   * Method for marking chat threads as read
+   * @param chatThreads - chat threads to mark as read
+   */
+  markChatThreadsAsRead(chatThreads: string[]): string[];
   /**
    * Method for caching last read time for all included chat threads
+   * @param chatThreads - chat threads to cache last read time for
    */
-  cacheLastReadTime(readChatThreads: string[]): void;
+  cacheLastReadTime(chatThreads: string[]): void;
 }
 
 type MessageEventType =
@@ -183,13 +189,13 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /**
    * Load more chat threads if applicable.
    */
-  public async loadMoreChatThreads() {
+  public loadMoreChatThreads() {
     const state = this.getState();
     const items: GraphChatThread[] = [];
-    await this.loadAndAppendChatThreads('', items, state.chatThreads.length + this.chatThreadsPerPage);
+    this.loadAndAppendChatThreads('', items, state.chatThreads.length + this.chatThreadsPerPage);
   }
 
-  private async loadAndAppendChatThreads(nextLink: string, items: GraphChatThread[], maxItems: number): Promise<void> {
+  private loadAndAppendChatThreads(nextLink: string, items: GraphChatThread[], maxItems: number) {
     if (maxItems < 1) {
       error('maxItem is invalid: ' + maxItems);
       return;
@@ -212,7 +218,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       }
 
       if (handlerNextLink && handlerNextLink !== '') {
-        await this.loadAndAppendChatThreads(handlerNextLink, checkedItems, maxItems);
+        this.loadAndAppendChatThreads(handlerNextLink, checkedItems, maxItems);
         return;
       }
 
@@ -231,7 +237,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
 
   public markChatThreadsAsRead = (readChatThreads: string[]): string[] => {
     // mark as read after chat thread is found in current state
-    var markedChatThreads: string[] = [];
+    const markedChatThreads: string[] = [];
     this.notifyStateChange((draft: GraphChatListClient) => {
       draft.chatThreads = this._state.chatThreads.map((chatThread: GraphChatThread) => {
         if (chatThread.id && readChatThreads.includes(chatThread.id) && !chatThread.isRead) {
@@ -252,20 +258,20 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     // cache last read time after chat thread is found in current state
     this._state.chatThreads.forEach((chatThread: GraphChatThread) => {
       if (chatThread.id && readChatThreads.includes(chatThread.id)) {
-        this._cache.cacheLastReadTime(chatThread.id, new Date());
+        void this._cache.cacheLastReadTime(chatThread.id, new Date());
       }
     });
   };
 
   // check whether to mark the chat as read or not
-  private checkWhetherToMarkAsRead = async (c: GraphChatThread[]): Promise<GraphChatThread[]> => {
+  private readonly checkWhetherToMarkAsRead = async (c: GraphChatThread[]): Promise<GraphChatThread[]> => {
     const result = await Promise.all(
       c.map(async (chatThread: GraphChatThread) => {
         const lastReadData = await this._cache.loadLastReadTime(chatThread.id!);
         if (lastReadData) {
           const lastUpdatedDateTime = new Date(chatThread.lastUpdatedDateTime!);
-          const lastMessagePreviewCreatedDateTime = new Date(chatThread.lastMessagePreview?.createdDateTime as string);
-          const lastReadTime = new Date(lastReadData.lastReadTime as string);
+          const lastMessagePreviewCreatedDateTime = new Date(chatThread.lastMessagePreview?.createdDateTime!);
+          const lastReadTime = new Date(lastReadData.lastReadTime);
           const isRead = !(
             lastUpdatedDateTime > lastReadTime ||
             lastMessagePreviewCreatedDateTime > lastReadTime ||
@@ -273,7 +279,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
           );
           return {
             ...chatThread,
-            isRead: isRead
+            isRead
           };
         } else {
           return chatThread;
@@ -522,7 +528,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    * @param {LoginChangedEvent} e The event that triggered the change
    * @memberof StatefulGraphChatListClient
    */
-  private readonly onLoginStateChanged = (e: LoginChangedEvent) => {
+  private readonly onLoginStateChanged = async (e: LoginChangedEvent) => {
     switch (e.detail) {
       case ProviderState.SignedIn:
         // update userId and displayName
@@ -532,7 +538,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         // emit new state;
         if (this.userId) {
           void this.updateUserSubscription();
-          this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
+          await this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
         }
         return;
       case ProviderState.SignedOut:

@@ -163,8 +163,8 @@ export const ChatList = ({
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
 
   // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
-  const loadMore = async () => {
-    await chatListClient?.loadMoreChatThreads();
+  const loadMore = () => {
+    chatListClient?.loadMoreChatThreads();
   };
 
   return (
