@@ -269,8 +269,10 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       c.map(async (chatThread: GraphChatThread) => {
         const lastReadData = await this._cache.loadLastReadTime(chatThread.id!);
         if (lastReadData) {
-          const lastUpdatedDateTime = new Date(chatThread.lastUpdatedDateTime!);
-          const lastMessagePreviewCreatedDateTime = new Date(chatThread.lastMessagePreview?.createdDateTime!);
+          const lastUpdatedDateTime = chatThread.lastUpdatedDateTime ? new Date(chatThread.lastUpdatedDateTime) : null;
+          const lastMessagePreviewCreatedDateTime = chatThread.lastMessagePreview?.createdDateTime
+            ? new Date(chatThread.lastMessagePreview?.createdDateTime)
+            : null;
           const lastReadTime = new Date(lastReadData.lastReadTime);
           const isRead = !(
             (lastUpdatedDateTime && lastUpdatedDateTime > lastReadTime) ||
