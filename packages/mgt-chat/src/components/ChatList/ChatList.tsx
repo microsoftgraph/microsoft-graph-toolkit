@@ -133,14 +133,10 @@ export const ChatList = ({
   }, [chatListClient]);
 
   const markAllThreadsAsRead = (chatThreads: GraphChatThread[]) => {
+    const readChatThreads = chatThreads.map(c => c.id).filter(id => id !== undefined) as string[];
     chatListClient?.markAllChatThreadsAsRead();
-    // for each chat thread, cache the last read time as now
-    chatThreads.forEach(c => {
-      if (c.id) {
-        cache.cacheLastReadTime(c.id, new Date());
-      }
-    });
-    props.onAllMessagesRead(chatThreads.map(c => c.id).filter(id => id !== undefined) as string[]);
+    chatListClient?.cacheLastReadTime(cache, readChatThreads);
+    props.onAllMessagesRead(readChatThreads);
   };
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;

@@ -24,6 +24,8 @@ import { ThreadEventEmitter } from './ThreadEventEmitter';
 import { ChatThreadCollection, loadChatThreads, loadChatThreadsByPage } from './graph.chat';
 import { ChatMessageInfo, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { error } from '@microsoft/mgt-element';
+import { LastReadCache } from '../statefulClient/Caching/LastReadCache';
+
 interface ODataType {
   '@odata.type': MessageEventType;
 }
@@ -110,6 +112,10 @@ interface StatefulClient<T> {
   loadMoreChatThreads(): void;
 
   markAllChatThreadsAsRead(): void;
+  /**
+   * Method for caching last read time for all included chat threads
+   */
+  cacheLastReadTime(lastReadCache: LastReadCache, readChatThreads: string[]): void;
 }
 
 type MessageEventType =
@@ -229,6 +235,15 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
           isRead: true
         };
       });
+    });
+  };
+
+  public cacheLastReadTime = (lastReadCache: LastReadCache, readChatThreads: string[]) => {
+    this._state.chatThreads.forEach((chatThread: GraphChatThread) => {
+      if (chatThread.id && readChatThreads.includes(chatThread.id)) {
+        log('caching last read time for:', chatThread.id);
+        lastReadCache.cacheLastReadTime(chatThread.id, new Date());
+      }
     });
   };
 
