@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChatListItem } from '../ChatListItem/ChatListItem';
 import { MgtTemplateProps, ProviderState, Providers, log } from '@microsoft/mgt-react';
 import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
@@ -133,9 +133,14 @@ export const ChatList = ({
 
   const markAllThreadsAsRead = (chatThreads: GraphChatThread[]) => {
     const readChatThreads = chatThreads.map(c => c.id).filter(id => id !== undefined) as string[];
-    chatListClient?.markChatThreadsAsRead(readChatThreads);
-    chatListClient?.cacheLastReadTime(readChatThreads);
-    props.onAllMessagesRead(readChatThreads);
+    const markedChatThreads = chatListClient?.markChatThreadsAsRead(readChatThreads)?.map(c => c) as string[];
+    chatListClient?.cacheLastReadTime(markedChatThreads);
+    props.onAllMessagesRead(markedChatThreads);
+  };
+
+  const markThreadAsRead = (chatThread: string) => {
+    const markedChatThreads = chatListClient?.markChatThreadsAsRead([chatThread])?.map(c => c) as string[];
+    chatListClient?.cacheLastReadTime(markedChatThreads);
   };
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
@@ -162,8 +167,7 @@ export const ChatList = ({
                   // set selected state only once per click event
                   if (c.id && c.id !== selectedItem) {
                     setSelectedItem(c.id);
-                    chatListClient?.markChatThreadsAsRead([c.id]);
-                    chatListClient?.cacheLastReadTime([c.id]);
+                    markThreadAsRead(c.id);
                     props.onSelected(c);
                   }
                 }}

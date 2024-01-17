@@ -127,18 +127,11 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
   // manage the internal state of the chat
   const [chatInternal, setChatInternal] = useState(chat);
-  const [read, setRead] = useState<boolean>();
-
-  // when isRead changes, setRead to match
-  useEffect(() => {
-    setRead(isRead);
-    log(`setting chat ${chat.id} read to ${isRead}.`);
-  }, [isRead]);
 
   // when isSelected changes to true, setRead to true
   useEffect(() => {
     if (isSelected) {
-      setRead(true);
+      isRead = true;
     }
   }, [isSelected]);
 
@@ -369,7 +362,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   const container = mergeClasses(
     styles.chatListItem,
     isSelected ? styles.isSelected : styles.isUnSelected,
-    read ? styles.isNormal : styles.isBold
+    isRead ? styles.isNormal : styles.isBold
   );
 
   // short cut if the id is not defined
