@@ -204,14 +204,16 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     };
 
     // build others array
-    const others = (c.members || []).filter(m => (m as AadUserConversationMember).userId !== myId);
+    const others = (c.members || [])
+      .filter(m => (m as AadUserConversationMember).userId !== myId)
+      .sort((a, b) => (name(a) > name(b) ? 1 : -1));
     const application = c.lastMessagePreview?.from?.application as TeamworkApplicationIdentity;
 
     // return the appropriate title
     if (c.topic) {
       return c.topic;
     } else if (others.length === 0 && application) {
-      return application.displayName ? `${application.displayName} (bot)` : `${application.id} (bot)`;
+      return application.displayName ? application.displayName : application.id;
     } else if (others.length === 0) {
       const me = c.members?.find(m => (m as AadUserConversationMember).userId === myId);
       return me ? name(me) : 'Me';
