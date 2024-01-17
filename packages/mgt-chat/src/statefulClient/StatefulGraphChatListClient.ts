@@ -55,6 +55,10 @@ type ChatMessageEvents =
   | TeamsAppInstalledEventDetail
   | TeamsAppRemovedEventDetail;
 
+export type GraphChatThread = GraphChat & {
+  isRead: boolean;
+};
+
 // defines the type of the state object returned from the StatefulGraphChatListClient
 export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
   status:
@@ -67,7 +71,7 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
     | 'chat threads loaded'
     | 'ready'
     | 'error';
-  chatThreads: GraphChat[];
+  chatThreads: GraphChatThread[];
   moreChatThreadsToLoad: boolean | undefined;
 } & Pick<ErrorBarProps, 'activeErrorMessages'>;
 
@@ -104,6 +108,8 @@ interface StatefulClient<T> {
   chatThreadsPerPage: number;
 
   loadMoreChatThreads(): void;
+
+  markAllChatThreadsAsRead(): void;
 }
 
 type MessageEventType =
@@ -171,18 +177,18 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    */
   public loadMoreChatThreads(): void {
     const state = this.getState();
-    const items: GraphChat[] = [];
+    const items: GraphChatThread[] = [];
     this.loadAndAppendChatThreads('', items, state.chatThreads.length + this.chatThreadsPerPage);
   }
 
-  private loadAndAppendChatThreads(nextLink: string, items: GraphChat[], maxItems: number): void {
+  private loadAndAppendChatThreads(nextLink: string, items: GraphChatThread[], maxItems: number): void {
     if (maxItems < 1) {
       error('maxItem is invalid: ' + maxItems);
       return;
     }
 
     const handler = (latestChatThreads: ChatThreadCollection) => {
-      items = items.concat(latestChatThreads.value);
+      items = items.concat(latestChatThreads.value as GraphChatThread[]);
 
       const handlerNextLink = latestChatThreads['@odata.nextLink'];
       if (items.length >= maxItems) {
@@ -212,6 +218,20 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       const filter = nextLink.split('?')[1];
       loadChatThreadsByPage(this._graph, filter).then(handler, err => error(err));
     }
+  }
+
+  public markAllChatThreadsAsRead = () => {
+    this.notifyStateChange((draft: GraphChatListClient) => {
+      // log the ids of the chat threads
+      log("marking all as read");
+     // set isread to true for all chatThreads
+      draft.chatThreads = this._state.chatThreads.map((chatThread: GraphChatThread) => {
+        return {
+          ...chatThread,
+          isRead: true
+        };
+      });
+    });
   }
 
   /**
@@ -301,7 +321,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       const chatThread = draft.chatThreads[chatThreadIndex];
 
       // func to bring the chat thread to the top of the list
-      const bringToTop = (newThread?: GraphChat) => {
+      const bringToTop = (newThread?: GraphChatThread) => {
         draft.chatThreads.splice(chatThreadIndex, 1);
         draft.chatThreads.unshift(newThread ?? chatThread);
       };
@@ -314,7 +334,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       } else if (event.type === 'memberAdded' && chatThread) {
         // inject a chat thread with only the id to force a reload; this is necessary because the
         // notification does not include the displayName of the user who was added
-        const newThread = { id: chatThread.id } as GraphChat;
+        const newThread = { id: chatThread.id } as GraphChatThread;
         bringToTop(newThread);
       } else if (event.type === 'memberRemoved' && event.message?.eventDetail && chatThread) {
         // update the user list to remove the user; while we could add a "User removed" message
@@ -359,10 +379,11 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         bringToTop();
       } else if (event.type === 'chatMessageReceived' && event.message?.chatId) {
         // create a new chat thread at the top
-        const newChatThread: GraphChat = {
+        const newChatThread: GraphChatThread = {
           id: event.message.chatId,
           lastMessagePreview: event.message as ChatMessageInfo,
-          lastUpdatedDateTime: event.message.lastModifiedDateTime
+          lastUpdatedDateTime: event.message.lastModifiedDateTime,
+          isRead: false
         };
         draft.chatThreads.unshift(newChatThread);
       } else {
@@ -437,7 +458,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /*
    * Event handler to be called when we need to load more chat threads.
    */
-  private readonly handleChatThreads = (chatThreads: GraphChat[], nextLink: string | undefined) => {
+  private readonly handleChatThreads = (chatThreads: GraphChatThread[], nextLink: string | undefined) => {
     this.notifyStateChange((draft: GraphChatListClient) => {
       draft.status = 'chat threads loaded';
       draft.chatThreads = chatThreads;

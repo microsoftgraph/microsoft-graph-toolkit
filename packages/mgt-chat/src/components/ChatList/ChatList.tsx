@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { SetStateAction, useEffect, useState } from 'react';
 import { ChatListItem } from '../ChatListItem/ChatListItem';
 import { MgtTemplateProps, ProviderState, Providers, log } from '@microsoft/mgt-react';
 import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
@@ -8,7 +8,8 @@ import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import {
   StatefulGraphChatListClient,
   GraphChatListClient,
-  ChatListEvent
+  ChatListEvent,
+  GraphChatThread
 } from '../../statefulClient/StatefulGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
@@ -66,8 +67,6 @@ export const ChatList = ({
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
   const [selectedItem, setSelectedItem] = useState<string>();
-  const [markAllItemsAsRead, setMarkAllItemsAsRead] = useState<boolean>(false);
-
   const cache = new LastReadCache();
 
   // wait for provider to be ready before setting client and state
@@ -80,14 +79,6 @@ export const ChatList = ({
         setChatListState(client.getState());
       }
     });
-    const markAllAsRead = {
-      displayText: 'Mark all as read',
-      onClick: () => setMarkAllItemsAsRead(true)
-    };
-    // clone the menuItems array
-    const updatedMenuItems = [...menuItems];
-    updatedMenuItems.unshift(markAllAsRead);
-    setMenuItems(updatedMenuItems);
   }, []);
 
   // Store last read time in cache so that when the user comes back to the chat list,
@@ -115,11 +106,19 @@ export const ChatList = ({
         }
       }
     };
+
     if (chatListClient) {
       chatListClient.onStateChange(setChatListState);
       chatListClient.onStateChange(state => {
         if (state.status === 'chat threads loaded' && props.onLoaded) {
-          setMarkAllItemsAsRead(false);
+          const markAllAsRead = {
+            displayText: 'Mark all as read',
+            onClick: () => markAllThreadsAsRead()
+          };
+          // clone the menuItems array
+          const updatedMenuItems = [...menuItems];
+          updatedMenuItems.unshift(markAllAsRead);
+          setMenuItems(updatedMenuItems);
           props.onLoaded();
         }
       });
@@ -132,16 +131,10 @@ export const ChatList = ({
     }
   }, [chatListClient]);
 
-  var isRead = function (id: string): boolean {
-    if (markAllItemsAsRead) {
-      log(`Marking all messages as read for chat ID '${id}'...`);
-      cache.cacheLastReadTime(id, new Date());
-      return true;
-    }
-
-    // TODO: Replace with a call to cache to determine if the chat is read
-    return false;
+  const markAllThreadsAsRead = () => {
+    chatListClient?.markAllChatThreadsAsRead();
   };
+
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
 
   // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
@@ -176,7 +169,7 @@ export const ChatList = ({
                   chat={c}
                   myId={chatListState.userId}
                   isSelected={c.id === selectedItem}
-                  isRead={c.id === selectedItem ? true : isRead(c.id ?? '')}
+                  isRead={c.isRead}
                 />
               </Button>
             ))}
