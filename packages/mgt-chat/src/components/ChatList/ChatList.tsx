@@ -15,7 +15,6 @@ import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
 import { ChatListMenuItem } from '../ChatListHeader/ChatListMenuItem';
-import { LastReadCache } from '../../statefulClient/Caching/LastReadCache';
 
 export interface IChatListItemProps {
   onSelected: (e: GraphChat) => void;
@@ -67,7 +66,6 @@ export const ChatList = ({
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
   const [selectedItem, setSelectedItem] = useState<string>();
-  const cache = new LastReadCache();
 
   // wait for provider to be ready before setting client and state
   useEffect(() => {
@@ -88,7 +86,7 @@ export const ChatList = ({
     const timer = setInterval(() => {
       if (selectedItem) {
         log(`caching the last-read timestamp of now to chat ID '${selectedItem}'...`);
-        cache.cacheLastReadTime(selectedItem, new Date());
+        chatListClient?.cacheLastReadTime([selectedItem]);
       }
     }, lastReadTimeInterval);
 
@@ -110,6 +108,7 @@ export const ChatList = ({
     if (chatListClient) {
       chatListClient.onStateChange(setChatListState);
       chatListClient.onStateChange(state => {
+        log('adding "mark all as read" menu item...');
         if (state.status === 'chat threads loaded' && props.onLoaded) {
           const markAllAsRead = {
             displayText: 'Mark all as read',
@@ -134,16 +133,16 @@ export const ChatList = ({
 
   const markAllThreadsAsRead = (chatThreads: GraphChatThread[]) => {
     const readChatThreads = chatThreads.map(c => c.id).filter(id => id !== undefined) as string[];
-    chatListClient?.markAllChatThreadsAsRead();
-    chatListClient?.cacheLastReadTime(cache, readChatThreads);
+    chatListClient?.markChatThreadsAsRead(readChatThreads);
+    chatListClient?.cacheLastReadTime(readChatThreads);
     props.onAllMessagesRead(readChatThreads);
   };
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
 
   // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
-  const loadMore = () => {
-    chatListClient?.loadMoreChatThreads();
+  const loadMore = async () => {
+    await chatListClient?.loadMoreChatThreads();
   };
 
   return (
@@ -163,7 +162,8 @@ export const ChatList = ({
                   // set selected state only once per click event
                   if (c.id && c.id !== selectedItem) {
                     setSelectedItem(c.id);
-                    cache.cacheLastReadTime(c.id, new Date());
+                    chatListClient?.markChatThreadsAsRead([c.id]);
+                    chatListClient?.cacheLastReadTime([c.id]);
                     props.onSelected(c);
                   }
                 }}
@@ -173,7 +173,7 @@ export const ChatList = ({
                   chat={c}
                   myId={chatListState.userId}
                   isSelected={c.id === selectedItem}
-                  isRead={c.isRead}
+                  isRead={c.isRead ?? false}
                 />
               </Button>
             ))}

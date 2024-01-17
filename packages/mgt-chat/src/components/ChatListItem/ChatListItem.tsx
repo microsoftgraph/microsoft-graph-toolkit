@@ -15,7 +15,6 @@ import { rewriteEmojiContent } from '../../utils/rewriteEmojiContent';
 import { convert } from 'html-to-text';
 import { loadChatWithPreview } from '../../statefulClient/graph.chat';
 import { DefaultProfileIcon } from './DefaultProfileIcon';
-import { LastReadCache } from '../../statefulClient/Caching/LastReadCache';
 
 interface IMgtChatListItemProps {
   chat: Chat;
@@ -129,11 +128,11 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   // manage the internal state of the chat
   const [chatInternal, setChatInternal] = useState(chat);
   const [read, setRead] = useState<boolean>();
-  const cache = new LastReadCache();
 
   // when isRead changes, setRead to match
   useEffect(() => {
     setRead(isRead);
+    log(`setting chat ${chat.id} read to ${isRead}.`);
   }, [isRead]);
 
   // when isSelected changes to true, setRead to true
@@ -146,9 +145,6 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   // if chat changes, update the internal state to match
   useEffect(() => {
     setChatInternal(chat);
-    if (isLoaded()) {
-      checkWhetherToMarkAsRead(chat);
-    }
   }, [chat]);
 
   // enrich the chat if necessary
@@ -163,7 +159,6 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
         load(chatInternal.id!).then(
           c => {
             setChatInternal(c);
-            checkWhetherToMarkAsRead(c);
           },
           e => error(e)
         );
@@ -173,26 +168,6 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
   const isLoaded = () => {
     return chatInternal.id && (!chatInternal.chatType || !chatInternal.members);
-  };
-
-  // check whether to mark the chat as read or not
-  const checkWhetherToMarkAsRead = async (c: Chat) => {
-    await cache
-      .loadLastReadTime(c.id!)
-      .then(lastReadData => {
-        if (lastReadData) {
-          const lastUpdatedDateTime = new Date(c.lastUpdatedDateTime!);
-          const lastMessagePreviewCreatedDateTime = new Date(c.lastMessagePreview?.createdDateTime as string);
-          const lastReadTime = new Date(lastReadData.lastReadTime as string);
-          const isRead = !(
-            lastUpdatedDateTime > lastReadTime ||
-            lastMessagePreviewCreatedDateTime > lastReadTime ||
-            !lastReadData.lastReadTime
-          );
-          setRead(isRead);
-        }
-      })
-      .catch(e => error(e));
   };
 
   // shortcut if no valid user

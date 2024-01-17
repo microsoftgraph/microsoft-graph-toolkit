@@ -109,13 +109,13 @@ interface StatefulClient<T> {
 
   chatThreadsPerPage: number;
 
-  loadMoreChatThreads(): void;
+  loadMoreChatThreads(): Promise<void>;
 
-  markAllChatThreadsAsRead(): void;
+  markChatThreadsAsRead(readChatThreads: string[]): void;
   /**
    * Method for caching last read time for all included chat threads
    */
-  cacheLastReadTime(lastReadCache: LastReadCache, readChatThreads: string[]): void;
+  cacheLastReadTime(readChatThreads: string[]): void;
 }
 
 type MessageEventType =
@@ -151,6 +151,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   private readonly _notificationClient: GraphNotificationUserClient;
   private readonly _eventEmitter: ThreadEventEmitter;
   // private readonly _cache: MessageCache;
+  private _cache: LastReadCache;
   private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
   private _chatListEventSubscribers: ((state: ChatListEvent) => void)[] = [];
   private readonly _graph: IGraph;
@@ -161,6 +162,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
     // this._cache = new MessageCache();
+    this._cache = new LastReadCache();
     this._graph = graph('mgt-chat', GraphConfig.version);
     this.chatThreadsPerPage = chatThreadsPerPage;
     this._notificationClient = new GraphNotificationUserClient(this._eventEmitter, this._graph);
@@ -181,70 +183,108 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /**
    * Load more chat threads if applicable.
    */
-  public loadMoreChatThreads(): void {
+  public async loadMoreChatThreads() {
     const state = this.getState();
     const items: GraphChatThread[] = [];
-    this.loadAndAppendChatThreads('', items, state.chatThreads.length + this.chatThreadsPerPage);
+    await this.loadAndAppendChatThreads('', items, state.chatThreads.length + this.chatThreadsPerPage);
   }
 
-  private loadAndAppendChatThreads(nextLink: string, items: GraphChatThread[], maxItems: number): void {
+  private async loadAndAppendChatThreads(nextLink: string, items: GraphChatThread[], maxItems: number): Promise<void> {
     if (maxItems < 1) {
       error('maxItem is invalid: ' + maxItems);
       return;
     }
 
-    const handler = (latestChatThreads: ChatThreadCollection) => {
+    const handler = async (latestChatThreads: ChatThreadCollection) => {
       items = items.concat(latestChatThreads.value as GraphChatThread[]);
+      const checkedItems = await this.checkWhetherToMarkAsRead(items);
 
       const handlerNextLink = latestChatThreads['@odata.nextLink'];
-      if (items.length >= maxItems) {
-        if (items.length > maxItems) {
+      if (checkedItems.length >= maxItems) {
+        if (checkedItems.length > maxItems) {
           // return exact page size
-          this.handleChatThreads(items.slice(0, maxItems), 'more');
+          this.handleChatThreads(checkedItems.slice(0, maxItems), 'more');
+          log('exact page size')
           return;
         }
 
-        this.handleChatThreads(items, handlerNextLink);
+        this.handleChatThreads(checkedItems, handlerNextLink);
+        log('maxItems')
         return;
       }
 
       if (handlerNextLink && handlerNextLink !== '') {
-        this.loadAndAppendChatThreads(handlerNextLink, items, maxItems);
+        await this.loadAndAppendChatThreads(handlerNextLink, checkedItems, maxItems);
+        log('handlerNextLink')
         return;
       }
 
-      this.handleChatThreads(items, handlerNextLink);
+      this.handleChatThreads(checkedItems, handlerNextLink);
+      log('handleChatThreads')
+
     };
 
     if (nextLink === '') {
       // max page count cannot exceed 50 per documentation
       const pageCount = maxItems > 50 ? 50 : maxItems;
       loadChatThreads(this._graph, pageCount).then(handler, err => error(err));
+      log('loadChatThreads');
     } else {
       const filter = nextLink.split('?')[1];
       loadChatThreadsByPage(this._graph, filter).then(handler, err => error(err));
+      log('loadChatThreadsByPage');
     }
   }
 
-  public markAllChatThreadsAsRead = () => {
+  public markChatThreadsAsRead = (readChatThreads: string[]) => {
+    // mark as read after chat thread is found in current state
     this.notifyStateChange((draft: GraphChatListClient) => {
-      log('marking all as read');
       draft.chatThreads = this._state.chatThreads.map((chatThread: GraphChatThread) => {
-        return {
-          ...chatThread,
-          isRead: true
-        };
+        if (chatThread.id && readChatThreads.includes(chatThread.id) && !(chatThread.isRead)) {
+          return {
+            ...chatThread,
+            isRead: true
+          };
+        }
+        return chatThread;
       });
     });
   };
 
-  public cacheLastReadTime = (lastReadCache: LastReadCache, readChatThreads: string[]) => {
+  public cacheLastReadTime = (readChatThreads: string[]) => {
+    // cache last read time after chat thread is found in current state
     this._state.chatThreads.forEach((chatThread: GraphChatThread) => {
       if (chatThread.id && readChatThreads.includes(chatThread.id)) {
-        log('caching last read time for:', chatThread.id);
-        lastReadCache.cacheLastReadTime(chatThread.id, new Date());
+        this._cache.cacheLastReadTime(chatThread.id, new Date());
       }
     });
+  };
+
+  // check whether to mark the chat as read or not
+  private checkWhetherToMarkAsRead = async (c: GraphChatThread[]): Promise<GraphChatThread[]> => {
+    const result = await Promise.all(
+      c.map(async (chatThread: GraphChatThread) => {
+        const lastReadData = await this._cache.loadLastReadTime(chatThread.id!);
+        if (lastReadData) {
+          const lastUpdatedDateTime = new Date(chatThread.lastUpdatedDateTime!);
+          const lastMessagePreviewCreatedDateTime = new Date(chatThread.lastMessagePreview?.createdDateTime as string);
+          const lastReadTime = new Date(lastReadData.lastReadTime as string);
+          const isRead = !(
+            lastUpdatedDateTime > lastReadTime ||
+            lastMessagePreviewCreatedDateTime > lastReadTime ||
+            !lastReadData.lastReadTime
+          );
+          console.log('isRead', isRead);
+          return {
+            ...chatThread,
+            isRead: isRead
+          };
+        } else {
+          return chatThread;
+        }
+      })
+    );
+    return result;
   };
 
   /**
