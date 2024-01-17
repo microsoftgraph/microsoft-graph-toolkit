@@ -23,7 +23,8 @@ export const chatOperationScopes: Record<string, string[]> = {
   deleteChatMessage: ['Chat.ReadWrite'],
   removeChatMember: ['ChatMember.ReadWrite'],
   addChatMember: ['ChatMember.ReadWrite'],
-  createChat: ['Chat.ReadWrite']
+  createChat: ['Chat.ReadWrite'],
+  loadAppsInChat: ['TeamsAppInstallation.ReadForChat']
 };
 
 /**
@@ -39,7 +40,14 @@ export const chatOperationScopesFullListing: Record<string, string[]> = {
   deleteChatMessage: ['ChannelMessage.ReadWrite', 'Chat.ReadWrite'],
   removeChatMember: ['ChatMember.ReadWrite'],
   addChatMember: ['ChatMember.ReadWrite', 'Chat.ReadWrite'],
-  createChat: ['Chat.Create', 'Chat.ReadWrite']
+  createChat: ['Chat.Create', 'Chat.ReadWrite'],
+  loadAppsInChat: [
+    'TeamsAppInstallation.ReadForChat',
+    'TeamsAppInstallation.ReadWriteSelfForChat',
+    'TeamsAppInstallation.ReadWriteForChat',
+    'TeamsAppInstallation.ReadWriteAndConsentSelfForChat',
+    'TeamsAppInstallation.ReadWriteAndConsentForChat'
+  ]
 };
 
 /**
