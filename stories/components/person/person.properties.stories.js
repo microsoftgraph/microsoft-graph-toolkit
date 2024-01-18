@@ -171,6 +171,17 @@ export const personPresence = () => html`
      ></mgt-person>
  `;
 
+export const myPresence = () => html`
+  <div>
+    <div>Please login...</div>
+    <mgt-login />
+  </div>
+  <div style="margin-top: 32px">
+    <div>Then change your presence in Teams to be reflected here...</div>
+    <mgt-person person-query="me" avatar-size="large" show-presence></mgt-person>
+  </div>
+`;
+
 export const personPresenceDisplayAll = () => html`
    <script>
      const online = {
@@ -327,7 +338,7 @@ export const personDisablePresenceRefresh = () => html`
     <div>Refreshing presence</div>
     <mgt-person avatar-size="large" person-query="me" show-presence></mgt-person>
     <br/>
-    <div>Refreshing presence (mock)</div>
+    <div>Refreshing presence (fake)</div>
     <mgt-person class="enabled" avatar-size="large" person-query="me" show-presence></mgt-person>
     <br/>
     <div>Refreshing presence disabled</div>
