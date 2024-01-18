@@ -172,14 +172,8 @@ export const personPresence = () => html`
  `;
 
 export const myPresence = () => html`
-  <div>
-    <div>Please login...</div>
-    <mgt-login />
-  </div>
-  <div style="margin-top: 32px">
-    <div>Then change your presence in Teams to be reflected here...</div>
+    <div>Change your presence in Teams to see the presence reflected here...</div>
     <mgt-person person-query="me" avatar-size="large" show-presence></mgt-person>
-  </div>
 `;
 
 export const personPresenceDisplayAll = () => html`
