@@ -144,6 +144,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
   // if chat changes, update the internal state to match
   useEffect(() => {
+    setApps(undefined);
     setChatInternal(chat);
     if (isLoaded()) {
       checkWhetherToMarkAsRead(chat);
@@ -203,8 +204,8 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   };
 
   // check whether to mark the chat as read or not
-  const checkWhetherToMarkAsRead = async (c: Chat) => {
-    await cache
+  const checkWhetherToMarkAsRead = (c: Chat) => {
+    cache
       .loadLastReadTime(c.id!)
       .then(lastReadData => {
         if (lastReadData) {
