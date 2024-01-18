@@ -136,7 +136,6 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                         avatarSize="small"
                         personCardInteraction={PersonCardInteraction.hover}
                         showPresence={true}
-                        fetchImage={true}
                       />
                     );
                   }}
