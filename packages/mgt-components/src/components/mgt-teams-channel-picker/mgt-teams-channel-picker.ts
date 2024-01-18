@@ -9,20 +9,12 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import {
-  Providers,
-  ProviderState,
-  MgtTemplatedComponent,
-  BetaGraph,
-  mgtHtml,
-  CollectionResponse
-} from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
-import '../sub-components/mgt-spinner/mgt-spinner';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
 import { styles } from './mgt-teams-channel-picker-css';
-import { getAllMyTeams, getTeamsPhotosForPhotoIds } from './mgt-teams-channel-picker.graph';
+import { getAllMyTeams, getChannelsForTeams, getTeamsPhotosForPhotoIds } from './mgt-teams-channel-picker.graph';
 import { strings } from './strings';
 import { repeat } from 'lit/directives/repeat.js';
 import { registerFluentComponents } from '../../utils/FluentComponents';
@@ -36,104 +28,7 @@ import {
 } from '@fluentui/web-components';
 import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
-
-/**
- * Team with displayName
- *
- * @export
- * @interface SelectedChannel
- */
-export type Team = MicrosoftGraph.Team & {
-  /**
-   * Display name Of Team
-   *
-   * @type {string}
-   */
-  displayName?: string;
-};
-
-/**
- * Selected Channel item
- *
- * @export
- * @interface SelectedChannel
- */
-export interface SelectedChannel {
-  /**
-   * Channel
-   *
-   * @type {MicrosoftGraph.Channel}
-   * @memberof SelectedChannel
-   */
-  channel: MicrosoftGraph.Channel;
-
-  /**
-   * Team
-   *
-   * @type {MicrosoftGraph.Team}
-   * @memberof SelectedChannel
-   */
-  team: Team;
-}
-
-/**
- * Drop down menu item
- *
- * @export
- * @interface DropdownItem
- */
-interface DropdownItem {
-  /**
-   * Teams channel
-   *
-   * @type {DropdownItem[]}
-   * @memberof DropdownItem
-   */
-  channels?: DropdownItem[];
-  /**
-   * Microsoft Graph Channel or Team
-   *
-   * @type {(MicrosoftGraph.Channel | MicrosoftGraph.Team)}
-   * @memberof DropdownItem
-   */
-  item: MicrosoftGraph.Channel | Team;
-}
-
-/**
- * Drop down menu item state
- *
- * @interface DropdownItemState
- */
-interface ChannelPickerItemState {
-  /**
-   * Microsoft Graph Channel or Team
-   *
-   * @type {(MicrosoftGraph.Channel | MicrosoftGraph.Team)}
-   * @memberof ChannelPickerItemState
-   */
-  item: MicrosoftGraph.Channel | Team;
-  /**
-   * if dropdown item shows expanded state
-   *
-   * @type {boolean}
-   * @memberof DropdownItemState
-   */
-  isExpanded?: boolean;
-  /**
-   * If item contains channels
-   *
-   * @type {ChannelPickerItemState[]}
-   * @memberof DropdownItemState
-   */
-  channels?: ChannelPickerItemState[];
-  /**
-   * if Item has parent item (team)
-   *
-   * @type {ChannelPickerItemState}
-   * @memberof DropdownItemState
-   */
-  parent: ChannelPickerItemState;
-}
+import { SelectedChannel, DropdownItem, ChannelPickerItemState } from './teams-channel-picker-types';
 
 export const registerMgtTeamsChannelPickerComponent = () => {
   registerFluentComponents(
@@ -727,31 +622,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
-      teams = await getAllMyTeams(graph, MgtTeamsChannelPicker.requiredScopes);
+      teams = await getAllMyTeams(graph);
       teams = teams.filter(t => !t.isArchived);
 
-      const beta = BetaGraph.fromGraph(graph);
-
       const teamsIds = teams.map(t => t.id);
-      this.teamsPhotos = await getTeamsPhotosForPhotoIds(beta, teamsIds);
+      this.teamsPhotos = await getTeamsPhotosForPhotoIds(graph, teamsIds);
 
-      const batch = graph.createBatch<CollectionResponse<MicrosoftGraph.Channel>>();
-
-      for (const team of teams) {
-        batch.get(team.id, `teams/${team.id}/channels`, MgtTeamsChannelPicker.requiredScopes);
-      }
-
-      const responses = await batch.executeAll();
-      this._items = [];
-      for (const team of teams) {
-        const channelsForTeam = responses.get(team.id);
-        // skip over any teams that don't have channels
-        if (!channelsForTeam?.content?.value?.length) continue;
-        this.items.push({
-          item: team,
-          channels: channelsForTeam.content.value.map(c => ({ item: c }))
-        });
-      }
+      this._items = await getChannelsForTeams(graph, teams);
     }
     this.filterList();
     this.resetFocusState();
