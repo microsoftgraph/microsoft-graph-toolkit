@@ -72,7 +72,7 @@ export const getUsers = async (graph: IGraph, userFilters = '', top = 10): Promi
   const graphClient: GraphRequest = graph.api(apiString).top(top);
 
   if (userFilters) {
-    graphClient.filter(userFilters);
+    graphClient.filter(userFilters).header('ConsistencyLevel', 'eventual').count(true);
   }
 
   try {
@@ -242,9 +242,9 @@ export const getUsersForUserIds = async (
       } else {
         apiUrl = `/users/${id}`;
         if (userFilters) {
-          apiUrl += `${apiUrl}?$filter=${userFilters}`;
+          apiUrl += `${apiUrl}?$filter=${userFilters}&$count=true`;
         }
-        batch.get(id, apiUrl, validUserByIdScopes);
+        batch.get(id, apiUrl, validUserByIdScopes, userFilters ? { ConsistencyLevel: 'eventual' } : {});
         notInCache.push(id);
       }
     }
@@ -418,15 +418,11 @@ export const findUsers = async (graph: IGraph, query: string, top = 10, userFilt
   }
 
   const encodedQuery = `${query.replace(/#/g, '%2523')}`;
-  const graphBuilder = graph
-    .api('users')
-    .header('ConsistencyLevel', 'eventual')
-    .count(true)
-    .search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}"`);
+  const graphBuilder = graph.api('users').search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}"`);
   let graphResult: CollectionResponse<User>;
 
   if (userFilters !== '') {
-    graphBuilder.filter(userFilters);
+    graphBuilder.filter(userFilters).header('ConsistencyLevel', 'eventual').count(true);
   }
   try {
     graphResult = (await graphBuilder.top(top).middlewareOptions(prepScopes(scopes)).get()) as CollectionResponse<User>;
@@ -503,12 +499,14 @@ export const findGroupMembers = async (
   if (peopleFilters) {
     filter += query ? ` and ${peopleFilters}` : peopleFilters;
   }
-  const graphResult = (await graph
-    .api(apiUrl)
-    .count(true)
-    .top(top)
-    .filter(filter)
-    .header('ConsistencyLevel', 'eventual')
+
+  const graphClient: GraphRequest = graph.api(apiUrl).top(top).filter(filter);
+
+  if (userFilters) {
+    graphClient.header('ConsistencyLevel', 'eventual').count(true);
+  }
+
+  const graphResult = (await graphClient
     .middlewareOptions(prepScopes(allValidScopes))
     .get()) as CollectionResponse<User>;
 
