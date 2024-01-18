@@ -96,7 +96,6 @@ export const GetEmail = () => html`
       text-overflow: ellipsis;
       word-wrap: break-word;
       overflow: hidden;
-      max-height: 2.8em;
       line-height: 1.4em;
     }
   </style>
@@ -185,29 +184,27 @@ export const PollingRate = () => html`
 `;
 
 export const refresh = () => html`
-    <mgt-get cache-enabled="true" resource="/me/presence" version="beta" scopes="Presence.Read">
-      <template data-type="default"> {{availability}} </template>
-      <template data-type="loading">
+<mgt-get cache-enabled="true" resource="/me" version="beta">
+    <template data-type="default"> {{ this.displayName }}</template>
+    <template data-type="loading">
         <h2>Loading...?!?!</h2>
-      </template>
-    </mgt-get>
+    </template>
+</mgt-get>
 
-    <div>
-      <label>get.refresh(false)</label>
-      <button id="false">Soft refresh</button>
-    </div>
-    <label>get.refresh(true)</label>
-    <button id="true">Hard refresh</button>
+<div>
+    <label>get.refresh(false)</label>
+    <button id="false">Soft refresh</button>
+</div>
+<label>get.refresh(true)</label>
+<button id="true">Hard refresh</button>
 
+<script>
+document.querySelector('#false').addEventListener('click', _ =>{
+      document.querySelector('mgt-get').refresh(false)
+})
 
-  <script>
-
-    document.querySelector('#false').addEventListener('click', _ =>{
-          document.querySelector('mgt-get').refresh(false)
-    })
-
-    document.querySelector('#true').addEventListener('click', _ =>{
-      document.querySelector('mgt-get').refresh(true)
-    })
-  </script>
+document.querySelector('#true').addEventListener('click', _ =>{
+  document.querySelector('mgt-get').refresh(true)
+})
+</script>
 `;
