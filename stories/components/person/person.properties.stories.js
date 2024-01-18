@@ -325,6 +325,9 @@ export const personDisablePresenceRefresh = () => html`
       }, 2000);
     </script>
     <div>Refreshing presence</div>
+    <mgt-person avatar-size="large" person-query="me" show-presence></mgt-person>
+    <br/>
+    <div>Refreshing presence (mock)</div>
     <mgt-person class="enabled" avatar-size="large" person-query="me" show-presence></mgt-person>
     <br/>
     <div>Refreshing presence disabled</div>
