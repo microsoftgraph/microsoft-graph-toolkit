@@ -34,7 +34,6 @@ import {
   mgtHtml
 } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
-import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce, isValidEmail } from '../../utils/Utils';
 import { MgtPerson, defaultPersonProperties, registerMgtPersonComponent } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
@@ -251,7 +250,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * The type of user to search for. Default is any.
    *
-   * @readonly
    * @type {UserType}
    * @memberof MgtPeoplePicker
    */
@@ -1082,7 +1080,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 } catch (_) {
                   this._groupPeople = [];
                 }
-              } else if (this.groupIds) {
+              } else {
                 if (this.type === PersonType.group) {
                   try {
                     this._groupPeople = await getGroupsForGroupIds(graph, this.groupIds, this.groupFilters);
@@ -1120,21 +1118,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               }
             }
           } else if (this.type === PersonType.group) {
-            if (this.groupIds) {
-              try {
-                people = await this.getGroupsForGroupIds(graph, people);
-              } catch (_) {
-                // nop
-              }
-            } else {
-              let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
-              // eslint-disable-next-line @typescript-eslint/dot-notation
-              if (groups.length > 0 && groups[0]['value']) {
-                // eslint-disable-next-line @typescript-eslint/dot-notation, @typescript-eslint/no-unsafe-assignment
-                groups = groups[0]['value'];
-              }
-              people = groups;
+            let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
+            // eslint-disable-next-line @typescript-eslint/dot-notation
+            if (groups.length > 0 && groups[0]['value']) {
+              // eslint-disable-next-line @typescript-eslint/dot-notation, @typescript-eslint/no-unsafe-assignment
+              groups = groups[0]['value'];
             }
+            people = groups;
           }
           this.defaultPeople = people;
         }
@@ -1190,7 +1180,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               if (this.userType === UserType.contact || this.userType === UserType.user) {
                 // we might have a user-filters property set, search for users with it.
                 if (this.userIds?.length) {
-                  // has the user-ids proerty set
+                  // has the user-ids property set
                   people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
                 } else {
                   people = await findUsers(graph, input, this.showMax, this._userFilters);
@@ -1198,7 +1188,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               } else {
                 if (!this.groupIds) {
                   if (this.userIds?.length) {
-                    // has the user-ids proerty set
+                    // has the user-ids property set
                     people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
                   } else {
                     people = (await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) || [];
@@ -1607,24 +1597,28 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if (this.hasMaxSelections) {
             this.disableTextInput();
           }
+          return;
         }
-      } else if (this.allowAnyEmail) {
+      }
+
+      if (this.allowAnyEmail) {
         this.handleAnyEmail();
       } else {
         this.showFlyout();
       }
     }
 
-    if (keyName === 'Tab') {
-      this.hideFlyout();
-    }
-
-    if ([';', ','].includes(keyName)) {
+    if ([';', ',', 'Tab'].includes(keyName)) {
       if (this.allowAnyEmail) {
-        event.preventDefault();
+        // need to ensure the tab key does tab things
+        if ('Tab' !== keyName) event.preventDefault();
         this.userInput = this.input.value;
         this.handleAnyEmail();
       }
+    }
+    // need to ensure that the tab key hides the flyout even if the input doesn't have an email address
+    if (keyName === 'Tab') {
+      this.hideFlyout();
     }
   };
 

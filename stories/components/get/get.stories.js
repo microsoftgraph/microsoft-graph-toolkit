@@ -96,7 +96,6 @@ export const GetEmail = () => html`
       text-overflow: ellipsis;
       word-wrap: break-word;
       overflow: hidden;
-      max-height: 2.8em;
       line-height: 1.4em;
     }
   </style>

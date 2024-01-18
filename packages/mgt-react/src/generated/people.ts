@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { IDynamicPerson,PersonCardInteraction } from '@microsoft/mgt-components/dist/es6/exports';
-import { registerMgtPeopleComponent } from '@microsoft/mgt-components/dist/es6/components/components';
-import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
+import { IDynamicPerson,PersonCardInteraction } from '@microsoft/mgt-components';
+import { registerMgtPeopleComponent } from '@microsoft/mgt-components';
+import { TemplateContext,TemplateRenderedData } from '@microsoft/mgt-element';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,7 +22,6 @@ export type PeopleProps = {
 	scopes?: string[];
 	fallbackDetails?: IDynamicPerson[];
 	templateContext?: TemplateContext;
-	mediaQuery?: ComponentMediaQuery;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { ResponseType,DataChangedDetail } from '@microsoft/mgt-components/dist/es6/exports';
-import { registerMgtGetComponent } from '@microsoft/mgt-components/dist/es6/components/components';
-import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
+import { ResponseType,DataChangedDetail } from '@microsoft/mgt-components';
+import { registerMgtGetComponent } from '@microsoft/mgt-components';
+import { TemplateContext,TemplateRenderedData } from '@microsoft/mgt-element';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,7 +20,6 @@ export type GetProps = {
 	cacheInvalidationPeriod?: number;
 	response?: any;
 	templateContext?: TemplateContext;
-	mediaQuery?: ComponentMediaQuery;
 	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
