@@ -207,18 +207,14 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       items = items.concat(checkedItems);
 
       const handlerNextLink = latestChatThreads['@odata.nextLink'];
-      if (items.length >= maxItems) {
-        if (items.length > maxItems) {
-          // return exact page size
-          this.handleChatThreads(items.slice(0, maxItems), 'more');
-          return;
-        }
 
-        this.handleChatThreads(items, handlerNextLink);
+      if (items.length > maxItems) {
+        // return exact page size
+        this.handleChatThreads(items.slice(0, maxItems), 'more');
         return;
       }
 
-      if (handlerNextLink && handlerNextLink !== '') {
+      if (items.length < maxItems && handlerNextLink && handlerNextLink !== '') {
         this.loadAndAppendChatThreads(handlerNextLink, items, maxItems);
         return;
       }
