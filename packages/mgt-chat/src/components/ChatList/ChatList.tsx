@@ -133,15 +133,19 @@ export const ChatList = ({
   }, [chatListClient]);
 
   const markAllThreadsAsRead = (chatThreads: GraphChatThread[]) => {
-    const readChatThreads = chatThreads.map(c => c.id).filter(id => id !== undefined) as string[];
-    const markedChatThreads = chatListClient?.markChatThreadsAsRead(readChatThreads)?.map(c => c) as string[];
-    chatListClient?.cacheLastReadTime(markedChatThreads);
-    props.onAllMessagesRead(markedChatThreads);
+    const readChatThreads = chatThreads.map(c => c.id!);
+    const markedChatThreads = chatListClient?.markChatThreadsAsRead(readChatThreads);
+    if (markedChatThreads) {
+      chatListClient?.cacheLastReadTime(markedChatThreads);
+      props.onAllMessagesRead(markedChatThreads);
+    }
   };
 
   const markThreadAsRead = (chatThread: string) => {
-    const markedChatThreads = chatListClient?.markChatThreadsAsRead([chatThread])?.map(c => c) as string[];
-    chatListClient?.cacheLastReadTime(markedChatThreads);
+    const markedChatThreads = chatListClient?.markChatThreadsAsRead([chatThread]);
+    if (markedChatThreads) {
+      chatListClient?.cacheLastReadTime(markedChatThreads);
+    }
   };
 
   const onClickChatListItem = (chatListItem: GraphChat) => {
@@ -183,7 +187,7 @@ export const ChatList = ({
                   chat={c}
                   myId={chatListState.userId}
                   isSelected={c.id === selectedChatId}
-                  isRead={c.id === selectedChatId || (c.isRead ?? false)}
+                  isRead={c.id === selectedChatId || c.isRead}
                 />
               </Button>
             ))}

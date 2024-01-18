@@ -128,13 +128,6 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   // manage the internal state of the chat
   const [chatInternal, setChatInternal] = useState(chat);
 
-  // when isSelected changes to true, setRead to true
-  useEffect(() => {
-    if (isSelected) {
-      isRead = true;
-    }
-  }, [isSelected]);
-
   // if chat changes, update the internal state to match
   useEffect(() => {
     setChatInternal(chat);
