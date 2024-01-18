@@ -24,7 +24,6 @@ export const OneToOneChatHeader = ({ chat, currentUserId }: ChatHeaderProps) => 
       avatarSize="small"
       personCardInteraction={PersonCardInteraction.hover}
       showPresence={true}
-      fetchImage={true}
     />
   ) : null;
 };
