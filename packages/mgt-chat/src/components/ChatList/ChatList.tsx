@@ -8,8 +8,7 @@ import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import {
   StatefulGraphChatListClient,
   GraphChatListClient,
-  ChatListEvent,
-  GraphChatThread
+  ChatListEvent
 } from '../../statefulClient/StatefulGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
@@ -132,7 +131,7 @@ export const ChatList = ({
     }
   }, [chatListClient]);
 
-  const markAllThreadsAsRead = (chatThreads: GraphChatThread[]) => {
+  const markAllThreadsAsRead = (chatThreads: GraphChat[]) => {
     const readChatThreads = chatThreads.map(c => c.id!);
     const markedChatThreads = chatListClient?.markChatThreadsAsRead(readChatThreads);
     if (markedChatThreads) {
