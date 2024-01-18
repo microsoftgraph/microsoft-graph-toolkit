@@ -421,7 +421,7 @@ export class MgtTaxonomyPicker extends MgtTemplatedComponent {
         class="mgt-get"
         resource=${resource}
         version=${this.version}
-        scopes=${['TermStore.Read.All']}
+        scopes="TermStore.Read.All, TermStore.ReadWrite.All"
         ?cache-enabled=${this.cacheEnabled}
         ?cache-invalidation-period=${this.cacheInvalidationPeriod}>
       </mgt-get>`;

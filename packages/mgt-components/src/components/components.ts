@@ -55,6 +55,7 @@ export * from './mgt-search-box/mgt-search-box';
 export * from './mgt-search-results/mgt-search-results';
 export * from './mgt-theme-toggle/mgt-theme-toggle';
 export * from './sub-components/mgt-spinner/mgt-spinner';
+export * from './mgt-teams-channel-picker/teams-channel-picker-types';
 // include preview components here for ease of import into mgt-react
 // There are no preview components in this package at this time
 // export * from './preview';
