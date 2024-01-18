@@ -202,27 +202,27 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     }
 
     const handler = async (latestChatThreads: ChatThreadCollection) => {
-      items = items.concat(latestChatThreads.value as GraphChatThread[]);
-      const checkedItems = await this.checkWhetherToMarkAsRead(items);
+      const checkedItems = await this.checkWhetherToMarkAsRead(latestChatThreads.value as GraphChatThread[]);
+      items = items.concat(checkedItems);
 
       const handlerNextLink = latestChatThreads['@odata.nextLink'];
-      if (checkedItems.length >= maxItems) {
-        if (checkedItems.length > maxItems) {
+      if (items.length >= maxItems) {
+        if (items.length > maxItems) {
           // return exact page size
-          this.handleChatThreads(checkedItems.slice(0, maxItems), 'more');
+          this.handleChatThreads(items.slice(0, maxItems), 'more');
           return;
         }
 
-        this.handleChatThreads(checkedItems, handlerNextLink);
+        this.handleChatThreads(items, handlerNextLink);
         return;
       }
 
       if (handlerNextLink && handlerNextLink !== '') {
-        this.loadAndAppendChatThreads(handlerNextLink, checkedItems, maxItems);
+        this.loadAndAppendChatThreads(handlerNextLink, items, maxItems);
         return;
       }
 
-      this.handleChatThreads(checkedItems, handlerNextLink);
+      this.handleChatThreads(items, handlerNextLink);
     };
 
     if (nextLink === '') {
