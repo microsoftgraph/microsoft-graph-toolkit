@@ -547,7 +547,7 @@ export class MgtAgenda extends MgtTemplatedTaskComponent {
           } else {
             query = this.eventQuery;
           }
-          const iterator = await getEventsQueryPageIterator(graph, query, scope);
+          const iterator = await getEventsQueryPageIterator(graph, query, scope ? [scope] : []);
           if (iterator?.value) {
             events = iterator.value;
 

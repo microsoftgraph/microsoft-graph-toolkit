@@ -77,6 +77,11 @@
       scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all,files.read,files.read.all,files.readwrite,files.readwrite.all"
     ></mgt-msal2-provider> -->
 
+    <!-- <mgt-msal2-provider
+      client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
+      redirect-uri="http://localhost:3000"
+    ></mgt-msal2-provider> -->
+
     <!-- <mgt-mock-provider></mgt-mock-provider> -->
     <header>
       <mgt-theme-toggle></mgt-theme-toggle>
@@ -92,6 +97,56 @@
       <!-- <h2>mgt-person me query two lines card on click with presence</h2> -->
       <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
       <mgt-person-card person-query="me"></mgt-person-card>
+      <!-- <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person> -->
+      <mgt-person fetch-image person-details='{
+        "id": "a2a36b00-b196-4286-adfc-7c1bedbffa39",
+        "deletedDateTime": null,
+        "classification": null,
+        "createdDateTime": "2022-07-07T16:04:37Z",
+        "creationOptions": [
+            "Team",
+            "ExchangeProvisioningFlags:3552"
+        ],
+        "description": "Welcome to the team that we&apos;ve assembled to create the Mark 8.",
+        "displayName": "Mark 8 Project Team",
+        "expirationDateTime": null,
+        "groupTypes": [
+            "Unified"
+        ],
+        "isAssignableToRole": null,
+        "mail": "Mark8ProjectTeam@wgww6.onmicrosoft.com",
+        "mailEnabled": true,
+        "mailNickname": "Mark8ProjectTeam",
+        "membershipRule": null,
+        "membershipRuleProcessingState": null,
+        "onPremisesDomainName": null,
+        "onPremisesLastSyncDateTime": null,
+        "onPremisesNetBiosName": null,
+        "onPremisesSamAccountName": null,
+        "onPremisesSecurityIdentifier": null,
+        "onPremisesSyncEnabled": null,
+        "preferredDataLocation": null,
+        "preferredLanguage": null,
+        "proxyAddresses": [
+            "SPO:SPO_8e2a3ed7-94b3-4a3f-a010-06c6aadcbdbb@SPO_262437ff-351d-4f6c-b543-bac09b5a0c23",
+            "SMTP:Mark8ProjectTeam@wgww6.onmicrosoft.com"
+        ],
+        "renewedDateTime": "2022-07-07T16:04:37Z",
+        "resourceBehaviorOptions": [
+            "HideGroupInOutlook",
+            "SubscribeMembersToCalendarEventsDisabled",
+            "WelcomeEmailDisabled"
+        ],
+        "resourceProvisioningOptions": [
+            "Team"
+        ],
+        "securityEnabled": false,
+        "securityIdentifier": "S-1-12-1-2728618752-1116123542-461175981-972734445",
+        "theme": null,
+        "visibility": "Public",
+        "onPremisesProvisioningErrors": [],
+        "serviceProvisioningErrors": []
+      }'></mgt-person>
       <!-- <mgt-person-card person-query="me"></mgt-person-card> -->
       <!-- <h2>mgt-people-picker</h2>
       <mgt-people-picker selection-mode="single" show-max="6"></mgt-people-picker>
@@ -102,8 +157,8 @@
       <mgt-planner></mgt-planner> -->
       <!-- <h2>mgt-agenda group-by-day</h2>
       <mgt-agenda group-by-day></mgt-agenda> -->
-      <!-- <h2>mgt-people show-presence</h2>
-      <mgt-people show-presence></mgt-people> -->
+      <h2>mgt-people show-presence</h2>
+      <mgt-people group-id="a2a36b00-b196-4286-adfc-7c1bedbffa39"></mgt-people>
       <!-- <h2>mgt-todo</h2>
       <mgt-todo></mgt-todo> -->
       <!-- <h2>mgt-file-list</h2>

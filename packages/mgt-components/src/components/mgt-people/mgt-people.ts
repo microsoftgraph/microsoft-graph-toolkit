@@ -425,10 +425,10 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
         // populate people
         if (this.groupId) {
           this.people = await findGroupMembers(graph, null, this.groupId, this.showMax, PersonType.person);
-        } else if (this.userIds || this.peopleQueries) {
-          this.people = this.userIds
-            ? await getUsersForUserIds(graph, this.userIds, '', '', this.fallbackDetails)
-            : await getUsersForPeopleQueries(graph, this.peopleQueries, this.fallbackDetails);
+        } else if (this.userIds) {
+          this.people = await getUsersForUserIds(graph, this.userIds, '', '', this.fallbackDetails);
+        } else if (this.peopleQueries) {
+          this.people = await getUsersForPeopleQueries(graph, this.peopleQueries, this.fallbackDetails);
         } else if (this.resource) {
           this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);
         } else {

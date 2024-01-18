@@ -15,7 +15,6 @@ import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
-import { PersonViewType } from '../mgt-person/mgt-person-types';
 
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
@@ -611,7 +610,7 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
                       <mgt-person
                         .personDetails=${details ? JSON.parse(details) : null}
                         .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
-                        .view=${PersonViewType.twolines}
+                        .view=${ViewType.twolines}
                         class="account"
                       ></mgt-person>
                     </li>`;

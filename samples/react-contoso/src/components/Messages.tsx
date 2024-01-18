@@ -1,4 +1,4 @@
-import { MgtTemplateProps, Person, PersonCardInteraction, PersonViewType } from '@microsoft/mgt-react';
+import { MgtTemplateProps, Person, PersonCardInteraction, ViewType } from '@microsoft/mgt-react';
 import { makeStyles, mergeClasses, shorthands } from '@fluentui/react-components';
 
 const useStyles = makeStyles({
@@ -73,7 +73,7 @@ export function Messages(props: MgtTemplateProps) {
           <div>
             <Person
               personQuery={email.sender?.emailAddress?.address}
-              view={PersonViewType.oneline}
+              view={ViewType.oneline}
               personCardInteraction={PersonCardInteraction.hover}
             />
           </div>

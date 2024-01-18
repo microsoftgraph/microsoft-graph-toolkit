@@ -28,7 +28,7 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
+import { MgtPersonConfig, avatarType } from './mgt-person-types';
 import { strings } from './strings';
 import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -498,7 +498,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
    * Sets what data to be rendered (image only, oneLine, twoLines).
    * Default is 'image'.
    *
-   * @type {ViewType | PersonViewType}
+   * @type {ViewType}
    * @memberof MgtPerson
    */
   @property({
@@ -516,7 +516,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
       }
     }
   })
-  public view: ViewType | PersonViewType;
+  public view: ViewType = ViewType.image;
 
   @state() private _fetchedImage: string;
   @state() private _fetchedPresence: Presence;
@@ -904,7 +904,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
    * @returns
    */
   protected renderDetails(personProps: IDynamicPerson, presence?: Presence): TemplateResult {
-    if (!personProps || this.view === ViewType.image || this.view === PersonViewType.avatar) {
+    if (!personProps || this.view === ViewType.image) {
       return html``;
     }
 

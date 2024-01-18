@@ -255,7 +255,7 @@ export class MgtOrganization extends BasePersonCardSection {
 
     return html`
       <div class="org-member__separator"></div>
-      <div>
+      <div class="direct-report-list">
         ${directReports.map(
           person => mgtHtml`
             <div
@@ -278,7 +278,6 @@ export class MgtOrganization extends BasePersonCardSection {
                 ${getSvg(SvgIcon.ExpandRight)}
               </div>
             </div>
-            <div class="org-member__separator"></div>
           `
         )}
       </div>

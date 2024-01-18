@@ -518,7 +518,7 @@ export class MgtSearchResults extends MgtTemplatedTaskComponent {
           let request = graph.api(this.searchEndpoint).version(this.version);
 
           if (this.scopes?.length) {
-            request = request.middlewareOptions(prepScopes(...this.scopes));
+            request = request.middlewareOptions(prepScopes(this.scopes));
           }
 
           response = (await request.post({ requests: [requestOptions] })) as SearchResponseCollection;

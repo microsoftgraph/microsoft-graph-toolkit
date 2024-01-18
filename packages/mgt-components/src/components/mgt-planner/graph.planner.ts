@@ -10,6 +10,9 @@ import { PlannerAssignments, PlannerBucket, PlannerPlan, PlannerTask } from '@mi
 import { CollectionResponse } from '@microsoft/mgt-element';
 import { ITask } from './task-sources';
 
+const writePlannerDataScopes = ['Tasks.ReadWrite', 'Group.ReadWrite.All'];
+const readPlannerDataScopes = ['Tasks.Read', 'Group.Read.All', 'Tasks.ReadWrite', 'Group.ReadWrite.All'];
+
 /**
  * async promise, allows developer to create new Planner task
  *
@@ -22,7 +25,7 @@ export const addPlannerTask = async (graph: IGraph, newTask: PlannerTask): Promi
   return (await graph
     .api('/planner/tasks')
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Group.ReadWrite.All'))
+    .middlewareOptions(prepScopes(writePlannerDataScopes))
     .post(newTask)) as PlannerTask;
 };
 
@@ -57,7 +60,7 @@ export const removePlannerTask = async (graph: IGraph, task: ITask): Promise<voi
     .api(`/planner/tasks/${task.id}`)
     .header('Cache-Control', 'no-store')
     .header('If-Match', task.eTag)
-    .middlewareOptions(prepScopes('Group.ReadWrite.All'))
+    .middlewareOptions(prepScopes(writePlannerDataScopes))
     .delete();
 };
 
@@ -100,7 +103,7 @@ export const setPlannerTaskDetails = async (graph: IGraph, task: ITask, details:
     response = (await graph
       .api(`/planner/tasks/${task.id}`)
       .header('Cache-Control', 'no-store')
-      .middlewareOptions(prepScopes('Group.ReadWrite.All'))
+      .middlewareOptions(prepScopes(writePlannerDataScopes))
       .header('Prefer', 'return=representation')
       .header('If-Match', task.eTag)
       .update(details)) as PlannerTask;
@@ -119,13 +122,11 @@ export const setPlannerTaskDetails = async (graph: IGraph, task: ITask, details:
  * @memberof Graph
  */
 export const getPlansForGroup = async (graph: IGraph, groupId: string): Promise<PlannerPlan[]> => {
-  const scopes = 'Group.Read.All';
-
   const uri = `/groups/${groupId}/planner/plans`;
   const plans = (await graph
     .api(uri)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes(scopes))
+    .middlewareOptions(prepScopes(readPlannerDataScopes))
     .get()) as CollectionResponse<PlannerPlan>;
   return plans?.value;
 };
@@ -142,7 +143,7 @@ export const getSinglePlannerPlan = async (graph: IGraph, planId: string): Promi
   (await graph
     .api(`/planner/plans/${planId}`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Group.Read.All'))
+    .middlewareOptions(prepScopes(readPlannerDataScopes))
     .get()) as PlannerPlan;
 
 /**
@@ -157,7 +158,7 @@ export const getBucketsForPlannerPlan = async (graph: IGraph, planId: string): P
   const buckets = (await graph
     .api(`/planner/plans/${planId}/buckets`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Group.Read.All'))
+    .middlewareOptions(prepScopes(readPlannerDataScopes))
     .get()) as CollectionResponse<PlannerBucket>;
 
   return buckets?.value;
@@ -174,7 +175,7 @@ export const getAllMyPlannerPlans = async (graph: IGraph): Promise<PlannerPlan[]
   const plans = (await graph
     .api('/me/planner/plans')
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Group.Read.All'))
+    .middlewareOptions(prepScopes(readPlannerDataScopes))
     .get()) as CollectionResponse<PlannerPlan>;
 
   return plans?.value;
@@ -192,7 +193,7 @@ export const getTasksForPlannerBucket = async (graph: IGraph, bucketId: string):
   const tasks = (await graph
     .api(`/planner/buckets/${bucketId}/tasks`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Group.Read.All'))
+    .middlewareOptions(prepScopes(readPlannerDataScopes))
     .get()) as CollectionResponse<PlannerTask>;
 
   return tasks?.value;

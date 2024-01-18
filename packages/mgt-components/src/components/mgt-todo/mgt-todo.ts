@@ -8,13 +8,11 @@
 import { html, nothing, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { IGraph, mgtHtml } from '@microsoft/mgt-element';
-import { Providers, ProviderState } from '@microsoft/mgt-element';
-import { getSvg, SvgIcon } from '../../utils/SvgHelper';
-import '../mgt-person/mgt-person';
-import { MgtTasksBase } from '../mgt-tasks-base/mgt-tasks-base';
-import '../sub-components/mgt-arrow-options/mgt-arrow-options';
+import { fluentCheckbox, fluentRadioGroup, fluentButton } from '@fluentui/web-components';
+import { IGraph, mgtHtml, registerComponent, Providers, ProviderState } from '@microsoft/mgt-element';
+import { TodoTaskList, TodoTask, TaskStatus } from '@microsoft/microsoft-graph-types';
 import {
   createTodoTask,
   deleteTodoTask,
@@ -25,14 +23,11 @@ import {
 } from './graph.todo';
 import { styles } from './mgt-todo-css';
 import { strings } from './strings';
-import { registerFluentComponents } from '../../utils/FluentComponents';
-import { fluentCheckbox, fluentRadioGroup, fluentButton } from '@fluentui/web-components';
-import { isElementDark } from '../../utils/isDark';
-import { ifDefined } from 'lit/directives/if-defined.js';
-
-import { TodoTaskList, TodoTask, TaskStatus } from '@microsoft/microsoft-graph-types';
-import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtPickerComponent } from '../mgt-picker/mgt-picker';
+import { MgtTasksBase } from '../mgt-tasks-base/mgt-tasks-base';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+import { isElementDark } from '../../utils/isDark';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
 /**
  * Filter function

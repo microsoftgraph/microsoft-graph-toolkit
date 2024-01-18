@@ -111,6 +111,7 @@ export class TeamsFxProvider extends IProvider {
     } else {
       this.scopes = scopesArr;
     }
+    this.approvedScopes = this.scopes;
 
     this.baseURL = baseURL;
     this.graph = createFromProvider(this);
