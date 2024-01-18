@@ -25,6 +25,9 @@ const ChatListWrapper = memo(({ onSelected, selectedChatId }: { onSelected: (e: 
       onClick: () => console.log('My custom menu item clicked')
     }
   ];
+  const onAllMessagesRead = useCallback((chatIds: string[]) => {
+    console.log(`Number of chats marked as read: ${chatIds.length}`);
+  }, []);
   const onLoaded = () => {
     console.log('Chat threads loaded.');
   };
@@ -41,6 +44,7 @@ const ChatListWrapper = memo(({ onSelected, selectedChatId }: { onSelected: (e: 
       onSelected={onSelected}
       selectedChatId={selectedChatId}
       onMessageReceived={onMessageReceived}
+      onAllMessagesRead={onAllMessagesRead}
     />
   );
 });
