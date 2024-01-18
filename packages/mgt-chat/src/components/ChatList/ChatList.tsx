@@ -14,12 +14,12 @@ import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
 import { ChatListMenuItem } from '../ChatListHeader/ChatListMenuItem';
-import { LastReadCache } from '../../statefulClient/Caching/LastReadCache';
 
 export interface IChatListItemProps {
   onSelected: (e: GraphChat) => void;
   onUnselected?: (e: GraphChat) => void;
   onLoaded?: () => void;
+  onAllMessagesRead: (e: string[]) => void;
   buttonItems?: ChatListButtonItem[];
   chatThreadsPerPage: number;
   lastReadTimeInterval?: number;
@@ -67,7 +67,6 @@ export const ChatList = ({
   const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
-  const cache = new LastReadCache();
 
   // wait for provider to be ready before setting client and state
   useEffect(() => {
@@ -79,16 +78,6 @@ export const ChatList = ({
         setChatListState(client.getState());
       }
     });
-
-    const markAllAsRead = {
-      displayText: 'Mark all as read',
-      onClick: () => {
-        console.log('mark all as read');
-      }
-    };
-
-    menuItems.unshift(markAllAsRead);
-    setMenuItems(menuItems);
   }, []);
 
   // Store last read time in cache so that when the user comes back to the chat list,
@@ -98,7 +87,7 @@ export const ChatList = ({
     const timer = setInterval(() => {
       if (selectedChatId) {
         log(`caching the last-read timestamp of now to chat ID '${selectedChatId}'...`);
-        void cache.cacheLastReadTime(selectedChatId, new Date());
+        chatListClient?.cacheLastReadTime([selectedChatId]);
       }
     }, lastReadTimeInterval);
 
@@ -116,13 +105,23 @@ export const ChatList = ({
         }
       }
     };
+
     if (chatListClient) {
       chatListClient.onStateChange(setChatListState);
       chatListClient.onStateChange(state => {
         if (state.status === 'chat threads loaded' && props.onLoaded) {
+          const markAllAsRead = {
+            displayText: 'Mark all as read',
+            onClick: () => markAllThreadsAsRead(state.chatThreads)
+          };
+          // clone the menuItems array
+          const updatedMenuItems = [...menuItems];
+          updatedMenuItems.unshift(markAllAsRead);
+          setMenuItems(updatedMenuItems);
           props.onLoaded();
         }
       });
+
       chatListClient.onChatListEvent(handleChatListEvent);
       return () => {
         chatListClient.offStateChange(setChatListState);
@@ -132,9 +131,26 @@ export const ChatList = ({
     }
   }, [chatListClient]);
 
+  const markAllThreadsAsRead = (chatThreads: GraphChat[]) => {
+    const readChatThreads = chatThreads.map(c => c.id!);
+    const markedChatThreads = chatListClient?.markChatThreadsAsRead(readChatThreads);
+    if (markedChatThreads) {
+      chatListClient?.cacheLastReadTime(markedChatThreads);
+      props.onAllMessagesRead(markedChatThreads);
+    }
+  };
+
+  const markThreadAsRead = (chatThread: string) => {
+    const markedChatThreads = chatListClient?.markChatThreadsAsRead([chatThread]);
+    if (markedChatThreads) {
+      chatListClient?.cacheLastReadTime(markedChatThreads);
+    }
+  };
+
   const onClickChatListItem = (chatListItem: GraphChat) => {
     // set selected state only once per click event
     if (chatListItem.id !== selectedChatId) {
+      markThreadAsRead(chatListItem.id!);
       props.onSelected(chatListItem);
 
       // trigger an unselect event for the previously selected item
@@ -170,7 +186,7 @@ export const ChatList = ({
                   chat={c}
                   myId={chatListState.userId}
                   isSelected={c.id === selectedChatId}
-                  isRead={c.id === selectedChatId}
+                  isRead={c.id === selectedChatId || c.isRead}
                 />
               </Button>
             ))}

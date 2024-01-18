@@ -15,7 +15,6 @@ import { rewriteEmojiContent } from '../../utils/rewriteEmojiContent';
 import { convert } from 'html-to-text';
 import { loadChatWithPreview, loadAppsInChat } from '../../statefulClient/graph.chat';
 import { DefaultProfileIcon } from './DefaultProfileIcon';
-import { LastReadCache } from '../../statefulClient/Caching/LastReadCache';
 
 interface IMgtChatListItemProps {
   chat: Chat;
@@ -132,23 +131,11 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   const [chatInternal, setChatInternal] = useState(chat);
   const [apps, setApps] = useState<TeamsAppInstallation[]>();
   const isAppsLoadingOrLoaded = useRef(false);
-  const [read, setRead] = useState<boolean>(isRead);
-  const cache = new LastReadCache();
-
-  // when isSelected changes to true, setRead to true
-  useEffect(() => {
-    if (isSelected) {
-      setRead(true);
-    }
-  }, [isSelected]);
 
   // if chat changes, update the internal state to match
   useEffect(() => {
     setApps(undefined);
     setChatInternal(chat);
-    if (isLoaded()) {
-      checkWhetherToMarkAsRead(chat);
-    }
   }, [chat]);
 
   // enrich the chat if necessary
@@ -163,7 +150,6 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
         load(chatInternal.id!).then(
           c => {
             setChatInternal(c);
-            checkWhetherToMarkAsRead(c);
           },
           e => error(e)
         );
@@ -201,26 +187,6 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
   const isLoaded = () => {
     return chatInternal.id && (!chatInternal.chatType || !chatInternal.members);
-  };
-
-  // check whether to mark the chat as read or not
-  const checkWhetherToMarkAsRead = (c: Chat) => {
-    cache
-      .loadLastReadTime(c.id!)
-      .then(lastReadData => {
-        if (lastReadData) {
-          const lastUpdatedDateTime = new Date(c.lastUpdatedDateTime!);
-          const lastMessagePreviewCreatedDateTime = new Date(c.lastMessagePreview?.createdDateTime as string);
-          const lastReadTime = new Date(lastReadData.lastReadTime as string);
-          const isRead = !(
-            lastUpdatedDateTime > lastReadTime ||
-            lastMessagePreviewCreatedDateTime > lastReadTime ||
-            !lastReadData.lastReadTime
-          );
-          setRead(isRead);
-        }
-      })
-      .catch(e => error(e));
   };
 
   // shortcut if no valid user
@@ -498,7 +464,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   const container = mergeClasses(
     styles.chatListItem,
     isSelected ? styles.isSelected : styles.isUnSelected,
-    read ? styles.isNormal : styles.isBold
+    isRead ? styles.isNormal : styles.isBold
   );
 
   // short cut if the id is not defined
