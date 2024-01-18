@@ -184,27 +184,39 @@ export const PollingRate = () => html`
 `;
 
 export const refresh = () => html`
-<mgt-get cache-enabled="true" resource="/me" version="beta">
-    <template data-type="default"> {{ this.displayName }}</template>
-    <template data-type="loading">
-        <h2>Loading...?!?!</h2>
-    </template>
-</mgt-get>
-
 <div>
     <label>get.refresh(false)</label>
     <button id="false">Soft refresh</button>
 </div>
-<label>get.refresh(true)</label>
-<button id="true">Hard refresh</button>
+<div>
+    <label>get.refresh(true)</label>
+    <button id="true">Hard refresh</button>
+</div>
+
+<mgt-get cache-enabled="true" resource="/me/messages" version="beta">
+  <template data-type="default"> {{ this }}</template>
+  <template data-type="loading">
+    <h2>Loading...?!?!</h2>
+  </template>
+</mgt-get>
 
 <script>
-document.querySelector('#false').addEventListener('click', _ =>{
-      document.querySelector('mgt-get').refresh(false)
-})
+const softRefreshButton = document.querySelector('#false');
+const hardRefreshButton = document.querySelector('#true');
+const getElement = document.querySelector('mgt-get');
 
-document.querySelector('#true').addEventListener('click', _ =>{
-  document.querySelector('mgt-get').refresh(true)
-})
+const softRefresh = () => {
+  alert('requesting soft refresh of mgt-get component');
+  getElement.refresh(false);
+};
+
+const hardRefresh = () => {
+  alert('requesting hard refresh of mgt-get component');
+  getElement.refresh(true);
+};
+
+softRefreshButton.addEventListener('click', softRefresh)
+
+hardRefreshButton.addEventListener('click', hardRefresh)
 </script>
 `;
