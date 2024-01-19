@@ -1,5 +1,5 @@
 import React from 'react';
-import { MgtTemplateProps, Login } from '@microsoft/mgt-react';
+import { MgtTemplateProps } from '@microsoft/mgt-react';
 import { makeStyles, shorthands, Button } from '@fluentui/react-components';
 import { EllipsisMenu, IChatListMenuItemsProps } from './EllipsisMenu';
 import { ChatListButtonItem } from './ChatListButtonItem';
@@ -68,9 +68,6 @@ export const ChatListHeader = (
               </div>
             </Button>
           ))}
-        </div>
-        <div>
-          <Login showPresence={true} loginView="avatar" />
         </div>
         <div>
           <EllipsisMenu menuItems={props.menuItems} />

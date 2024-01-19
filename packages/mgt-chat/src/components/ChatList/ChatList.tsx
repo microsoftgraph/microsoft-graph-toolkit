@@ -192,13 +192,15 @@ export const ChatList = ({
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme}>
         <div>
-          <div className={styles.headerContainer}>
-            <ChatListHeader
-              bannerMessage={headerBannerMessage}
-              buttonItems={chatListButtonItems}
-              menuItems={menuItems}
-            />
-          </div>
+          {Providers.globalProvider.state === ProviderState.SignedIn && (
+            <div className={styles.headerContainer}>
+              <ChatListHeader
+                bannerMessage={headerBannerMessage}
+                buttonItems={chatListButtonItems}
+                menuItems={menuItems}
+              />
+            </div>
+          )}
           <div>
             {chatListState?.chatThreads.map(c => (
               <Button className={styles.button} key={c.id} onClick={() => onClickChatListItem(c)}>
