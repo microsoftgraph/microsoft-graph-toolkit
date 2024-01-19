@@ -64,6 +64,7 @@ export const ChatList = ({
   ...props
 }: MgtTemplateProps & IChatListItemProps & IChatListMenuItemsProps) => {
   const styles = useStyles();
+  const [headerBannerMessage, setHeaderBannerMessage] = useState<string>('');
   const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
   const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
@@ -120,13 +121,29 @@ export const ChatList = ({
           setMenuItems(updatedMenuItems);
           props.onLoaded();
         }
+
+        if (state.status === 'server connection established') {
+          setHeaderBannerMessage(''); // reset
+        }
+
+        if (state.status === 'creating server connections') {
+          setHeaderBannerMessage('Connecting...');
+        }
+
+        if (state.status === 'server connection lost') {
+          // this happens when we lost connection to the server and we will try to reconnect
+          setHeaderBannerMessage('We ran into a problem. Reconnecting...');
+        }
       });
 
       chatListClient.onChatListEvent(handleChatListEvent);
       return () => {
+        // log state of chatlistclient for debugging purposes
+        log(chatListClient.getState());
         chatListClient.offStateChange(setChatListState);
         chatListClient.offChatListEvent(handleChatListEvent);
-        void chatListClient.tearDown();
+        chatListClient.tearDown();
+        setHeaderBannerMessage('We ran into a problem. Reconnecting...');
       };
     }
   }, [chatListClient]);
@@ -176,7 +193,11 @@ export const ChatList = ({
       <FluentProvider theme={webLightTheme}>
         <div>
           <div className={styles.headerContainer}>
-            <ChatListHeader buttonItems={chatListButtonItems} menuItems={menuItems} />
+            <ChatListHeader
+              bannerMessage={headerBannerMessage}
+              buttonItems={chatListButtonItems}
+              menuItems={menuItems}
+            />
           </div>
           <div>
             {chatListState?.chatThreads.map(c => (

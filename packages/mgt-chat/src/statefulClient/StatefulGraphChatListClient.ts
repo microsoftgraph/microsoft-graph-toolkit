@@ -1,5 +1,5 @@
 import { MessageThreadProps, ErrorBarProps, Message } from '@azure/communication-react';
-import { ActiveAccountChanged, IGraph, LoginChangedEvent, ProviderState, Providers, log } from '@microsoft/mgt-element';
+import { ActiveAccountChanged, IGraph, Providers, log } from '@microsoft/mgt-element';
 import { GraphError } from '@microsoft/microsoft-graph-client';
 import {
   AadUserConversationMember,
@@ -66,9 +66,10 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
   status:
     | 'initial'
     | 'creating server connections'
+    | 'server connection lost'
+    | 'server connection established'
     | 'subscribing to notifications'
     | 'loading messages'
-    | 'no session id'
     | 'no messages'
     | 'chat threads loaded'
     | 'ready'
@@ -163,7 +164,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   private readonly _graph: IGraph;
   constructor(chatThreadsPerPage: number) {
     this.updateUserInfo();
-    Providers.globalProvider.onStateChanged(this.onLoginStateChanged);
+
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
@@ -172,6 +173,11 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this._graph = graph('mgt-chat', GraphConfig.version);
     this.chatThreadsPerPage = chatThreadsPerPage;
     this._notificationClient = new GraphNotificationUserClient(this._eventEmitter, this._graph);
+
+    if (this.userId) {
+      void this.updateUserSubscription();
+      this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
+    }
   }
 
   /**
@@ -182,8 +188,8 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /**
    * Provides a method to clean up any resources being used internally when a consuming component is being removed from the DOM
    */
-  public async tearDown() {
-    await this._notificationClient.tearDown();
+  public tearDown() {
+    this._notificationClient.tearDown();
   }
 
   /**
@@ -520,39 +526,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     });
   };
 
-  /**
-   * Update the state of the client when the Login state changes
-   *
-   * @private
-   * @param {LoginChangedEvent} e The event that triggered the change
-   * @memberof StatefulGraphChatListClient
-   */
-  private readonly onLoginStateChanged = (e: LoginChangedEvent) => {
-    switch (e.detail) {
-      case ProviderState.SignedIn:
-        // update userId and displayName
-        this.updateUserInfo();
-        // load messages?
-        // configure subscriptions
-        // emit new state;
-        if (this.userId) {
-          void this.updateUserSubscription();
-          this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
-        }
-        return;
-      case ProviderState.SignedOut:
-        // clear userId
-        // clear subscriptions
-        // clear messages
-        // emit new state
-        return;
-      case ProviderState.Loading:
-      default:
-        // do nothing for now
-        return;
-    }
-  };
-
   private readonly onActiveAccountChanged = (e: ActiveAccountChanged) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (e.detail && this.userId !== e.detail?.id) {
@@ -608,10 +581,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     });
   }
 
-  public get sessionId(): string {
-    return 'default';
-  }
-
   /**
    * A helper to co-ordinate the loading of a chat and its messages, and the subscription to notifications for that chat
    *
@@ -630,26 +599,15 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         draft.status = 'creating server connections';
       });
       try {
-        // Prefer sequential promise resolving to catch loading message errors
-        // TODO: in parallel promise resolving, find out how to trigger different
-        // TODO: state for failed subscriptions in GraphChatClient.onSubscribeFailed
-        const tasks: Promise<unknown>[] = [];
-        // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
-        // this client will then load the chat and messages when that event listener is called
-        tasks.push(this._notificationClient.subscribeToUserNotifications(this._userId, this.sessionId));
-        await Promise.all(tasks);
+        await this._notificationClient.subscribeToUserNotifications(this._userId);
       } catch (e) {
-        console.error('Failed to load chat data or subscribe to notications: ', e);
+        error('Failed to load chat data or subscribe to notications: ', e);
         if (e instanceof GraphError) {
           this.notifyStateChange((draft: GraphChatListClient) => {
             draft.status = 'no messages';
           });
         }
       }
-    } else {
-      this.notifyStateChange((draft: GraphChatListClient) => {
-        draft.status = 'no session id';
-      });
     }
   }
 
@@ -660,6 +618,16 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this._eventEmitter.on('chatMessageReceived', (message: ChatMessage) => void this.onMessageReceived(message));
     this._eventEmitter.on('chatMessageDeleted', this.onMessageDeleted);
     this._eventEmitter.on('chatMessageEdited', (message: ChatMessage) => void this.onMessageEdited(message));
+    this._eventEmitter.on('disconnected', () => {
+      this.notifyStateChange((draft: GraphChatListClient) => {
+        draft.status = 'server connection lost';
+      });
+    });
+    this._eventEmitter.on('connected', () => {
+      this.notifyStateChange((draft: GraphChatListClient) => {
+        draft.status = 'server connection established';
+      });
+    });
   }
 }
 

@@ -22,6 +22,8 @@ export type ChatEvent =
   | 'chatThreadPropertiesUpdated'
   | 'participantAdded'
   | 'participantRemoved'
+  | 'disconnected'
+  | 'connected'
   | 'notificationsSubscribedForResource';
 
 export class ThreadEventEmitter {
@@ -64,5 +66,11 @@ export class ThreadEventEmitter {
   }
   notificationsSubscribedForResource(resouce: string) {
     this.emitter.emit('notificationsSubscribedForResource', resouce);
+  }
+  disconnected() {
+    this.emitter.emit('disconnected');
+  }
+  connected() {
+    this.emitter.emit('connected');
   }
 }

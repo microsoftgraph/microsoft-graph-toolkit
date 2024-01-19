@@ -1,5 +1,11 @@
 import { BetaGraph, IGraph, Providers, createFromProvider, error, log } from '@microsoft/mgt-element';
-import { HubConnection, HubConnectionBuilder, IHttpConnectionOptions, LogLevel } from '@microsoft/signalr';
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  IHttpConnectionOptions,
+  LogLevel,
+  RetryContext
+} from '@microsoft/signalr';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
 import type {
   Entity,
@@ -15,9 +21,7 @@ import { Timer } from '../utils/Timer';
 export const appSettings = {
   defaultSubscriptionLifetimeInMinutes: 10,
   renewalThreshold: 75, // The number of seconds before subscription expires it will be renewed
-  renewalTimerInterval: 20, // The number of seconds between executions of the renewal timer
-  removalThreshold: 1 * 60, // number of seconds after the last update of a subscription to consider in inactive
-  removalTimerInterval: 1 * 60, // the number of seconds between executions of the timer to remove inactive subscriptions
+  renewalTimerInterval: 10, // The number of seconds between executions of the renewal timer
   useCanary: GraphConfig.useCanary
 };
 
@@ -45,10 +49,13 @@ const isMembershipNotification = (o: Notification<Entity>): o is Notification<Aa
 export class GraphNotificationUserClient {
   private connection?: HubConnection = undefined;
   private renewalInterval?: string;
-  private cleanupInterval?: string;
   private renewalCount = 0;
+  private isRewnewalInProgress = false;
   private userId = '';
-  private sessionId = '';
+  private currentUserId = '';
+  private get sessionId() {
+    return 'default';
+  }
   private readonly subscriptionCache: SubscriptionsCache = new SubscriptionsCache();
   private readonly timer = new Timer();
   private get graph() {
@@ -69,22 +76,17 @@ export class GraphNotificationUserClient {
   constructor(
     private readonly emitter: ThreadEventEmitter,
     private readonly _graph: IGraph
-  ) {
-    // start the cleanup timer when we create the notification client.
-    this.startCleanupTimer();
-  }
+  ) {}
 
   /**
    * Removes any active timers that may exist to prevent memory leaks and perf issues.
    * Call this method when the component that depends an instance of this class is being removed from the DOM
    * i.e
    */
-  public async tearDown() {
+  public tearDown() {
     log('cleaning up user graph notification resources');
-    if (this.cleanupInterval) this.timer.clearInterval(this.cleanupInterval);
     if (this.renewalInterval) this.timer.clearInterval(this.renewalInterval);
     this.timer.close();
-    await this.unsubscribeFromUserNotifications(this.userId, this.sessionId);
   }
 
   private readonly getToken = async () => {
@@ -96,7 +98,8 @@ export class GraphNotificationUserClient {
   // TODO: understand if this is needed under the native model
   private readonly onReconnect = (connectionId: string | undefined) => {
     log(`Reconnected. ConnectionId: ${connectionId || 'undefined'}`);
-    // void this.renewChatSubscriptions();
+    const emitter: ThreadEventEmitter | undefined = this.emitter;
+    emitter?.connected();
   };
 
   private readonly receiveNotificationMessage = (message: string) => {
@@ -167,23 +170,19 @@ export class GraphNotificationUserClient {
     }
   }
 
-  private readonly cacheSubscription = async (subscriptionRecord: Subscription): Promise<void> => {
+  private readonly cacheSubscription = async (userId: string, subscriptionRecord: Subscription): Promise<void> => {
     log(subscriptionRecord);
-
-    await this.subscriptionCache.cacheSubscription(this.userId, ComponentType.User, this.sessionId, subscriptionRecord);
-
-    // only start timer once. -1 for renewalInterval is semaphore it has stopped.
-    if (this.renewalInterval === undefined) this.startRenewalTimer();
+    await this.subscriptionCache.cacheSubscription(userId, ComponentType.User, this.sessionId, subscriptionRecord);
   };
 
-  private async subscribeToResource(resourcePath: string, changeTypes: ChangeTypes[]) {
+  private async subscribeToResource(userId: string, resourcePath: string, changeTypes: ChangeTypes[]) {
     // build subscription request
     const expirationDateTime = new Date(
       new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
     ).toISOString();
     const subscriptionDefinition: Subscription = {
       changeType: changeTypes.join(','),
-      notificationUrl: `${GraphConfig.webSocketsPrefix}?groupId=${this.userId}&sessionId=${this.sessionId}`,
+      notificationUrl: `${GraphConfig.webSocketsPrefix}?groupId=${userId}&sessionId=${this.sessionId}`,
       resource: resourcePath,
       expirationDateTime,
       includeResourceData: true,
@@ -199,92 +198,138 @@ export class GraphNotificationUserClient {
     if (!subscription?.notificationUrl) throw new Error('Subscription not created');
     log(subscription);
 
-    const awaits: Promise<void>[] = [];
-    // Cache the subscription in storage for re-hydration on page refreshes
-    awaits.push(this.cacheSubscription(subscription));
+    await this.cacheSubscription(userId, subscription);
 
     // create a connection to the web socket if one does not exist
-    if (!this.connection) awaits.push(this.createSignalRConnection(subscription.notificationUrl));
+    if (!this.connection) await this.createSignalRConnection(subscription.notificationUrl);
 
     log('Invoked CreateSubscription');
-    return Promise.all(awaits);
   }
 
-  private readonly startRenewalTimer = () => {
-    if (this.renewalInterval !== undefined) this.timer.clearInterval(this.renewalInterval);
-    this.renewalInterval = this.timer.setInterval(this.syncTimerWrapper, appSettings.renewalTimerInterval * 1000);
-    log(`Start renewal timer . Id: ${this.renewalInterval}`);
+  private readonly renewalSync = () => {
+    void this.renewal();
   };
 
-  private readonly syncTimerWrapper = () => void this.renewalTimer();
-
-  private readonly renewalTimer = async () => {
-    log(`running subscription renewal timer for userId: ${this.userId} sessionId: ${this.sessionId}`);
-    const subscriptions =
-      (await this.subscriptionCache.loadSubscriptions(this.userId, this.sessionId))?.subscriptions || [];
-    if (subscriptions.length === 0) {
-      log(`No subscriptions found in session state. Stop renewal timer ${this.renewalInterval}.`);
-      clearInterval(this.renewalInterval);
+  private readonly renewal = async () => {
+    if (this.isRewnewalInProgress) {
+      log('Renewal already in progress');
       return;
     }
 
-    for (const subscription of subscriptions) {
-      if (!subscription.expirationDateTime) continue;
-      const expirationTime = new Date(subscription.expirationDateTime);
-      const now = new Date();
-      const diff = Math.round((expirationTime.getTime() - now.getTime()) / 1000);
+    this.isRewnewalInProgress = true;
 
-      if (diff <= appSettings.renewalThreshold) {
-        this.renewalCount++;
-        log(`Renewing Graph subscription. RenewalCount: ${this.renewalCount}`);
-        // stop interval to prevent new invokes until refresh is ready.
-        clearInterval(this.renewalInterval);
-        this.renewalInterval = undefined;
-        void this.renewUserSubscriptions();
-        // There is one subscription that need expiration, all subscriptions will be renewed
-        break;
+    if (this.currentUserId !== '' && this.currentUserId !== this.userId) {
+      log('User has changed. Unsubscribing from previous user');
+      await this.unsubscribeFromUserNotifications(this.currentUserId);
+    }
+
+    this.currentUserId = this.userId;
+
+    try {
+      const subscriptions =
+        (await this.subscriptionCache.loadSubscriptions(this.currentUserId, this.sessionId))?.subscriptions || [];
+      if (subscriptions.length === 0) {
+        log('No subscriptions found in session state. Creating a new subscription.');
+
+        await this.subscribeToResource(this.currentUserId, `/users/${this.currentUserId}/chats/getAllmessages`, [
+          'created',
+          'updated',
+          'deleted'
+        ]);
+      } else {
+        for (const subscription of subscriptions) {
+          if (!subscription.expirationDateTime || !subscription.id || !subscription.notificationUrl) continue;
+
+          const expirationTime = new Date(subscription.expirationDateTime);
+          const now = new Date();
+          const diff = Math.round((expirationTime.getTime() - now.getTime()) / 1000);
+
+          if (diff <= appSettings.renewalThreshold) {
+            this.renewalCount++;
+            log(`Renewing Graph subscription. RenewalCount: ${this.renewalCount}.`);
+
+            const newExpirationTime = new Date(
+              new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
+            );
+
+            try {
+              await this.renewSubscription(this.currentUserId, subscription.id, newExpirationTime.toISOString());
+            } catch (e) {
+              error(e);
+              // this error indicates we are not able to successfully renew the subscription, so we should create a new one.
+              if ((e as { statusCode?: number }).statusCode === 404) {
+                log('Removing subscription from cache', subscription.id);
+                await this.subscriptionCache.deleteCachedSubscriptions(this.currentUserId, this.sessionId);
+                await this.subscribeToUserNotifications(this.currentUserId);
+              }
+            }
+          } else {
+            // create a connection to the web socket if one does not exist
+            if (!this.connection) await this.createSignalRConnection(subscription.notificationUrl);
+          }
+
+          // Expecting only one subscription per user
+          break;
+        }
       }
+    } catch (e) {
+      error(e);
     }
+
+    this.isRewnewalInProgress = false;
+    this.renewalInterval = this.timer.setTimeout(this.renewalSync, appSettings.renewalTimerInterval * 1000);
   };
 
-  public renewUserSubscriptions = async () => {
-    if (this.renewalInterval) this.timer.clearInterval(this.renewalInterval);
-
-    const expirationTime = new Date(
-      new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
-    );
-
-    const subscriptionCache = await this.subscriptionCache.loadSubscriptions(this.userId, this.sessionId);
-    const awaits: Promise<unknown>[] = [];
-    for (const subscription of subscriptionCache?.subscriptions || []) {
-      if (!subscription.id) continue;
-      // the renewSubscription method caches the updated subscription to track the new expiration time
-      awaits.push(this.renewSubscription(subscription.id, expirationTime.toISOString()));
-      log(`Invoked RenewSubscription ${subscription.id}`);
-    }
-    await Promise.all(awaits);
-  };
-
-  public renewSubscription = async (subscriptionId: string, expirationDateTime: string): Promise<void> => {
+  private readonly renewSubscription = async (
+    userId: string,
+    subscriptionId: string,
+    expirationDateTime: string
+  ): Promise<void> => {
     // PATCH /subscriptions/{id}
     const renewedSubscription = (await this.graph.api(`${GraphConfig.subscriptionEndpoint}/${subscriptionId}`).patch({
       expirationDateTime
     })) as Subscription;
-    return this.cacheSubscription(renewedSubscription);
+    return this.cacheSubscription(userId, renewedSubscription);
   };
 
-  public async createSignalRConnection(notificationUrl: string) {
+  private async createSignalRConnection(notificationUrl: string) {
+    log('Creating SignalR connection');
+
     const connectionOptions: IHttpConnectionOptions = {
       accessTokenFactory: this.getToken,
       withCredentials: false
     };
+
+    // retry with the following intervals, the last interval will take precedence if there are more retries than intervals
+    const retryTimes = [0, 2000, 10000, 30000, 45000, 60000, 90000, 120000, 180000, 240000];
+    const retryPolicy = {
+      nextRetryDelayInMilliseconds: (context: RetryContext) => {
+        const index =
+          context.previousRetryCount < retryTimes.length ? context.previousRetryCount : retryTimes.length - 1;
+        return retryTimes[index];
+      }
+    };
+
     const connection = new HubConnectionBuilder()
       .withUrl(GraphConfig.adjustNotificationUrl(notificationUrl), connectionOptions)
-      .withAutomaticReconnect()
+      .withAutomaticReconnect(retryPolicy)
       .configureLogging(LogLevel.Information)
       .build();
 
+    const emitter: ThreadEventEmitter | undefined = this.emitter;
+    connection.onclose((err?: Error) => {
+      if (err) {
+        log('Connection closed with error', err);
+      }
+
+      emitter?.disconnected();
+    });
+
     connection.onreconnected(this.onReconnect);
+
+    connection.onreconnecting(() => {
+      emitter?.disconnected();
+    });
 
     connection.on('receivenotificationmessageasync', this.receiveNotificationMessage);
 
@@ -294,6 +339,7 @@ export class GraphNotificationUserClient {
     try {
       await connection.start();
       log(connection);
+      emitter?.connected();
     } catch (e) {
       error('An error occurred connecting to the notification web socket', e);
     }
@@ -317,77 +363,26 @@ export class GraphNotificationUserClient {
     return Promise.all(tasks);
   }
 
-  private startCleanupTimer() {
-    this.cleanupInterval = this.timer.setInterval(this.cleanupTimerSync, appSettings.removalTimerInterval * 1000);
-  }
-
-  private readonly cleanupTimerSync = () => {
-    void this.cleanupTimer();
-  };
-
-  private readonly cleanupTimer = async () => {
-    log(`running user cleanup timer`);
-    const offset = Math.min(
-      appSettings.removalThreshold * 1000,
-      appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
-    );
-    const threshold = new Date(new Date().getTime() - offset).toISOString();
-    const inactiveSubs = await this.subscriptionCache.loadInactiveSubscriptions(threshold, ComponentType.User);
-    let tasks: Promise<unknown>[] = [];
-    for (const inactive of inactiveSubs) {
-      tasks.push(this.removeSubscriptions(inactive.subscriptions));
-    }
-    await Promise.all(tasks);
-    tasks = [];
-    for (const inactive of inactiveSubs) {
-      tasks.push(this.subscriptionCache.deleteCachedSubscriptions(inactive.componentEntityId, inactive.sessionId));
-    }
-  };
-
   public async closeSignalRConnection() {
     // stop the connection and set it to undefined so it will reconnect when next subscription is created.
     await this.connection?.stop();
     this.connection = undefined;
   }
 
-  private async unsubscribeFromUserNotifications(userId: string, sessionId: string) {
+  private async unsubscribeFromUserNotifications(userId: string) {
     await this.closeSignalRConnection();
-    const cacheData = await this.subscriptionCache.loadSubscriptions(userId, sessionId);
+    const cacheData = await this.subscriptionCache.loadSubscriptions(userId, this.sessionId);
     if (cacheData) {
       await Promise.all([
         this.removeSubscriptions(cacheData.subscriptions),
-        this.subscriptionCache.deleteCachedSubscriptions(userId, sessionId)
+        this.subscriptionCache.deleteCachedSubscriptions(userId, this.sessionId)
       ]);
     }
   }
 
-  public async subscribeToUserNotifications(userId: string, sessionId: string) {
-    // if we have a "previous" chat state at present, unsubscribe for the previous userId
-    if (this.userId && this.sessionId && userId !== this.userId) {
-      await this.unsubscribeFromUserNotifications(this.userId, this.sessionId);
-    }
+  public async subscribeToUserNotifications(userId: string) {
+    log(`User subscription with id: ${userId}`);
     this.userId = userId;
-    this.sessionId = sessionId;
-    // MGT uses a per-user cache, so no concerns of loading the cached data for another user.
-    const cacheData = await this.subscriptionCache.loadSubscriptions(userId, sessionId);
-    if (cacheData) {
-      // check subscription validity & renew if all still valid otherwise recreate
-      const someExpired = cacheData.subscriptions.some(
-        s => s.expirationDateTime && new Date(s.expirationDateTime) <= new Date()
-      );
-      // for a given user + app + userId + sessionId they only get one websocket and receive all notifications via that websocket.
-      const webSocketUrl = cacheData.subscriptions.find(s => s.notificationUrl)?.notificationUrl;
-      if (someExpired) {
-        await this.removeSubscriptions(cacheData.subscriptions);
-      } else if (webSocketUrl) {
-        await this.createSignalRConnection(webSocketUrl);
-        await this.renewUserSubscriptions();
-        return;
-      }
-      await this.subscriptionCache.deleteCachedSubscriptions(userId, sessionId);
-    }
-    const promises: Promise<unknown>[] = [];
-    promises.push(this.subscribeToResource(`/users/${userId}/chats/getAllmessages`, ['created', 'updated', 'deleted']));
-    await Promise.all(promises);
+    await this.renewal();
   }
 }
