@@ -134,7 +134,11 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
   // if chat changes, update the internal state to match
   useEffect(() => {
-    setApps(undefined);
+    if (chatInternal.id !== chat.id) {
+      setApps(undefined);
+      isAppsLoadingOrLoaded.current = false;
+    }
+
     setChatInternal(chat);
   }, [chat]);
 
@@ -174,15 +178,13 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
     // load the apps
     const graph = provider.graph.forComponent('ChatListItem');
-    loadAppsInChat(graph, chatId).then(
-      apps => {
-        setApps(apps.value);
-      },
-      e => {
-        error(e);
-        setApps([]);
-      }
-    );
+    try {
+      const appsResponse = await loadAppsInChat(graph, chatId);
+      setApps(appsResponse.value);
+    } catch (e) {
+      error(e);
+      setApps([]);
+    }
   };
 
   const isLoaded = () => {
@@ -195,7 +197,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
   }
 
   const getMemberName = (member: ConversationMember): string => {
-    return member?.displayName || (member as AadUserConversationMember)?.email || member?.id || 'Uknown';
+    return member?.displayName || (member as AadUserConversationMember)?.email || member?.id || 'Unknown';
   };
 
   const getTitleFromNames = (names: string[], useFirstNamesIfAppropriate: boolean) => {
