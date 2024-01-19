@@ -57,7 +57,7 @@ const useStyles = makeStyles({
   },
 
   profileImage: {
-    ...shorthands.flex('0 0 auto'),
+    ...shorthands.flex(0, 0, 'auto'),
     marginRight: '10px',
     objectFit: 'cover',
     display: 'flex',
