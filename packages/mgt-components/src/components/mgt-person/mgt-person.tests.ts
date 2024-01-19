@@ -7,11 +7,13 @@
 import { fixture, html, expect, waitUntil } from '@open-wc/testing';
 import { MockProvider, Providers } from '@microsoft/mgt-element';
 import { registerMgtPersonComponent } from './mgt-person';
+import { useConfig } from '../../graph/graph.presence.mock';
+import { PresenceService } from '../../utils/PresenceService';
 
 describe('mgt-person - tests', () => {
   before(() => {
     registerMgtPersonComponent();
-    Providers.globalProvider = new MockProvider(true);
+    Providers.globalProvider = new MockProvider(true, [{ id: '48d31887-5fad-4d73-a9f5-3c356e68a038' }]);
   });
 
   it('should render', async () => {
@@ -28,6 +30,19 @@ describe('mgt-person - tests', () => {
         </div>
       </div>`,
       { ignoreAttributes: ['src'] }
+    );
+  });
+
+  it('unknown user should render with a default icon', async () => {
+    // purposely throws browser error "Error: Invalid userId"
+    const person = await fixture(
+      html`<mgt-person user-id="2004BC77-F054-4678-8883-768ADA7B00EC" view="twoLines"></mgt-person>`
+    );
+    await waitUntil(() => person.shadowRoot.querySelector('svg'), 'no svg was populated');
+    await expect(person).shadowDom.to.equal(
+      `<i class="avatar-icon" icon="no-data">
+        <svg />
+      </i>`
     );
   });
 
@@ -175,5 +190,98 @@ describe('mgt-person - tests', () => {
         personType: {}
       })}' view="twoLines"></mgt-person>`);
     await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('FV');
+  });
+
+  it('should support a change in presence', async () => {
+    useConfig({
+      default: 'Available',
+      3: 'Busy',
+      4: 'Busy',
+      5: 'Busy'
+    });
+
+    PresenceService.config.initial = 100;
+    PresenceService.config.refresh = 200;
+
+    const person = await fixture(
+      html`<mgt-person person-query="me" show-presence="true" view="twoLines" iteration="0"></mgt-person>`
+    );
+
+    const match = (status: string) => `<div class=" person-root twolines " dir="ltr">
+      <div class="avatar-wrapper">
+        <img alt="Photo for Megan Bowen" src="">
+        <span
+          aria-label="${status}"
+          class="presence-wrapper"
+          role="img"
+          title="${status}"
+        >
+        </span>
+      </div>
+      <div class=" details-wrapper ">
+            <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+            <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+      </div>
+    </div>`;
+
+    // starts as Offline
+    await waitUntil(() => person.shadowRoot.querySelector('span.presence-wrapper'), 'no presence span');
+    await expect(person).shadowDom.to.equal(match('Offline'), { ignoreAttributes: ['src'] });
+
+    // changes to Available on initial
+    await waitUntil(() => person.shadowRoot.querySelector('span[title="Available"]'), 'did not update to available', {
+      timeout: 4000
+    });
+    await expect(person).shadowDom.to.equal(match('Available'), { ignoreAttributes: ['src'] });
+
+    // changes to Busy on refresh
+    await waitUntil(() => person.shadowRoot.querySelector('span[title="Busy"]'), 'did not update to busy', {
+      timeout: 4000
+    });
+    await expect(person).shadowDom.to.equal(match('Busy'), { ignoreAttributes: ['src'] });
+  });
+
+  it('should not update presence on error', async () => {
+    useConfig({
+      default: 'Available',
+      0: new Error('purposeful error'),
+      1: new Error('purposeful error'),
+      2: new Error('purposeful error')
+    });
+
+    PresenceService.config.initial = 1000;
+    PresenceService.config.refresh = 2000;
+
+    const person = await fixture(
+      html`<mgt-person person-query="me" show-presence="true" view="twoLines" iteration="0"></mgt-person>`
+    );
+    await waitUntil(() => person.shadowRoot.querySelector('img'), 'mgt-person did not update');
+
+    const match = (status: string) => `<div class=" person-root twolines " dir="ltr">
+      <div class="avatar-wrapper">
+        <img alt="Photo for Megan Bowen" src="">
+        <span
+          aria-label="${status}"
+          class="presence-wrapper"
+          role="img"
+          title="${status}"
+        >
+        </span>
+      </div>
+      <div class=" details-wrapper ">
+            <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+            <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+      </div>
+    </div>`;
+
+    // starts Offline during errors
+    await waitUntil(() => person.shadowRoot.querySelector('span.presence-wrapper'), 'no presence span');
+    await expect(person).shadowDom.to.equal(match('Offline'), { ignoreAttributes: ['src'] });
+
+    // changes to Available eventually
+    await waitUntil(() => person.shadowRoot.querySelector('span[title="Available"]'), 'did not update to available', {
+      timeout: 4000
+    });
+    await expect(person).shadowDom.to.equal(match('Available'), { ignoreAttributes: ['src'] });
   });
 });
