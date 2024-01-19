@@ -100,30 +100,7 @@ The following guides are available to help you get started with the Toolkit:
 * [Use the Toolkit with Angular](https://learn.microsoft.com/graph/toolkit/get-started/use-toolkit-with-angular)
 * [Build a productivity hub app](https://learn.microsoft.com/en-us/graph/toolkit/get-started/building-one-productivity-hub)
 
-You can use the components by referencing the loader directly (via unpkg), or installing the npm package
-
-### Use via mgt-loader:
-
-```html
-<script src="https://unpkg.com/@microsoft/mgt@3/dist/bundle/mgt-loader.js"></script>
-```
-
-> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 3.0.0 < 4.0.0`, omitting the `@3` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
-
-You can then start using the components in your html page. Here is a full working example with the MSAL2 provider:
-
-```html
-<script src="https://unpkg.com/@microsoft/mgt@3/dist/bundle/mgt-loader.js"></script>
-<mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
-<mgt-login></mgt-login>
-
-<!-- <script>
-    // alternatively, you can set the provider in code and provide more options
-    mgt.Providers.globalProvider = new mgt.Msal2Provider({clientId: '[CLIENT-ID]'});
-</script> -->
-```
-
-> NOTE: MSAL requires the page to be hosted in a web server for the authentication redirects. If you are just getting started and want to play around, the quickest way is to use something like [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in vscode.
+You can use the components by installing the npm packages or referencing the loader directly (via unpkg).
 
 ### Use via NPM:
 
@@ -137,14 +114,43 @@ npm install @microsoft/mgt-msal2-provider
 Now you can reference all components and providers at the page you are using:
 
 ```html
-<script type="module" src="node_modules/@microsoft/mgt-components/dist/es6/index.js"></script>
-<script type="module" src="node_modules/@microsoft/mgt-msal2-provider/dist/es6/index.js"></script>
-
-<mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
+<script type="module">
+  import { Providers } from 'node_modules/@microsoft/mgt-element/dist/es6/index.js';
+  import { Msal2Provider } from 'node_modules/@microsoft/mgt-msal2-provider/dist/es6/index.js';
+  import { registerMgtLoginComponent, registerMgtAgendaComponent } from 'node_modules/@microsoft/mgt-components/dist/es6/index.js';
+  
+  Providers.globalProvider = new Msal2Provider({clientId: '[CLIENT-ID]'});
+  
+  registerMgtLoginComponent();
+  registerMgtAgendaComponent();
+</script>
 
 <mgt-login></mgt-login>
 <mgt-agenda></mgt-agenda>
 ```
+
+### Use via mgt-loader:
+
+```html
+<script src="https://unpkg.com/@microsoft/mgt@4/dist/bundle/mgt-loader.js"></script>
+```
+
+> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 4.0.0 < 5.0.0`, omitting the `@4` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
+
+You can then start using the components in your html page. Here is a full working example with the MSAL2 provider:
+
+```html
+<script src="https://unpkg.com/@microsoft/mgt@4/dist/bundle/mgt-loader.js"></script>
+<mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
+<mgt-login></mgt-login>
+
+<!-- <script>
+    // alternatively, you can set the provider in code and provide more options
+    mgt.Providers.globalProvider = new mgt.Msal2Provider({clientId: '[CLIENT-ID]'});
+</script> -->
+```
+
+> NOTE: MSAL requires the page to be hosted in a web server for the authentication redirects. If you are just getting started and want to play around, the quickest way is to use something like [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in vscode.
 
 ## Using our samples
 

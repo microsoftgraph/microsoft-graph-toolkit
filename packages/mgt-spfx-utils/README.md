@@ -22,25 +22,23 @@ yarn add @microsoft/mgt-spfx-utils @microsoft/mgt-react
 
 ## Usage
 
-Disambiguation is intended to provide developers with a mechanism to use a specific version of MGT in their solution without encountering collisions with other solutions that may be using MGT. `mgt-spfx` will allow all SPFx solutions in a tenant to use a single shared version, either v2.x or v3.x, of MGT. Currently multiple versions of `mgt-spfx` cannot be used in the same tenant. This is a limitation of the SharePoint Framework.
+Disambiguation is intended to provide developers with a mechanism to use a specific version of MGT in their solution without encountering collisions with other solutions that may be using MGT. Developers building SharePoint customization using MGT should use disambiguation to ensure that their applications function as intended.
 
-> **Important:** `mgt-spfx` is now deprecated. To use Microsoft Graph Toolkit version 4.0.0 or greater in a SharePoint Framework solution you should use the disambiguation approach.
-
-By disambiguating tag names of Microsoft Graph Toolkit components, you can use your own version of MGT rather than using the centrally deployed `@microsoft/mgt-spfx` package. This allows you to avoid colliding with SharePoint Framework components built by other developers. When disambiguating tag names, MGT is included in the generated SPFx bundle, increasing its size. It is strongly recommended that you use a disambiguation value unique to your organization and solution to avoid collisions with other solutions, e.g. `contoso-hr-extensions`.
+By disambiguating tag names of Microsoft Graph Toolkit components you to avoid colliding with SharePoint Framework components built by other developers. When disambiguating tag names, MGT is included in the generated SPFx bundle, increasing its size. It is strongly recommended that you use a disambiguation value unique to your organization and solution to avoid collisions with other solutions, e.g. `contoso-hr-extensions`.
 
 > **Important:** Since a given web component tag can only be registered once this approach **must** be used along with the `customElementHelper.withDisambiguation('foo')` as this allows developers to create disambiguated tag names.
 
 ### When using no framework web parts
 
-When building SharePoint Framework web parts without a JavaScript framework the `@microsoft/mgt-components` library must be asynchronously loaded after configuring the disambiguation setting. No helper library is necessary as dynamic imports are sufficient. After the browser has loaded the `@microsoft/mgt-components` library any tags which had already been rendered to the DOM without an existing custom element registration will automatically have the loaded custom behavior attached to them.
+When building SharePoint Framework web parts without a JavaScript framework the `withDisambiguation('foo')` function must be called before registering the the desired components
 
 Below is a minimal example web part that demonstrates how to use MGT with disambiguation in SharePoint Framework Web parts. A more complete example is available in the [No Framework Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
 
 ```ts
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import { Providers } from '@microsoft/mgt-element';
+import { Providers, customElementHelper } from '@microsoft/mgt-element';
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
-import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
+import { registerMgtAgendaComponent } from '@microsoft/mgt-components';
 
 export default class MgtWebPart extends BaseClientSideWebPart<Record<string, unknown>> {
   protected onInit(): Promise<void> {
@@ -49,14 +47,15 @@ export default class MgtWebPart extends BaseClientSideWebPart<Record<string, unk
     }
     // Use the solution name to ensure unique tag names
     customElementHelper.withDisambiguation('spfx-solution-name');
-    return import('@microsoft/mgt-components').then(() => super.onInit());
+    registerMgtAgendaComponent();
+    return super.onInit();
   }
 
   public render(): void {
 
     this.domElement.innerHTML = `
     <section class="${styles.helloWorld} ${this.context.sdks.microsoftTeams ? styles.teams : ''}">
-      <mgt-spfx-solution-name-login></mgt-spfx-solution-name-login>
+      <mgt-spfx-solution-name-agenda></mgt-spfx-solution-name-agenda>
     </section>`;
   }
 }
@@ -70,9 +69,8 @@ Below is a minimal example web part that demonstrates how to use MGT with disamb
 
 ```ts
 // [...] trimmed for brevity
-import { Providers } from '@microsoft/mgt-element/dist/es6/providers/Providers';
-import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
-import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider/dist/es6/SharePointProvider';
+import { Providers, customElementHelper } from '@microsoft/mgt-element';
+import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
 import { lazyLoadComponent } from '@microsoft/mgt-spfx-utils';
 
 // Async import of component that imports the React Components

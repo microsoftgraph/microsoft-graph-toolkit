@@ -6,7 +6,7 @@
     "packages": [
       "packages/*",
       "packages/providers/*",
-      "samples/react-contoso"
+      "samples/*"
     ]
   },
   "scripts": {
