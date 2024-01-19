@@ -92,8 +92,8 @@ const getIsGroupsCacheEnabled = (): boolean => CacheService.config.groups.isEnab
 const validGroupQueryScopes = [
   'GroupMember.Read.All',
   'Group.Read.All',
-  'Group.ReadWrite.All',
   'Directory.Read.All',
+  'Group.ReadWrite.All',
   'Directory.ReadWrite.All'
 ];
 

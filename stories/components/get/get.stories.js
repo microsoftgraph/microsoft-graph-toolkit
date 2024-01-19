@@ -96,7 +96,6 @@ export const GetEmail = () => html`
       text-overflow: ellipsis;
       word-wrap: break-word;
       overflow: hidden;
-      max-height: 2.8em;
       line-height: 1.4em;
     }
   </style>
@@ -185,29 +184,39 @@ export const PollingRate = () => html`
 `;
 
 export const refresh = () => html`
-    <mgt-get cache-enabled="true" resource="/me/presence" version="beta" scopes="Presence.Read">
-      <template data-type="default"> {{availability}} </template>
-      <template data-type="loading">
-        <h2>Loading...?!?!</h2>
-      </template>
-    </mgt-get>
-
-    <div>
-      <label>get.refresh(false)</label>
-      <button id="false">Soft refresh</button>
-    </div>
+<div>
+    <label>get.refresh(false)</label>
+    <button id="false">Soft refresh</button>
+</div>
+<div>
     <label>get.refresh(true)</label>
     <button id="true">Hard refresh</button>
+</div>
 
+<mgt-get cache-enabled="true" resource="/me/messages" version="beta">
+  <template data-type="default"> {{ this }}</template>
+  <template data-type="loading">
+    <h2>Loading...?!?!</h2>
+  </template>
+</mgt-get>
 
-  <script>
+<script>
+const softRefreshButton = document.querySelector('#false');
+const hardRefreshButton = document.querySelector('#true');
+const getElement = document.querySelector('mgt-get');
 
-    document.querySelector('#false').addEventListener('click', _ =>{
-          document.querySelector('mgt-get').refresh(false)
-    })
+const softRefresh = () => {
+  alert('requesting soft refresh of mgt-get component');
+  getElement.refresh(false);
+};
 
-    document.querySelector('#true').addEventListener('click', _ =>{
-      document.querySelector('mgt-get').refresh(true)
-    })
-  </script>
+const hardRefresh = () => {
+  alert('requesting hard refresh of mgt-get component');
+  getElement.refresh(true);
+};
+
+softRefreshButton.addEventListener('click', softRefresh)
+
+hardRefreshButton.addEventListener('click', hardRefresh)
+</script>
 `;
