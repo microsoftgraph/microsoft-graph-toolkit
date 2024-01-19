@@ -14,7 +14,13 @@ import {
 } from '@microsoft/mgt-components';
 import { CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
-import { AadUserConversationMember, Chat, ChatMessage, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
+import {
+  AadUserConversationMember,
+  Chat,
+  ChatMessage,
+  Chat as GraphChat,
+  TeamsAppInstallation
+} from '@microsoft/microsoft-graph-types';
 import { chatOperationScopes } from './chatOperationScopes';
 /**
  * Generic collection response from graph
@@ -30,6 +36,7 @@ export interface GraphCollection<T = any> {
  */
 export type MessageCollection = GraphCollection<ChatMessage>;
 export type ChatThreadCollection = GraphCollection<GraphChat>;
+export type AppCollection = GraphCollection<TeamsAppInstallation>;
 
 /**
  * Load the specified chat from graph with the members expanded
@@ -122,6 +129,15 @@ export const loadMoreChatMessages = async (graph: IGraph, nextLink: string): Pro
   const response = (await graph.api(nextLink).get()) as MessageCollection;
   // split the nextLink on version to maintain a relative path
   response.nextLink = response['@odata.nextLink']?.split(graph.version)[1];
+  return response;
+};
+
+export const loadAppsInChat = async (graph: IGraph, chatId: string): Promise<AppCollection> => {
+  const response = (await graph
+    .api(`/chats/${chatId}/installedApps`)
+    .expand('teamsAppDefinition($expand=bot)')
+    .middlewareOptions(prepScopes(...chatOperationScopes.loadAppsInChat))
+    .get()) as AppCollection;
   return response;
 };
 

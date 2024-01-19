@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles, mergeClasses, shorthands } from '@fluentui/react-components';
 import {
   Chat,
   ConversationMember,
   AadUserConversationMember,
   NullableOption,
-  ChatMessageInfo,
-  TeamworkApplicationIdentity
+  TeamworkApplicationIdentity,
+  TeamsAppInstallation
 } from '@microsoft/microsoft-graph-types';
 import { Person, PersonCardInteraction, log } from '@microsoft/mgt-react';
 import { ProviderState, Providers, error } from '@microsoft/mgt-element';
 import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
 import { rewriteEmojiContent } from '../../utils/rewriteEmojiContent';
 import { convert } from 'html-to-text';
-import { loadChatWithPreview } from '../../statefulClient/graph.chat';
+import { loadChatWithPreview, loadAppsInChat } from '../../statefulClient/graph.chat';
 import { DefaultProfileIcon } from './DefaultProfileIcon';
 
 interface IMgtChatListItemProps {
@@ -26,6 +26,8 @@ interface IMgtChatListItemProps {
 interface EventMessageDetailWithType {
   '@odata.type': string;
 }
+
+const ignoreBotsWithName = ['Updates'];
 
 const useStyles = makeStyles({
   // highlight selection
@@ -127,9 +129,16 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
   // manage the internal state of the chat
   const [chatInternal, setChatInternal] = useState(chat);
+  const [apps, setApps] = useState<TeamsAppInstallation[]>();
+  const isAppsLoadingOrLoaded = useRef(false);
 
   // if chat changes, update the internal state to match
   useEffect(() => {
+    if (chatInternal.id !== chat.id) {
+      setApps(undefined);
+      isAppsLoadingOrLoaded.current = false;
+    }
+
     setChatInternal(chat);
   }, [chat]);
 
@@ -152,6 +161,32 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     }
   }, [chatInternal]);
 
+  const startLoadingAppsInChat = async (chatId: string) => {
+    // ensure this is only called once
+    if (isAppsLoadingOrLoaded.current) {
+      return;
+    }
+
+    // make sure there is a logged in graph provider
+    const provider = Providers.globalProvider;
+    if (!provider || provider.state !== ProviderState.SignedIn) {
+      return;
+    }
+
+    // set to loading
+    isAppsLoadingOrLoaded.current = true;
+
+    // load the apps
+    const graph = provider.graph.forComponent('ChatListItem');
+    try {
+      const appsResponse = await loadAppsInChat(graph, chatId);
+      setApps(appsResponse.value);
+    } catch (e) {
+      error(e);
+      setApps([]);
+    }
+  };
+
   const isLoaded = () => {
     return chatInternal.id && (!chatInternal.chatType || !chatInternal.members);
   };
@@ -161,41 +196,98 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     return <></>;
   }
 
+  const getMemberName = (member: ConversationMember): string => {
+    return member?.displayName || (member as AadUserConversationMember)?.email || member?.id || 'Unknown';
+  };
+
+  const getTitleFromNames = (names: string[], useFirstNamesIfAppropriate: boolean) => {
+    names = names.sort();
+    if (names.length === 1) {
+      return names[0];
+    }
+
+    if (names.length === 2 && useFirstNamesIfAppropriate) {
+      const firstNames = names.map(n => n.split(' ')[0]);
+      return firstNames.join(' and ');
+    }
+
+    if (names.length === 2) {
+      return names.join(' and ');
+    }
+
+    if (names.length === 3 && useFirstNamesIfAppropriate) {
+      const firstNames = names.map(n => n.split(' ')[0]);
+      return firstNames.join(', ');
+    }
+
+    if (names.length === 3) {
+      return names.join(', ');
+    }
+
+    if (names.length > 3 && useFirstNamesIfAppropriate) {
+      const firstNames = names.map(n => n.split(' ')[0]);
+      const firstThree = firstNames.slice(0, 3);
+      const remainingCount = names.length - 3 + 1; // +1 for the current user
+      return firstThree.join(', ') + ' +' + remainingCount;
+    }
+
+    if (names.length > 3) {
+      const firstThree = names.slice(0, 3);
+      const remainingCount = names.length - 3 + 1; // +1 for the current user
+      return firstThree.join(', ') + ' +' + remainingCount;
+    }
+  };
+
   // Copied and modified from the sample ChatItem.tsx
   // Determines the title in the case of 1:1 and self chats
   // Self Chats are not possible, however, 1:1 chats with a bot will show no other members other than self.
-  const inferTitle = (c: Chat) => {
-    const name = (member: ConversationMember): string => {
-      return `${member?.displayName || (member as AadUserConversationMember)?.email || member?.id}`;
-    };
-
-    // build others array
-    const others = (c.members || [])
-      .filter(m => (m as AadUserConversationMember).userId !== myId)
-      .sort((a, b) => (name(a) > name(b) ? 1 : -1));
-    const application = c.lastMessagePreview?.from?.application as TeamworkApplicationIdentity;
-
-    // return the appropriate title
+  const getTitleFromChat = (c: Chat) => {
+    // use the topic if available
     if (c.topic) {
       return c.topic;
-    } else if (others.length === 0 && application) {
-      return application.displayName ? application.displayName : application.id;
-    } else if (others.length === 0) {
+    }
+
+    const others = (c.members || []).filter(m => (m as AadUserConversationMember).userId !== myId);
+
+    // when there are no other people, and we have bot information to make the most informed decision
+    if (others.length === 0 && apps) {
+      const names = apps
+        .filter(
+          a =>
+            a.teamsAppDefinition?.bot?.id &&
+            a.teamsAppDefinition?.displayName &&
+            ignoreBotsWithName.indexOf(a.teamsAppDefinition?.displayName) === -1
+        )
+        .map(a => a.teamsAppDefinition!.displayName!);
+      if (names.length > 0) {
+        const unique = names.filter((n, i) => names.indexOf(n) === i);
+        return getTitleFromNames(unique, false);
+      }
       const me = c.members?.find(m => (m as AadUserConversationMember).userId === myId);
-      return me ? name(me) : 'Me';
-    } else if (others.length === 1) {
-      return name(others[0]);
-    } else if (others.length === 2) {
-      return others.map(m => m.displayName?.split(' ')[0]).join(' and ');
-    } else if (others.length === 3) {
-      return others.map(m => m.displayName?.split(' ')[0]).join(', ');
-    } else if (others.length > 3) {
-      const firstThreeMembersSlice = others.slice(0, 3);
-      const remainingMembersCount = others.length - 3 + 1; // +1 for the current user
-      return firstThreeMembersSlice.map(m => m.displayName?.split(' ')[0]).join(', ') + ' +' + remainingMembersCount;
-    } else {
+      return me ? getMemberName(me) : 'Me';
+    }
+
+    const application = c.lastMessagePreview?.from?.application as TeamworkApplicationIdentity;
+
+    // when there are no people, and we don't have any bot information but we do have application information
+    if (others.length === 0 && application) {
+      startLoadingAppsInChat(c.id!);
+      return application.displayName ? application.displayName : application.id;
+    }
+
+    // when there are no people, and we don't have any bot or application information
+    if (others.length === 0) {
+      startLoadingAppsInChat(c.id!);
       return c.id;
     }
+
+    // when there are people, use them
+    if (others.length > 0) {
+      const names = others.map(o => getMemberName(o));
+      return getTitleFromNames(names, true);
+    }
+
+    return c.id;
   };
 
   // Derives the timestamp to display
@@ -279,33 +371,60 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     }
   };
 
-  const enrichPreviewMessage = (previewMessage: NullableOption<ChatMessageInfo> | undefined) => {
-    let previewString = '';
-    let content = previewMessage?.body?.content;
+  const getLastMessagePreviewPrefix = (c: Chat) => {
+    // if the last message was sent by the current user, display 'You: '
+    if (c.lastMessagePreview?.from?.user?.id === myId) {
+      return 'You: ';
+    }
+
+    // if you are only chatting with one other person, don't display their name
+    if (c.chatType === 'oneOnOne') {
+      return '';
+    }
+
+    // if the last message was sent from a user, use their display name
+    if (c.lastMessagePreview?.from?.user?.displayName) {
+      return `${c.lastMessagePreview.from.user.displayName}: `;
+    }
+
+    // if the last message is from a bot and we have all the app info, use the app name
+    if (c.lastMessagePreview?.from?.application?.id && apps) {
+      const app = apps.find(a => a.teamsAppDefinition?.bot?.id === c.lastMessagePreview?.from?.application?.id);
+      if (app && app.teamsAppDefinition?.displayName) {
+        return `${app.teamsAppDefinition.displayName}: `;
+      }
+    }
+
+    // if the last message is from a bot and we don't have all the app info, load it
+    if (c.lastMessagePreview?.from?.application?.displayName) {
+      startLoadingAppsInChat(c.id!);
+      return `${c.lastMessagePreview.from.application.displayName}: `;
+    }
+
+    return '';
+  };
+
+  const enrichPreviewMessage = (c: Chat) => {
+    const prefix = getLastMessagePreviewPrefix(c);
+    let content = c.lastMessagePreview?.body?.content;
 
     // handle null or undefined content
     if (!content) {
-      if (previewMessage?.isDeleted) {
-        previewString = 'This message was deleted';
-      } else if (previewMessage?.from?.user?.id === myId) {
-        previewString = 'You: Sent a message';
-      } else if (previewMessage?.from?.user?.displayName) {
-        previewString = `${previewMessage.from.user.displayName}: Sent a message`;
-      } else if (previewMessage?.from?.application?.displayName) {
-        previewString = `${previewMessage.from.application.displayName}: Sent a message`;
+      if (c.lastMessagePreview?.isDeleted) {
+        return 'This message was deleted';
+      } else if (c.lastMessagePreview) {
+        return `${prefix}Sent a message`;
+      } else {
+        return '';
       }
-      return previewString;
     }
 
     // handle HTML
-    if (previewMessage?.body?.contentType === 'html') {
-      // handle emojis
-      content = rewriteEmojiContent(content);
-
+    if (c.lastMessagePreview?.body?.contentType === 'html') {
       // handle images
       const imageMatch = content.match(imageTagRegex);
       if (imageMatch) {
-        content = 'Sent an image';
+        return `${prefix}Sent an image`;
       }
 
       /* handle attachments
@@ -318,7 +437,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
        */
       const attachmentMatch = content.match(attachmentTagRegex);
       if (attachmentMatch) {
-        content = 'Sent a file';
+        return `${prefix}Sent a file`;
       }
 
       /* handle system events
@@ -328,30 +447,20 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
        */
       const systemEventMessage = content.match(systemEventTagRegex);
       if (systemEventMessage) {
-        const type = (previewMessage?.eventDetail as EventMessageDetailWithType)?.['@odata.type'];
+        const type = (c.lastMessagePreview?.eventDetail as EventMessageDetailWithType)?.['@odata.type'];
         switch (type) {
           case '#microsoft.graph.membersAddedEventMessageDetail':
-            content = 'User added';
-            break;
+            return `${prefix}User added`;
         }
       }
 
       // convert html to text
+      content = rewriteEmojiContent(content);
       content = convert(content);
     }
 
     // handle general chats from people and bots
-    if (previewMessage?.from?.user?.id === myId) {
-      previewString = 'You: ' + content;
-    } else if (previewMessage?.from?.user?.displayName) {
-      previewString = previewMessage?.from?.user?.displayName + ': ' + content;
-    } else if (previewMessage?.from?.application?.displayName) {
-      previewString = previewMessage?.from?.application?.displayName + ': ' + content;
-    } else {
-      previewString = content;
-    }
-
-    return previewString;
+    return `${prefix}${content}`;
   };
 
   const container = mergeClasses(
@@ -368,8 +477,8 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     <div className={container}>
       <div className={styles.profileImage}>{getDefaultProfileImage(chatInternal)}</div>
       <div className={styles.chatInfo}>
-        <p className={styles.chatTitle}>{inferTitle(chatInternal)}</p>
-        <p className={styles.chatMessage}>{enrichPreviewMessage(chatInternal.lastMessagePreview)}</p>
+        <p className={styles.chatTitle}>{getTitleFromChat(chatInternal)}</p>
+        <p className={styles.chatMessage}>{enrichPreviewMessage(chatInternal)}</p>
       </div>
       <div className={styles.chatTimestamp}>{extractTimestamp(determineCorrectTimestamp(chatInternal))}</div>
     </div>
