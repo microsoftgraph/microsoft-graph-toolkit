@@ -31,9 +31,8 @@ const getMiddleOfElement = (element: Element) => {
 };
 
 describe('mgt-theme-toggle - media behavior tests', () => {
-  before(() => {
-    registerMgtThemeToggleComponent();
-  });
+  registerMgtThemeToggleComponent();
+
   it('should render as checked whe color scheme is dark', async () => {
     await emulateMedia({ colorScheme: 'dark' });
     expect(matchMedia('(prefers-color-scheme: dark)').matches).to.be.true;
@@ -149,5 +148,6 @@ describe('mgt-theme-toggle - tests', () => {
         <label for="direction-switch">Color mode:</label>
       </fluent-switch>`
     );
+    await expect(toggle).shadowDom.to.be.accessible();
   });
 });

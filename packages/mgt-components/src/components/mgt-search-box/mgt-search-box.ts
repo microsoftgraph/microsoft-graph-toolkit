@@ -7,7 +7,7 @@
 
 import { CSSResult, html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { MgtBaseComponent } from '@microsoft/mgt-element';
+import { MgtBaseTaskComponent } from '@microsoft/mgt-element';
 import { fluentSearch } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { strings } from './strings';
@@ -21,15 +21,14 @@ export const registerMgtSearchBoxComponent = () => {
 };
 
 /**
- * **Preview component** Web component used to enter a search value to power search scenarios.
- * Component may change before general availability release.
+ * Web component used to enter a search value to power search scenarios.
  *
  * @fires {CustomEvent<string>} searchTermChanged - Fired when the search term is changed
  *
  * @class MgtSearchBox
  * @extends {MgtBaseComponent}
  */
-export class MgtSearchBox extends MgtBaseComponent {
+export class MgtSearchBox extends MgtBaseTaskComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * user the `css` tag function.
@@ -105,7 +104,7 @@ export class MgtSearchBox extends MgtBaseComponent {
    * @return {TemplateResult}
    * @memberof MgtSearchBox
    */
-  render(): TemplateResult {
+  protected readonly renderContent = (): TemplateResult => {
     return html`
       <fluent-search
         autocomplete="off"
@@ -118,7 +117,7 @@ export class MgtSearchBox extends MgtBaseComponent {
         @change=${this.onInputChanged}
       >
       </fluent-search>`;
-  }
+  };
 
   private readonly onInputChanged = (e: Event) => {
     this.searchTerm = (e.target as HTMLInputElement).value;

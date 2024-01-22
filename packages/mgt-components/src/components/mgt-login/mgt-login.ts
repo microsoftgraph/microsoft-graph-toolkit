@@ -9,7 +9,7 @@ import { CSSResult, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { Providers, ProviderState, MgtTemplatedComponent, IProviderAccount, mgtHtml } from '@microsoft/mgt-element';
+import { Providers, ProviderState, IProviderAccount, mgtHtml, MgtTemplatedTaskComponent } from '@microsoft/mgt-element';
 
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
@@ -26,6 +26,7 @@ import '../../styles/style-helper';
 import { fluentListbox, fluentProgressRing, fluentButton, fluentCard } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { registerComponent } from '@microsoft/mgt-element';
+import { TaskStatus } from '@lit/task';
 
 /**
  * loginViewType describes the enum strings that can be passed in to determine
@@ -51,7 +52,7 @@ export const registerMgtLoginComponent = () => {
  *
  * @export
  * @class MgtLogin
- * @extends {MgtBaseComponent}
+ * @extends {MgtTemplatedTaskComponent}
  *
  * @fires {CustomEvent<undefined>} loginInitiated - Fired when login is initiated by the user
  * @fires {CustomEvent<undefined>} loginCompleted - Fired when login completes
@@ -83,7 +84,7 @@ export const registerMgtLoginComponent = () => {
  * @cssprop --login-flyout-command-text-color - {Color} the color for the text of the flyout command button.
  * @cssprop --login-person-avatar-size - {Length} the size of the avatar in the person component. Default is 40px.
  */
-export class MgtLogin extends MgtTemplatedComponent {
+export class MgtLogin extends MgtTemplatedTaskComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -260,13 +261,16 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @protected
    * @returns {TemplateResult}
    */
-  protected render(): TemplateResult {
+  protected renderContent = (): TemplateResult => {
     return html`
       <div class="login-root">
         ${this.renderButton()}
         ${this.renderFlyout()}
-      </div>
-    `;
+      </div>`;
+  };
+
+  protected args(): unknown[] {
+    return [this.providerState];
   }
 
   /**
@@ -324,7 +328,7 @@ export class MgtLogin extends MgtTemplatedComponent {
         aria-expanded="${ifDefined(expandedState)}"
         appearance=${appearance}
         aria-label="${ifDefined(isSignedIn ? undefined : this.strings.signInLinkSubtitle)}"
-        ?disabled=${this.isLoadingState}
+        ?disabled=${this._task.status === TaskStatus.PENDING}
         @click=${this.onClick}
         class=${loginClasses}>
           ${buttonContentTemplate}

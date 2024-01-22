@@ -12,7 +12,7 @@ const useStyles = makeStyles({
       borderLeftStyle: 'solid',
       paddingLeft: '6px'
     },
-    '&mgt-person': {
+    '& mgt-person': {
       '--font-size': '12px',
       '--person-avatar-size': '16px'
     }
@@ -72,7 +72,7 @@ export function Messages(props: MgtTemplateProps) {
         <div className={styles.header}>
           <div>
             <Person
-              personQuery={email.sender.emailAddress.address}
+              personQuery={email.sender?.emailAddress?.address}
               view={ViewType.oneline}
               personCardInteraction={PersonCardInteraction.hover}
             />
