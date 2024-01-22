@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@microsoft/mgt": "*"
+    "@microsoft/mgt": "<mgt-version></mgt-version>"
   },
   "devDependencies": {
     "vite": "^5.0.8"
