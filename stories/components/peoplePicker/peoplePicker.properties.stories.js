@@ -24,8 +24,8 @@ export const showPresence = () => html`
 
 export const personCard = () => html`
    <div class="example">
-     <div style="margin-bottom:10px">Show Person Card</div>
-     <mgt-people-picker show-person-card></mgt-people-picker>
+     <div>Person Card</div>
+     <mgt-people-picker person-card="hover"></mgt-people-picker>
    </div>
  `;
 

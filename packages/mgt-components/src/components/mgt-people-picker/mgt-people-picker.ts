@@ -358,11 +358,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   @property({
-    attribute: 'show-person-card',
+    attribute: 'person-card',
     converter: (value, _type) => {
       value = value.toLowerCase();
       if (typeof PersonCardInteraction[value] === 'undefined') {
-        return PersonCardInteraction.hover;
+        return PersonCardInteraction.none;
       } else {
         return PersonCardInteraction[value] as PersonCardInteraction;
       }
@@ -840,7 +840,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         @blur="${this.lostFocus}"
         ?disabled=${this.disabled}
       >
-        <span slot="start">${startSlot}</span>
+        <span slot="start" class="selected-people-slot">${startSlot}</span>
       </fluent-text-field>
     `;
   }
@@ -1053,14 +1053,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
     return mgtHtml`
-        <mgt-person
-          tabindex="1"
-          class="person-image-selected"
-          .personDetails=${person}
-          .fetchImage=${!this.disableImages}
-          .view=${ViewType.oneline}
-          .personCardInteraction=${this.personCardInteraction}
-          .usage=${'people-picker'}
+       <mgt-person
+         tabindex="-1"
+         class="person-image-selected"
+         .personDetails=${person}
+         .fetchImage=${!this.disableImages}
+         .view=${ViewType.oneline}
+         .personCardInteraction=${this.personCardInteraction}
+         .usage=${'people-picker'}
         ></mgt-person>
      `;
   }
