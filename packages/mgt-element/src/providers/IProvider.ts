@@ -46,10 +46,42 @@ export abstract class IProvider implements AuthenticationProvider {
   public get isMultiAccountSupportedAndEnabled(): boolean {
     return false;
   }
+
   private _state: ProviderState;
   private readonly _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private readonly _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
   private _baseURL: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
+
+  private _approvedScopes: string[] = [];
+  public get approvedScopes(): string[] {
+    return this._approvedScopes;
+  }
+
+  public set approvedScopes(value: string[]) {
+    this._approvedScopes = value.map(v => v.toLowerCase());
+  }
+
+  public hasAtLeastOneApprovedScope(requiredScopeSet: string[]): boolean {
+    return requiredScopeSet.some(s => this.approvedScopes.includes(s.toLowerCase().trim()));
+  }
+
+  public hasAllOneApprovedScope(requiredScopeSet: string[]): boolean {
+    return requiredScopeSet.some(s => !this.approvedScopes.includes(s.toLowerCase().trim()));
+  }
+
+  /**
+   * Examines the currently consented scopes for any match in the requiredScopeSet to determine what, if any, scopes need to be consented to
+   *
+   * @param {string[]} requiredScopeSet an array of scopes to be checked
+   * @returns {string[]} if any matches in requiredScopeSet exist then an empty array is returns, otherwise an array containing the first element in the requiredScopeSet is returned
+   */
+  public needsAdditionalScopes(requiredScopeSet: string[]): string[] {
+    const reqScopes: string[] = [];
+    if (requiredScopeSet.length && !this.hasAtLeastOneApprovedScope(requiredScopeSet)) {
+      reqScopes.push(requiredScopeSet[0].trim());
+    }
+    return reqScopes;
+  }
 
   /**
    * The base URL to be used in the graph client config.
