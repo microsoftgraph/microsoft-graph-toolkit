@@ -1159,7 +1159,11 @@ detail: ${JSON.stringify(eventDetail)}`);
    * Emits the error state to the stateful client.
    */
   private readonly updateErrorState = (e: Error) => {
-    error(e?.message);
+    if (e?.message) {
+      error(e?.message);
+    } else {
+      error('an unknown error occurred', e);
+    }
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.status = 'error';
       draft.activeErrorMessages = [e];
