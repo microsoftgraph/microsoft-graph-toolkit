@@ -66,12 +66,13 @@ export const getUserPresence = async (graph: IGraph, userId?: string): Promise<P
 };
 
 /**
- * async promise, allows developer to get person presense by providing array of IDynamicPerson
+ * Async promise, allows developer to get person presense by providing array of IDynamicPerson.
+ * BypassCacheRead forces all presence to be queried from the graph but will still update the cache.
  *
  * @returns {}
  * @memberof BetaGraph
  */
-export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicPerson[]) => {
+export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicPerson[], bypassCacheRead = false) => {
   if (!people || people.length === 0) {
     return {};
   }
@@ -90,10 +91,15 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
       const id = person.id;
       peoplePresence[id] = null;
       let presence: CachePresence;
-      if (getIsPresenceCacheEnabled()) {
+      if (!bypassCacheRead && getIsPresenceCacheEnabled()) {
         presence = await cache.getValue(id);
       }
-      if (getIsPresenceCacheEnabled() && presence && getPresenceInvalidationTime() > Date.now() - presence.timeCached) {
+      if (
+        !bypassCacheRead &&
+        getIsPresenceCacheEnabled() &&
+        presence &&
+        getPresenceInvalidationTime() > Date.now() - presence.timeCached
+      ) {
         peoplePresence[id] = JSON.parse(presence.presence) as Presence;
       } else {
         peoplePresenceToQuery.push(id);
