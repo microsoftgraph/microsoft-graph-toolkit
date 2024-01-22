@@ -5,7 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { MgtTemplatedComponent, ProviderState, Providers, customElementHelper, mgtHtml } from '@microsoft/mgt-element';
+import {
+  MgtTemplatedTaskComponent,
+  ProviderState,
+  Providers,
+  customElementHelper,
+  mgtHtml
+} from '@microsoft/mgt-element';
 import { Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -22,7 +28,7 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-import { MgtPersonConfig, PersonViewType, avatarType } from './mgt-person-types';
+import { MgtPersonConfig, avatarType } from './mgt-person-types';
 import { strings } from './strings';
 import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -107,7 +113,7 @@ export const registerMgtPersonComponent = () => {
  *
  * @cssprop --person-details-wrapper-width - {Length} the minimum width of the details section. Default is 168px.
  */
-export class MgtPerson extends MgtTemplatedComponent {
+export class MgtPerson extends MgtTemplatedTaskComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -144,21 +150,20 @@ export class MgtPerson extends MgtTemplatedComponent {
    *
    * @type {string}
    */
-  @property({
-    attribute: 'person-query'
-  })
   public get personQuery(): string {
     return this._personQuery;
   }
+  @property({
+    attribute: 'person-query'
+  })
   public set personQuery(value: string) {
     if (value === this._personQuery) {
       return;
     }
 
     this._personQuery = value;
-    this._personDetailsInternal = null;
     this._personDetails = null;
-    void this.requestStateUpdate();
+    this.personDetailsInternal = null;
   }
 
   /**
@@ -166,13 +171,13 @@ export class MgtPerson extends MgtTemplatedComponent {
    *
    * @type {IDynamicPerson}
    */
+  public get fallbackDetails(): IDynamicPerson {
+    return this._fallbackDetails;
+  }
   @property({
     attribute: 'fallback-details',
     type: Object
   })
-  public get fallbackDetails(): IDynamicPerson {
-    return this._fallbackDetails;
-  }
   public set fallbackDetails(value: IDynamicPerson) {
     if (value === this._fallbackDetails) {
       return;
@@ -183,8 +188,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this.personDetailsInternal) {
       return;
     }
-
-    void this.requestStateUpdate();
   }
 
   /**
@@ -192,21 +195,20 @@ export class MgtPerson extends MgtTemplatedComponent {
    *
    * @type {string}
    */
-  @property({
-    attribute: 'user-id'
-  })
   public get userId(): string {
     return this._userId;
   }
+  @property({
+    attribute: 'user-id'
+  })
   public set userId(value: string) {
     if (value === this._userId) {
       return;
     }
 
     this._userId = value;
-    this._personDetailsInternal = null;
+    this.personDetailsInternal = null;
     this._personDetails = null;
-    void this.requestStateUpdate();
   }
 
   /**
@@ -216,19 +218,18 @@ export class MgtPerson extends MgtTemplatedComponent {
    *
    * @type {string}
    */
-  @property({
-    attribute: 'usage'
-  })
   public get usage(): string {
     return this._usage;
   }
+  @property({
+    attribute: 'usage'
+  })
   public set usage(value: string) {
     if (value === this._usage) {
       return;
     }
 
     this._usage = value;
-    void this.requestStateUpdate();
   }
 
   /**
@@ -260,11 +261,11 @@ export class MgtPerson extends MgtTemplatedComponent {
    *
    * @type {IDynamicPerson}
    */
-  @state()
   private get personDetailsInternal(): IDynamicPerson {
     return this._personDetailsInternal;
   }
 
+  @state()
   private set personDetailsInternal(value: IDynamicPerson) {
     if (this._personDetailsInternal === value) {
       return;
@@ -273,8 +274,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._personDetailsInternal = value;
     this._fetchedImage = null;
     this._fetchedPresence = null;
-
-    void this.requestStateUpdate();
   }
 
   /**
@@ -282,14 +281,14 @@ export class MgtPerson extends MgtTemplatedComponent {
    *
    * @type {IDynamicPerson}
    */
-  @property({
-    attribute: 'person-details',
-    type: Object
-  })
   public get personDetails(): IDynamicPerson {
     return this._personDetails;
   }
 
+  @property({
+    attribute: 'person-details',
+    type: Object
+  })
   public set personDetails(value: IDynamicPerson) {
     if (this._personDetails === value) {
       return;
@@ -298,8 +297,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._personDetails = value;
     this._fetchedImage = null;
     this._fetchedPresence = null;
-
-    void this.requestStateUpdate();
   }
 
   /**
@@ -308,13 +305,13 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtPersonCard
    */
+  public get personImage(): string {
+    return this._personImage || this._fetchedImage;
+  }
   @property({
     attribute: 'person-image',
     type: String
   })
-  public get personImage(): string {
-    return this._personImage || this._fetchedImage;
-  }
   public set personImage(value: string) {
     if (value === this._personImage) {
       return;
@@ -371,6 +368,9 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtPerson
    */
+  public get avatarType(): avatarType {
+    return this._avatarType;
+  }
   @property({
     attribute: 'avatar-type',
     converter: (value): avatarType => {
@@ -382,16 +382,12 @@ export class MgtPerson extends MgtTemplatedComponent {
       return avatarType.photo;
     }
   })
-  public get avatarType(): avatarType {
-    return this._avatarType;
-  }
   public set avatarType(value: avatarType) {
     if (value === this._avatarType) {
       return;
     }
 
     this._avatarType = value;
-    void this.requestStateUpdate();
   }
 
   /**
@@ -400,21 +396,18 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @type {MicrosoftGraph.Presence}
    * @memberof MgtPerson
    */
+  public get personPresence(): Presence {
+    return this._personPresence || this._fetchedPresence;
+  }
   @property({
     attribute: 'person-presence',
     type: Object
   })
-  public get personPresence(): Presence {
-    return this._personPresence || this._fetchedPresence;
-  }
   public set personPresence(value: Presence) {
     if (value === this._personPresence) {
       return;
     }
-
-    const oldValue = this._personPresence;
     this._personPresence = value;
-    this.requestUpdate('personPresence', oldValue);
   }
 
   /**
@@ -505,7 +498,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * Sets what data to be rendered (image only, oneLine, twoLines).
    * Default is 'image'.
    *
-   * @type {ViewType | PersonViewType}
+   * @type {ViewType}
    * @memberof MgtPerson
    */
   @property({
@@ -523,7 +516,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
   })
-  public view: ViewType | PersonViewType;
+  public view: ViewType = ViewType.image;
 
   @state() private _fetchedImage: string;
   @state() private _fetchedPresence: Presence;
@@ -561,17 +554,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.verticalLayout = false;
   }
 
-  /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
-   */
-  public render() {
-    // Loading
-    if (this.isLoadingState && !this.personDetails && !this.personDetailsInternal && !this.fallbackDetails) {
-      return this.renderLoading();
-    }
-
+  protected readonly renderContent = () => {
     // Prep data
     const person = this.personDetails || this.personDetailsInternal || this.fallbackDetails;
     const image = this.getImage();
@@ -627,7 +610,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         ${personTemplate}
       </div>
     `;
-  }
+  };
 
   /**
    * Render the loading state
@@ -636,9 +619,9 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPerson
    */
-  protected renderLoading(): TemplateResult {
+  protected renderLoading = (): TemplateResult => {
     return this.renderTemplate('loading', null) || html``;
-  }
+  };
 
   /**
    * Clears state of the component
@@ -733,7 +716,11 @@ export class MgtPerson extends MgtTemplatedComponent {
         ${hasInitials ? initials : contactIconTemplate}
       </span>
 `;
-    if (hasImage) this.fireCustomEvent('person-image-rendered');
+    if (hasImage) {
+      this.fireCustomEvent('person-image-rendered');
+    } else {
+      this.fireCustomEvent('person-icon-rendered');
+    }
 
     return hasImage ? imageTemplate : textTemplate;
   }
@@ -917,7 +904,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns
    */
   protected renderDetails(personProps: IDynamicPerson, presence?: Presence): TemplateResult {
-    if (!personProps || this.view === ViewType.image || this.view === PersonViewType.avatar) {
+    if (!personProps || this.view === ViewType.image) {
       return html``;
     }
 
@@ -1081,6 +1068,47 @@ export class MgtPerson extends MgtTemplatedComponent {
           .showPresence=${this.showPresence}>
         </mgt-person-card>`
     );
+  }
+
+  // Tracked state
+  // provider.state
+  // this.personDetailsInternal (?? possibly just an output.)
+  // this.verticalLayout
+  // this.view
+  // this.fallbackDetails
+  // this.lineNProperty
+  // this.fetchImage
+  // this._avatarType
+  // this.personImage
+  // this._fetchedImage
+  // this.personDetailsInternal
+  // this.personDetails
+  // this.userId
+  // this.personQuery
+  // this.disableImageFetch
+  // this.showPresence
+  // this.personPresence
+  // this._fetchedPresence
+
+  protected args() {
+    return [
+      this.providerState,
+      this.verticalLayout,
+      this.view,
+      this.fallbackDetails,
+      this.line1Property,
+      this.line2Property,
+      this.line3Property,
+      this.line4Property,
+      this.fetchImage,
+      this._avatarType,
+      this.userId,
+      this.personQuery,
+      this.disableImageFetch,
+      this.showPresence,
+      this.personPresence,
+      this.personDetails
+    ];
   }
 
   /**

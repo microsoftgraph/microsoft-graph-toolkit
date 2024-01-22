@@ -9,11 +9,8 @@ import { MockProvider, Providers } from '@microsoft/mgt-element';
 import { registerMgtPersonComponent } from './mgt-person';
 
 describe('mgt-person - tests', () => {
-  before(() => {
-    registerMgtPersonComponent();
-    Providers.globalProvider = new MockProvider(true);
-  });
-
+  registerMgtPersonComponent();
+  Providers.globalProvider = new MockProvider(true);
   it('should render', async () => {
     const person = await fixture(html`<mgt-person person-query="me" view="twoLines"></mgt-person>`);
     await oneEvent(person, 'person-image-rendered');
@@ -29,6 +26,7 @@ describe('mgt-person - tests', () => {
       </div>`,
       { ignoreAttributes: ['src'] }
     );
+    await expect(person).shadowDom.to.be.accessible();
   });
 
   it('should pop up a flyout on click', async () => {

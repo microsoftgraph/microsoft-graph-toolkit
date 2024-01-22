@@ -6,7 +6,7 @@
  */
 
 import { fluentMenu, fluentMenuItem, fluentButton } from '@fluentui/web-components';
-import { MgtBaseComponent } from '@microsoft/mgt-element';
+import { MgtBaseTaskComponent } from '@microsoft/mgt-element';
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
@@ -34,7 +34,7 @@ export const registerMgtDotOptionsComponent = () => {
  * @extends {MgtBaseComponent}
  */
 
-export class MgtDotOptions extends MgtBaseComponent {
+export class MgtDotOptions extends MgtBaseTaskComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * user the `css` tag function.
@@ -82,11 +82,9 @@ export class MgtDotOptions extends MgtBaseComponent {
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * Invoked from the base class render method when the _task is in a completed state.
    */
-  public render() {
+  public readonly renderContent = () => {
     const menuOptions = Object.keys(this.options);
     return html`
       <fluent-button
@@ -98,7 +96,7 @@ export class MgtDotOptions extends MgtBaseComponent {
       <fluent-menu class=${classMap({ menu: true, open: this.open })}>
         ${menuOptions.map(opt => this.getMenuOption(opt, this.options[opt]))}
       </fluent-menu>`;
-  }
+  };
 
   private readonly handleItemClick = (e: MouseEvent, fn: MenuOptionEventFunction) => {
     e.preventDefault();

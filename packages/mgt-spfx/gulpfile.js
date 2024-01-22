@@ -15,20 +15,18 @@ build.rig.getTasks = function () {
 };
 // add babel-loader and some transforms to handle es2021 language features which are unsupported in webpack 4 by default
 build.configureWebpack.mergeConfig({
-  additionalConfiguration: (generatedConfiguration) => {
+  additionalConfiguration: generatedConfiguration => {
     generatedConfiguration.module.rules.push({
       test: /\.js$/,
       // only run on lit packages in the root node_module folder
-      include: [
-          path.resolve(__dirname, "../../node_modules/lit"),
-      ],
+      include: [path.resolve(__dirname, '../../node_modules/lit'), path.resolve(__dirname, '../../node_modules/@lit')],
       use: {
         loader: 'babel-loader',
         options: {
           plugins: [
-            "@babel/plugin-transform-optional-chaining",
-            "@babel/plugin-transform-nullish-coalescing-operator",
-            "@babel/plugin-transform-logical-assignment-operators"
+            '@babel/plugin-transform-optional-chaining',
+            '@babel/plugin-transform-nullish-coalescing-operator',
+            '@babel/plugin-transform-logical-assignment-operators'
           ]
         }
       }

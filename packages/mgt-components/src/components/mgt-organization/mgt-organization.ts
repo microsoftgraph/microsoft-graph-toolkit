@@ -17,6 +17,7 @@ import { ViewType } from '../../graph/types';
 import { mgtHtml } from '@microsoft/mgt-element';
 import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtPersonComponent } from '../mgt-person/mgt-person';
+import { state } from 'lit/decorators.js';
 
 export const registerMgtOrganizationComponent = () => {
   registerMgtPersonComponent();
@@ -50,12 +51,14 @@ export class MgtOrganization extends BasePersonCardSection {
     return strings;
   }
 
-  private _state: MgtPersonCardState;
-  private _me: User;
+  @state()
+  private _state?: MgtPersonCardState;
+  @state()
+  private _me?: User;
 
-  constructor(state: MgtPersonCardState, me: User) {
+  constructor(cardState: MgtPersonCardState, me: User) {
     super();
-    this._state = state;
+    this._state = cardState;
     this._me = me;
   }
 
@@ -67,8 +70,8 @@ export class MgtOrganization extends BasePersonCardSection {
    */
   public clearState(): void {
     super.clearState();
-    this._state = null;
-    this._me = null;
+    this._state = undefined;
+    this._me = undefined;
   }
 
   /**
