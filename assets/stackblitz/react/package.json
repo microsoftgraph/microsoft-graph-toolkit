@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@microsoft/mgt-element": "*",
-    "@microsoft/mgt-react": "*",
+    "@microsoft/mgt-element": "<mgt-version></mgt-version>",
+    "@microsoft/mgt-react": "<mgt-version></mgt-version>",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

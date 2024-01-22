@@ -1,5 +1,6 @@
 import sdk from '@stackblitz/sdk';
 import { beautifyContent } from '../../utils/beautifyContent';
+import { PACKAGE_VERSION } from '../../../packages/mgt-element/dist/es6/utils/version';
 
 const TEMPLATE_PATH = [window.location.protocol, '//', window.location.host, window.location.pathname]
   .join('')
@@ -19,6 +20,7 @@ const HTML_TEMPLATE_PATH = TEMPLATE_PATH + 'stackblitz/html/';
 const HTML_TEMPLATE_FILES = [
   { name: 'index.html', type: 'html' },
   { name: 'main.css', type: 'css' },
+  { name: 'app.js', type: 'js' },
   { name: 'main.js', type: 'js' },
   { name: 'package.json', type: 'json' },
   { name: 'style.css', type: 'css' }
@@ -71,7 +73,14 @@ let buildFiles = async (templatePath, files, snippets) => {
   const stackblitzFiles = {};
   await Promise.all(
     files.map(async file => {
-      const fileContent = await loadFile(templatePath + file.name);
+      let fileContent = await loadFile(templatePath + file.name);
+
+      if (PACKAGE_VERSION.includes('PR') || window.location.href.includes('localhost')) {
+        fileContent = fileContent.replace(/<mgt-version><\/mgt-version>/g, 'next');
+      } else {
+        fileContent = fileContent.replace(/<mgt-version><\/mgt-version>/g, PACKAGE_VERSION);
+      }
+
       stackblitzFiles[file.name] = beautifyContent(file.type, fileContent);
     })
   );
