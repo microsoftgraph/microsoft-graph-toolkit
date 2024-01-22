@@ -30,7 +30,7 @@ By disambiguating tag names of Microsoft Graph Toolkit components you to avoid c
 
 ### When using no framework web parts
 
-When building SharePoint Framework web parts without a JavaScript framework the `withDisambiguation('foo')` function must be called before registering the the desired components
+When building SharePoint Framework web parts without a JavaScript framework the `withDisambiguation('foo')` function must be called before registering the desired components.
 
 Below is a minimal example web part that demonstrates how to use MGT with disambiguation in SharePoint Framework Web parts. A more complete example is available in the [No Framework Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
 
