@@ -24,15 +24,15 @@ yarn add @microsoft/mgt-spfx-utils @microsoft/mgt-react
 
 Disambiguation is intended to provide developers with a mechanism to use a specific version of MGT in their solution without encountering collisions with other solutions that may be using MGT. Developers building SharePoint customization using MGT should use disambiguation to ensure that their applications function as intended.
 
-By disambiguating tag names of Microsoft Graph Toolkit components you to avoid colliding with SharePoint Framework components built by other developers. When disambiguating tag names, MGT is included in the generated SPFx bundle, increasing its size. It is strongly recommended that you use a disambiguation value unique to your organization and solution to avoid collisions with other solutions, e.g. `contoso-hr-extensions`.
+By disambiguating tag names of Microsoft Graph Toolkit components you avoid colliding with SharePoint Framework components built by other developers. When disambiguating tag names, MGT is included in the generated SPFx bundle, increasing its size. It is strongly recommended that you use a disambiguation value unique to your organization and solution to avoid collisions with other solutions, e.g. `contoso-hr-extensions`.
 
 > **Important:** Since a given web component tag can only be registered once this approach **must** be used along with the `customElementHelper.withDisambiguation('foo')` as this allows developers to create disambiguated tag names.
 
 ### When using no framework web parts
 
-When building SharePoint Framework web parts without a JavaScript framework the `withDisambiguation('foo')` function must be called before registering the desired components.
+When building SharePoint Framework web parts without a JavaScript framework the `customElementHelper.withDisambiguation('foo')` function must be called before registering the desired components.
 
-Below is a minimal example web part that demonstrates how to use MGT with disambiguation in SharePoint Framework Web parts. A more complete example is available in the [No Framework Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
+Below is a minimal example web part that demonstrates how to use MGT with disambiguation in SharePoint Framework Web parts. A more complete example is available in the [No Framework Web Part Sample](https://github.com/pnp/mgt-samples/blob/main/samples/app/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
 
 ```ts
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';

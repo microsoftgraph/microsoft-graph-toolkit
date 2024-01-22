@@ -85,7 +85,7 @@ This removes the registration of a component from being a side effect of importi
 
 MGT is built using [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). Web components use their tag name as a unique key when registering within a browser. Any attempt to register a component using a previously registered tag name results in an error being thrown when calling `CustomElementRegistry.define()`. In scenarios where multiple custom applications can be loaded into a single page this created issues for MGT, most notably in developing solutions using SharePoint Framework.
 
-To allow developers to build web parts MGT and load them on pages along with other applications using MGT we've added a the disambiguation feature to MGT. Using this feature developers can specify a unique string to add to the tag name of all MGT web components in their application.
+To allow developers to build web parts with MGT and load them on pages along with other applications using MGT, we've added a disambiguation feature to MGT. Using this feature, developers can specify a unique string to add to the tag name of all MGT web components in their application.
 
 
 ### Usage in standard HTML and JavaScript
