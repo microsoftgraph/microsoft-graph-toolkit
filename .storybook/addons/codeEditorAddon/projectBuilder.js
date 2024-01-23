@@ -75,7 +75,7 @@ let buildFiles = async (templatePath, files, snippets) => {
     files.map(async file => {
       let fileContent = await loadFile(templatePath + file.name);
 
-      if (PACKAGE_VERSION.includes('PR') || window.location.href.includes('localhost')) {
+      if (PACKAGE_VERSION.toLowerCase().includes('pr') || window.location.href.includes('localhost')) {
         fileContent = fileContent.replace(/<mgt-version><\/mgt-version>/g, 'next');
       } else {
         fileContent = fileContent.replace(/<mgt-version><\/mgt-version>/g, PACKAGE_VERSION);
