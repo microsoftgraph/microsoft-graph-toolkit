@@ -23,6 +23,7 @@ export const LoginToShowAgenda = () => html`
 `;
 
 export const LoginToShowAgendaReact = () => html`
+  <mgt-login></mgt-login>
   <mgt-agenda></mgt-agenda>
   <react>
     import { Agenda, Login } from '@microsoft/mgt-react';
