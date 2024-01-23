@@ -69,6 +69,10 @@ const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
     '& .ui-box': {
       zIndex: 'unset'
+    },
+    '& p': {
+      display: 'inline-flex',
+      justifyContent: 'center'
     }
   },
   chatMessageContainer: {
