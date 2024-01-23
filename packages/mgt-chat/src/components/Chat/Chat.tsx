@@ -74,6 +74,10 @@ const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
     '& .ui-box': {
       zIndex: 'unset'
+    },
+    '& p': {
+      display: 'inline-flex',
+      justifyContent: 'center'
     }
   },
   chatMessageContainer: {
@@ -142,8 +146,8 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                       <Person
                         userId={userId}
                         avatarSize="small"
-                        showPresence={true}
                         personCardInteraction={PersonCardInteraction.hover}
+                        showPresence={true}
                       />
                     );
                   }}

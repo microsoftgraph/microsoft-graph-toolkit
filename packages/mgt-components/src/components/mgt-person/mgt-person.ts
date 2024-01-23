@@ -28,6 +28,7 @@ import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
 import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
+import { PresenceService, PresenceAwareComponent } from '../../utils/PresenceService';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -107,7 +108,7 @@ export const registerMgtPersonComponent = () => {
  *
  * @cssprop --person-details-wrapper-width - {Length} the minimum width of the details section. Default is 168px.
  */
-export class MgtPerson extends MgtTemplatedComponent {
+export class MgtPerson extends MgtTemplatedComponent implements PresenceAwareComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -239,6 +240,17 @@ export class MgtPerson extends MgtTemplatedComponent {
     type: Boolean
   })
   public showPresence: boolean;
+
+  /**
+   * determines if person component refreshes presence
+   *
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'disable-presence-refresh',
+    type: Boolean
+  })
+  public disablePresenceRefresh;
 
   /**
    * determines person component avatar size and apply presence badge accordingly.
@@ -564,6 +576,19 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   /**
+   * Unregisters from presence service if necessary. Note, it does not cause an error
+   * if the component was not registered.
+   *
+   * @memberof MgtAgenda
+   */
+  public disconnectedCallback() {
+    if (this.showPresence && !this.disablePresenceRefresh) {
+      PresenceService.unregister(this);
+    }
+    super.disconnectedCallback();
+  }
+
+  /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
@@ -639,7 +664,22 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderLoading(): TemplateResult {
-    return this.renderTemplate('loading', null) || html``;
+    const loadingTemplate = this.renderTemplate('loading', null);
+    if (loadingTemplate) {
+      return loadingTemplate;
+    }
+
+    const avatarClasses = {
+      'avatar-icon': true,
+      vertical: this.isVertical(),
+      small: !this.isLargeAvatar(),
+      threeLines: this.isThreeLines(),
+      fourLines: this.isFourLines()
+    };
+
+    return html`
+      <i class=${classMap(avatarClasses)} icon='loading'>${this.renderLoadingIcon()}</i>
+    `;
   }
 
   /**
@@ -677,8 +717,19 @@ export class MgtPerson extends MgtTemplatedComponent {
     };
 
     return html`
-       <i class=${classMap(avatarClasses)}></i>
-     `;
+      <i class=${classMap(avatarClasses)} icon='no-data'>${this.renderPersonIcon()}</i>
+    `;
+  }
+
+  /**
+   * Render a loading icon.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtPerson
+   */
+  protected renderLoadingIcon() {
+    return getSvg(SvgIcon.Loading);
   }
 
   /**
@@ -1167,14 +1218,16 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
 
-    // populate presence
     const defaultPresence: Presence = {
       activity: 'Offline',
       availability: 'Offline',
       id: null
     };
 
-    if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
+    if (this.showPresence && !this.disablePresenceRefresh) {
+      this._fetchedPresence = defaultPresence;
+      PresenceService.register(this);
+    } else if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
       try {
         if (details) {
           // setting userId to 'me' ensures only the presence.read permission is required
@@ -1375,4 +1428,26 @@ export class MgtPerson extends MgtTemplatedComponent {
       flyout.open();
     }
   };
+
+  /**
+   * gets the id of the person that presence updates are needed for
+   *
+   * @memberof MgtPerson
+   * @implements {PresenceAwareComponent}
+   * @returns {string | undefined}
+   **/
+  public get presenceId(): string | undefined {
+    return this.personDetailsInternal?.id || this.personDetails?.id || this.fallbackDetails?.id;
+  }
+
+  /**
+   * fires when the presence for the user is changed
+   *
+   * @memberof MgtPerson
+   * @implements {PresenceAwareComponent}
+   * @param {Presence} [presence]
+   **/
+  public onPresenceChange(presence: Presence): void {
+    this.personPresence = presence;
+  }
 }
