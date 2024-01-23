@@ -4339,9 +4339,9 @@ ${display("inline-block")} :host {
         autocomplete="list"
         placeholder=${this.placeholder}>
           ${this.response.map((e=>ye`
-            <fluent-option value=${e.id} @click=${t=>this.handleClick(t,e)}> ${e[this.keyName]} </fluent-option>`))}
+            <fluent-option value=${e.id} @click=${t=>this.handleClick(t,e)}> ${this.getNestedPropertyValue(e,this.keyName)} </fluent-option>`))}
       </fluent-combobox>
-     `}renderGet(){return mgtHtml`
+     `}getNestedPropertyValue(e,t){const a=t.split(".");let c=e;for(const e of a)if(c=c[e],void 0===c)return console.warn(`mgt-picker: Key '${e}' is undefined.`),"";return c}renderGet(){return mgtHtml`
       <mgt-get
         class="mgt-get"
         resource=${this.resource}
