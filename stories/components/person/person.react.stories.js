@@ -43,6 +43,34 @@ export const person = () => html`
   </react>
 `;
 
+export const personCard = () => html`
+   <div class="example">
+     <div style="margin-bottom:10px">Person card Hover</div>
+     <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
+   </div>
+   <div class="example">
+     <div style="margin-bottom:10px">Person card Click</div>
+     <mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>
+   </div>
+
+   <react>
+    import { Person, PersonCardInteraction } from '@microsoft/mgt-react';
+
+    export default () => (
+      <>
+        <div className="example">
+          <div style={{'marginBottom': '10px'}}>Person card Hover</div>
+          <Person personQuery="me" view={ViewType.twolines} personCardInteraction={PersonCardInteraction.hover}></Person>
+        </div>
+        <div className="example">
+        <div style={{'marginBottom': '10px'}}>Person card Click</div>
+          <Person personQuery="me" view={ViewType.twolines} personCardInteraction={PersonCardInteraction.click}></Person>
+        </div>
+      </>
+    );
+  </react>
+ `;
+
 export const events = () => html`
   <div style="margin-bottom: 10px">Click on each line</div>
   <div class="example">
