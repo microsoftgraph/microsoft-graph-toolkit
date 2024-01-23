@@ -54,7 +54,7 @@ export const personCard = () => html`
    </div>
 
    <react>
-    import { Person, PersonCardInteraction } from '@microsoft/mgt-react';
+    import { Person, ViewType, PersonCardInteraction } from '@microsoft/mgt-react';
 
     export default () => (
       <>
