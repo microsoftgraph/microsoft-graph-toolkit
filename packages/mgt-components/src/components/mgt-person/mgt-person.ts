@@ -34,6 +34,7 @@ import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
 import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
+import { personCardConverter } from '../../utils/personCard';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -419,14 +420,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
    */
   @property({
     attribute: 'person-card',
-    converter: value => {
-      value = value.toLowerCase();
-      if (typeof PersonCardInteraction[value] === 'undefined') {
-        return PersonCardInteraction.none;
-      } else {
-        return PersonCardInteraction[value] as PersonCardInteraction;
-      }
-    }
+    converter: personCardConverter
   })
   public personCardInteraction: PersonCardInteraction;
 

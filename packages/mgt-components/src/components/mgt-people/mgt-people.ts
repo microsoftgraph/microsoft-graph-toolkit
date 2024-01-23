@@ -19,6 +19,7 @@ import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
 import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
 import { registerComponent } from '@microsoft/mgt-element';
+import { personCardConverter } from '../../utils/personCard';
 
 export { PersonCardInteraction } from './../PersonCardInteraction';
 
@@ -131,14 +132,7 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
    */
   @property({
     attribute: 'person-card',
-    converter: (value, _type) => {
-      value = value.toLowerCase();
-      if (typeof PersonCardInteraction[value] === 'undefined') {
-        return PersonCardInteraction.hover;
-      } else {
-        return PersonCardInteraction[value] as PersonCardInteraction;
-      }
-    }
+    converter: personCardConverter
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
 

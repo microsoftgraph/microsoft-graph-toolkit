@@ -7,7 +7,6 @@
 
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { TaskStatus } from '@lit/task';
 import {
@@ -49,6 +48,7 @@ import { Person, User } from '@microsoft/microsoft-graph-types';
 import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 import { isGraphError } from '../../graph/isGraphError';
+import { personCardConverter } from '../../utils/personCard';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType, UserType } from '../../graph/graph.people';
@@ -287,14 +287,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    */
   @property({
     attribute: 'person-card',
-    converter: (value, _type) => {
-      value = value.toLowerCase();
-      if (typeof PersonCardInteraction[value] === 'undefined') {
-        return PersonCardInteraction.none;
-      } else {
-        return PersonCardInteraction[value] as PersonCardInteraction;
-      }
-    }
+    converter: personCardConverter
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
 
@@ -849,14 +842,10 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    */
   protected renderSearchResults(people: IDynamicPerson[]) {
     const filteredPeople = people.filter(person => person.id);
-    const resultClasses = classMap({
-      'searched-people-list': true,
-      'person-card': this.personCardInteraction !== PersonCardInteraction.none
-    });
     return html`
       <ul
         id="suggestions-list"
-        class=${resultClasses}
+        class="searched-people-list"
         role="listbox"
         aria-live="polite"
         title=${this.strings.suggestionsTitle}
@@ -898,7 +887,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
           line2-property="jobTitle,mail"
           .personDetails=${person}
           .fetchImage=${!this.disableImages}
-          .personCardInteraction=${this.personCardInteraction}
+          .personCardInteraction=${PersonCardInteraction.none}
           .usage=${'people-picker'}
         ></mgt-person>`
     );
@@ -915,7 +904,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
     return mgtHtml`
        <mgt-person
-         tabindex="-1"
+         tabindex="1"
          class="person-image-selected"
          .personDetails=${person}
          .fetchImage=${!this.disableImages}

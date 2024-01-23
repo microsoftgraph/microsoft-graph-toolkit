@@ -38,8 +38,6 @@ $people-picker-selected-person-avatar-size: var(--people-picker-selected-person-
 
     &::part(start) {
       margin: unset;
-      display: flex;
-      align-items: center;
     }
 
     &::part(control) {
@@ -93,6 +91,7 @@ $people-picker-selected-person-avatar-size: var(--people-picker-selected-person-
       display: flex;
       column-gap: 5px;
       border-radius: 100px;
+      margin-top: 3px;
       background-color: $selected-option-bg;
 
       &.highlighted {
@@ -149,10 +148,6 @@ $people-picker-selected-person-avatar-size: var(--people-picker-selected-person-
       .person-image-result {
         --person-avatar-size: #{$people-picker-result-person-avatar-size};
       }
-    }
-
-    &.person-card {
-      width: 400px;
     }
   }
 
