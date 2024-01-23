@@ -537,7 +537,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         )
         .sort(MessageCreatedComparator);
       draft.onLoadPreviousChatMessages = this._nextLink ? this.loadMoreMessages : undefined;
-      draft.status = this._nextLink ? 'loading messages' : 'ready';
+      draft.status = this._nextLink ? 'loading messages' : !draft.messages.length ? 'no messages' : 'ready';
       draft.chat = this._chat;
       // Keep updating if there was a next link.
       draft.mentions = draft.mentions?.concat(
