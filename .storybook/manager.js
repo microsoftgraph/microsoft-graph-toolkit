@@ -15,9 +15,9 @@ import { ProviderState, LoginType } from '../packages/mgt-element/dist/es6/provi
 import { Msal2Provider } from '../packages/providers/mgt-msal2-provider/dist/es6/Msal2Provider';
 import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from './env';
 import { MockProvider } from '@microsoft/mgt-element';
-import { PACKAGE_VERSION } from '../packages/mgt-element/dist/es6/utils/version';
 import { Login, Person } from '../packages/mgt-react/src/generated/react';
 import './manager.css';
+import { getVersion } from './helpers/versionHelper';
 
 const getClientId = () => {
   const urlParams = new window.URL(window.location.href).searchParams;
@@ -26,7 +26,7 @@ const getClientId = () => {
   return customClientId ? customClientId : CLIENTID;
 };
 
-document.getElementById('mgt-version').innerText = PACKAGE_VERSION;
+document.getElementById('mgt-version').innerText = getVersion();
 
 const mockProvider = new MockProvider(true);
 const msal2Provider = new Msal2Provider({
