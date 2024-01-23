@@ -58,7 +58,7 @@ import {
   updateChatTopic
 } from './graph.chat';
 import { updateMessageContentWithImage } from '../utils/updateMessageContentWithImage';
-import { isChatMessage } from '../utils/types';
+import { GraphChatClientStatus, isChatMessage } from '../utils/types';
 import { rewriteEmojiContentToHTML } from '../utils/rewriteEmojiContent';
 
 // 1x1 grey pixel
@@ -104,15 +104,7 @@ export type GraphChatClient = Pick<
   | 'onDeleteMessage'
 > &
   Pick<SendBoxProps, 'onSendMessage'> & {
-    status:
-      | 'initial'
-      | 'creating server connections'
-      | 'subscribing to notifications'
-      | 'loading messages'
-      | 'no chat id'
-      | 'no messages'
-      | 'ready'
-      | 'error';
+    status: GraphChatClientStatus;
     chat?: Chat;
   } & {
     participants: AadUserConversationMember[];
@@ -416,7 +408,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     }
   }
 
-  public setStatus(status: GraphChatClient['status']) {
+  public setStatus(status: GraphChatClientStatus) {
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.status = status;
       draft.chat = { topic: 'Unknown' };

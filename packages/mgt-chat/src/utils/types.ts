@@ -25,3 +25,16 @@ export const isChatMessage = (msg: Message): msg is ChatMessage => {
 export const isGraphChatMessage = (msg: Message): msg is GraphChatMessage => {
   return 'content' in msg && 'hasUnsupportedContent' in msg && 'rawChatUrl' in msg;
 };
+
+/**
+ * States of a chat.
+ */
+export type GraphChatClientStatus =
+  | 'initial'
+  | 'creating server connections'
+  | 'subscribing to notifications'
+  | 'loading messages'
+  | 'no chat id'
+  | 'no messages'
+  | 'ready'
+  | 'error';
