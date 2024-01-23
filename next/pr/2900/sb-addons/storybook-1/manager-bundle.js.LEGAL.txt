@@ -105,6 +105,13 @@ lit-html/is-server.js:
    * SPDX-License-Identifier: BSD-3-Clause
    */
 
+@lit/task/task.js:
+  /**
+   * @license
+   * Copyright 2017 Google LLC
+   * SPDX-License-Identifier: BSD-3-Clause
+   */
+
 lit-html/directive.js:
   /**
    * @license
