@@ -48,7 +48,7 @@ import { Person, User } from '@microsoft/microsoft-graph-types';
 import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 import { isGraphError } from '../../graph/isGraphError';
-import { personCardConverter } from '../../utils/personCard';
+import { personCardConverter } from '../../utils/personCardConverter';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType, UserType } from '../../graph/graph.people';
@@ -720,7 +720,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
             selectedPeople,
             person => person?.id,
             person => html`
-            <li class="selected-list-item">
+            <li class="selected-list-item" tabindex="-1">
               ${
                 this.renderTemplate(
                   'selected-person',
@@ -857,7 +857,8 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
             <li
               id="${person.id}"
               class="searched-people-list-result"
-              role="option">
+              role="option"
+              @click="${() => this.handleSuggestionClick(person)}">
                 ${this.renderPersonResult(person)}
             </li>
           `
@@ -879,8 +880,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       this.renderTemplate('person', { person }, person.id) ||
       mgtHtml`
          <mgt-person
-          @click="${() => this.handleSuggestionClick(person)}"
-          tabindex="1"
           class="person-image-result"
           ?show-presence=${this.showPresence}
           view="twoLines"
@@ -888,7 +887,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
           .personDetails=${person}
           .fetchImage=${!this.disableImages}
           .personCardInteraction=${PersonCardInteraction.none}
-          .usage=${'people-picker'}
         ></mgt-person>`
     );
   }
@@ -904,7 +902,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
     return mgtHtml`
        <mgt-person
-         tabindex="1"
+         tabindex="0"
          class="person-image-selected"
          .personDetails=${person}
          .fetchImage=${!this.disableImages}
@@ -1669,14 +1667,10 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       // set selected background
       // set aria-selected to true
       const focusedItem = peopleList.children[this._arrowSelectionCount] as HTMLElement;
-      const mgtPerson = focusedItem?.querySelector<MgtPerson>('mgt-person');
 
-      if (focusedItem && mgtPerson) {
+      if (focusedItem) {
         focusedItem.setAttribute('tabindex', '0');
         focusedItem.focus();
-        if (this.personCardInteraction !== PersonCardInteraction.none) {
-          mgtPerson?.showPersonCard();
-        }
         focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         focusedItem.setAttribute('aria-selected', 'true');
         this.input.setAttribute('aria-activedescendant', focusedItem?.id);

@@ -1,6 +1,6 @@
 import { PersonCardInteraction } from '../components/PersonCardInteraction';
 
-export const personCardConverter = (value: string, _type: unknown) => {
+export const personCardConverter = (value: string) => {
   value = value.toLowerCase();
   if (typeof PersonCardInteraction[value] === 'undefined') {
     return PersonCardInteraction.none;

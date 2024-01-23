@@ -19,7 +19,7 @@ import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
 import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
 import { registerComponent } from '@microsoft/mgt-element';
-import { personCardConverter } from '../../utils/personCard';
+import { personCardConverter } from '../../utils/personCardConverter';
 
 export { PersonCardInteraction } from './../PersonCardInteraction';
 
