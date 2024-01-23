@@ -57,7 +57,7 @@ To learn more about authentication providers, see [Providers](./providers.md).
         public render(): void {
             return (
                 <div>
-                    <Person personQuery="me" view={ViewType.threelines}></Person>
+                    <Person personQuery="me" view="threelines"></Person>
                 </div>
             );
         }

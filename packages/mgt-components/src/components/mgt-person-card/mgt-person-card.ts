@@ -20,7 +20,7 @@ import { IGraph } from '@microsoft/mgt-element';
 import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
-import { IDynamicPerson, ViewType } from '../../graph/types';
+import { IDynamicPerson } from '../../graph/types';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -599,7 +599,7 @@ export class MgtPersonCard extends MgtTemplatedTaskComponent implements IHistory
         .personImage=${this.getImage()}
         .personPresence=${this.personPresence}
         .showPresence=${this.showPresence}
-        .view=${ViewType.threelines}
+        view="threelines"
       ></mgt-person>
     `;
   }

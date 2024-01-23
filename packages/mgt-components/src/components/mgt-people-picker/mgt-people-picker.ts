@@ -14,9 +14,18 @@ import {
   getGroupsForGroupIds,
   GroupType,
   getGroup,
-  findGroupsFromGroupIds
+  findGroupsFromGroupIds,
+  isGroupType,
+  groupTypeConverter
 } from '../../graph/graph.groups';
-import { findPeople, getPeople, PersonType, UserType } from '../../graph/graph.people';
+import {
+  findPeople,
+  getPeople,
+  PersonType,
+  personTypeConverter,
+  UserType,
+  userTypeConverter
+} from '../../graph/graph.people';
 import {
   findUsers,
   findGroupMembers,
@@ -25,7 +34,7 @@ import {
   getUsersForUserIds,
   getUsers
 } from '../../graph/graph.user';
-import { IDynamicPerson, ViewType } from '../../graph/types';
+import { IDynamicPerson } from '../../graph/types';
 import {
   Providers,
   ProviderState,
@@ -37,7 +46,6 @@ import {
 import '../../styles/style-helper';
 import { debounce, isValidEmail } from '../../utils/Utils';
 import { MgtPerson, defaultPersonProperties, registerMgtPersonComponent } from '../mgt-person/mgt-person';
-import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
@@ -160,20 +168,9 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    */
   @property({
     attribute: 'type',
-    converter: value => {
-      value = value.toLowerCase();
-      if (!value || value.length === 0) {
-        return PersonType.any;
-      }
-
-      if (typeof PersonType[value] === 'undefined') {
-        return PersonType.any;
-      } else {
-        return PersonType[value] as PersonType;
-      }
-    }
+    converter: value => personTypeConverter(value, 'any')
   })
-  public type: PersonType = PersonType.any;
+  public type: PersonType = 'any';
 
   /**
    * type of group to search for - requires personType to be
@@ -184,8 +181,9 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   @property({
     attribute: 'group-type',
     converter: value => {
+      const defaultResult: GroupType[] = ['any'];
       if (!value || value.length === 0) {
-        return GroupType.any;
+        return defaultResult;
       }
 
       const values = value.split(',');
@@ -193,21 +191,19 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
 
       for (let v of values) {
         v = v.trim();
-        if (typeof GroupType[v] !== 'undefined') {
-          groupTypes.push(GroupType[v] as GroupType);
+        if (isGroupType(v)) {
+          groupTypes.push(groupTypeConverter(v));
         }
       }
 
       if (groupTypes.length === 0) {
-        return GroupType.any;
+        return defaultResult;
       }
 
-      // eslint-disable-next-line no-bitwise
-      const gt = groupTypes.reduce((a, c) => a | c);
-      return gt;
+      return groupTypes;
     }
   })
-  public groupType: GroupType = GroupType.any;
+  public groupType: GroupType[] = ['any'];
 
   /**
    * The type of user to search for. Default is any.
@@ -217,13 +213,9 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    */
   @property({
     attribute: 'user-type',
-    converter: value => {
-      value = value.toLowerCase();
-
-      return !value || typeof UserType[value] === 'undefined' ? UserType.any : (UserType[value] as UserType);
-    }
+    converter: value => userTypeConverter(value)
   })
-  public userType: UserType = UserType.any;
+  public userType: UserType = 'any';
 
   /**
    * whether the return should contain a flat list of all nested members
@@ -864,9 +856,9 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
           view="twoLines"
           line2-property="jobTitle,mail"
           .personDetails=${person}
-          .fetchImage=${!this.disableImages}>
-          .personCardInteraction=${PersonCardInteraction.none}
-        </mgt-person>`
+          ?fetch-image=${!this.disableImages}
+          person-card="none"
+        ></mgt-person>`
     );
   }
 
@@ -884,10 +876,10 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
          tabindex="-1"
          class="person-image-selected"
          .personDetails=${person}
-         .fetchImage=${!this.disableImages}
-         .view=${ViewType.oneline}
-         .personCardInteraction=${PersonCardInteraction.none}>
-        </mgt-person>
+         ?fetch-image=${!this.disableImages}
+         view="oneline"
+         person-card="none"
+        ></mgt-person>
      `;
   }
 
@@ -919,7 +911,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
             if (this._groupPeople === null) {
               if (this.groupId) {
                 try {
-                  if (this.type === PersonType.group) {
+                  if (this.type === 'group') {
                     this._groupPeople = await findGroupMembers(
                       graph,
                       null,
@@ -944,7 +936,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
                   this._groupPeople = [];
                 }
               } else {
-                if (this.type === PersonType.group) {
+                if (this.type === 'group') {
                   try {
                     this._groupPeople = await getGroupsForGroupIds(graph, this.groupIds, this.groupFilters);
                   } catch (_) {
@@ -969,18 +961,18 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
               }
             }
             people = this._groupPeople || [];
-          } else if (this.type === PersonType.person || this.type === PersonType.any) {
+          } else if (this.type === 'person' || this.type === 'any') {
             if (this.userIds.length) {
               people = await getUsersForUserIds(graph, this.userIds, '', this.userFilters);
             } else {
-              const isUserOrContactType = this.userType === UserType.user || this.userType === UserType.contact;
+              const isUserOrContactType = this.userType === 'user' || this.userType === 'contact';
               if (this.userFilters && isUserOrContactType) {
                 people = await getUsers(graph, this.userFilters, this.showMax);
               } else {
                 people = await getPeople(graph, this.userType, this.peopleFilters, this.showMax);
               }
             }
-          } else if (this.type === PersonType.group) {
+          } else if (this.type === 'group') {
             let groups = (await findGroups(graph, '', this.showMax, this.groupType, this.groupFilters)) || [];
             // eslint-disable-next-line @typescript-eslint/dot-notation
             if (groups.length > 0 && groups[0]['value']) {
@@ -1034,10 +1026,10 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
               this.peopleFilters
             )) || [];
         } else {
-          if (this.type === PersonType.person || this.type === PersonType.any) {
+          if (this.type === 'person' || this.type === 'any') {
             try {
               // Default UserType === any
-              if (this.userType === UserType.contact || this.userType === UserType.user) {
+              if (this.userType === 'contact' || this.userType === 'user') {
                 // we might have a user-filters property set, search for users with it.
                 if (this.userIds?.length) {
                   // has the user-ids property set
@@ -1076,12 +1068,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
 
             // Don't follow this path if a people-filters attribute is set on the component as the
             // default type === PersonType.person
-            if (
-              people &&
-              people.length < this.showMax &&
-              this.userType !== UserType.contact &&
-              this.type !== PersonType.person
-            ) {
+            if (people && people.length < this.showMax && this.userType !== 'contact' && this.type !== 'person') {
               try {
                 const users = (await findUsers(graph, input, this.showMax, this.userFilters)) || [];
 
@@ -1098,7 +1085,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
             }
           }
 
-          if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
+          if ((this.type === 'group' || this.type === 'any') && people.length < this.showMax) {
             if (this.groupIds.length) {
               try {
                 people = await findGroupsFromGroupIds(

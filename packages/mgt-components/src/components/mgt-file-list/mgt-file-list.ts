@@ -37,7 +37,7 @@ import {
 } from '../../graph/graph.files';
 import './mgt-file-upload/mgt-file-upload';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
-import { OfficeGraphInsightString, ViewType } from '../../graph/types';
+import { OfficeGraphInsightString, ViewType, viewTypeConverter } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
 import { MgtFile, registerMgtFileComponent } from '../mgt-file/mgt-file';
@@ -253,21 +253,9 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
    */
   @property({
     attribute: 'item-view',
-    converter: value => {
-      if (!value || value.length === 0) {
-        return ViewType.threelines;
-      }
-
-      value = value.toLowerCase();
-
-      if (typeof ViewType[value] === 'undefined') {
-        return ViewType.threelines;
-      } else {
-        return ViewType[value] as ViewType;
-      }
-    }
+    converter: value => viewTypeConverter(value, 'threelines')
   })
-  public itemView = ViewType.threelines;
+  public itemView: ViewType = 'threelines';
 
   /**
    * allows developer to provide file type to filter the list

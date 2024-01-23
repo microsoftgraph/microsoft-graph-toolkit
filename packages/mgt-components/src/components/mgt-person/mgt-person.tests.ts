@@ -12,7 +12,7 @@ describe('mgt-person - tests', () => {
   registerMgtPersonComponent();
   Providers.globalProvider = new MockProvider(true);
   it('should render', async () => {
-    const person = await fixture(html`<mgt-person person-query="me" view="twoLines"></mgt-person>`);
+    const person = await fixture(html`<mgt-person person-query="me" view="twolines"></mgt-person>`);
     await oneEvent(person, 'person-image-rendered');
     await expect(person).shadowDom.to.equal(
       `<div class=" person-root twolines " dir="ltr">
@@ -30,7 +30,7 @@ describe('mgt-person - tests', () => {
   });
 
   it('should pop up a flyout on click', async () => {
-    const person = await fixture(html`<mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>`);
+    const person = await fixture(html`<mgt-person person-query="me" view="twolines" person-card="click"></mgt-person>`);
     await oneEvent(person, 'person-image-rendered');
     await expect(person).shadowDom.to.equal(
       `<div class=" person-root twolines " dir="ltr"tabindex="0">
