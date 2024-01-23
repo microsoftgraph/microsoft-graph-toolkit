@@ -7,7 +7,7 @@
 
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { MgtBaseComponent } from '@microsoft/mgt-element';
+import { MgtBaseTaskComponent } from '@microsoft/mgt-element';
 import { fluentSwitch } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { applyTheme } from '../../styles/theme-manager';
@@ -26,9 +26,9 @@ export const registerMgtThemeToggleComponent = () => {
  * @fires {CustomEvent<boolean>} darkmodechanged - Fired when dark mode is toggled by a user action
  *
  * @class MgtDarkToggle
- * @extends {MgtBaseComponent}
+ * @extends {MgtBaseTaskComponent}
  */
-export class MgtThemeToggle extends MgtBaseComponent {
+export class MgtThemeToggle extends MgtBaseTaskComponent {
   constructor() {
     super();
     const prefersDarkMode = window.matchMedia('(prefers-color-scheme:dark)').matches;

@@ -16,7 +16,7 @@ import { TemplateHelper } from '../utils/TemplateHelper';
 /**
  * Lookup for rendered component templates and contexts by slot name.
  */
-type RenderedTemplates = Record<
+export type RenderedTemplates = Record<
   string,
   {
     /**
@@ -36,7 +36,7 @@ export interface TemplateRenderedData {
   element: HTMLElement;
 }
 
-type OrderedHtmlTemplate = HTMLTemplateElement & { templateOrder: number };
+export type OrderedHtmlTemplate = HTMLTemplateElement & { templateOrder: number };
 
 /**
  * An abstract class that defines a templatable web component
@@ -45,6 +45,7 @@ type OrderedHtmlTemplate = HTMLTemplateElement & { templateOrder: number };
  * @abstract
  * @class MgtTemplatedComponent
  * @extends {MgtBaseComponent}
+ * @deprecated Use MgtTemplatedTaskComponent instead
  *
  * @fires {CustomEvent<MgtElement.TemplateRenderedData>} templateRendered - fires when a template is rendered
  */
