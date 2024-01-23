@@ -246,7 +246,8 @@ export class MgtFile extends MgtTemplatedTaskComponent {
   @property({ attribute: 'line3-property' }) public line3Property: string;
 
   /**
-   * Sets what data to be rendered (file icon only, oneLine, twoLines threeLines).
+   * Sets what data will be rendered.
+   * Valid options are 'image', 'oneline', 'twolines', 'threelines', or 'fourlines'
    * Default is 'threeLines'.
    *
    * @type {ViewType}

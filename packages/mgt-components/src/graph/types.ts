@@ -35,7 +35,7 @@ export type IDynamicPerson = (IUser | IContact | IGroup) & {
 export type AvatarSize = 'small' | 'large' | 'auto';
 
 /**
- * Insight string types used to retrive OneDrive files
+ * Insight string types used to retrieve OneDrive files
  */
 export type OfficeGraphInsightString = 'trending' | 'used' | 'shared';
 
@@ -58,33 +58,6 @@ export const viewTypeConverter = (value: string, defaultValue: ViewType = 'twoli
   }
   return defaultValue;
 };
-
-// {
-//   /**
-//    * Render only the avatar
-//    */
-//   image = 2,
-
-//   /**
-//    * Render the avatar and one line of text
-//    */
-//   oneline = 3,
-
-//   /**
-//    * Render the avatar and two lines of text
-//    */
-//   twolines = 4,
-
-//   /**
-//    * Render the avatar and three lines of text
-//    */
-//   threelines = 5,
-
-//   /**
-//    * Render the avatar and four lines of text
-//    */
-//   fourlines = 6
-// }
 
 /**
  * Postion describes the position of the dropdown

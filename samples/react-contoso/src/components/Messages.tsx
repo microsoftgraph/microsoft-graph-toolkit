@@ -71,7 +71,7 @@ export function Messages(props: MgtTemplateProps) {
       <a className={styles.link} href={email.webLink} target="_blank" rel="noreferrer">
         <div className={styles.header}>
           <div>
-            <Person personQuery={email.sender?.emailAddress?.address} personCardInteraction="hover" />
+            <Person personQuery={email.sender?.emailAddress?.address} personCardInteraction="hover" view="oneline" />
           </div>
         </div>
         <div className={styles.title}>

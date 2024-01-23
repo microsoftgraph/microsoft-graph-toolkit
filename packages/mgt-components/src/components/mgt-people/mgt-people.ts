@@ -123,7 +123,8 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
 
   /**
    * Sets how the person-card is invoked
-   * Set to "none" to not show the card
+   * Valid options are: 'none', 'hover', or 'click'
+   * Set to 'none' to not show the card
    *
    * @type {PersonCardInteraction}
    * @memberof MgtPerson

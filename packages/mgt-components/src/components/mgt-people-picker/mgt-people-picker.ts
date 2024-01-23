@@ -162,7 +162,8 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   })
   public groupIds: string[] = [];
   /**
-   * value determining if search is filtered to a group.
+   * Value determining if search is filtered to a group.
+   * Valid options are 'any', 'person', 'group'
    *
    * @type {PersonType}
    */
@@ -173,8 +174,9 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   public type: PersonType = 'any';
 
   /**
-   * type of group to search for - requires personType to be
-   * set to "Group" or "All"
+   * Type of groups to search for - requires personType to be set to "Group" or "All"
+   * Valid values are 'any', 'unified', 'security', 'mailenabledsecurity', 'distribution'
+   * Default is ['any'].
    *
    * @type {GroupType}
    */
@@ -206,7 +208,9 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   public groupType: GroupType[] = ['any'];
 
   /**
-   * The type of user to search for. Default is any.
+   * The type of user to search for.
+   * Valid options are 'any', 'user', 'contact'
+   * Default is any.
    *
    * @type {UserType}
    * @memberof MgtPeoplePicker

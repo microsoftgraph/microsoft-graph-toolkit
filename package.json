@@ -56,7 +56,7 @@
     "setLicense": "gulp setLicense",
     "test": "npm run wtr:coverage",
     "version:tsc": "tsc -v",
-    "wtr": "wtr --puppeteer",
+    "wtr": "wtr --playwright",
     "wtr:coverage": "wtr --playwright --coverage",
     "wtr:watch": "wtr --playwright --watch"
   },

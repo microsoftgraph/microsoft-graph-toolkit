@@ -243,7 +243,8 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
 
   /**
    * determines person component avatar size and apply presence badge accordingly.
-   * Default is "auto". When you set the view > 1, it will default to "auto".
+   * Valid options are 'small', 'large', and 'auto'
+   * Default is "auto". When you set the view more than oneline, it will default to "auto".
    *
    * @type {AvatarSize}
    */
@@ -360,8 +361,8 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
   public verticalLayout: boolean;
 
   /**
-   * Determines and sets person avatar
-   *
+   * Determines and sets person avatar view
+   * Valid options are 'photo' or 'initials'
    *
    * @type {AvatarType}
    * @memberof MgtPerson
@@ -394,6 +395,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
 
   /**
    * Sets how the person-card is invoked
+   * Valid options are: 'none', 'hover', or 'click'
    * Set to 'none' to not show the card
    *
    * @type {PersonCardInteraction}
@@ -470,7 +472,8 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
   @property({ attribute: 'line4-property' }) public line4Property: string;
 
   /**
-   * Sets what data to be rendered (image only, oneLine, twoLines).
+   * Sets what data to be rendered.
+   * Valid options are 'image', 'oneline', 'twolines', 'threelines', or 'fourlines'
    * Default is 'image'.
    *
    * @type {ViewType}
