@@ -1,4 +1,4 @@
-import { registerMgtMockProvider, registerMgtComponents } from './node_modules/@microsoft/mgt/dist/es6/index.js';
+import { registerMgtComponents, Providers, MockProvider } from './node_modules/@microsoft/mgt/dist/es6/index.js';
 
-registerMgtMockProvider();
+Providers.globalProvider = new MockProvider(true);
 registerMgtComponents();
