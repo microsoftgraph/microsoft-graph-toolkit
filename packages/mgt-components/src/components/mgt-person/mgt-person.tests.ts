@@ -82,7 +82,7 @@ describe('mgt-person - tests', () => {
         givenName: 'Brian',
         surname: 'Herbert',
         personType: {}
-      })}' view="twoLines"></mgt-person>`
+      })}' view="twolines"></mgt-person>`
     );
     await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('BH');
   });
@@ -96,7 +96,7 @@ describe('mgt-person - tests', () => {
         givenName: null,
         surname: null,
         personType: {}
-      })}' view="twoLines"></mgt-person>`);
+      })}' view="twolines"></mgt-person>`);
     await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('FH');
   });
 
@@ -108,7 +108,7 @@ describe('mgt-person - tests', () => {
         givenName: 'Frank',
         surname: null,
         personType: {}
-      })}' view="twoLines"></mgt-person>`);
+      })}' view="twolines"></mgt-person>`);
     await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('F');
   });
 
@@ -120,7 +120,7 @@ describe('mgt-person - tests', () => {
         givenName: 'Frank',
         surname: '',
         personType: {}
-      })}' view="twoLines"></mgt-person>`);
+      })}' view="twolines"></mgt-person>`);
     await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('F');
   });
 
@@ -132,7 +132,7 @@ describe('mgt-person - tests', () => {
         givenName: null,
         surname: 'Herbert',
         personType: {}
-      })}' view="twoLines"></mgt-person>`);
+      })}' view="twolines"></mgt-person>`);
     await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('H');
   });
   it('should render with last initial when only surname is populated and given name is an empty string', async () => {
@@ -143,7 +143,7 @@ describe('mgt-person - tests', () => {
         givenName: '',
         surname: 'Herbert',
         personType: {}
-      })}' view="twoLines"></mgt-person>`);
+      })}' view="twolines"></mgt-person>`);
     await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('H');
   });
 
@@ -155,7 +155,7 @@ describe('mgt-person - tests', () => {
         givenName: null,
         surname: null,
         personType: {}
-      })}' view="twoLines"></mgt-person>`);
+      })}' view="twolines"></mgt-person>`);
     await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('F');
   });
 
@@ -167,7 +167,7 @@ describe('mgt-person - tests', () => {
         givenName: null,
         surname: null,
         personType: {}
-      })}' view="twoLines"></mgt-person>`);
+      })}' view="twolines"></mgt-person>`);
     await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('FV');
   });
 });

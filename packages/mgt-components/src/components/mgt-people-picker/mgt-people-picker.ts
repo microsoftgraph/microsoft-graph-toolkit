@@ -857,7 +857,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
          <mgt-person
           class="person-image-result"
           ?show-presence=${this.showPresence}
-          view="twoLines"
+          view="twolines"
           line2-property="jobTitle,mail"
           .personDetails=${person}
           ?fetch-image=${!this.disableImages}

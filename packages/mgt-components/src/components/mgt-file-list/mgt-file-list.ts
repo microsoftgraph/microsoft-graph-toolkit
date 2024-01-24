@@ -245,8 +245,8 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
   public insightType: OfficeGraphInsightString;
 
   /**
-   * Sets what data to be rendered (file icon only, oneLine, twoLines threeLines).
-   * Default is 'threeLines'.
+   * Sets what data to be rendered (file icon only, oneline, twolines threelines).
+   * Default is 'threelines'.
    *
    * @type {ViewType}
    * @memberof MgtFileList

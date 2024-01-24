@@ -248,7 +248,7 @@ export class MgtFile extends MgtTemplatedTaskComponent {
   /**
    * Sets what data will be rendered.
    * Valid options are 'image', 'oneline', 'twolines', 'threelines', or 'fourlines'
-   * Default is 'threeLines'.
+   * Default is 'threelines'.
    *
    * @type {ViewType}
    * @memberof MgtFile

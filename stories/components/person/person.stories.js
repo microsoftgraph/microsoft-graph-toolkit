@@ -15,7 +15,7 @@ export default {
   tags: ['autodocs'],
   parameters: {
     docs: {
-      source: { code: '<mgt-person person-query="me" view="twoLines"></mgt-person>' }
+      source: { code: '<mgt-person person-query="me" view="twolines"></mgt-person>' }
     }
   }
 };
@@ -23,13 +23,13 @@ export default {
 export const person = () => html`
   <mgt-person person-query="me"></mgt-person>
   <br>
-  <mgt-person person-query="me" view="oneLine"></mgt-person>
+  <mgt-person person-query="me" view="oneline"></mgt-person>
   <br>
-  <mgt-person person-query="me" view="twoLines"></mgt-person>
+  <mgt-person person-query="me" view="twolines"></mgt-person>
   <br>
-  <mgt-person person-query="me" view="threeLines"></mgt-person>
+  <mgt-person person-query="me" view="threelines"></mgt-person>
   <br>
-  <mgt-person person-query="me" view="fourLines"></mgt-person>
+  <mgt-person person-query="me" view="fourlines"></mgt-person>
 `;
 
 export const events = () => html`
@@ -106,7 +106,7 @@ export const RTL = () => html`
       <mgt-person person-query="me" class="example" vertical-layout id="online3" view="threelines"></mgt-person>
     </div>
     <div class="row">
-      <mgt-person person-query="me" class="example" vertical-layout id="online4" view="fourLines"></mgt-person>
+      <mgt-person person-query="me" class="example" vertical-layout id="online4" view="fourlines"></mgt-person>
     </div>
   </body>
   <style>
@@ -128,7 +128,7 @@ export const personVertical = () => html`
   <mgt-person person-query="me" class="example" vertical-layout view="threelines" class="example"></mgt-person>
 </div>
 <div class="row">
-  <mgt-person person-query="me" class="example" vertical-layout view="fourLines" class="example"></mgt-person>
+  <mgt-person person-query="me" class="example" vertical-layout view="fourlines" class="example"></mgt-person>
 </div>
 
 <!-- With Presence; Check JS tab -->
@@ -143,12 +143,12 @@ export const personVertical = () => html`
   <mgt-person person-query="me" class="example" vertical-layout id="online3" show-presence view="threelines" class="example"></mgt-person>
 </div>
 <div class="row">
-  <mgt-person person-query="me" class="example" vertical-layout id="online4" show-presence view="fourLines" class="example"></mgt-person>
+  <mgt-person person-query="me" class="example" vertical-layout id="online4" show-presence view="fourlines" class="example"></mgt-person>
 </div>
 
 <!-- Person unauthenticated vertical layout-->
 <div class="row">
-	<mgt-person person-query="mbowen" vertical-layout view="twoLines" fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'>
+	<mgt-person person-query="mbowen" vertical-layout view="twolines" fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'>
 	</mgt-person>
 </div>
 

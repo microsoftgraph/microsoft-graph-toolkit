@@ -621,8 +621,8 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
       noline: this.isNoLine(),
       oneline: this.isOneLine(),
       twolines: this.isTwoLines(),
-      threeLines: this.isThreeLines(),
-      fourLines: this.isFourLines()
+      threelines: this.isThreeLines(),
+      fourlines: this.isFourLines()
     };
 
     return html`
