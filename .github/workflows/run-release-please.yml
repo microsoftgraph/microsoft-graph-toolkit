@@ -1,6 +1,5 @@
 # when the main branch is updated this workflow will run and create or update a combined [release PR](https://github.com/googleapis/release-please#whats-a-release-pr)
-# upon approval of the release PR as it adds a v3.x tag the [push-release.yml](./push-release.yml) workflow will run, push the release to npm and update the GitHub
-# release with the mgt-spfx sppkg file
+# upon approval of the release PR as it adds a v3.x tag the [push-release.yml](./push-release.yml) workflow will run, push the release to npm
 on:
   push:
     branches:

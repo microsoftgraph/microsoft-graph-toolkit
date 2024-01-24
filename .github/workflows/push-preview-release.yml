@@ -71,9 +71,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Attach mgt-spfx solution to GitHub release
-        run: node scripts/uploadSpfxSolution.js ${{secrets.GITHUB_TOKEN}} ${{needs.version.outputs.package-version}}
-
       - name: ReleaseNotes
         uses: anton-yurchenko/git-release@v5.0
         env:

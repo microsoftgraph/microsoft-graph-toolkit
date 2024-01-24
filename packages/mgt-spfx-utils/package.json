@@ -38,11 +38,8 @@
   "license": "MIT",
   "dependencies": {
     "@microsoft/mgt-components": "*",
-    "@types/react": "^17.0.0",
-    "react": "^17.0.1"
-  },
-  "resolutions": {
-    "react": "16.13.1"
+    "@types/react": "17.0.45",
+    "react": "17.0.1"
   },
   "publishConfig": {
     "access": "public"
