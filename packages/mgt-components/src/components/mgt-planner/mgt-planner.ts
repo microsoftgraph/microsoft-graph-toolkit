@@ -27,7 +27,6 @@ import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
-import { PersonCardInteraction } from '../PersonCardInteraction';
 import { styles } from './mgt-planner-css';
 import { strings } from './strings';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource } from './task-sources';
@@ -1118,7 +1117,7 @@ export class MgtPlanner extends MgtTemplatedTaskComponent {
       <mgt-people
         class="people people-${taskId}"
         .userIds=${assignedPeople}
-        .personCardInteraction=${PersonCardInteraction.none}
+        person-card="none"
         @click=${(e: MouseEvent) => this.handlePeopleClick(e, task)}
         @keydown=${(e: KeyboardEvent) => this.handlePeopleKeydown(e, task)}
       >

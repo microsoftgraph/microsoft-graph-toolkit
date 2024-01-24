@@ -40,7 +40,7 @@ export const inheritDetails = () => html`
       font-size: 12px;
     }
   </style>
-  <mgt-person person-query="me" view="twoLines" person-card="hover">
+  <mgt-person person-query="me" view="twolines" person-card="hover">
     <template data-type="person-card">
       <mgt-person-card inherit-details></mgt-person-card>
     </template>

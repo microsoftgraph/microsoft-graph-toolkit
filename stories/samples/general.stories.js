@@ -103,8 +103,8 @@ export const cache = () => html`
 >
 
 <mgt-login></mgt-login>
-<mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
-<mgt-person user-id="4782e723-f4f4-4af3-a76e-25e3bab0d896" view="twoLines"></mgt-person>
+<mgt-person person-query="me" view="twolines" person-card="hover" show-presence></mgt-person>
+<mgt-person user-id="4782e723-f4f4-4af3-a76e-25e3bab0d896" view="twolines"></mgt-person>
 <mgt-people-picker></mgt-people-picker>
 <mgt-people-picker type="group"></mgt-people-picker>
 <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
