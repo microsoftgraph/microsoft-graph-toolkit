@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { IDynamicPerson,AvatarSize,PersonCardInteraction,ViewType } from '@microsoft/mgt-components';
+import { IDynamicPerson,AvatarSize,AvatarType,PersonCardInteraction,ViewType } from '@microsoft/mgt-components';
 import { registerMgtPersonComponent } from '@microsoft/mgt-components';
 import { TemplateContext,TemplateRenderedData } from '@microsoft/mgt-element';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -21,7 +21,7 @@ export type PersonProps = {
 	fetchImage?: boolean;
 	disableImageFetch?: boolean;
 	verticalLayout?: boolean;
-	avatarType?: string;
+	avatarType?: AvatarType;
 	personPresence?: MicrosoftGraph.Presence;
 	personCardInteraction?: PersonCardInteraction;
 	line1Property?: string;

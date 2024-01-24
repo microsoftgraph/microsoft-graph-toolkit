@@ -102,7 +102,7 @@ export const GetEmail = () => html`
 `;
 
 export const ExtendingPersonCard = () => html`
-  <mgt-person person-query="Isaiah" view="twoLines" person-card="hover">
+  <mgt-person person-query="Isaiah" view="twolines" person-card="hover">
     <template data-type="person-card">
       <mgt-person-card inherit-details>
         <template data-type="additional-details">

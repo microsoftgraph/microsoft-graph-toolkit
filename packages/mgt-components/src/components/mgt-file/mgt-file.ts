@@ -27,7 +27,7 @@ import {
   getUserInsightsDriveItemById
 } from '../../graph/graph.files';
 import { formatBytes, getRelativeDisplayDate } from '../../utils/Utils';
-import { OfficeGraphInsightString, ViewType } from '../../graph/types';
+import { OfficeGraphInsightString, ViewType, viewTypeConverter } from '../../graph/types';
 import { getFileTypeIconUriByExtension } from '../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { strings } from './strings';
@@ -246,27 +246,16 @@ export class MgtFile extends MgtTemplatedTaskComponent {
   @property({ attribute: 'line3-property' }) public line3Property: string;
 
   /**
-   * Sets what data to be rendered (file icon only, oneLine, twoLines threeLines).
-   * Default is 'threeLines'.
+   * Sets what data will be rendered.
+   * Valid options are 'image', 'oneline', 'twolines', 'threelines', or 'fourlines'
+   * Default is 'threelines'.
    *
    * @type {ViewType}
    * @memberof MgtFile
    */
   @property({
     attribute: 'view',
-    converter: value => {
-      if (!value || value.length === 0) {
-        return ViewType.threelines;
-      }
-
-      value = value.toLowerCase();
-
-      if (typeof ViewType[value] === 'undefined') {
-        return ViewType.threelines;
-      } else {
-        return ViewType[value] as ViewType;
-      }
-    }
+    converter: value => viewTypeConverter(value, 'threelines')
   })
   public view: ViewType;
 
@@ -304,7 +293,7 @@ export class MgtFile extends MgtTemplatedTaskComponent {
     this.line1Property = 'name';
     this.line2Property = 'lastModifiedDateTime';
     this.line3Property = 'size';
-    this.view = ViewType.threelines;
+    this.view = 'threelines';
   }
 
   public renderContent = () => {
@@ -397,13 +386,13 @@ export class MgtFile extends MgtTemplatedTaskComponent {
    * @memberof MgtFile
    */
   protected renderDetails(driveItem: DriveItem): TemplateResult {
-    if (!driveItem || this.view === ViewType.image) {
+    if (!driveItem || this.view === 'image') {
       return html``;
     }
 
     const details: TemplateResult[] = [];
 
-    if (this.view > ViewType.image) {
+    if (this.view > 'image') {
       const text = this.getTextFromProperty(driveItem, this.line1Property);
       if (text) {
         details.push(html`
@@ -412,7 +401,7 @@ export class MgtFile extends MgtTemplatedTaskComponent {
       }
     }
 
-    if (this.view > ViewType.oneline) {
+    if (this.view > 'oneline') {
       const text = this.getTextFromProperty(driveItem, this.line2Property);
       if (text) {
         details.push(html`
@@ -421,7 +410,7 @@ export class MgtFile extends MgtTemplatedTaskComponent {
       }
     }
 
-    if (this.view > ViewType.twolines) {
+    if (this.view > 'twolines') {
       const text = this.getTextFromProperty(driveItem, this.line3Property);
       if (text) {
         details.push(html`

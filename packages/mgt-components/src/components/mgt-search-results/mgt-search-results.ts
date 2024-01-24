@@ -933,7 +933,7 @@ export class MgtSearchResults extends MgtTemplatedTaskComponent {
             <div class="search-result-author">
               <mgt-person
                 person-query=${resource.lastModifiedBy.user.email}
-                view="oneLine"
+                view="oneline"
                 person-card="hover"
                 show-presence="true">
               </mgt-person>
@@ -1038,7 +1038,7 @@ export class MgtSearchResults extends MgtTemplatedTaskComponent {
             <div class="search-result-author">
               <mgt-person
                 person-query=${resource.lastModifiedBy.user.email}
-                view="oneLine"
+                view="oneline"
                 person-card="hover"
                 show-presence="true">
               </mgt-person>
@@ -1074,7 +1074,7 @@ export class MgtSearchResults extends MgtTemplatedTaskComponent {
     return mgtHtml`
       <div class="search-result">
         <mgt-person
-          view="fourLines"
+          view="fourlines"
           person-query=${resource.userPrincipalName}
           person-card="hover"
           show-presence="true">

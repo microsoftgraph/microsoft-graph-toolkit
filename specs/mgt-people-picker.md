@@ -79,6 +79,6 @@ The following events are fired from the component.
 
 | Object store | Cached data    | Remarks                                                            |
 | ------------ | -------------- | ------------------------------------------------------------------ |
-| `groups`     | List of groups | Used when `type` is set to `PersonType.group`                      |
-| `people`     | List of people | Used when `type` is set to `PersonType.person` or `PersonType.any` |
+| `groups`     | List of groups | Used when `type` is set to `group`                      |
+| `people`     | List of people | Used when `type` is set to `person` or `any` |
 | `users`      | List of users  | Used when `groupId` specified                                      |
