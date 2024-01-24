@@ -16,11 +16,6 @@ export default {
   }
 };
 
-export const LoginToShowAgenda = () => html`
-  <mgt-login></mgt-login>
-  <mgt-agenda></mgt-agenda>
-`;
-
 export const Localization = () => html`
   <mgt-login></mgt-login>
   <mgt-people-picker></mgt-people-picker>

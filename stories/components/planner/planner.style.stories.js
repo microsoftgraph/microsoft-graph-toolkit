@@ -9,15 +9,9 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-planner',
+  title: 'Components / mgt-planner / Style',
   component: 'planner',
-  decorators: [withCodeEditor],
-  tags: ['autodocs'],
-  parameters: {
-    docs: {
-      source: { code: '<mgt-planner></mgt-planner>' }
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const customCSSProperties = () => html`
