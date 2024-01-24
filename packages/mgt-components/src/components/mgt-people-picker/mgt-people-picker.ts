@@ -902,7 +902,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
          .personDetails=${person}
          ?fetch-image=${!this.disableImages}
          view="oneline"
-         person-card="none"
+         person-card=${this.personCardInteraction}
         ></mgt-person>
      `;
   }
