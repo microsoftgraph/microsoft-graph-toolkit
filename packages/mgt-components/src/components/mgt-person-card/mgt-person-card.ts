@@ -9,7 +9,7 @@ import { html, nothing, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import {
-  MgtTemplatedComponent,
+  MgtTemplatedTaskComponent,
   Providers,
   ProviderState,
   TeamsHelper,
@@ -157,7 +157,7 @@ export const registerMgtPersonCardComponent = () => {
  * @cssprop --profile-token-overflow-color - {Color} The color of the token overflow in the profile section of the person card component
  *
  */
-export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClearer, IExpandable {
+export class MgtPersonCard extends MgtTemplatedTaskComponent implements IHistoryClearer, IExpandable {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -198,13 +198,13 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
    * @type {IDynamicPerson}
    * @memberof MgtPersonCard
    */
+  public get personDetails(): IDynamicPerson {
+    return this._personDetails;
+  }
   @property({
     attribute: 'person-details',
     type: Object
   })
-  public get personDetails(): IDynamicPerson {
-    return this._personDetails;
-  }
   public set personDetails(value: IDynamicPerson) {
     if (this._personDetails === value) {
       return;
@@ -212,17 +212,28 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
 
     this._personDetails = value;
     this.personImage = this.getImage();
-    void this.requestStateUpdate();
   }
+
+  private _personQuery: string;
   /**
    * allows developer to define name of person for component
    *
    * @type {string}
    */
+  public get personQuery(): string {
+    return this._personQuery;
+  }
   @property({
     attribute: 'person-query'
   })
-  public personQuery: string;
+  public set personQuery(value: string) {
+    if (this._personQuery === value) {
+      return;
+    }
+    this._personQuery = value;
+    this.personDetails = null;
+    this._cardState = null;
+  }
 
   /**
    * allows the locking of navigation using tabs to not flow out of the card section
@@ -240,12 +251,12 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
    *
    * @type {string}
    */
-  @property({
-    attribute: 'user-id'
-  })
   public get userId(): string {
     return this._userId;
   }
+  @property({
+    attribute: 'user-id'
+  })
   public set userId(value: string) {
     if (value === this._userId) {
       return;
@@ -253,7 +264,6 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
     this._userId = value;
     this.personDetails = null;
     this._cardState = null;
-    void this.requestStateUpdate();
   }
 
   /**
@@ -332,7 +342,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
   public personPresence: Presence;
 
   @state()
-  private isSending = false;
+  private isSendingMessage = false;
 
   /**
    * The subsections for display in the lower part of the card
@@ -348,6 +358,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
 
   private _history: MgtPersonCardStateHistory[];
   private _chatInput: string;
+  @state()
   private _currentSection: CardSection;
   private _personDetails: IDynamicPerson;
   private _me: User;
@@ -357,7 +368,6 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
   private _userId: string;
   private _graph: IGraph;
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   private get internalPersonDetails(): IDynamicPerson {
     return this._cardState?.person || this.personDetails;
   }
@@ -369,30 +379,6 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
     this._history = [];
     this.sections = [];
     this._graph = null;
-  }
-
-  /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtPersonCard
-   */
-  public attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-
-    if (oldValue === newValue) {
-      return;
-    }
-
-    switch (name) {
-      case 'person-query':
-        this.personDetails = null;
-        this._cardState = null;
-        void this.requestStateUpdate();
-        break;
-    }
   }
 
   /**
@@ -408,13 +394,12 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
       state: this._cardState
     });
 
-    this._personDetails = person;
+    this.personDetails = person;
     this._cardState = null;
     this.personImage = null;
     this._currentSection = null;
     this.sections = [];
     this._chatInput = '';
-    void this.requestStateUpdate();
   }
 
   /**
@@ -464,12 +449,14 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
     this.loadSections();
   }
 
+  protected args(): unknown[] {
+    return [this.providerState, this.personDetails, this.personQuery, this.personImage, this.userId];
+  }
+
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * Invoked from the base class when the loadState promise has completed.
    */
-  protected render() {
+  protected readonly renderContent = () => {
     // Handle no data
     if (!this.internalPersonDetails) {
       return this.renderNoData();
@@ -557,7 +544,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
         </div>
       </div>
      `;
-  }
+  };
 
   private readonly handleEndOfCard = (e: KeyboardEvent) => {
     if (e && e.code === 'Tab') {
@@ -945,8 +932,8 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
         <fluent-button class="send-message-icon"
           aria-label=${this.strings.sendMessageLabel}
           @click=${this.sendQuickMessage}
-          ?disabled=${this.isSending}>
-          ${!this.isSending ? getSvg(SvgIcon.Send) : getSvg(SvgIcon.Confirmation)}
+          ?disabled=${this.isSendingMessage}>
+          ${!this.isSendingMessage ? getSvg(SvgIcon.Send) : getSvg(SvgIcon.Confirmation)}
         </fluent-button>
       </div>
       `
@@ -1077,7 +1064,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
     }
     const person = this.personDetails as User;
     const user = this._me.userPrincipalName;
-    this.isSending = true;
+    this.isSendingMessage = true;
 
     const chat = await createChat(this._graph, person.userPrincipalName, user);
 
@@ -1087,7 +1074,7 @@ export class MgtPersonCard extends MgtTemplatedComponent implements IHistoryClea
       }
     };
     await sendMessage(this._graph, chat.id, messageData);
-    this.isSending = false;
+    this.isSendingMessage = false;
     this.clearInputData();
   };
 

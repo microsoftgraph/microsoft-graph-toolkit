@@ -9,7 +9,7 @@ import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { styles } from './mgt-file-css';
-import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
+import { MgtTemplatedTaskComponent, Providers, ProviderState } from '@microsoft/mgt-element';
 import {
   getDriveItemById,
   getDriveItemByPath,
@@ -65,7 +65,7 @@ export const registerMgtFileComponent = () => registerComponent('file', MgtFile)
  * @cssprop --file-line3-color - {Color} the third line text color.
  * @cssprop --file-line3-text-transform - {String} the third line text text transform. Default value is 400.
  */
-export class MgtFile extends MgtTemplatedComponent {
+export class MgtFile extends MgtTemplatedTaskComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -86,17 +86,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'file-query'
   })
-  public get fileQuery(): string {
-    return this._fileQuery;
-  }
-  public set fileQuery(value: string) {
-    if (value === this._fileQuery) {
-      return;
-    }
-
-    this._fileQuery = value;
-    void this.requestStateUpdate();
-  }
+  public fileQuery: string;
 
   /**
    * allows developer to provide site id for a file
@@ -107,17 +97,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'site-id'
   })
-  public get siteId(): string {
-    return this._siteId;
-  }
-  public set siteId(value: string) {
-    if (value === this._siteId) {
-      return;
-    }
-
-    this._siteId = value;
-    void this.requestStateUpdate();
-  }
+  public siteId: string;
 
   /**
    * allows developer to provide drive id for a file
@@ -128,17 +108,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'drive-id'
   })
-  public get driveId(): string {
-    return this._driveId;
-  }
-  public set driveId(value: string) {
-    if (value === this._driveId) {
-      return;
-    }
-
-    this._driveId = value;
-    void this.requestStateUpdate();
-  }
+  public driveId: string;
 
   /**
    * allows developer to provide group id for a file
@@ -149,17 +119,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'group-id'
   })
-  public get groupId(): string {
-    return this._groupId;
-  }
-  public set groupId(value: string) {
-    if (value === this._groupId) {
-      return;
-    }
-
-    this._groupId = value;
-    void this.requestStateUpdate();
-  }
+  public groupId: string;
 
   /**
    * allows developer to provide list id for a file
@@ -170,17 +130,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'list-id'
   })
-  public get listId(): string {
-    return this._listId;
-  }
-  public set listId(value: string) {
-    if (value === this._listId) {
-      return;
-    }
-
-    this._listId = value;
-    void this.requestStateUpdate();
-  }
+  public listId: string;
 
   /**
    * allows developer to provide user id for a file
@@ -191,18 +141,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'user-id'
   })
-  public get userId(): string {
-    return this._userId;
-  }
-  public set userId(value: string) {
-    if (value === this._userId) {
-      return;
-    }
-
-    this._userId = value;
-    void this.requestStateUpdate();
-  }
-
+  public userId: string;
   /**
    * allows developer to provide item id for a file
    *
@@ -212,17 +151,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'item-id'
   })
-  public get itemId(): string {
-    return this._itemId;
-  }
-  public set itemId(value: string) {
-    if (value === this._itemId) {
-      return;
-    }
-
-    this._itemId = value;
-    void this.requestStateUpdate();
-  }
+  public itemId: string;
 
   /**
    * allows developer to provide item path for a file
@@ -233,17 +162,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'item-path'
   })
-  public get itemPath(): string {
-    return this._itemPath;
-  }
-  public set itemPath(value: string) {
-    if (value === this._itemPath) {
-      return;
-    }
-
-    this._itemPath = value;
-    void this.requestStateUpdate();
-  }
+  public itemPath: string;
 
   /**
    * allows developer to provide insight type for a file
@@ -255,17 +174,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'insight-type'
   })
-  public get insightType(): OfficeGraphInsightString {
-    return this._insightType;
-  }
-  public set insightType(value: OfficeGraphInsightString) {
-    if (value === this._insightType) {
-      return;
-    }
-
-    this._insightType = value;
-    void this.requestStateUpdate();
-  }
+  public insightType: OfficeGraphInsightString;
 
   /**
    * allows developer to provide insight id for a file
@@ -276,17 +185,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'insight-id'
   })
-  public get insightId(): string {
-    return this._insightId;
-  }
-  public set insightId(value: string) {
-    if (value === this._insightId) {
-      return;
-    }
-
-    this._insightId = value;
-    void this.requestStateUpdate();
-  }
+  public insightId: string;
 
   /**
    * allows developer to provide DriveItem object
@@ -297,17 +196,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     type: Object
   })
-  public get fileDetails(): DriveItem {
-    return this._fileDetails;
-  }
-  public set fileDetails(value: DriveItem) {
-    if (value === this._fileDetails) {
-      return;
-    }
-
-    this._fileDetails = value;
-    void this.requestStateUpdate();
-  }
+  public fileDetails: DriveItem;
 
   /**
    * allows developer to provide file type icon url
@@ -318,17 +207,7 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'file-icon'
   })
-  public get fileIcon(): string {
-    return this._fileIcon;
-  }
-  public set fileIcon(value: string) {
-    if (value === this._fileIcon) {
-      return;
-    }
-
-    this._fileIcon = value;
-    void this.requestStateUpdate();
-  }
+  public fileIcon: string;
 
   /**
    * object containing Graph details on item
@@ -402,18 +281,23 @@ export class MgtFile extends MgtTemplatedComponent {
     return [...new Set(['files.read', 'files.read.all', 'sites.read.all'])];
   }
 
-  private _fileQuery: string;
-  private _siteId: string;
-  private _itemId: string;
-  private _driveId: string;
-  private _itemPath: string;
-  private _listId: string;
-  private _groupId: string;
-  private _userId: string;
-  private _insightType: OfficeGraphInsightString;
-  private _insightId: string;
-  private _fileDetails: DriveItem;
-  private _fileIcon: string;
+  protected args(): unknown[] {
+    return [
+      this.providerState,
+      this.fileQuery,
+      this.siteId,
+      this.itemId,
+      this.driveId,
+      this.itemPath,
+      this.listId,
+      this.groupId,
+      this.userId,
+      this.insightType,
+      this.insightId,
+      this.fileDetails,
+      this.fileIcon
+    ];
+  }
 
   constructor() {
     super();
@@ -423,11 +307,7 @@ export class MgtFile extends MgtTemplatedComponent {
     this.view = ViewType.threelines;
   }
 
-  public render() {
-    if (!this.driveItem && this.isLoadingState) {
-      return this.renderLoading();
-    }
-
+  public renderContent = () => {
     if (!this.driveItem) {
       return this.renderNoData();
     }
@@ -447,18 +327,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     return fileTemplate;
-  }
-
-  /**
-   * Render the loading state
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtFile
-   */
-  protected renderLoading(): TemplateResult {
-    return this.renderTemplate('loading', null) || html``;
-  }
+  };
 
   /**
    * Render the state when no data is available
