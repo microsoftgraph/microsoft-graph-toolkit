@@ -70,6 +70,10 @@ export const changeUserId = () => html`
   </script>
   `;
 
+export const personImage = () => html`
+  <mgt-person person-query="me" view="fourLines" fetch-image person-image="https://images.pexels.com/photos/1542085/pexels-photo-1542085.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"></mgt-person>
+  `;
+
 export const personFallbackDetails = () => html`
    <div class="example">
    <mgt-person person-query="mbowen" view="twolines" show-presence fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
