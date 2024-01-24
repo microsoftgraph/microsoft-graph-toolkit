@@ -56,7 +56,7 @@ import { Person, User } from '@microsoft/microsoft-graph-types';
 import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 import { isGraphError } from '../../graph/isGraphError';
-import { personCardConverter } from '../../utils/personCardConverter';
+import { type PersonCardInteraction, personCardConverter } from './../PersonCardInteraction';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType, UserType } from '../../graph/graph.people';
@@ -283,9 +283,9 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    */
   @property({
     attribute: 'person-card',
-    converter: personCardConverter
+    converter: value => personCardConverter(value)
   })
-  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
+  public personCardInteraction: PersonCardInteraction = 'none';
 
   /**
    * array of user picked people.

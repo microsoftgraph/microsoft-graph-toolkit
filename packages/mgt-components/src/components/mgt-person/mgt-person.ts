@@ -34,7 +34,6 @@ import { isUser, isContact } from '../../graph/entityType';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
 import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
-import { personCardConverter } from '../../utils/personCardConverter';
 
 /**
  * Person properties part of original set provided by graph by default

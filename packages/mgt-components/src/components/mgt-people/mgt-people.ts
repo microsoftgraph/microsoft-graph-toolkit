@@ -20,7 +20,6 @@ import { type PersonCardInteraction, personCardConverter } from './../PersonCard
 import { styles } from './mgt-people-css';
 import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
 import { registerComponent } from '@microsoft/mgt-element';
-import { personCardConverter } from '../../utils/personCardConverter';
 
 /**
  * web component to display a group of people or contacts by using their photos or initials.
