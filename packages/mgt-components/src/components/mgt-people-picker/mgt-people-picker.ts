@@ -694,7 +694,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         @blur="${this.lostFocus}"
         ?disabled=${this.disabled}
       >
-        <span slot="start" class="selected-people-slot">${startSlot}</span>
+        <span slot="start">${startSlot}</span>
       </fluent-text-field>
     `;
   }
@@ -720,7 +720,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
             selectedPeople,
             person => person?.id,
             person => html`
-            <li class="selected-list-item" tabindex="-1">
+            <li class="selected-list-item">
               ${
                 this.renderTemplate(
                   'selected-person',
@@ -849,21 +849,21 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         role="listbox"
         aria-live="polite"
         title=${this.strings.suggestionsTitle}
-        >
-         ${repeat(
-           filteredPeople,
-           person => person.id,
-           person => html`
-            <li
-              id="${person.id}"
-              class="searched-people-list-result"
-              role="option"
-              @click="${() => this.handleSuggestionClick(person)}">
-                ${this.renderPersonResult(person)}
-            </li>
-          `
-         )}
-       </ul>
+      >
+        ${repeat(
+          filteredPeople,
+          person => person.id,
+          person => html`
+          <li
+            id="${person.id}"
+            class="searched-people-list-result"
+            role="option"
+            @click="${() => this.handleSuggestionClick(person)}">
+              ${this.renderPersonResult(person)}
+          </li>
+        `
+        )}
+      </ul>
      `;
   }
 
@@ -907,7 +907,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
          .fetchImage=${!this.disableImages}
          .view=${ViewType.oneline}
          .personCardInteraction=${this.personCardInteraction}
-         .usage=${'people-picker'}
         ></mgt-person>
      `;
   }
@@ -1660,7 +1659,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         p.setAttribute('aria-selected', 'false');
         p.blur();
         p.removeAttribute('tabindex');
-        p.querySelector<MgtPerson>('mgt-person')?.hidePersonCard();
       }
 
       // set selected background

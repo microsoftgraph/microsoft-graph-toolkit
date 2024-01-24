@@ -23,11 +23,8 @@ export const showPresence = () => html`
 `;
 
 export const personCard = () => html`
-   <div class="example">
-     <div>Person Card</div>
-     <mgt-people-picker person-card="hover"></mgt-people-picker>
-   </div>
- `;
+  <mgt-people-picker person-card="hover"></mgt-people-picker>
+`;
 
 export const groupId = () => html`
 <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
