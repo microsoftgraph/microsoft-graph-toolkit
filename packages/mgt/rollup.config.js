@@ -7,11 +7,11 @@ import json from 'rollup-plugin-json';
 
 const extensions = ['.js', '.ts'];
 
-const getBabelConfig = isEs5 => {
+const getBabelConfig = () => {
   return {
     plugins: [
-      ['@babel/plugin-proposal-decorators', isEs5 ? { legacy: true } : { decoratorsBeforeExport: true, legacy: false }],
-      ['@babel/proposal-class-properties', { loose: isEs5 }],
+      ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true, legacy: false }],
+      ['@babel/proposal-class-properties', { loose: false }],
       '@babel/proposal-object-rest-spread'
     ],
     include: [
@@ -37,8 +37,7 @@ const es6Bundle = {
   output: {
     dir: 'dist/bundle',
     entryFileNames: 'mgt.es6.js',
-    format: 'iife',
-    name: 'mgt',
+    format: 'esm',
     sourcemap: false
   },
   plugins: [
@@ -53,65 +52,10 @@ const es6Bundle = {
         ],
         '@babel/typescript'
       ],
-      ...getBabelConfig(false)
+      ...getBabelConfig()
     }),
     ...commonPlugins
   ]
 };
 
-const es5Bundle = {
-  input: ['src/bundle/index.es5.ts'],
-  output: {
-    dir: 'dist/bundle',
-    entryFileNames: 'mgt.es5.js',
-    format: 'iife',
-    name: 'mgt',
-    sourcemap: false
-  },
-  plugins: [
-    babel({
-      extensions,
-      presets: [
-        [
-          '@babel/preset-env',
-          {
-            targets: 'last 2 versions',
-            useBuiltIns: 'entry',
-            corejs: 3
-          }
-        ],
-        '@babel/typescript'
-      ],
-      ...getBabelConfig(true)
-    }),
-    ...commonPlugins
-  ]
-};
-
-const cjsBundle = {
-  input: ['src/bundle/index.es5.ts'],
-  output: {
-    dir: 'dist/commonjs',
-    entryFileNames: 'index.js',
-    format: 'cjs',
-    sourcemap: true
-  },
-  plugins: [
-    babel({
-      extensions,
-      presets: [
-        [
-          '@babel/preset-env',
-          {
-            targets: 'last 2 versions'
-          }
-        ],
-        '@babel/typescript'
-      ],
-      ...getBabelConfig(true)
-    }),
-    ...commonPlugins
-  ]
-};
-
-export default [es6Bundle, es5Bundle, cjsBundle];
+export default [es6Bundle];

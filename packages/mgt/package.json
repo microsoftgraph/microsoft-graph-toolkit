@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "build": "npm-run-all clean build:compile build:bundle",
-    "build:bundle": "npm-run-all copy:loader copy:wc sass rollup",
+    "build:bundle": "npm-run-all sass rollup",
     "build:compile": "npm-run-all sass compile",
     "build:watch": "npm-run-all -p sass:watch compile:watch",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
