@@ -10,19 +10,10 @@
     <!-- <script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script> -->
 
     <!-- <script src="https://unpkg.com/@microsoft/teams-js@2/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script> -->
-<!-- 
-    <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script> -->
 
-    <!-- <script type="module" src="./packages/mgt-element/dist/es6/index.js"></script>
-    <script type="module" src="./packages/mgt-components/dist/es6/index.js"></script>
-    <script type="module" src="./packages/providers/mgt-msal2-provider/dist/es6/index.js"></script>
-    <script type="module" src="./packages/providers/mgt-mock-provider/dist/es6/index.js"></script> -->
     <script type="module">
-      import { registerMgtComponents, Providers, MockProvider, Msal2Provider } from './packages/mgt/dist/es6/index.js';
-      // import { registerMgtComponents, Providers, MockProvider, Msal2Provider } from './packages/mgt/dist/bundle/mgt.es6.js';
-      // import { Msal2Provider } from './packages/providers/mgt-msal2-provider/dist/es6/index.js';
-      // import { Providers } from './packages/mgt-element/dist/es6/index.js';
-      // import { MockProvider } from './packages/mgt-element/dist/es6/index.js';
+      // import { registerMgtComponents, Providers, MockProvider, Msal2Provider } from 'https://unpkg.com/@microsoft/mgt@next/dist/bundle/mgt.es6.js';
+      import { registerMgtComponents, Providers, MockProvider, Msal2Provider } from './packages/mgt/dist/bundle/mgt.es6.js';
       // Providers.globalProvider = new MockProvider(true);
       Providers.globalProvider = new Msal2Provider({
         clientId: '2dfea037-938a-4ed8-9b35-c05708a1b241',
