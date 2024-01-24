@@ -36,7 +36,7 @@ const es6Bundle = {
   input: ['src/index.ts'],
   output: {
     dir: 'dist/bundle',
-    entryFileNames: 'mgt.es6.js',
+    entryFileNames: 'mgt.js',
     format: 'esm',
     sourcemap: false
   },
