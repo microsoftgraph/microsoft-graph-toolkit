@@ -54,17 +54,17 @@ export const personCard = () => html`
    </div>
 
    <react>
-    import { Person, ViewType, PersonCardInteraction } from '@microsoft/mgt-react';
+    import { Person } from '@microsoft/mgt-react';
 
     export default () => (
       <>
         <div className="example">
           <div style={{'marginBottom': '10px'}}>Person card Hover</div>
-          <Person personQuery="me" view={ViewType.twolines} personCardInteraction={PersonCardInteraction.hover}></Person>
+          <Person personQuery="me" view="twolines" personCardInteraction="hover"></Person>
         </div>
         <div className="example">
         <div style={{'marginBottom': '10px'}}>Person card Click</div>
-          <Person personQuery="me" view={ViewType.twolines} personCardInteraction={PersonCardInteraction.click}></Person>
+          <Person personQuery="me" view="twolines" personCardInteraction="click"></Person>
         </div>
       </>
     );
@@ -79,7 +79,7 @@ export const events = () => html`
   <react>
     // Check the console tab for the event to fire
     import { useCallback } from 'react';
-    import { Person, ViewType, IDynamicPerson } from '@microsoft/mgt-react';
+    import { Person, IDynamicPerson } from '@microsoft/mgt-react';
 
     export default () => {
       const onLineClicked = useCallback((e: CustomEvent<IDynamicPerson>) => {
@@ -89,7 +89,7 @@ export const events = () => html`
       return (
         <Person
           personQuery="me"
-          view={ViewType.fourlines}
+          view="fourlines"
           line1clicked={onLineClicked}
           line2clicked={onLineClicked}
           line3clicked={onLineClicked}
