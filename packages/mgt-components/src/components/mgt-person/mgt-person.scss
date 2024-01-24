@@ -192,6 +192,8 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
         border: $person-avatar-border;
         border-radius: $person-avatar-border-radius;
         margin-block-start: $person-avatar-top-spacing;
+        object-fit: cover;
+        object-position: center top;
       }
 
       .initials,

@@ -18,6 +18,7 @@ import { DriveItem, SharedInsight, Trending, UploadSession, UsedInsight } from '
 import { schemas } from './cacheStores';
 import { GraphRequest, ResponseType } from '@microsoft/microsoft-graph-client';
 import { blobToBase64 } from '../utils/Utils';
+import { MgtFileUploadConflictBehavior } from '../components/mgt-file-list/mgt-file-upload/mgt-file-upload';
 
 /**
  * Simple type guard to check if a response is an UploadSession
@@ -738,13 +739,13 @@ export const getGraphfile = async (graph: IGraph, resource: string): Promise<Dri
 export const getUploadSession = async (
   graph: IGraph,
   resource: string,
-  conflictBehavior: number
+  conflictBehavior: MgtFileUploadConflictBehavior
 ): Promise<UploadSession> => {
   try {
     // get from graph request
     const sessionOptions = {
       item: {
-        '@microsoft.graph.conflictBehavior': conflictBehavior === 0 || conflictBehavior === null ? 'rename' : 'replace'
+        '@microsoft.graph.conflictBehavior': conflictBehavior ? conflictBehavior : 'rename'
       }
     };
     let response: UploadSession;

@@ -48,10 +48,17 @@ The components can be used on their own, but they are at their best when they ar
     ```html
     <script type="module">
       import {Providers} from '@microsoft/mgt-element';
-      import {Msal2Provider} from '@microsoft/mgt-msal2-provider/dist/es6/exports';
+      import {Msal2Provider} from '@microsoft/mgt-msal2-provider';
 
-      // import the components
-      import '@microsoft/mgt-components';
+      // import the registration functions
+      import {
+        registerMgtLoginComponent,
+        registerMgtAgendaComponent
+      } from '@microsoft/mgt-components';
+
+      // register the components
+      registerMgtLoginComponent();
+      registerMgtAgendaComponent();
 
       // initialize the auth provider globally
       Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
@@ -62,70 +69,37 @@ The components can be used on their own, but they are at their best when they ar
     <mgt-agenda group-by-day></mgt-agenda>
     ```
 
+> **Important:** Components must now be explicitly registered to function, this is a breaking change in v4.0.0
+
 ## Tree shaking/Live code inclusion
 
-By default importing anything from the root of the `@microsoft/mgt-components` package triggers a side effect causing the registration of all components as custom elements with the browser. If you are using a bundler that can perform "tree shaking" then there are two steps to ensure that your bundler can correctly determine which pieces of code to include in you bundle.
-
-- Use the `@microsoft/mgt-components/dist/es6/exports` path to import your dependencies. This code path has no side effects unlike the root path.
-- Explicitly register each component that will be used in your application using the appropriate function. For each component there is a registration function `registerMgt{Name}Component()`, e.g. `registerMgtLoginComponent()`.
+By requiring explicit component registration bundlers can now correctly tree shake the MGT libraries. If you use the convenience `registerMgtComponents()` function then all components will be included in your bundle. For production applications you should explicitly register each component that will be used in your application using the appropriate function. For each component there is a registration function `registerMgt{Name}Component()`, e.g. `registerMgtLoginComponent()`.
 
 In cases where a component has a dependency on other components these are all registered in the registration function. For example, the mgt-login component uses an mgt-person internally, so `registerMgtLoginComponent()` calls `registerMgtPersonComponent()`.`
-
-### Why have the auto registration side effect at the root?
-
-Versions 3.1.x and lower all provide automatic registration of the web components as a side effect. By keeping this behavior we prevent this change from being a breaking change. We may refactor this behavior with version 4 to move the side effect based component registration to an explicit function call.
 
 ### Why use a explicit function call for component registration?
 
 This removes the registration of a component from being a side effect of importing the component, this allows for imperative disambiguation of web components without the need to rely on dynamic imports to ensure that disambiguation is configured before the import of the `@microsoft/mgt-components` library happens. It also provides for greater developer control.
 
-### Example usage
-
-```html
-<script type="module">
-  import {Providers} from '@microsoft/mgt-element';
-  import {Msal2Provider} from '@microsoft/mgt-msal2-provider/dist/es6/exports';
-
-  // import the registration functions
-  import {
-    registerMgtLoginComponent,
-    registerMgtAgendaComponent
-  } from '@microsoft/mgt-components/dist/es6/exports';
-
-  // register the components
-  registerMgtLoginComponent();
-  registerMgtAgendaComponent();
-
-  // initialize the auth provider globally
-  Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
-</script>
-
-<mgt-login></mgt-login>
-<mgt-person person-query="Bill Gates" person-card="hover"></mgt-person>
-<mgt-agenda group-by-day></mgt-agenda>
-```
-
 ## <a id="disambiguation">Disambiguation</a>
 
 MGT is built using [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). Web components use their tag name as a unique key when registering within a browser. Any attempt to register a component using a previously registered tag name results in an error being thrown when calling `CustomElementRegistry.define()`. In scenarios where multiple custom applications can be loaded into a single page this created issues for MGT, most notably in developing solutions using SharePoint Framework.
 
-To mitigate this challenge we built the [`mgt-spfx`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx) package. Using `mgt-spfx` developers can centralize the registration of MGT web components across all SPFx solutions deployed on the tenant. By reusing MGT components from a central location web parts from different solutions can be loaded into a single page without throwing errors. When using `mgt-spfx` all MGT based web parts in a SharePoint tenant use the same version of MGT.
-
-To allow developers to build web parts using the latest version of MGT and load them on pages along with web parts that use v2.x of MGT, we've added a new disambiguation feature to MGT. Using this feature developers can specify a unique string to add to the tag name of all MGT web components in their application.
+To allow developers to build web parts with MGT and load them on pages along with other applications using MGT, we've added a disambiguation feature to MGT. Using this feature, developers can specify a unique string to add to the tag name of all MGT web components in their application.
 
 
-### Usage in standard HTML and JavaScript with explicit component registration
+### Usage in standard HTML and JavaScript
 
 The earlier example can be updated to use the disambiguation feature as follows:
 
 ```html
 <script type="module">
   import { Providers, customElementHelper } from '@microsoft/mgt-element';
-  import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
+  import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
   import {
     registerMgtLoginComponent,
     registerMgtAgendaComponent
-  } from '@microsoft/mgt-components/dist/es6/exports';
+  } from '@microsoft/mgt-components';
 
   // configure disambiguation
   customElementHelper.withDisambiguation('contoso');
@@ -136,9 +110,6 @@ The earlier example can be updated to use the disambiguation feature as follows:
 
   // initialize the auth provider globally
   Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
-
-  // import the components using dynamic import to avoid hoisting
-  import('@microsoft/mgt-components');
 </script>
 
 <mgt-contoso-login></mgt-contoso-login>
@@ -148,44 +119,16 @@ The earlier example can be updated to use the disambiguation feature as follows:
 
 > Note: `withDisambiguation('foo')` must be called before registering the the desired components.
 
-### Usage in standard HTML and JavaScript with dynamic imports
-
-The earlier example can be updated to use the disambiguation feature as follows:
-
-```html
-<script type="module">
-  import { Providers, customElementHelper } from '@microsoft/mgt-element';
-  import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
-  // configure disambiguation
-  customElementHelper.withDisambiguation('contoso');
-
-  // initialize the auth provider globally
-  Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
-
-  // import the components using dynamic import to avoid hoisting
-  import('@microsoft/mgt-components');
-</script>
-
-<mgt-contoso-login></mgt-contoso-login>
-<mgt-contoso-person person-query="Bill Gates" person-card="hover"></mgt-contoso-person>
-<mgt-contoso-agenda group-by-day></mgt-contoso-agenda>
-```
-
-> Note: the `import` of `mgt-components` must use a dynamic import to ensure that the disambiguation is applied before the components are imported and the automatic registration is performed.
-
-When developing SharePoint Framework web parts the pattern for using disambiguation is based on whether or not the MGT React wrapper library is being used. If you are using React then the helper utility in the [`mgt-spfx-utils`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx-utils) package should be used. SharePoint Framework web part example usages are provided below.
+When developing SharePoint Framework web parts the pattern for using disambiguation is based on whether or not the MGT React wrapper library is being used. If you are using React then the helper utility in the [`mgt-spfx-utils`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx-utils) package can be used. SharePoint Framework web part example usages are provided below.
 
 ### Usage in a SharePoint web part with no framework
 
-A dynamic import of the `@microsoft/mgt-components` library is used after configuring the disambiguation.
-
-This example is sourced from the [No Framework Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
+This example is sourced from the [No Framework Web Part Sample](https://github.com/pnp/mgt-samples/blob/main/samples/app/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
 
 ```ts
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import { Providers } from '@microsoft/mgt-element';
+import { Providers, customElementHelper } from '@microsoft/mgt-element';
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
-import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
 import { registerMgtLoginComponent } from '@microsoft/mgt-components';
 
 export default class MgtWebPart extends BaseClientSideWebPart<Record<string, unknown>> {
@@ -221,9 +164,8 @@ A complete example is available in the [React SharePoint Web Part Sample](https:
 
 ```ts
 // [...] trimmed for brevity
-import { Providers } from '@microsoft/mgt-element/dist/es6/providers/Providers';
-import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
-import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider/dist/es6/SharePointProvider';
+import { Providers, customElementHelper } from '@microsoft/mgt-element';
+import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
 import { lazyLoadComponent } from '@microsoft/mgt-spfx-utils';
 
 // Async import of a component that uses the @microsoft/mgt-react Components
@@ -252,48 +194,6 @@ export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPar
   // [...] trimmed for brevity
 }
 ```
-
-### Dynamic imports aka Lazy Loading
-
-Using dynamic imports you can load dependencies asynchronously. This pattern allows you to load dependencies only when needed. For example, you may want to load a component only when a user clicks a button. This is a great way to reduce the initial load time of your application. In the context of disambiguation, you need to use this technique because components register themselves in the browser when they are imported.
-
-**Important:** If you import the components before you have applied the disambiguation, the disambiguation will not be applied and using the disambiguated tag name will not work.
-
-When using an `import` statement the import statement is hoisted and executed before any other code in the code block. To use dynamic imports you must use the `import()` function. The `import()` function returns a promise that resolves to the module. You can also use the `then` method to execute code after the module is loaded and the `catch` method to handle any errors if necessary.
-
-#### Example using dynamic imports
-
-```typescript
-// static import via a statement
-import { Providers, customElementHelper } from '@microsoft/mgt-element';
-import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
-
-customElementHelper.withDisambiguation('contoso');
-Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
-
-// dynamic import via a function
-import('@microsoft/mgt-components').then(() => {
-  // code to execute after the module is loaded
-  document.body.innerHTML = '<mgt-contoso-login></mgt-contoso-login>';
-}).catch((e) => {
-  // handle any errors
-});
-```
-
-#### Example using static imports
-
-```typescript
-// static import via a statement
-import { Provider } from '@microsoft/mgt-element';
-import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
-import '@microsoft/mgt-components';
-
-Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
-
-document.body.innerHTML = '<mgt-login></mgt-login>';
-```
-
-> Note: it is not possible to use disambiguation with static imports.
 
 ## Sea also
 * [Microsoft Graph Toolkit docs](https://aka.ms/mgt-docs)

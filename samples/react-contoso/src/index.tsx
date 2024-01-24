@@ -1,8 +1,12 @@
 import ReactDOM from 'react-dom';
-import { App } from './App';
+import { Suspense } from 'react';
 import { mergeStyles } from '@fluentui/react';
 import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
-import { Providers, LoginType } from '@microsoft/mgt-element';
+import { Providers, LoginType, customElementHelper } from '@microsoft/mgt-element';
+import { lazy } from 'react';
+const App = lazy(() => import('./App'));
+
+customElementHelper.withDisambiguation('foo');
 
 // Inject some global styles
 mergeStyles({
@@ -37,4 +41,9 @@ Providers.globalProvider = new Msal2Provider({
   ]
 });
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+  <Suspense fallback="...">
+    <App />
+  </Suspense>,
+  document.getElementById('root')
+);
