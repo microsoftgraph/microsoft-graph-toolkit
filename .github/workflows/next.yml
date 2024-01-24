@@ -39,8 +39,3 @@ jobs:
         if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Upload a Build Artifact - mgt-spfx Solution
-        uses: actions/upload-artifact@v2
-        with:
-          name: mgt-spfx solution
-          path: packages/mgt-spfx/sharepoint/*

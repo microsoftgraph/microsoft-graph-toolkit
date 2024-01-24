@@ -6,7 +6,7 @@
     "packages": [
       "packages/*",
       "packages/providers/*",
-      "samples/react-contoso"
+      "samples/*"
     ]
   },
   "scripts": {
@@ -19,7 +19,6 @@
     "build:mgt-element": "cd ./packages/mgt-element && npm run build",
     "build:mgt-components": "cd ./packages/mgt-components && npm run build",
     "build:mgt-react": "lerna run build --scope @microsoft/mgt-react",
-    "build:mgt-spfx": "lerna run build --scope @microsoft/mgt-spfx",
     "build:react-contoso": "lerna run build --scope react-contoso",
     "bundle": "cd ./packages/mgt && npm run bundle",
     "clean": "lerna run --parallel --stream --scope '@microsoft/*' clean",
