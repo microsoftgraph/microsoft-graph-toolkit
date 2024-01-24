@@ -123,7 +123,7 @@ When developing SharePoint Framework web parts the pattern for using disambiguat
 
 ### Usage in a SharePoint web part with no framework
 
-This example is sourced from the [No Framework Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
+This example is sourced from the [No Framework Web Part Sample](https://github.com/pnp/mgt-samples/blob/main/samples/app/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
 
 ```ts
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
