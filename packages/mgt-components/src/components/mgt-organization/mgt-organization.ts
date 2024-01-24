@@ -13,7 +13,6 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPersonCardState, UserWithManager } from '../mgt-person-card/mgt-person-card.types';
 import { styles } from './mgt-organization-css';
 import { strings } from './strings';
-import { ViewType } from '../../graph/types';
 import { mgtHtml } from '@microsoft/mgt-element';
 import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtPersonComponent } from '../mgt-person/mgt-person';
@@ -200,7 +199,7 @@ export class MgtOrganization extends BasePersonCardSection {
             class="org-member__person-image"
             .personDetails=${person}
             .fetchImage=${true}
-            .view=${ViewType.twolines}
+            view="twolines"
             .showPresence=${true}
           ></mgt-person>
         </div>
@@ -271,7 +270,7 @@ export class MgtOrganization extends BasePersonCardSection {
                   .personDetails=${person}
                   .fetchImage=${true}
                   .showPresence=${true}
-                  .view=${ViewType.twolines}
+                  view="twolines"
                 ></mgt-person>
               </div>
               <div tabindex="0" class="org-member__more">
@@ -311,7 +310,7 @@ export class MgtOrganization extends BasePersonCardSection {
                 .personDetails=${person}
                 .fetchImage=${true}
                 .showPresence=${true}
-                .view=${ViewType.twolines}
+                view="twolines"
               ></mgt-person>
             </div>
           `
@@ -337,7 +336,7 @@ export class MgtOrganization extends BasePersonCardSection {
              .personDetails=${person}
              .fetchImage=${true}
              .showPresence=${true}
-             .view=${ViewType.twolines}
+             view="twolines"
            ></mgt-person>
          </div>
        </div>
@@ -367,7 +366,7 @@ export class MgtOrganization extends BasePersonCardSection {
             .personDetails=${person}
             .fetchImage=${true}
             .showPresence=${true}
-            .view=${ViewType.twolines}
+            view="twolines"
           ></mgt-person>
         </div>
       </div>

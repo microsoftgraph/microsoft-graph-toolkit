@@ -456,7 +456,7 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
         <mgt-person
           .personDetails=${personDetails}
           .personImage=${personImage}
-          .view=${ViewType.twolines}
+          view="twolines"
           .line2Property=${'email'}
           ?vertical-layout=${this.usesVerticalPersonCard}
           class="person">
@@ -527,19 +527,19 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
   }
 
   private parsePersonDisplayConfiguration(): PersonViewConfig {
-    const displayConfig: PersonViewConfig = { view: ViewType.twolines, avatarSize: 'small' };
+    const displayConfig: PersonViewConfig = { view: 'twolines', avatarSize: 'small' };
     switch (this.loginView) {
       case 'avatar':
-        displayConfig.view = ViewType.image;
+        displayConfig.view = 'image';
         displayConfig.avatarSize = 'small';
         break;
       case 'compact':
-        displayConfig.view = ViewType.oneline;
+        displayConfig.view = 'oneline';
         displayConfig.avatarSize = 'small';
         break;
       case 'full':
       default:
-        displayConfig.view = ViewType.twolines;
+        displayConfig.view = 'twolines';
         displayConfig.avatarSize = 'auto';
         break;
     }
@@ -612,7 +612,7 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
                       <mgt-person
                         .personDetails=${details ? JSON.parse(details) : null}
                         .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
-                        .view=${ViewType.twolines}
+                        .view=${'twolines'}
                         class="account"
                       ></mgt-person>
                     </li>`;

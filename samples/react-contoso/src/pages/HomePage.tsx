@@ -4,7 +4,6 @@ import {
   FileList,
   File,
   Person,
-  PersonCardInteraction,
   Spinner,
   Agenda,
   PersonCard,
@@ -42,7 +41,12 @@ const HomePage: React.FunctionComponent = () => {
         driveId="b!M5IeZ2QKf0y18TIIXsDQkecHx1QrukxCte8X3n6ka6yn409-utaER7M2W9uRO4yB"
         itemId="01WEUQSTSBWERA5VH4BFALQBXUDVUMT22G"
       />
-      <Person personQuery="LeeG@wgww6.onmicrosoft.com" personCardInteraction={PersonCardInteraction.click} />
+      <Person
+        personQuery="LeeG@wgww6.onmicrosoft.com"
+        personCardInteraction="click"
+        avatarType="initials"
+        avatarSize="auto"
+      />
       <Agenda />
       <PersonCard personQuery="LeeG@wgww6.onmicrosoft.com" />
     </>

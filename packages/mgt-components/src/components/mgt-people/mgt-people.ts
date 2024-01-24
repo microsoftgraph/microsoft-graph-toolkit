@@ -9,18 +9,17 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { getPeople, getPeopleFromResource, PersonType } from '../../graph/graph.people';
+import { getPeople, getPeopleFromResource } from '../../graph/graph.people';
 import { getUsersPresenceByPeople } from '../../graph/graph.presence';
 import { findGroupMembers, getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedTaskComponent, mgtHtml } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
-import { PersonCardInteraction } from './../PersonCardInteraction';
+import { type PersonCardInteraction, personCardConverter } from './../PersonCardInteraction';
+
 import { styles } from './mgt-people-css';
 import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
 import { registerComponent } from '@microsoft/mgt-element';
-
-export { PersonCardInteraction } from './../PersonCardInteraction';
 
 /**
  * web component to display a group of people or contacts by using their photos or initials.
@@ -124,23 +123,17 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
 
   /**
    * Sets how the person-card is invoked
-   * Set to PersonCardInteraction.none to not show the card
+   * Valid options are: 'none', 'hover', or 'click'
+   * Set to 'none' to not show the card
    *
    * @type {PersonCardInteraction}
    * @memberof MgtPerson
    */
   @property({
     attribute: 'person-card',
-    converter: (value, _type) => {
-      value = value.toLowerCase();
-      if (typeof PersonCardInteraction[value] === 'undefined') {
-        return PersonCardInteraction.hover;
-      } else {
-        return PersonCardInteraction[value] as PersonCardInteraction;
-      }
-    }
+    converter: (value, _type) => personCardConverter(value, 'hover')
   })
-  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
+  public personCardInteraction: PersonCardInteraction = 'hover';
 
   /**
    * The resource to get
@@ -344,7 +337,7 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
       this._arrowKeyLocation = -1;
       peopleContainer.blur();
     } else if (['Enter', 'space', ' '].includes(keyName)) {
-      if (this.personCardInteraction !== PersonCardInteraction.none) {
+      if (this.personCardInteraction !== 'none') {
         const personEl = peopleElements[this._arrowKeyLocation] as HTMLElement;
         const mgtPerson = personEl.querySelector<MgtPerson>('mgt-person');
         if (mgtPerson) {
@@ -424,7 +417,7 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
 
         // populate people
         if (this.groupId) {
-          this.people = await findGroupMembers(graph, null, this.groupId, this.showMax, PersonType.person);
+          this.people = await findGroupMembers(graph, null, this.groupId, this.showMax, 'person');
         } else if (this.userIds) {
           this.people = await getUsersForUserIds(graph, this.userIds, '', '', this.fallbackDetails);
         } else if (this.peopleQueries) {
