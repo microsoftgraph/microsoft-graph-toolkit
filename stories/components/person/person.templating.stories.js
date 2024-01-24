@@ -39,7 +39,7 @@ export const noDataTemplate = () => html`
   `;
 
 export const retemplateMetadata = () => html`
-  <mgt-person person-query="me" view="threeLines">
+  <mgt-person person-query="me" view="threelines">
     <template data-type="line1">
       <div>
         Hello, my name is: {{person.displayName}}
@@ -59,7 +59,7 @@ export const retemplateMetadata = () => html`
 
   <br/>
 
-  <mgt-person person-query="me" view="fourLines">
+  <mgt-person person-query="me" view="fourlines">
     <template data-type="line1">
       <div>
         Hello, my name is: {{person.displayName}}

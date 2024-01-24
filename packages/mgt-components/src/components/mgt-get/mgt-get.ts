@@ -43,23 +43,18 @@ interface ImageValue {
 export const isCollectionResponse = (value: unknown): value is CollectionResponse<unknown> =>
   Array.isArray((value as CollectionResponse<unknown>)?.value);
 
+const responseTypes = ['json', 'image'] as const;
 /**
  * Enumeration to define what types of query are available
  *
  * @export
  * @enum {string}
  */
-export enum ResponseType {
-  /**
-   * Fetches a call as JSON
-   */
-  json = 'json',
-
-  /**
-   * Fetches a call as image
-   */
-  image = 'image'
-}
+export type ResponseType = (typeof responseTypes)[number];
+const isResponseType = (value: unknown): value is ResponseType =>
+  typeof value === 'string' && responseTypes.includes(value as ResponseType);
+const responseTypeConverter = (value: string, defaultValue: ResponseType = 'json'): ResponseType =>
+  isResponseType(value) ? value : defaultValue;
 
 /**
  * Defines the expiration time
@@ -147,9 +142,10 @@ export class MgtGet extends MgtTemplatedTaskComponent {
   @property({
     attribute: 'type',
     reflect: true,
-    type: ResponseType
+    type: String,
+    converter: value => responseTypeConverter(value, 'json')
   })
-  public type: ResponseType = ResponseType.json;
+  public type: ResponseType = 'json';
 
   /**
    * Maximum number of pages to get for the resource
@@ -367,7 +363,7 @@ export class MgtGet extends MgtTemplatedTaskComponent {
             request = request.middlewareOptions(prepScopes(this.scopes));
           }
 
-          if (this.type === ResponseType.json) {
+          if (this.type === 'json') {
             response = (await request.get()) as CollectionResponse<Entity> | Entity;
 
             if (isDeltaLink && isCollectionResponse(this.response) && isCollectionResponse(response)) {

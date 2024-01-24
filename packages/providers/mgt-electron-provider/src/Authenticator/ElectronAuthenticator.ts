@@ -76,7 +76,7 @@ export interface MsalElectronConfig {
 /**
  * Prompt type for consent or login
  *
- * @enum {number}
+ * @enum {string}
  */
 enum promptType {
   /**
@@ -88,7 +88,7 @@ enum promptType {
 /**
  * State of Authentication Provider
  *
- * @enum {number}
+ * @enum {string}
  */
 enum AuthState {
   /**
