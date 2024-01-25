@@ -27,7 +27,7 @@ export const SelectedValue = () => html`
 `;
 
 export const NestedValues = () => html`
-  <mgt-picker resource="/applications?$count=true" placeholder="Select application home pages" scopes="application.read.all, directory.read.all" key-name="web.homePageUrl" cache-enabled="true" cache-invalidation-period="50000"></mgt-picker>
+  <mgt-picker resource="teams/02bd9fd6-8f93-4758-87c3-1fb73740a315/installedApps?$expand=teamsAppDefinition" placeholder="Select teams applications" scopes="teamsappinstallation.readforteam" key-name="teamsAppDefinition.displayName" cache-enabled="true" cache-invalidation-period="50000"></mgt-picker>
 `;
 
 export const CacheEnabled = () => html`
