@@ -68,11 +68,11 @@ const useStyles = makeStyles({
 const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
     '& .ui-box': {
-      zIndex: 'unset'
-    },
-    '& p': {
-      display: 'inline-flex',
-      justifyContent: 'center'
+      zIndex: 'unset',
+      '& div[data-ui-status]': {
+        display: 'inline-flex',
+        justifyContent: 'center'
+      }
     }
   },
   chatMessageContainer: {
