@@ -119,7 +119,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/communication-common@npm:2.3.0, @azure/communication-common@npm:^2.2.0, @azure/communication-common@npm:^2.2.1, @azure/communication-common@npm:^2.3.0":
+"@azure/communication-common@npm:2.3.0, @azure/communication-common@npm:^2.2.0, @azure/communication-common@npm:^2.3.0":
   version: 2.3.0
   resolution: "@azure/communication-common@npm:2.3.0"
   dependencies:
@@ -132,6 +132,22 @@ __metadata:
     jwt-decode: ^3.1.2
     tslib: ^2.2.0
   checksum: a27d7f50e088f36af32b2e36bde43b816383baa5dfcb092ae8787c32b21d79d690959893ca66a26471771e7d1d10ff6f0e856f671fc535c923123aaadd8abe3b
+  languageName: node
+  linkType: hard
+
+"@azure/communication-common@npm:3.0.0-beta.1":
+  version: 3.0.0-beta.1
+  resolution: "@azure/communication-common@npm:3.0.0-beta.1"
+  dependencies:
+    "@azure/abort-controller": ^1.0.0
+    "@azure/core-auth": ^1.3.0
+    "@azure/core-rest-pipeline": ^1.3.2
+    "@azure/core-tracing": ^1.0.0
+    "@azure/core-util": ^1.0.0
+    events: ^3.0.0
+    jwt-decode: ^3.1.2
+    tslib: ^2.2.0
+  checksum: 6de17c76d2d161828debf08ba11d8c5a7c50f80b11b91cbc8682a91779d370ee4fc764a7ea4cc435feb33a53c05b1cd21209fa36550118a395089d235f5ae7c2
   languageName: node
   linkType: hard
 
@@ -154,11 +170,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/communication-react@npm:1.8.0":
-  version: 1.8.0
-  resolution: "@azure/communication-react@npm:1.8.0"
+"@azure/communication-react@npm:1.8.0-beta.1":
+  version: 1.8.0-beta.1
+  resolution: "@azure/communication-react@npm:1.8.0-beta.1"
   dependencies:
-    "@azure/communication-common": ^2.2.1
+    "@azure/communication-common": 3.0.0-beta.1
     "@azure/core-client": ^1.7.3
     "@azure/core-paging": ^1.5.0
     "@azure/core-rest-pipeline": ^1.11.0
@@ -182,14 +198,14 @@ __metadata:
     use-debounce: ^9.0.4
     uuid: ^9.0.0
   peerDependencies:
-    "@azure/communication-calling": ^1.15.3
-    "@azure/communication-calling-effects": 1.0.1
-    "@azure/communication-chat": ">=1.3.2"
+    "@azure/communication-calling": 1.16.3-beta.1
+    "@azure/communication-calling-effects": 1.0.0-beta.2
+    "@azure/communication-chat": 1.4.0-beta.1
     "@types/react": ">=16.8.0 <19.0.0"
     "@types/react-dom": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
     react-dom: ">=16.8.0 <19.0.0"
-  checksum: e489a9cb8b4002618fa4163c4df5621e7bf65135cc8c9ecd7327ffd8ba1789eb6c8a483024069938269680a814cf4acfe698213b8f323914ca30cac2ee5a3f59
+  checksum: c4a58c5021b0af000076802a52b6fcbc6c9ba9164bab6d5a3f1ee7813246ac05c3457fa3546e78b343686b3069125f8d0b31fbc3cdca84509705ccc9abf148d0
   languageName: node
   linkType: hard
 
@@ -6069,7 +6085,7 @@ __metadata:
     "@azure/communication-chat": 1.4.0
     "@azure/communication-common": 2.3.0
     "@azure/communication-identity": 1.3.0
-    "@azure/communication-react": 1.8.0
+    "@azure/communication-react": 1.8.0-beta.1
     "@azure/msal-browser": 2.33.0
     "@fluentui/react": ~8.106.1
     "@fluentui/react-components": ^9.19.1
