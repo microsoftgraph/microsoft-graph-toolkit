@@ -25,6 +25,11 @@ export const MaxPages = () => html`
 export const SelectedValue = () => html`
   <mgt-picker resource="/groups" selected-value="Activewear" scopes="group.read.all" key-name="displayName"></mgt-picker>
 `;
+
+export const NestedValues = () => html`
+  <mgt-picker resource="/applications?$count=true" placeholder="Select application home pages" scopes="application.read.all, directory.read.all" key-name="web.homePageUrl" cache-enabled="true" cache-invalidation-period="50000"></mgt-picker>
+`;
+
 export const CacheEnabled = () => html`
   <mgt-picker resource="/groups" placeholder="Select a group" scopes="group.read.all" key-name="displayName" cache-enabled="true" cache-invalidation-period="50000"></mgt-picker>
 `;
