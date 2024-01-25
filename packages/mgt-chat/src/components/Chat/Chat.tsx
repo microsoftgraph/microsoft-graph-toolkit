@@ -81,7 +81,8 @@ const messageThreadStyles: MessageThreadStyles = {
       ...shorthands.marginInline('0px')
     },
     '& .otherMention': {
-      color: 'var(--accent-base-color)'
+      color: 'var(--accent-base-color)',
+      ...shorthands.margin('0px')
     }
   },
   myChatMessageContainer: {
@@ -90,7 +91,8 @@ const messageThreadStyles: MessageThreadStyles = {
       ...shorthands.marginInline('0px')
     },
     '& .otherMention': {
-      color: 'var(--accent-base-color)'
+      color: 'var(--accent-base-color)',
+      ...shorthands.margin('0px')
     }
   }
 };
