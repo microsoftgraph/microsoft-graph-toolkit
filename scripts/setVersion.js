@@ -3,7 +3,7 @@ var path = require('path');
 var fs = require('fs');
 var project = require('../package.json');
 
-const ignoreDirs = ['node_modules', 'samples'];
+const ignoreDirs = ['node_modules', 'samples', 'assets'];
 
 const getFiles = (filter, startPath = 'packages') => {
   let results = [];

@@ -213,7 +213,9 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
    */
   public async login(): Promise<void> {
     const provider = Providers.globalProvider;
-    if (!provider.isMultiAccountSupportedAndEnabled && (this.userDetails || !this.fireCustomEvent('loginInitiated'))) {
+    // (If we have user details or the consumer doesn't cancel the loginInitiated event) and the provider doesn't support multi-account, we don't have to login.
+    // This condition is to prevent the login popup from showing up when the user is already logged in while still ensuring the loginIntiated event is raised
+    if ((this.userDetails || !this.fireCustomEvent('loginInitiated')) && !provider.isMultiAccountSupportedAndEnabled) {
       return;
     }
     if (provider?.login) {
@@ -356,9 +358,9 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
         light-dismiss
         @opened=${this.flyoutOpened}
         @closed=${this.flyoutClosed}>
-        <fluent-card 
-          slot="flyout" 
-          tabindex="0" 
+        <fluent-card
+          slot="flyout"
+          tabindex="0"
           class="flyout-card"
           @keydown=${this.onUserKeyDown}
           >
