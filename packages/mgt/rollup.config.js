@@ -1,9 +1,9 @@
-import resolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+import { babel } from '@rollup/plugin-babel';
+import json from '@rollup/plugin-json';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import terser from '@rollup/plugin-terser';
 import commonjs from 'rollup-plugin-commonjs';
 import postcss from 'rollup-plugin-postcss';
-import { terser } from 'rollup-plugin-terser';
-import json from 'rollup-plugin-json';
 
 const extensions = ['.js', '.ts'];
 
@@ -27,7 +27,7 @@ const getBabelConfig = isEs5 => {
 const commonPlugins = [
   json(),
   commonjs(),
-  resolve({ module: true, jsnext: true, extensions }),
+  nodeResolve({ mainFields: ['module', 'jsnext'], extensions }),
   postcss(),
   terser({ keep_classnames: true, keep_fnames: true })
 ];

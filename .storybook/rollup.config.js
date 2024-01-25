@@ -1,7 +1,7 @@
-import resolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+import { babel } from '@rollup/plugin-babel';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import terser from '@rollup/plugin-terser';
 import postcss from 'rollup-plugin-postcss';
-import { terser } from 'rollup-plugin-terser';
 
 const extensions = ['.js'];
 
@@ -34,7 +34,7 @@ const es6Bundle = {
       extensions,
       ...getBabelConfig(false)
     }),
-    resolve({ module: true, jsnext: true, extensions }),
+    nodeResolve({ mainFields: ['modules', 'jsnext'], extensions }),
     postcss(),
     terser({ keep_classnames: true, keep_fnames: true })
   ]
