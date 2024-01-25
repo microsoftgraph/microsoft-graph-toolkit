@@ -34,7 +34,7 @@ const es6Bundle = {
       extensions,
       ...getBabelConfig(false)
     }),
-    nodeResolve({ mainFields: ['modules', 'jsnext'], extensions }),
+    nodeResolve({ mainFields: ['module', 'jsnext'], extensions }),
     postcss(),
     terser({ keep_classnames: true, keep_fnames: true })
   ]

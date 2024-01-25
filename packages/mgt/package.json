@@ -36,7 +36,7 @@
     "copy:wc": "cpx '../../node_modules/@webcomponents/webcomponentsjs/bundles/**/*' ./dist/bundle/wc/bundles && cpx ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js ./dist/bundle/wc",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts",
-    "rollup": "rollup -c",
+    "rollup": "rollup -c --bundleConfigAsCjs",
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd ."
   },

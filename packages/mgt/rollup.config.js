@@ -2,7 +2,7 @@ import { babel } from '@rollup/plugin-babel';
 import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
-import commonjs from 'rollup-plugin-commonjs';
+import commonjs from '@rollup/plugin-commonjs';
 import postcss from 'rollup-plugin-postcss';
 
 const extensions = ['.js', '.ts'];
@@ -42,6 +42,7 @@ const es6Bundle = {
     sourcemap: false
   },
   plugins: [
+    ...commonPlugins,
     babel({
       extensions,
       presets: [
@@ -54,8 +55,7 @@ const es6Bundle = {
         '@babel/typescript'
       ],
       ...getBabelConfig(false)
-    }),
-    ...commonPlugins
+    })
   ]
 };
 
@@ -69,6 +69,7 @@ const es5Bundle = {
     sourcemap: false
   },
   plugins: [
+    ...commonPlugins,
     babel({
       extensions,
       presets: [
@@ -83,8 +84,7 @@ const es5Bundle = {
         '@babel/typescript'
       ],
       ...getBabelConfig(true)
-    }),
-    ...commonPlugins
+    })
   ]
 };
 
@@ -97,6 +97,7 @@ const cjsBundle = {
     sourcemap: true
   },
   plugins: [
+    ...commonPlugins,
     babel({
       extensions,
       presets: [
@@ -109,8 +110,7 @@ const cjsBundle = {
         '@babel/typescript'
       ],
       ...getBabelConfig(true)
-    }),
-    ...commonPlugins
+    })
   ]
 };
 
