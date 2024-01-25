@@ -48,8 +48,7 @@ The components are also available as [React components](https://learn.microsoft.
 
 [Watch the Getting Started Video](https://www.youtube.com/watch?v=oZCGb2MMxa0)
 
-
-You can use the components by installing the npm packages or referencing the loader directly (via unpkg).
+You can use the components by installing the npm package or importing them from a CDN (unpkg).
 
 ### Use via NPM:
 
@@ -78,26 +77,23 @@ Now you can reference all components and providers at the page you are using:
 <mgt-agenda></mgt-agenda>
 ```
 
-### Use via mgt-loader:
+### Use via CDN:
+
+The following script tag downloads the code from the CDN, configures an MSAL2 provider, and makes all the components available for use in the web page.
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt@4/dist/bundle/mgt-loader.js"></script>
+<script type="module">
+  import { registerMgtComponents, Providers, Msal2Provider } from 'https://unpkg.com/@microsoft/mgt@4';
+  Providers.globalProvider = new Msal2Provider({clientId: '[CLIENT-ID]'});
+  registerMgtComponents();
+</script>
+<mgt-login></mgt-login>
+<mgt-agenda></mgt-agenda>
 ```
 
 > NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 4.0.0 < 5.0.0`, omitting the `@4` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
 
-You can then start using the components in your html page. Here is a full working example with the MSAL2 provider:
-
-```html
-<script src="https://unpkg.com/@microsoft/mgt@4/dist/bundle/mgt-loader.js"></script>
-<mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
-<mgt-login></mgt-login>
-
-<!-- <script>
-    // alternatively, you can set the provider in code and provide more options
-    mgt.Providers.globalProvider = new mgt.Msal2Provider({clientId: '[CLIENT-ID]'});
-</script> -->
-```
+> NOTE: MSAL requires the page to be hosted in a web server for the authentication redirects. If you are just getting started and want to play around, the quickest way is to use something like [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in vscode.
 
 ## Feedback and Requests
 
