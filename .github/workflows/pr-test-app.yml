@@ -12,6 +12,8 @@ jobs:
   react-contoso:
     if: "contains(github.event.pull_request.labels.*.name, 'Build: React Contoso')"
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     strategy:
       matrix:

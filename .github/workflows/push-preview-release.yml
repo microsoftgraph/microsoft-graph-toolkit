@@ -18,6 +18,9 @@ jobs:
       matrix:
         node-version: [18.x]
 
+    permissions:
+      packages: write
+
     steps:
       - uses: actions/checkout@v4
 

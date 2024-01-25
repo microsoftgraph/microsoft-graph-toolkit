@@ -8,6 +8,10 @@ on:
 jobs:
   track_issue:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      repository-projects: read
+
     steps:
       - name: Get project data
         env:
@@ -32,8 +36,8 @@ jobs:
             }' -f org=$PROJECT_ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
 
           echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
-  
-      - name: Add issue to project        
+
+      - name: Add issue to project
         env:
           GITHUB_TOKEN: ${{ secrets.PROJECT_ACCESS_TOKEN }}
           ISSUE_ID: ${{ github.event.issue.node_id }}
