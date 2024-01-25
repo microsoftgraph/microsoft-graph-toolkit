@@ -8,13 +8,14 @@ on:
     types: [opened, labeled, synchronize, reopened]
     branches: [main, release/**, next/**]
 
+permissions:
+  pull-requests: write
+  contents: write
+
 jobs:
   storybook:
     if: "contains(github.event.pull_request.labels.*.name, 'Build: Storybook')"
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
 
     strategy:
       matrix:

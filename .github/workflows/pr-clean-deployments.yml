@@ -8,6 +8,9 @@ on:
     types: [closed]
     branches: [main, release/**, next/**]
 
+permissions:
+  pull-requests: write
+
 jobs:
   cleanup:
     if: "contains(github.event.pull_request.labels.*.name, 'Build: Storybook') || contains(github.event.pull_request.labels.*.name, 'Build: React Contoso')"

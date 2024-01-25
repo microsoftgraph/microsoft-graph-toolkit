@@ -5,12 +5,13 @@ on:
     types:
       - opened
 
+permissions:
+  issues: write
+  repository-projects: read
+
 jobs:
   track_issue:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      repository-projects: read
 
     steps:
       - name: Get project data

@@ -6,6 +6,8 @@ name: Release latest
 on:
   push:
     tags: ['v3.*']
+permissions:
+  contents: write
 
 jobs:
   version:
