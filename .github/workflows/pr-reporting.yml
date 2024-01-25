@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
+    permissions:
+      pull-requests: write
     steps:
       # added to work around missing .git repo wanted by gh cli
       - uses: actions/checkout@v4
