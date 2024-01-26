@@ -22,6 +22,10 @@ export const showPresence = () => html`
 <mgt-people-picker show-presence></mgt-people-picker>
 `;
 
+export const personCard = () => html`
+  <mgt-people-picker person-card="hover"></mgt-people-picker>
+`;
+
 export const groupId = () => html`
 <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
 `;

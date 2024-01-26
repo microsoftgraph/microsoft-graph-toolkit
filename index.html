@@ -6,53 +6,39 @@
     <title>Microsoft Graph Toolkit Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" />
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" /> -->
     <!-- <script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script> -->
 
-    <script src="https://unpkg.com/@microsoft/teams-js@2/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
-<!-- 
-    <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script> -->
+    <!-- <script src="https://unpkg.com/@microsoft/teams-js@2/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script> -->
 
     <script type="module">
-      import { registerMgtMsal2Provider } from 'node_modules/@microsoft/mgt-msal2-provider/dist/es6/index.js';
-      import { registerMgtComponents } from 'node_modules/@microsoft/mgt-components/dist/es6/index.js';
-      registerMgtMsal2Provider();
-      registerMgtComponents();
-    </script>
-    <!-- <script type="module" src="./packages/mgt-element/dist/es6/index.js"></script>
-    <script type="module" src="./packages/mgt-components/dist/es6/index.js"></script>
-    <script type="module" src="./packages/providers/mgt-msal2-provider/dist/es6/index.js"></script>
-    <script type="module" src="./packages/providers/mgt-mock-provider/dist/es6/index.js"></script>
-    <script type="module">
-      import { registerMgtComponents } from './packages/mgt-components/dist/es6/index.js';
-      // import { Msal2Provider } from './packages/providers/mgt-msal2-provider/dist/es6/index.js';
-      import { Providers } from './packages/mgt-element/dist/es6/index.js';
-      import { MockProvider } from './packages/mgt-element/dist/es6/index.js';
-      Providers.globalProvider = new MockProvider(true);
-      // Providers.globalProvider = new Msal2Provider({
-      //   clientId: '2dfea037-938a-4ed8-9b35-c05708a1b241',
-      //   redirectUri: "http://localhost:3000",
-      //   scopes: [
-      //     'user.read',
-      //     'user.read.all',
-      //     'mail.readBasic',
-      //     'people.read',
-      //     'people.read.all',
-      //     'sites.read.all',
-      //     'user.readbasic.all',
-      //     'contacts.read',
-      //     'presence.read',
-      //     'presence.read.all',
-      //     'tasks.readwrite',
-      //     'tasks.read',
-      //     'calendars.read',
-      //     'group.read.all',
-      //     'files.read',
-      //     'files.read.all',
-      //     'files.readwrite',
-      //     'files.readwrite.all'
-      //   ]
-      // });
+      // import { registerMgtComponents, Providers, MockProvider, Msal2Provider } from 'https://unpkg.com/@microsoft/mgt@next/dist/bundle/mgt.es6.js';
+      import { registerMgtComponents, Providers, MockProvider, Msal2Provider } from './packages/mgt/dist/bundle/mgt.es6.js';
+      // Providers.globalProvider = new MockProvider(true);
+      Providers.globalProvider = new Msal2Provider({
+        clientId: '2dfea037-938a-4ed8-9b35-c05708a1b241',
+        redirectUri: "http://localhost:3000",
+        scopes: [
+          'user.read',
+          'user.read.all',
+          'mail.readBasic',
+          'people.read',
+          'people.read.all',
+          'sites.read.all',
+          'user.readbasic.all',
+          'contacts.read',
+          'presence.read',
+          'presence.read.all',
+          'tasks.readwrite',
+          'tasks.read',
+          'calendars.read',
+          'group.read.all',
+          'files.read',
+          'files.read.all',
+          'files.readwrite',
+          'files.readwrite.all'
+        ]
+      });
       registerMgtComponents();
     </script>
     
