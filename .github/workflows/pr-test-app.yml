@@ -8,6 +8,10 @@ on:
     types: [opened, labeled, synchronize, reopened]
     branches: [main, release/**, next/**]
 
+permissions:
+  pull-requests: write
+  contents: write
+
 jobs:
   react-contoso:
     if: "contains(github.event.pull_request.labels.*.name, 'Build: React Contoso')"
