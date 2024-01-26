@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { PersonType,GroupType,UserType,IDynamicPerson } from '@microsoft/mgt-components';
+import { PersonType,GroupType,UserType,IDynamicPerson,PersonCardInteraction } from '@microsoft/mgt-components';
 import { registerMgtPeoplePickerComponent } from '@microsoft/mgt-components';
 import { TemplateContext,TemplateRenderedData } from '@microsoft/mgt-element';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,6 +20,7 @@ export type PeoplePickerProps = {
 	showMax?: number;
 	disableImages?: boolean;
 	showPresence?: boolean;
+	personCardInteraction?: PersonCardInteraction;
 	selectedPeople?: IDynamicPerson[];
 	defaultSelectedUserIds?: string[];
 	defaultSelectedGroupIds?: string[];

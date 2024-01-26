@@ -56,6 +56,7 @@ import { Person, User } from '@microsoft/microsoft-graph-types';
 import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 import { isGraphError } from '../../graph/isGraphError';
+import { type PersonCardInteraction, personCardConverter } from './../PersonCardInteraction';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType, UserType } from '../../graph/graph.people';
@@ -274,6 +275,19 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   public showPresence: boolean;
 
   /**
+   * Sets how the person-card is invoked
+   * Set to PersonCardInteraction.none to not show the card
+   *
+   * @type {PersonCardInteraction}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'person-card',
+    converter: value => personCardConverter(value)
+  })
+  public personCardInteraction: PersonCardInteraction = 'none';
+
+  /**
    * array of user picked people.
    *
    * @type {IDynamicPerson[]}
@@ -423,7 +437,14 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    */
   public static get requiredScopes(): string[] {
     return [
-      ...new Set(['user.read.all', 'people.read', 'group.read.all', 'user.readbasic.all', ...MgtPerson.requiredScopes])
+      ...new Set([
+        'user.read.all',
+        'people.read',
+        'group.read.all',
+        'user.readbasic.all',
+        'contacts.read',
+        ...MgtPerson.requiredScopes
+      ])
     ];
   }
 
@@ -825,20 +846,20 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         aria-live="polite"
         title=${this.strings.suggestionsTitle}
       >
-         ${repeat(
-           filteredPeople,
-           person => person.id,
-           person => html`
-            <li
-              id="${person.id}"
-              class="searched-people-list-result"
-              role="option"
-              @click="${() => this.handleSuggestionClick(person)}">
-                ${this.renderPersonResult(person)}
-            </li>
-          `
-         )}
-       </ul>
+        ${repeat(
+          filteredPeople,
+          person => person.id,
+          person => html`
+          <li
+            id="${person.id}"
+            class="searched-people-list-result"
+            role="option"
+            @click="${() => this.handleSuggestionClick(person)}">
+              ${this.renderPersonResult(person)}
+          </li>
+        `
+        )}
+      </ul>
      `;
   }
 
@@ -877,12 +898,11 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
     return mgtHtml`
        <mgt-person
-         tabindex="-1"
          class="person-image-selected"
          .personDetails=${person}
          ?fetch-image=${!this.disableImages}
          view="oneline"
-         person-card="none"
+         person-card=${this.personCardInteraction}
         ></mgt-person>
      `;
   }
@@ -1389,7 +1409,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
     const selectedList = this.renderRoot.querySelector('.selected-list');
     const isCmdOrCtrlKey = event.getModifierState('Control') || event.getModifierState('Meta');
     if (isCmdOrCtrlKey && selectedList) {
-      const selectedPeople = selectedList.querySelectorAll('mgt-person.selected-list-item-person');
+      const selectedPeople = selectedList.querySelectorAll('mgt-person.person-image-selected');
       this.hideFlyout();
       if (isCmdOrCtrlKey && keyName === 'ArrowLeft') {
         this._currentHighlightedUserPos =
