@@ -7,19 +7,22 @@
 
 @import '../../styles/shared-sass-variables';
 
-$input-background: padding-box
+$input-background:
+  padding-box
     linear-gradient(
       var(--people-picker-input-background, var(--neutral-fill-input-rest)),
       var(--people-picker-input-background, var(--neutral-fill-input-rest))
     ),
   border-box var(--people-picker-input-border-color, var(--neutral-stroke-input-rest));
-$input-hover-background: padding-box
+$input-hover-background:
+  padding-box
     linear-gradient(
       var(--people-picker-input-hover-background, var(--neutral-fill-input-hover)),
       var(--people-picker-input-hover-background, var(--neutral-fill-input-hover))
     ),
   border-box var(--people-picker-input-hover-border-color, var(--neutral-stroke-input-hover));
-$input-focus-background: padding-box
+$input-focus-background:
+  padding-box
     linear-gradient(
       var(--people-picker-input-focus-background, var(--neutral-fill-input-focus)),
       var(--people-picker-input-focus-background, var(--neutral-fill-input-focus))
@@ -33,17 +36,17 @@ $selected-option-bg: var(
   var(--person-background-color, var(--neutral-layer-3))
 );
 $selected-option-highlight-bg: var(--people-picker-selected-option-highlight-background-color, var(--accent-fill-rest));
-$dropdown-card-color: var(--people-picker-dropdown-background-color, var(--neutral-layer-card-container));
+$dropdown-card-color: var(--people-picker-dropdown-background-color, var(--fill-color));
 $dropdown-result-bg-color: var(
   --people-picker-dropdown-result-background-color,
   var(--person-background-color, transparent)
 );
 $dropdown-result-hover-bg-color: var(
   --people-picker-dropdown-result-hover-background-color,
-  var(--person-background-color, var(--neutral-fill-rest))
+  var(--person-background-color, var(--neutral-fill-input-hover))
 );
 $dropdown-result-focus-bg-color: var(
   --people-picker-dropdown-result-focus-background-color,
-  var(--person-background-color, var(--neutral-fill-rest))
+  var(--person-background-color, var(--neutral-fill-input-focus))
 );
 $no-results-color: var(--people-picker-no-results-text-color, var(--neutral-foreground-hint));

@@ -12,7 +12,6 @@ module.exports = {
       'packages/mgt-element/tsconfig.json',
       'packages/mgt-components/tsconfig.json',
       'packages/mgt-react/tsconfig.json',
-      'packages/mgt-spfx/tsconfig.json',
       'packages/mgt-spfx-utils/tsconfig.json',
       'packages/providers/mgt-electron-provider/tsconfig.authenticator.json',
       'packages/providers/mgt-electron-provider/tsconfig.provider.json',

@@ -1,6 +1,6 @@
 import { Meta, Source } from '@storybook/addon-docs';
 import { PACKAGE_VERSION } from '@microsoft/mgt-element';
-import { versionInfo } from '../.storybook/versionInfo';
+import { getCleanVersionInfo } from '../.storybook/versionInfo';
 import { TableNamer, CopyButtonNamer } from '../.storybook/components/ElementNamer';
 
 <Meta title="Overview" />
@@ -17,20 +17,25 @@ The Microsoft Graph Toolkit makes it easy to use Microsoft Graph in your applica
 
 ### Installing the Microsoft Graph Toolkit
 
-It's easy to get started! Add the Toolkit via our `mgt-loader` or via npm and you are ready to go!
+It's easy to get started! Add the Toolkit from a CDN or via npm and you are ready to go!
 
-#### Via the mgt-loader
+#### From a CDN
 
 <Source
  language="html"
- code={`<script src="https://unpkg.com/@microsoft/mgt@${versionInfo.major}/dist/bundle/mgt-loader.js"></script>`}
+ code={`
+ <script type="module">
+  import { registerMgtComponents, Providers, Msal2Provider } from 'https://unpkg.com/@microsoft/mgt@${getCleanVersionInfo(true)}';
+  Providers.globalProvider = new Msal2Provider({clientId: '[CLIENT-ID]'});
+  registerMgtComponents();
+</script>`}
 />
 
 #### Via npm
 
 <Source
  language="shell"
- code={`npm install @microsoft/mgt@${PACKAGE_VERSION}`}
+ code={`npm install @microsoft/mgt@${getCleanVersionInfo()}`}
 />
 
 ### What's in the Microsoft Graph Toolkit?

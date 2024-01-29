@@ -442,7 +442,7 @@ export const findUsers = async (graph: IGraph, query: string, top = 10, userFilt
  * @param {string} query
  * @param {string} groupId - the group to query
  * @param {number} [top=10] - number of people to return
- * @param {PersonType} [personType=PersonType.person] - the type of person to search for
+ * @param {PersonType} [personType='person'] - the type of person to search for
  * @param {boolean} [transitive=false] - whether the return should contain a flat list of all nested members
  * @returns {(Promise<User[]>)}
  */
@@ -451,7 +451,7 @@ export const findGroupMembers = async (
   query: string,
   groupId: string,
   top = 10,
-  personType: PersonType = PersonType.person,
+  personType: PersonType = 'person',
   transitive = false,
   userFilters = '',
   peopleFilters = ''
@@ -483,9 +483,9 @@ export const findGroupMembers = async (
   }
 
   let apiUrl = `/groups/${groupId}/${transitive ? 'transitiveMembers' : 'members'}`;
-  if (personType === PersonType.person) {
+  if (personType === 'person') {
     apiUrl += '/microsoft.graph.user';
-  } else if (personType === PersonType.group) {
+  } else if (personType === 'group') {
     apiUrl += '/microsoft.graph.group';
     if (query) {
       filter = `startswith(displayName,'${query}') or startswith(mail,'${query}')`;
@@ -523,7 +523,7 @@ export const findUsersFromGroupIds = async (
   query: string,
   groupIds: string[],
   top = 10,
-  personType: PersonType = PersonType.person,
+  personType: PersonType = 'person',
   transitive = false,
   groupFilters = ''
 ): Promise<User[]> => {

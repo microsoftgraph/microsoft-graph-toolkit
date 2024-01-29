@@ -178,7 +178,7 @@ export interface Msal2PublicClientApplicationConfig extends Msal2ConfigBase {
  * Prompt type enum
  *
  * @export
- * @enum {number}
+ * @enum {string}
  */
 export enum PromptType {
   SELECT_ACCOUNT = 'select_account',

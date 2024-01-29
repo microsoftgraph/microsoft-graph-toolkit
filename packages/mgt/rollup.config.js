@@ -7,11 +7,11 @@ import postcss from 'rollup-plugin-postcss';
 
 const extensions = ['.js', '.ts'];
 
-const getBabelConfig = isEs5 => {
+const getBabelConfig = () => {
   return {
     plugins: [
-      ['@babel/plugin-proposal-decorators', isEs5 ? { legacy: true } : { decoratorsBeforeExport: true, legacy: false }],
-      ['@babel/proposal-class-properties', { loose: isEs5 }],
+      ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true, legacy: false }],
+      ['@babel/proposal-class-properties', { loose: false }],
       '@babel/proposal-object-rest-spread'
     ],
     include: [
@@ -36,9 +36,8 @@ const es6Bundle = {
   input: ['src/index.ts'],
   output: {
     dir: 'dist/bundle',
-    entryFileNames: 'mgt.es6.js',
-    format: 'iife',
-    name: 'mgt',
+    entryFileNames: 'mgt.js',
+    format: 'esm',
     sourcemap: false
   },
   plugins: [
@@ -54,64 +53,9 @@ const es6Bundle = {
         ],
         '@babel/typescript'
       ],
-      ...getBabelConfig(false)
+      ...getBabelConfig()
     })
   ]
 };
 
-const es5Bundle = {
-  input: ['src/bundle/index.es5.ts'],
-  output: {
-    dir: 'dist/bundle',
-    entryFileNames: 'mgt.es5.js',
-    format: 'iife',
-    name: 'mgt',
-    sourcemap: false
-  },
-  plugins: [
-    ...commonPlugins,
-    babel({
-      extensions,
-      presets: [
-        [
-          '@babel/preset-env',
-          {
-            targets: 'last 2 versions',
-            useBuiltIns: 'entry',
-            corejs: 3
-          }
-        ],
-        '@babel/typescript'
-      ],
-      ...getBabelConfig(true)
-    })
-  ]
-};
-
-const cjsBundle = {
-  input: ['src/bundle/index.es5.ts'],
-  output: {
-    dir: 'dist/commonjs',
-    entryFileNames: 'index.js',
-    format: 'cjs',
-    sourcemap: true
-  },
-  plugins: [
-    ...commonPlugins,
-    babel({
-      extensions,
-      presets: [
-        [
-          '@babel/preset-env',
-          {
-            targets: 'last 2 versions'
-          }
-        ],
-        '@babel/typescript'
-      ],
-      ...getBabelConfig(true)
-    })
-  ]
-};
-
-export default [es6Bundle, es5Bundle, cjsBundle];
+export default [es6Bundle];

@@ -20,20 +20,19 @@
   "main": "./dist/es6/index.js",
   "types": "./dist/es6/index.d.ts",
   "module": "./dist/es6/index.js",
+  "unpkg": "./dist/bundle/mgt.js",
   "files": [
     "dist",
     "src"
   ],
   "scripts": {
     "build": "npm-run-all clean build:compile build:bundle",
-    "build:bundle": "npm-run-all copy:loader copy:wc sass rollup",
+    "build:bundle": "npm run rollup",
     "build:compile": "npm-run-all sass compile",
     "build:watch": "npm-run-all -p sass:watch compile:watch",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
-    "copy:loader": "cpx src/bundle/mgt-loader.js dist/bundle",
-    "copy:wc": "cpx '../../node_modules/@webcomponents/webcomponentsjs/bundles/**/*' ./dist/bundle/wc/bundles && cpx ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js ./dist/bundle/wc",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts",
     "rollup": "rollup -c --bundleConfigAsCjs",
