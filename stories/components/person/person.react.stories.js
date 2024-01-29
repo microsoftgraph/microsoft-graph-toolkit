@@ -17,13 +17,13 @@ export default {
 export const person = () => html`
   <mgt-person person-query="me"></mgt-person>
   <br>
-  <mgt-person person-query="me" view="oneLine"></mgt-person>
+  <mgt-person person-query="me" view="oneline"></mgt-person>
   <br>
-  <mgt-person person-query="me" view="twoLines"></mgt-person>
+  <mgt-person person-query="me" view="twolines"></mgt-person>
   <br>
-  <mgt-person person-query="me" view="threeLines"></mgt-person>
+  <mgt-person person-query="me" view="threelines"></mgt-person>
   <br>
-  <mgt-person person-query="me" view="fourLines"></mgt-person>
+  <mgt-person person-query="me" view="fourlines"></mgt-person>
   <react>
     import { Person } from '@microsoft/mgt-react';
 
@@ -31,13 +31,13 @@ export const person = () => html`
       <>
         <Person personQuery="me"></Person>
         <br />
-        <Person personQuery="me" view={ViewType.oneline}></Person>
+        <Person personQuery="me" view="oneline"></Person>
         <br />
-        <Person personQuery="me" view={ViewType.twolines}></Person>
+        <Person personQuery="me" view="twolines"></Person>
         <br />
-        <Person personQuery="me" view={ViewType.threelines}></Person>
+        <Person personQuery="me" view="threelines"></Person>
         <br />
-        <Person personQuery="me" view={ViewType.fourlines}></Person>
+        <Person personQuery="me" view="fourlines"></Person>
       </>
     );
   </react>
@@ -46,11 +46,11 @@ export const person = () => html`
 export const personCard = () => html`
    <div class="example">
      <div style="margin-bottom:10px">Person card Hover</div>
-     <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
+     <mgt-person person-query="me" view="twolines" person-card="hover"></mgt-person>
    </div>
    <div class="example">
      <div style="margin-bottom:10px">Person card Click</div>
-     <mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>
+     <mgt-person person-query="me" view="twolines" person-card="click"></mgt-person>
    </div>
 
    <react>
