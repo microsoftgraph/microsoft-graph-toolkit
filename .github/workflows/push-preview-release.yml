@@ -6,6 +6,10 @@ on:
   push:
     tags: ['v3.*-preview.*', 'v3.*-rc.*']
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   version:
     runs-on: ubuntu-latest
