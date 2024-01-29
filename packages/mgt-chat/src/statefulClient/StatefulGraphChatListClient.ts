@@ -72,7 +72,6 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
     | 'loading messages'
     | 'no messages'
     | 'chat threads loaded'
-    | 'ready'
     | 'error';
   chatThreads: GraphChatThread[];
   moreChatThreadsToLoad: boolean | undefined;
@@ -157,27 +156,22 @@ export interface ChatListEvent {
 class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient> {
   private readonly _notificationClient: GraphNotificationUserClient;
   private readonly _eventEmitter: ThreadEventEmitter;
-  // private readonly _cache: MessageCache;
   private readonly _cache: LastReadCache;
   private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
   private _chatListEventSubscribers: ((state: ChatListEvent) => void)[] = [];
   private readonly _graph: IGraph;
   constructor(chatThreadsPerPage: number) {
-    this.updateUserInfo();
-
+    this.userId = currentUserId();
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
-    // this._cache = new MessageCache();
     this._cache = new LastReadCache();
     this._graph = graph('mgt-chat', GraphConfig.version);
     this.chatThreadsPerPage = chatThreadsPerPage;
     this._notificationClient = new GraphNotificationUserClient(this._eventEmitter, this._graph);
 
-    if (this.userId) {
-      void this.updateUserSubscription();
-      this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
-    }
+    void this.updateUserSubscription(this.userId);
+    this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
   }
 
   /**
@@ -527,33 +521,33 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   };
 
   private readonly onActiveAccountChanged = (e: ActiveAccountChanged) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (e.detail && this.userId !== e.detail?.id) {
-      void this.handleAccountChange();
+    if (!e.detail) {
+      return;
+    }
+    const [newUserId] = e.detail.id.split('.');
+
+    if (newUserId && this.userId !== newUserId) {
+      void this.handleAccountChange(newUserId);
     }
   };
 
-  private readonly handleAccountChange = async () => {
-    this.clearCurrentUserMessages();
-    // need to ensure that we close any existing connection if present
-    await this._notificationClient?.closeSignalRConnection();
+  private readonly handleAccountChange = async (userId: string) => {
+    await this._notificationClient.unsubscribeFromUserNotifications(this.userId);
 
-    this.updateUserInfo();
+    this.clearCurrentUserMessages();
+
+    this.userId = userId;
     // by updating the followed chat the notification client will reconnect to SignalR
-    await this.updateUserSubscription();
+    await this.updateUserSubscription(userId);
+
+    this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
   };
 
   private clearCurrentUserMessages() {
     this.notifyStateChange((draft: GraphChatListClient) => {
-      draft.status = 'initial'; // no message?
+      draft.status = 'initial';
+      draft.chatThreads = [];
     });
-  }
-
-  /**
-   * Changes the current user ID value to the current value.
-   */
-  private updateUserInfo() {
-    this.userId = currentUserId();
   }
 
   /**
@@ -587,26 +581,25 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    * @private
    * @memberof StatefulGraphChatListClient
    */
-  private async updateUserSubscription() {
-    // avoid subscribing to a resource with an empty userId
-    if (this.userId) {
-      // reset state to initial
-      this.notifyStateChange((draft: GraphChatListClient) => {
-        draft.status = 'initial';
-      });
-      // Subscribe to notifications for messages
-      this.notifyStateChange((draft: GraphChatListClient) => {
-        draft.status = 'creating server connections';
-      });
-      try {
-        await this._notificationClient.subscribeToUserNotifications(this._userId);
-      } catch (e) {
-        error('Failed to load chat data or subscribe to notications: ', e);
-        if (e instanceof GraphError) {
-          this.notifyStateChange((draft: GraphChatListClient) => {
-            draft.status = 'no messages';
-          });
-        }
+  private async updateUserSubscription(userId: string) {
+    if (userId === '') return;
+
+    // reset state to initial
+    this.notifyStateChange((draft: GraphChatListClient) => {
+      draft.status = 'initial';
+    });
+    // Subscribe to notifications for messages
+    this.notifyStateChange((draft: GraphChatListClient) => {
+      draft.status = 'creating server connections';
+    });
+    try {
+      await this._notificationClient.subscribeToUserNotifications(userId);
+    } catch (e) {
+      error('Failed to load chat data or subscribe to notications: ', e);
+      if (e instanceof GraphError) {
+        this.notifyStateChange((draft: GraphChatListClient) => {
+          draft.status = 'no messages';
+        });
       }
     }
   }

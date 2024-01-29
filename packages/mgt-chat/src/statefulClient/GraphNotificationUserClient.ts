@@ -218,11 +218,6 @@ export class GraphNotificationUserClient {
 
     this.isRewnewalInProgress = true;
 
-    if (this.currentUserId !== '' && this.currentUserId !== this.userId) {
-      log('User has changed. Unsubscribing from previous user');
-      await this.unsubscribeFromUserNotifications(this.currentUserId);
-    }
-
     this.currentUserId = this.userId;
 
     try {
@@ -348,6 +343,7 @@ export class GraphNotificationUserClient {
   private async deleteSubscription(id: string) {
     try {
       await this.graph.api(`${GraphConfig.subscriptionEndpoint}/${id}`).delete();
+      log(`Deleted subscription with id: ${id}`);
     } catch (e) {
       error(e);
     }
@@ -369,7 +365,11 @@ export class GraphNotificationUserClient {
     this.connection = undefined;
   }
 
-  private async unsubscribeFromUserNotifications(userId: string) {
+  public async unsubscribeFromUserNotifications(userId: string) {
+    if (this.renewalInterval) {
+      this.timer.clearTimeout(this.renewalInterval);
+    }
+
     await this.closeSignalRConnection();
     const cacheData = await this.subscriptionCache.loadSubscriptions(userId, this.sessionId);
     if (cacheData) {
