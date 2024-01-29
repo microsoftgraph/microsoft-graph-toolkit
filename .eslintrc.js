@@ -25,7 +25,7 @@ module.exports = {
   },
   plugins: ['eslint-plugin-jsdoc', 'eslint-plugin-prefer-arrow', 'eslint-plugin-react', '@typescript-eslint'],
   root: true,
-  ignorePatterns: ['**/**-css.ts', '.eslintrc.js', '*.cjs'],
+  ignorePatterns: ['**/**-css.ts', '.eslintrc.js', '*.cjs', 'rollup.config.mjs'],
   rules: {
     '@typescript-eslint/no-explicit-any': 'warn',
     // prefer-nullish-coalescing requires strictNullChecking to be turned on
