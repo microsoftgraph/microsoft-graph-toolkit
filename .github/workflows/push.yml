@@ -15,7 +15,7 @@ jobs:
     if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4
