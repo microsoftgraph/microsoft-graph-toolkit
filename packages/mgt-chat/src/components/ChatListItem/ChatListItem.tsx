@@ -8,10 +8,10 @@ import {
   TeamworkApplicationIdentity,
   TeamsAppInstallation
 } from '@microsoft/microsoft-graph-types';
-import { Person, PersonCardInteraction, log } from '@microsoft/mgt-react';
+import { Person, PersonCardInteraction } from '@microsoft/mgt-react';
 import { ProviderState, Providers, error } from '@microsoft/mgt-element';
 import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
-import { rewriteEmojiContent } from '../../utils/rewriteEmojiContent';
+import { rewriteEmojiContentToText } from '../../utils/rewriteEmojiContent';
 import { convert } from 'html-to-text';
 import { loadChatWithPreview, loadAppsInChat } from '../../statefulClient/graph.chat';
 import { DefaultProfileIcon } from './DefaultProfileIcon';
@@ -455,7 +455,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
       }
 
       // convert html to text
-      content = rewriteEmojiContent(content);
+      content = rewriteEmojiContentToText(content);
       content = convert(content);
     }
 

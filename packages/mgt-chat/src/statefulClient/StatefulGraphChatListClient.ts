@@ -621,6 +621,9 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         draft.status = 'server connection established';
       });
     });
+    this._eventEmitter.on('reconnected', () => {
+      this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
+    });
   }
 }
 
