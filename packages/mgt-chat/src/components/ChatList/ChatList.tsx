@@ -4,7 +4,7 @@ import { MgtTemplateProps, ProviderState, Providers, log } from '@microsoft/mgt-
 import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
-import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
+import { Chat as GraphChat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import {
   StatefulGraphChatListClient,
   GraphChatListClient,
@@ -13,7 +13,6 @@ import {
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
-import { ChatListMenuItem } from '../ChatListHeader/ChatListMenuItem';
 
 export interface IChatListItemProps {
   onSelected: (e: GraphChat) => void;
@@ -24,7 +23,7 @@ export interface IChatListItemProps {
   chatThreadsPerPage: number;
   lastReadTimeInterval?: number;
   selectedChatId?: string;
-  onMessageReceived?: () => void;
+  onMessageReceived?: (msg: ChatMessage) => void;
 }
 
 const useStyles = makeStyles({
@@ -61,101 +60,102 @@ const useStyles = makeStyles({
 export const ChatList = ({
   lastReadTimeInterval = 30000, // default to 30 seconds
   selectedChatId,
+  onMessageReceived,
+  onAllMessagesRead,
+  onLoaded,
+  chatThreadsPerPage,
   ...props
 }: MgtTemplateProps & IChatListItemProps & IChatListMenuItemsProps) => {
   const styles = useStyles();
   const [headerBannerMessage, setHeaderBannerMessage] = useState<string>('');
   const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
-  const [menuItems, setMenuItems] = useState<ChatListMenuItem[]>(props.menuItems === undefined ? [] : props.menuItems);
+  const [internalSelectedChatId, setInternalSelectedChatId] = useState<string | undefined>();
 
   // wait for provider to be ready before setting client and state
   useEffect(() => {
     const provider = Providers.globalProvider;
     provider.onStateChanged(evt => {
       if (evt.detail === ProviderState.SignedIn) {
-        const client = new StatefulGraphChatListClient(props.chatThreadsPerPage);
+        const client = new StatefulGraphChatListClient(chatThreadsPerPage);
         setChatListClient(client);
         setChatListState(client.getState());
       }
     });
-  }, []);
+  }, [chatThreadsPerPage]);
+
+  // if selected chat id is changed, update the internal state
+  // NOTE: Decoupling this ensures that the app can change the selection but the chat
+  // list can also change the selection without a full re - render.
+  useEffect(() => {
+    setInternalSelectedChatId(selectedChatId);
+  }, [selectedChatId]);
 
   // Store last read time in cache so that when the user comes back to the chat list,
   // we know what messages they are likely to have not read. This is not perfect because
   // the user could have read messages in another client (for instance, the Teams client).
   useEffect(() => {
     const timer = setInterval(() => {
-      if (selectedChatId) {
-        log(`caching the last-read timestamp of now to chat ID '${selectedChatId}'...`);
-        chatListClient?.cacheLastReadTime([selectedChatId]);
+      if (internalSelectedChatId) {
+        log(`caching the last-read timestamp of now to chat ID '${internalSelectedChatId}'...`);
+        chatListClient?.cacheLastReadTime([internalSelectedChatId]);
       }
     }, lastReadTimeInterval);
 
     return () => {
       clearInterval(timer);
     };
-  }, [selectedChatId]);
+  }, [chatListClient, internalSelectedChatId, lastReadTimeInterval]);
 
   useEffect(() => {
-    // handles events emitted from the chat list client
+    // shortcut if we don't have a chat list client
+    if (!chatListClient) {
+      return;
+    }
+
+    // handle events emitted from the chat list client
     const handleChatListEvent = (event: ChatListEvent) => {
       if (event.type === 'chatMessageReceived') {
-        if (props.onMessageReceived) {
-          props.onMessageReceived();
+        if (onMessageReceived) {
+          onMessageReceived(event.message);
         }
       }
     };
 
-    if (chatListClient) {
-      chatListClient.onStateChange(setChatListState);
-      chatListClient.onStateChange(state => {
-        if (state.status === 'chat threads loaded' && props.onLoaded) {
-          const markAllAsRead = {
-            displayText: 'Mark all as read',
-            onClick: () => markAllThreadsAsRead(state.chatThreads)
-          };
-          // clone the menuItems array
-          const updatedMenuItems = [...menuItems];
-          updatedMenuItems.unshift(markAllAsRead);
-          setMenuItems(updatedMenuItems);
-          props.onLoaded();
-        }
+    // handle state changes
+    chatListClient.onStateChange(setChatListState);
+    chatListClient.onStateChange(state => {
+      if (state.status === 'chat threads loaded' && onLoaded) {
+        onLoaded();
+      }
 
-        if (state.status === 'server connection established') {
-          setHeaderBannerMessage(''); // reset
-        }
+      if (state.status === 'server connection established') {
+        setHeaderBannerMessage(''); // reset
+      }
 
-        if (state.status === 'creating server connections') {
-          setHeaderBannerMessage('Connecting...');
-        }
+      if (state.status === 'creating server connections') {
+        setHeaderBannerMessage('Connecting...');
+      }
 
-        if (state.status === 'server connection lost') {
-          // this happens when we lost connection to the server and we will try to reconnect
-          setHeaderBannerMessage('We ran into a problem. Reconnecting...');
-        }
-      });
-
-      chatListClient.onChatListEvent(handleChatListEvent);
-      return () => {
-        // log state of chatlistclient for debugging purposes
-        log(chatListClient.getState());
-        chatListClient.offStateChange(setChatListState);
-        chatListClient.offChatListEvent(handleChatListEvent);
-        chatListClient.tearDown();
+      if (state.status === 'server connection lost') {
+        // this happens when we lost connection to the server and we will try to reconnect
         setHeaderBannerMessage('We ran into a problem. Reconnecting...');
-      };
-    }
-  }, [chatListClient]);
+      }
+    });
 
-  const markAllThreadsAsRead = (chatThreads: GraphChat[]) => {
-    const readChatThreads = chatThreads.map(c => c.id!);
-    const markedChatThreads = chatListClient?.markChatThreadsAsRead(readChatThreads);
-    if (markedChatThreads) {
-      chatListClient?.cacheLastReadTime(markedChatThreads);
-      props.onAllMessagesRead(markedChatThreads);
-    }
-  };
+    // handle chat list events
+    chatListClient.onChatListEvent(handleChatListEvent);
+
+    // tear down
+    return () => {
+      // log state of chatlistclient for debugging purposes
+      log(chatListClient.getState());
+      chatListClient.offStateChange(setChatListState);
+      chatListClient.offChatListEvent(handleChatListEvent);
+      chatListClient.tearDown();
+      setHeaderBannerMessage('We ran into a problem. Please close or refresh.');
+    };
+  }, [chatListClient, onMessageReceived, onAllMessagesRead, onLoaded]); // menuItems
 
   const markThreadAsRead = (chatThread: string) => {
     const markedChatThreads = chatListClient?.markChatThreadsAsRead([chatThread]);
@@ -166,17 +166,19 @@ export const ChatList = ({
 
   const onClickChatListItem = (chatListItem: GraphChat) => {
     // set selected state only once per click event
-    if (chatListItem.id !== selectedChatId) {
-      markThreadAsRead(chatListItem.id!);
-      props.onSelected(chatListItem);
-
+    if (chatListItem.id !== internalSelectedChatId) {
       // trigger an unselect event for the previously selected item
-      if (selectedChatId && props.onUnselected) {
-        const previouslySelectedChatListItem = chatListState?.chatThreads.filter(c => c.id === selectedChatId);
+      if (internalSelectedChatId && props.onUnselected) {
+        const previouslySelectedChatListItem = chatListState?.chatThreads.filter(c => c.id === internalSelectedChatId);
         if (previouslySelectedChatListItem?.length === 1) {
           props.onUnselected(previouslySelectedChatListItem[0]);
         }
       }
+
+      // select a new item
+      markThreadAsRead(chatListItem.id!);
+      setInternalSelectedChatId(chatListItem.id);
+      props.onSelected(chatListItem);
     }
   };
 
@@ -185,6 +187,22 @@ export const ChatList = ({
   // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
   const loadMore = () => {
     chatListClient?.loadMoreChatThreads();
+  };
+
+  const markAllThreadsAsRead = (chatThreads: GraphChat[] | undefined) => {
+    if (!chatThreads) {
+      return;
+    }
+    const readChatThreads = chatThreads.map(c => c.id!);
+    const markedChatThreads = chatListClient?.markChatThreadsAsRead(readChatThreads);
+    if (markedChatThreads) {
+      chatListClient?.cacheLastReadTime(markedChatThreads);
+      onAllMessagesRead(markedChatThreads);
+    }
+  };
+  const markAllAsRead = {
+    displayText: 'Mark all as read',
+    onClick: () => markAllThreadsAsRead(chatListState?.chatThreads)
   };
 
   return (
@@ -197,7 +215,7 @@ export const ChatList = ({
               <ChatListHeader
                 bannerMessage={headerBannerMessage}
                 buttonItems={chatListButtonItems}
-                menuItems={menuItems}
+                menuItems={[markAllAsRead, ...(props.menuItems ?? [])]}
               />
             </div>
           )}
@@ -208,8 +226,8 @@ export const ChatList = ({
                   key={c.id}
                   chat={c}
                   myId={chatListState.userId}
-                  isSelected={c.id === selectedChatId}
-                  isRead={c.id === selectedChatId || c.isRead}
+                  isSelected={c.id === internalSelectedChatId}
+                  isRead={c.id === internalSelectedChatId || c.isRead}
                 />
               </Button>
             ))}

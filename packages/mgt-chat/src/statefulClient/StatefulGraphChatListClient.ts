@@ -430,6 +430,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         // update the last message preview and bring to the top
         chatThread.lastMessagePreview = event.message as ChatMessageInfo;
         chatThread.lastUpdatedDateTime = event.message.lastModifiedDateTime;
+        chatThread.isRead = false;
         bringToTop();
       } else if (event.type === 'chatMessageReceived' && event.message?.chatId) {
         // create a new chat thread at the top
