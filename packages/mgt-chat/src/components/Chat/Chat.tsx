@@ -11,6 +11,9 @@ import { registerAppIcons } from '../styles/registerIcons';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
 import { Error } from '../Error/Error';
 import { LoadingMessagesErrorIcon } from '../Error/LoadingMessageErrorIcon';
+import { OpenTeamsLinkError } from '../Error/OpenTeams';
+import { RequireValidChatId } from '../Error/RequireAValidChatId';
+import { TypeANewMessage } from '../Error/TypeANewMessage';
 
 registerAppIcons();
 
@@ -175,18 +178,15 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
               {chatState.status === 'no messages' && (
                 <Error
                   icon={LoadingMessagesErrorIcon}
-                  message="No messages were found."
-                  subheading="Type a new message and send."
+                  message="No messages were found for this chat."
+                  subheading={TypeANewMessage}
                 ></Error>
               )}
               {chatState.status === 'no chat id' && (
-                <Error message="No chat id has been provided." subheading="A valid chat id is required."></Error>
+                <Error message="No chat id has been provided." subheading={RequireValidChatId}></Error>
               )}
               {chatState.status === 'error' && (
-                <Error
-                  message="We're sorry—we've run into an issue.."
-                  subheading="If the problem continues, open Teams app to view the issue."
-                ></Error>
+                <Error message="We're sorry—we've run into an issue.." subheading={OpenTeamsLinkError}></Error>
               )}
               <div className={styles.chatInput}>
                 <SendBox disabled={disabled} onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />

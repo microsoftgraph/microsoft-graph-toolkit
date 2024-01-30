@@ -53,8 +53,12 @@ const useStyles = makeStyles({
 interface IMGTErrorProps {
   icon?: React.FC;
   message: string;
-  subheading?: string;
+  subheading?: React.FC;
 }
+
+const EmptySubheading = () => {
+  return <p></p>;
+};
 
 /**
  * Renders a full screen error message.
@@ -63,6 +67,7 @@ interface IMGTErrorProps {
 const Error = ({ icon = GenericErrorIcon, message, subheading }: IMGTErrorProps): JSX.Element => {
   const styles = useStyles();
   const IconTemplate = icon;
+  const SubheadingTemplate = subheading ? subheading : EmptySubheading;
 
   return (
     <div className={styles.container}>
@@ -71,7 +76,11 @@ const Error = ({ icon = GenericErrorIcon, message, subheading }: IMGTErrorProps)
       </div>
       <div className={styles.messageContainer}>
         <div className={styles.message}>{message}</div>
-        {subheading && <div className={styles.subheading}>{subheading}</div>}
+        {subheading && (
+          <div className={styles.subheading}>
+            <SubheadingTemplate />
+          </div>
+        )}
       </div>
     </div>
   );
