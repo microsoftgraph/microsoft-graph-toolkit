@@ -89,23 +89,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/communication-calling@npm:1.16.3":
-  version: 1.16.3
-  resolution: "@azure/communication-calling@npm:1.16.3"
+"@azure/communication-calling@npm:1.20.1":
+  version: 1.20.1
+  resolution: "@azure/communication-calling@npm:1.20.1"
   dependencies:
-    "@azure/communication-common": ^2.0.0
+    "@azure/communication-common": ^2.3.0
     "@azure/logger": ^1.0.3
-  checksum: da044d19caeabbfa934d002136a236acd44d66e2e9f0c44f1608960b347aa71a2e158b0fde32ba8bf0f2048e7b103093add025f190e26d79133fe669b1c59b08
+  checksum: 4faf9c6980a719568df21d040e74087e2754ed9943a48151e5944efbf4acf6b27845774d8d1728c0612be0080e00a0f6b9261b2e1a016470d2a96ffb6ce68533
   languageName: node
   linkType: hard
 
-"@azure/communication-chat@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@azure/communication-chat@npm:1.3.2"
+"@azure/communication-chat@npm:1.4.0":
+  version: 1.4.0
+  resolution: "@azure/communication-chat@npm:1.4.0"
   dependencies:
     "@azure/abort-controller": ^1.0.0
     "@azure/communication-common": ^2.2.0
-    "@azure/communication-signaling": 1.0.0-beta.20
+    "@azure/communication-signaling": 1.0.0-beta.22
     "@azure/core-auth": ^1.3.0
     "@azure/core-client": ^1.3.0
     "@azure/core-paging": ^1.1.1
@@ -115,13 +115,13 @@ __metadata:
     events: ^3.0.0
     tslib: ^2.2.0
     uuid: ^8.3.0
-  checksum: 753596b81579d8210ff71bf1e2bd651849ddb7fbdc5f0ceec07664d9d2af1a8ecafc1486d639e8cc6899af9a2ad01c51d76e463e9160d0b00df42843e307c384
+  checksum: 4951093d7b217b7a397b6e2269a4c08c38ffb5e64f80b069cef7736f1bba2f7219227ff9f7a2eb08b47a30282a964ffebfe2532156fa1bca69a80209a220f01b
   languageName: node
   linkType: hard
 
-"@azure/communication-common@npm:2.2.1":
-  version: 2.2.1
-  resolution: "@azure/communication-common@npm:2.2.1"
+"@azure/communication-common@npm:2.3.0, @azure/communication-common@npm:^2.2.0, @azure/communication-common@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@azure/communication-common@npm:2.3.0"
   dependencies:
     "@azure/abort-controller": ^1.0.0
     "@azure/core-auth": ^1.3.0
@@ -131,7 +131,7 @@ __metadata:
     events: ^3.0.0
     jwt-decode: ^3.1.2
     tslib: ^2.2.0
-  checksum: a3aaadee0cf5ba67e44a8533e3dca1f012501ed06cb6a067ec63399168a6b873c5c319914089af26cfcaef2a558aa0c987e883309336b3ccdaa22f3ef73c503a
+  checksum: a27d7f50e088f36af32b2e36bde43b816383baa5dfcb092ae8787c32b21d79d690959893ca66a26471771e7d1d10ff6f0e856f671fc535c923123aaadd8abe3b
   languageName: node
   linkType: hard
 
@@ -151,28 +151,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/communication-common@npm:^2.0.0, @azure/communication-common@npm:^2.1.0, @azure/communication-common@npm:^2.2.0":
-  version: 2.3.0
-  resolution: "@azure/communication-common@npm:2.3.0"
+"@azure/communication-identity@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@azure/communication-identity@npm:1.3.0"
   dependencies:
     "@azure/abort-controller": ^1.0.0
-    "@azure/core-auth": ^1.3.0
-    "@azure/core-rest-pipeline": ^1.3.2
-    "@azure/core-tracing": ^1.0.0
-    "@azure/core-util": ^1.0.0
-    events: ^3.0.0
-    jwt-decode: ^3.1.2
-    tslib: ^2.2.0
-  checksum: a27d7f50e088f36af32b2e36bde43b816383baa5dfcb092ae8787c32b21d79d690959893ca66a26471771e7d1d10ff6f0e856f671fc535c923123aaadd8abe3b
-  languageName: node
-  linkType: hard
-
-"@azure/communication-identity@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@azure/communication-identity@npm:1.2.0"
-  dependencies:
-    "@azure/abort-controller": ^1.0.0
-    "@azure/communication-common": ^2.1.0
+    "@azure/communication-common": ^2.2.0
     "@azure/core-auth": ^1.3.0
     "@azure/core-client": ^1.3.0
     "@azure/core-lro": ^2.2.0
@@ -182,13 +166,13 @@ __metadata:
     "@azure/logger": ^1.0.0
     events: ^3.0.0
     tslib: ^2.2.0
-  checksum: dd09e3caa418cfb664cdebed52215a12ea8c03ffceb736271a333aefedd638de0102005f658526d01078df10534878fba7500910a3e639c370953ca54d453818
+  checksum: 660660957172c0c298ff6c4930dd8fc70869ce6d63534c66217442aed9c8a21acc3348c92d1f5fd64ab86fdfd42729ff085fa10580cb17f585e453bf14dd6ec3
   languageName: node
   linkType: hard
 
-"@azure/communication-react@npm:1.7.0-beta.2":
-  version: 1.7.0-beta.2
-  resolution: "@azure/communication-react@npm:1.7.0-beta.2"
+"@azure/communication-react@npm:1.8.0-beta.1":
+  version: 1.8.0-beta.1
+  resolution: "@azure/communication-react@npm:1.8.0-beta.1"
   dependencies:
     "@azure/communication-common": 3.0.0-beta.1
     "@azure/core-client": ^1.7.3
@@ -214,27 +198,27 @@ __metadata:
     use-debounce: ^9.0.4
     uuid: ^9.0.0
   peerDependencies:
-    "@azure/communication-calling": 1.15.1-beta.1
+    "@azure/communication-calling": 1.16.3-beta.1
     "@azure/communication-calling-effects": 1.0.0-beta.2
-    "@azure/communication-chat": 1.3.2-beta.3
+    "@azure/communication-chat": 1.4.0-beta.1
     "@types/react": ">=16.8.0 <19.0.0"
     "@types/react-dom": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
     react-dom: ">=16.8.0 <19.0.0"
-  checksum: 68484084553f821067546a3337045ebafb03d79c5457b135d011e8ed8d0d41a994591169f1c4fbe329e7d4245443462b21ff0bc516d27456a3467ea1467d4882
+  checksum: c4a58c5021b0af000076802a52b6fcbc6c9ba9164bab6d5a3f1ee7813246ac05c3457fa3546e78b343686b3069125f8d0b31fbc3cdca84509705ccc9abf148d0
   languageName: node
   linkType: hard
 
-"@azure/communication-signaling@npm:1.0.0-beta.20":
-  version: 1.0.0-beta.20
-  resolution: "@azure/communication-signaling@npm:1.0.0-beta.20"
+"@azure/communication-signaling@npm:1.0.0-beta.22":
+  version: 1.0.0-beta.22
+  resolution: "@azure/communication-signaling@npm:1.0.0-beta.22"
   dependencies:
     "@azure/core-http": ^2.0.0
     "@azure/core-tracing": 1.0.0-preview.13
     "@azure/logger": ~1.0.0
     events: ^3.0.0
     tslib: ^1.10.0
-  checksum: f023ac73f3a55f168c3dfe93786ed7464a61d9d94cae8dfdfd217b56b58bd6ae67c885569b8fd70fee7945201058ec7eb77251d3b7a7ec876393998cb168855a
+  checksum: 162d4bef8641e2a18e02c49c06406b48eb6b2116be7cf5804762c6ed26a14b265c1b306ebf2c3761c87471ef3a3df62c8a737cbb814957ffad483ddee4fc06a3
   languageName: node
   linkType: hard
 
@@ -2980,6 +2964,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui/dom-utilities@npm:^2.2.14":
+  version: 2.2.14
+  resolution: "@fluentui/dom-utilities@npm:2.2.14"
+  dependencies:
+    "@fluentui/set-version": ^8.2.14
+    tslib: ^2.1.0
+  checksum: 48bfa107f36537712838f92be719afcc69e280b11c593c9b5d55cf83ff87a4ff1cc3cb1ecfb85a8be2a3654572e59ecb7fa0c6a0e033c0f720fd8e58879159b7
+  languageName: node
+  linkType: hard
+
 "@fluentui/fluent2-theme@npm:^8.0.0":
   version: 8.107.45
   resolution: "@fluentui/fluent2-theme@npm:8.107.45"
@@ -2991,7 +2985,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/font-icons-mdl2@npm:^8.5.13, @fluentui/font-icons-mdl2@npm:^8.5.24, @fluentui/font-icons-mdl2@npm:^8.5.25":
+"@fluentui/font-icons-mdl2@npm:^8.5.13, @fluentui/font-icons-mdl2@npm:^8.5.25":
   version: 8.5.25
   resolution: "@fluentui/font-icons-mdl2@npm:8.5.25"
   dependencies:
@@ -3003,7 +2997,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/foundation-legacy@npm:^8.2.33, @fluentui/foundation-legacy@npm:^8.2.44, @fluentui/foundation-legacy@npm:^8.2.45":
+"@fluentui/font-icons-mdl2@npm:^8.5.24":
+  version: 8.5.31
+  resolution: "@fluentui/font-icons-mdl2@npm:8.5.31"
+  dependencies:
+    "@fluentui/set-version": ^8.2.14
+    "@fluentui/style-utilities": ^8.10.2
+    "@fluentui/utilities": ^8.13.24
+    tslib: ^2.1.0
+  checksum: b10c39b53374a5f34a3959564888e744d1ae4f8cff9731b174459e28336a543f3c3175bfdafad0fb255a72c138dd08f3e154ee9b4c26284a1e525bd542a5231e
+  languageName: node
+  linkType: hard
+
+"@fluentui/foundation-legacy@npm:^8.2.33, @fluentui/foundation-legacy@npm:^8.2.45":
   version: 8.2.45
   resolution: "@fluentui/foundation-legacy@npm:8.2.45"
   dependencies:
@@ -3019,12 +3025,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui/foundation-legacy@npm:^8.2.44":
+  version: 8.2.51
+  resolution: "@fluentui/foundation-legacy@npm:8.2.51"
+  dependencies:
+    "@fluentui/merge-styles": ^8.5.15
+    "@fluentui/set-version": ^8.2.14
+    "@fluentui/style-utilities": ^8.10.2
+    "@fluentui/utilities": ^8.13.24
+    tslib: ^2.1.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <19.0.0"
+    react: ">=16.8.0 <19.0.0"
+  checksum: a2a59549d04ffb2894dfe3a795d38d4e3797fed396a1f1aec6945abc208e11165c9bc2ed6fbcf0bb988a42aab1c53b9a3ef6420c72194da6f0ec9c4b2bf5ac2a
+  languageName: node
+  linkType: hard
+
 "@fluentui/keyboard-key@npm:^0.4.11":
   version: 0.4.11
   resolution: "@fluentui/keyboard-key@npm:0.4.11"
   dependencies:
     tslib: ^2.1.0
   checksum: cb47f567b2e24c92e4604e7fb7d25e1a9cc0f171cbd83983e72f58e271ac19dff84f34450e70f7fc8d62f177f5def3f8d17b1861715cdb96313cb390152dde89
+  languageName: node
+  linkType: hard
+
+"@fluentui/keyboard-key@npm:^0.4.14":
+  version: 0.4.14
+  resolution: "@fluentui/keyboard-key@npm:0.4.14"
+  dependencies:
+    tslib: ^2.1.0
+  checksum: 2af350c225aa2930478500ecb22396cf19b4ebbe4214aa19bfc1eea7cb38963c097e758826bd9c442862ec7702a3b92847c40dede0d31f2892c97d6ee34f9127
   languageName: node
   linkType: hard
 
@@ -3044,6 +3075,16 @@ __metadata:
     "@fluentui/set-version": ^8.2.11
     tslib: ^2.1.0
   checksum: d3aea463dc6029e00ed0babcf4fec1cea97d7648d1fb5d61e13a6cb9d38b97d046c463d9fceef4346e54b96a4ac6b92575363515d6e84b7933368555c7672803
+  languageName: node
+  linkType: hard
+
+"@fluentui/merge-styles@npm:^8.5.15":
+  version: 8.5.15
+  resolution: "@fluentui/merge-styles@npm:8.5.15"
+  dependencies:
+    "@fluentui/set-version": ^8.2.14
+    tslib: ^2.1.0
+  checksum: 5649657e1bf91c290794a172707b05d0b8c880a8fcafc22813231d452ec1887e4f1a4bd45e10f86a8d0863b1794312b18f4b7b7af9c57a812ee14989fc952ff4
   languageName: node
   linkType: hard
 
@@ -3517,7 +3558,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-focus@npm:^8.8.19, @fluentui/react-focus@npm:^8.8.31, @fluentui/react-focus@npm:^8.8.32":
+"@fluentui/react-focus@npm:^8.8.19, @fluentui/react-focus@npm:^8.8.32":
   version: 8.8.32
   resolution: "@fluentui/react-focus@npm:8.8.32"
   dependencies:
@@ -3534,7 +3575,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-hooks@npm:^8.2.0, @fluentui/react-hooks@npm:^8.6.20, @fluentui/react-hooks@npm:^8.6.29, @fluentui/react-hooks@npm:^8.6.30, @fluentui/react-hooks@npm:~8.6.12":
+"@fluentui/react-focus@npm:^8.8.31":
+  version: 8.8.39
+  resolution: "@fluentui/react-focus@npm:8.8.39"
+  dependencies:
+    "@fluentui/keyboard-key": ^0.4.14
+    "@fluentui/merge-styles": ^8.5.15
+    "@fluentui/set-version": ^8.2.14
+    "@fluentui/style-utilities": ^8.10.2
+    "@fluentui/utilities": ^8.13.24
+    tslib: ^2.1.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <19.0.0"
+    react: ">=16.8.0 <19.0.0"
+  checksum: 9a4e22a29ca7ea9fe6637a7d2516dfc7932c2bb8f8e6b556dda509204b494ab361030b2ff589d02f4afe09ca8bc06077536aee2e3d5033d9e2d2150f57a230e7
+  languageName: node
+  linkType: hard
+
+"@fluentui/react-hooks@npm:^8.2.0, @fluentui/react-hooks@npm:^8.6.20, @fluentui/react-hooks@npm:^8.6.30":
   version: 8.6.30
   resolution: "@fluentui/react-hooks@npm:8.6.30"
   dependencies:
@@ -3546,6 +3604,21 @@ __metadata:
     "@types/react": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
   checksum: f9d68cd6046befe7decb43f94779a1b53e70ceebdad57d3d55493c0612cc0c20823ee82c5f8a1e7149c52f1a2bed34009e83e8196f1cf0690bcd702556793538
+  languageName: node
+  linkType: hard
+
+"@fluentui/react-hooks@npm:^8.6.29, @fluentui/react-hooks@npm:~8.6.12":
+  version: 8.6.36
+  resolution: "@fluentui/react-hooks@npm:8.6.36"
+  dependencies:
+    "@fluentui/react-window-provider": ^2.2.18
+    "@fluentui/set-version": ^8.2.14
+    "@fluentui/utilities": ^8.13.24
+    tslib: ^2.1.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <19.0.0"
+    react: ">=16.8.0 <19.0.0"
+  checksum: ba0886a4af5a8e34142f8c9180a4ad963caba71a7e2d9b0ad28615b41196ea7fd56ae40822a762a86128c1103e40a83964db3dd54381e87b5fe10e5070ee71b0
   languageName: node
   linkType: hard
 
@@ -3565,7 +3638,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-icons@npm:^2.0.210, @fluentui/react-icons@npm:~2.0.194":
+"@fluentui/react-icons@npm:^2.0.210":
   version: 2.0.219
   resolution: "@fluentui/react-icons@npm:2.0.219"
   dependencies:
@@ -3586,6 +3659,18 @@ __metadata:
   peerDependencies:
     react: ">=16.8.0 <19.0.0"
   checksum: 2e55409874bd78879852fd39c213f477b9768ac5a2847f79d12ac2a9399192284cf408e16821a6b619c268d98acb69fef4cf1e6ee099bebcdd2eb893624240e1
+  languageName: node
+  linkType: hard
+
+"@fluentui/react-icons@npm:~2.0.194":
+  version: 2.0.225
+  resolution: "@fluentui/react-icons@npm:2.0.225"
+  dependencies:
+    "@griffel/react": ^1.0.0
+    tslib: ^2.1.0
+  peerDependencies:
+    react: ">=16.8.0 <19.0.0"
+  checksum: d74142f3bde66865769dfc3ca7319fb84d09145a26e9dc59f08042429e3c3c784708e872bf2da0535afea234aadae2af8ff01e0ee0120908fbc8d9b4fd050118
   languageName: node
   linkType: hard
 
@@ -4520,7 +4605,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-window-provider@npm:^2.2.15, @fluentui/react-window-provider@npm:^2.2.9, @fluentui/react-window-provider@npm:~2.2.3":
+"@fluentui/react-window-provider@npm:^2.2.15, @fluentui/react-window-provider@npm:^2.2.9":
   version: 2.2.15
   resolution: "@fluentui/react-window-provider@npm:2.2.15"
   dependencies:
@@ -4530,6 +4615,19 @@ __metadata:
     "@types/react": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
   checksum: 7c9573bf580593d922cdeda9e968a2224be4139cb3f01c122dddff1abc7507ebdf24f1a34a6a6987fc3e4f19d2fd2d44f2f2809d889476693de2925a7c5c979e
+  languageName: node
+  linkType: hard
+
+"@fluentui/react-window-provider@npm:^2.2.18, @fluentui/react-window-provider@npm:~2.2.3":
+  version: 2.2.18
+  resolution: "@fluentui/react-window-provider@npm:2.2.18"
+  dependencies:
+    "@fluentui/set-version": ^8.2.14
+    tslib: ^2.1.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <19.0.0"
+    react: ">=16.8.0 <19.0.0"
+  checksum: 479cf5e4a3dc94f2257ab4673e8baaf889b7d84bddf8047be544d2b60bc7e13e921d47006c705f6b3e8859f0aa1292c0586fb7087d190f6964dc4aa73b3d2096
   languageName: node
   linkType: hard
 
@@ -4623,6 +4721,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui/set-version@npm:^8.2.14":
+  version: 8.2.14
+  resolution: "@fluentui/set-version@npm:8.2.14"
+  dependencies:
+    tslib: ^2.1.0
+  checksum: 7a6223d7fdd820ab92f2ffae0462a36d040686dda931deaff9524515c182df21acee4750ebefd9f35aa80346d8eac75bb1670a1ea362478512d7c40ea3c9d18e
+  languageName: node
+  linkType: hard
+
 "@fluentui/state@npm:^0.66.5":
   version: 0.66.5
   resolution: "@fluentui/state@npm:0.66.5"
@@ -4632,7 +4739,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/style-utilities@npm:^8.9.17, @fluentui/style-utilities@npm:^8.9.18, @fluentui/style-utilities@npm:^8.9.6":
+"@fluentui/style-utilities@npm:^8.10.2, @fluentui/style-utilities@npm:^8.9.17":
+  version: 8.10.2
+  resolution: "@fluentui/style-utilities@npm:8.10.2"
+  dependencies:
+    "@fluentui/merge-styles": ^8.5.15
+    "@fluentui/set-version": ^8.2.14
+    "@fluentui/theme": ^2.6.41
+    "@fluentui/utilities": ^8.13.24
+    "@microsoft/load-themed-styles": ^1.10.26
+    tslib: ^2.1.0
+  checksum: 0d015bae243422326cc05d5fe0f280a7b78dd16cc53e97b15dfbde93b83a01b97fd7a7152eadf2e2ac46293dbb86d8843d25eed8f60513f4b08677b26ccf4b61
+  languageName: node
+  linkType: hard
+
+"@fluentui/style-utilities@npm:^8.9.18, @fluentui/style-utilities@npm:^8.9.6":
   version: 8.9.18
   resolution: "@fluentui/style-utilities@npm:8.9.18"
   dependencies:
@@ -4674,7 +4795,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/theme@npm:^2.6.25, @fluentui/theme@npm:^2.6.35, @fluentui/theme@npm:^2.6.36":
+"@fluentui/theme@npm:^2.6.25, @fluentui/theme@npm:^2.6.36":
   version: 2.6.36
   resolution: "@fluentui/theme@npm:2.6.36"
   dependencies:
@@ -4689,6 +4810,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui/theme@npm:^2.6.35, @fluentui/theme@npm:^2.6.41":
+  version: 2.6.41
+  resolution: "@fluentui/theme@npm:2.6.41"
+  dependencies:
+    "@fluentui/merge-styles": ^8.5.15
+    "@fluentui/set-version": ^8.2.14
+    "@fluentui/utilities": ^8.13.24
+    tslib: ^2.1.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <19.0.0"
+    react: ">=16.8.0 <19.0.0"
+  checksum: 2319de26faf200592123f8990ee43e89f82dbd04c36674b1b44f0257a442dc0d0cf45f4a64b86d1ef7a1cd31bc24a556a44e7f05bcb70fde56a4e94f9ffc71bf
+  languageName: node
+  linkType: hard
+
 "@fluentui/tokens@npm:1.0.0-alpha.11":
   version: 1.0.0-alpha.11
   resolution: "@fluentui/tokens@npm:1.0.0-alpha.11"
@@ -4698,7 +4834,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/utilities@npm:^8.13.18, @fluentui/utilities@npm:^8.13.19, @fluentui/utilities@npm:^8.13.9":
+"@fluentui/utilities@npm:^8.13.18, @fluentui/utilities@npm:^8.13.24":
+  version: 8.13.24
+  resolution: "@fluentui/utilities@npm:8.13.24"
+  dependencies:
+    "@fluentui/dom-utilities": ^2.2.14
+    "@fluentui/merge-styles": ^8.5.15
+    "@fluentui/set-version": ^8.2.14
+    tslib: ^2.1.0
+  peerDependencies:
+    "@types/react": ">=16.8.0 <19.0.0"
+    react: ">=16.8.0 <19.0.0"
+  checksum: 441b6990d1eec55d61372579c5c94cc5b4001d2e066566c974310ecc86385df1b8ac901db3dca61817568aab626df3b097695980ab18669254389dd159e8b725
+  languageName: node
+  linkType: hard
+
+"@fluentui/utilities@npm:^8.13.19, @fluentui/utilities@npm:^8.13.9":
   version: 8.13.19
   resolution: "@fluentui/utilities@npm:8.13.19"
   dependencies:
@@ -5929,12 +6080,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@microsoft/mgt-chat@workspace:packages/mgt-chat"
   dependencies:
-    "@azure/communication-calling": 1.16.3
+    "@azure/communication-calling": 1.20.1
     "@azure/communication-calling-effects": 1.0.1
-    "@azure/communication-chat": 1.3.2
-    "@azure/communication-common": 2.2.1
-    "@azure/communication-identity": 1.2.0
-    "@azure/communication-react": 1.7.0-beta.2
+    "@azure/communication-chat": 1.4.0
+    "@azure/communication-common": 2.3.0
+    "@azure/communication-identity": 1.3.0
+    "@azure/communication-react": 1.8.0-beta.1
     "@azure/msal-browser": 2.33.0
     "@fluentui/react": ~8.106.1
     "@fluentui/react-components": ^9.19.1
