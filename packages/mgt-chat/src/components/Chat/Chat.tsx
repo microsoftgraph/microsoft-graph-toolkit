@@ -1,15 +1,19 @@
 import { ErrorBar, FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
-import { FluentTheme, MessageBarType } from '@fluentui/react';
+import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { onRenderMessage } from '../../utils/chat';
-import ChatMessageBar from '../ChatMessageBar/ChatMessageBar';
 import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
+import { Error } from '../Error/Error';
+import { LoadingMessagesErrorIcon } from '../Error/LoadingMessageErrorIcon';
+import { OpenTeamsLinkError } from '../Error/OpenTeams';
+import { RequireValidChatId } from '../Error/RequireAValidChatId';
+import { TypeANewMessage } from '../Error/TypeANewMessage';
 
 registerAppIcons();
 
@@ -23,7 +27,8 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     height: '100%',
     ...shorthands.overflow('auto'),
-    paddingBlockEnd: '12px'
+    paddingBlockEnd: '12px',
+    backgroundColor: 'var(--Neutral-Background-2-Rest, #FAFAFA)'
   },
   chatMessages: {
     height: 'auto',
@@ -42,6 +47,9 @@ const useStyles = makeStyles({
       '& ul': {
         ...shorthands.paddingInline('40px', '0px')
       }
+    },
+    '& .fui-Chat': {
+      maxWidth: 'unset'
     }
   },
   chatInput: {
@@ -110,13 +118,16 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
     chatState.status
   );
 
+  const disabled = !chatId || !!chatState.activeErrorMessages.length;
+  const placeholderText = disabled ? 'You cannot send a message' : 'Type a message...';
+
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
-      <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
+      <FluentProvider id="fluentui" theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.chat}>
+          <ChatHeader chatState={chatState} />
           {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
-              <ChatHeader chatState={chatState} />
               <div className={styles.chatMessages}>
                 <MessageThread
                   userId={chatState.userId}
@@ -153,9 +164,8 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 />
               </div>
               <div className={styles.chatInput}>
-                <SendBox onSendMessage={chatState.onSendMessage} />
+                <SendBox onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />
               </div>
-              <ErrorBar activeErrorMessages={chatState.activeErrorMessages} />
             </>
           ) : (
             <>
@@ -166,14 +176,21 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 </div>
               )}
               {chatState.status === 'no messages' && (
-                <ChatMessageBar
-                  messageBarType={MessageBarType.error}
-                  message={`No messages were found for the id ${chatId}.`}
-                />
+                <Error
+                  icon={LoadingMessagesErrorIcon}
+                  message="No messages were found for this chat."
+                  subheading={TypeANewMessage}
+                ></Error>
               )}
               {chatState.status === 'no chat id' && (
-                <ChatMessageBar messageBarType={MessageBarType.error} message={'A valid chat id is required.'} />
+                <Error message="No chat id has been provided." subheading={RequireValidChatId}></Error>
               )}
+              {chatState.status === 'error' && (
+                <Error message="We're sorry—we've run into an issue.." subheading={OpenTeamsLinkError}></Error>
+              )}
+              <div className={styles.chatInput}>
+                <SendBox disabled={disabled} onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />
+              </div>
             </>
           )}
         </div>
