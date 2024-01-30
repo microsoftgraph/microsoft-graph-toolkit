@@ -157,11 +157,3 @@ export class LocalizationHelper {
     return stringObj;
   }
 }
-
-LocalizationHelper.strings = {
-  _components: {
-    'people-picker': {
-      inputPlaceholderText: 'Search for people'
-    }
-  }
-};
