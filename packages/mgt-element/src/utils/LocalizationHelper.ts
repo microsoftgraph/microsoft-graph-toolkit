@@ -12,7 +12,7 @@ type LocalizationRecord = Record<string, ComponentLocalizationRecord>;
 
 type LocalizationStorage = {
   _components: LocalizationRecord;
-} & Record<string, string>;
+} & Record<string, string | LocalizationRecord>;
 
 /**
  * Helper class for Localization
@@ -157,3 +157,11 @@ export class LocalizationHelper {
     return stringObj;
   }
 }
+
+LocalizationHelper.strings = {
+  _components: {
+    'people-picker': {
+      inputPlaceholderText: 'Search for people'
+    }
+  }
+};
