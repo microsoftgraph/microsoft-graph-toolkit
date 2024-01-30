@@ -20,8 +20,8 @@ describe('mgt-person - tests', () => {
           <img alt="Photo for Megan Bowen" src="">
         </div>
         <div class=" details-wrapper ">
-              <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
-              <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+              <div class="line1" part="detail-line" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+              <div class="line2" part="detail-line" role="presentation" aria-label="Auditor">Auditor</div>
         </div>
       </div>`,
       { ignoreAttributes: ['src'] }
@@ -46,6 +46,7 @@ describe('mgt-person - tests', () => {
               <div
                 aria-label="Megan Bowen"
                 class="line1"
+                part="detail-line"
                 role="presentation"
               >
                 Megan Bowen
@@ -53,6 +54,7 @@ describe('mgt-person - tests', () => {
               <div
                 aria-label="Auditor"
                 class="line2"
+                part="detail-line"
                 role="presentation"
               >
                 Auditor
