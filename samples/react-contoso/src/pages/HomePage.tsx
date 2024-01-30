@@ -17,8 +17,6 @@ import { makeStyles } from '@fluentui/react-components';
 import { Messages } from '../components/Messages';
 import { Loading } from '../components/Loading';
 import { GetDefaultContent } from '../components/GetDefaultContent';
-import { Stylesheet } from '@fluentui/merge-styles';
-
 const useStyles = makeStyles({
   root: {
     '&::part(detail-line)': {
@@ -26,7 +24,7 @@ const useStyles = makeStyles({
       textOverflow: 'ellipsis',
       width: '-webkit-fill-available',
       overflowX: 'hidden',
-      overflowY: 
+      overflowY: 'hidden'
     }
   },
   container: {
@@ -35,12 +33,10 @@ const useStyles = makeStyles({
 });
 
 const HomePage: React.FunctionComponent = () => {
-  const styles = useStyles();
   return (
     <>
-      {/* <ThemeToggle /> */}
-      {/* <TeamsChannelPicker /> */}
-      {/* <Picker
+      {/* <TeamsChannelPicker />
+      <Picker
         resource="me/todo/lists"
         scopes={['tasks.read', 'tasks.readwrite']}
         placeholder="Select a task list"
@@ -68,8 +64,8 @@ const HomePage: React.FunctionComponent = () => {
       {/* <div className={styles.container}>
         <Person className={styles.root} personQuery="me" view="threelines" line2Property="email" />
       </div> */}
-      {/* <Agenda /> */}
-      {/* <PersonCard personQuery="LeeG@wgww6.onmicrosoft.com" /> */}
+      {/* <Agenda />
+      <PersonCard personQuery="LeeG@wgww6.onmicrosoft.com" /> */}
     </>
   );
 };
