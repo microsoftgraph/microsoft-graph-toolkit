@@ -374,6 +374,15 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       const chatThreadIndex = draft.chatThreads.findIndex(c => c.id === event.message.chatId);
       const chatThread = draft.chatThreads[chatThreadIndex];
 
+      if (
+        event.message.lastModifiedDateTime &&
+        chatThread.lastMessagePreview?.createdDateTime &&
+        event.message.lastModifiedDateTime < chatThread.lastMessagePreview.createdDateTime
+      ) {
+        log('message is older than last message preview, ignoring', event.message);
+        return;
+      }
+
       // func to bring the chat thread to the top of the list
       const bringToTop = (newThread?: GraphChatThread) => {
         draft.chatThreads.splice(chatThreadIndex, 1);
