@@ -22,7 +22,7 @@ export const renderMGTMention = (chatState: GraphChatClient) => {
         return defaultRenderer(mention);
       };
       const MgtOtherMention = () => {
-        return <p className="otherMention">{mention.displayText}&nbsp;</p>;
+        return <p className="otherMention">{mention.displayText}</p>;
       };
       const MgtMention = me ? MgtMeMention : MgtOtherMention;
       render = (
@@ -31,6 +31,7 @@ export const renderMGTMention = (chatState: GraphChatClient) => {
         </Person>
       );
     }
+    render = <>{render}&nbsp;</>;
     return render;
   };
 };
