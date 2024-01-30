@@ -45,6 +45,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     [slot='anchor'] {
       display: flex;
       cursor: pointer;
+      align-items: center;
 
       &.vertical {
         flex-direction: column;
