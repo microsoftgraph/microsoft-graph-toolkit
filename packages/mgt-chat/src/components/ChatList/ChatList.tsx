@@ -155,7 +155,7 @@ export const ChatList = ({
       chatListClient.tearDown();
       setHeaderBannerMessage('We ran into a problem. Please close or refresh.');
     };
-  }, [chatListClient, onMessageReceived, onAllMessagesRead, onLoaded]); // menuItems
+  }, [chatListClient, onMessageReceived, onAllMessagesRead, onLoaded]);
 
   const markThreadAsRead = (chatThread: string) => {
     const markedChatThreads = chatListClient?.markChatThreadsAsRead([chatThread]);
