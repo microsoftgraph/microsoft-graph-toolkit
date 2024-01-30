@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
     if: needs.version.outputs.latest-version != needs.version.outputs.package-version
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     environment:
       name: release
@@ -87,7 +87,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4
