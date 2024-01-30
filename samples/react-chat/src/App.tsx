@@ -2,7 +2,7 @@ import React, { memo, useCallback, useState } from 'react';
 import './App.css';
 import { Login } from '@microsoft/mgt-react';
 import { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem } from '@microsoft/mgt-chat';
-import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
+import { ChatMessage, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { ChatAdd24Filled, ChatAdd24Regular, bundleIcon } from '@fluentui/react-icons';
 
 const ChatAddIconBundle = bundleIcon(ChatAdd24Filled, ChatAdd24Regular);
@@ -12,7 +12,7 @@ export const ChatAddIcon = (): JSX.Element => {
   return <ChatAddIconBundle color={iconColor} />;
 };
 
-const ChatListWrapper = memo(({ onSelected, selectedChatId }: { onSelected: (e: GraphChat) => void, selectedChatId?: string }) => {
+const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => void }) => {
   const buttons: ChatListButtonItem[] = [
     {
       renderIcon: () => <ChatAddIcon />,
@@ -31,8 +31,8 @@ const ChatListWrapper = memo(({ onSelected, selectedChatId }: { onSelected: (e: 
   const onLoaded = () => {
     console.log('Chat threads loaded.');
   };
-  const onMessageReceived = () => {
-    console.log('SampleChatLog: Message received');
+  const onMessageReceived = (msg: ChatMessage) => {
+    console.log('SampleChatLog: Message received', msg);
   };
 
   return (
@@ -42,7 +42,6 @@ const ChatListWrapper = memo(({ onSelected, selectedChatId }: { onSelected: (e: 
       menuItems={menus}
       buttonItems={buttons}
       onSelected={onSelected}
-      selectedChatId={selectedChatId}
       onMessageReceived={onMessageReceived}
       onAllMessagesRead={onAllMessagesRead}
     />
@@ -50,8 +49,6 @@ const ChatListWrapper = memo(({ onSelected, selectedChatId }: { onSelected: (e: 
 });
 
 function App() {
-  // Copied from the sample ChatItem.tsx
-  // This should probably move up to ChatList.tsx so that all the ChatListItems can share myId
   const [chatId, setChatId] = useState<string>('');
   const [showNewChat, setShowNewChat] = useState<boolean>(false);
 
@@ -73,7 +70,7 @@ function App() {
       </header>
       <main className="main">
         <div className="chat-selector">
-          <ChatListWrapper onSelected={chatSelected} selectedChatId={chatId} />
+          <ChatListWrapper onSelected={chatSelected} />
           <br />
           <button onClick={() => setChatId('')}>Clear selected chat</button>
           <br />
