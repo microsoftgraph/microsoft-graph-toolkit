@@ -5,11 +5,11 @@ import postcss from 'rollup-plugin-postcss';
 
 const extensions = ['.js'];
 
-const getBabelConfig = isEs5 => {
+const getBabelConfig = () => {
   return {
     plugins: [
-      ['@babel/plugin-proposal-decorators', isEs5 ? { legacy: true } : { decoratorsBeforeExport: true, legacy: false }],
-      ['@babel/proposal-class-properties', { loose: isEs5 }],
+      ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true, legacy: false }],
+      ['@babel/proposal-class-properties', { loose: false }],
       '@babel/proposal-object-rest-spread'
     ],
     include: [
@@ -22,6 +22,12 @@ const getBabelConfig = isEs5 => {
   };
 };
 
+const commonPlugins = [
+  nodeResolve({ mainFields: ['module', 'jsnext'], extensions }),
+  postcss(),
+  terser({ keep_classnames: true, keep_fnames: true })
+];
+
 const es6Bundle = {
   input: ['./packages/mgt/dist/es6/index.js'],
   output: {
@@ -30,13 +36,11 @@ const es6Bundle = {
     format: 'esm'
   },
   plugins: [
+    ...commonPlugins,
     babel({
       extensions,
-      ...getBabelConfig(false)
-    }),
-    nodeResolve({ mainFields: ['module', 'jsnext'], extensions }),
-    postcss(),
-    terser({ keep_classnames: true, keep_fnames: true })
+      ...getBabelConfig()
+    })
   ]
 };
 
