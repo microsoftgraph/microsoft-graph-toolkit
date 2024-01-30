@@ -42,7 +42,7 @@ export const Localization = () => html`
           noResultsFound: 'لم يتم العثور على نتائج',
           loadingMessage: 'Loading...'
         },
-        tasks: {
+        planner: {
           removeTaskSubtitle: 'delete',
           cancelNewTaskSubtitle: 'canceltest',
           newTaskPlaceholder: 'newTaskTest',
