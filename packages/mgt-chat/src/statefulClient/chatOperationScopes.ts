@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { getMgtPersonCardScopes } from '@microsoft/mgt-components/dist/es6/exports';
+import { getMgtPersonCardScopes } from '@microsoft/mgt-react';
 
 /**
  * The lowest count of scopes required to perform all chat operations

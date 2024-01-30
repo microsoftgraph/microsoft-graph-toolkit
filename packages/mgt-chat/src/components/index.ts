@@ -5,6 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Chat } from './Chat/Chat';
+import { Chat, registerMgtChatComponent } from './Chat/Chat';
 import { NewChat } from './NewChat/NewChat';
-export { Chat, NewChat };
+export { Chat, NewChat, registerMgtChatComponent };

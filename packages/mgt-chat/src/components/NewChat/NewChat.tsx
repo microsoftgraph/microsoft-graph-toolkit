@@ -1,7 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
-import { IDynamicPerson } from '@microsoft/mgt-components';
 import { Chat } from '@microsoft/microsoft-graph-types';
-import { IGraph, PeoplePicker, Spinner } from '@microsoft/mgt-react';
+import { IGraph, PeoplePicker, Spinner, IDynamicPerson } from '@microsoft/mgt-react';
 import {
   Button,
   Field,
