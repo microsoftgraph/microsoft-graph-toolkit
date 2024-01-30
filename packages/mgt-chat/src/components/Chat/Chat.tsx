@@ -180,7 +180,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 ></Error>
               )}
               {chatState.status === 'no chat id' && (
-                <Error message="No chat ID has been provided." subheading="A valid chat id is required."></Error>
+                <Error message="No chat id has been provided." subheading="A valid chat id is required."></Error>
               )}
               {chatState.status === 'error' && (
                 <Error
