@@ -69,9 +69,9 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
     | 'server connection lost'
     | 'server connection established'
     | 'subscribing to notifications'
-    | 'loading messages'
-    | 'no messages'
-    | 'chat threads loaded'
+    | 'loading chats'
+    | 'no chats'
+    | 'chats loaded'
     | 'error';
   chatThreads: GraphChatThread[];
   moreChatThreadsToLoad: boolean | undefined;
@@ -524,7 +524,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    */
   private readonly handleChatThreads = (chatThreads: GraphChatThread[], nextLink: string | undefined) => {
     this.notifyStateChange((draft: GraphChatListClient) => {
-      draft.status = 'chat threads loaded';
+      draft.status = chatThreads.length > 0 ? 'chats loaded' : 'no chats';
       draft.chatThreads = chatThreads;
       draft.moreChatThreadsToLoad = nextLink !== undefined && nextLink !== '';
     });
@@ -608,7 +608,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       error('Failed to load chat data or subscribe to notications: ', e);
       if (e instanceof GraphError) {
         this.notifyStateChange((draft: GraphChatListClient) => {
-          draft.status = 'no messages';
+          draft.status = 'no chats';
         });
       }
     }
