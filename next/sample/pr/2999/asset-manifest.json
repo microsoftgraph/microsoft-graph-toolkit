@@ -1,0 +1,34 @@
+{
+  "files": {
+    "main.js": "./static/js/main.9f5bd218.js",
+    "static/js/421.eb85f3c2.chunk.js": "./static/js/421.eb85f3c2.chunk.js",
+    "static/js/512.36bb9029.chunk.js": "./static/js/512.36bb9029.chunk.js",
+    "static/js/386.61123415.chunk.js": "./static/js/386.61123415.chunk.js",
+    "static/js/13.215acc28.chunk.js": "./static/js/13.215acc28.chunk.js",
+    "static/js/732.c65b45c2.chunk.js": "./static/js/732.c65b45c2.chunk.js",
+    "static/js/363.bd05d635.chunk.js": "./static/js/363.bd05d635.chunk.js",
+    "static/js/155.7bf8f377.chunk.js": "./static/js/155.7bf8f377.chunk.js",
+    "static/js/518.f5031102.chunk.js": "./static/js/518.f5031102.chunk.js",
+    "static/js/842.ae504874.chunk.js": "./static/js/842.ae504874.chunk.js",
+    "static/js/268.0e123839.chunk.js": "./static/js/268.0e123839.chunk.js",
+    "static/js/216.2b678577.chunk.js": "./static/js/216.2b678577.chunk.js",
+    "static/js/487.d5f17e2b.chunk.js": "./static/js/487.d5f17e2b.chunk.js",
+    "index.html": "./index.html",
+    "main.9f5bd218.js.map": "./static/js/main.9f5bd218.js.map",
+    "421.eb85f3c2.chunk.js.map": "./static/js/421.eb85f3c2.chunk.js.map",
+    "512.36bb9029.chunk.js.map": "./static/js/512.36bb9029.chunk.js.map",
+    "386.61123415.chunk.js.map": "./static/js/386.61123415.chunk.js.map",
+    "13.215acc28.chunk.js.map": "./static/js/13.215acc28.chunk.js.map",
+    "732.c65b45c2.chunk.js.map": "./static/js/732.c65b45c2.chunk.js.map",
+    "363.bd05d635.chunk.js.map": "./static/js/363.bd05d635.chunk.js.map",
+    "155.7bf8f377.chunk.js.map": "./static/js/155.7bf8f377.chunk.js.map",
+    "518.f5031102.chunk.js.map": "./static/js/518.f5031102.chunk.js.map",
+    "842.ae504874.chunk.js.map": "./static/js/842.ae504874.chunk.js.map",
+    "268.0e123839.chunk.js.map": "./static/js/268.0e123839.chunk.js.map",
+    "216.2b678577.chunk.js.map": "./static/js/216.2b678577.chunk.js.map",
+    "487.d5f17e2b.chunk.js.map": "./static/js/487.d5f17e2b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.9f5bd218.js"
+  ]
+}
