@@ -25,7 +25,8 @@ export type ChatEvent =
   | 'disconnected'
   | 'connected'
   | 'reconnected'
-  | 'notificationsSubscribedForResource';
+  | 'notificationsSubscribedForResource'
+  | 'graphNotificationClientError';
 
 export class ThreadEventEmitter {
   private readonly emitter: EventEmitter = new EventEmitter();
@@ -76,5 +77,8 @@ export class ThreadEventEmitter {
   }
   reconnected() {
     this.emitter.emit('reconnected');
+  }
+  graphNotificationClientError(error: Error) {
+    this.emitter.emit('graphNotificationClientError', error);
   }
 }
