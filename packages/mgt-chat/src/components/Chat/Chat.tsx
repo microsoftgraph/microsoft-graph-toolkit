@@ -76,29 +76,31 @@ const useStyles = makeStyles({
 const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
     '& .ui-box': {
-      zIndex: 'unset'
-    },
-    '& p': {
-      display: 'inline-flex',
-      justifyContent: 'center'
+      zIndex: 'unset',
+      '& div[data-ui-status]': {
+        display: 'inline-flex',
+        justifyContent: 'center'
+      }
     }
   },
   chatMessageContainer: {
     '& p>mgt-person,msft-mention': {
       display: 'inline-block',
-      ...shorthands.marginInline('0px', '2px')
+      ...shorthands.marginInline('0px')
     },
     '& .otherMention': {
-      color: 'var(--accent-base-color)'
+      color: 'var(--accent-base-color)',
+      ...shorthands.margin('0px')
     }
   },
   myChatMessageContainer: {
     '& p>mgt-person,msft-mention': {
       display: 'inline-block',
-      ...shorthands.marginInline('0px', '2px')
+      ...shorthands.marginInline('0px')
     },
     '& .otherMention': {
-      color: 'var(--accent-base-color)'
+      color: 'var(--accent-base-color)',
+      ...shorthands.margin('0px')
     }
   }
 };
