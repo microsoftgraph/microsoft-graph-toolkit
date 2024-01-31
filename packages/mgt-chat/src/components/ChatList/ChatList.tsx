@@ -234,7 +234,6 @@ export const ChatList = ({
   const isError = ['server connection lost', 'error'].includes(chatListState?.status ?? '');
 
   return (
-    // This is a temporary approach to render the chatlist items. This should be replaced.
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider id="fluentui" theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.fullHeight}>
