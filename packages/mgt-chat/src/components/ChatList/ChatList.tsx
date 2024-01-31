@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ChatListItem } from '../ChatListItem/ChatListItem';
-import { MgtTemplateProps, ProviderState, Providers, log } from '@microsoft/mgt-react';
+import { MgtTemplateProps, ProviderState, Providers, Spinner, log } from '@microsoft/mgt-react';
 import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
@@ -13,6 +13,11 @@ import {
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
 import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
+import { Error } from '../Error/Error';
+import { LoadingMessagesErrorIcon } from '../Error/LoadingMessageErrorIcon';
+import { CreateANewChat } from '../Error/CreateANewChat';
+import { PleaseSignIn } from '../Error/PleaseSignIn';
+import { OpenTeamsLinkError } from '../Error/OpenTeams';
 
 export interface IChatListItemProps {
   onSelected: (e: GraphChat) => void;
@@ -27,6 +32,9 @@ export interface IChatListItemProps {
 }
 
 const useStyles = makeStyles({
+  fullHeight: {
+    height: '100%'
+  },
   headerContainer: {
     display: 'flex',
     justifyContent: 'center',
@@ -38,6 +46,12 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     width: '100%',
     ...shorthands.padding('10px')
+  },
+  spinner: {
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    height: '100%'
   },
   loadMore: {
     textDecorationLine: 'none',
@@ -53,6 +67,11 @@ const useStyles = makeStyles({
     width: '100%',
     ...shorthands.padding('0px'),
     ...shorthands.border('none')
+  },
+  error: {
+    display: 'flex',
+    justifyContent: 'center',
+    height: '100%'
   }
 });
 
@@ -125,7 +144,7 @@ export const ChatList = ({
     // handle state changes
     chatListClient.onStateChange(setChatListState);
     chatListClient.onStateChange(state => {
-      if (state.status === 'chat threads loaded' && onLoaded) {
+      if (state.status === 'chats loaded' && onLoaded) {
         onLoaded();
       }
 
@@ -205,11 +224,19 @@ export const ChatList = ({
     onClick: () => markAllThreadsAsRead(chatListState?.chatThreads)
   };
 
+  const isLoading = [
+    'creating server connections',
+    'server connection established',
+    'subscribing to notifications',
+    'loading messages'
+  ].includes(chatListState?.status ?? '');
+
+  const isError = ['server connection lost', 'error'].includes(chatListState?.status ?? '');
+
   return (
-    // This is a temporary approach to render the chatlist items. This should be replaced.
     <FluentThemeProvider fluentTheme={FluentTheme}>
-      <FluentProvider theme={webLightTheme}>
-        <div>
+      <FluentProvider id="fluentui" theme={webLightTheme} className={styles.fullHeight}>
+        <div className={styles.fullHeight}>
           {Providers.globalProvider.state === ProviderState.SignedIn && (
             <div className={styles.headerContainer}>
               <ChatListHeader
@@ -219,26 +246,52 @@ export const ChatList = ({
               />
             </div>
           )}
-          <div>
-            {chatListState?.chatThreads.map(c => (
-              <Button className={styles.button} key={c.id} onClick={() => onClickChatListItem(c)}>
-                <ChatListItem
-                  key={c.id}
-                  chat={c}
-                  myId={chatListState.userId}
-                  isSelected={c.id === internalSelectedChatId}
-                  isRead={c.id === internalSelectedChatId || c.isRead}
-                />
-              </Button>
-            ))}
-            {chatListState?.moreChatThreadsToLoad === true && (
-              <div className={styles.linkContainer}>
-                <Link onClick={loadMore} href="#" className={styles.loadMore}>
-                  load more
-                </Link>
+          {chatListState && chatListState.chatThreads.length > 0 ? (
+            <>
+              <div>
+                {chatListState?.chatThreads.map(c => (
+                  <Button className={styles.button} key={c.id} onClick={() => onClickChatListItem(c)}>
+                    <ChatListItem
+                      key={c.id}
+                      chat={c}
+                      myId={chatListState.userId}
+                      isSelected={c.id === internalSelectedChatId}
+                      isRead={c.id === internalSelectedChatId || c.isRead}
+                    />
+                  </Button>
+                ))}
+                {chatListState?.moreChatThreadsToLoad === true && (
+                  <div className={styles.linkContainer}>
+                    <Link onClick={loadMore} href="#" className={styles.loadMore}>
+                      load more
+                    </Link>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          ) : (
+            <>
+              <div className={styles.error}>
+                {!chatListState?.userId && <Error message="User not signed-in." subheading={PleaseSignIn}></Error>}
+                {isLoading && (
+                  <div className={styles.spinner}>
+                    <Spinner /> <br />
+                    {chatListState?.status}
+                  </div>
+                )}
+                {chatListState?.status === 'no chats' && (
+                  <Error
+                    icon={LoadingMessagesErrorIcon}
+                    message="No threads were found for this user."
+                    subheading={CreateANewChat}
+                  ></Error>
+                )}
+                {isError && (
+                  <Error message="We're sorry—we've run into an issue." subheading={OpenTeamsLinkError}></Error>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </FluentProvider>
     </FluentThemeProvider>
