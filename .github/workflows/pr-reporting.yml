@@ -9,8 +9,7 @@ on:
 permissions:
   pull-requests: write
   contents: read
-  actions: read
-  checks: write
+  id-token: write
 
 jobs:
   pr_report:
