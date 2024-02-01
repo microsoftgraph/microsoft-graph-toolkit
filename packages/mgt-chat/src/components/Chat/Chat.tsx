@@ -75,7 +75,7 @@ const useStyles = makeStyles({
  */
 const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
-    '& .ui-box': {
+    '& .uiBox': {
       zIndex: 'unset',
       '& div[data-ui-status]': {
         display: 'inline-flex',
@@ -84,7 +84,7 @@ const messageThreadStyles: MessageThreadStyles = {
     }
   },
   chatMessageContainer: {
-    '& p>mgt-person,msft-mention': {
+    '& p>mgtPerson,msftMention': {
       display: 'inline-block',
       ...shorthands.marginInline('0px')
     },
@@ -94,7 +94,7 @@ const messageThreadStyles: MessageThreadStyles = {
     }
   },
   myChatMessageContainer: {
-    '& p>mgt-person,msft-mention': {
+    '& p>mgtPerson,msftMention': {
       display: 'inline-block',
       ...shorthands.marginInline('0px')
     },
