@@ -94,7 +94,7 @@ export const ChatList = ({
   // wait for provider to be ready before setting client and state
   useEffect(() => {
     const provider = Providers.globalProvider;
-    const conditionalLoad = (state: ProviderState) => {
+    const conditionalLoad = (state: ProviderState | undefined) => {
       if (state === ProviderState.SignedIn && !chatListClient) {
         const client = new StatefulGraphChatListClient(chatThreadsPerPage);
         setChatListClient(client);
@@ -104,7 +104,7 @@ export const ChatList = ({
     provider.onStateChanged(evt => {
       conditionalLoad(evt.detail);
     });
-    conditionalLoad(provider.state);
+    conditionalLoad(provider?.state);
   }, [chatListClient, chatThreadsPerPage]);
 
   // if selected chat id is changed, update the internal state
@@ -241,7 +241,7 @@ export const ChatList = ({
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.fullHeight}>
-          {Providers.globalProvider.state === ProviderState.SignedIn && (
+          {Providers.globalProvider?.state === ProviderState.SignedIn && (
             <div className={styles.headerContainer}>
               <ChatListHeader
                 bannerMessage={headerBannerMessage}
