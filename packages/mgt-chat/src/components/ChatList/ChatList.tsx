@@ -94,14 +94,18 @@ export const ChatList = ({
   // wait for provider to be ready before setting client and state
   useEffect(() => {
     const provider = Providers.globalProvider;
-    provider.onStateChanged(evt => {
-      if (evt.detail === ProviderState.SignedIn) {
+    const conditionalLoad = (state: ProviderState) => {
+      if (state === ProviderState.SignedIn && !chatListClient) {
         const client = new StatefulGraphChatListClient(chatThreadsPerPage);
         setChatListClient(client);
         setChatListState(client.getState());
       }
+    };
+    provider.onStateChanged(evt => {
+      conditionalLoad(evt.detail);
     });
-  }, [chatThreadsPerPage]);
+    conditionalLoad(provider.state);
+  }, [chatListClient, chatThreadsPerPage]);
 
   // if selected chat id is changed, update the internal state
   // NOTE: Decoupling this ensures that the app can change the selection but the chat
