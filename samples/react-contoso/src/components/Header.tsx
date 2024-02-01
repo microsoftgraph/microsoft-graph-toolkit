@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Login, SearchBox } from '@microsoft/mgt-react';
+import { Login, SearchBox, ThemeToggle } from '@microsoft/mgt-react';
 import { PACKAGE_VERSION } from '@microsoft/mgt-element';
 import { InfoButton } from '@fluentui/react-components/unstable';
 import { SimpleLogin } from './SimpleLogin';
@@ -166,6 +166,7 @@ const HeaderComponent: React.FunctionComponent = () => {
 
       <div className={styles.login}>
         <ThemeSwitcher />
+        <ThemeToggle />
         <div className={mergeClasses(!isSignedIn ? styles.signedOut : styles.signedIn, styles.root)}>
           <Login>
             <SimpleLogin template="signed-in-button-content" />
