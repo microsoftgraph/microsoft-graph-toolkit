@@ -239,7 +239,7 @@ export const ChatList = ({
 
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
-      <FluentProvider id="fluentui" theme={webLightTheme} className={styles.fullHeight}>
+      <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.fullHeight}>
           {Providers.globalProvider.state === ProviderState.SignedIn && (
             <div className={styles.headerContainer}>
