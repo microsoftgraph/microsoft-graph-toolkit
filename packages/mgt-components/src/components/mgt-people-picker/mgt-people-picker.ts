@@ -854,7 +854,8 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
             id="${person.id}"
             class="searched-people-list-result"
             role="option"
-            @click="${() => this.handleSuggestionClick(person)}">
+            @click="${() => this.handleSuggestionClick(person)}"
+            @keydown="${(e: KeyboardEvent) => this.handleSuggestionKeydown(person, e)}">
               ${this.renderPersonResult(person)}
           </li>
         `
@@ -1200,10 +1201,8 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       }
       return p.id !== person.id;
     });
-    if (this.hasMaxSelections) {
-      this.enableTextInput();
-    }
     this.selectedPeople = filteredPersonArr;
+    this.enableTextInput();
     void this.loadState();
   }
 
@@ -1216,6 +1215,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   protected handleRemovePersonKeyDown(person: IDynamicPerson, e: KeyboardEvent): void {
     if (e.key === 'Enter') {
       this.removePerson(person, e);
+      this.enableTextInput();
     }
   }
 
@@ -1378,7 +1378,21 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       this.disableTextInput();
       this.input.value = '';
     }
+    this.enableTextInput();
     this.hideFlyout();
+  }
+
+  // handle suggestion list item keydown
+  private handleSuggestionKeydown(person: IDynamicPerson, e: KeyboardEvent): void {
+    if (e.key === 'Enter') {
+      this.addPerson(person);
+      if (this.hasMaxSelections) {
+        this.disableTextInput();
+        this.input.value = '';
+      }
+      this.enableTextInput();
+      this.hideFlyout();
+    }
   }
 
   /**
