@@ -74,3 +74,17 @@ export const allChatScopes = Array.from(
       return acc;
     }, new Set<string>())
 );
+
+/**
+ * Provides an array of the distinct scopes required for all chat operations
+ */
+export const allChatListScopes = Array.from(
+  [['User.Read', 'TeamsAppInstallation.ReadForChat']]
+    .concat([minimalChatScopesList])
+    .concat(Object.values(peoplePickerScopes))
+    .concat([getMgtPersonCardScopes()])
+    .reduce((acc, scopes) => {
+      scopes.forEach(s => acc.add(s));
+      return acc;
+    }, new Set<string>())
+);
