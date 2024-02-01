@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { MessageThreadProps, ErrorBarProps, Message } from '@azure/communication-react';
 import { ActiveAccountChanged, IGraph, Providers, log } from '@microsoft/mgt-element';
 import { GraphError } from '@microsoft/microsoft-graph-client';
