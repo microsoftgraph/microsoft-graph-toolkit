@@ -5,17 +5,22 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { fluentSkeleton } from '@fluentui/web-components';
 import {
   MgtTemplatedTaskComponent,
   ProviderState,
   Providers,
+  buildComponentName,
   customElementHelper,
-  mgtHtml
+  mgtHtml,
+  registerComponent
 } from '@microsoft/mgt-element';
 import { Presence } from '@microsoft/microsoft-graph-types';
-import { html, TemplateResult, nothing } from 'lit';
+import { TemplateResult, html, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { isContact, isUser } from '../../graph/entityType';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
@@ -23,17 +28,15 @@ import { findUsers, getMe, getUser } from '../../graph/graph.user';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { AvatarSize, IDynamicPerson, ViewType, viewTypeConverter } from '../../graph/types';
 import '../../styles/style-helper';
+import { registerFluentComponents } from '../../utils/FluentComponents';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
+import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
 import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
-import { type PersonCardInteraction, personCardConverter } from './../PersonCardInteraction';
+import { personCardConverter, type PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-import { MgtPersonConfig, AvatarType, avatarTypeConverter } from './mgt-person-types';
+import { AvatarType, MgtPersonConfig, avatarTypeConverter } from './mgt-person-types';
 import { strings } from './strings';
-import { isUser, isContact } from '../../graph/entityType';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
-import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
 
 /**
  * Person properties part of original set provided by graph by default
@@ -55,6 +58,8 @@ export const defaultPersonProperties = [
 ];
 
 export const registerMgtPersonComponent = () => {
+  registerFluentComponents(fluentSkeleton);
+
   // register self first to avoid infinte loop due to circular ref between person and person card
   registerComponent('person', MgtPerson);
 
@@ -575,6 +580,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
         ${personTemplate}
       </div>
     `;
+    // return this.renderLoading();
   };
 
   /**
@@ -585,7 +591,20 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
    * @memberof MgtPerson
    */
   protected renderLoading = (): TemplateResult => {
-    return this.renderTemplate('loading', null) || html``;
+    return (
+      this.renderTemplate('loading', null) ||
+      html`
+        <div class="person-root small oneline">
+          <div class="avatar-wrapper">
+            <fluent-skeleton shimmer class="shimmer icon" shape="circle"></fluent-skeleton>
+          </div>
+          <div class="details-wrapper">
+            <div class="line1">
+              <fluent-skeleton shimmer class="shimmer text" shape="rect"></fluent-skeleton>
+            </div>
+          </div>
+        </div>`
+    );
   };
 
   /**
