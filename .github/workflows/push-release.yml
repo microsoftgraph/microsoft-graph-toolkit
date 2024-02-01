@@ -5,7 +5,7 @@ name: Release latest
 
 on:
   push:
-    tags: ['v3.*']
+    tags: ['v3.*', v4.*]
 permissions:
   contents: write
 
