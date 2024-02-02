@@ -555,6 +555,15 @@ export class MgtTodo extends MgtTasksBase {
     this._newTaskName = '';
     this._changedTaskName = '';
     this._isChangedDueDate = false;
+    this.focusOnTaskInput();
+  };
+
+  protected focusOnTaskInput = (): void => {
+    const taskInputWrapper = this.renderRoot.querySelector<HTMLInputElement>('#new-task-name-input');
+    const input = taskInputWrapper?.shadowRoot.querySelector<HTMLInputElement>('input');
+    if (input) {
+      input.focus();
+    }
   };
 
   /**
