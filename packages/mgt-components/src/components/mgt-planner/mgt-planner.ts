@@ -792,6 +792,7 @@ export class MgtPlanner extends MgtTemplatedTaskComponent {
     const taskTitle = html`
       <fluent-text-field
         autocomplete="off"
+        ?autofocus=${this.isNewTaskVisible}
         placeholder=${this.strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
         class="new-task"
