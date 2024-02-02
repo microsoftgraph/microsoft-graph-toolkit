@@ -5172,6 +5172,7 @@ ${display("inline-block")} :host {
       </fluent-text-field>`,y=this.renderAssignedPeople(null),w=this._newTaskBeingAdded?we`<div class="task-add-button-container"></div>`:we`
           <fluent-button
             class="add-task"
+            ?disabled=${!this._newTaskName}
             @click=${this.onAddTaskClick}
             @keydown=${this.onAddTaskKeyDown}
             appearance="neutral">

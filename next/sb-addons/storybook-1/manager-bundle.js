@@ -6814,6 +6814,7 @@ Error Description: `+h.message)),[2,null];case 4:return i||(this.logger.warning(
       </fluent-text-field>`,p=this.renderAssignedPeople(null),f=this._newTaskBeingAdded?C`<div class="task-add-button-container"></div>`:C`
           <fluent-button
             class="add-task"
+            ?disabled=${!this._newTaskName}
             @click=${this.onAddTaskClick}
             @keydown=${this.onAddTaskKeyDown}
             appearance="neutral">
