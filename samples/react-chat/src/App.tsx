@@ -47,7 +47,8 @@ function App() {
           )}
         </div>
 
-        <div className="chat-pane">{chatId && <Chat chatId={chatId} />}</div>
+        {/* NOTE: removed the chatId guard as this case has an error state. */}
+        <div className="chat-pane">{<Chat chatId={chatId} />}</div>
       </main>
     </div>
   );

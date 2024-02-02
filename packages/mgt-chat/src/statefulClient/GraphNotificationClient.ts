@@ -399,6 +399,8 @@ export class GraphNotificationClient {
     promises.push(this.subscribeToResource(`/chats/${chatId}/messages`, ['created', 'updated', 'deleted']));
     promises.push(this.subscribeToResource(`/chats/${chatId}/members`, ['created', 'deleted']));
     promises.push(this.subscribeToResource(`/chats/${chatId}`, ['updated', 'deleted']));
-    await Promise.all(promises);
+    await Promise.all(promises).catch((e: Error) => {
+      this?.emitter.graphNotificationClientError(e);
+    });
   }
 }

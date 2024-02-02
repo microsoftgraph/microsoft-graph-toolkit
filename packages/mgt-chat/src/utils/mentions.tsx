@@ -31,6 +31,7 @@ export const renderMGTMention = (chatState: GraphChatClient) => {
         </Person>
       );
     }
+    render = <>{render}&nbsp;</>;
     return render;
   };
 };
