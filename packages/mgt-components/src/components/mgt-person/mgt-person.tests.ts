@@ -199,8 +199,8 @@ describe('mgt-person - localization', () => {
           <img alt="test value Megan Bowen" src="">
         </div>
         <div class=" details-wrapper ">
-              <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
-              <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+              <div class="line1" part="detail-line" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+              <div class="line2" part="detail-line" role="presentation" aria-label="Auditor">Auditor</div>
         </div>
       </div>`,
       { ignoreAttributes: ['src'] }
