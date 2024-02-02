@@ -347,6 +347,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     // define the JSX for FluentUI Icons + Styling
     const oneOnOneProfilePicture = <ChatListItemIcon chatType="oneOnOne" />;
     const GroupProfilePicture = <ChatListItemIcon chatType="group" />;
+    const meetingProfilePicture = <ChatListItemIcon chatType="meeting" />;
 
     const other = c.members?.find(m => (m as AadUserConversationMember).userId !== myId);
     const otherAad = other as AadUserConversationMember;
@@ -366,6 +367,8 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
         );
       case c.chatType === 'group':
         return GroupProfilePicture;
+      case c.chatType === 'meeting':
+        return meetingProfilePicture;
       default:
         return oneOnOneProfilePicture;
     }
