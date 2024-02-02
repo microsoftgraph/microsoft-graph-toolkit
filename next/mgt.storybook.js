@@ -5136,6 +5136,7 @@ ${display("inline-block")} :host {
       `}renderNewTask(){const e="var(--neutral-foreground-hint)",t=we`
       <fluent-text-field
         autocomplete="off"
+        ?autofocus=${this.isNewTaskVisible}
         placeholder=${this.strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
         class="new-task"

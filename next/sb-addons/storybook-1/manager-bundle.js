@@ -6778,6 +6778,7 @@ Error Description: `+h.message)),[2,null];case 4:return i||(this.logger.warning(
       `}renderNewTask(){let e="var(--neutral-foreground-hint)",t=C`
       <fluent-text-field
         autocomplete="off"
+        ?autofocus=${this.isNewTaskVisible}
         placeholder=${this.strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
         class="new-task"
