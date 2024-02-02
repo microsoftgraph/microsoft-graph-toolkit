@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 import { fixture, html, expect, oneEvent } from '@open-wc/testing';
-import { MockProvider, Providers } from '@microsoft/mgt-element';
+import { LocalizationHelper, MockProvider, Providers } from '@microsoft/mgt-element';
 import { registerMgtPersonComponent } from './mgt-person';
 
 describe('mgt-person - tests', () => {
@@ -20,8 +20,8 @@ describe('mgt-person - tests', () => {
           <img alt="Photo for Megan Bowen" src="">
         </div>
         <div class=" details-wrapper ">
-              <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
-              <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+              <div class="line1" part="detail-line" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+              <div class="line2" part="detail-line" role="presentation" aria-label="Auditor">Auditor</div>
         </div>
       </div>`,
       { ignoreAttributes: ['src'] }
@@ -46,6 +46,7 @@ describe('mgt-person - tests', () => {
               <div
                 aria-label="Megan Bowen"
                 class="line1"
+                part="detail-line"
                 role="presentation"
               >
                 Megan Bowen
@@ -53,6 +54,7 @@ describe('mgt-person - tests', () => {
               <div
                 aria-label="Auditor"
                 class="line2"
+                part="detail-line"
                 role="presentation"
               >
                 Auditor
@@ -169,5 +171,68 @@ describe('mgt-person - tests', () => {
         personType: {}
       })}' view="twolines"></mgt-person>`);
     await expect(person.shadowRoot.querySelector('span.initials')).lightDom.to.equal('FV');
+  });
+});
+
+describe('mgt-person - localization', () => {
+  registerMgtPersonComponent();
+  Providers.globalProvider = new MockProvider(true);
+
+  afterEach(() => {
+    LocalizationHelper.strings = {
+      _components: {}
+    };
+  });
+  it('should render with updated photo for text', async () => {
+    LocalizationHelper.strings = {
+      _components: {
+        person: {
+          photoFor: 'test value'
+        }
+      }
+    };
+    const person = await fixture(html`<mgt-person person-query="me" view="twolines"></mgt-person>`);
+    await oneEvent(person, 'person-image-rendered');
+    await expect(person).shadowDom.to.equal(
+      `<div class=" person-root twolines " dir="ltr">
+        <div class="avatar-wrapper">
+          <img alt="test value Megan Bowen" src="">
+        </div>
+        <div class=" details-wrapper ">
+              <div class="line1" part="detail-line" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+              <div class="line2" part="detail-line" role="presentation" aria-label="Auditor">Auditor</div>
+        </div>
+      </div>`,
+      { ignoreAttributes: ['src'] }
+    );
+  });
+  it('should render with updated email address text', async () => {
+    LocalizationHelper.strings = {
+      _components: {
+        person: {
+          emailAddress: 'test value'
+        }
+      }
+    };
+    const person = await fixture(
+      html`<mgt-person person-details='${JSON.stringify({
+        mail: 'herbert@dune.net',
+        personType: {}
+      })}' view="image"></mgt-person>`
+    );
+    // await oneEvent(person, 'person-icon-rendered');
+    await expect(person).shadowDom.to.equal(
+      `<div class="noline person-root small" dir="ltr">
+        <div class="avatar-wrapper">
+          <span
+            class="contact-icon"
+            title="test value herbert@dune.net"
+          >
+            <i></i>
+          </span>
+        </div>
+      </div>`,
+      { ignoreAttributes: ['src'] }
+    );
   });
 });
