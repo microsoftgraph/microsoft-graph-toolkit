@@ -656,7 +656,9 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
     const hasImage = imageSrc && !this._isInvalidImageSrc && this.avatarType === 'photo';
     const imageOnly = this.avatarType === 'photo' && this.view === 'image';
     const titleText =
-      (personDetailsInternal?.displayName || getEmailFromGraphEntity(personDetailsInternal)) ?? undefined;
+      (personDetailsInternal?.displayName ||
+        `${this.strings.emailAddress} ${getEmailFromGraphEntity(personDetailsInternal)}`) ??
+      undefined;
     const imageTemplate = html`<img
       title="${ifDefined(imageOnly ? titleText : undefined)}"
       alt=${altText}
@@ -813,26 +815,6 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
    * @memberof MgtPersonCard
    */
   protected renderAvatar(personDetailsInternal: IDynamicPerson, image: string, presence: Presence): TemplateResult {
-    const hasInitials = !image || this._isInvalidImageSrc || this.avatarType === 'initials';
-
-    let title = '';
-
-    if (hasInitials && personDetailsInternal) {
-      title = `${this.strings.initials} ${this.getInitials(personDetailsInternal)}`;
-    } else {
-      title = personDetailsInternal ? personDetailsInternal.displayName || '' : '';
-      if (title !== '') {
-        title = `${this.strings.photoFor} ${title}`;
-      }
-    }
-
-    if (title === '') {
-      const emailAddress = getEmailFromGraphEntity(personDetailsInternal);
-      if (emailAddress !== null) {
-        title = `${this.strings.emailAddress} ${emailAddress}`;
-      }
-    }
-
     const imageTemplate: TemplateResult = this.renderImage(personDetailsInternal, image);
     const presenceTemplate: TemplateResult = this.renderPresence(presence);
 
