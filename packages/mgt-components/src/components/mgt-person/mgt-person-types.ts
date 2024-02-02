@@ -5,17 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export enum avatarType {
-  /**
-   * Renders avatar photo if available, falls back to initials
-   */
-  photo = 'photo',
+const avatarTypes = ['photo', 'initials'] as const;
 
-  /**
-   * Forces render avatar initials
-   */
-  initials = 'initials'
-}
+export type AvatarType = (typeof avatarTypes)[number];
+export const isAvatarType = (value: unknown): value is AvatarType =>
+  typeof value === 'string' && avatarTypes.includes(value as AvatarType);
+export const avatarTypeConverter = (value: string, defaultValue: AvatarType = 'photo'): AvatarType =>
+  isAvatarType(value) ? value : defaultValue;
 
 /**
  * Configuration object for the Person component

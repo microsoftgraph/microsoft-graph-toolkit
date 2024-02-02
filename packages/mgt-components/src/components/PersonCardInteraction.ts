@@ -5,50 +5,24 @@
  * -------------------------------------------------------------------------------------------
  */
 
-/* istanbul ignore file */
+const interactions = ['none', 'hover', 'click'] as const;
 
 /**
  * Defines how a person card is shown when a user interacts with
  * a person component
  *
- * @export
- * @enum {number}
  */
-export enum PersonCardInteraction {
-  /**
-   * Don't show person card
-   */
-  none,
+export type PersonCardInteraction = (typeof interactions)[number];
 
-  /**
-   * Show person card on hover
-   */
-  hover,
+export const isPersonCardInteraction = (value: unknown): value is PersonCardInteraction =>
+  typeof value === 'string' && interactions.includes(value as PersonCardInteraction);
 
-  /**
-   * Show person card on click
-   */
-  click
-}
-
-// const ALL_INTERACTIONS = ['none', 'hover', 'click'] as const;
-
-// /**
-//  * Defines how a person card is shown when a user interacts with
-//  * a person component
-//  *
-//  * @export
-//  * @enum {number}
-//  */
-// export type PersonCardInteraction = (typeof ALL_INTERACTIONS)[number];
-
-// export const isPersonCardInteraction = (value: string): value is PersonCardInteraction =>
-//   ALL_INTERACTIONS.includes(value as PersonCardInteraction);
-
-// export const personCardConverter = (value: string): PersonCardInteraction => {
-//   value = value.toLowerCase();
-//   if (isPersonCardInteraction(value)) {
-//     return value;
-//   }
-//   return 'none';
-// };
+export const personCardConverter = (
+  value: string,
+  defaultValue: PersonCardInteraction = 'none'
+): PersonCardInteraction => {
+  if (isPersonCardInteraction(value)) {
+    return value;
+  }
+  return defaultValue;
+};

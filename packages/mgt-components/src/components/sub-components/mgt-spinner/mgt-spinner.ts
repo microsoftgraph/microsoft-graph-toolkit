@@ -6,7 +6,7 @@
  */
 
 import { html } from 'lit';
-import { MgtBaseComponent } from '@microsoft/mgt-element';
+import { MgtBaseTaskComponent } from '@microsoft/mgt-element';
 import { styles } from './mgt-spinner-css';
 import { registerComponent } from '@microsoft/mgt-element';
 
@@ -19,7 +19,7 @@ export const registerMgtSpinnerComponent = () => registerComponent('spinner', Mg
  * @class MgtSpinner
  * @extends {MgtBaseComponent}
  */
-export class MgtSpinner extends MgtBaseComponent {
+export class MgtSpinner extends MgtBaseTaskComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * user the `css` tag function.

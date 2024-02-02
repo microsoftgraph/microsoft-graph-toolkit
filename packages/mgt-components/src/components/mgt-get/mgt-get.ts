@@ -11,7 +11,7 @@ import {
   CacheService,
   CacheStore,
   equals,
-  MgtTemplatedComponent,
+  MgtTemplatedTaskComponent,
   prepScopes,
   Providers,
   ProviderState,
@@ -43,23 +43,18 @@ interface ImageValue {
 export const isCollectionResponse = (value: unknown): value is CollectionResponse<unknown> =>
   Array.isArray((value as CollectionResponse<unknown>)?.value);
 
+const responseTypes = ['json', 'image'] as const;
 /**
  * Enumeration to define what types of query are available
  *
  * @export
  * @enum {string}
  */
-export enum ResponseType {
-  /**
-   * Fetches a call as JSON
-   */
-  json = 'json',
-
-  /**
-   * Fetches a call as image
-   */
-  image = 'image'
-}
+export type ResponseType = (typeof responseTypes)[number];
+const isResponseType = (value: unknown): value is ResponseType =>
+  typeof value === 'string' && responseTypes.includes(value as ResponseType);
+const responseTypeConverter = (value: string, defaultValue: ResponseType = 'json'): ResponseType =>
+  isResponseType(value) ? value : defaultValue;
 
 /**
  * Defines the expiration time
@@ -88,13 +83,13 @@ export const registerMgtGetComponent = () => registerComponent('get', MgtGet);
 /**
  * Custom element for making Microsoft Graph get queries
  *
- * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes
+ * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes bubbles, composed, and is not cancelable.
  *
  * @export
  * @class mgt-get
  * @extends {MgtTemplatedComponent}
  */
-export class MgtGet extends MgtTemplatedComponent {
+export class MgtGet extends MgtTemplatedTaskComponent {
   /**
    * The resource to get
    *
@@ -147,9 +142,10 @@ export class MgtGet extends MgtTemplatedComponent {
   @property({
     attribute: 'type',
     reflect: true,
-    type: ResponseType
+    type: String,
+    converter: value => responseTypeConverter(value, 'json')
   })
-  public type: ResponseType = ResponseType.json;
+  public type: ResponseType = 'json';
 
   /**
    * Maximum number of pages to get for the resource
@@ -227,20 +223,6 @@ export class MgtGet extends MgtTemplatedComponent {
   private isRefreshing = false;
 
   /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtPersonCard
-   */
-  public attributeChangedCallback(name, oldval, newval) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    super.attributeChangedCallback(name, oldval, newval);
-    void this.requestStateUpdate();
-  }
-
-  /**
    * Refresh the data
    *
    * @param {boolean} [hardRefresh=false]
@@ -253,7 +235,7 @@ export class MgtGet extends MgtTemplatedComponent {
     if (hardRefresh) {
       this.clearState();
     }
-    void this.requestStateUpdate(hardRefresh);
+    void this._task.run();
   }
 
   /**
@@ -266,54 +248,68 @@ export class MgtGet extends MgtTemplatedComponent {
     this.response = null;
   }
 
+  protected args(): unknown[] {
+    return [
+      this.providerState,
+      this.resource,
+      this.scopes,
+      this.version,
+      this.pollingRate,
+      this.type,
+      this.maxPages,
+      this.cacheEnabled,
+      this.cacheInvalidationPeriod
+    ];
+  }
+
+  protected renderLoading = () => {
+    const loading = this.renderTemplate('loading', null);
+    return isCollectionResponse(this.response)
+      ? this.renderValueContentWithDefaultTemplate(
+          html`${this.response.value.map(v => this.renderTemplate('value', v, v.id))} ${loading} `
+        )
+      : loading;
+  };
+
   /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-  protected render() {
-    if (this.isLoadingState && !this.response) {
-      return this.renderTemplate('loading', null);
-    } else if (this.error) {
-      return this.renderTemplate('error', this.error);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
-    } else if (this.hasTemplate('value') && isCollectionResponse(this.response)) {
-      let valueContent: TemplateResult;
+  protected renderContent = () => {
+    if (this.hasTemplate('value') && isCollectionResponse(this.response)) {
+      const valueContent: TemplateResult = isCollectionResponse(this.response)
+        ? html`
+          ${this.response.value.map(v => this.renderTemplate('value', v, v.id))}
+        `
+        : this.renderTemplate('value', this.response);
 
-      if (isCollectionResponse(this.response)) {
-        let loading = null;
-        if (this.isLoadingState && !this.isPolling) {
-          loading = this.renderTemplate('loading', null);
-        }
-        valueContent = html`
-          ${this.response.value.map(v => this.renderTemplate('value', v, v.id))} ${loading}
-        `;
-      } else {
-        valueContent = this.renderTemplate('value', this.response);
-      }
-
-      if (this.hasTemplate('default')) {
-        const defaultContent = this.renderTemplate('default', this.response);
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
-        if (this.templates['value'].templateOrder > this.templates['default'].templateOrder) {
-          return html`
-            ${defaultContent}${valueContent}
-          `;
-        } else {
-          return html`
-            ${valueContent}${defaultContent}
-          `;
-        }
-      } else {
-        return valueContent;
-      }
+      return this.renderValueContentWithDefaultTemplate(valueContent);
     } else if (this.response) {
       return this.renderTemplate('default', this.response) || html``;
     } else if (this.hasTemplate('no-data')) {
       return this.renderTemplate('no-data', null);
     } else {
       return html``;
+    }
+  };
+
+  private renderValueContentWithDefaultTemplate(valueContent: TemplateResult) {
+    if (this.hasTemplate('default')) {
+      const defaultContent = this.renderTemplate('default', this.response);
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/dot-notation
+      if ((this.templates['value']?.templateOrder ?? 999) > this.templates['default'].templateOrder) {
+        return html`
+          ${defaultContent}${valueContent}
+        `;
+      } else {
+        return html`
+          ${valueContent}${defaultContent}
+        `;
+      }
+    } else {
+      return valueContent;
     }
   }
 
@@ -367,7 +363,7 @@ export class MgtGet extends MgtTemplatedComponent {
             request = request.middlewareOptions(prepScopes(this.scopes));
           }
 
-          if (this.type === ResponseType.json) {
+          if (this.type === 'json') {
             response = (await request.get()) as CollectionResponse<Entity> | Entity;
 
             if (isDeltaLink && isCollectionResponse(this.response) && isCollectionResponse(response)) {
@@ -456,7 +452,7 @@ export class MgtGet extends MgtTemplatedComponent {
       this.response = null;
     }
     this.isRefreshing = false;
-    this.fireCustomEvent('dataChange', { response: this.response, error: this.error });
+    this.fireCustomEvent('dataChange', { response: this.response, error: this.error }, true, false, true);
   }
 
   private shouldRetrieveCache(): boolean {

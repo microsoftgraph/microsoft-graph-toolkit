@@ -6,17 +6,41 @@
     <title>Microsoft Graph Toolkit Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" />
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" /> -->
     <!-- <script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script> -->
 
-    <script src="https://unpkg.com/@microsoft/teams-js@2/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
+    <!-- <script src="https://unpkg.com/@microsoft/teams-js@2/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script> -->
 
-    <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script>
-
-    <!-- <script type="module" src="./packages/mgt-element/dist/es6/index.js"></script>
-    <script type="module" src="./packages/mgt-components/dist/es6/index.js"></script>
-    <script type="module" src="./packages/providers/mgt-msal2-provider/dist/es6/index.js"></script>
-    <script type="module" src="./packages/providers/mgt-mock-provider/dist/es6/index.js"></script> -->
+    <script type="module">
+      // import { registerMgtComponents, Providers, MockProvider, Msal2Provider } from 'https://unpkg.com/@microsoft/mgt@next/dist/bundle/mgt.es6.js';
+      import { registerMgtComponents, Providers, MockProvider, Msal2Provider } from './packages/mgt/dist/bundle/mgt.es6.js';
+      // Providers.globalProvider = new MockProvider(true);
+      Providers.globalProvider = new Msal2Provider({
+        clientId: '2dfea037-938a-4ed8-9b35-c05708a1b241',
+        redirectUri: "http://localhost:3000",
+        scopes: [
+          'user.read',
+          'user.read.all',
+          'mail.readBasic',
+          'people.read',
+          'people.read.all',
+          'sites.read.all',
+          'user.readbasic.all',
+          'contacts.read',
+          'presence.read',
+          'presence.read.all',
+          'tasks.readwrite',
+          'tasks.read',
+          'calendars.read',
+          'group.read.all',
+          'files.read',
+          'files.read.all',
+          'files.readwrite',
+          'files.readwrite.all'
+        ]
+      });
+      registerMgtComponents();
+    </script>
     
     <style>
       header {
@@ -45,10 +69,10 @@
       scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all,files.read,files.read.all,files.readwrite,files.readwrite.all"
     ></mgt-msal2-provider> -->
 
-    <mgt-msal2-provider
+    <!-- <mgt-msal2-provider
       client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
       redirect-uri="http://localhost:3000"
-    ></mgt-msal2-provider>
+    ></mgt-msal2-provider> -->
 
     <!-- <mgt-mock-provider></mgt-mock-provider> -->
     <header>
@@ -63,7 +87,9 @@
       </div>
       <!-- <mgt-login></mgt-login> -->
       <!-- <h2>mgt-person me query two lines card on click with presence</h2> -->
-      <!-- <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person> -->
+      <mgt-person person-query="me" view="twolines" person-card="hover" show-presence></mgt-person>
+      <mgt-person-card person-query="me"></mgt-person-card>
+      <!-- <mgt-person person-query="me" view="twolines" person-card="hover" show-presence></mgt-person> -->
       <mgt-person fetch-image person-details='{
         "id": "a2a36b00-b196-4286-adfc-7c1bedbffa39",
         "deletedDateTime": null,

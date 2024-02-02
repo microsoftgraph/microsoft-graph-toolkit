@@ -119,8 +119,9 @@ const buildOrgStructureRequest = (batch: IBatch, userId: string) => {
   batch.get(batchKeys.directReports, `users/${userId}/directReports?$select=${userProperties}`);
 };
 
+const validPeopleScopes = ['People.Read.All'];
 const buildWorksWithRequest = (batch: IBatch, userId: string) => {
-  batch.get(batchKeys.people, `users/${userId}/people?$filter=personType/class eq 'Person'`, validUserByIdScopes);
+  batch.get(batchKeys.people, `users/${userId}/people?$filter=personType/class eq 'Person'`, validPeopleScopes);
 };
 const validMailSearchScopes = ['Mail.ReadBasic', 'Mail.Read', 'Mail.ReadWrite'];
 const buildMessagesWithUserRequest = (batch: IBatch, emailAddress: string) => {
@@ -139,6 +140,7 @@ const buildFilesRequest = (batch: IBatch, emailAddress?: string) => {
   batch.get(batchKeys.files, request, validInsightScopes);
 };
 
+const validProfileScopes = ['User.Read.All', 'User.ReadWrite.All'];
 /**
  * Get the profile for a user
  *
@@ -150,7 +152,7 @@ const getProfile = async (graph: IGraph, userId: string): Promise<Profile> =>
   (await graph
     .api(`/users/${userId}/profile`)
     .version('beta')
-    .middlewareOptions(prepScopes(validUserByIdScopes))
+    .middlewareOptions(prepScopes(validProfileScopes))
     .get()) as Profile;
 
 const validCreateChatScopes = ['Chat.Create', 'Chat.ReadWrite'];

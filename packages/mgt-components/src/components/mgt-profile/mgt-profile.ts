@@ -18,6 +18,7 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { styles } from './mgt-profile-css';
 import { strings } from './strings';
 import { registerComponent } from '@microsoft/mgt-element';
+import { property } from 'lit/decorators.js';
 
 export const registerMgtProfileComponent = () => registerComponent('profile', MgtProfile);
 
@@ -103,6 +104,7 @@ export class MgtProfile extends BasePersonCardSection {
   protected get profile(): Profile {
     return this._profile;
   }
+  @property({ attribute: false })
   protected set profile(value: Profile) {
     if (value === this._profile) {
       return;

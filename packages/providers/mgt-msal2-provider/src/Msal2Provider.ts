@@ -24,7 +24,7 @@ import {
   InteractionRequiredAuthError,
   SsoSilentRequest,
   EventMessage,
-  AuthenticationResult
+  EventType
 } from '@azure/msal-browser';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 
@@ -178,7 +178,7 @@ export interface Msal2PublicClientApplicationConfig extends Msal2ConfigBase {
  * Prompt type enum
  *
  * @export
- * @enum {number}
+ * @enum {string}
  */
 export enum PromptType {
   SELECT_ACCOUNT = 'select_account',
@@ -423,7 +423,7 @@ export class Msal2Provider extends IProvider {
   }
 
   private readonly handleMsalEvent = (message: EventMessage): void => {
-    if (message.eventType === 'msal:acquireTokenSuccess' && 'scopes' in message.payload) {
+    if (message.eventType === EventType.ACQUIRE_TOKEN_SUCCESS && 'scopes' in message.payload) {
       this.approvedScopes = message.payload.scopes;
     }
   };
@@ -505,7 +505,20 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public setActiveAccount(user: IProviderAccount) {
-    this._publicClientApplication.setActiveAccount(this._publicClientApplication.getAccountByHomeId(user.id));
+    const accountToSet = this._publicClientApplication.getAccountByHomeId(user.id);
+    const activeAccount = this._publicClientApplication.getActiveAccount();
+    const storedAccount = this.getStoredAccount();
+    // exit early if the account is already active and stored
+    if (
+      storedAccount &&
+      activeAccount &&
+      accountToSet &&
+      storedAccount.homeAccountId === accountToSet.homeAccountId &&
+      activeAccount.homeAccountId === accountToSet.homeAccountId
+    ) {
+      return;
+    }
+    this._publicClientApplication.setActiveAccount(accountToSet);
     this.setStoredAccount();
     super.setActiveAccount(user);
   }

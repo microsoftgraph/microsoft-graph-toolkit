@@ -10,7 +10,7 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 
 const PersonArgs = {
   'avatar-size': 'auto',
-  view: 'twoLines',
+  view: 'twolines',
   'person-query': 'me',
   'person-card': 'none',
   'show-presence': true
@@ -22,7 +22,7 @@ const PersonArgTypes = {
     control: { type: 'select' }
   },
   view: {
-    options: ['image', 'oneLine', 'twoLines', 'threeLines', 'fourLines'],
+    options: ['image', 'oneline', 'twolines', 'threelines', 'fourlines'],
     control: { type: 'inline-radio' }
   },
   'person-card': {

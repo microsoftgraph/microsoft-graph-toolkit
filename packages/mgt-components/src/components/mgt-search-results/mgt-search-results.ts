@@ -11,14 +11,14 @@ import {
   CacheService,
   CacheStore,
   equals,
-  MgtTemplatedComponent,
   prepScopes,
   Providers,
   ProviderState,
   mgtHtml,
   BetaGraph,
   BatchResponse,
-  CollectionResponse
+  CollectionResponse,
+  MgtTemplatedTaskComponent
 } from '@microsoft/mgt-element';
 
 import { schemas } from '../../graph/cacheStores';
@@ -138,9 +138,9 @@ export const registerMgtSearchResultsComponent = () => {
  * @cssprop --answer-padding - {Length} Padding of an answer
  *
  * @class mgt-search-results
- * @extends {MgtTemplatedComponent}
+ * @extends {MgtTemplatedTaskComponent}
  */
-export class MgtSearchResults extends MgtTemplatedComponent {
+export class MgtSearchResults extends MgtTemplatedTaskComponent {
   /**
    * Default page size is 10
    */
@@ -169,19 +169,17 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @type {string}
    * @memberof MgtSearchResults
    */
+  public get queryString(): string {
+    return this._queryString;
+  }
   @property({
     attribute: 'query-string',
     type: String
   })
-  public get queryString(): string {
-    return this._queryString;
-  }
   public set queryString(value: string) {
     if (this._queryString !== value) {
       this._queryString = value;
-      this._currentPage = 1;
-      this.setLoadingState(true);
-      void this.requestStateUpdate(true);
+      this.currentPage = 1;
     }
   }
 
@@ -271,14 +269,14 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @type {number}
    * @memberof MgtSearchResults
    */
+  public get size(): number {
+    return this._size;
+  }
   @property({
     attribute: 'size',
     reflect: true,
     type: Number
   })
-  public get size(): number {
-    return this._size;
-  }
   public set size(value) {
     if (value > this.maxPageSize) {
       this._size = this.maxPageSize;
@@ -393,33 +391,29 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     'displayName',
     'name'
   ];
-  private _currentPage = 1;
-  @state()
-  public get currentPage(): number {
-    return this._currentPage;
-  }
-  public set currentPage(value: number) {
-    if (this._currentPage !== value) {
-      this._currentPage = value;
-      void this.requestStateUpdate(true);
-    }
-  }
+
+  @property({ attribute: false })
+  public currentPage = 1;
 
   constructor() {
     super();
   }
 
-  /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {string} name
-   * @param {string} oldValue
-   * @param {string} newValue
-   * @memberof MgtSearchResults
-   */
-  public attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-    void this.requestStateUpdate();
+  protected args(): unknown[] {
+    return [
+      this.providerState,
+      this.queryString,
+      this.queryTemplate,
+      this.entityTypes,
+      this.contentSources,
+      this.scopes,
+      this.version,
+      this.size,
+      this.fetchThumbnail,
+      this.fields,
+      this.enableTopResults,
+      this.currentPage
+    ];
   }
 
   /**
@@ -435,7 +429,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     if (hardRefresh) {
       this.clearState();
     }
-    void this.requestStateUpdate(hardRefresh);
+    void this._task.run();
   }
 
   /**
@@ -453,7 +447,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-  protected render(): TemplateResult {
+  protected renderContent = (): TemplateResult => {
     let renderedTemplate: TemplateResult = null;
     let headerTemplate: TemplateResult = null;
     let footerTemplate: TemplateResult = null;
@@ -464,11 +458,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
     footerTemplate = this.renderFooter(this.response?.value[0]?.hitsContainers[0]);
 
-    if (this.isLoadingState) {
-      renderedTemplate = this.renderLoading();
-    } else if (this.error) {
-      renderedTemplate = this.renderError();
-    } else if (this.response && this.hasTemplate('default')) {
+    if (this.response && this.hasTemplate('default')) {
       renderedTemplate = this.renderTemplate('default', this.response) || html``;
     } else if (this.response?.value[0]?.hitsContainers[0]) {
       renderedTemplate = html`${this.response?.value[0]?.hitsContainers[0]?.hits?.map(result =>
@@ -486,7 +476,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         ${renderedTemplate}
       </div>
       ${footerTemplate}`;
-  }
+  };
 
   /**
    * load state into the component.
@@ -618,7 +608,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtSearchResults
    */
-  protected renderLoading(): TemplateResult {
+  protected readonly renderLoading = (): TemplateResult => {
     return (
       this.renderTemplate('loading', null) ||
       // creates an array of n items where n is the current max number of results, this builds a shimmer for that many results
@@ -660,7 +650,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         })}
        `
     );
-  }
+  };
 
   /**
    * Render the result item.
@@ -943,7 +933,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             <div class="search-result-author">
               <mgt-person
                 person-query=${resource.lastModifiedBy.user.email}
-                view="oneLine"
+                view="oneline"
                 person-card="hover"
                 show-presence="true">
               </mgt-person>
@@ -1048,7 +1038,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             <div class="search-result-author">
               <mgt-person
                 person-query=${resource.lastModifiedBy.user.email}
-                view="oneLine"
+                view="oneline"
                 person-card="hover"
                 show-presence="true">
               </mgt-person>
@@ -1084,7 +1074,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     return mgtHtml`
       <div class="search-result">
         <mgt-person
-          view="fourLines"
+          view="fourlines"
           person-query=${resource.userPrincipalName}
           person-card="hover"
           show-presence="true">

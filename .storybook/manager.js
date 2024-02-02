@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { addons, types } from '@storybook/addons';
+import { addons, types } from '@storybook/manager-api';
 import theme from './theme';
 
 import React, { useState } from 'react';
@@ -14,15 +14,9 @@ import { Providers } from '../packages/mgt-element/dist/es6/providers/Providers'
 import { ProviderState, LoginType } from '../packages/mgt-element/dist/es6/providers/IProvider';
 import { Msal2Provider } from '../packages/providers/mgt-msal2-provider/dist/es6/Msal2Provider';
 import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from './env';
-import { MockProvider } from '@microsoft/mgt-element';
-import { PACKAGE_VERSION } from '../packages/mgt-element/dist/es6/utils/version';
-import { registerMgtPersonComponent } from '../packages/mgt-components/dist/es6/components/mgt-person/mgt-person';
-import { registerMgtLoginComponent } from '../packages/mgt-components/dist/es6/components/mgt-login/mgt-login';
-
+import { MockProvider, PACKAGE_VERSION } from '@microsoft/mgt-element';
+import { Login, Person } from '../packages/mgt-react/src/generated/react';
 import './manager.css';
-
-registerMgtPersonComponent();
-registerMgtLoginComponent();
 
 const getClientId = () => {
   const urlParams = new window.URL(window.location.href).searchParams;
@@ -60,6 +54,7 @@ const msal2Provider = new Msal2Provider({
   ],
   loginType: LoginType.Popup
 });
+let loginInitiated = false;
 
 Providers.globalProvider = msal2Provider;
 
@@ -81,46 +76,77 @@ const SignInPanel = () => {
   };
 
   Providers.onProviderUpdated(() => {
+    if (state === Providers.globalProvider.state) return;
     setState(Providers.globalProvider.state);
     emitProvider(Providers.globalProvider.state);
   });
 
-  const onSignOut = () => {
-    Providers.globalProvider.logout();
+  const onSignOut = async () => {
+    await Providers.globalProvider.logout();
+    reload();
+  };
+
+  const reload = () => {
+    console.log('reload');
+    window.location.reload();
+  };
+
+  const onLoginCompleted = e => {
+    if (loginInitiated) {
+      reload();
+    }
+    console.log('loginCompleted');
+  };
+
+  const onLoginInitiated = e => {
+    loginInitiated = true;
+    console.log('loginInitiated');
   };
 
   emitProvider(state);
 
   return (
     <>
-      {Providers.globalProvider.state !== ProviderState.SignedIn ? (
-        <mgt-login login-view="compact" style={{ marginTop: '3px' }}></mgt-login>
-      ) : (
-        <>
-          <mgt-person person-query="me" style={{ marginTop: '8px' }}></mgt-person>
-          <fluent-button appearance="lightweight" style={{ marginTop: '3px' }} onClick={onSignOut}>
-            Sign Out
-          </fluent-button>
-        </>
-      )}
+      <div
+        style={{
+          marginTop: '3px',
+          display: Providers.globalProvider.state !== ProviderState.SignedIn ? 'flex' : 'none'
+        }}
+      >
+        {/* We need to keep the login component available (but hidden) to handle mock to logged in states */}
+        <Login loginView="compact" loginCompleted={onLoginCompleted} loginInitiated={onLoginInitiated}></Login>
+      </div>
+
+      <div style={{ display: Providers.globalProvider.state === ProviderState.SignedIn ? 'flex' : 'none' }}>
+        <div style={{ marginTop: '8px' }}>
+          <Person personQuery="me"></Person>
+        </div>
+        <fluent-button appearance="lightweight" style={{ marginTop: '3px' }} onClick={onSignOut}>
+          Sign Out
+        </fluent-button>
+      </div>
     </>
   );
 };
 
-addons.setConfig({
-  enableShortcuts: false,
-  theme
-});
-
-addons.register('microsoft/graph-toolkit', storybookAPI => {
-  const render = ({ active }) => <SignInPanel />;
-
-  addons.add('mgt/sign-in', {
+addons.register('mgt', api => {
+  addons.add('mgt/login', {
     type: types.TOOLEXTRA,
     title: 'Sign In',
-    match: ({ viewMode }) => true,
-    render
+    render: ({ active }) => <SignInPanel />
   });
+});
+
+addons.setConfig({
+  enableShortcuts: false,
+  theme,
+  sidebar: {
+    filters: {
+      patterns: item => {
+        return !(item.tags.includes('hidden') && item.type === 'story');
+      }
+    }
+  }
 });
 
 // inject page setup for manager frame.

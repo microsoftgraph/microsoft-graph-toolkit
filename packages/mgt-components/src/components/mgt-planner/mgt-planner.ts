@@ -5,7 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { ComponentMediaQuery, MgtTemplatedComponent, ProviderState, Providers, mgtHtml } from '@microsoft/mgt-element';
+import {
+  ComponentMediaQuery,
+  MgtTemplatedTaskComponent,
+  ProviderState,
+  Providers,
+  mgtHtml
+} from '@microsoft/mgt-element';
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact } from '@microsoft/microsoft-graph-types-beta';
 import { HTMLTemplateResult, PropertyValueMap, TemplateResult, html } from 'lit';
@@ -21,7 +27,6 @@ import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
-import { PersonCardInteraction } from '../PersonCardInteraction';
 import { styles } from './mgt-planner-css';
 import { strings } from './strings';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource } from './task-sources';
@@ -155,7 +160,7 @@ export const registerMgtPlannerComponent = () => {
  * @cssprop --tasks-border-radius - {Length} the border radius of the area where the tasks are rendered. Default is none.
  * @cssprop --tasks-padding - {Length} the padding of the are where the tasks are rendered. Default is 12px.
  */
-export class MgtPlanner extends MgtTemplatedComponent {
+export class MgtPlanner extends MgtTemplatedTaskComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -307,7 +312,6 @@ export class MgtPlanner extends MgtTemplatedComponent {
   @state() private _folders: ITaskFolder[];
   @state() private _tasks: ITask[];
   @state() private _hiddenTasks: string[];
-  @state() private _loadingTasks: string[];
   @state() private _inTaskLoad: boolean;
   @state() private _hasDoneInitialLoad: boolean;
 
@@ -375,7 +379,6 @@ export class MgtPlanner extends MgtTemplatedComponent {
     this._folders = [];
     this._groups = [];
     this._hiddenTasks = [];
-    this._loadingTasks = [];
 
     this._hasDoneInitialLoad = false;
     this._inTaskLoad = false;
@@ -403,11 +406,20 @@ export class MgtPlanner extends MgtTemplatedComponent {
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * Renders the loading state of the component if the initial load has not been completed
+   * @returns {TemplateResult}
    */
-  protected render() {
+  protected renderLoading = (): TemplateResult => {
+    if (!this._hasDoneInitialLoad) {
+      return this.renderLoadingTask();
+    }
+    return this.renderContent();
+  };
+
+  /**
+   * Renders the contentful state of the component.
+   */
+  protected renderContent = () => {
     const loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
     let header: TemplateResult;
@@ -431,7 +443,7 @@ export class MgtPlanner extends MgtTemplatedComponent {
         )}
       </div>
     `;
-  }
+  };
 
   /**
    * loads tasks from dataSource
@@ -552,9 +564,9 @@ export class MgtPlanner extends MgtTemplatedComponent {
     newTask._raw = await ts.addTask(newTask);
     this.fireCustomEvent('taskAdded', newTask);
 
-    await this.requestStateUpdate();
     this._newTaskBeingAdded = false;
     this.isNewTaskVisible = false;
+    await this._task.run();
   }
 
   private async completeTask(task: ITask) {
@@ -562,12 +574,10 @@ export class MgtPlanner extends MgtTemplatedComponent {
     if (!ts) {
       return;
     }
-    this._loadingTasks = [...this._loadingTasks, task.id];
     await ts.setTaskComplete(task);
     this.fireCustomEvent('taskChanged', task);
 
-    await this.requestStateUpdate();
-    this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
+    await this._task.run();
   }
 
   private async uncompleteTask(task: ITask) {
@@ -576,12 +586,10 @@ export class MgtPlanner extends MgtTemplatedComponent {
       return;
     }
 
-    this._loadingTasks = [...this._loadingTasks, task.id];
     await ts.setTaskIncomplete(task);
     this.fireCustomEvent('taskChanged', task);
 
-    await this.requestStateUpdate();
-    this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
+    await this._task.run();
   }
 
   private async removeTask(task: ITask) {
@@ -594,7 +602,7 @@ export class MgtPlanner extends MgtTemplatedComponent {
     await ts.removeTask(task);
     this.fireCustomEvent('taskRemoved', task);
 
-    await this.requestStateUpdate();
+    await this._task.run();
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
@@ -647,8 +655,7 @@ export class MgtPlanner extends MgtTemplatedComponent {
 
     if (task) {
       await ts.assignPeopleToTask(task, peopleObj);
-      await this.requestStateUpdate();
-      this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
+      await this._task.run();
     }
   }
 
@@ -763,7 +770,7 @@ export class MgtPlanner extends MgtTemplatedComponent {
           `;
 
     return html`
-        <div class="Title">
+        <div class="title">
           ${groupSelect} ${separator} ${!this._currentGroup ? null : folderSelect}
         </div>
         ${addButton}
@@ -1110,7 +1117,7 @@ export class MgtPlanner extends MgtTemplatedComponent {
       <mgt-people
         class="people people-${taskId}"
         .userIds=${assignedPeople}
-        .personCardInteraction=${PersonCardInteraction.none}
+        person-card="none"
         @click=${(e: MouseEvent) => this.handlePeopleClick(e, task)}
         @keydown=${(e: KeyboardEvent) => this.handlePeopleKeydown(e, task)}
       >

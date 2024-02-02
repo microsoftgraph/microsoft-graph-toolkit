@@ -4,7 +4,11 @@
 name: Create Preview release
 on:
   push:
-    tags: ['v3.*-preview.*', 'v3.*-rc.*']
+    tags: ['*-preview.*', '*-rc.*']
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   version:
@@ -16,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -41,7 +45,7 @@ jobs:
     if: needs.version.outputs.latest-version != needs.version.outputs.package-version
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     environment:
       name: release
@@ -70,9 +74,6 @@ jobs:
         run: lerna exec --scope @microsoft/* -- "npm publish --tag preview --access=public"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Attach mgt-spfx solution to GitHub release
-        run: node scripts/uploadSpfxSolution.js ${{secrets.GITHUB_TOKEN}} ${{needs.version.outputs.package-version}}
 
       - name: ReleaseNotes
         uses: anton-yurchenko/git-release@v5.0

@@ -12,51 +12,34 @@ import { extractEmailAddress } from '../utils/Utils';
 import { schemas } from './cacheStores';
 import { IDynamicPerson } from './types';
 
+const personTypes = ['any', 'person', 'group'] as const;
 /**
  * Person Type enum
  *
  * @export
- * @enum {number}
+ * @enum {string}
  */
-export enum PersonType {
-  /**
-   * Any type
-   */
-  any = 0,
+export type PersonType = (typeof personTypes)[number];
+export const isPersonType = (value: unknown): value is PersonType =>
+  typeof value === 'string' && personTypes.includes(value as PersonType);
+export const personTypeConverter = (value: string, defaultValue: PersonType = 'any'): PersonType =>
+  isPersonType(value) ? value : defaultValue;
 
-  /**
-   * A Person such as User or Contact
-   */
-  person = 'person',
-
-  /**
-   * A group
-   */
-  group = 'group'
-}
-
+const userTypes = ['any', 'user', 'contact'] as const;
 /**
  * User Type enum
  *
  * @export
- * @enum {number}
+ * @enum {string}
  */
-export enum UserType {
-  /**
-   * Any user or contact
-   */
-  any = 'any',
+export type UserType = (typeof userTypes)[number];
 
-  /**
-   * An organization User
-   */
-  user = 'user',
+export const isUserType = (value: unknown): value is UserType => {
+  return typeof value === 'string' && userTypes.includes(value as UserType);
+};
 
-  /**
-   * An implicit or personal contact
-   */
-  contact = 'contact'
-}
+export const userTypeConverter = (value: string, defaultValue: UserType = 'any'): UserType =>
+  isUserType(value) ? value : defaultValue;
 
 /**
  * Object to be stored in cache representing individual people
@@ -100,16 +83,17 @@ const validContactQueryScopes = ['Contacts.Read', 'Contacts.ReadWrite'];
 /**
  * async promise, returns all Graph people who are most relevant contacts to the signed in user.
  *
+ * @param {IGraph} graph
  * @param {string} query
  * @param {number} [top=10] - number of people to return
- * @param {PersonType} [personType=PersonType.person] - the type of person to search for
+ * @param {UserType} [personType='any'] - the type of person to search for
  * @returns {(Promise<Person[]>)}
  */
 export const findPeople = async (
   graph: IGraph,
   query: string,
   top = 10,
-  userType: UserType = UserType.any,
+  userType: UserType = 'any',
   filters = ''
 ): Promise<Person[]> => {
   const cacheKey = `${query}:${top}:${userType}`;
@@ -126,8 +110,8 @@ export const findPeople = async (
 
   let filter = "personType/class eq 'Person'";
 
-  if (userType !== UserType.any) {
-    if (userType === UserType.user) {
+  if (userType !== 'any') {
+    if (userType === 'user') {
       filter += "and personType/subclass eq 'OrganizationUser'";
     } else {
       filter += "and (personType/subclass eq 'ImplicitContact' or personType/subclass eq 'PersonalContact')";
@@ -147,7 +131,7 @@ export const findPeople = async (
       .filter(filter)
       .middlewareOptions(prepScopes(validPeopleQueryScopes));
 
-    if (userType !== UserType.contact) {
+    if (userType !== 'contact') {
       // for any type other than Contact, user a wider search
       graphRequest = graphRequest.header('X-PeopleQuery-QuerySources', 'Mailbox,Directory');
     }
@@ -173,7 +157,7 @@ export const findPeople = async (
  */
 export const getPeople = async (
   graph: IGraph,
-  userType: UserType = UserType.any,
+  userType: UserType = 'any',
   peopleFilters = '',
   top = 10
 ): Promise<Person[]> => {
@@ -191,8 +175,8 @@ export const getPeople = async (
 
   const uri = '/me/people';
   let filter = "personType/class eq 'Person'";
-  if (userType !== UserType.any) {
-    if (userType === UserType.user) {
+  if (userType !== 'any') {
+    if (userType === 'user') {
       filter += "and personType/subclass eq 'OrganizationUser'";
     } else {
       filter += "and (personType/subclass eq 'ImplicitContact' or personType/subclass eq 'PersonalContact')";
@@ -207,7 +191,7 @@ export const getPeople = async (
   try {
     let graphRequest = graph.api(uri).middlewareOptions(prepScopes(validPeopleQueryScopes)).top(top).filter(filter);
 
-    if (userType !== UserType.contact) {
+    if (userType !== 'contact') {
       // for any type other than Contact, user a wider search
       graphRequest = graphRequest.header('X-PeopleQuery-QuerySources', 'Mailbox,Directory');
     }

@@ -17,42 +17,19 @@ import {
 import { Group } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
 
+const groupTypeValues = ['any', 'unified', 'security', 'mailenabledsecurity', 'distribution'] as const;
+
 /**
  * Group Type enumeration
  *
  * @export
- * @enum {number}
+ * @enum {string}
  */
-export enum GroupType {
-  /**
-   * Any group Type
-   */
-  any = 0,
-
-  /**
-   * Office 365 group
-   */
-  // eslint-disable-next-line no-bitwise
-  unified = 1 << 0,
-
-  /**
-   * Security group
-   */
-  // eslint-disable-next-line no-bitwise
-  security = 1 << 1,
-
-  /**
-   * Mail Enabled Security group
-   */
-  // eslint-disable-next-line no-bitwise
-  mailenabledsecurity = 1 << 2,
-
-  /**
-   * Distribution Group
-   */
-  // eslint-disable-next-line no-bitwise
-  distribution = 1 << 3
-}
+export type GroupType = (typeof groupTypeValues)[number];
+export const isGroupType = (value: unknown): value is GroupType =>
+  typeof value === 'string' && groupTypeValues.includes(value as GroupType);
+export const groupTypeConverter = (value: string, defaultValue: GroupType = 'any'): GroupType =>
+  isGroupType(value) ? value : defaultValue;
 
 /**
  * Object to be stored in cache
@@ -92,8 +69,8 @@ const getIsGroupsCacheEnabled = (): boolean => CacheService.config.groups.isEnab
 const validGroupQueryScopes = [
   'GroupMember.Read.All',
   'Group.Read.All',
-  'Group.ReadWrite.All',
   'Directory.Read.All',
+  'Group.ReadWrite.All',
   'Directory.ReadWrite.All'
 ];
 
@@ -112,18 +89,18 @@ const validTransitiveGroupMemberScopes = [
  * @param {IGraph} graph
  * @param {string} query - what to search for
  * @param {number} [top=10] - number of groups to return
- * @param {GroupType} [groupTypes=GroupType.any] - the type of group to search for
+ * @param {GroupType} [groupTypes=["any"]] - the type of group to search for
  * @returns {Promise<Group[]>} An array of Groups
  */
 export const findGroups = async (
   graph: IGraph,
   query: string,
   top = 10,
-  groupTypes: GroupType = GroupType.any,
+  groupTypes: GroupType[] = ['any'],
   groupFilters = ''
 ): Promise<Group[]> => {
   let cache: CacheStore<CacheGroupQuery>;
-  const key = `${query ? query : '*'}*${groupTypes}*${groupFilters}:${top}`;
+  const key = `${query ? query : '*'}*${groupTypes.join('+')}*${groupFilters}:${top}`;
 
   if (getIsGroupsCacheEnabled()) {
     cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery);
@@ -149,28 +126,24 @@ export const findGroups = async (
     filterQuery += `${query ? ' and ' : ''}${groupFilters}`;
   }
 
-  if (groupTypes !== GroupType.any) {
+  if (!groupTypes.includes('any')) {
     const batch = graph.createBatch<CollectionResponse<Group>>();
 
     const filterGroups: string[] = [];
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison, no-bitwise
-    if (GroupType.unified === (groupTypes & GroupType.unified)) {
+    if (groupTypes.includes('unified')) {
       filterGroups.push("groupTypes/any(c:c+eq+'Unified')");
     }
 
-    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
-    if (GroupType.security === (groupTypes & GroupType.security)) {
+    if (groupTypes.includes('security')) {
       filterGroups.push('(mailEnabled eq false and securityEnabled eq true)');
     }
 
-    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
-    if (GroupType.mailenabledsecurity === (groupTypes & GroupType.mailenabledsecurity)) {
+    if (groupTypes.includes('mailenabledsecurity')) {
       filterGroups.push('(mailEnabled eq true and securityEnabled eq true)');
     }
 
-    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
-    if (GroupType.distribution === (groupTypes & GroupType.distribution)) {
+    if (groupTypes.includes('distribution')) {
       filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
     }
 
@@ -241,7 +214,7 @@ export const findGroups = async (
  * @param {string} groupId - what to search for
  * @param {number} [top=10] - number of groups to return
  * @param {boolean} [transitive=false] - whether the return should contain a flat list of all nested members
- * @param {GroupType} [groupTypes=GroupType.any] - the type of group to search for
+ * @param {GroupType} [groupTypes=["any"]] - the type of group to search for
  * @returns {Promise<Group[]>} An array of Groups
  */
 export const findGroupsFromGroup = async (
@@ -250,10 +223,10 @@ export const findGroupsFromGroup = async (
   groupId: string,
   top = 10,
   transitive = false,
-  groupTypes: GroupType = GroupType.any
+  groupTypes: GroupType[] = ['any']
 ): Promise<Group[]> => {
   let cache: CacheStore<CacheGroupQuery>;
-  const key = `${groupId}:${query || '*'}:${groupTypes}:${transitive}`;
+  const key = `${groupId}:${query || '*'}:${groupTypes.join('+')}:${transitive}`;
 
   if (getIsGroupsCacheEnabled()) {
     cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery);
@@ -273,26 +246,22 @@ export const findGroupsFromGroup = async (
     filterQuery = `(startswith(displayName,'${query}') or startswith(mailNickname,'${query}') or startswith(mail,'${query}'))`;
   }
 
-  if (groupTypes !== GroupType.any) {
+  if (!groupTypes.includes('any')) {
     const filterGroups = [];
 
-    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
-    if (GroupType.unified === (groupTypes & GroupType.unified)) {
+    if (groupTypes.includes('unified')) {
       filterGroups.push("groupTypes/any(c:c+eq+'Unified')");
     }
 
-    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
-    if (GroupType.security === (groupTypes & GroupType.security)) {
+    if (groupTypes.includes('security')) {
       filterGroups.push('(mailEnabled eq false and securityEnabled eq true)');
     }
 
-    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
-    if (GroupType.mailenabledsecurity === (groupTypes & GroupType.mailenabledsecurity)) {
+    if (groupTypes.includes('mailenabledsecurity')) {
       filterGroups.push('(mailEnabled eq true and securityEnabled eq true)');
     }
 
-    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-enum-comparison
-    if (GroupType.distribution === (groupTypes & GroupType.distribution)) {
+    if (groupTypes.includes('distribution')) {
       filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
     }
 
@@ -448,7 +417,7 @@ export const findGroupsFromGroupIds = async (
   query: string,
   groupIds: string[],
   top = 10,
-  groupTypes: GroupType = GroupType.any,
+  groupTypes: GroupType[] = ['any'],
   filters = ''
 ): Promise<Group[]> => {
   const foundGroups: Group[] = [];
