@@ -411,21 +411,21 @@ const Pe=1,$e=Symbol();let Me=class h{get taskComplete(){return this.t||(1===thi
         ${d}
       </div>
     `}handleLine1Clicked(){this.fireCustomEvent("line1clicked",this.personDetailsInternal)}handleLine2Clicked(){this.fireCustomEvent("line2clicked",this.personDetailsInternal)}handleLine3Clicked(){this.fireCustomEvent("line3clicked",this.personDetailsInternal)}handleLine4Clicked(){this.fireCustomEvent("line4clicked",this.personDetailsInternal)}renderDetails(e,t){if(!e||"image"===this.view)return we``;const a=e;t&&(a.presenceActivity=null==t?void 0:t.activity,a.presenceAvailability=null==t?void 0:t.availability);const c=[],d=this.getTextFromProperty(a,this.line1Property);if(this.hasTemplate("line1")){const e=this.renderTemplate("line1",{person:a});c.push(we`
-           <div class="line1" @click=${()=>this.handleLine1Clicked()} role="presentation" aria-label="${d}">${e}</div>
+           <div class="line1" part="detail-line" @click=${()=>this.handleLine1Clicked()} role="presentation" aria-label="${d}">${e}</div>
          `)}else d&&c.push(we`
-             <div class="line1" @click=${()=>this.handleLine1Clicked()} role="presentation" aria-label="${d}">${d}</div>
+             <div class="line1" part="detail-line" @click=${()=>this.handleLine1Clicked()} role="presentation" aria-label="${d}">${d}</div>
            `);if("oneline"!==this.view){const e=this.getTextFromProperty(a,this.line2Property);if(this.hasTemplate("line2")){const t=this.renderTemplate("line2",{person:a});c.push(we`
-           <div class="line2" @click=${()=>this.handleLine2Clicked()} role="presentation" aria-label="${e}">${t}</div>
+           <div class="line2" part="detail-line" @click=${()=>this.handleLine2Clicked()} role="presentation" aria-label="${e}">${t}</div>
          `)}else e&&c.push(we`
-             <div class="line2" @click=${()=>this.handleLine2Clicked()} role="presentation" aria-label="${e}">${e}</div>
+             <div class="line2" part="detail-line" @click=${()=>this.handleLine2Clicked()} role="presentation" aria-label="${e}">${e}</div>
            `)}if("threelines"===this.view||"fourlines"===this.view){const e=this.getTextFromProperty(a,this.line3Property);if(this.hasTemplate("line3")){const t=this.renderTemplate("line3",{person:a});c.push(we`
-           <div class="line3" @click=${()=>this.handleLine3Clicked()} role="presentation" aria-label="${e}">${t}</div>
+           <div class="line3" part="detail-line" @click=${()=>this.handleLine3Clicked()} role="presentation" aria-label="${e}">${t}</div>
          `)}else e&&c.push(we`
-             <div class="line3" @click=${()=>this.handleLine3Clicked()} role="presentation" aria-label="${e}">${e}</div>
+             <div class="line3" part="detail-line" @click=${()=>this.handleLine3Clicked()} role="presentation" aria-label="${e}">${e}</div>
            `)}if("fourlines"===this.view){const e=this.getTextFromProperty(a,this.line4Property);if(this.hasTemplate("line4")){const t=this.renderTemplate("line4",{person:a});c.push(we`
-          <div class="line4" @click=${()=>this.handleLine4Clicked()} role="presentation" aria-label="${e}">${t}</div>
+          <div class="line4" part="detail-line" @click=${()=>this.handleLine4Clicked()} role="presentation" aria-label="${e}">${t}</div>
         `)}else e&&c.push(we`
-            <div class="line4" @click=${()=>this.handleLine4Clicked()} role="presentation" aria-label="${e}">${e}</div>
+            <div class="line4" part="detail-line" @click=${()=>this.handleLine4Clicked()} role="presentation" aria-label="${e}">${e}</div>
           `)}const p=Qe({"details-wrapper":!0,vertical:this.isVertical()});return we`
       <div class="${p}">
         ${c}
