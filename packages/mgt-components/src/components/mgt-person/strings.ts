@@ -26,6 +26,5 @@ const activityMap = {
 export const strings = {
   ...activityMap,
   photoFor: 'Photo for',
-  emailAddress: 'Email address',
-  initials: 'Initials'
+  emailAddress: 'Email address'
 };
