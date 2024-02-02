@@ -101,7 +101,7 @@ export const ChatList = ({
         setChatListState(client.getState());
       }
     };
-    provider.onStateChanged(evt => {
+    provider?.onStateChanged(evt => {
       conditionalLoad(evt.detail);
     });
     conditionalLoad(provider?.state);
