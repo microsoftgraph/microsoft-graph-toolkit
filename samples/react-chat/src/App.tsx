@@ -3,9 +3,9 @@ import './App.css';
 import { Login } from '@microsoft/mgt-react';
 import { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem } from '@microsoft/mgt-chat';
 import { ChatMessage, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
-import { ChatAdd24Filled, ChatAdd24Regular, bundleIcon } from '@fluentui/react-icons';
+import { Compose24Filled, Compose24Regular, bundleIcon } from '@fluentui/react-icons';
 
-const ChatAddIconBundle = bundleIcon(ChatAdd24Filled, ChatAdd24Regular);
+const ChatAddIconBundle = bundleIcon(Compose24Filled, Compose24Regular);
 
 export const ChatAddIcon = (): JSX.Element => {
   const iconColor = 'var(--colorBrandForeground2)';
