@@ -90,7 +90,6 @@ export const parameters = {
 };
 
 const req = require.context('../stories', true, /\.(js|mdx)$/);
-// configure(req, module);
 if (module.hot) {
   module.hot.accept(req.id, () => {
     const currentLocationHref = window.location.href;

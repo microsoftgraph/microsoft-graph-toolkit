@@ -74,7 +74,6 @@ export const registerMgtPersonComponent = () => {
  * @fires {CustomEvent<IDynamicPerson>} line4clicked - Fired when line4 is clicked
  *
  * @cssprop --person-background-color - {Color} the color of the person component background.
- * @cssprop --person-background-border-radius - {Length} the border radius of the person component. Default is 4px.
  *
  * @cssprop --person-avatar-size - {Length} the width and height of the avatar. Default is 24px.
  * @cssprop --person-avatar-border - {String} the border around an avatar. Default is none.
@@ -83,7 +82,8 @@ export const registerMgtPersonComponent = () => {
  * @cssprop --person-initials-text-color - {Color} the color of initials in an avatar.
  * @cssprop --person-initials-background-color - {Color} the color of the background in an avatar with initials.
  *
- * @cssprop --person-details-spacing - {Length} the space between the avatar and the person details. Default is 12px.
+ * @cssprop --person-details-left-spacing - {Length} the space between the avatar and the person details. Default is 12px.
+ * @cssprop --person-details-bottom-spacing - {Length} the space between the bottom of the detail block and the bottom on the component. Default is 0.
  *
  * @cssprop --person-line1-font-size - {String} the font-size of the line 1 text. Default is 14px.
  * @cssprop --person-line1-font-weight - {Length} the font weight of the line 1 text. Default is 600.
@@ -332,7 +332,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
     attribute: 'fetch-image',
     type: Boolean
   })
-  public fetchImage: boolean;
+  public fetchImage = false;
 
   /**
    * Sets whether to disable the person image fetch from the Microsoft Graph
@@ -869,16 +869,16 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
       // Render the line1 template
       const template = this.renderTemplate('line1', { person });
       details.push(html`
-           <div class="line1" part="detail-line" @click=${() =>
-             this.handleLine1Clicked()} role="presentation" aria-label="${line1text}">${template}</div>
-         `);
+        <div class="line1" part="detail-line" @click=${() =>
+          this.handleLine1Clicked()} role="presentation" aria-label="${line1text}">${template}</div>
+`);
     } else {
       // Render the line1 property value
       if (line1text) {
         details.push(html`
-             <div class="line1" part="detail-line" @click=${() =>
-               this.handleLine1Clicked()} role="presentation" aria-label="${line1text}">${line1text}</div>
-           `);
+          <div class="line1" part="detail-line" @click=${() =>
+            this.handleLine1Clicked()} role="presentation" aria-label="${line1text}">${line1text}</div>
+`);
       }
     }
 
@@ -889,16 +889,16 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
         // Render the line2 template
         const template = this.renderTemplate('line2', { person });
         details.push(html`
-           <div class="line2" part="detail-line" @click=${() =>
-             this.handleLine2Clicked()} role="presentation" aria-label="${text}">${template}</div>
-         `);
+          <div class="line2" part="detail-line" @click=${() =>
+            this.handleLine2Clicked()} role="presentation" aria-label="${text}">${template}</div>
+`);
       } else {
         // Render the line2 property value
         if (text) {
           details.push(html`
-             <div class="line2" part="detail-line" @click=${() =>
-               this.handleLine2Clicked()} role="presentation" aria-label="${text}">${text}</div>
-           `);
+            <div class="line2" part="detail-line" @click=${() =>
+              this.handleLine2Clicked()} role="presentation" aria-label="${text}">${text}</div>
+`);
         }
       }
     }
@@ -910,16 +910,16 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
         // Render the line3 template
         const template = this.renderTemplate('line3', { person });
         details.push(html`
-           <div class="line3" part="detail-line" @click=${() =>
-             this.handleLine3Clicked()} role="presentation" aria-label="${text}">${template}</div>
+          <div class="line3" part="detail-line" @click=${() =>
+            this.handleLine3Clicked()} role="presentation" aria-label="${text}">${template}</div>
          `);
       } else {
         // Render the line3 property value
         if (text) {
           details.push(html`
-             <div class="line3" part="detail-line" @click=${() =>
-               this.handleLine3Clicked()} role="presentation" aria-label="${text}">${text}</div>
-           `);
+            <div class="line3" part="detail-line" @click=${() =>
+              this.handleLine3Clicked()} role="presentation" aria-label="${text}">${text}</div>
+`);
         }
       }
     }
