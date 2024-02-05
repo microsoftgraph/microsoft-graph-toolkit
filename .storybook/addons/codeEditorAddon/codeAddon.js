@@ -300,16 +300,14 @@ export const withCodeEditor = makeDecorator({
       editor.style.width = null;
     });
 
-    if (isEditorEnabled()) {
-      editor.files = {
-        html: beautifyContent('html', storyHtml),
-        react: beautifyContent('js', reactCode),
-        js: beautifyContent('js', scriptCode),
-        css: beautifyContent('css', styleCode)
-      };
+    editor.files = {
+      html: beautifyContent('html', storyHtml),
+      react: beautifyContent('js', reactCode),
+      js: beautifyContent('js', scriptCode),
+      css: beautifyContent('css', styleCode)
+    };
 
-      editor.title = getStoryTitle(context);
-    }
+    editor.title = getStoryTitle(context);
 
     return root;
   }

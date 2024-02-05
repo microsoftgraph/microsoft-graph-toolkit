@@ -511,8 +511,8 @@ export class Msal2Provider extends IProvider {
     // exit early if the account is already active and stored
     if (
       storedAccount &&
-      activeAccount &&
       accountToSet &&
+      activeAccount &&
       storedAccount.homeAccountId === accountToSet.homeAccountId &&
       activeAccount.homeAccountId === accountToSet.homeAccountId
     ) {
