@@ -595,6 +595,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const taskIndex = this._tasks.findIndex(t => t.id === task.id);
     this._tasks[taskIndex] = task;
+    await this._task.run();
   };
 
   private readonly removeTask = async (taskId: string): Promise<void> => {
