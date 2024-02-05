@@ -15,12 +15,12 @@ export default {
   tags: ['autodocs', 'hidden'],
   parameters: {
     docs: {
-      source: { code: '<mgt-person person-query="me" view="twoLines"></mgt-person>' },
+      source: { code: '<mgt-person person-query="me" view="twolines"></mgt-person>' },
       editor: { hidden: true }
     }
   }
 };
 
 export const person = () => html`
-  <mgt-person person-query="me" view="twoLines"></mgt-person>
+  <mgt-person person-query="me" view="twolines"></mgt-person>
 `;
