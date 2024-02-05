@@ -871,6 +871,7 @@ export class MgtPlanner extends MgtTemplatedTaskComponent {
       : html`
           <fluent-button
             class="add-task"
+            ?disabled=${!this._newTaskName}
             @click=${this.onAddTaskClick}
             @keydown=${this.onAddTaskKeyDown}
             appearance="neutral">
