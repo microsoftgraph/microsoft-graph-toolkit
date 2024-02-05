@@ -1202,7 +1202,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       return p.id !== person.id;
     });
     this.selectedPeople = filteredPersonArr;
-    this.enableTextInput();
     void this.loadState();
   }
 
@@ -1243,6 +1242,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         this._foundPeople = [];
         this._arrowSelectionCount = -1;
       }
+      this.enableTextInput();
     }
   }
 
@@ -1378,7 +1378,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       this.disableTextInput();
       this.input.value = '';
     }
-    this.enableTextInput();
     this.hideFlyout();
   }
 
@@ -1390,7 +1389,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         this.disableTextInput();
         this.input.value = '';
       }
-      this.enableTextInput();
       this.hideFlyout();
     }
   }
