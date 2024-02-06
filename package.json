@@ -46,7 +46,7 @@
     "watch:chat": "npm-run-all --parallel watch:chat-library watch:chat-library-deps watch:chat-test-app",
     "watch:components": "lerna run --parallel build:watch --scope @microsoft/mgt-components --include-dependents --include-dependencies",
     "watch:react-contoso": "lerna run start --scope react-contoso",
-    "watch:react": "npm-run-all --parallel watch:components watch:react-contoso",
+    "watch:react": "NODE_OPTIONS=--max_old_space_size=8192 npm-run-all --parallel watch:components watch:react-contoso",
     "prettier:base": "prettier --parser typescript",
     "prettier:check": "npm run prettier:base -- --check \"packages/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"packages/**/*.{ts,tsx}\"",
