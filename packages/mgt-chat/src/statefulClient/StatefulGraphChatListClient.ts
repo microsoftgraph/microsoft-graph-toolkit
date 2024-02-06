@@ -79,7 +79,8 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
     | 'loading chats'
     | 'no chats'
     | 'chats loaded'
-    | 'error';
+    | 'error'
+    | 'chats read';
   chatThreads: GraphChatThread[];
   moreChatThreadsToLoad: boolean | undefined;
 } & Pick<ErrorBarProps, 'activeErrorMessages'>;
@@ -243,6 +244,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     // mark as read after chat thread is found in current state
     const markedChatThreads: string[] = [];
     this.notifyStateChange((draft: GraphChatListClient) => {
+      draft.status = 'chats read';
       draft.chatThreads = this._state.chatThreads.map((chatThread: GraphChatThread) => {
         if (chatThread.id && readChatThreads.includes(chatThread.id) && !chatThread.isRead) {
           markedChatThreads.push(chatThread.id);

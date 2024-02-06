@@ -1,21 +1,25 @@
 import * as React from 'react';
+import { memo, useCallback } from 'react';
 import { PageHeader } from '../components/PageHeader';
-import { Get } from '@microsoft/mgt-react';
-import { Loading } from '../components/Loading';
 import {
   shorthands,
   makeStyles,
   mergeClasses,
-  Button,
   Dialog,
-  DialogTrigger,
   DialogSurface,
   DialogBody,
   DialogTitle
 } from '@fluentui/react-components';
-import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
-import { Chat, NewChat } from '@microsoft/mgt-chat';
-import ChatListTemplate from './Chats/ChatListTemplate';
+import { Chat as GraphChat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import { ChatList, Chat, NewChat, ChatListButtonItem, ChatListMenuItem } from '@microsoft/mgt-chat';
+import { Compose24Filled, Compose24Regular, bundleIcon } from '@fluentui/react-icons';
+
+const ChatAddIconBundle = bundleIcon(Compose24Filled, Compose24Regular);
+
+export const ChatAddIcon = (): JSX.Element => {
+  const iconColor = 'var(--colorBrandForeground2)';
+  return <ChatAddIconBundle color={iconColor} />;
+};
 
 const useStyles = makeStyles({
   container: {
@@ -59,31 +63,69 @@ const useStyles = makeStyles({
   }
 });
 
-const getPreviousDate = (months: number) => {
-  const date = new Date();
-  date.setMonth(date.getMonth() - months);
-  return date.toISOString();
-};
+interface ChatListWrapperProps {
+  onSelected: (e: GraphChat) => void;
+  onNewChat: () => void;
+  selectedChatId: string | undefined;
+}
 
-const nextResourceUrl = () =>
-  `me/chats?$expand=members,lastMessagePreview&$orderBy=lastMessagePreview/createdDateTime desc&$filter=viewpoint/lastMessageReadDateTime ge ${getPreviousDate(
-    9
-  )}`;
+const ChatListWrapper = memo(({ onSelected, onNewChat, selectedChatId }: ChatListWrapperProps) => {
+  const buttons: ChatListButtonItem[] = [
+    {
+      renderIcon: () => <ChatAddIcon />,
+      onClick: onNewChat
+    }
+  ];
+  const menus: ChatListMenuItem[] = [
+    {
+      displayText: 'My custom menu item',
+      onClick: () => console.log('My custom menu item clicked')
+    }
+  ];
+  const onAllMessagesRead = useCallback((chatIds: string[]) => {
+    console.log(`Number of chats marked as read: ${chatIds.length}`);
+  }, []);
+  const onLoaded = useCallback(() => {
+    console.log('Chat threads loaded.');
+  }, []);
+  const onMessageReceived = useCallback((msg: ChatMessage) => {
+    console.log('SampleChatLog: Message received', msg);
+  }, []);
+
+  return (
+    <ChatList
+      selectedChatId={selectedChatId}
+      onLoaded={onLoaded}
+      chatThreadsPerPage={10}
+      menuItems={menus}
+      buttonItems={buttons}
+      onSelected={onSelected}
+      onMessageReceived={onMessageReceived}
+      onAllMessagesRead={onAllMessagesRead}
+    />
+  );
+});
 
 const ChatPage: React.FunctionComponent = () => {
   const styles = useStyles();
-
-  const [resourceUrl, setResourceUrl] = React.useState(nextResourceUrl);
-
-  const [selectedChat, setSelectedChat] = React.useState<GraphChat>();
+  const [chatId, setChatId] = React.useState<string>('');
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
 
-  const onChatCreated = (e: GraphChat) => {
-    if (e.id !== selectedChat?.id && isNewChatOpen) {
-      setIsNewChatOpen(false);
-      setResourceUrl(nextResourceUrl);
+  const onChatSelected = React.useCallback((e: GraphChat) => {
+    if (chatId !== e.id) {
+      setChatId(e.id ?? '');
     }
-    setSelectedChat(e);
+  }, []);
+
+  const onNewChat = React.useCallback(() => {
+    setIsNewChatOpen(true);
+  }, []);
+
+  const onChatCreated = (e: GraphChat) => {
+    setIsNewChatOpen(false);
+    if (chatId !== e.id) {
+      setChatId(e.id ?? '');
+    }
   };
 
   return (
@@ -97,44 +139,22 @@ const ChatPage: React.FunctionComponent = () => {
         <div className={mergeClasses(styles.panels, styles.main)}>
           <div className={styles.newChat}>
             <Dialog open={isNewChatOpen}>
-              <DialogTrigger disableButtonEnhancement>
-                <Button appearance="primary" onClick={() => setIsNewChatOpen(true)}>
-                  New Chat
-                </Button>
-              </DialogTrigger>
               <DialogSurface className={styles.dialogSurface}>
                 <DialogBody className={styles.dialog}>
                   <DialogTitle>New Chat</DialogTitle>
-                  <NewChat
-                    onChatCreated={onChatCreated}
-                    onCancelClicked={() => {
-                      setIsNewChatOpen(false);
-                    }}
-                  ></NewChat>
+                  <NewChat onChatCreated={onChatCreated} onCancelClicked={() => setIsNewChatOpen(false)}></NewChat>
                 </DialogBody>
               </DialogSurface>
             </Dialog>
           </div>
-          <ChatList onChatSelected={setSelectedChat} resourceUrl={resourceUrl}></ChatList>
+          <ChatListWrapper selectedChatId={chatId} onSelected={onChatSelected} onNewChat={onNewChat} />
         </div>
-        <div className={styles.side}>{selectedChat && <Chat chatId={selectedChat.id!}></Chat>}</div>
+        <div className={styles.side}>
+          <Chat chatId={chatId} />
+        </div>
       </div>
     </>
   );
 };
-
-interface ChatListProps {
-  onChatSelected: (e: GraphChat) => void;
-  resourceUrl: string;
-}
-
-const ChatList = React.memo((props: ChatListProps) => {
-  return (
-    <Get resource={props.resourceUrl} scopes={['chat.read']}>
-      <ChatListTemplate template="default" onChatSelected={props.onChatSelected}></ChatListTemplate>
-      <Loading template="loading" message={'Loading your chats...'}></Loading>
-    </Get>
-  );
-});
 
 export default ChatPage;
