@@ -22,7 +22,7 @@ import { OpenTeamsLinkError } from '../Error/OpenTeams';
 export interface IChatListItemProps {
   onSelected: (e: GraphChat) => void;
   onUnselected?: (e: GraphChat) => void;
-  onLoaded?: () => void;
+  onLoaded?: (e: number) => number;
   onAllMessagesRead: (e: string[]) => void;
   buttonItems?: ChatListButtonItem[];
   chatThreadsPerPage: number;
@@ -149,7 +149,7 @@ export const ChatList = ({
     chatListClient.onStateChange(setChatListState);
     chatListClient.onStateChange(state => {
       if (state.status === 'chats loaded' && onLoaded) {
-        onLoaded();
+        onLoaded(chatListState?.chatThreads.length ?? 0);
       }
 
       if (state.status === 'server connection established') {
