@@ -8,7 +8,8 @@ import { Chat as GraphChat, ChatMessage } from '@microsoft/microsoft-graph-types
 import {
   StatefulGraphChatListClient,
   GraphChatListClient,
-  ChatListEvent
+  ChatListEvent,
+  GraphChatThread
 } from '../../statefulClient/StatefulGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
 import { IChatListMenuItemsProps } from '../ChatListHeader/EllipsisMenu';
@@ -22,7 +23,7 @@ import { OpenTeamsLinkError } from '../Error/OpenTeams';
 export interface IChatListItemProps {
   onSelected: (e: GraphChat) => void;
   onUnselected?: (e: GraphChat) => void;
-  onLoaded?: (e: number) => number;
+  onLoaded?: (e: GraphChatThread[]) => void;
   onAllMessagesRead: (e: string[]) => void;
   buttonItems?: ChatListButtonItem[];
   chatThreadsPerPage: number;
@@ -149,7 +150,11 @@ export const ChatList = ({
     chatListClient.onStateChange(setChatListState);
     chatListClient.onStateChange(state => {
       if (state.status === 'chats loaded' && onLoaded) {
-        onLoaded(chatListState?.chatThreads.length ?? 0);
+        onLoaded(state?.chatThreads ?? []);
+      }
+
+      if (state.status === 'no chats' && onLoaded) {
+        onLoaded([]);
       }
 
       if (state.status === 'server connection established') {
@@ -188,21 +193,18 @@ export const ChatList = ({
   };
 
   const onClickChatListItem = (chatListItem: GraphChat) => {
-    // set selected state only once per click event
-    if (chatListItem.id !== internalSelectedChatId) {
-      // trigger an unselect event for the previously selected item
-      if (internalSelectedChatId && props.onUnselected) {
-        const previouslySelectedChatListItem = chatListState?.chatThreads.filter(c => c.id === internalSelectedChatId);
-        if (previouslySelectedChatListItem?.length === 1) {
-          props.onUnselected(previouslySelectedChatListItem[0]);
-        }
+    // trigger an unselect event for the previously selected item
+    if (internalSelectedChatId && props.onUnselected) {
+      const previouslySelectedChatListItem = chatListState?.chatThreads.filter(c => c.id === internalSelectedChatId);
+      if (previouslySelectedChatListItem?.length === 1) {
+        props.onUnselected(previouslySelectedChatListItem[0]);
       }
-
-      // select a new item
-      markThreadAsRead(chatListItem.id!);
-      setInternalSelectedChatId(chatListItem.id);
-      props.onSelected(chatListItem);
     }
+
+    // select a new item
+    markThreadAsRead(chatListItem.id!);
+    setInternalSelectedChatId(chatListItem.id);
+    props.onSelected(chatListItem);
   };
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
