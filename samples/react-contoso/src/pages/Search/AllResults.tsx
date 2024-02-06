@@ -21,7 +21,7 @@ export const AllResults: React.FunctionComponent<IResultsProps> = (props: IResul
           <SearchResults
             entityTypes={['driveItem', 'listItem', 'site']}
             queryString={props.searchTerm}
-            scopes={['Files.Read.All', 'Sites.Read.All']}
+            scopes={['Files.Read.All', 'Files.ReadWrite.All', 'Sites.Read.All']}
             fetchThumbnail={true}
           ></SearchResults>
         </>

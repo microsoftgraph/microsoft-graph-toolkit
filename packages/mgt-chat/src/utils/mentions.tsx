@@ -1,5 +1,4 @@
 import React from 'react';
-import { PersonCardInteraction } from '@microsoft/mgt-components';
 import { MgtTemplateProps, Person } from '@microsoft/mgt-react';
 import { ChatMessageMention, User } from '@microsoft/microsoft-graph-types';
 import { GraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
@@ -26,7 +25,7 @@ export const renderMGTMention = (chatState: GraphChatClient) => {
       };
       const MgtMention = me ? MgtMeMention : MgtOtherMention;
       render = (
-        <Person userId={user?.id} personCardInteraction={PersonCardInteraction.hover}>
+        <Person userId={user?.id} personCardInteraction="hover">
           <MgtMention />
         </Person>
       );

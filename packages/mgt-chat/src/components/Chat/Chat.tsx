@@ -1,7 +1,7 @@
-import { ErrorBar, FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
+import { FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
-import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
+import { Person, Spinner } from '@microsoft/mgt-react';
 import React, { useEffect, useState } from 'react';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
@@ -148,12 +148,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   // render props
                   onRenderAvatar={(userId?: string) => {
                     return (
-                      <Person
-                        userId={userId}
-                        avatarSize="small"
-                        personCardInteraction={PersonCardInteraction.hover}
-                        showPresence={true}
-                      />
+                      <Person userId={userId} avatarSize="small" personCardInteraction="hover" showPresence={true} />
                     );
                   }}
                   styles={messageThreadStyles}

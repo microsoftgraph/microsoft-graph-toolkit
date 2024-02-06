@@ -16,10 +16,13 @@ export const strings = {
   cancelNewTaskSubtitle: 'Cancel',
   newTaskPlaceholder: 'Add a task',
   newTaskLabel: 'New Task Input',
+  editTaskLabel: 'Edit Task Input',
   addTaskButtonSubtitle: 'Add',
-  deleteTaskLabel: 'Delete Task',
+  deleteTaskOption: 'Delete',
+  editTaskOption: 'Edit',
   dueDate: 'Due date',
   newTaskDateInputLabel: 'New Task Date Input',
+  changeTaskDateInputLabel: 'Change Task Date Input',
   newTaskNameInputLabel: 'New Task Name Input',
   cancelAddingTask: 'Cancel adding a new task'
 };

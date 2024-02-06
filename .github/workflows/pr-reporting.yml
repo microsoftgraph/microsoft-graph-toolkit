@@ -6,11 +6,18 @@ on:
     types:
       - completed
 
+permissions:
+  pull-requests: write
+  contents: read
+  id-token: write
+  checks: write
+
 jobs:
   pr_report:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
+
     steps:
       # added to work around missing .git repo wanted by gh cli
       - uses: actions/checkout@v4

@@ -5,51 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-/**
- * Enumeration to define what parts of the person component render
- *
- * @export
- * @enum {number}
- */
+const avatarTypes = ['photo', 'initials'] as const;
 
-export enum PersonViewType {
-  /**
-   * Render only the avatar
-   */
-  avatar = 2,
-
-  /**
-   * Render the avatar and one line of text
-   */
-  oneline = 3,
-
-  /**
-   * Render the avatar and two lines of text
-   */
-  twolines = 4,
-
-  /**
-   * Render the avatar and three lines of text
-   */
-  threelines = 5,
-
-  /**
-   * Render the avatar and four lines of text
-   */
-  fourlines = 6
-}
-
-export enum avatarType {
-  /**
-   * Renders avatar photo if available, falls back to initials
-   */
-  photo = 'photo',
-
-  /**
-   * Forces render avatar initials
-   */
-  initials = 'initials'
-}
+export type AvatarType = (typeof avatarTypes)[number];
+export const isAvatarType = (value: unknown): value is AvatarType =>
+  typeof value === 'string' && avatarTypes.includes(value as AvatarType);
+export const avatarTypeConverter = (value: string, defaultValue: AvatarType = 'photo'): AvatarType =>
+  isAvatarType(value) ? value : defaultValue;
 
 /**
  * Configuration object for the Person component

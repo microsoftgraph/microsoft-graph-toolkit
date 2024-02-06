@@ -73,13 +73,11 @@ const isDataTransferItem = (item: DataTransferItem | File): item is DataTransfer
   ('getAsFile' in item && typeof item.getAsFile === 'function') ||
   ('webkitGetAsEntry' in item && typeof item.webkitGetAsEntry === 'function');
 
+const conflictBehaviors = ['rename', 'replace'] as const;
 /**
  * Upload conflict behavior status
  */
-export const enum MgtFileUploadConflictBehavior {
-  rename,
-  replace
-}
+export type MgtFileUploadConflictBehavior = (typeof conflictBehaviors)[number];
 
 /**
  * MgtFileUpload upload item lifecycle object.
@@ -241,6 +239,13 @@ export const registerMgtFileUploadComponent = () => {
 
   registerMgtFileComponent();
   registerComponent('file-upload', MgtFileUpload);
+};
+
+const calculateConflictBehavior = (behavior: (number | true | MgtFileUploadConflictBehavior)[]) => {
+  if (behavior?.length > 1) {
+    return behavior[1] === 'replace' ? 'replace' : 'rename';
+  }
+  return null;
 };
 
 /**
@@ -429,7 +434,7 @@ export class MgtFileUpload extends MgtBaseComponent {
                     name: fileItem.fullPath.substring(1, fileItem.fullPath.lastIndexOf('/')),
                     folder: 'Folder'
                   }}
-                  .view=${ViewType.oneline}
+                  view="oneline"
                   class="mgt-file-item">
                 </mgt-file>
               </div>
@@ -686,7 +691,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           if (file.size > this.fileUploadList.maxFileSize * 1024) {
             acceptFile = false;
             if (this._maximumFileSize === false) {
-              const maximumFileSize: (number | true)[] = await this.getFileUploadStatus(
+              const maximumFileSize: (number | true | string)[] = await this.getFileUploadStatus(
                 file,
                 fullPath,
                 'MaxFileSize',
@@ -711,7 +716,7 @@ export class MgtFileUpload extends MgtBaseComponent {
             ) {
               acceptFile = false;
               if (this._excludedFileType === false) {
-                const excludedFileType: (number | true)[] = await this.getFileUploadStatus(
+                const excludedFileType: (number | true | string)[] = await this.getFileUploadStatus(
                   file,
                   fullPath,
                   'ExcludedFileType',
@@ -729,7 +734,7 @@ export class MgtFileUpload extends MgtBaseComponent {
 
         // Collect accepted files
         if (acceptFile) {
-          const conflictBehavior: (number | true)[] = await this.getFileUploadStatus(
+          const conflictBehavior: (number | true | MgtFileUploadConflictBehavior)[] = await this.getFileUploadStatus(
             file,
             fullPath,
             'Upload',
@@ -752,10 +757,10 @@ export class MgtFileUpload extends MgtBaseComponent {
               name: file.name
             },
             fullPath,
-            conflictBehavior: conflictBehavior !== null ? (conflictBehavior[1] ? 1 : 0) : null,
+            conflictBehavior: calculateConflictBehavior(conflictBehavior),
             iconStatus: null,
             percent: 1,
-            view: ViewType.image,
+            view: 'image',
             completed,
             maxSize: this._maxChunkSize,
             minSize: 0
@@ -793,7 +798,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     fullPath: string,
     DialogStatus: string,
     fileUploadList: MgtFileUploadConfig
-  ) {
+  ): Promise<(number | true | MgtFileUploadConflictBehavior)[]> {
     const fileUploadDialog: HTMLElement = this.renderRoot.querySelector('#file-upload-dialog');
 
     switch (DialogStatus) {
@@ -811,7 +816,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           this._dialogSecondaryButton = strings.buttonKeep;
           await super.requestStateUpdate(true);
 
-          return new Promise<number[]>(resolve => {
+          return new Promise<(number | MgtFileUploadConflictBehavior)[]>(resolve => {
             const fileUploadDialogClose: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-close');
             const fileUploadDialogOk: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-ok');
             const fileUploadDialogCancel: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-cancel');
@@ -822,13 +827,13 @@ export class MgtFileUpload extends MgtBaseComponent {
             // Replace File
             const onOkDialogClick = () => {
               fileUploadDialog.classList.remove('visible');
-              resolve([fileUploadDialogCheck.checked ? 1 : 0, MgtFileUploadConflictBehavior.replace]);
+              resolve([fileUploadDialogCheck.checked ? 1 : 0, 'replace']);
             };
 
             // Rename File
             const onCancelDialogClick = () => {
               fileUploadDialog.classList.remove('visible');
-              resolve([fileUploadDialogCheck.checked ? 1 : 0, MgtFileUploadConflictBehavior.rename]);
+              resolve([fileUploadDialogCheck.checked ? 1 : 0, 'rename']);
             };
 
             // Cancel File
@@ -1010,13 +1015,10 @@ export class MgtFileUpload extends MgtBaseComponent {
     if (fileItem.file.size < this._maxChunkSize) {
       try {
         if (!fileItem.completed) {
-          if (
-            fileItem.conflictBehavior === null ||
-            fileItem.conflictBehavior === MgtFileUploadConflictBehavior.replace
-          ) {
+          if (fileItem.conflictBehavior === null || fileItem.conflictBehavior === 'replace') {
             graphQuery = `${this.getGrapQuery(fileItem.fullPath)}:/content`;
           }
-          if (fileItem.conflictBehavior === MgtFileUploadConflictBehavior.rename) {
+          if (fileItem.conflictBehavior === 'rename') {
             graphQuery = `${this.getGrapQuery(fileItem.fullPath)}:/content?@microsoft.graph.conflictBehavior=rename`;
           }
           fileItem.driveItem = await sendFileContent(graph, graphQuery, fileItem.file);
@@ -1114,7 +1116,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     void super.requestStateUpdate(true);
     setTimeout(() => {
       fileUpload.iconStatus = getSvg(SvgIcon.Success);
-      fileUpload.view = ViewType.twolines;
+      fileUpload.view = 'twolines';
       fileUpload.fieldUploadResponse = 'lastModifiedDateTime';
       fileUpload.completed = true;
       void super.requestStateUpdate(true);
@@ -1130,7 +1132,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   protected setUploadFail(fileUpload: MgtFileUploadItem, errorMessage: string) {
     setTimeout(() => {
       fileUpload.iconStatus = getSvg(SvgIcon.Fail);
-      fileUpload.view = ViewType.twolines;
+      fileUpload.view = 'twolines';
       fileUpload.driveItem.description = errorMessage;
       fileUpload.fieldUploadResponse = 'description';
       fileUpload.completed = true;
