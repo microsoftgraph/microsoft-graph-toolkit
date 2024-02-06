@@ -321,6 +321,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   };
 
   private clearCurrentUserMessages() {
+    log('clear');
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.messages = [];
       draft.participants = [];
@@ -410,6 +411,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
 
   public setStatus(status: GraphChatClientStatus) {
     this.notifyStateChange((draft: GraphChatClient) => {
+      log(`status = ${status}`);
       draft.status = status;
       draft.chat = { topic: 'Unknown' };
     });
@@ -425,6 +427,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     // avoid subscribing to a resource with an empty chatId
     if (this.chatId && this._sessionId) {
       // reset state to initial
+      log('rset');
       this.notifyStateChange((draft: GraphChatClient) => {
         draft.status = 'initial';
         draft.messages = [];

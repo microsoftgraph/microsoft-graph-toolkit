@@ -128,6 +128,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
       <FluentProvider id="fluentui" theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.chat}>
           <ChatHeader chatState={chatState} />
+          {<div>CHAT: {chatState.status}</div>}
           {chatState.userId && chatId && chatState.messages.length > 0 ? (
             <>
               <div className={styles.chatMessages}>
