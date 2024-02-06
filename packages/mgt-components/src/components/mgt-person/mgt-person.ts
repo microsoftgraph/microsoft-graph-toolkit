@@ -1086,7 +1086,6 @@ export class MgtPerson extends MgtTemplatedTaskComponent implements PresenceAwar
       this.personQuery,
       this.disableImageFetch,
       this.showPresence,
-      this.personPresence,
       this.personDetails
     ];
   }

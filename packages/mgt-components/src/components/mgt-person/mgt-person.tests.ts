@@ -32,15 +32,26 @@ describe('mgt-person - tests', () => {
   });
 
   it('unknown user should render with a default icon', async () => {
-    // purposely throws browser error "Error: Invalid userId"
-    const person = await fixture(
-      html`<mgt-person user-id="2004BC77-F054-4678-8883-768ADA7B00EC" view="twoLines"></mgt-person>`
-    );
+    // mock returns null for the user in this specific case (actual behavior when user is not found)
+    const person = await fixture(html`<mgt-person user-id="no-match" view="twolines"></mgt-person>`);
     await waitUntil(() => person.shadowRoot.querySelector('svg'), 'no svg was populated');
     await expect(person).shadowDom.to.equal(
-      `<i class="avatar-icon" icon="no-data">
+      `<i class="avatar-icon twolines" icon="no-data">
         <svg />
       </i>`
+    );
+  });
+
+  it('should render the error state when an unhandled error is thrown', async () => {
+    // purposely throws browser error "Error: Invalid userId"
+    const person = await fixture(
+      html`<mgt-person user-id="2004BC77-F054-4678-8883-768ADA7B00EC" view="twolines"></mgt-person>`
+    );
+    await waitUntil(() => person.shadowRoot.querySelector('div.error'), 'no error was rendered');
+    await expect(person).shadowDom.to.equal(
+      `<div class="error">
+        Error: Invalid userId
+      </div>`
     );
   });
 
@@ -205,7 +216,7 @@ describe('mgt-person - tests', () => {
     PresenceService.config.refresh = 200;
 
     const person = await fixture(
-      html`<mgt-person person-query="me" show-presence="true" view="twoLines" iteration="0"></mgt-person>`
+      html`<mgt-person person-query="me" show-presence="true" view="twolines"></mgt-person>`
     );
 
     const match = (status: string) => `<div class=" person-root twolines " dir="ltr">
@@ -220,8 +231,8 @@ describe('mgt-person - tests', () => {
         </span>
       </div>
       <div class=" details-wrapper ">
-            <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
-            <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+            <div class="line1" part="detail-line" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+            <div class="line2" part="detail-line" role="presentation" aria-label="Auditor">Auditor</div>
       </div>
     </div>`;
 
@@ -250,13 +261,13 @@ describe('mgt-person - tests', () => {
       2: new Error('purposeful error')
     });
 
-    PresenceService.config.initial = 1000;
-    PresenceService.config.refresh = 2000;
+    PresenceService.config.initial = 100;
+    PresenceService.config.refresh = 200;
 
     const person = await fixture(
-      html`<mgt-person person-query="me" show-presence="true" view="twoLines" iteration="0"></mgt-person>`
+      html`<mgt-person person-query="me" show-presence="true" view="twolines"></mgt-person>`
     );
-    await waitUntil(() => person.shadowRoot.querySelector('img'), 'mgt-person did not update');
+    await oneEvent(person, 'person-image-rendered');
 
     const match = (status: string) => `<div class=" person-root twolines " dir="ltr">
       <div class="avatar-wrapper">
@@ -270,8 +281,8 @@ describe('mgt-person - tests', () => {
         </span>
       </div>
       <div class=" details-wrapper ">
-            <div class="line1" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
-            <div class="line2" role="presentation" aria-label="Auditor">Auditor</div>
+            <div class="line1" part="detail-line" role="presentation" aria-label="Megan Bowen">Megan Bowen</div>
+            <div class="line2" part="detail-line" role="presentation" aria-label="Auditor">Auditor</div>
       </div>
     </div>`;
 
