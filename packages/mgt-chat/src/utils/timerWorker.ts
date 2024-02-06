@@ -16,7 +16,7 @@ ctx.onconnect = (e: MessageEvent<unknown>) => {
     const jobId = data.id;
     switch (data.type) {
       case 'setInterval': {
-        const interval = self.setInterval(() => {
+        const interval = setInterval(() => {
           const message: TimerWork = { ...event.data, ...{ type: 'runCallback' } };
           port.postMessage(message);
         }, delay);
