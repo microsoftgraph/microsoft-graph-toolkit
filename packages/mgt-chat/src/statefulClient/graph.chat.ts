@@ -41,7 +41,7 @@ export type MessageCollection = GraphCollection<ChatMessage>;
  */
 export const loadChat = async (graph: IGraph, chatId: string): Promise<Chat> =>
   (await graph
-    .api(addPremiumApiSegment(`/chats/${chatId}?$expand=members`))
+    .api(`/chats/${chatId}?$expand=members`)
     .middlewareOptions(prepScopes(...chatOperationScopes.loadChat))
     .get()) as Chat;
 
@@ -129,7 +129,7 @@ export const sendChatMessage = async (graph: IGraph, chatId: string, content: st
   // if (fail) throw new Error('fail');
 
   return (await graph
-    .api(addPremiumApiSegment(`/chats/${chatId}/messages`))
+    .api(`/chats/${chatId}/messages`)
     .middlewareOptions(prepScopes(...chatOperationScopes.sendChatMessage))
     .post({ body: { content } })) as ChatMessage;
 };
@@ -156,7 +156,7 @@ export const updateChatMessage = async (
   // if (fail) throw new Error('fail');
 
   await graph
-    .api(addPremiumApiSegment(`/chats/${chatId}/messages/${messageId}`))
+    .api(`/chats/${chatId}/messages/${messageId}`)
     .middlewareOptions(prepScopes(...chatOperationScopes.updateChatMessage))
     .patch({ body: { content } });
 };
@@ -171,14 +171,14 @@ export const updateChatMessage = async (
  */
 export const deleteChatMessage = async (graph: IGraph, chatId: string, messageId: string): Promise<void> => {
   await graph
-    .api(addPremiumApiSegment(`/me/chats/${chatId}/messages/${messageId}/softDelete`))
+    .api(`/me/chats/${chatId}/messages/${messageId}/softDelete`)
     .middlewareOptions(prepScopes(...chatOperationScopes.deleteChatMessage))
     .post({});
 };
 
 export const removeChatMember = async (graph: IGraph, chatId: string, membershipId: string): Promise<void> => {
   await graph
-    .api(addPremiumApiSegment(`/chats/${chatId}/members/${membershipId}`))
+    .api(`/chats/${chatId}/members/${membershipId}`)
     .middlewareOptions(prepScopes(...chatOperationScopes.removeChatMember))
     .delete();
 };
@@ -202,7 +202,7 @@ export const addChatMembers = async (
       return {
         id: index,
         method: 'POST',
-        url: addPremiumApiSegment(`/chats/${chatId}/members`),
+        url: `/chats/${chatId}/members`,
         headers: {
           'Content-Type': 'application/json'
         },
@@ -237,7 +237,7 @@ export const loadChatImage = async (graph: IGraph, url: string): Promise<string 
     }
   }
   const response = (await graph
-    .api(addPremiumApiSegment(url))
+    .api(url)
     .responseType(ResponseType.RAW)
     .middlewareOptions(prepScopes(...chatOperationScopes.loadChatImage))
     .get()) as Response & { '@odata.mediaEtag'?: string };
@@ -289,7 +289,7 @@ export const createChatThread = async (
   if (isGroupChat && chatName) body.topic = chatName;
 
   const chat = (await graph
-    .api(addPremiumApiSegment('/chats'))
+    .api('/chats')
     .middlewareOptions(prepScopes(...chatOperationScopes.createChat))
     .post(body)) as Chat;
   if (!chat?.id) throw new Error('Chat id not returned from create chat thread');
@@ -309,7 +309,7 @@ export const createChatThread = async (
  */
 export const updateChatTopic = async (graph: IGraph, chatId: string, topic: string | null): Promise<void> => {
   await graph
-    .api(addPremiumApiSegment(`/chats/${chatId}`))
+    .api(`/chats/${chatId}`)
     .middlewareOptions(prepScopes(...chatOperationScopes.updateChatMessage))
     .patch({ topic });
 };
