@@ -1,0 +1,100 @@
+/* stylelint-disable color-function-notation */
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+    #root,
+    svg,
+    svg>path,
+    button {
+        fill: rgb(255, 255, 255) !important;
+        color: rgb(255, 255, 255) !important;
+    }
+
+    .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle,
+    .os-scrollbar>.os-scrollbar-track {
+        border: 1px solid transparent;
+    }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+    #root,
+    svg,
+    svg>path,
+    button {
+        fill: rgb(0, 0, 0) !important;
+        color: rgb(0, 0, 0) !important;
+    }
+
+    .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle,
+    .os-scrollbar>.os-scrollbar-track {
+        border: 1px solid transparent;
+    }
+}
+
+.sidebar-header button {
+    display: none !important;
+}
+
+.storybook-footer {
+    position: absolute;
+    bottom: 0;
+    font-size: 11px;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    z-index: 9999;
+    background-color: #f2f2f2;
+}
+
+.sidebar-header a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.storybook-footer a {
+    color: #616161;
+}
+
+.storybook-footer a:hover {
+    color: #323232;
+}
+
+.sidebar-header h1 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-right: 10px;
+    display: flex;
+    width: 100%;
+    -webkit-box-align: center;
+    align-items: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    min-height: 28px;
+}
+
+/* Sets the color of the sidebar section headings */
+.sidebar-subheading.css-ppqi8s {
+    color: #616159 !important;
+}
+
+/* Fix color contrast of left expanded/collapsed chevrons */
+.css-ct44ui,
+.css-1necw0m {
+    color: unset;
+}
+
+/* Removes Find component feature */
+.search-field {
+    display: none !important;
+}
+
+/* fix high contrast mode colors on sidebar links */
+@media (forced-colors: active){
+    a[class*="css-"][data-selected="true"],
+    a[class*="css-"][data-selected="true"]:focus,
+    a[class*="css-"][data-selected="false"]:focus,
+    a[class*="css-"][data-selected="true"]:hover,
+    a[class*="css-"][data-selected="false"]:hover {
+        background: Highlight;
+        color: LinkText;
+    }
+}

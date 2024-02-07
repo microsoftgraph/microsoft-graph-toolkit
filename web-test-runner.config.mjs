@@ -39,13 +39,16 @@ export default {
             // mock a module in your own code
             // need to have the query string wds-import-map=0 for this to work.
             '/packages/mgt-components/src/graph/graph.userWithPhoto.ts?wds-import-map=0':
-              '/packages/mgt-components/src/graph/graph.userWithPhoto.mock.ts'
+              '/packages/mgt-components/src/graph/graph.userWithPhoto.mock.ts',
+            '/packages/mgt-components/src/graph/graph.presence.ts?wds-import-map=0':
+              '/packages/mgt-components/src/graph/graph.presence.mock.ts'
           }
         }
       }
     }),
     // https://modern-web.dev/docs/dev-server/plugins/esbuild/
     esbuildPlugin({
+      target: 'auto',
       ts: true,
       tsconfig: fileURLToPath(new URL('./tsconfig.web-test-runner.json', import.meta.url))
     })

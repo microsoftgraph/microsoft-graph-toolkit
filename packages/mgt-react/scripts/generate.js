@@ -12,7 +12,7 @@ const gaTags = new Set([
   'login',
   'people-picker',
   'people',
-  'tasks',
+  'planner',
   'teams-channel-picker',
   'todo',
   'file',
@@ -102,7 +102,7 @@ const generateTags = (tags, fileName) => {
       const prop = tag.members[i];
       let type = prop.type?.text;
 
-      if (type && prop.kind === 'field' && prop.privacy === 'public' && !prop.static) {
+      if (type && prop.kind === 'field' && prop.privacy === 'public' && !prop.static && !prop.readonly) {
         if (prop.name) {
           props[prop.name] = type;
         }
@@ -148,8 +148,11 @@ const generateTags = (tags, fileName) => {
         }
       }
     }
-
-    output += `\nexport type ${className}Props = {\n${propsType}}\n`;
+    if (propsType) {
+      output += `\nexport type ${className}Props = {\n${propsType}}\n`;
+    } else {
+      output += `\ntype ${className}Props = Record<string, never>\n`;
+    }
   }
 
   for (const wrapper of wrappers) {
@@ -160,29 +163,32 @@ const generateTags = (tags, fileName) => {
 
   const componentTypeImports = Array.from(mgtComponentImports).join(',');
   const initialLine = componentTypeImports
-    ? `import { ${componentTypeImports} } from '@microsoft/mgt-components/dist/es6/exports';
+    ? `import { ${componentTypeImports} } from '@microsoft/mgt-components';
 `
     : '';
   output = `/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-${initialLine}import { ${Array.from(registrationFunctions).join(
-    ','
-  )} } from '@microsoft/mgt-components/dist/es6/components/components';
-import { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+${initialLine}import { ${Array.from(registrationFunctions).join(',')} } from '@microsoft/mgt-components';
+${
+  mgtElementImports.size > 0
+    ? `import { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
+`
+    : ''
+}// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
 ${output}
 `;
-
-  if (!fs.existsSync(`${__dirname}/../src/generated`)) {
-    fs.mkdirSync(`${__dirname}/../src/generated`);
-  }
-
   fs.writeFileSync(`${__dirname}/../src/generated/${fileName}.ts`, output);
 };
+
+// clear out the generated folder
+if (fs.existsSync(`${__dirname}/../src/generated`)) {
+  fs.removeSync(`${__dirname}/../src/generated`);
+}
+fs.mkdirSync(`${__dirname}/../src/generated`);
 
 // generate each component to a separate file
 gaTags.forEach(tag => {

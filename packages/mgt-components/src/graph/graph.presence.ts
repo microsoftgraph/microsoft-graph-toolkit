@@ -51,13 +51,10 @@ export const getUserPresence = async (graph: IGraph, userId?: string): Promise<P
     }
   }
 
-  const scopes = userId ? ['presence.read.all'] : ['presence.read'];
+  const validScopes = userId ? ['presence.read.all'] : ['presence.read', 'presence.read.all'];
   const resource = userId ? `/users/${userId}/presence` : '/me/presence';
 
-  const result = (await graph
-    .api(resource)
-    .middlewareOptions(prepScopes(...scopes))
-    .get()) as Presence;
+  const result = (await graph.api(resource).middlewareOptions(prepScopes(validScopes)).get()) as Presence;
   if (getIsPresenceCacheEnabled()) {
     await cache.putValue(userId || 'me', { presence: JSON.stringify(result) });
   }
@@ -66,19 +63,20 @@ export const getUserPresence = async (graph: IGraph, userId?: string): Promise<P
 };
 
 /**
- * async promise, allows developer to get person presense by providing array of IDynamicPerson
+ * Async promise, allows developer to get person presense by providing array of IDynamicPerson.
+ * BypassCacheRead forces all presence to be queried from the graph but will still update the cache.
  *
  * @returns {}
  * @memberof BetaGraph
  */
-export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicPerson[]) => {
+export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicPerson[], bypassCacheRead = false) => {
   if (!people || people.length === 0) {
     return {};
   }
 
   const peoplePresence: Record<string, Presence> = {};
   const peoplePresenceToQuery: string[] = [];
-  const scopes = ['presence.read.all'];
+  const validScopes = ['presence.read.all'];
   let cache: CacheStore<CachePresence>;
 
   if (getIsPresenceCacheEnabled()) {
@@ -90,10 +88,15 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
       const id = person.id;
       peoplePresence[id] = null;
       let presence: CachePresence;
-      if (getIsPresenceCacheEnabled()) {
+      if (!bypassCacheRead && getIsPresenceCacheEnabled()) {
         presence = await cache.getValue(id);
       }
-      if (getIsPresenceCacheEnabled() && presence && getPresenceInvalidationTime() > Date.now() - presence.timeCached) {
+      if (
+        !bypassCacheRead &&
+        getIsPresenceCacheEnabled() &&
+        presence &&
+        getPresenceInvalidationTime() > Date.now() - presence.timeCached
+      ) {
         peoplePresence[id] = JSON.parse(presence.presence) as Presence;
       } else {
         peoplePresenceToQuery.push(id);
@@ -105,7 +108,7 @@ export const getUsersPresenceByPeople = async (graph: IGraph, people?: IDynamicP
     if (peoplePresenceToQuery.length > 0) {
       const presenceResult = (await graph
         .api('/communications/getPresencesByUserId')
-        .middlewareOptions(prepScopes(...scopes))
+        .middlewareOptions(prepScopes(validScopes))
         .post({
           ids: peoplePresenceToQuery
         })) as CollectionResponse<Presence>;

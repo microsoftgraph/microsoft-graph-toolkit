@@ -8,6 +8,10 @@ on:
     types: [opened, labeled, synchronize, reopened]
     branches: [main, release/**, next/**]
 
+permissions:
+  pull-requests: write
+  contents: write
+
 jobs:
   react-contoso:
     if: "contains(github.event.pull_request.labels.*.name, 'Build: React Contoso')"
@@ -18,7 +22,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4

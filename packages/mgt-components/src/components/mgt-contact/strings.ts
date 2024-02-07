@@ -12,7 +12,7 @@ export const strings = {
   businessPhoneTitle: 'Business Phone',
   cellPhoneTitle: 'Mobile Phone',
   departmentTitle: 'Department',
-  titleTitle: 'Title',
+  personTitle: 'Title',
   officeLocationTitle: 'Office Location',
   copyToClipboardButton: 'Copy to clipboard'
 };

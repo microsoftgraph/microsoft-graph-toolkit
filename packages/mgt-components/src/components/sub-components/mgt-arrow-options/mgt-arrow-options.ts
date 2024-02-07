@@ -8,7 +8,7 @@
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { MgtBaseComponent } from '@microsoft/mgt-element';
+import { MgtBaseTaskComponent } from '@microsoft/mgt-element';
 import { styles } from './mgt-arrow-options-css';
 import { registerFluentComponents } from '../../../utils/FluentComponents';
 import { fluentMenu, fluentMenuItem, fluentButton } from '@fluentui/web-components';
@@ -40,7 +40,7 @@ export const registerMgtArrowOptionsComponent = () => {
  * @class MgtArrowOptions
  * @extends {MgtBaseComponent}
  */
-export class MgtArrowOptions extends MgtBaseComponent {
+export class MgtArrowOptions extends MgtBaseTaskComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * user the `css` tag function.
@@ -145,7 +145,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-  public render() {
+  public renderContent = () => {
     return html`
       <fluent-button
         class="header"
@@ -158,7 +158,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
         class=${classMap({ menu: true, open: this.open, closed: !this.open })}>
           ${this.getMenuOptions()}
       </fluent-menu>`;
-  }
+  };
 
   private getMenuOptions() {
     const keys = Object.keys(this.options);

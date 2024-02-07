@@ -55,7 +55,8 @@ function App() {
             )}
           </div>
 
-          <div className="chat-pane">{chatId && <Chat chatId={chatId} usePremiumApis={usePremiumApis} />}</div>
+          {/* NOTE: removed the chatId guard as this case has an error state. */}
+          <div className="chat-pane">{<Chat chatId={chatId} usePremiumApis={usePremiumApis} />}</div>
         </main>
       </FluentProvider>
     </div>

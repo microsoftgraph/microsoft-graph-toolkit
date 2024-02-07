@@ -12,7 +12,7 @@ import {
   DialogTitle
 } from '@fluentui/react-components';
 import { List, ListItem } from '@fluentui/react-northstar';
-import { Person, PersonViewType } from '@microsoft/mgt-react';
+import { Person } from '@microsoft/mgt-react';
 import { AadUserConversationMember } from '@microsoft/microsoft-graph-types';
 import { Dismiss20Filled, bundleIcon, iconFilledClassName, iconRegularClassName } from '@fluentui/react-icons';
 
@@ -130,7 +130,7 @@ const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParent
                     className={styles.fullWidth}
                     tabIndex={-1}
                     userId={member.userId}
-                    view={PersonViewType.oneline}
+                    view="oneline"
                     showPresence
                   />
                   <span className={styles.iconPlaceholder}>{!isCurrentUser && <RemovePerson />}</span>

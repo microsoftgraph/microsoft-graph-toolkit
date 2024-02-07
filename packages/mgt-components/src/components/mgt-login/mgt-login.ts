@@ -9,13 +9,12 @@ import { CSSResult, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { Providers, ProviderState, MgtTemplatedComponent, IProviderAccount, mgtHtml } from '@microsoft/mgt-element';
+import { Providers, ProviderState, IProviderAccount, mgtHtml, MgtTemplatedTaskComponent } from '@microsoft/mgt-element';
 
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
-import { PersonViewType } from '../mgt-person/mgt-person-types';
 
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
@@ -27,6 +26,7 @@ import '../../styles/style-helper';
 import { fluentListbox, fluentProgressRing, fluentButton, fluentCard } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { registerComponent } from '@microsoft/mgt-element';
+import { TaskStatus } from '@lit/task';
 
 /**
  * loginViewType describes the enum strings that can be passed in to determine
@@ -52,7 +52,7 @@ export const registerMgtLoginComponent = () => {
  *
  * @export
  * @class MgtLogin
- * @extends {MgtBaseComponent}
+ * @extends {MgtTemplatedTaskComponent}
  *
  * @fires {CustomEvent<undefined>} loginInitiated - Fired when login is initiated by the user
  * @fires {CustomEvent<undefined>} loginCompleted - Fired when login completes
@@ -82,8 +82,9 @@ export const registerMgtLoginComponent = () => {
  * @cssprop --login-command-button-hover-background-color - {Color} the color for the background of the command button on hovering.
  * @cssprop --login-account-item-hover-bg-color - {Color} the background color of the account item on hover.
  * @cssprop --login-flyout-command-text-color - {Color} the color for the text of the flyout command button.
+ * @cssprop --login-person-avatar-size - {Length} the size of the avatar in the person component. Default is 40px.
  */
-export class MgtLogin extends MgtTemplatedComponent {
+export class MgtLogin extends MgtTemplatedTaskComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -212,7 +213,9 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   public async login(): Promise<void> {
     const provider = Providers.globalProvider;
-    if (!provider.isMultiAccountSupportedAndEnabled && (this.userDetails || !this.fireCustomEvent('loginInitiated'))) {
+    // (If we have user details or the consumer doesn't cancel the loginInitiated event) and the provider doesn't support multi-account, we don't have to login.
+    // This condition is to prevent the login popup from showing up when the user is already logged in while still ensuring the loginIntiated event is raised
+    if ((this.userDetails || !this.fireCustomEvent('loginInitiated')) && !provider.isMultiAccountSupportedAndEnabled) {
       return;
     }
     if (provider?.login) {
@@ -260,13 +263,16 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @protected
    * @returns {TemplateResult}
    */
-  protected render(): TemplateResult {
+  protected renderContent = (): TemplateResult => {
     return html`
       <div class="login-root">
         ${this.renderButton()}
         ${this.renderFlyout()}
-      </div>
-    `;
+      </div>`;
+  };
+
+  protected args(): unknown[] {
+    return [this.providerState];
   }
 
   /**
@@ -324,7 +330,7 @@ export class MgtLogin extends MgtTemplatedComponent {
         aria-expanded="${ifDefined(expandedState)}"
         appearance=${appearance}
         aria-label="${ifDefined(isSignedIn ? undefined : this.strings.signInLinkSubtitle)}"
-        ?disabled=${this.isLoadingState}
+        ?disabled=${this._task.status === TaskStatus.PENDING}
         @click=${this.onClick}
         class=${loginClasses}>
           ${buttonContentTemplate}
@@ -352,9 +358,9 @@ export class MgtLogin extends MgtTemplatedComponent {
         light-dismiss
         @opened=${this.flyoutOpened}
         @closed=${this.flyoutClosed}>
-        <fluent-card 
-          slot="flyout" 
-          tabindex="0" 
+        <fluent-card
+          slot="flyout"
+          tabindex="0"
           class="flyout-card"
           @keydown=${this.onUserKeyDown}
           >
@@ -450,7 +456,7 @@ export class MgtLogin extends MgtTemplatedComponent {
         <mgt-person
           .personDetails=${personDetails}
           .personImage=${personImage}
-          .view=${ViewType.twolines}
+          view="twolines"
           .line2Property=${'email'}
           ?vertical-layout=${this.usesVerticalPersonCard}
           class="person">
@@ -521,19 +527,19 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   private parsePersonDisplayConfiguration(): PersonViewConfig {
-    const displayConfig: PersonViewConfig = { view: ViewType.twolines, avatarSize: 'small' };
+    const displayConfig: PersonViewConfig = { view: 'twolines', avatarSize: 'small' };
     switch (this.loginView) {
       case 'avatar':
-        displayConfig.view = ViewType.image;
+        displayConfig.view = 'image';
         displayConfig.avatarSize = 'small';
         break;
       case 'compact':
-        displayConfig.view = ViewType.oneline;
+        displayConfig.view = 'oneline';
         displayConfig.avatarSize = 'small';
         break;
       case 'full':
       default:
-        displayConfig.view = ViewType.twolines;
+        displayConfig.view = 'twolines';
         displayConfig.avatarSize = 'auto';
         break;
     }
@@ -606,7 +612,7 @@ export class MgtLogin extends MgtTemplatedComponent {
                       <mgt-person
                         .personDetails=${details ? JSON.parse(details) : null}
                         .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
-                        .view=${PersonViewType.twolines}
+                        .view=${'twolines'}
                         class="account"
                       ></mgt-person>
                     </li>`;

@@ -14,6 +14,31 @@ export class Timer {
     this.worker.port.onmessage = this.onMessage;
   }
 
+  public setTimeout(callback: () => void, delay: number): string {
+    const timeoutWork: TimerWork = {
+      type: 'setTimeout',
+      id: uuid(),
+      delay
+    };
+
+    this.work.set(timeoutWork.id, callback);
+
+    this.worker.port.postMessage(timeoutWork);
+
+    return timeoutWork.id;
+  }
+
+  public clearTimeout(id: string): void {
+    if (this.work.has(id)) {
+      const timeoutWork: TimerWork = {
+        type: 'clearTimeout',
+        id
+      };
+      this.worker.port.postMessage(timeoutWork);
+      this.work.delete(id);
+    }
+  }
+
   public setInterval(callback: () => void, delay: number): string {
     const intervalWork: TimerWork = {
       type: 'setInterval',

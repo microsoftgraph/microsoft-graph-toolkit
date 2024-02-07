@@ -22,7 +22,8 @@ export type ChatEvent =
   | 'chatThreadPropertiesUpdated'
   | 'participantAdded'
   | 'participantRemoved'
-  | 'notificationsSubscribedForResource';
+  | 'notificationsSubscribedForResource'
+  | 'graphNotificationClientError';
 
 export class ThreadEventEmitter {
   private readonly emitter: EventEmitter = new EventEmitter();
@@ -64,5 +65,8 @@ export class ThreadEventEmitter {
   }
   notificationsSubscribedForResource(resouce: string) {
     this.emitter.emit('notificationsSubscribedForResource', resouce);
+  }
+  graphNotificationClientError(error: Error) {
+    this.emitter.emit('graphNotificationClientError', error);
   }
 }

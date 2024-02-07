@@ -42,8 +42,11 @@ export enum ComponentMediaQuery {
  * @abstract
  * @class MgtBaseComponent
  * @extends {LitElement}
+ * @deprecated Use MgtBaseTaskComponent instead
  */
 export abstract class MgtBaseComponent extends LitElement {
+  @state()
+  protected providerState: ProviderState = ProviderState.Loading;
   /**
    * Exposes the semver of the library the component is part of
    *
@@ -309,6 +312,7 @@ export abstract class MgtBaseComponent extends LitElement {
   };
 
   private readonly handleProviderUpdates = () => {
+    this.providerState = Providers.globalProvider?.state ?? ProviderState.Loading;
     void this.requestStateUpdate();
   };
 

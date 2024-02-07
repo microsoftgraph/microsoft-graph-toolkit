@@ -1,5 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { generateProject } from './projectBuilder';
 
 let debounce = (func, wait, immediate) => {
   var timeout;
@@ -50,6 +51,10 @@ export class EditorElement extends LitElement {
         border: 1px solid transparent;
       }
 
+      .tab-right {
+        float: right;
+      }
+
       .tab[aria-selected='true'] {
         background-color: white;
         color: rgb(51, 51, 51);
@@ -83,11 +88,10 @@ export class EditorElement extends LitElement {
     return this.internalFiles;
   }
 
-  constructor() {
+  constructor(fileTypes) {
     super();
     this.internalFiles = [];
-    this.fileTypes = ['html', 'js', 'css'];
-    this.autoFormat = true;
+    this.fileTypes = fileTypes ?? ['html', 'js', 'css'];
 
     this.editorRoot = document.createElement('div');
     this.editorRoot.setAttribute('slot', 'editor');
@@ -120,10 +124,14 @@ export class EditorElement extends LitElement {
       html: {
         model: monaco.editor.createModel('', 'html'),
         state: null
+      },
+      react: {
+        model: monaco.editor.createModel('', 'typescript'),
+        state: null
       }
     };
 
-    this.currentEditorState = this.editorState.html;
+    this.currentEditorState = this.editorState[this.fileTypes[0]];
 
     this.editor = monaco.editor.create(htmlElement, {
       model: this.currentEditorState.model,
@@ -185,7 +193,7 @@ export class EditorElement extends LitElement {
   }
 
   showTab(type) {
-    this.editor.updateOptions({ readOnly: false });
+    this.editor.updateOptions({ readOnly: type === 'react' });
 
     this.currentType = type;
     if (this.files && typeof this.files[type] !== 'undefined') {
@@ -194,10 +202,6 @@ export class EditorElement extends LitElement {
       this.currentEditorState = this.editorState[type];
       this.editor.setModel(this.currentEditorState.model);
       this.editor.restoreViewState(this.currentEditorState.state);
-    }
-
-    if (this.autoFormat) {
-      this.editor.getAction('editor.action.formatDocument').run();
     }
   }
 
@@ -245,6 +249,17 @@ export class EditorElement extends LitElement {
               </button>
             `
           )}
+
+          <button
+            @click="${_ => generateProject(this.title, this.files)}"
+            id="project"
+            role="tab"
+            class="tab tab-right"
+            title="Edit in StackBlitz"
+          >
+            <svg viewBox="0 0 14 14" width="14px" height="14px" class="css-149xqrd"><path d="M2 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7.5a.5.5 0 0 0-1 0V12H2V2h4.5a.5.5 0 0 0 0-1H2Z"></path><path d="M7.35 7.36 12 2.7v1.8a.5.5 0 0 0 1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 0 0 1h1.8L6.64 6.64a.5.5 0 1 0 .7.7Z"></path></svg>
+          </button>
+
         </div>
         <div
           class="editor-root"
@@ -262,7 +277,7 @@ export class EditorElement extends LitElement {
               role="tabpanel"
               id="${`tab-${type}`}"
               aria-labelledby="${type}"
-              tabindex=0 
+              tabindex=0
               hidden
             ></div>
           `

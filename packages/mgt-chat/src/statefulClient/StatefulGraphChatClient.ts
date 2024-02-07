@@ -8,7 +8,6 @@
 import {
   ChatMessage as AcsChatMessage,
   ContentSystemMessage,
-  ErrorBarProps,
   Message,
   MessageThreadProps,
   SendBoxProps,
@@ -21,10 +20,10 @@ import {
   LoginChangedEvent,
   ProviderState,
   Providers,
+  error,
   log,
   warn
 } from '@microsoft/mgt-element';
-import { GraphError } from '@microsoft/microsoft-graph-client';
 import {
   AadUserConversationMember,
   Chat,
@@ -59,8 +58,8 @@ import {
   updateChatTopic
 } from './graph.chat';
 import { updateMessageContentWithImage } from '../utils/updateMessageContentWithImage';
-import { isChatMessage } from '../utils/types';
-import { rewriteEmojiContent } from '../utils/rewriteEmojiContent';
+import { GraphChatClientStatus, isChatMessage } from '../utils/types';
+import { rewriteEmojiContentToHTML } from '../utils/rewriteEmojiContent';
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -104,17 +103,8 @@ export type GraphChatClient = Pick<
   | 'onUpdateMessage'
   | 'onDeleteMessage'
 > &
-  Pick<SendBoxProps, 'onSendMessage'> &
-  Pick<ErrorBarProps, 'activeErrorMessages'> & {
-    status:
-      | 'initial'
-      | 'creating server connections'
-      | 'subscribing to notifications'
-      | 'loading messages'
-      | 'no chat id'
-      | 'no messages'
-      | 'ready'
-      | 'error';
+  Pick<SendBoxProps, 'onSendMessage'> & {
+    status: GraphChatClientStatus;
     chat?: Chat;
   } & {
     participants: AadUserConversationMember[];
@@ -122,6 +112,7 @@ export type GraphChatClient = Pick<
     onRemoveChatMember: (membershipId: string) => Promise<void>;
     onRenameChat: (topic: string | null) => Promise<void>;
     mentions: NullableOption<ChatMessageMention[]>;
+    activeErrorMessages: Error[];
   };
 
 interface StatefulClient<T> {
@@ -195,9 +186,10 @@ interface MessageConversion {
 const graphImageUrlRegex = /(<img[^>]+)src=(["']https:\/\/graph\.microsoft\.com[^"']*["'])/;
 
 class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
-  private readonly _notificationClient: GraphNotificationClient;
   private readonly _eventEmitter: ThreadEventEmitter;
   private readonly _cache: MessageCache;
+  private _graph: IGraph = Providers.globalProvider.graph;
+  private _notificationClient: GraphNotificationClient;
   private _subscribers: ((state: GraphChatClient) => void)[] = [];
   private get _messagesPerCall() {
     return 5;
@@ -212,15 +204,25 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
+    this._notificationClient = new GraphNotificationClient(this._eventEmitter, this._graph);
     this._cache = new MessageCache();
-    this._notificationClient = new GraphNotificationClient(this._eventEmitter, graph('mgt-chat', GraphConfig.version));
+  }
+
+  /**
+   * Updates the provider graph SDK client and the notification client. By now,
+   * an assumption is made that the Providers.globalProvider.graph is available
+   * and won't throw a TypeError when you access graph.forComponent.
+   */
+  private updateGraphNotificationClient() {
+    this._graph = graph('mgt-chat', GraphConfig.version);
+    this._notificationClient = new GraphNotificationClient(this._eventEmitter, this.graph);
   }
 
   /**
    * Provides a method to clean up any resources being used internally when a consuming component is being removed from the DOM
    */
   public async tearDown() {
-    await this._notificationClient.tearDown();
+    await this._notificationClient?.tearDown();
   }
 
   /**
@@ -280,6 +282,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       case ProviderState.SignedIn:
         // update userId and displayName
         this.updateUserInfo();
+        this.updateGraphNotificationClient();
         // load messages?
         // configure subscriptions
         // emit new state;
@@ -405,6 +408,13 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     }
   }
 
+  public setStatus(status: GraphChatClientStatus) {
+    this.notifyStateChange((draft: GraphChatClient) => {
+      draft.status = status;
+      draft.chat = { topic: 'Unknown' };
+    });
+  }
+
   /**
    * A helper to co-ordinate the loading of a chat and its messages, and the subscription to notifications for that chat
    *
@@ -421,6 +431,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         draft.mentions = [];
         draft.chat = undefined;
         draft.participants = [];
+        draft.activeErrorMessages = [];
       });
       // Subscribe to notifications for messages
       this.notifyStateChange((draft: GraphChatClient) => {
@@ -436,16 +447,12 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         tasks.push(this._notificationClient.subscribeToChatNotifications(this._chatId, this._sessionId));
         await Promise.all(tasks);
       } catch (e) {
-        console.error('Failed to load chat data or subscribe to notications: ', e);
-        if (e instanceof GraphError) {
-          this.notifyStateChange((draft: GraphChatClient) => {
-            draft.status = 'no messages';
-          });
-        }
+        this.updateErrorState(e as Error);
       }
     } else {
       this.notifyStateChange((draft: GraphChatClient) => {
         draft.status = 'no chat id';
+        draft.chat = { topic: 'Unknown' };
       });
     }
   }
@@ -456,8 +463,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     });
     try {
       this._chat = await loadChat(this.graph, this.chatId);
-    } catch (error) {
-      return Promise.reject(error);
+    } catch (e) {
+      return Promise.reject(e);
     }
     const cachedMessages = await this._cache.loadMessages(this._chatId);
     if (cachedMessages) {
@@ -530,7 +537,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         )
         .sort(MessageCreatedComparator);
       draft.onLoadPreviousChatMessages = this._nextLink ? this.loadMoreMessages : undefined;
-      draft.status = this._nextLink ? 'loading messages' : 'ready';
+      draft.status = this._nextLink ? 'loading messages' : !draft.messages.length ? 'no messages' : 'ready';
       draft.chat = this._chat;
       // Keep updating if there was a next link.
       draft.mentions = draft.mentions?.concat(
@@ -1020,8 +1027,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     }
     let content = graphMessage.body?.content ?? 'undefined';
     let result: MessageConversion = {};
-    // do simple emoji replacement first
-    content = rewriteEmojiContent(content);
+    content = rewriteEmojiContentToHTML(content);
     // Handle any mentions in the content
     content = this.updateMentionsContent(content);
 
@@ -1130,7 +1136,31 @@ detail: ${JSON.stringify(eventDetail)}`);
     // this._eventEmitter.on('chatThreadDeleted', this.onChatDeleted);
     this._eventEmitter.on('participantAdded', this.onParticipantAdded);
     this._eventEmitter.on('participantRemoved', this.onParticipantRemoved);
+    this._eventEmitter.on('graphNotificationClientError', this.onGraphNotificationClientError);
   }
+
+  /**
+   * Handles the GraphNotificationClient emitted errors.
+   */
+  private readonly onGraphNotificationClientError = (e: Error) => {
+    this.updateErrorState(e);
+  };
+
+  /**
+   * Emits the error state to the stateful client.
+   */
+  private readonly updateErrorState = (e: Error) => {
+    if (e?.message) {
+      error(e?.message);
+    } else {
+      error('an unknown error occurred', e);
+    }
+    this.notifyStateChange((draft: GraphChatClient) => {
+      draft.status = 'error';
+      draft.activeErrorMessages = [e];
+      draft.chat = { topic: 'Unknown' };
+    });
+  };
 
   /**
    * Provided the graph instance for the component with the correct SDK version decoration

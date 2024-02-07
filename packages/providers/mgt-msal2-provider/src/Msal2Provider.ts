@@ -23,7 +23,9 @@ import {
   AccountInfo,
   EndSessionRequest,
   InteractionRequiredAuthError,
-  SsoSilentRequest
+  SsoSilentRequest,
+  EventMessage,
+  AuthenticationResult
 } from '@azure/msal-browser';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 
@@ -177,7 +179,7 @@ export interface Msal2PublicClientApplicationConfig extends Msal2ConfigBase {
  * Prompt type enum
  *
  * @export
- * @enum {number}
+ * @enum {string}
  */
 export enum PromptType {
   SELECT_ACCOUNT = 'select_account',
@@ -387,6 +389,7 @@ export class Msal2Provider extends IProvider {
     } else {
       throw new Error('either clientId or publicClientApplication must be provided');
     }
+    this._publicClientApplication.addEventCallback(this.handleMsalEvent);
     await this._publicClientApplication.initialize();
 
     this.ms_config.system = msalConfig.system || {};
@@ -419,6 +422,12 @@ export class Msal2Provider extends IProvider {
       throw e;
     }
   }
+
+  private readonly handleMsalEvent = (message: EventMessage): void => {
+    if (message.eventType === 'msal:acquireTokenSuccess' && 'scopes' in message.payload) {
+      this.approvedScopes = message.payload.scopes;
+    }
+  };
 
   /**
    * Attempts to sign in user silently
@@ -497,7 +506,20 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public setActiveAccount(user: IProviderAccount) {
-    this._publicClientApplication.setActiveAccount(this._publicClientApplication.getAccountByHomeId(user.id));
+    const accountToSet = this._publicClientApplication.getAccountByHomeId(user.id);
+    const activeAccount = this._publicClientApplication.getActiveAccount();
+    const storedAccount = this.getStoredAccount();
+    // exit early if the account is already active and stored
+    if (
+      storedAccount &&
+      accountToSet &&
+      activeAccount &&
+      storedAccount.homeAccountId === accountToSet.homeAccountId &&
+      activeAccount.homeAccountId === accountToSet.homeAccountId
+    ) {
+      return;
+    }
+    this._publicClientApplication.setActiveAccount(accountToSet);
     this.setStoredAccount();
     super.setActiveAccount(user);
   }

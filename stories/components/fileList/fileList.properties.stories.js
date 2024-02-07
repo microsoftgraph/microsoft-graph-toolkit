@@ -111,9 +111,9 @@ export const getFileListByExtensionsAndSize = () => html`
   `;
 
 export const fileListItemView = () => html`
-    <mgt-file-list item-view="oneLine" page-size=3></mgt-file-list>
-    <mgt-file-list item-view="twoLines" page-size=3></mgt-file-list>
-    <mgt-file-list item-view="threeLines" page-size=3></mgt-file-list>
+    <mgt-file-list item-view="oneline" page-size=3></mgt-file-list>
+    <mgt-file-list item-view="twolines" page-size=3></mgt-file-list>
+    <mgt-file-list item-view="threelines" page-size=3></mgt-file-list>
   `;
 
 export const clearCacheAndReload = () => html`

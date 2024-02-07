@@ -15,22 +15,22 @@ export default {
 };
 
 export const userId = () => html`
-   <mgt-person user-id="2804bc07-1e1f-4938-9085-ce6d756a32d2" view="twoLines"></mgt-person>
+   <mgt-person user-id="2804bc07-1e1f-4938-9085-ce6d756a32d2" view="twolines"></mgt-person>
  `;
 
 export const personCard = () => html`
    <div class="example">
      <div style="margin-bottom:10px">Person card Hover</div>
-     <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
+     <mgt-person person-query="me" view="twolines" person-card="hover"></mgt-person>
    </div>
    <div class="example">
      <div style="margin-bottom:10px">Person card Click</div>
-     <mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>
+     <mgt-person person-query="me" view="twolines" person-card="click"></mgt-person>
    </div>
  `;
 
 export const setPersonDetails = () => html`
-   <mgt-person class="my-person" view="twoLines" line2-property="title" person-card="hover" fetch-image> </mgt-person>
+   <mgt-person class="my-person" view="twolines" line2-property="title" person-card="hover" fetch-image> </mgt-person>
    <script>
      const person = document.querySelector('.my-person');
 
@@ -44,26 +44,56 @@ export const setPersonDetails = () => html`
    </script>
  `;
 
+export const changePersonQuery = () => html`
+  <mgt-person class="my-person" person-query="me" view="threelines"></mgt-person>
+
+  <button class="button">Change person-query </button>
+  <script>
+    const person = document.querySelector('.my-person');
+    const button = document.querySelector('.button');
+    button.addEventListener('click', () => {
+      person.personQuery = 'Isaiah';
+    });
+  </script>
+  `;
+
+export const changeUserId = () => html`
+  <mgt-person class="my-person" person-query="me" view="threelines"></mgt-person>
+
+  <button class="button">Change user-id </button>
+  <script>
+    const person = document.querySelector('.my-person');
+    const button = document.querySelector('.button');
+    button.addEventListener('click', () => {
+      person.userId = '2804bc07-1e1f-4938-9085-ce6d756a32d2';
+    });
+  </script>
+  `;
+
+export const personImage = () => html`
+  <mgt-person person-query="me" view="fourLines" fetch-image person-image="https://images.pexels.com/photos/1542085/pexels-photo-1542085.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"></mgt-person>
+  `;
+
 export const personFallbackDetails = () => html`
    <div class="example">
-   <mgt-person person-query="mbowen" view="twoLines" show-presence fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
+   <mgt-person person-query="mbowen" view="twolines" show-presence fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
  </div>
  <div class="example">
-   <mgt-person person-query="mbowen" view="twoLines" show-presence
+   <mgt-person person-query="mbowen" view="twolines" show-presence
      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'></mgt-person>
  </div>
  <div class="example">
-   <mgt-person person-query="mbowen" view="twoLines" show-presence
+   <mgt-person person-query="mbowen" view="twolines" show-presence
      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'></mgt-person>
  </div>
  <!-- No Fallback details -->
  <div class="example">
-   <mgt-person person-query="mbowen" view="twoLines" show-presence
+   <mgt-person person-query="mbowen" view="twolines" show-presence
      fallback-details='{}'></mgt-person>
  </div>
 <!-- Correct Person Query and Fallback Details -->
  <div class="example">
-   <mgt-person person-query="bowen" view="twoLines" show-presence
+   <mgt-person person-query="bowen" view="twolines" show-presence
    fallback-details='{"mail":"Noone@M365x214355.onmicrosoft.com","displayName":"Someone"}'></mgt-person>
  </div>
  
@@ -108,7 +138,7 @@ export const personView = () => html`
      <mgt-person person-query="me" id="online3" show-presence view="threelines"></mgt-person>
    </div>
    <div class="example">
-     <mgt-person person-query="me" id="online4" show-presence view="fourLines" ></mgt-person>
+     <mgt-person person-query="me" id="online4" show-presence view="fourlines" ></mgt-person>
    </div>
 
    <script>
@@ -157,19 +187,24 @@ export const personPresence = () => html`
      }
  </style>
    <div>Show presence</div>
-   <mgt-person person-query="me" show-presence view="twoLines" class="example"></mgt-person>
+   <mgt-person person-query="me" show-presence view="twolines" class="example"></mgt-person>
    <div>Set presence</div>
-   <mgt-person person-query="me" id="online" person-presence="{activity: 'Available', availability:'Available', id:null}" show-presence view="twoLines" class="example"></mgt-person>
+   <mgt-person person-query="me" id="online" person-presence="{activity: 'Available', availability:'Available', id:null}" show-presence view="twolines" class="example"></mgt-person>
    <div>Presence Line properties</div>
    <mgt-person
      person-query="me"
      show-presence
-     view="twoLines"
+     view="twolines"
      class="example"
      line1-property="presenceAvailability"
      line2-property="presenceActivity"
      ></mgt-person>
  `;
+
+export const myPresence = () => html`
+    <div>Change your presence in Teams to see the presence reflected here...</div>
+    <mgt-person person-query="me" avatar-size="large" show-presence></mgt-person>
+`;
 
 export const personPresenceDisplayAll = () => html`
    <script>
@@ -276,14 +311,14 @@ export const personPresenceDisplayAll = () => html`
      }
    </style>
    <div class="title"><span>Presence badge on big avatars: </span></div>
-   <mgt-person id="online" person-query="me" show-presence view="twoLines"></mgt-person>
-   <mgt-person id="onlineOof" person-query="Isaiah Langer" show-presence view="twoLines"></mgt-person>
-   <mgt-person id="busy" person-query="bobk@tailspintoys.com" show-presence view="twoLines"></mgt-person>
-   <mgt-person id="busyOof" person-query="Diego Siciliani" show-presence view="twoLines"></mgt-person>
-   <mgt-person id="dnd" person-query="Lynne Robbins" show-presence view="twoLines"></mgt-person>
-   <mgt-person id="dndOof" person-query="EmilyB" show-presence view="twoLines"></mgt-person>
-   <mgt-person id="away" person-query="BrianJ" show-presence view="twoLines"></mgt-person>
-   <mgt-person id="oof" person-query="JoniS@M365x214355.onmicrosoft.com" show-presence view="twoLines"></mgt-person>
+   <mgt-person id="online" person-query="me" show-presence view="twolines"></mgt-person>
+   <mgt-person id="onlineOof" person-query="Isaiah Langer" show-presence view="twolines"></mgt-person>
+   <mgt-person id="busy" person-query="bobk@tailspintoys.com" show-presence view="twolines"></mgt-person>
+   <mgt-person id="busyOof" person-query="Diego Siciliani" show-presence view="twolines"></mgt-person>
+   <mgt-person id="dnd" person-query="Lynne Robbins" show-presence view="twolines"></mgt-person>
+   <mgt-person id="dndOof" person-query="EmilyB" show-presence view="twolines"></mgt-person>
+   <mgt-person id="away" person-query="BrianJ" show-presence view="twolines"></mgt-person>
+   <mgt-person id="oof" person-query="JoniS@M365x214355.onmicrosoft.com" show-presence view="twolines"></mgt-person>
    <div class="title"><span>Presence badge on small avatars: </span></div>
    <mgt-person class="small" id="online-small" person-query="me" show-presence></mgt-person>
    <mgt-person class="small" id="onlineOof-small" person-query="Isaiah Langer" show-presence></mgt-person>
@@ -311,6 +346,27 @@ export const personAvatarType = () => html`
 
 export const personDisableImageFetch = () => html`
    <mgt-person person-query="me" disable-image-fetch></mgt-person>
+ `;
+
+export const personDisablePresenceRefresh = () => html`
+    <script>
+      const person = document.querySelector('.enabled');
+      let isAvailable = true;
+      setInterval(() => {
+        isAvailable = !isAvailable;
+        person.personPresence = isAvailable ?
+          { activity: 'Available', availability: 'Available', id: null } :
+          { activity: 'Busy', availability: 'Busy', id: null };
+      }, 2000);
+    </script>
+    <div>Refreshing presence</div>
+    <mgt-person avatar-size="large" person-query="me" show-presence></mgt-person>
+    <br/>
+    <div>Refreshing presence (fake)</div>
+    <mgt-person class="enabled" avatar-size="large" person-query="me" show-presence></mgt-person>
+    <br/>
+    <div>Refreshing presence disabled</div>
+    <mgt-person class="disabled" avatar-size="large" person-query="me" show-presence disable-presence-refresh></mgt-person>
  `;
 
 export const moreExamples = () => html`
@@ -353,7 +409,7 @@ export const moreExamples = () => html`
 
    <div class="example">
      <div>Two lines</div>
-     <mgt-person person-query="me" view="twoLines"></mgt-person>
+     <mgt-person person-query="me" view="twolines"></mgt-person>
    </div>
 
    <div class="example">
@@ -363,7 +419,7 @@ export const moreExamples = () => html`
        person-query="me"
        line1-property="givenName"
        line2-property="jobTitle,mail"
-       view="twoLines"
+       view="twolines"
      ></mgt-person>
    </div>
 
@@ -374,12 +430,12 @@ export const moreExamples = () => html`
 
    <div class="example">
      <div>Different styles (see css tab for style)</div>
-     <mgt-person class="styled-person" person-query="me" view="twoLines"></mgt-person>
+     <mgt-person class="styled-person" person-query="me" view="twolines"></mgt-person>
    </div>
 
    <div class="example" style="width: 200px">
      <div>Overflow</div>
-     <mgt-person person-query="me" view="twoLines"></mgt-person>
+     <mgt-person person-query="me" view="twolines"></mgt-person>
    </div>
 
   <div class="example">
@@ -396,7 +452,7 @@ export const moreExamples = () => html`
     <div>Additional Person properties</div>
     <mgt-person
       person-query="me"
-      view="twoLines"
+      view="twolines"
       line1-property="displayName"
       line2-property="officeLocation"
     ></mgt-person>
@@ -409,14 +465,14 @@ export const moreExamples = () => html`
       <li role="menuitem" data-is-focusable="true" class="ui-list__item" tabindex="0">
         <mgt-person
           person-query="me"
-          view="twoLines"
+          view="twolines"
           line2-property="jobTitle"
         ></mgt-person>
       </li>
       <li role="menuitem" data-is-focusable="true" class="ui-list__item" tabindex="-1">
         <mgt-person
           user-id="2804bc07-1e1f-4938-9085-ce6d756a32d2"
-          view="twoLines"
+          view="twolines"
           line2-property="jobTitle"
         ></mgt-person>
       </li>
@@ -426,11 +482,11 @@ export const moreExamples = () => html`
 `;
 
 export const personDetailExamples = () => html`
-<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":null,"surname":null,"personType":{}}' view="twoLines"></mgt-person>
+<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":null,"surname":null,"personType":{}}' view="twolines"></mgt-person>
 <br>
-<mgt-person person-details='{"displayName":"Frank van Herbert","mail":"herbert@dune.net","givenName":null,"surname":null,"personType":{}}' view="twoLines"></mgt-person>
+<mgt-person person-details='{"displayName":"Frank van Herbert","mail":"herbert@dune.net","givenName":null,"surname":null,"personType":{}}' view="twolines"></mgt-person>
 <br>
-<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":"Frank","surname":null,"personType":{}}' view="twoLines"></mgt-person>
+<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":"Frank","surname":null,"personType":{}}' view="twolines"></mgt-person>
 <br>
-<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":null,"surname":"Herbert","personType":{}}' view="twoLines"></mgt-person>
+<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":null,"surname":"Herbert","personType":{}}' view="twolines"></mgt-person>
  `;
