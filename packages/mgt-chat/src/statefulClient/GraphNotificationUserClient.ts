@@ -249,7 +249,7 @@ export class GraphNotificationUserClient {
 
           if (diff <= appSettings.renewalThreshold) {
             this.renewalCount++;
-            log(`Renewing Graph subscription for ChatList. RenewalCount: ${this.renewalCount}.`);
+            log(`Renewing Graph subscription. RenewalCount: ${this.renewalCount}.`);
 
             const newExpirationTime = new Date(
               new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000

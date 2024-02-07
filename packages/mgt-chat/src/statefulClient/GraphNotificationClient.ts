@@ -355,42 +355,23 @@ export class GraphNotificationClient {
   };
 
   private readonly cleanupTimer = async () => {
-    try {
-      log(`running cleanup timer`);
-
-      // ensure there is a valid user
-      const id = await Providers.getCacheId();
-      if (!id) {
-        return;
-      }
-
-      // get the inactive subs (requires a user since the db is per user)
-      const offset = Math.min(
-        appSettings.removalThreshold * 1000,
-        appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
-      );
-      const threshold = new Date(new Date().getTime() - offset).toISOString();
-      const inactiveSubs = await this.subscriptionCache.loadInactiveSubscriptions(threshold, ComponentType.Chat);
-
-      // remove all subscriptions
-      let tasks: Promise<unknown>[] = [];
-      for (const inactive of inactiveSubs) {
-        tasks.push(this.removeSubscriptions(inactive.subscriptions));
-      }
-      await Promise.all(tasks);
-
-      // delete the cache entries
-      tasks = [];
-      for (const inactive of inactiveSubs) {
-        tasks.push(this.subscriptionCache.deleteCachedSubscriptions(inactive.componentEntityId, inactive.sessionId));
-      }
-    } catch (e) {
-      // EXAMPLE: a user does a sign-out so `loadInactiveSubscriptions` no longer has a valid user and results
-      //    in an exception.
-      error(e);
-    } finally {
-      this.startCleanupTimer();
+    log(`running cleanup timer`);
+    const offset = Math.min(
+      appSettings.removalThreshold * 1000,
+      appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
+    );
+    const threshold = new Date(new Date().getTime() - offset).toISOString();
+    const inactiveSubs = await this.subscriptionCache.loadInactiveSubscriptions(threshold, ComponentType.Chat);
+    let tasks: Promise<unknown>[] = [];
+    for (const inactive of inactiveSubs) {
+      tasks.push(this.removeSubscriptions(inactive.subscriptions));
     }
+    await Promise.all(tasks);
+    tasks = [];
+    for (const inactive of inactiveSubs) {
+      tasks.push(this.subscriptionCache.deleteCachedSubscriptions(inactive.componentEntityId, inactive.sessionId));
+    }
+    this.startCleanupTimer();
   };
 
   public async closeSignalRConnection() {
