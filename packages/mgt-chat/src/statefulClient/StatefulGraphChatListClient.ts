@@ -346,9 +346,10 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this.notifyStateChange((draft: GraphChatListClient) => {
       // find the chat thread
       const chatThreadIndex = draft.chatThreads.findIndex(c => c.id === event.message.chatId);
-      const chatThread = draft.chatThreads[chatThreadIndex];
+      const chatThread: GraphChatThread | undefined = draft.chatThreads[chatThreadIndex];
 
       if (
+        chatThread &&
         event.message.lastModifiedDateTime &&
         chatThread.lastMessagePreview?.createdDateTime &&
         event.message.lastModifiedDateTime < chatThread.lastMessagePreview.createdDateTime
