@@ -8,7 +8,6 @@ import { Chat as GraphChat, ChatMessage } from '@microsoft/microsoft-graph-types
 import {
   StatefulGraphChatListClient,
   GraphChatListClient,
-  ChatListEvent,
   GraphChatThread
 } from '../../statefulClient/StatefulGraphChatListClient';
 import { ChatListHeader } from '../ChatListHeader/ChatListHeader';
@@ -137,18 +136,15 @@ export const ChatList = ({
       return;
     }
 
-    // handle events emitted from the chat list client
-    const handleChatListEvent = (event: ChatListEvent) => {
-      if (event.type === 'chatMessageReceived') {
-        if (onMessageReceived) {
-          onMessageReceived(event.message);
-        }
-      }
-    };
-
     // handle state changes
     chatListClient.onStateChange(setChatListState);
     chatListClient.onStateChange(state => {
+      if (state.status === 'chat message received') {
+        if (onMessageReceived && state.chatMessage) {
+          onMessageReceived(state.chatMessage);
+        }
+      }
+
       if (state.status === 'chats loaded' && onLoaded) {
         onLoaded(state?.chatThreads ?? []);
       }
@@ -171,15 +167,11 @@ export const ChatList = ({
       }
     });
 
-    // handle chat list events
-    chatListClient.onChatListEvent(handleChatListEvent);
-
     // tear down
     return () => {
       // log state of chatlistclient for debugging purposes
       log(chatListClient.getState());
       chatListClient.offStateChange(setChatListState);
-      chatListClient.offChatListEvent(handleChatListEvent);
       chatListClient.tearDown();
       setHeaderBannerMessage('We ran into a problem. Please close or refresh.');
     };

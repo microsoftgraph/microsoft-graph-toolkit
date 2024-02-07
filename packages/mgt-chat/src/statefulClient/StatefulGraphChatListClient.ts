@@ -80,8 +80,10 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
     | 'no chats'
     | 'chats loaded'
     | 'error'
+    | 'chat message received'
     | 'chats read';
   chatThreads: GraphChatThread[];
+  chatMessage: ChatMessage | undefined;
   moreChatThreadsToLoad: boolean | undefined;
 } & Pick<ErrorBarProps, 'activeErrorMessages'>;
 
@@ -102,18 +104,6 @@ interface StatefulClient<T> {
    * @param handler Callback to be unregistered
    */
   offStateChange(handler: (state: T) => void): void;
-  /**
-   * Register a callback to receive ChatList events
-   *
-   * @param handler Callback to receive ChatList events
-   */
-  onChatListEvent(handler: (event: ChatListEvent) => void): void;
-  /**
-   * Remove a callback to receive ChatList events
-   *
-   * @param handler Callback to be unregistered
-   */
-  offChatListEvent(handler: (event: ChatListEvent) => void): void;
 
   chatThreadsPerPage: number;
   /**
@@ -166,7 +156,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   private readonly _eventEmitter: ThreadEventEmitter;
   private readonly _cache: LastReadCache;
   private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
-  private _chatListEventSubscribers: ((state: ChatListEvent) => void)[] = [];
   private readonly _graph: IGraph;
   constructor(chatThreadsPerPage: number) {
     this.userId = currentUserId();
@@ -322,37 +311,13 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     }
   }
 
-  /**
-   * Register a callback to receive ChatList events
-   *
-   * @param {(event: ChatListEvent) => void} handler
-   * @memberof StatefulGraphChatListClient
-   */
-  public onChatListEvent(handler: (event: ChatListEvent) => void): void {
-    if (!this._chatListEventSubscribers.includes(handler)) {
-      this._chatListEventSubscribers.push(handler);
-    }
-  }
-
-  /**
-   * Unregister a callback from receiving ChatList events
-   *
-   * @param {(event: ChatListEvent) => void} handler
-   * @memberof StatefulGraphChatListClient
-   */
-  public offChatListEvent(handler: (event: ChatListEvent) => void): void {
-    const index = this._chatListEventSubscribers.indexOf(handler);
-    if (index !== -1) {
-      this._chatListEventSubscribers = this._chatListEventSubscribers.splice(index, 1);
-    }
-  }
-
   private readonly _initialState: GraphChatListClient = {
     status: 'initial',
     activeErrorMessages: [],
     userId: '',
     chatThreads: [],
-    moreChatThreadsToLoad: undefined
+    moreChatThreadsToLoad: undefined,
+    chatMessage: undefined
   };
 
   /**
@@ -446,12 +411,16 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
           isDeleted: true
         } as ChatMessageInfo;
       } else if (event.type === 'chatMessageReceived' && event.message && chatThread) {
+        draft.status = 'chat message received';
+        draft.chatMessage = event.message;
         // update the last message preview and bring to the top
         chatThread.lastMessagePreview = event.message as ChatMessageInfo;
         chatThread.lastUpdatedDateTime = event.message.lastModifiedDateTime;
         chatThread.isRead = false;
         bringToTop();
       } else if (event.type === 'chatMessageReceived' && event.message?.chatId) {
+        draft.status = 'chat message received';
+        draft.chatMessage = event.message;
         // create a new chat thread at the top
         const newChatThread: GraphChatThread = {
           id: event.message.chatId,
