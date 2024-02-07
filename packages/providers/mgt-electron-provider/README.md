@@ -4,7 +4,7 @@ The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection 
 The `@microsoft/mgt-electron-provider` package exposes the `ElectronAuthenticator` and `ElectronProvider` classes which use [MSAL node](https://www.npmjs.com/package/@azure/msal-node) to sign in users and acquire tokens to use with Microsoft Graph.
 
 
-## Usage
+## Usage without Context Bridge
 
 1. Install the packages
 
@@ -45,6 +45,87 @@ The `@microsoft/mgt-electron-provider` package exposes the `ElectronAuthenticato
     ElectronAuthenticator.initialize(config);
     ```
 Note : Make sure `nodeIntegration` is set to `true` under `webPreferences` while creating a new BrowserWindow instance. 
+
+See [provider usage documentation](https://learn.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more. See [Electron provider documentation](https://learn.microsoft.com/graph/toolkit/providers/electron).
+
+## Usage with Context Bridge
+
+1. Install the packages
+
+    ```bash
+    npm install @microsoft/mgt-element @microsoft/mgt-electron-provider
+    ```
+
+2. Setup the context bridge in your preload script (eg. preload.ts)
+
+    ```ts
+    import { contextBridge } from 'electron';
+    import { ElectronContextBridgeProvider } from '@microsoft/mgt-electron-provider/dist/Provider';
+    
+    // can be named anything, like "electronApi"
+    contextBridge.exposeInMainWorld("main", {
+      electronProvider: {
+        mgtAuthState: (callback: (event: IpcRendererEvent, authState: string) => void) => ipcRenderer.on('mgtAuthState', callback),
+        token: (options?: AuthenticationProviderOptions) => ipcRenderer.invoke('token', options),
+        login: () => ipcRenderer.invoke('login'),
+        logout: () => ipcRenderer.invoke('logout'),
+      },
+    });
+    ```
+
+    Expose the ElectronProvider methods through the context bridge. Here, we've named the api "main" for the main window, but it can be named anything. We've also made sure to put them under `electronProvider` to separate them from other methods you may add. These methods must match the `IContextBridgeImpl` interface in the `@microsoft/mgt-electron-provider` package.
+
+3. Globally augment the `Window` interface in a declaration file (eg. preload.d.ts)
+
+    ```ts
+    import { IContextBridgeImpl } from '@microsoft/mgt-electron-provider/dist/Provider';
+
+    export declare global {
+      interface Window {
+        // can be named anything, like "electronApi"
+        main: {
+          electronProvider: IContextBridgeImpl;
+        }
+      }
+    }
+    ```
+
+3. Initialize the provider in your renderer process (Front end, eg. renderer.ts)
+
+    ```ts
+    import {Providers} from '@microsoft/mgt-element';
+    import {ElectronContextBridgeProvider} from '@microsoft/mgt-electron-provider/dist/Provider';
+
+    // initialize the auth provider globally
+    Providers.globalProvider = new ElectronContextBridgeProvider(window.main.electronProvider)
+    ```
+
+4. Initialize ElectronAuthenticator in Main.ts (Back end)
+
+    ```ts
+    import { ElectronAuthenticator, MsalElectronConfig } from '@microsoft/mgt-electron-provider/dist/Authenticator'; 
+    ...
+    let mainWindow =  new BrowserWindow({
+      width: 800,
+      height: 800,
+      webPreferences: {
+        nodeIntegration: false // make sure this is false, we're using context bridge
+      }
+    });
+
+    let config: MsalElectronConfig = {
+      clientId: '<your_client_id>',
+      authority: '<your_authority_url>', // optional, uses common authority by default
+      mainWindow: mainWindow, // this is the BrowserWindow instance that requires authentication
+      scopes: [
+        'user.read', 
+      ],
+    };
+
+    ElectronAuthenticator.initialize(config);
+    ```
+
+Note : Make sure `nodeIntegration` is set to `false` under `webPreferences` while creating a new BrowserWindow instance. This is because we're using context bridge to communicate between the main and renderer processes.
 
 See [provider usage documentation](https://learn.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more. See [Electron provider documentation](https://learn.microsoft.com/graph/toolkit/providers/electron).
 

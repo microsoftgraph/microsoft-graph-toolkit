@@ -8,12 +8,21 @@
 import { GraphPageIterator, IGraph, prepScopes } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
+/**
+ *
+ * @param {IGraph} graph
+ * @param {string} query the graph resource and query string to be requested
+ * @param {string[]} additionalScopes an array of scope to be requested before making the request
+ * Should be calculated by the calling code using `IProvider.needsAdditionalScopes()`
+ * @returns {Promise<GraphPageIterator<MicrosoftGraph.Event>>} a page iterator to allow
+ * the calling code to request more data if present and needed
+ */
 export const getEventsQueryPageIterator = async (
   graph: IGraph,
   query: string,
-  scopes = 'calendars.read'
+  additionalScopes: string[]
 ): Promise<GraphPageIterator<MicrosoftGraph.Event>> => {
-  const request = graph.api(query).middlewareOptions(prepScopes(scopes)).orderby('start/dateTime');
+  const request = graph.api(query).middlewareOptions(prepScopes(additionalScopes)).orderby('start/dateTime');
 
   return GraphPageIterator.create<MicrosoftGraph.Event>(graph, request);
 };
@@ -21,11 +30,11 @@ export const getEventsQueryPageIterator = async (
 /**
  * returns Calender events iterator associated with either the logged in user or a specific groupId
  *
+ * @param {IGraph} graph
  * @param {Date} startDateTime
  * @param {Date} endDateTime
  * @param {string} [groupId]
- * @param {string} preferredTimezone
- * @returns {(Promise<Event[]>)}
+ * @returns {Promise<GraphPageIterator<MicrosoftGraph.Event>>}
  * @memberof Graph
  */
 export const getEventsPageIterator = async (
@@ -37,15 +46,12 @@ export const getEventsPageIterator = async (
   const sdt = `startdatetime=${startDateTime.toISOString()}`;
   const edt = `enddatetime=${endDateTime.toISOString()}`;
 
-  let uri: string;
+  const uri: string = groupId
+    ? `groups/${groupId}/calendar/calendarview?${sdt}&${edt}`
+    : `me/calendarview?${sdt}&${edt}`;
+  const allValidScopes = groupId
+    ? ['Group.Read.All', 'Group.ReadWrite.All']
+    : ['Calendars.ReadBasic', 'Calendars.Read', 'Calendars.ReadWrite'];
 
-  if (groupId) {
-    uri = `groups/${groupId}/calendar`;
-  } else {
-    uri = 'me';
-  }
-
-  uri += `/calendarview?${sdt}&${edt}`;
-
-  return getEventsQueryPageIterator(graph, uri);
+  return getEventsQueryPageIterator(graph, uri, allValidScopes);
 };

@@ -3,7 +3,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "prettier.prettierPath": "./node_modules/prettier",
   "editor.codeActionsOnSave": {
-    "source.fixAll.tslint": "explicit"
+    "source.fixAll.eslint": "explicit"
   },
   "lit-html.tags": ["mgtHtml"],
   "typescript.tsdk": "node_modules/typescript/lib",
@@ -20,6 +20,6 @@
   "stylelint.snippet": ["css", "less", "postcss", "scss"],
   "stylelint.validate": ["css", "less", "postcss", "scss"],
   "cSpell.words": ["odata", "mailenabledsecurity"],
-  "liveServer.settings.root": "coverage/lcov-report",
+  "liveServer.settings.root": "storybook-static",
   "liveServer.settings.port": 6006
 }

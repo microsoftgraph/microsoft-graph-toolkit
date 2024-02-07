@@ -85,6 +85,6 @@ export class MockMiddleware implements Middleware {
   }
 
   private static setBaseFallbackUrl() {
-    this._baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
+    this._baseUrl = 'https://graph.office.net/en-us/graph/api/proxy?url=';
   }
 }

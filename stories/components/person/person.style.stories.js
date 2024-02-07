@@ -78,7 +78,27 @@ export const customCSSProperties = () => html`
   dndPerson.personPresence = dnd;
 </script>
 
-<mgt-person class="person" person-query="me" view="fourlines" id="online" show-presence></mgt-person>
-<br>
-<mgt-person class="person vertical" person-query="me" view="fourlines" avatar-type="initials" id="dnd" show-presence vertical-layout></mgt-person>
+  <mgt-person class="person" person-query="me" view="fourlines" id="online" show-presence></mgt-person>
+  <br>
+  <!-- Vertical layout -->
+  <mgt-person class="person" vertical-layout person-query="me" view="fourlines" avatar-type="initials" id="dnd"
+    show-presence></mgt-person>
+`;
+
+export const personDetailPart = () => html`
+  <style>
+    mgt-person::part(detail-line) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: var(--person-details-wrapper-width)
+    }
+
+    mgt-person {
+      --person-details-wrapper-width: 150px;
+    }
+  </style>
+
+  <mgt-person person-query="me" view="threelines" line3-property="email"></mgt-person>
+
 `;

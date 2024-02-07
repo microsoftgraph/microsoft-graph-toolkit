@@ -3,7 +3,7 @@ var path = require('path');
 var fs = require('fs');
 var project = require('../package.json');
 
-const ignoreDirs = ['node_modules', 'samples'];
+const ignoreDirs = ['node_modules', 'samples', 'assets'];
 
 const getFiles = (filter, startPath = 'packages') => {
   let results = [];
@@ -36,28 +36,6 @@ const updateMgtDependencyVersion = (packages, version) => {
     result = result.replace(/"version": "(.*)"/g, `"version": "${version}"`);
 
     fs.writeFileSync(package, result, 'utf8');
-  }
-};
-
-const updateSpfxSolutionVersion = (solutions, version) => {
-  const isPreview = version.indexOf('-preview') > 0;
-  if (isPreview) {
-    version = version.replace(/-preview\./, '.');
-  }
-  const isRC = version.indexOf('-rc') > 0;
-  if (isRC) {
-    version = version.replace(/-rc\./, '.');
-  }
-  for (let solution of solutions) {
-    console.log(`updating spfx solution ${solution} with version ${version}`);
-    const data = fs.readFileSync(solution, 'utf8');
-
-    const result =
-      isPreview || isRC
-        ? data.replace(/"version": "(.*)"/g, `"version": "${version}"`)
-        : data.replace(/"version": "(.*)"/g, `"version": "${version}.0"`);
-
-    fs.writeFileSync(solution, result, 'utf8');
   }
 };
 
@@ -97,6 +75,3 @@ if (process.argv.length > 2) {
 // include update to the root package.json
 const packages = getFiles('package.json', '.');
 updateMgtDependencyVersion(packages, version);
-
-const spfxSolutions = getFiles('package-solution.json');
-updateSpfxSolutionVersion(spfxSolutions, project.version);

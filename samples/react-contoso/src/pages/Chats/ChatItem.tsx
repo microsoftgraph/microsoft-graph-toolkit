@@ -1,5 +1,5 @@
 import { Persona, makeStyles, mergeClasses, shorthands } from '@fluentui/react-components';
-import { MgtTemplateProps, Person, ViewType } from '@microsoft/mgt-react';
+import { MgtTemplateProps, Person } from '@microsoft/mgt-react';
 import { Chat, AadUserConversationMember } from '@microsoft/microsoft-graph-types';
 import React, { useCallback, useState } from 'react';
 import { PeopleTeam16Regular, Calendar16Regular } from '@fluentui/react-icons';
@@ -157,7 +157,7 @@ const ChatItemComponent = ({ chat, userId }: ChatItemProps) => {
           {chat.chatType === 'oneOnOne' && (
             <Person
               userId={getOtherParticipantId(chat)}
-              view={messagePreview ? ViewType.twolines : ViewType.oneline}
+              view={messagePreview ? 'twolines' : 'oneline'}
               avatarSize="auto"
               showPresence={true}
               className={styles.person}

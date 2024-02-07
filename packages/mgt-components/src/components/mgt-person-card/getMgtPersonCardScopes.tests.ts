@@ -1,18 +1,19 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { MgtPersonCardConfig } from './MgtPersonCardConfig';
 import { expect } from '@open-wc/testing';
 import { getMgtPersonCardScopes } from './getMgtPersonCardScopes';
 
 describe('getMgtPersonCardScopes() tests', () => {
-  let originalConfigMessaging: typeof MgtPersonCardConfig.isSendMessageVisible;
-  let originalConfigContactApis: typeof MgtPersonCardConfig.useContactApis;
-  let originalConfigOrgSection: typeof MgtPersonCardConfig.sections.organization;
-  let originalConfigSections: typeof MgtPersonCardConfig.sections;
-  before(() => {
-    originalConfigOrgSection = { ...MgtPersonCardConfig.sections.organization };
-    originalConfigSections = { ...MgtPersonCardConfig.sections };
-    originalConfigContactApis = MgtPersonCardConfig.useContactApis;
-    originalConfigMessaging = MgtPersonCardConfig.isSendMessageVisible;
-  });
+  const originalConfigMessaging = MgtPersonCardConfig.isSendMessageVisible;
+  const originalConfigContactApis = MgtPersonCardConfig.useContactApis;
+  const originalConfigOrgSection = { ...MgtPersonCardConfig.sections.organization };
+  const originalConfigSections = { ...MgtPersonCardConfig.sections };
   beforeEach(() => {
     MgtPersonCardConfig.sections = { ...originalConfigSections };
     MgtPersonCardConfig.sections.organization = { ...originalConfigOrgSection };
