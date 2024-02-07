@@ -25,7 +25,7 @@ export const renderMGTMention = (chatState: GraphChatClient) => {
       };
       const MgtMention = me ? MgtMeMention : MgtOtherMention;
       render = (
-        <Person userId={user?.id} personCardInteraction="hover">
+        <Person className="mgt-person-mention" userId={user?.id} personCardInteraction="hover">
           <MgtMention />
         </Person>
       );

@@ -84,7 +84,7 @@ const messageThreadStyles: MessageThreadStyles = {
     }
   },
   chatMessageContainer: {
-    '& p>mgt-person,msft-mention': {
+    '& p>.mgt-person-mention,msft-mention': {
       display: 'inline-block',
       ...shorthands.marginInline('0px')
     },
@@ -94,7 +94,7 @@ const messageThreadStyles: MessageThreadStyles = {
     }
   },
   myChatMessageContainer: {
-    '& p>mgt-person,msft-mention': {
+    '& p>.mgt-person-mention,msft-mention': {
       display: 'inline-block',
       ...shorthands.marginInline('0px')
     },
