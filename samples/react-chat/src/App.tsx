@@ -4,7 +4,6 @@ import { Login } from '@microsoft/mgt-react';
 import { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem } from '@microsoft/mgt-chat';
 import { ChatMessage, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { Compose24Filled, Compose24Regular, bundleIcon } from '@fluentui/react-icons';
-import { GraphChatThread } from '../../../packages/mgt-chat/src/statefulClient/StatefulGraphChatListClient';
 
 const ChatAddIconBundle = bundleIcon(Compose24Filled, Compose24Regular);
 
@@ -29,8 +28,8 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => vo
   const onAllMessagesRead = useCallback((chatIds: string[]) => {
     console.log(`Number of chats marked as read: ${chatIds.length}`);
   }, []);
-  const onLoaded = (chatThreads: GraphChatThread[]) => {
-    console.log('Chat threads loaded: ', chatThreads.length);
+  const onLoaded = () => {
+    console.log('Chat threads loaded.');
   };
   const onMessageReceived = (msg: ChatMessage) => {
     console.log('SampleChatLog: Message received', msg);
@@ -70,6 +69,21 @@ function App() {
         <Login />
       </header>
       <main className="main">
+        <div className="chat-selector">
+          <ChatListWrapper onSelected={chatSelected} />
+          <br />
+          <button onClick={() => setChatId('')}>Clear selected chat</button>
+          <br />
+          <button onClick={() => setShowNewChat(true)}>New Chat</button>
+          Selected chat: {chatId}
+          <br />
+          {showNewChat && (
+            <div className="new-chat">
+              <NewChat onChatCreated={onChatCreated} onCancelClicked={() => setShowNewChat(false)} mode="auto" />
+            </div>
+          )}
+        </div>
+
         {/* NOTE: removed the chatId guard as this case has an error state. */}
         <div className="chat-pane">{<Chat chatId={chatId} />}</div>
       </main>
