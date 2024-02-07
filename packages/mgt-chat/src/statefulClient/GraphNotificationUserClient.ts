@@ -123,7 +123,6 @@ export class GraphNotificationUserClient {
     } else {
       this.processChatPropertiesNotification(notification, emitter);
     }
-
     // Need to return a status code string of 200 so that graph knows the message was received and doesn't re-send the notification
     const ackMessage: unknown = { StatusCode: '200' };
     return GraphConfig.ackAsString ? JSON.stringify(ackMessage) : ackMessage;
@@ -232,7 +231,7 @@ export class GraphNotificationUserClient {
       const subscriptions =
         (await this.subscriptionCache.loadSubscriptions(this.currentUserId, this.sessionId))?.subscriptions || [];
       if (subscriptions.length === 0) {
-        log('No subscriptions found in subscription cache. Creating a new subscription.');
+        log('No subscriptions found in session state. Creating a new subscription.');
 
         await this.subscribeToResource(this.currentUserId, `/users/${this.currentUserId}/chats/getAllmessages`, [
           'created',
@@ -258,12 +257,12 @@ export class GraphNotificationUserClient {
             try {
               await this.renewSubscription(this.currentUserId, subscription.id, newExpirationTime.toISOString());
             } catch (e) {
-              error(e);
               // this error indicates we are not able to successfully renew the subscription, so we should create a new one.
               if ((e as { statusCode?: number }).statusCode === 404) {
                 log('Removing subscription from cache', subscription.id);
                 await this.subscriptionCache.deleteCachedSubscriptions(this.currentUserId, this.sessionId);
                 await this.subscribeToUserNotifications(this.currentUserId);
+
                 const emitter: ThreadEventEmitter | undefined = this.emitter;
                 emitter?.reconnected();
               }
