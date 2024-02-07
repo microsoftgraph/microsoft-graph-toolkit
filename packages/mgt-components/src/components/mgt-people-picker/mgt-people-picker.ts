@@ -854,8 +854,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
             id="${person.id}"
             class="searched-people-list-result"
             role="option"
-            @click="${() => this.handleSuggestionClick(person)}"
-            @keydown="${(e: KeyboardEvent) => this.handleSuggestionKeydown(person, e)}">
+            @click="${() => this.handleSuggestionClick(person)}">
               ${this.renderPersonResult(person)}
           </li>
         `
@@ -1379,18 +1378,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       this.input.value = '';
     }
     this.hideFlyout();
-  }
-
-  // handle suggestion list item keydown
-  private handleSuggestionKeydown(person: IDynamicPerson, e: KeyboardEvent): void {
-    if (e.key === 'Enter') {
-      this.addPerson(person);
-      if (this.hasMaxSelections) {
-        this.disableTextInput();
-        this.input.value = '';
-      }
-      this.hideFlyout();
-    }
   }
 
   /**
