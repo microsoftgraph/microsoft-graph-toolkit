@@ -231,7 +231,7 @@ export class GraphNotificationUserClient {
       const subscriptions =
         (await this.subscriptionCache.loadSubscriptions(this.currentUserId, this.sessionId))?.subscriptions || [];
       if (subscriptions.length === 0) {
-        log('No subscriptions found in session state. Creating a new subscription.');
+        log('No subscriptions found in subscription cache. Creating a new subscription.');
 
         await this.subscribeToResource(this.currentUserId, `/users/${this.currentUserId}/chats/getAllmessages`, [
           'created',
@@ -248,7 +248,7 @@ export class GraphNotificationUserClient {
 
           if (diff <= appSettings.renewalThreshold) {
             this.renewalCount++;
-            log(`Renewing Graph subscription. RenewalCount: ${this.renewalCount}.`);
+            log(`Renewing Graph subscription for ChatList. RenewalCount: ${this.renewalCount}.`);
 
             const newExpirationTime = new Date(
               new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
