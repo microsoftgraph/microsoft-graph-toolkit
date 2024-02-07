@@ -70,6 +70,21 @@ function App() {
         <Login />
       </header>
       <main className="main">
+        <div className="chat-selector">
+          <ChatListWrapper onSelected={chatSelected} />
+          <br />
+          <button onClick={() => setChatId('')}>Clear selected chat</button>
+          <br />
+          <button onClick={() => setShowNewChat(true)}>New Chat</button>
+          Selected chat: {chatId}
+          <br />
+          {showNewChat && (
+            <div className="new-chat">
+              <NewChat onChatCreated={onChatCreated} onCancelClicked={() => setShowNewChat(false)} mode="auto" />
+            </div>
+          )}
+        </div>
+
         {/* NOTE: removed the chatId guard as this case has an error state. */}
         <div className="chat-pane">{<Chat chatId={chatId} />}</div>
       </main>
