@@ -6,7 +6,7 @@
  */
 
 import { ChatMessage, Message } from '@azure/communication-react';
-import { GraphChatMessage } from 'src/statefulClient/StatefulGraphChatClient';
+import type { GraphChatMessage } from '../statefulClient/StatefulGraphChatClient';
 
 /**
  * A typeguard to get the ChatMessage type

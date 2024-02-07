@@ -18,7 +18,7 @@ import type {
 import { GraphConfig } from './GraphConfig';
 import { SubscriptionsCache } from './Caching/SubscriptionCache';
 import { Timer } from '../utils/Timer';
-import { addPremiumApiSegment } from 'src/utils/addPremiumApiSegment';
+import { addPremiumApiSegment } from '../utils/addPremiumApiSegment';
 
 export const appSettings = {
   defaultSubscriptionLifetimeInMinutes: 10,

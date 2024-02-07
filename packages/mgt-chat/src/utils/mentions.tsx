@@ -1,7 +1,7 @@
 import React from 'react';
 import { MgtTemplateProps, Person } from '@microsoft/mgt-react';
 import { ChatMessageMention, User } from '@microsoft/microsoft-graph-types';
-import { GraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
+import { GraphChatClient } from '../statefulClient/StatefulGraphChatClient';
 import { Mention } from '@azure/communication-react';
 
 export const renderMGTMention = (chatState: GraphChatClient) => {
