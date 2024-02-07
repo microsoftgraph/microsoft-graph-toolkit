@@ -71,7 +71,7 @@ export const changeUserId = () => html`
   `;
 
 export const personImage = () => html`
-  <mgt-person person-query="me" view="fourLines" fetch-image person-image="https://images.pexels.com/photos/1542085/pexels-photo-1542085.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"></mgt-person>
+  <mgt-person person-query="me" view="fourlines" fetch-image person-image="https://images.pexels.com/photos/1542085/pexels-photo-1542085.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"></mgt-person>
   `;
 
 export const personFallbackDetails = () => html`
@@ -456,11 +456,11 @@ export const moreExamples = () => html`
 `;
 
 export const personDetailExamples = () => html`
-<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":null,"surname":null,"personType":{}}' view="twolines"></mgt-person>
+<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":null,"surname":null,"personType":{}}' view="oneline"></mgt-person>
 <br>
-<mgt-person person-details='{"displayName":"Frank van Herbert","mail":"herbert@dune.net","givenName":null,"surname":null,"personType":{}}' view="twolines"></mgt-person>
+<mgt-person person-details='{"displayName":"Frank van Herbert","mail":"herbert@dune.net","givenName":null,"surname":null,"personType":{}}' view="oneline"></mgt-person>
 <br>
-<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":"Frank","surname":null,"personType":{}}' view="twolines"></mgt-person>
+<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":"Frank","surname":null,"personType":{}}' view="oneline"></mgt-person>
 <br>
-<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":null,"surname":"Herbert","personType":{}}' view="twolines"></mgt-person>
+<mgt-person person-details='{"displayName":"Frank Herbert","mail":"herbert@dune.net","givenName":null,"surname":"Herbert","personType":{}}' view="oneline"></mgt-person>
  `;
