@@ -54,12 +54,8 @@ export const useGraphChatClient = (chatId: string): StatefulGraphChatClient => {
   // the component to/from web socket based notifications for the given chatId
   useEffect(() => {
     // we must have both a chatId & sessionId to subscribe.
-    log(`chat Id ${chatId}, sessionId ${sessionId}`);
     if (chatId && sessionId) chatClient.subscribeToChat(chatId, sessionId);
-    else {
-      log('set status');
-      chatClient.setStatus('no chat id');
-    }
+    else chatClient.setStatus('no chat id');
   }, [chatId, sessionId, chatClient]);
 
   // Returns a cleanup function to call tearDown on the chatClient
