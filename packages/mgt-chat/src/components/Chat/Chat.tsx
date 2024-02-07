@@ -2,7 +2,7 @@ import { FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from
 import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
 import { Person, PersonCardInteraction, Spinner } from '@microsoft/mgt-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { onRenderMessage } from '../../utils/chat';
@@ -107,20 +107,18 @@ const messageThreadStyles: MessageThreadStyles = {
 
 export const Chat = ({ chatId }: IMgtChatProps) => {
   const styles = useStyles();
-  const chatClient: StatefulGraphChatClient = useGraphChatClient(chatId, () => {
+  const chatClient: StatefulGraphChatClient = useGraphChatClient(chatId);
+  const [chatState, setChatState] = useState(chatClient.getState());
+  useEffect(() => {
     chatClient.onStateChange(setChatState);
     return () => {
       chatClient.offStateChange(setChatState);
     };
-  });
-  const [chatState, setChatState] = useState(chatClient.getState());
+  }, [chatClient]);
 
-  const isLoading = [
-    'initial',
-    'creating server connections',
-    'subscribing to notifications',
-    'loading messages'
-  ].includes(chatState.status);
+  const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
+    chatState.status
+  );
 
   const disabled = !chatId || !!chatState.activeErrorMessages.length;
   const placeholderText = disabled ? 'You cannot send a message' : 'Type a message...';

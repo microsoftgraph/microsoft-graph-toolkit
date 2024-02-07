@@ -44,23 +44,11 @@ const useSessionId = (): string => {
 /**
  * Custom hook to abstract the creation of a stateful graph chat client.
  * @param {string} chatId the current chatId to be rendered
- * @param {React.EffectCallback} pre an optional useEffect function to be run before other useEffects
- * @param {React.EffectCallback} post an optional useEffect function to be run after other useEffects
  * @returns {StatefulGraphChatClient} a stateful graph chat client that is subscribed to the given chatId
  */
-export const useGraphChatClient = (
-  chatId: string,
-  pre: React.EffectCallback | undefined = undefined,
-  post: React.EffectCallback | undefined = undefined
-): StatefulGraphChatClient => {
+export const useGraphChatClient = (chatId: string): StatefulGraphChatClient => {
   const sessionId = useSessionId();
   const [chatClient] = useState<StatefulGraphChatClient>(() => new StatefulGraphChatClient());
-
-  // pre
-  // NOTE: we need the registration of state handlers before changing state
-  useEffect(() => {
-    if (pre) pre();
-  }, [chatClient, pre]);
 
   // when chatId or sessionId changes this effect subscribes or unsubscribes
   // the component to/from web socket based notifications for the given chatId
@@ -78,11 +66,6 @@ export const useGraphChatClient = (
       void chatClient.tearDown();
     };
   }, [chatClient]);
-
-  // post
-  useEffect(() => {
-    if (post) post();
-  }, [chatClient, post]);
 
   return chatClient;
 };
