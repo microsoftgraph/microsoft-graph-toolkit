@@ -9,7 +9,7 @@
     "@fluentui/react": "^8.0.0",
     "@fluentui/react-components": "^9.19.1",
     "@fluentui/react-hooks": "^8.2.0",
-    "@fluentui/react-northstar": "^0.66.4",
+    "@fluentui/react-migration-v0-v9": "^9.1.15",
     "@fluentui/react-theme-provider": "^0.18.5",
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-msal2-provider": "*",

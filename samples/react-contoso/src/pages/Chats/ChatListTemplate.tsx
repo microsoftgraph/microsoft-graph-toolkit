@@ -3,7 +3,7 @@ import { MgtTemplateProps, Providers } from '@microsoft/mgt-react';
 import { Chat } from '@microsoft/microsoft-graph-types';
 import { ChatItem } from './ChatItem';
 import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
-import { List, ListItem } from '@fluentui/react-northstar';
+import { List, ListItem } from '@fluentui/react-migration-v0-v9';
 import { makeStyles, shorthands } from '@fluentui/react-components';
 import { iconFilledClassName, iconRegularClassName } from '@fluentui/react-icons';
 
@@ -45,7 +45,7 @@ const ChatListTemplate = (props: MgtTemplateProps & ChatInteractionProps) => {
 
   const onChatSelected = (e: GraphChat) => {
     setSelectedChat(e);
-  }
+  };
 
   // Set the selected chat to the first chat in the list
   // Fires only the first time the component is rendered
@@ -76,20 +76,10 @@ const ChatListTemplate = (props: MgtTemplateProps & ChatInteractionProps) => {
   return (
     <List navigable className={styles.list}>
       {chats.map((c, index) => (
-        <ListItem
-          key={c.id}
-          index={index}
-          className={styles.listItem}
-          content={
-            <div className={(!selectedChat && index === 0) || isChatActive(c) ? styles.selected : ''}>
-              <ChatItem
-                key={c.id}
-                chat={c}
-                userId={userId}
-              />
-            </div>
-          }
-          onClick={() => onChatSelected(c)}>
+        <ListItem key={c.id} className={styles.listItem} onClick={() => onChatSelected(c)}>
+          <div className={(!selectedChat && index === 0) || isChatActive(c) ? styles.selected : ''}>
+            <ChatItem key={c.id} chat={c} userId={userId} />
+          </div>
         </ListItem>
       ))}
     </List>
