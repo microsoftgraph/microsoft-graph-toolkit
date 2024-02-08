@@ -12,7 +12,9 @@ export * from './BetaGraph';
 
 export * from './components/baseComponent';
 export * from './components/baseProvider';
+export * from './components/baseTaskComponent';
 export * from './components/templatedComponent';
+export * from './components/templatedTaskComponent';
 export * from './components/customElementHelper';
 
 export * from './providers/IProvider';

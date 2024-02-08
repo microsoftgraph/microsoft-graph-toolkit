@@ -17,16 +17,24 @@ import './mgt-people/mgt-people';
 import './mgt-person-card/mgt-person-card';
 import './mgt-person/mgt-person';
 import './mgt-person/mgt-person-types';
-import './mgt-tasks/mgt-tasks';
+import './mgt-planner/mgt-planner';
 import './mgt-teams-channel-picker/mgt-teams-channel-picker';
 import './mgt-todo/mgt-todo';
 import './mgt-contact/mgt-contact';
 import './mgt-messages/mgt-messages';
 import './mgt-organization/mgt-organization';
 import './mgt-profile/mgt-profile';
+import './mgt-search-box/mgt-search-box';
+import './mgt-search-results/mgt-search-results';
 import './mgt-theme-toggle/mgt-theme-toggle';
 import './sub-components/mgt-spinner/mgt-spinner';
 
+// type exports
+import type { PersonCardInteraction } from './PersonCardInteraction';
+
+export { PersonCardInteraction };
+
+// component exports
 export * from './mgt-agenda/mgt-agenda';
 export * from './mgt-file/mgt-file';
 export * from './mgt-file-list/mgt-file-list';
@@ -41,7 +49,7 @@ export * from './mgt-person-card/getMgtPersonCardScopes';
 export * from './mgt-person-card/mgt-person-card';
 export * from './mgt-person/mgt-person';
 export * from './mgt-person/mgt-person-types';
-export * from './mgt-tasks/mgt-tasks';
+export * from './mgt-planner/mgt-planner';
 export * from './mgt-teams-channel-picker/mgt-teams-channel-picker';
 export * from './mgt-todo/mgt-todo';
 export * from './mgt-contact/mgt-contact';
@@ -49,7 +57,11 @@ export * from './mgt-contact/mgt-contact';
 export * from './mgt-messages/mgt-messages';
 export * from './mgt-organization/mgt-organization';
 export * from './mgt-profile/mgt-profile';
+export * from './mgt-search-box/mgt-search-box';
+export * from './mgt-search-results/mgt-search-results';
 export * from './mgt-theme-toggle/mgt-theme-toggle';
 export * from './sub-components/mgt-spinner/mgt-spinner';
+export * from './mgt-teams-channel-picker/teams-channel-picker-types';
 // include preview components here for ease of import into mgt-react
-export * from './preview';
+// There are no preview components in this package at this time
+// export * from './preview';

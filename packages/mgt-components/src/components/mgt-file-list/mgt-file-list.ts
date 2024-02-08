@@ -6,12 +6,11 @@
  */
 
 import {
-  arraysAreEqual,
   GraphPageIterator,
   Providers,
   ProviderState,
   mgtHtml,
-  MgtTemplatedComponent
+  MgtTemplatedTaskComponent
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
@@ -38,7 +37,7 @@ import {
 } from '../../graph/graph.files';
 import './mgt-file-upload/mgt-file-upload';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
-import { OfficeGraphInsightString, ViewType } from '../../graph/types';
+import { OfficeGraphInsightString, ViewType, viewTypeConverter } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
 import { MgtFile, registerMgtFileComponent } from '../mgt-file/mgt-file';
@@ -83,7 +82,7 @@ export const registerMgtFileListComponent = () => {
  * @cssprop --show-more-button-border-bottom-left-radius - {String} the "show more" button bottom left border radius. Default value is 8px;
  * @cssprop --progress-ring-size -{String} Progress ring height and width. Default value is 24px.
  */
-export class MgtFileList extends MgtTemplatedComponent implements CardSection {
+export class MgtFileList extends MgtTemplatedTaskComponent implements CardSection {
   @state() private _isCompact = false;
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -106,17 +105,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   @property({
     attribute: 'file-list-query'
   })
-  public get fileListQuery(): string {
-    return this._fileListQuery;
-  }
-  public set fileListQuery(value: string) {
-    if (value === this._fileListQuery) {
-      return;
-    }
-
-    this._fileListQuery = value;
-    void this.requestStateUpdate(true);
-  }
+  public fileListQuery: string;
 
   /**
    * The name for display in the overview section.
@@ -166,17 +155,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       }
     }
   })
-  public get fileQueries(): string[] {
-    return this._fileQueries;
-  }
-  public set fileQueries(value: string[]) {
-    if (arraysAreEqual(this._fileQueries, value)) {
-      return;
-    }
-
-    this._fileQueries = value;
-    void this.requestStateUpdate(true);
-  }
+  public fileQueries: string[] | null = null;
 
   /**
    * allows developer to provide an array of files
@@ -185,7 +164,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    * @memberof MgtFileList
    */
   @property({ type: Object })
-  public files: DriveItem[];
+  public files: DriveItem[] | null = null;
 
   /**
    * allows developer to provide site id for a file
@@ -196,17 +175,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   @property({
     attribute: 'site-id'
   })
-  public get siteId(): string {
-    return this._siteId;
-  }
-  public set siteId(value: string) {
-    if (value === this._siteId) {
-      return;
-    }
-
-    this._siteId = value;
-    void this.requestStateUpdate(true);
-  }
+  public siteId: string;
 
   /**
    * allows developer to provide drive id for a file
@@ -217,17 +186,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   @property({
     attribute: 'drive-id'
   })
-  public get driveId(): string {
-    return this._driveId;
-  }
-  public set driveId(value: string) {
-    if (value === this._driveId) {
-      return;
-    }
-
-    this._driveId = value;
-    void this.requestStateUpdate(true);
-  }
+  public driveId: string;
 
   /**
    * allows developer to provide group id for a file
@@ -238,17 +197,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   @property({
     attribute: 'group-id'
   })
-  public get groupId(): string {
-    return this._groupId;
-  }
-  public set groupId(value: string) {
-    if (value === this._groupId) {
-      return;
-    }
-
-    this._groupId = value;
-    void this.requestStateUpdate(true);
-  }
+  public groupId: string;
 
   /**
    * allows developer to provide item id for a file
@@ -259,17 +208,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   @property({
     attribute: 'item-id'
   })
-  public get itemId(): string {
-    return this._itemId;
-  }
-  public set itemId(value: string) {
-    if (value === this._itemId) {
-      return;
-    }
-
-    this._itemId = value;
-    void this.requestStateUpdate(true);
-  }
+  public itemId: string;
 
   /**
    * allows developer to provide item path for a file
@@ -280,17 +219,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   @property({
     attribute: 'item-path'
   })
-  public get itemPath(): string {
-    return this._itemPath;
-  }
-  public set itemPath(value: string) {
-    if (value === this._itemPath) {
-      return;
-    }
-
-    this._itemPath = value;
-    void this.requestStateUpdate(true);
-  }
+  public itemPath: string;
 
   /**
    * allows developer to provide user id for a file
@@ -301,17 +230,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   @property({
     attribute: 'user-id'
   })
-  public get userId(): string {
-    return this._userId;
-  }
-  public set userId(value: string) {
-    if (value === this._userId) {
-      return;
-    }
-
-    this._userId = value;
-    void this.requestStateUpdate(true);
-  }
+  public userId: string;
 
   /**
    * allows developer to provide insight type for a file
@@ -323,42 +242,20 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
   @property({
     attribute: 'insight-type'
   })
-  public get insightType(): OfficeGraphInsightString {
-    return this._insightType;
-  }
-  public set insightType(value: OfficeGraphInsightString) {
-    if (value === this._insightType) {
-      return;
-    }
-
-    this._insightType = value;
-    void this.requestStateUpdate(true);
-  }
+  public insightType: OfficeGraphInsightString;
 
   /**
-   * Sets what data to be rendered (file icon only, oneLine, twoLines threeLines).
-   * Default is 'threeLines'.
+   * Sets what data to be rendered (file icon only, oneline, twolines threelines).
+   * Default is 'threelines'.
    *
    * @type {ViewType}
    * @memberof MgtFileList
    */
   @property({
     attribute: 'item-view',
-    converter: value => {
-      if (!value || value.length === 0) {
-        return ViewType.threelines;
-      }
-
-      value = value.toLowerCase();
-
-      if (typeof ViewType[value] === 'undefined') {
-        return ViewType.threelines;
-      } else {
-        return ViewType[value] as ViewType;
-      }
-    }
+    converter: value => viewTypeConverter(value, 'threelines')
   })
-  public itemView: ViewType;
+  public itemView: ViewType = 'threelines';
 
   /**
    * allows developer to provide file type to filter the list
@@ -373,17 +270,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       return value.split(',').map(v => v.trim());
     }
   })
-  public get fileExtensions(): string[] {
-    return this._fileExtensions;
-  }
-  public set fileExtensions(value: string[]) {
-    if (arraysAreEqual(this._fileExtensions, value)) {
-      return;
-    }
-
-    this._fileExtensions = value;
-    void this.requestStateUpdate(true);
-  }
+  public fileExtensions: string[] = [];
 
   /**
    * A number value to indicate the number of more files to load when show more button is clicked
@@ -395,17 +282,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     attribute: 'page-size',
     type: Number
   })
-  public get pageSize(): number {
-    return this._pageSize;
-  }
-  public set pageSize(value: number) {
-    if (value === this._pageSize) {
-      return;
-    }
-
-    this._pageSize = value;
-    void this.requestStateUpdate(true);
-  }
+  public pageSize = 10;
 
   @property({
     attribute: 'disable-open-on-click',
@@ -422,7 +299,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     attribute: 'hide-more-files-button',
     type: Boolean
   })
-  public hideMoreFilesButton: boolean;
+  public hideMoreFilesButton = false;
 
   /**
    * A number value indication for file size upload (KB)
@@ -434,17 +311,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     attribute: 'max-file-size',
     type: Number
   })
-  public get maxFileSize(): number {
-    return this._maxFileSize;
-  }
-  public set maxFileSize(value: number) {
-    if (value === this._maxFileSize) {
-      return;
-    }
-
-    this._maxFileSize = value;
-    void this.requestStateUpdate(true);
-  }
+  public maxFileSize: number;
 
   /**
    * A boolean value indication if file upload extension should be enable or disabled
@@ -456,7 +323,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     attribute: 'enable-file-upload',
     type: Boolean
   })
-  public enableFileUpload: boolean;
+  public enableFileUpload = false;
 
   /**
    * A number value to indicate the max number allowed of files to upload.
@@ -468,17 +335,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     attribute: 'max-upload-file',
     type: Number
   })
-  public get maxUploadFile(): number {
-    return this._maxUploadFile;
-  }
-  public set maxUploadFile(value: number) {
-    if (value === this._maxUploadFile) {
-      return;
-    }
-
-    this._maxUploadFile = value;
-    void this.requestStateUpdate(true);
-  }
+  public maxUploadFile = 10;
 
   /**
    * A Array of file extensions to be excluded from file upload.
@@ -492,17 +349,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       return value.split(',').map(v => v.trim());
     }
   })
-  public get excludedFileExtensions(): string[] {
-    return this._excludedFileExtensions;
-  }
-  public set excludedFileExtensions(value: string[]) {
-    if (arraysAreEqual(this._excludedFileExtensions, value)) {
-      return;
-    }
-
-    this._excludedFileExtensions = value;
-    void this.requestStateUpdate(true);
-  }
+  public excludedFileExtensions: string[] = [];
 
   /**
    * Get the scopes required for file list
@@ -515,21 +362,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     return [...new Set([...MgtFile.requiredScopes])];
   }
 
-  private _fileListQuery: string;
-  private _fileQueries: string[];
-  private _siteId: string;
-  private _itemId: string;
-  private _driveId: string;
-  private _itemPath: string;
-  private _groupId: string;
-  private _insightType: OfficeGraphInsightString;
-  private _fileExtensions: string[];
-  private _pageSize: number;
-  private _excludedFileExtensions: string[];
-  private _maxUploadFile: number;
-  private _maxFileSize: number;
-  private _userId: string;
-  private _preloadedFiles: DriveItem[];
+  private _preloadedFiles: DriveItem[] = [];
   private pageIterator: GraphPageIterator<DriveItem>;
   // tracking user arrow key input of selection for accessibility purpose
   private _focusedItemIndex = -1;
@@ -538,22 +371,6 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
 
   constructor() {
     super();
-
-    this.pageSize = 10;
-    this.itemView = ViewType.twolines;
-    this.maxUploadFile = 10;
-    this.enableFileUpload = false;
-    this._preloadedFiles = [];
-  }
-
-  /**
-   * Override requestStateUpdate to include clearstate.
-   *
-   * @memberof MgtFileList
-   */
-  protected requestStateUpdate(force?: boolean) {
-    this.clearState();
-    return super.requestStateUpdate(force);
   }
 
   /**
@@ -588,23 +405,43 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
     return this;
   }
 
+  protected args(): unknown[] {
+    return [
+      this.providerState,
+      this.fileListQuery,
+      this.fileQueries,
+      this.siteId,
+      this.driveId,
+      this.groupId,
+      this.itemId,
+      this.itemPath,
+      this.userId,
+      this.insightType,
+      this.fileExtensions,
+      this.pageSize,
+      this.maxFileSize
+    ];
+  }
+
+  protected renderLoading = () => {
+    if (!this.files) {
+      return this.renderTemplate('loading', null) || html``;
+    }
+    return this.renderContent();
+  };
+
   /**
    * Render the file list
    *
    * @return {*}
    * @memberof MgtFileList
    */
-  public render() {
-    if (!this.files && this.isLoadingState) {
-      return this.renderLoading();
-    }
-
+  protected renderContent = () => {
     if (!this.files || this.files.length === 0) {
       return this.renderNoData();
     }
-
     return this._isCompact ? this.renderCompactView() : this.renderFullView();
-  }
+  };
 
   /**
    * Render the compact view
@@ -626,17 +463,6 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
    */
   public renderFullView(): TemplateResult {
     return this.renderTemplate('default', { files: this.files }) || this.renderFiles(this.files);
-  }
-
-  /**
-   * Render the loading state
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtFileList
-   */
-  protected renderLoading(): TemplateResult {
-    return this.renderTemplate('loading', null) || html``;
   }
 
   /**
@@ -915,7 +741,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
 
       // filter files when extensions are provided
       let filteredByFileExtension: DriveItem[];
-      if (this.fileExtensions && this.fileExtensions !== null) {
+      if (this.fileExtensions?.length > 0) {
         // retrive all pages before filtering
         if (this.pageIterator?.value) {
           while (this.pageIterator.hasNext) {
@@ -1072,7 +898,7 @@ export class MgtFileList extends MgtTemplatedComponent implements CardSection {
       // clear cache File List
       void clearFilesCache();
     }
-
-    void this.requestStateUpdate(true);
+    // explicitly run the task to reload data
+    void this._task.run();
   }
 }

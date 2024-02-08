@@ -19,7 +19,7 @@ import {
   registerMgtSearchBoxComponent,
   registerMgtSearchResultsComponent,
   registerMgtSpinnerComponent,
-  registerMgtTasksComponent,
+  registerMgtPlannerComponent,
   registerMgtTaxonomyPickerComponent,
   registerMgtTeamsChannelPickerComponent,
   registerMgtThemeToggleComponent,
@@ -36,7 +36,7 @@ export const registerMgtComponents = () => {
   registerMgtLoginComponent();
   registerMgtPeoplePickerComponent();
   registerMgtPeopleComponent();
-  registerMgtTasksComponent();
+  registerMgtPlannerComponent();
   registerMgtTeamsChannelPickerComponent();
   registerMgtTodoComponent();
   registerMgtFileComponent();

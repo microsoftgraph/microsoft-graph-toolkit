@@ -13,7 +13,7 @@ export interface TimerWork {
 
 const ctx: SharedWorkerGlobalScope = self as unknown as SharedWorkerGlobalScope;
 
-const intervals = new Map<string, ReturnType<typeof setInterval>>();
+const intervals = new Map<string, number>();
 
 ctx.onconnect = (e: MessageEvent<unknown>) => {
   const port = e.ports[0];

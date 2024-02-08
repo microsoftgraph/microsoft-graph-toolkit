@@ -1,4 +1,4 @@
-import { MgtTemplateProps, Person, PersonCardInteraction, PersonViewType } from '@microsoft/mgt-react';
+import { MgtTemplateProps, Person } from '@microsoft/mgt-react';
 import { makeStyles, mergeClasses, shorthands } from '@fluentui/react-components';
 
 const useStyles = makeStyles({
@@ -12,9 +12,9 @@ const useStyles = makeStyles({
       borderLeftStyle: 'solid',
       paddingLeft: '6px'
     },
-    'mgt-person': {
+    '& mgt-person': {
       '--font-size': '12px',
-      '--avatar-size-s': '16px'
+      '--person-avatar-size': '16px'
     }
   },
 
@@ -71,11 +71,7 @@ export function Messages(props: MgtTemplateProps) {
       <a className={styles.link} href={email.webLink} target="_blank" rel="noreferrer">
         <div className={styles.header}>
           <div>
-            <Person
-              personQuery={email.sender.emailAddress.address}
-              view={PersonViewType.oneline}
-              personCardInteraction={PersonCardInteraction.hover}
-            />
+            <Person personQuery={email.sender?.emailAddress?.address} personCardInteraction="hover" view="oneline" />
           </div>
         </div>
         <div className={styles.title}>

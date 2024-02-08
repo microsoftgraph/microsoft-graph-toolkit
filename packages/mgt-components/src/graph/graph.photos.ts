@@ -42,6 +42,16 @@ export const getPhotoInvalidationTime = () =>
 export const getIsPhotosCacheEnabled = () => CacheService.config.photos.isEnabled && CacheService.config.isEnabled;
 
 /**
+ * Ordered list of scopes able to load user photos for any user, least privilege comes first
+ */
+export const anyUserValidPhotoScopes = ['User.ReadBasic.All', 'User.Read.All', 'User.ReadWrite.All'];
+
+/**
+ * Ordered list of scopes able to load user photo for the current user, least privilege comes first
+ */
+export const currentUserValidPhotoScopes = ['User.Read', 'User.ReadWrite', ...anyUserValidPhotoScopes];
+
+/**
  * retrieves a photo for the specified resource.
  *
  * @param {string} resource
@@ -53,7 +63,7 @@ export const getPhotoForResource = async (graph: IGraph, resource: string, scope
     const response = (await graph
       .api(`${resource}/photo/$value`)
       .responseType(ResponseType.RAW)
-      .middlewareOptions(prepScopes(...scopes))
+      .middlewareOptions(prepScopes(scopes))
       .get()) as Response;
 
     if (response.status === 404) {
@@ -90,8 +100,9 @@ export const getContactPhoto = async (graph: IGraph, contactId: string): Promise
       return photoDetails.photo;
     }
   }
+  const validContactPhotoScopes = ['Contacts.Read', 'Contacts.ReadWrite'];
 
-  photoDetails = await getPhotoForResource(graph, `me/contacts/${contactId}`, ['contacts.read']);
+  photoDetails = await getPhotoForResource(graph, `me/contacts/${contactId}`, validContactPhotoScopes);
   if (getIsPhotosCacheEnabled() && photoDetails) {
     await cache.putValue(contactId, photoDetails);
   }
@@ -115,7 +126,8 @@ export const getUserPhoto = async (graph: IGraph, userId: string): Promise<strin
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
     } else if (photoDetails) {
-      // there is a photo in the cache, but it's staleS
+      // there is a photo in the cache, but it's stale. implicit assumption that the app has permissions
+      // necessary to fetch photo metadata otherwise there couldn't be data in the cache
       try {
         const response = (await graph.api(`users/${userId}/photo`).get()) as ProfilePhoto;
         if (
@@ -131,9 +143,8 @@ export const getUserPhoto = async (graph: IGraph, userId: string): Promise<strin
       }
     }
   }
-
   // if there is a photo in the cache, we got here because it was stale
-  photoDetails = photoDetails || (await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']));
+  photoDetails = photoDetails || (await getPhotoForResource(graph, `users/${userId}`, anyUserValidPhotoScopes));
   if (getIsPhotosCacheEnabled() && photoDetails) {
     await cache.putValue(userId, photoDetails);
   }
@@ -169,8 +180,7 @@ export const myPhoto = async (graph: IGraph): Promise<string> => {
   } catch {
     return null;
   }
-
-  photoDetails = photoDetails || (await getPhotoForResource(graph, 'me', ['user.read']));
+  photoDetails = photoDetails || (await getPhotoForResource(graph, 'me', currentUserValidPhotoScopes));
   if (getIsPhotosCacheEnabled()) {
     await cache.putValue('me', photoDetails || {});
   }
@@ -272,8 +282,9 @@ export const getGroupImage = async (graph: IGraph, group: IDynamicPerson) => {
     }
   }
 
+  const validGroupPhotoScopes = ['Group.Read.All', 'Group.ReadWrite.All'];
   // if there is a photo in the cache, we got here because it was stale
-  photoDetails = photoDetails || (await getPhotoForResource(graph, `groups/${groupId}`, ['user.readbasic.all']));
+  photoDetails = photoDetails || (await getPhotoForResource(graph, `groups/${groupId}`, validGroupPhotoScopes));
   if (getIsPhotosCacheEnabled() && photoDetails) {
     await cache.putValue(groupId, photoDetails);
   }
