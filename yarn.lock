@@ -3544,7 +3544,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-components@npm:^9.46.2":
+"@fluentui/react-components@npm:^9.46.2, @fluentui/react-components@npm:^9.46.4":
   version: 9.46.4
   resolution: "@fluentui/react-components@npm:9.46.4"
   dependencies:
@@ -4149,6 +4149,31 @@ __metadata:
     react: ">=16.8.0 <19.0.0"
     react-dom: ">=16.8.0 <19.0.0"
   checksum: 8a9cec9677692048284d5ccfa7aacfe4caf0eb7f8b669665f94b9b2b52bec636279c98a89124a6433e8464d58ab7d30644f1752d8c82d153d0f0d5ae93571307
+  languageName: node
+  linkType: hard
+
+"@fluentui/react-migration-v0-v9@npm:^9.1.15":
+  version: 9.1.15
+  resolution: "@fluentui/react-migration-v0-v9@npm:9.1.15"
+  dependencies:
+    "@fluentui/react-aria": ^9.8.2
+    "@fluentui/react-components": ^9.46.4
+    "@fluentui/react-context-selector": ^9.1.51
+    "@fluentui/react-icons": ^2.0.224
+    "@fluentui/react-jsx-runtime": ^9.0.29
+    "@fluentui/react-shared-contexts": ^9.14.0
+    "@fluentui/react-tabster": ^9.19.0
+    "@fluentui/react-theme": ^9.1.16
+    "@fluentui/react-utilities": ^9.18.0
+    "@griffel/react": ^1.5.14
+    "@swc/helpers": ^0.5.1
+  peerDependencies:
+    "@fluentui/react-northstar": ^0.66.5
+    "@types/react": ">=16.14.0 <19.0.0"
+    "@types/react-dom": ">=16.9.0 <19.0.0"
+    react: ">=16.14.0 <19.0.0"
+    react-dom: ">=16.14.0 <19.0.0"
+  checksum: 15586d7b6a646beb582bc3a435130e78e24bab11ef91a7bc57b875a6dce903e8f5bb982a8e3ddf618a49f968cbc4a8b443095da02a93c7c4d51566150b5497ea
   languageName: node
   linkType: hard
 
@@ -26828,7 +26853,7 @@ __metadata:
     "@fluentui/react": ^8.0.0
     "@fluentui/react-components": ^9.19.1
     "@fluentui/react-hooks": ^8.2.0
-    "@fluentui/react-northstar": ^0.66.4
+    "@fluentui/react-migration-v0-v9": ^9.1.15
     "@fluentui/react-theme-provider": ^0.18.5
     "@microsoft/mgt-element": "*"
     "@microsoft/mgt-msal2-provider": "*"
