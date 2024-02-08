@@ -1977,7 +1977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.4.5, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.23.9
   resolution: "@babel/runtime@npm:7.23.9"
   dependencies:
@@ -3452,19 +3452,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-component-nesting-registry@npm:^0.66.5":
-  version: 0.66.5
-  resolution: "@fluentui/react-component-nesting-registry@npm:0.66.5"
-  dependencies:
-    "@babel/runtime": ^7.10.4
-    prop-types: ^15.7.2
-  peerDependencies:
-    react: ^16.8.0 || ^17
-    react-dom: ^16.8.0 || ^17
-  checksum: 39f1b72fce65f58aaa7622492d9bd2456192d1eaa041b0c479c3e83a6c1d5e5fe1673028fc19061bbeb8bc9253f16f37eb5d58467fc3a1a2890d20b9926d672c
-  languageName: node
-  linkType: hard
-
 "@fluentui/react-component-ref@npm:^0.66.5":
   version: 0.66.5
   resolution: "@fluentui/react-component-ref@npm:0.66.5"
@@ -4234,39 +4221,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-northstar@npm:^0.66.4":
-  version: 0.66.5
-  resolution: "@fluentui/react-northstar@npm:0.66.5"
-  dependencies:
-    "@babel/runtime": ^7.10.4
-    "@fluentui/accessibility": ^0.66.5
-    "@fluentui/dom-utilities": ^1.1.1
-    "@fluentui/react-bindings": ^0.66.5
-    "@fluentui/react-component-event-listener": ^0.66.5
-    "@fluentui/react-component-nesting-registry": ^0.66.5
-    "@fluentui/react-component-ref": ^0.66.5
-    "@fluentui/react-icons-northstar": ^0.66.5
-    "@fluentui/react-northstar-styles-renderer": ^0.66.5
-    "@fluentui/react-portal-compat-context": ^9.0.6
-    "@fluentui/react-proptypes": ^0.66.5
-    "@fluentui/state": ^0.66.5
-    "@fluentui/styles": ^0.66.5
-    "@popperjs/core": ~2.4.3
-    body-scroll-lock: ^3.1.5
-    classnames: ^2.2.6
-    compute-scroll-into-view: 1.0.11
-    downshift: 5.0.5
-    lodash: ^4.17.15
-    prop-types: ^15.7.2
-    react-is: ^17.0.2
-    react-transition-group: ^4.4.1
-  peerDependencies:
-    react: ^16.8.0 || ^17
-    react-dom: ^16.8.0 || ^17
-  checksum: 2fe64782e2f546de7b948852d6fca058e1063dd80010a6882d1b1cd26df273589f03a3cace569b73ab690e0e43737689153de3f69e5e4cc339fb4976d86f5b92
-  languageName: node
-  linkType: hard
-
 "@fluentui/react-overflow@npm:^9.1.10":
   version: 9.1.10
   resolution: "@fluentui/react-overflow@npm:9.1.10"
@@ -4381,7 +4335,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-portal-compat-context@npm:^9.0.11, @fluentui/react-portal-compat-context@npm:^9.0.5, @fluentui/react-portal-compat-context@npm:^9.0.6":
+"@fluentui/react-portal-compat-context@npm:^9.0.11, @fluentui/react-portal-compat-context@npm:^9.0.5":
   version: 9.0.11
   resolution: "@fluentui/react-portal-compat-context@npm:9.0.11"
   dependencies:
@@ -4488,17 +4442,6 @@ __metadata:
     react: ">=16.14.0 <19.0.0"
     react-dom: ">=16.14.0 <19.0.0"
   checksum: 78f281316879069e25270f83d0d1c131eeed04c4e7952e3e2d25551ad31a091b2b02eab87fff02373e8a9065fe4e260e06055d97b7aab84f2611ce1f3f43a9ac
-  languageName: node
-  linkType: hard
-
-"@fluentui/react-proptypes@npm:^0.66.5":
-  version: 0.66.5
-  resolution: "@fluentui/react-proptypes@npm:0.66.5"
-  dependencies:
-    "@babel/runtime": ^7.10.4
-    lodash: ^4.17.15
-    prop-types: ^15.7.2
-  checksum: 3a75420934effad6cdca0622701eb246406462e946bc115aba9878df825ecaadfad2be7a52dde324ff2d5aec150ad1f260eb5a8a2ddcfb25f6e4ad61bc4d51cf
   languageName: node
   linkType: hard
 
@@ -6190,7 +6133,8 @@ __metadata:
     "@fluentui/react": ~8.106.1
     "@fluentui/react-components": ^9.19.1
     "@fluentui/react-icons": ^2.0.210
-    "@fluentui/react-northstar": ^0.66.4
+    "@fluentui/react-icons-northstar": ^0.66.5
+    "@fluentui/react-migration-v0-v9": ^9.1.15
     "@microsoft/mgt-components": "*"
     "@microsoft/mgt-element": "*"
     "@microsoft/mgt-msal2-provider": "*"
@@ -7055,13 +6999,6 @@ __metadata:
     webpack-plugin-serve:
       optional: true
   checksum: a82eced9519f4dcac424acae719f819ab4150bfcf2874ac7daaf25a4f1c409e3d8b9d693fea0c686c24d520a5473756df32da90d8b89739670f8f8084c600bb4
-  languageName: node
-  linkType: hard
-
-"@popperjs/core@npm:~2.4.3":
-  version: 2.4.4
-  resolution: "@popperjs/core@npm:2.4.4"
-  checksum: 77bf4fb8fa16c67a7b017172264533d6a04481def64f99b503cd4d99195a541235f46c26afdcb212d9fc08e72c4f8012769422cd491831e6520b0c8367f8cd86
   languageName: node
   linkType: hard
 
@@ -12505,13 +12442,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-scroll-lock@npm:^3.1.5":
-  version: 3.1.5
-  resolution: "body-scroll-lock@npm:3.1.5"
-  checksum: 52c25b81d6e7a87cfbdd7870363c3e20a439dbc76535b735916e2df907abbce95c0da0d2c7a2cfe88f49775d53bbc4bd09445ffda2d61b999efa3f0b1dedfc5e
-  languageName: node
-  linkType: hard
-
 "bonjour-service@npm:^1.0.11":
   version: 1.2.1
   resolution: "bonjour-service@npm:1.2.1"
@@ -13745,20 +13675,6 @@ __metadata:
     safe-buffer: 5.1.2
     vary: ~1.1.2
   checksum: 35c0f2eb1f28418978615dc1bc02075b34b1568f7f56c62d60f4214d4b7cc00d0f6d282b5f8a954f59872396bd770b6b15ffd8aa94c67d4bce9b8887b906999b
-  languageName: node
-  linkType: hard
-
-"compute-scroll-into-view@npm:1.0.11":
-  version: 1.0.11
-  resolution: "compute-scroll-into-view@npm:1.0.11"
-  checksum: ecc7b84905fc93639491f0b482c6a419abfdc876d8c5043ad66a9bd601e00c3bfc5ae5d20cee468c5fd993b3463b4540791494da1fc437b42889928bb3e34b7f
-  languageName: node
-  linkType: hard
-
-"compute-scroll-into-view@npm:^1.0.9":
-  version: 1.0.20
-  resolution: "compute-scroll-into-view@npm:1.0.20"
-  checksum: f15fab29221953620735393ac1866541aab0d27d28078bedbba071a291ee9c8cc1a72bee302cf0bc06ed83c5e55afb74ebcbd634a63671ba33cf1fb1c51d3308
   languageName: node
   linkType: hard
 
@@ -15258,20 +15174,6 @@ __metadata:
   version: 16.3.2
   resolution: "dotenv@npm:16.3.2"
   checksum: 917b27eeb654b95846484009326b1c52af7a7c25f7b09e2939ed49de8f98cb9895dcc04f13a39cdb078d247985e21147311ccb5bfbf2fd151afb20fa8f96de15
-  languageName: node
-  linkType: hard
-
-"downshift@npm:5.0.5":
-  version: 5.0.5
-  resolution: "downshift@npm:5.0.5"
-  dependencies:
-    "@babel/runtime": ^7.4.5
-    compute-scroll-into-view: ^1.0.9
-    prop-types: ^15.7.2
-    react-is: ^16.9.0
-  peerDependencies:
-    react: ">=0.14.9"
-  checksum: 47260ef61c73148affecc2beb8fd3d57ac67486ba29fc4de683089baf003db364ad6439e2628a57e322c2c018d3bcfa75989915e03b2ae77842cfb6b6d3d652a
   languageName: node
   linkType: hard
 
@@ -26927,7 +26829,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.13.1, react-is@npm:^16.7.0, react-is@npm:^16.9.0":
+"react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
