@@ -9,7 +9,8 @@
 @import '../../styles/shared-styles';
 @import './mgt-login.theme';
 
-$signed-out-bg: padding-box linear-gradient(var(--neutral-fill-rest), var(--neutral-fill-rest)),
+$signed-out-bg:
+  padding-box linear-gradient(var(--neutral-fill-rest), var(--neutral-fill-rest)),
   border-box var(--neutral-stroke-control-rest);
 $signed-out-background: #{var(--login-signed-out-button-background, $signed-out-bg)};
 $signed-out-hover-background: #{var(--login-signed-out-button-hover-background, var(--neutral-fill-stealth-hover))};
@@ -17,6 +18,7 @@ $login-popup-background-color: #{var(--login-popup-background-color, var(--neutr
 $login-account-item-hover-bg-color: #{var(--login-account-item-hover-bg-color, var(--neutral-fill-stealth-hover))};
 $button-padding: var(--login-button-padding, 0);
 $login-flyout-command-text-color: #{var(--login-flyout-command-text-color, var(--accent-foreground-rest))};
+$login-person-avatar-size: #{var(--login-person-avatar-size, 40px)};
 
 :host {
   .signed-in-person {
@@ -28,6 +30,12 @@ $login-flyout-command-text-color: #{var(--login-flyout-command-text-color, var(-
   .account {
     padding: 0;
     margin: 7px 0;
+  }
+
+  .signed-in-person,
+  .account,
+  .person {
+    --person-avatar-size: #{$login-person-avatar-size};
   }
 
   fluent-button {

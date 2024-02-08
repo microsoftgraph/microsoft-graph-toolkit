@@ -49,7 +49,7 @@ To learn more about authentication providers, see [Providers](./providers.md).
 
     ```html
         <!-- Using HTML -->
-        <mgt-person query="me" view="threeLines"></mgt-person>
+        <mgt-person query="me" view="threelines"></mgt-person>
     ```
 
     ```ts
@@ -57,7 +57,7 @@ To learn more about authentication providers, see [Providers](./providers.md).
         public render(): void {
             return (
                 <div>
-                    <Person personQuery="me" view={PersonViewType.threelines}></Person>
+                    <Person personQuery="me" view="threelines"></Person>
                 </div>
             );
         }

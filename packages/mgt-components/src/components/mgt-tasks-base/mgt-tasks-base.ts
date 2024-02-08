@@ -7,7 +7,7 @@
 
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedTaskComponent } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentTextField, fluentButton, fluentCalendar } from '@fluentui/web-components';
@@ -19,7 +19,7 @@ import { TodoTask } from '@microsoft/microsoft-graph-types';
  * @class MgtTasksBase
  * @extends {MgtTemplatedComponent}
  */
-export abstract class MgtTasksBase extends MgtTemplatedComponent {
+export abstract class MgtTasksBase extends MgtTemplatedTaskComponent {
   /**
    * determines if tasks are un-editable
    *
@@ -32,7 +32,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * sets whether the header is rendered
    *
    * @type {boolean}
-   * @memberof MgtTasks
+   * @memberof MgtTasksBase
    */
   @property({ attribute: 'hide-header', type: Boolean })
   public hideHeader: boolean;
@@ -41,7 +41,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * sets whether the options are rendered
    *
    * @type {boolean}
-   * @memberof MgtTasks
+   * @memberof MgtTasksBase
    */
   @property({ attribute: 'hide-options', type: Boolean })
   public hideOptions: boolean;
@@ -78,29 +78,14 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     this._previousMediaQuery = this.mediaQuery;
   }
 
-  /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtTasks
-   */
-  public attributeChangedCallback(name: string, oldVal: string, newVal: string) {
-    super.attributeChangedCallback(name, oldVal, newVal);
-    switch (name) {
-      case 'target-id':
-      case 'initial-id':
-        this.clearState();
-        void this.requestStateUpdate();
-        break;
-    }
+  protected args(): unknown[] {
+    return [this.providerState, this.targetId, this.initialId];
   }
 
   /**
    * updates provider state
    *
-   * @memberof MgtTasks
+   * @memberof MgtTasksBase
    */
   public connectedCallback() {
     super.connectedCallback();
@@ -110,7 +95,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   /**
    * removes updates on provider state
    *
-   * @memberof MgtTasks
+   * @memberof MgtTasksBase
    */
   public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);
@@ -118,23 +103,28 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * Render the loading state
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtTasksBase
    */
-  protected render() {
+  protected renderLoading = (): TemplateResult => {
+    return this.renderLoadingTask();
+  };
+
+  /**
+   * Invoked by render when the task is in a completed state
+   */
+  protected renderContent = () => {
     const provider = Providers.globalProvider;
     if (!provider || provider.state !== ProviderState.SignedIn) {
       return html``;
     }
 
-    if (this.isLoadingState) {
-      return this.renderLoadingTask();
-    }
-
     const picker = this.renderPicker();
     const newTaskTemplate = this.renderNewTask();
-    const tasksTemplate = this.isLoadingState ? this.renderLoadingTask() : this.renderTasks();
+    const tasksTemplate = this.renderTasks();
 
     return html`
       ${picker}
@@ -143,7 +133,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
         ${tasksTemplate}
       </div>
     `;
-  }
+  };
 
   /**
    * Render a task in a loading state.

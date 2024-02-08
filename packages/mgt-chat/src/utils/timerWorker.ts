@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 export interface TimerWork {
   id: string;
   type: 'clearInterval' | 'setInterval' | 'runCallback' | 'setTimeout' | 'clearTimeout';
@@ -6,7 +13,7 @@ export interface TimerWork {
 
 const ctx: SharedWorkerGlobalScope = self as unknown as SharedWorkerGlobalScope;
 
-const intervals = new Map<string, ReturnType<typeof setInterval>>();
+const intervals = new Map<string, number>();
 
 ctx.onconnect = (e: MessageEvent<unknown>) => {
   const port = e.ports[0];

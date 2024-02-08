@@ -5,7 +5,9 @@ name: Release latest
 
 on:
   push:
-    tags: ['v3.*']
+    tags: ['v3.*', v4.*]
+permissions:
+  contents: write
 
 jobs:
   version:
@@ -17,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +44,7 @@ jobs:
     if: needs.version.outputs.latest-version != needs.version.outputs.package-version
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     environment:
       name: release
@@ -72,9 +74,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Attach mgt-spfx solution to GitHub release
-        run: node scripts/uploadSpfxSolution.js ${{secrets.GITHUB_TOKEN}} ${{needs.version.outputs.package-version}}
-
       - name: Notify TeamsFx Repo
         uses: peter-evans/repository-dispatch@v2
         with:
@@ -88,7 +87,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4

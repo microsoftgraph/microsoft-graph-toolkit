@@ -3,6 +3,7 @@ import { addons, makeDecorator } from '@storybook/preview-api';
 import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/IProvider';
 import { EditorElement } from './editor';
 import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from '../../env';
+import { beautifyContent } from '../../utils/beautifyContent';
 
 const mgtScriptName = './mgt.storybook.js';
 const mgtPreviewScriptName = './mgt.preview.storybook.js';
@@ -62,6 +63,7 @@ const setupEditorResize = (first, separator, last, dragComplete) => {
   };
 };
 
+let reactRegex = /<react\b[^>]*>([\s\S]*?)<\/react>/gm;
 let scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
 let styleRegex = /<style\b[^>]*>([\s\S]*?)<\/style>/gm;
 
@@ -90,20 +92,25 @@ export const withCodeEditor = makeDecorator({
     let scriptMatches = scriptRegex.exec(storyHtml);
     let scriptCode = scriptMatches && scriptMatches.length > 1 ? scriptMatches[1].trim() : '';
 
+    let reactMatches = reactRegex.exec(storyHtml);
+    let reactCode = reactMatches && reactMatches.length > 1 ? reactMatches[1].trim() : '';
+
     let styleMatches = styleRegex.exec(storyHtml);
     let styleCode = styleMatches && styleMatches.length > 1 ? styleMatches[1].trim() : '';
 
     storyHtml = storyHtml
-      .replace(styleRegex, '')
-      .replace(scriptRegex, '')
-      .replace(/\n?<!---->\n?/g, '')
-      .trim();
+      ?.replace(styleRegex, '')
+      ?.replace(reactRegex, '')
+      ?.replace(scriptRegex, '')
+      ?.replace(/\n?<!---->\n?/g, '')
+      ?.trim();
 
-    let editor = new EditorElement();
-    editor.files = {
-      html: storyHtml,
-      js: scriptCode,
-      css: styleCode
+    const fileTypes = reactCode ? ['react', 'css'] : ['html', 'js', 'css'];
+
+    let editor = new EditorElement(fileTypes);
+
+    const isEditorEnabled = () => {
+      return !context.parameters.docs?.editor?.hidden;
     };
 
     const getContent = async (url, json) => {
@@ -153,9 +160,9 @@ export const withCodeEditor = makeDecorator({
             ]).then(values => {
               //editor.autoFormat = false;
               editor.files = {
-                html: values[0],
-                js: values[1],
-                css: values[2]
+                html: beautifyContent('html', values[0]),
+                js: beautifyContent('js', values[1]),
+                css: beautifyContent('css', values[2])
               };
             });
           });
@@ -214,12 +221,12 @@ export const withCodeEditor = makeDecorator({
             redirectUri: "${window.location.origin}/${AUTH_PAGE}"
           });`;
       }
-
-      loadEditorContent();
     });
 
-    const componentRegistration = `
-    `;
+    const getStoryTitle = context => {
+      const storyTitle = `${context?.title} - ${context?.story}`;
+      return storyTitle;
+    };
 
     const loadEditorContent = () => {
       const storyElement = document.createElement('iframe');
@@ -233,35 +240,35 @@ export const withCodeEditor = makeDecorator({
           // strip the preview import, we include it in the resolved script
           js = js.replace(/import '@microsoft\/mgt-components\/dist\/es6\/components\/preview'/gm, ``);
           js = js.replace(
-            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt\x2d([^\}]+)['"];/gm,
+            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt\x2d.*['"];/gm,
             `import {$1} from '${mgtScriptName}';`
           );
 
           const docContent = `
-          <html>
-            <head>
-              <script type="module" src="${resolveScript()}"></script>
-              <script type="module">
-                import { registerMgtComponents } from "${mgtScriptName}";
-                registerMgtComponents();
-              </script>
-              <script type="module">
-                ${providerInitCode}
-              </script>
-              <style>
-                ${themeToggleCss}
-                ${css}
-              </style>
-            </head>
-            <body>
-              ${themeToggle}
-              ${html}
-              <script type="module">
-                ${js}
-              </script>
-            </body>
-          </html>
-        `;
+            <html>
+              <head>
+                <script type="module" src="${mgtScriptName}"></script>
+                <script type="module">
+                  import { registerMgtComponents } from "${mgtScriptName}";
+                  registerMgtComponents();
+                </script>
+                <script type="module">
+                  ${providerInitCode}
+                </script>
+                <style>
+                  ${themeToggleCss}
+                  ${css}
+                </style>
+              </head>
+              <body>
+                ${themeToggle}
+                ${html}
+                <script type="module">
+                  ${js}
+                </script>
+              </body>
+            </html>
+          `;
 
           doc.open();
           doc.write(docContent);
@@ -283,13 +290,17 @@ export const withCodeEditor = makeDecorator({
     setupEditorResize(storyElementWrapper, separator, editor, () => editor.layout());
 
     root.className = 'story-mgt-root';
-    storyElementWrapper.className = 'story-mgt-preview-wrapper';
+
+    storyElementWrapper.className = isEditorEnabled() ? 'story-mgt-preview-wrapper' : 'story-mgt-preview-wrapper-full';
     separator.className = 'story-mgt-separator';
     editor.className = 'story-mgt-editor';
 
     root.appendChild(storyElementWrapper);
     root.appendChild(separator);
-    root.appendChild(editor);
+
+    if (isEditorEnabled()) {
+      root.appendChild(editor);
+    }
 
     window.addEventListener('resize', () => {
       storyElementWrapper.style.height = null;
@@ -297,6 +308,15 @@ export const withCodeEditor = makeDecorator({
       editor.style.height = null;
       editor.style.width = null;
     });
+
+    editor.files = {
+      html: beautifyContent('html', storyHtml),
+      react: beautifyContent('js', reactCode),
+      js: beautifyContent('js', scriptCode),
+      css: beautifyContent('css', styleCode)
+    };
+
+    editor.title = getStoryTitle(context);
 
     return root;
   }

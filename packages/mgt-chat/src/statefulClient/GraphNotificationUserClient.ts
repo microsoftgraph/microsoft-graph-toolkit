@@ -179,7 +179,7 @@ export class GraphNotificationUserClient {
 
   private readonly cacheSubscription = async (userId: string, subscriptionRecord: Subscription): Promise<void> => {
     log(subscriptionRecord);
-    await this.subscriptionCache.cacheSubscription(userId, ComponentType.User, this.sessionId, subscriptionRecord);
+    await this.subscriptionCache.cacheSubscription(userId, ComponentType.User, subscriptionRecord);
   };
 
   private async subscribeToResource(userId: string, resourcePath: string, changeTypes: ChangeTypes[]) {
@@ -228,8 +228,7 @@ export class GraphNotificationUserClient {
     this.currentUserId = this.userId;
 
     try {
-      const subscriptions =
-        (await this.subscriptionCache.loadSubscriptions(this.currentUserId, this.sessionId))?.subscriptions || [];
+      const subscriptions = (await this.subscriptionCache.loadSubscriptions(this.currentUserId))?.subscriptions || [];
       if (subscriptions.length === 0) {
         log('No subscriptions found in subscription cache. Creating a new subscription.');
 
@@ -260,7 +259,7 @@ export class GraphNotificationUserClient {
               // this error indicates we are not able to successfully renew the subscription, so we should create a new one.
               if ((e as { statusCode?: number }).statusCode === 404) {
                 log('Removing subscription from cache', subscription.id);
-                await this.subscriptionCache.deleteCachedSubscriptions(this.currentUserId, this.sessionId);
+                await this.subscriptionCache.deleteCachedSubscriptions(this.currentUserId);
                 await this.subscribeToUserNotifications(this.currentUserId);
 
                 const emitter: ThreadEventEmitter | undefined = this.emitter;
@@ -380,11 +379,11 @@ export class GraphNotificationUserClient {
     }
 
     await this.closeSignalRConnection();
-    const cacheData = await this.subscriptionCache.loadSubscriptions(userId, this.sessionId);
+    const cacheData = await this.subscriptionCache.loadSubscriptions(userId);
     if (cacheData) {
       await Promise.all([
         this.removeSubscriptions(cacheData.subscriptions),
-        this.subscriptionCache.deleteCachedSubscriptions(userId, this.sessionId)
+        this.subscriptionCache.deleteCachedSubscriptions(userId)
       ]);
     }
   }

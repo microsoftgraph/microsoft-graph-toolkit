@@ -16,8 +16,8 @@ export default function mgtTagPlugin() {
         //do things...
         if (context.dev) console.log(node);
 
-        var elementClass = node.arguments[1].text;
         var elementTag = node.arguments[0].text;
+        var elementClass = node.arguments[1].text;
         const definitionDoc = {
           kind: 'custom-element-definition',
           name: elementTag,

@@ -58,7 +58,9 @@ export class Batch<T = any> implements IBatch<T> {
    *
    * @param {string} id
    * @param {string} resource
-   * @param {string[]} [scopes]
+   * @param {string[]} [scopes] any additional scopes that should be requested
+   * Note: use `IProvider.needsAdditionalScopes(scopes)` to calculate which
+   * scopes, if any, need to be requested before calling `Batch.get()`
    * @memberof Batch
    */
   public get(id: string, resource: string, scopes?: string[], headers?: Record<string, string>) {
@@ -106,7 +108,7 @@ export class Batch<T = any> implements IBatch<T> {
       });
     }
 
-    const middlewareOptions: MiddlewareOptions[] = this.scopes.length ? prepScopes(...this.scopes) : [];
+    const middlewareOptions: MiddlewareOptions[] = this.scopes.length ? prepScopes(this.scopes) : [];
     const batchRequest = this.graph.api('$batch').middlewareOptions(middlewareOptions);
 
     const batchRequestBody = await batchRequestContent.getContent();

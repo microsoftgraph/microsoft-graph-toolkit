@@ -109,7 +109,7 @@ export class MgtContact extends BasePersonCardSection {
     title: {
       icon: getSvg(SvgIcon.Person),
       showCompact: false,
-      title: this.strings.titleTitle
+      title: this.strings.personTitle
     },
     officeLocation: {
       icon: getSvg(SvgIcon.OfficeLocation),

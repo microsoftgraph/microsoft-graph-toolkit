@@ -13,10 +13,10 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPersonCardState, UserWithManager } from '../mgt-person-card/mgt-person-card.types';
 import { styles } from './mgt-organization-css';
 import { strings } from './strings';
-import { ViewType } from '../../graph/types';
 import { mgtHtml } from '@microsoft/mgt-element';
 import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtPersonComponent } from '../mgt-person/mgt-person';
+import { state } from 'lit/decorators.js';
 
 export const registerMgtOrganizationComponent = () => {
   registerMgtPersonComponent();
@@ -50,12 +50,14 @@ export class MgtOrganization extends BasePersonCardSection {
     return strings;
   }
 
-  private _state: MgtPersonCardState;
-  private _me: User;
+  @state()
+  private _state?: MgtPersonCardState;
+  @state()
+  private _me?: User;
 
-  constructor(state: MgtPersonCardState, me: User) {
+  constructor(cardState: MgtPersonCardState, me: User) {
     super();
-    this._state = state;
+    this._state = cardState;
     this._me = me;
   }
 
@@ -67,8 +69,8 @@ export class MgtOrganization extends BasePersonCardSection {
    */
   public clearState(): void {
     super.clearState();
-    this._state = null;
-    this._me = null;
+    this._state = undefined;
+    this._me = undefined;
   }
 
   /**
@@ -194,9 +196,10 @@ export class MgtOrganization extends BasePersonCardSection {
       >
         <div class="org-member__person">
           <mgt-person
+            class="org-member__person-image"
             .personDetails=${person}
             .fetchImage=${true}
-            .view=${ViewType.twolines}
+            view="twolines"
             .showPresence=${true}
           ></mgt-person>
         </div>
@@ -251,7 +254,7 @@ export class MgtOrganization extends BasePersonCardSection {
 
     return html`
       <div class="org-member__separator"></div>
-      <div>
+      <div class="direct-report-list">
         ${directReports.map(
           person => mgtHtml`
             <div
@@ -263,17 +266,17 @@ export class MgtOrganization extends BasePersonCardSection {
             >
               <div class="org-member__person">
                 <mgt-person
+                  class="org-member__person-image"
                   .personDetails=${person}
                   .fetchImage=${true}
                   .showPresence=${true}
-                  .view=${ViewType.twolines}
+                  view="twolines"
                 ></mgt-person>
               </div>
               <div tabindex="0" class="org-member__more">
                 ${getSvg(SvgIcon.ExpandRight)}
               </div>
             </div>
-            <div class="org-member__separator"></div>
           `
         )}
       </div>
@@ -303,10 +306,11 @@ export class MgtOrganization extends BasePersonCardSection {
               @click=${() => this.navigateCard(person)}
             >
               <mgt-person
+                class="direct-report__person-image"
                 .personDetails=${person}
                 .fetchImage=${true}
                 .showPresence=${true}
-                .view=${ViewType.twolines}
+                view="twolines"
               ></mgt-person>
             </div>
           `
@@ -328,10 +332,11 @@ export class MgtOrganization extends BasePersonCardSection {
        <div class="org-member org-member--target">
          <div class="org-member__person">
            <mgt-person
+              class="org-member__person-image"
              .personDetails=${person}
              .fetchImage=${true}
              .showPresence=${true}
-             .view=${ViewType.twolines}
+             view="twolines"
            ></mgt-person>
          </div>
        </div>
@@ -357,10 +362,11 @@ export class MgtOrganization extends BasePersonCardSection {
       >
         <div class="coworker__person">
           <mgt-person
+            class="coworker__person-image"
             .personDetails=${person}
             .fetchImage=${true}
             .showPresence=${true}
-            .view=${ViewType.twolines}
+            view="twolines"
           ></mgt-person>
         </div>
       </div>

@@ -2,7 +2,9 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     // Needed to mix class fields and reactive properties in Lit elements https://lit.dev/docs/components/properties/#avoiding-issues-with-class-fields
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    // Needed to ensure that string union types work as expected in tests
+    "verbatimModuleSyntax": true
   },
   "include": ["packages/**/src/**/*.ts"],
   "exclude": ["node_modules", "lib"]

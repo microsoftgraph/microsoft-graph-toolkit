@@ -1,6 +1,6 @@
 import React from 'react';
 import { AadUserConversationMember, Chat } from '@microsoft/microsoft-graph-types';
-import { Person, PersonCardInteraction, ViewType } from '@microsoft/mgt-react';
+import { Person } from '@microsoft/mgt-react';
 import { ChatHeaderProps } from './ChatTitle';
 import { makeStyles } from '@fluentui/react-components';
 
@@ -20,9 +20,9 @@ export const OneToOneChatHeader = ({ chat, currentUserId }: ChatHeaderProps) => 
     <Person
       className={styles.person}
       userId={id}
-      view={ViewType.oneline}
+      view="oneline"
       avatarSize="small"
-      personCardInteraction={PersonCardInteraction.hover}
+      personCardInteraction="hover"
       showPresence={true}
     />
   ) : null;
