@@ -71,7 +71,6 @@ function App() {
       </header>
       <main className="main">
         <div className="chat-selector">
-          <ChatListWrapper onSelected={chatSelected} />
           <br />
           <button onClick={() => setChatId('')}>Clear selected chat</button>
           <br />
@@ -84,7 +83,9 @@ function App() {
             </div>
           )}
         </div>
-
+        <div className="chat-pane">
+          <ChatListWrapper onSelected={chatSelected} />
+        </div>
         {/* NOTE: removed the chatId guard as this case has an error state. */}
         <div className="chat-pane">{<Chat chatId={chatId} />}</div>
       </main>

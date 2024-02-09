@@ -4,7 +4,6 @@ import { PageHeader } from '../components/PageHeader';
 import {
   shorthands,
   makeStyles,
-  mergeClasses,
   Dialog,
   DialogSurface,
   DialogBody,
@@ -25,22 +24,8 @@ export const ChatAddIcon = (): JSX.Element => {
 const useStyles = makeStyles({
   container: {
     display: 'flex',
-    flexDirection: 'row'
-  },
-  panels: {
-    ...shorthands.padding('10px')
-  },
-  main: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexWrap: 'nowrap',
-    width: '300px',
-    minWidth: '300px',
-    ...shorthands.overflow('auto'),
-    maxHeight: '80vh',
-    borderRightColor: 'var(--neutral-stroke-rest)',
-    borderRightStyle: 'solid',
-    borderRightWidth: '1px'
+    flexDirection: 'row',
+    height: '79vh'
   },
   side: {
     display: 'flex',
@@ -135,19 +120,18 @@ const ChatPage: React.FunctionComponent = () => {
         title={'Chats'}
         description={'Stay in touch with your teammates and navigate your chats'}
       ></PageHeader>
-
       <div className={styles.container}>
-        <div className={mergeClasses(styles.panels, styles.main)}>
-          <div className={styles.newChat}>
-            <Dialog open={isNewChatOpen}>
-              <DialogSurface className={styles.dialogSurface}>
-                <DialogBody className={styles.dialog}>
-                  <DialogTitle>New Chat</DialogTitle>
-                  <NewChat onChatCreated={onChatCreated} onCancelClicked={() => setIsNewChatOpen(false)}></NewChat>
-                </DialogBody>
-              </DialogSurface>
-            </Dialog>
-          </div>
+        <div className={styles.newChat}>
+          <Dialog open={isNewChatOpen}>
+            <DialogSurface className={styles.dialogSurface}>
+              <DialogBody className={styles.dialog}>
+                <DialogTitle>New Chat</DialogTitle>
+                <NewChat onChatCreated={onChatCreated} onCancelClicked={() => setIsNewChatOpen(false)}></NewChat>
+              </DialogBody>
+            </DialogSurface>
+          </Dialog>
+        </div>
+        <div className={styles.side}>
           <ChatListWrapper selectedChatId={chatId} onSelected={onChatSelected} onNewChat={onNewChat} />
         </div>
         <div className={styles.side}>

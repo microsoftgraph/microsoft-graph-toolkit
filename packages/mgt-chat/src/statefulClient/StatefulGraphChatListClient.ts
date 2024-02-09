@@ -168,7 +168,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this._notificationClient = new GraphNotificationUserClient(this._eventEmitter, this._graph);
 
     void this.updateUserSubscription(this.userId);
-    this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
+    void this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
   }
 
   /**
@@ -186,13 +186,13 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /**
    * Load more chat threads if applicable.
    */
-  public loadMoreChatThreads() {
+  public async loadMoreChatThreads() {
     const state = this.getState();
     const items: GraphChatThread[] = [];
-    this.loadAndAppendChatThreads('', items, state.chatThreads.length + this.chatThreadsPerPage);
+    await this.loadAndAppendChatThreads('', items, state.chatThreads.length + this.chatThreadsPerPage);
   }
 
-  private loadAndAppendChatThreads(nextLink: string, items: GraphChatThread[], maxItems: number) {
+  private async loadAndAppendChatThreads(nextLink: string, items: GraphChatThread[], maxItems: number) {
     if (maxItems < 1) {
       error('maxItem is invalid: ' + maxItems);
       return;
@@ -212,7 +212,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       }
 
       if (items.length < maxItems && handlerNextLink && handlerNextLink !== '') {
-        this.loadAndAppendChatThreads(handlerNextLink, items, maxItems);
+        await this.loadAndAppendChatThreads(handlerNextLink, items, maxItems);
         return;
       }
 
@@ -225,7 +225,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       loadChatThreads(this._graph, pageCount).then(handler, err => error(err));
     } else {
       const filter = nextLink.split('?')[1];
-      loadChatThreadsByPage(this._graph, filter).then(handler, err => error(err));
+      await loadChatThreadsByPage(this._graph, filter).then(handler, err => error(err));
     }
   }
 
@@ -361,7 +361,11 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       // func to bring the chat thread to the top of the list
       const bringToTop = (newThread?: GraphChatThread) => {
         draft.chatThreads.splice(chatThreadIndex, 1);
-        draft.chatThreads.unshift(newThread ?? chatThread);
+        if (newThread) {
+          draft.chatThreads.unshift(newThread);
+        } else if (chatThread) {
+          draft.chatThreads.unshift(chatThread);
+        }
       };
 
       // handle the events
@@ -529,7 +533,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     // by updating the followed chat the notification client will reconnect to SignalR
     await this.updateUserSubscription(userId);
 
-    this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
+    await this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
   };
 
   private clearCurrentUserMessages() {
@@ -611,7 +615,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       });
     });
     this._eventEmitter.on('reconnected', () => {
-      this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
+      void this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
     });
   }
 }

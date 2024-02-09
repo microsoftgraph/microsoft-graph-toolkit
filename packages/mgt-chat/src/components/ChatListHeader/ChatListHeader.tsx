@@ -7,7 +7,14 @@ import { Circle } from '../Circle/Circle';
 
 const useStyles = makeStyles({
   headerContainer: {
-    width: '100%'
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    rowGap: 0,
+    zIndex: 3,
+    paddingLeft: '30px',
+    paddingRight: '30px',
+    paddingBlockEnd: '12px'
   },
   controlsContainer: {
     display: 'flex',

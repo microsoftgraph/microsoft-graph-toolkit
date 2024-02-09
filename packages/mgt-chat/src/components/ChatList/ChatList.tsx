@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ChatListItem } from '../ChatListItem/ChatListItem';
 import { MgtTemplateProps, ProviderState, Providers, Spinner, log } from '@microsoft/mgt-react';
-import { makeStyles, Button, Link, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
+import { makeStyles, Button, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { Chat as GraphChat, ChatMessage } from '@microsoft/microsoft-graph-types';
@@ -32,34 +32,40 @@ export interface IChatListItemProps {
 }
 
 const useStyles = makeStyles({
+  chatList: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    ...shorthands.overflow('hidden'),
+    paddingBlockEnd: '12px'
+  },
+  chatListItems: {
+    height: '100%',
+    ...shorthands.paddingInline('20px'),
+    '&': {
+      paddingRight: '8px' // reserved some space for the scrollbar
+    },
+    '&:hover': {
+      paddingRight: '0', // we got the scrollbar, no need to reserve space
+      ...shorthands.overflow('auto'),
+      scrollbarWidth: 'auto'
+    },
+    '&:hover::-webkit-scrollbar': {
+      width: '8px'
+    },
+    '&:hover::-webkit-scrollbar-thumb': {
+      backgroundColor: 'darkgrey',
+      'border-radius': '5px'
+    }
+  },
   fullHeight: {
     height: '100%'
-  },
-  headerContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    width: '100%',
-    ...shorthands.padding('10px')
-  },
-  linkContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    width: '100%',
-    ...shorthands.padding('10px')
   },
   spinner: {
     justifyContent: 'center',
     display: 'flex',
     alignItems: 'center',
     height: '100%'
-  },
-  loadMore: {
-    textDecorationLine: 'none',
-    fontSize: '1.2em',
-    fontWeight: 'bold',
-    '&:hover': {
-      textDecorationLine: 'none' // This removes the underline when hovering
-    }
   },
   button: {
     flexDirection: 'row',
@@ -72,6 +78,10 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'center',
     height: '100%'
+  },
+  bottomWhitespace: {
+    height: '80%',
+    width: '100%'
   }
 });
 
@@ -90,7 +100,7 @@ export const ChatList = ({
   const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
   const [internalSelectedChatId, setInternalSelectedChatId] = useState<string | undefined>();
-
+  const loadingRef = useRef(false);
   // wait for provider to be ready before setting client and state
   useEffect(() => {
     const provider = Providers.globalProvider;
@@ -147,6 +157,8 @@ export const ChatList = ({
 
       if (state.status === 'chats loaded' && onLoaded) {
         onLoaded(state?.chatThreads ?? []);
+        // the loadingRef is used to prevent multiple calls to loadMoreChatThreads
+        loadingRef.current = false;
       }
 
       if (state.status === 'no chats' && onLoaded) {
@@ -201,11 +213,6 @@ export const ChatList = ({
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
 
-  // We need to have a function for "this" to work within the loadMoreChatThreads function, otherwise we get a undefined error.
-  const loadMore = () => {
-    chatListClient?.loadMoreChatThreads();
-  };
-
   const markAllThreadsAsRead = (chatThreads: GraphChat[] | undefined) => {
     if (!chatThreads) {
       return;
@@ -230,23 +237,51 @@ export const ChatList = ({
   ].includes(chatListState?.status ?? '');
 
   const isError = ['server connection lost', 'error'].includes(chatListState?.status ?? '');
+  const targetElementRef = useRef(null);
+
+  useEffect(() => {
+    const handleIntersection = async (entries: IntersectionObserverEntry[]) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          // The element has come into view, you can perform your actions here
+          if (!loadingRef.current) {
+            // Prevent the function from being called multiple times
+            if (chatListState?.moreChatThreadsToLoad) {
+              loadingRef.current = true;
+              await chatListClient?.loadMoreChatThreads();
+            }
+          }
+        }
+      }
+    };
+    // Create a new Intersection Observer instance
+    const observer = new IntersectionObserver(handleIntersection, {
+      root: null, // observing intersections with the viewport
+      rootMargin: '0px',
+      threshold: 0.1 // Callback is invoked when 10% of the target is visible
+    });
+
+    if (targetElementRef.current) {
+      observer.observe(targetElementRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [chatListState]);
 
   return (
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
-        <div className={styles.fullHeight}>
+        <div className={styles.chatList}>
           {Providers.globalProvider?.state === ProviderState.SignedIn && (
-            <div className={styles.headerContainer}>
-              <ChatListHeader
-                bannerMessage={headerBannerMessage}
-                buttonItems={chatListButtonItems}
-                menuItems={[markAllAsRead, ...(props.menuItems ?? [])]}
-              />
-            </div>
+            <ChatListHeader
+              bannerMessage={headerBannerMessage}
+              buttonItems={chatListButtonItems}
+              menuItems={[markAllAsRead, ...(props.menuItems ?? [])]}
+            />
           )}
           {chatListState && chatListState.chatThreads.length > 0 ? (
             <>
-              <div>
+              <div className={styles.chatListItems}>
                 {chatListState?.chatThreads.map(c => (
                   <Button className={styles.button} key={c.id} onClick={() => onClickChatListItem(c)}>
                     <ChatListItem
@@ -258,11 +293,9 @@ export const ChatList = ({
                     />
                   </Button>
                 ))}
-                {chatListState?.moreChatThreadsToLoad === true && (
-                  <div className={styles.linkContainer}>
-                    <Link onClick={loadMore} href="#" className={styles.loadMore}>
-                      load more
-                    </Link>
+                {chatListState?.moreChatThreadsToLoad && (
+                  <div ref={targetElementRef} className={styles.bottomWhitespace}>
+                    &nbsp;
                   </div>
                 )}
               </div>
