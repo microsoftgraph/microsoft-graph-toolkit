@@ -10,7 +10,8 @@ export class Timer {
   private readonly worker: SharedWorker;
   private readonly work = new Map<string, () => void>();
   constructor() {
-    this.worker = new SharedWorker(/* webpackChunkName: "timer-worker" */ new URL('./timerWorker.js', import.meta.url));
+    const url = new URL('./timerWorker.js', import.meta.url);
+    this.worker = new SharedWorker(/* webpackChunkName: "timer-worker" */ url);
     this.worker.port.onmessage = this.onMessage;
   }
 
