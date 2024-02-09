@@ -15,9 +15,10 @@ import { rewriteEmojiContentToText } from '../../utils/rewriteEmojiContent';
 import { convert } from 'html-to-text';
 import { loadChatWithPreview, loadAppsInChat } from '../../statefulClient/graph.chat';
 import { DefaultProfileIcon } from './DefaultProfileIcon';
+import { GraphChatThread } from '../../statefulClient/StatefulGraphChatListClient';
 
 interface IMgtChatListItemProps {
-  chat: Chat;
+  chat: GraphChatThread;
   myId: string | undefined;
   isSelected: boolean;
   isRead: boolean;
@@ -153,7 +154,11 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
         };
         load(chatInternal.id!).then(
           c => {
-            setChatInternal(c);
+            const chatThread = {
+              ...(c as GraphChatThread),
+              isRead: chat.isRead
+            };
+            setChatInternal(chatThread);
           },
           e => error(e)
         );

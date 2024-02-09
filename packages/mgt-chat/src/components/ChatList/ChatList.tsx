@@ -20,7 +20,7 @@ import { PleaseSignIn } from '../Error/PleaseSignIn';
 import { OpenTeamsLinkError } from '../Error/OpenTeams';
 
 export interface IChatListItemProps {
-  onSelected: (e: GraphChat) => void;
+  onSelected: (e: GraphChatThread) => void;
   onUnselected?: (e: GraphChat) => void;
   onLoaded?: (e: GraphChatThread[]) => void;
   onAllMessagesRead: (e: string[]) => void;
@@ -130,8 +130,7 @@ export const ChatList = ({
   useEffect(() => {
     const timer = setInterval(() => {
       if (internalSelectedChatId) {
-        log(`caching the last-read timestamp of now to chat ID '${internalSelectedChatId}'...`);
-        chatListClient?.cacheLastReadTime([internalSelectedChatId]);
+        markThreadAsRead(internalSelectedChatId);
       }
     }, lastReadTimeInterval);
 
@@ -151,6 +150,9 @@ export const ChatList = ({
     chatListClient.onStateChange(state => {
       if (state.status === 'chat message received') {
         if (onMessageReceived && state.chatMessage) {
+          if (state.chatMessage.chatId === internalSelectedChatId) {
+            markThreadAsRead(state.chatMessage.chatId!);
+          }
           onMessageReceived(state.chatMessage);
         }
       }
@@ -187,16 +189,17 @@ export const ChatList = ({
       chatListClient.tearDown();
       setHeaderBannerMessage('We ran into a problem. Please close or refresh.');
     };
-  }, [chatListClient, onMessageReceived, onLoaded]);
+  }, [chatListClient, onMessageReceived, onLoaded, internalSelectedChatId]);
 
   const markThreadAsRead = (chatThread: string) => {
     const markedChatThreads = chatListClient?.markChatThreadsAsRead([chatThread]);
     if (markedChatThreads) {
+      log(`caching the last-read timestamp of now to chat ID '${internalSelectedChatId}'...`);
       chatListClient?.cacheLastReadTime(markedChatThreads);
     }
   };
 
-  const onClickChatListItem = (chatListItem: GraphChat) => {
+  const onClickChatListItem = (chatListItem: GraphChatThread) => {
     // trigger an unselect event for the previously selected item
     if (internalSelectedChatId && props.onUnselected) {
       const previouslySelectedChatListItem = chatListState?.chatThreads.filter(c => c.id === internalSelectedChatId);
