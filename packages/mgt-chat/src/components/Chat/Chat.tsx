@@ -173,6 +173,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 <SendBox
                   mentionLookupOptions={mentionLookupOptionsWrapper(chatState)}
                   onSendMessage={chatState.onSendMessage}
+                  strings={{ placeholderText }}
                 />
               </div>
             </>
@@ -198,7 +199,12 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 <Error message="We're sorry—we've run into an issue.." subheading={OpenTeamsLinkError}></Error>
               )}
               <div className={styles.chatInput}>
-                <SendBox disabled={disabled} onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />
+                <SendBox
+                  disabled={disabled}
+                  onSendMessage={chatState.onSendMessage}
+                  strings={{ placeholderText }}
+                  mentionLookupOptions={mentionLookupOptionsWrapper(chatState)}
+                />
               </div>
             </>
           )}
