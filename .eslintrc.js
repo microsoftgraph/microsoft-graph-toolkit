@@ -8,6 +8,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: [
+      'stories/tsconfig.lint.json',
       'packages/mgt/tsconfig.json',
       'packages/mgt-element/tsconfig.json',
       'packages/mgt-components/tsconfig.json',
@@ -23,12 +24,25 @@ module.exports = {
     ],
     sourceType: 'module'
   },
-  plugins: ['eslint-plugin-jsdoc', 'eslint-plugin-prefer-arrow', 'eslint-plugin-react', '@typescript-eslint'],
+  plugins: ['eslint-plugin-jsdoc', 'eslint-plugin-prefer-arrow', 'eslint-plugin-react', '@typescript-eslint', 'header'],
   root: true,
   ignorePatterns: ['**/**-css.ts', '.eslintrc.js', '*.cjs', 'rollup.config.mjs'],
   rules: {
     '@typescript-eslint/no-explicit-any': 'warn',
     // prefer-nullish-coalescing requires strictNullChecking to be turned on
-    '@typescript-eslint/prefer-nullish-coalescing': 'off'
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
+    'header/header': [
+      2,
+      'block',
+      [
+        '*',
+        ' * -------------------------------------------------------------------------------------------',
+        ' * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.',
+        ' * See License in the project root for license information.',
+        ' * -------------------------------------------------------------------------------------------',
+        ' '
+      ],
+      1
+    ]
   }
 };

@@ -4,6 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
 import { fixture, html, expect } from '@open-wc/testing';
 import { MockProvider, Providers } from '@microsoft/mgt-element';
 import { MgtFileUpload, registerMgtFileUploadComponent } from './mgt-file-upload';

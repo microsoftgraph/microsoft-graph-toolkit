@@ -33,8 +33,7 @@
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts",
     "sass": "node ./scripts/compileSass.js",
-    "sass:watch": "nodemon -e scss -x npm run sass",
-    "sass:gulp": "gulp sass --cwd ."
+    "sass:watch": "nodemon -e scss -x npm run sass"
   },
   "sideEffects": [
     "./dist/es6/index.js",
