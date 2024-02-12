@@ -148,7 +148,7 @@ const HeaderComponent: React.FunctionComponent = () => {
         </div>
 
         <div className={styles.waffleTitle}>
-          <Label className={styles.name}>{process.env.REACT_APP_SITE_NAME} </Label>
+          <Label className={styles.name}>{import.meta.env.VITE_SITE_NAME} </Label>
           <InfoButton
             className={styles.infoIcon}
             size="medium"

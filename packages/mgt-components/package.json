@@ -35,10 +35,7 @@
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd ."
   },
-  "sideEffects": [
-    "./dist/es6/index.js",
-    "./src/index.ts"
-  ],
+  "sideEffects": false,
   "dependencies": {
     "@fluentui/web-components": "^2.5.12",
     "@lit/task": "^1.0.0",

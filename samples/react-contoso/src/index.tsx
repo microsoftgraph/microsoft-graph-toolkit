@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom';
 import { Suspense } from 'react';
 import { mergeStyles } from '@fluentui/react';
-import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
+import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
 import { Providers, LoginType, customElementHelper } from '@microsoft/mgt-element';
 import { lazy } from 'react';
 const App = lazy(() => import('./App'));
@@ -19,7 +19,7 @@ mergeStyles({
 });
 
 Providers.globalProvider = new Msal2Provider({
-  clientId: process.env.REACT_APP_CLIENT_ID!,
+  clientId: import.meta.env.VITE_CLIENT_ID!,
   loginType: LoginType.Redirect,
 
   scopes: [
