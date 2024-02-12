@@ -10,6 +10,10 @@
 @import '../../styles/shared-sass-variables';
 @import './mgt-organization.theme';
 
+$organization-coworker-person-avatar-size: var(--organization-coworker-person-avatar-size, 40px);
+$organization-member-person-avatar-size: var(--organization-member-person-avatar-size, 40px);
+$organization-direct-report-person-avatar-size: var(--organization-direct-report-person-avatar-size, 38px);
+
 :host {
   position: relative;
   user-select: none;
@@ -19,13 +23,12 @@
       padding: 0;
 
       .coworker {
-        .coworker__image {
+        .coworker__person-image {
           height: 40px;
           width: 40px;
           border-radius: 40px;
 
-          --avatar-size: 40px;
-          --avatar-size-s: 40px;
+          --person-avatar-size: 40px;
 
           margin-right: 12px;
         }
@@ -60,8 +63,7 @@
       padding: 12px;
       display: flex;
       align-items: center;
-      margin-left: 20px;
-      margin-right: 20px;
+      margin-inline: 20px;
 
       &.org-member--target {
         background-color: $organization-active-org-member-target-background-color;
@@ -79,6 +81,10 @@
 
       .org-member__person {
         flex-grow: 1;
+
+        .org-member__person-image {
+          --person-avatar-size: #{$organization-member-person-avatar-size};
+        }
       }
 
       .org-member__details {
@@ -120,6 +126,10 @@
         height: 46px;
         border-radius: 46px;
         margin-right: 8px;
+
+        .coworker__person-image {
+          --person-avatar-size: #{$organization-coworker-person-avatar-size};
+        }
       }
     }
 
@@ -127,12 +137,22 @@
       padding: 12px 20px;
 
       .direct-report {
-        cursor: pointer;
-        width: 38px;
         margin-right: 4px;
-        display: inline;
+      }
+    }
 
-        --avatar-size: 38px;
+    .direct-report-list {
+      border: 1px solid $organization-coworker-border-color;
+      margin-inline: 20px;
+
+      .org-member--direct-report {
+        border: none;
+        cursor: pointer;
+        margin-inline: 0;
+
+        .direct-report__person-image {
+          --person-avatar-size: #{$organization-direct-report-person-avatar-size};
+        }
       }
     }
   }

@@ -1,6 +1,6 @@
 import { Meta, Source } from '@storybook/addon-docs';
 import { PACKAGE_VERSION } from '@microsoft/mgt-element';
-import { versionInfo } from '../.storybook/versionInfo';
+import { getCleanVersionInfo } from '../.storybook/versionInfo';
 import { TableNamer, CopyButtonNamer } from '../.storybook/components/ElementNamer';
 
 <Meta title="Overview" />
@@ -11,26 +11,31 @@ The Microsoft Graph Toolkit is a collection of reusable, framework-agnostic comp
 
 <img src="graff.png" className="docs-img-centered" alt="graph logo" width="15%"/>
 
-The Microsoft Graph Toolkit makes it easy to use Microsoft Graph in your application. In the following example, a signed in user and their calendar events are displayed with just two lines of code by using the [Login](?path=/story/components-mgt-login--login) and [Agenda](?path=/story/components-mgt-agenda--simple) components.
+The Microsoft Graph Toolkit makes it easy to use Microsoft Graph in your application. In this [example](?path=/story/samples-general--login-to-show-agenda), a signed in user and their calendar events are displayed with just two lines of code by using the [Login](?path=/story/components-mgt-login--login) and [Agenda](?path=/story/components-mgt-agenda--simple) components.
 
 <p>This site is providing documentation for version {PACKAGE_VERSION} of the Microsoft Graph Toolkit.</p>
 
 ### Installing the Microsoft Graph Toolkit
 
-It's easy to get started! Add the Toolkit via our `mgt-loader` or via npm and you are ready to go!
+It's easy to get started! Add the Toolkit from a CDN or via npm and you are ready to go!
 
-#### Via the mgt-loader
+#### From a CDN
 
 <Source
  language="html"
- code={`<script src="https://unpkg.com/@microsoft/mgt@${versionInfo.major}/dist/bundle/mgt-loader.js"></script>`}
+ code={`
+ <script type="module">
+  import { registerMgtComponents, Providers, Msal2Provider } from 'https://unpkg.com/@microsoft/mgt@${getCleanVersionInfo(true)}';
+  Providers.globalProvider = new Msal2Provider({clientId: '[CLIENT-ID]'});
+  registerMgtComponents();
+</script>`}
 />
 
 #### Via npm
 
 <Source
  language="shell"
- code={`npm install @microsoft/mgt@${PACKAGE_VERSION}`}
+ code={`npm install @microsoft/mgt@${getCleanVersionInfo()}`}
 />
 
 ### What's in the Microsoft Graph Toolkit?
@@ -43,29 +48,23 @@ The components are also available as [React components](https://learn.microsoft.
 
 | Component                                                                                      | Description                                                                                                                                      |
 | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [Login](?path=/story/components-mgt-login--login)                                              | A button and a flyout control to authenticate a user with the Microsoft Identity platform and display the user's profile information on sign in. |
-| [Person](?path=/story/components-mgt-person--person)                                           | Displays a person or contact by their photo, name, and/or email address.                                                                         |
-| [People](?path=/story/components-mgt-people--people)                                           | Displays a group of people or contacts by their photos or initials.                                                                              |
 | [Agenda](?path=/story/components-mgt-agenda--simple)                                           | Displays events in a user or group's calendar.                                                                                                   |
-| [People picker](?path=/story/components-mgt-people-picker--people-picker)                      | Provides the ability to search for people and renders the list of results.                                                                       |
-| [Person card](?path=/story/components-mgt-person-card--person-card)                            | A flyout used on the person component to display more profile information about a user.                                                          |
-| [Picker](?path=/story/components-mgt-picker--picker)                                           | Displays a generic picker that allows for picking of Microsoft Graph entities.                                                                   |
 | [File](?path=/story/components-mgt-file--file)                                                 | Represents a file or folder with icon, filename, author, and more.                                                                               |
 | [File list](?path=/story/components-mgt-file-list--file-list)                                  | Displays a list of multiple files or folders.                                                                                                    |
 | [Get](?path=/story/components-mgt-get--get-email)                                              | Make a GET query to any Microsoft Graph API directly in your HTML.                                                                               |
-| [Teams Channel picker](?path=/story/components-mgt-teams-channel-picker--teams-channel-picker) | Provides the ability to search for Microsoft Teams channels to select a channel from a rendered list of results.                                 |
+| [Login](?path=/story/components-mgt-login--login)                                              | A button and a flyout control to authenticate a user with the Microsoft Identity platform and display the user's profile information on sign in. |
+| [People](?path=/story/components-mgt-people--people)                                           | Displays a group of people or contacts by their photos or initials.                                                                              |
+| [People picker](?path=/story/components-mgt-people-picker--people-picker)                      | Provides the ability to search for people and renders the list of results.                                                                       |
+| [Person](?path=/story/components-mgt-person--person)                                           | Displays a person or contact by their photo, name, and/or email address.                                                                         |
+| [Person card](?path=/story/components-mgt-person-card--person-card)                            | A flyout used on the person component to display more profile information about a user.                                                          |
+| [Picker](?path=/story/components-mgt-picker--picker)                                           | Displays a generic picker that allows for picking of Microsoft Graph entities.                                                                   |
+| [Planner](?path=/story/components-mgt-planner--tasks)                                          | Displays and enables adding, removing, completing, or editing of tasks from Microsoft Planner.                                                   |
+| [Search Box](?path=/story/preview-mgt-search-box--search-box)                                  | An input box for search scenarios.                                                                                                               |
+| [Seach Results](?path=/story/preview-mgt-search-results--search-results)                       | A component for executing search queries and displaying search results.                                                                          |
+| [Taxonomy picker](?path=/story/components-mgt-taxonomy-picker--taxonomy-picker)                | Use the taxonomy picker component to query the Microsoft Graph API for Taxonomy and render a dropdown control with terms.                        |
+| [Teams channel picker](?path=/story/components-mgt-teams-channel-picker--teams-channel-picker) | Provides the ability to search for Microsoft Teams channels to select a channel from a rendered list of results.                                 |
 | [Theme toggle](?path=/story/components-mgt-theme-toggle--user-preference-driven)               | Provides the ability to toggle between light and dark themes.                                                                                    |
 | [To Do](?path=/story/components-mgt-todo--todos)                                               | Displays and enables adding, removing, completing, or editing of tasks from Microsoft To Do.                                                     |
-| [Tasks](?path=/story/components-mgt-tasks--tasks)                                              | Displays and enables adding, removing, completing, or editing of tasks from Microsoft Planner or Microsoft To Do.                                |
-
-##### Preview components
-
-Additionaly the following components are available as preview components. These components are not yet ready for production use and are subject to change.
-
-| Preview Component                                                        | Description                                                             |
-| ------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| [Search Box](?path=/story/preview-mgt-search-box--search-box)            | An input box for search scenarios.                                      |
-| [Seach Results](?path=/story/preview-mgt-search-results--search-results) | A component for executing search queries and displaying search results. |
 
 #### Providers
 
@@ -104,5 +103,5 @@ The Microsoft Graph Toolkit is supported in the following browsers.
 - [Get started](https://learn.microsoft.com/graph/toolkit/get-started/overview) with the Microsoft Graph Toolkit.
 - Check out the Microsoft Graph Toolkit on [GitHub](https://aka.ms/mgt).
 
-<TableNamer names={['Microsoft Graph Toolkit Components', 'Components in preview', 'Microsoft Graph Toolkit Providers', 'Supported browsers']}/>
+<TableNamer names={['Microsoft Graph Toolkit Components', 'Microsoft Graph Toolkit Providers', 'Supported browsers']}/>
 <CopyButtonNamer names={['Copy mgt-loader script tag', 'Copy npm install command']}/>

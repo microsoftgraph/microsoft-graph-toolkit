@@ -14,6 +14,7 @@ import { getRelativeDisplayDate } from '../../utils/Utils';
 import { styles } from './mgt-messages-css';
 import { strings } from './strings';
 import { registerComponent } from '@microsoft/mgt-element';
+import { state } from 'lit/decorators.js';
 
 export const registerMgtMessagesComponent = () => registerComponent('messages', MgtMessages);
 
@@ -37,6 +38,7 @@ export class MgtMessages extends BasePersonCardSection {
     return strings;
   }
 
+  @state()
   private _messages: Message[];
 
   public constructor(messages: Message[]) {
@@ -96,9 +98,7 @@ export class MgtMessages extends BasePersonCardSection {
   public renderCompactView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if (!this._messages?.length) {
+    if (!this._messages?.length) {
       contentTemplate = this.renderNoData();
     } else {
       const messageTemplates = this._messages
@@ -126,9 +126,7 @@ export class MgtMessages extends BasePersonCardSection {
   protected renderFullView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if (!this._messages?.length) {
+    if (!this._messages?.length) {
       contentTemplate = this.renderNoData();
     } else {
       contentTemplate = html`

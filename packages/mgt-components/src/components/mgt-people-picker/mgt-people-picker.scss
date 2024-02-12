@@ -9,6 +9,9 @@
 @import '../../styles/shared-styles';
 @import './mgt-people-picker.theme';
 
+$people-picker-result-person-avatar-size: var(--people-picker-result-person-avatar-size, 40px);
+$people-picker-selected-person-avatar-size: var(--people-picker-selected-person-avatar-size, 24px);
+
 :host {
   --person-details-wrapper-width: 0;
 
@@ -38,7 +41,9 @@
     }
 
     &::part(control) {
-      width: min-content;
+      width: auto;
+      flex-grow: 1;
+      min-width: 25%;
       height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
       word-spacing: inherit;
       text-indent: inherit;
@@ -107,8 +112,10 @@
         }
       }
 
-      &-person {
+      .person-image-selected {
         width: max-content;
+
+        --person-avatar-size: #{$people-picker-selected-person-avatar-size};
       }
     }
   }
@@ -135,6 +142,10 @@
       &:focus,
       &:focus-within {
         background: $dropdown-result-focus-bg-color;
+      }
+
+      .person-image-result {
+        --person-avatar-size: #{$people-picker-result-person-avatar-size};
       }
     }
   }

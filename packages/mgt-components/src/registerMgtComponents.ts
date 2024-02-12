@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import {
   registerMgtAgendaComponent,
   registerMgtFileComponent,
@@ -12,7 +19,7 @@ import {
   registerMgtSearchBoxComponent,
   registerMgtSearchResultsComponent,
   registerMgtSpinnerComponent,
-  registerMgtTasksComponent,
+  registerMgtPlannerComponent,
   registerMgtTaxonomyPickerComponent,
   registerMgtTeamsChannelPickerComponent,
   registerMgtThemeToggleComponent,
@@ -29,7 +36,7 @@ export const registerMgtComponents = () => {
   registerMgtLoginComponent();
   registerMgtPeoplePickerComponent();
   registerMgtPeopleComponent();
-  registerMgtTasksComponent();
+  registerMgtPlannerComponent();
   registerMgtTeamsChannelPickerComponent();
   registerMgtTodoComponent();
   registerMgtFileComponent();

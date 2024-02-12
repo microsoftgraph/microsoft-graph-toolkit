@@ -14,8 +14,16 @@ export default {
   decorators: [withCodeEditor]
 };
 
+export const setPlaceholder = () => html`
+<mgt-people-picker placeholder="Select people"></mgt-people-picker>
+`;
+
 export const showPresence = () => html`
 <mgt-people-picker show-presence></mgt-people-picker>
+`;
+
+export const personCard = () => html`
+  <mgt-people-picker person-card="hover"></mgt-people-picker>
 `;
 
 export const groupId = () => html`

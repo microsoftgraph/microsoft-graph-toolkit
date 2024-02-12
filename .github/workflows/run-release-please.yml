@@ -1,6 +1,5 @@
 # when the main branch is updated this workflow will run and create or update a combined [release PR](https://github.com/googleapis/release-please#whats-a-release-pr)
-# upon approval of the release PR as it adds a v3.x tag the [push-release.yml](./push-release.yml) workflow will run, push the release to npm and update the GitHub
-# release with the mgt-spfx sppkg file
+# upon approval of the release PR as it adds a v3.x tag the [push-release.yml](./push-release.yml) workflow will run, push the release to npm
 on:
   push:
     branches:
@@ -14,10 +13,10 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - name: Use Node.js 18.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
+          node-version: 20.x
           registry-url: 'https://registry.npmjs.org'
       - uses: google-github-actions/release-please-action@v3
         id: release

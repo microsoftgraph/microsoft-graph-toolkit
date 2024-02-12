@@ -76,7 +76,7 @@ export interface MsalElectronConfig {
 /**
  * Prompt type for consent or login
  *
- * @enum {number}
+ * @enum {string}
  */
 enum promptType {
   /**
@@ -88,7 +88,7 @@ enum promptType {
 /**
  * State of Authentication Provider
  *
- * @enum {number}
+ * @enum {string}
  */
 enum AuthState {
   /**
@@ -195,6 +195,8 @@ export class ElectronAuthenticator {
    * @memberof ElectronAuthenticator
    */
   private static authInstance: ElectronAuthenticator;
+
+  private _approvedScopes: string[];
 
   /**
    * Creates an instance of ElectronAuthenticator.
@@ -343,7 +345,8 @@ export class ElectronAuthenticator {
       };
       authResponse = await this.getTokenSilent(request, scopes);
     }
-    if (authResponse && authResponse !== null) {
+    if (authResponse) {
+      this._approvedScopes = authResponse.scopes;
       return authResponse.accessToken;
     }
     return undefined;
@@ -407,6 +410,7 @@ export class ElectronAuthenticator {
    */
   private async setAccountFromResponse(response: AuthenticationResult) {
     if (response) {
+      this._approvedScopes = response.scopes;
       this.account = response?.account || undefined;
     } else {
       this.account = await this.getAccount();

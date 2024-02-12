@@ -13,6 +13,8 @@ import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { IDynamicPerson } from '../../graph/types';
 import { MgtPersonCardState } from './mgt-person-card.types';
 import { MgtPersonCardConfig } from './MgtPersonCardConfig';
+import { validUserByIdScopes } from '../../graph/graph.user';
+import { validInsightScopes } from '../../graph/graph.files';
 
 const userProperties =
   'businessPhones,companyName,department,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,accountEnabled';
@@ -108,7 +110,7 @@ const buildOrgStructureRequest = (batch: IBatch, userId: string) => {
   batch.get(
     batchKeys.person,
     `users/${userId}?$expand=${expandManagers}&$select=${userProperties}&$count=true`,
-    ['user.read.all'],
+    validUserByIdScopes,
     {
       ConsistencyLevel: 'eventual'
     }
@@ -117,12 +119,13 @@ const buildOrgStructureRequest = (batch: IBatch, userId: string) => {
   batch.get(batchKeys.directReports, `users/${userId}/directReports?$select=${userProperties}`);
 };
 
+const validPeopleScopes = ['People.Read.All'];
 const buildWorksWithRequest = (batch: IBatch, userId: string) => {
-  batch.get(batchKeys.people, `users/${userId}/people?$filter=personType/class eq 'Person'`, ['People.Read.All']);
+  batch.get(batchKeys.people, `users/${userId}/people?$filter=personType/class eq 'Person'`, validPeopleScopes);
 };
-
+const validMailSearchScopes = ['Mail.ReadBasic', 'Mail.Read', 'Mail.ReadWrite'];
 const buildMessagesWithUserRequest = (batch: IBatch, emailAddress: string) => {
-  batch.get(batchKeys.messages, `me/messages?$search="from:${emailAddress}"`, ['Mail.ReadBasic']);
+  batch.get(batchKeys.messages, `me/messages?$search="from:${emailAddress}"`, validMailSearchScopes);
 };
 
 const buildFilesRequest = (batch: IBatch, emailAddress?: string) => {
@@ -134,9 +137,10 @@ const buildFilesRequest = (batch: IBatch, emailAddress?: string) => {
     request = 'me/insights/used';
   }
 
-  batch.get(batchKeys.files, request, ['Sites.Read.All']);
+  batch.get(batchKeys.files, request, validInsightScopes);
 };
 
+const validProfileScopes = ['User.Read.All', 'User.ReadWrite.All'];
 /**
  * Get the profile for a user
  *
@@ -145,7 +149,13 @@ const buildFilesRequest = (batch: IBatch, emailAddress?: string) => {
  * @return {*}  {Promise<Profile>}
  */
 const getProfile = async (graph: IGraph, userId: string): Promise<Profile> =>
-  (await graph.api(`/users/${userId}/profile`).version('beta').get()) as Profile;
+  (await graph
+    .api(`/users/${userId}/profile`)
+    .version('beta')
+    .middlewareOptions(prepScopes(validProfileScopes))
+    .get()) as Profile;
+
+const validCreateChatScopes = ['Chat.Create', 'Chat.ReadWrite'];
 
 /**
  * Initiate a chat to a user
@@ -157,7 +167,7 @@ const getProfile = async (graph: IGraph, userId: string): Promise<Profile> =>
  */
 export const createChat = async (graph: IGraph, person: string, user: string): Promise<Chat> => {
   const chatData = {
-    chatType: 'oneonOne',
+    chatType: 'oneOnOne',
     members: [
       {
         '@odata.type': '#microsoft.graph.aadUserConversationMember',
@@ -174,9 +184,11 @@ export const createChat = async (graph: IGraph, person: string, user: string): P
   return (await graph
     .api('/chats')
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Chat.Create', 'Chat.ReadWrite'))
+    .middlewareOptions(prepScopes(validCreateChatScopes))
     .post(chatData)) as Chat;
 };
+
+const validSendChatMessageScopes = ['ChatMessage.Send', 'Chat.ReadWrite'];
 
 /**
  * Send a chat message to a user
@@ -194,5 +206,5 @@ export const sendMessage = async (
   (await graph
     .api(`/chats/${chatId}/messages`)
     .header('Cache-Control', 'no-store')
-    .middlewareOptions(prepScopes('Chat.ReadWrite', 'ChatMessage.Send'))
+    .middlewareOptions(prepScopes(validSendChatMessageScopes))
     .post(messageData)) as ChatMessage;
