@@ -612,7 +612,7 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
                       <mgt-person
                         .personDetails=${details ? JSON.parse(details) : null}
                         .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
-                        .view=${'twolines'}
+                        view="twolines"
                         class="account"
                       ></mgt-person>
                     </li>`;

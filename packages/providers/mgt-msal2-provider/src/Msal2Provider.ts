@@ -24,7 +24,7 @@ import {
   InteractionRequiredAuthError,
   SsoSilentRequest,
   EventMessage,
-  AuthenticationResult
+  EventType
 } from '@azure/msal-browser';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 
@@ -423,7 +423,7 @@ export class Msal2Provider extends IProvider {
   }
 
   private readonly handleMsalEvent = (message: EventMessage): void => {
-    if (message.eventType === 'msal:acquireTokenSuccess' && 'scopes' in message.payload) {
+    if (message.eventType === EventType.ACQUIRE_TOKEN_SUCCESS && 'scopes' in message.payload) {
       this.approvedScopes = message.payload.scopes;
     }
   };

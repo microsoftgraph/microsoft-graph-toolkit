@@ -18,7 +18,6 @@ export const customCSSProperties = () => html`
   <style>
     .person {
       --person-background-color: #616161;
-      --person-background-border-radius: 30%;
 
       --person-avatar-size: 40px;
       --person-avatar-border: 3px solid yellow;
@@ -50,7 +49,7 @@ export const customCSSProperties = () => html`
       --person-line4-text-transform: lowercase;
       --person-line4-text-line-height: 16px;
 
-      --person-details-spacing: 30px;
+      --person-details-left-spacing: 30px;
       --person-details-bottom-spacing: 20px;
     }
 

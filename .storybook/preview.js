@@ -11,8 +11,32 @@ import { setCustomElements } from '@storybook/web-components';
 import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import customElements from '../custom-elements.json';
 import { versionInfo } from './versionInfo';
+import { registerMgtComponents } from '../packages/mgt-components/dist/es6/registerMgtComponents';
 import { defaultDocsPage } from './story-elements/defaultDocsPage';
+
+import { addons } from '@storybook/preview-api';
+import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from './env';
+import { Providers } from '../packages/mgt-element/dist/es6/providers/Providers';
+import { LoginType, ProviderState } from '../packages/mgt-element/dist/es6/providers/IProvider';
+import { MockProvider } from '../packages/mgt-element/dist/es6/mock/MockProvider';
+import { Msal2Provider } from '../packages/providers/mgt-msal2-provider/dist/es6/Msal2Provider';
 import './preview.css';
+
+registerMgtComponents();
+
+Providers.globalProvider = new MockProvider(true);
+const channel = addons.getChannel();
+channel.on(SETPROVIDER_EVENT, params => {
+  if (params.state === ProviderState.SignedIn && params.name === 'MgtMockProvider') {
+    Providers.globalProvider = new MockProvider(true);
+  } else if (params.state === ProviderState.SignedIn && params.name === 'MgtMsal2Provider') {
+    Providers.globalProvider = new Msal2Provider({
+      clientId: CLIENTID,
+      loginType: LoginType.Popup,
+      redirectUri: `${window.location.origin}/${AUTH_PAGE}`
+    });
+  }
+});
 
 const setCustomElementsManifestWithOptions = (customElements, options) => {
   let { privateFields = true } = options;
@@ -54,12 +78,18 @@ export const parameters = {
   options: {
     storySort: {
       order: ['stories']
+    },
+    showPanel: false
+  },
+  html: {
+    removeEmptyComments: true,
+    transform: code => {
+      return code.replace(/=""/g, '');
     }
   }
 };
 
 const req = require.context('../stories', true, /\.(js|mdx)$/);
-// configure(req, module);
 if (module.hot) {
   module.hot.accept(req.id, () => {
     const currentLocationHref = window.location.href;

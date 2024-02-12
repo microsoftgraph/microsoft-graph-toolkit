@@ -13,6 +13,10 @@ body,
   padding: 0!important;
 }
 
+#root-inner {
+    padding: 16px;
+}
+
 .docs-img-centered {
   display: block;
   float: none;
