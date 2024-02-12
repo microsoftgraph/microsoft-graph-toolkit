@@ -158,7 +158,8 @@
     }
   },
   "resolutions": {
-    "responselike": "2.0.0"
+    "responselike": "2.0.0",
+    "nth-check": "^2.0.1"
   },
   "packageManager": "yarn@3.6.3"
 }
