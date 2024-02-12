@@ -19,7 +19,7 @@ import { CreateANewChat } from '../Error/CreateANewChat';
 import { PleaseSignIn } from '../Error/PleaseSignIn';
 import { OpenTeamsLinkError } from '../Error/OpenTeams';
 
-export interface IChatListItemProps {
+export interface IChatListProps {
   onSelected: (e: GraphChat) => void;
   onUnselected?: (e: GraphChat) => void;
   onLoaded?: (e: GraphChatThread[]) => void;
@@ -29,6 +29,7 @@ export interface IChatListItemProps {
   lastReadTimeInterval?: number;
   selectedChatId?: string;
   onMessageReceived?: (msg: ChatMessage) => void;
+  onConnectionChanged?: (connected: boolean) => void;
 }
 
 const useStyles = makeStyles({
@@ -92,11 +93,12 @@ export const ChatList = ({
   onMessageReceived,
   onAllMessagesRead,
   onLoaded,
+  onConnectionChanged,
   chatThreadsPerPage,
   ...props
-}: MgtTemplateProps & IChatListItemProps & IChatListMenuItemsProps) => {
+}: MgtTemplateProps & IChatListProps & IChatListMenuItemsProps) => {
   const styles = useStyles();
-  const [headerBannerMessage, setHeaderBannerMessage] = useState<string>('');
+
   const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
   const [internalSelectedChatId, setInternalSelectedChatId] = useState<string | undefined>();
@@ -165,29 +167,28 @@ export const ChatList = ({
         onLoaded([]);
       }
 
-      if (state.status === 'server connection established') {
-        setHeaderBannerMessage(''); // reset
+      if (state.status === 'server connection established' && onConnectionChanged) {
+        onConnectionChanged(true);
       }
 
-      if (state.status === 'creating server connections') {
-        setHeaderBannerMessage('Connecting...');
-      }
-
-      if (state.status === 'server connection lost') {
-        // this happens when we lost connection to the server and we will try to reconnect
-        setHeaderBannerMessage('We ran into a problem. Reconnecting...');
+      if (state.status === 'server connection lost' && onConnectionChanged) {
+        onConnectionChanged(false);
       }
     });
+  }, [chatListClient, onMessageReceived, onLoaded, onConnectionChanged]);
 
-    // tear down
-    return () => {
-      // log state of chatlistclient for debugging purposes
-      log(chatListClient.getState());
-      chatListClient.offStateChange(setChatListState);
-      chatListClient.tearDown();
-      setHeaderBannerMessage('We ran into a problem. Please close or refresh.');
-    };
-  }, [chatListClient, onMessageReceived, onLoaded]);
+  // this only runs once when the component is unmounted
+  useEffect(() => {
+    if (chatListClient) {
+      // tear down
+      return () => {
+        // log state of chatlistclient for debugging purposes
+        log('ChatList unmounted.', chatListClient.getState());
+        chatListClient.offStateChange(setChatListState);
+        chatListClient.tearDown();
+      };
+    }
+  }, []);
 
   const markThreadAsRead = (chatThread: string) => {
     const markedChatThreads = chatListClient?.markChatThreadsAsRead([chatThread]);
@@ -229,26 +230,21 @@ export const ChatList = ({
     onClick: () => markAllThreadsAsRead(chatListState?.chatThreads)
   };
 
-  const isLoading = [
-    'creating server connections',
-    'server connection established',
-    'subscribing to notifications',
-    'loading messages'
-  ].includes(chatListState?.status ?? '');
+  const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
+    chatListState?.status ?? ''
+  );
 
-  const isError = ['server connection lost', 'error'].includes(chatListState?.status ?? '');
   const targetElementRef = useRef(null);
 
   useEffect(() => {
-    const handleIntersection = async (entries: IntersectionObserverEntry[]) => {
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       for (const entry of entries) {
         if (entry.isIntersecting) {
           // The element has come into view, you can perform your actions here
-          if (!loadingRef.current) {
+          if (chatListClient && !loadingRef.current) {
             // Prevent the function from being called multiple times
             if (chatListState?.moreChatThreadsToLoad) {
-              loadingRef.current = true;
-              await chatListClient?.loadMoreChatThreads();
+              void chatListClient.loadMoreChatThreads().then(() => (loadingRef.current = true));
             }
           }
         }
@@ -272,13 +268,13 @@ export const ChatList = ({
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.chatList}>
-          {Providers.globalProvider?.state === ProviderState.SignedIn && (
-            <ChatListHeader
-              bannerMessage={headerBannerMessage}
-              buttonItems={chatListButtonItems}
-              menuItems={[markAllAsRead, ...(props.menuItems ?? [])]}
-            />
-          )}
+          {Providers.globalProvider?.state === ProviderState.SignedIn &&
+            chatListState?.status !== 'server connection lost' && (
+              <ChatListHeader
+                buttonItems={chatListButtonItems}
+                menuItems={[markAllAsRead, ...(props.menuItems ?? [])]}
+              />
+            )}
           {chatListState && chatListState.chatThreads.length > 0 ? (
             <>
               <div className={styles.chatListItems}>
@@ -317,8 +313,8 @@ export const ChatList = ({
                     subheading={CreateANewChat}
                   ></Error>
                 )}
-                {isError && (
-                  <Error message="We're sorry—we've run into an issue." subheading={OpenTeamsLinkError}></Error>
+                {chatListState?.status === 'server connection lost' && (
+                  <Error message="We ran into a problem. Reconnecting..." subheading={OpenTeamsLinkError}></Error>
                 )}
               </div>
             </>

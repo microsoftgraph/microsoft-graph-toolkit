@@ -21,10 +21,6 @@ import {
 import { produce } from 'immer';
 import { currentUserId } from '../utils/currentUser';
 import { graph } from '../utils/graph';
-// TODO: MessageCache is added here for the purpose of following the convention of StatefulGraphChatClient. However, StatefulGraphChatListClient
-//       is also leveraging the same cache and performing the same actions which would have resulted in race conditions against the same messages
-//       in the cache. To avoid this, I have commented out the code. We should revisit this and determine if we need to use the cache.
-// import { MessageCache } from './Caching/MessageCache';
 import { GraphConfig } from './GraphConfig';
 import { GraphNotificationUserClient } from './GraphNotificationUserClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
@@ -79,7 +75,6 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
     | 'loading chats'
     | 'no chats'
     | 'chats loaded'
-    | 'error'
     | 'chat message received'
     | 'chats read';
   chatThreads: GraphChatThread[];
@@ -168,7 +163,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this._notificationClient = new GraphNotificationUserClient(this._eventEmitter, this._graph);
 
     void this.updateUserSubscription(this.userId);
-    void this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
   }
 
   /**
@@ -532,8 +526,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this.userId = userId;
     // by updating the followed chat the notification client will reconnect to SignalR
     await this.updateUserSubscription(userId);
-
-    await this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
   };
 
   private clearCurrentUserMessages() {
@@ -607,15 +599,14 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this._eventEmitter.on('disconnected', () => {
       this.notifyStateChange((draft: GraphChatListClient) => {
         draft.status = 'server connection lost';
+        draft.chatThreads = [];
       });
     });
     this._eventEmitter.on('connected', () => {
+      void this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
       this.notifyStateChange((draft: GraphChatListClient) => {
         draft.status = 'server connection established';
       });
-    });
-    this._eventEmitter.on('reconnected', () => {
-      void this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
     });
   }
 }

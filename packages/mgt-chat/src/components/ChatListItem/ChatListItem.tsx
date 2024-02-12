@@ -16,7 +16,7 @@ import { convert } from 'html-to-text';
 import { loadChatWithPreview, loadAppsInChat } from '../../statefulClient/graph.chat';
 import { DefaultProfileIcon } from './DefaultProfileIcon';
 
-interface IMgtChatListItemProps {
+interface IChatListItemProps {
   chat: Chat;
   myId: string | undefined;
   isSelected: boolean;
@@ -124,7 +124,7 @@ const imageTagRegex = /(<img[^>]+)/;
 const attachmentTagRegex = /(<attachment[^>]+)/;
 const systemEventTagRegex = /(<systemEventMessage[^>]+)/;
 
-export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListItemProps) => {
+export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemProps) => {
   const styles = useStyles();
 
   // manage the internal state of the chat

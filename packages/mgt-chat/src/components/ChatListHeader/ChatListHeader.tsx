@@ -40,15 +40,6 @@ const useStyles = makeStyles({
     '&:hover': {
       backgroundColor: 'transparent'
     }
-  },
-  bannerClassName: {
-    backgroundColor: '#FFE1A7',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontStyle: 'italic',
-    paddingTop: '5px',
-    paddingBottom: '5px',
-    marginBottom: '5px'
   }
 });
 
@@ -57,7 +48,6 @@ export const ChatListHeader = (
   props: MgtTemplateProps &
     IChatListMenuItemsProps & {
       buttonItems?: ChatListButtonItem[];
-      bannerMessage: string;
     }
 ) => {
   const classes = useStyles();
@@ -65,7 +55,6 @@ export const ChatListHeader = (
   const buttonItems: ChatListButtonItem[] = props.buttonItems === undefined ? [] : props.buttonItems;
   return (
     <div className={classes.headerContainer}>
-      {props.bannerMessage !== '' && <div className={classes.bannerClassName}>{props.bannerMessage}</div>}
       <div className={classes.controlsContainer}>
         <div>
           {buttonItems.map((buttonItem, index) => (

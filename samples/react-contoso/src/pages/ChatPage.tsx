@@ -1,14 +1,7 @@
 import * as React from 'react';
 import { memo, useCallback } from 'react';
 import { PageHeader } from '../components/PageHeader';
-import {
-  shorthands,
-  makeStyles,
-  Dialog,
-  DialogSurface,
-  DialogBody,
-  DialogTitle
-} from '@fluentui/react-components';
+import { shorthands, makeStyles, Dialog, DialogSurface, DialogBody, DialogTitle } from '@fluentui/react-components';
 import { Chat as GraphChat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { ChatList, Chat, NewChat, ChatListButtonItem, ChatListMenuItem } from '@microsoft/mgt-chat';
 import { Compose24Filled, Compose24Regular, bundleIcon } from '@fluentui/react-icons';
@@ -77,6 +70,9 @@ const ChatListWrapper = memo(({ onSelected, onNewChat, selectedChatId }: ChatLis
   const onMessageReceived = useCallback((msg: ChatMessage) => {
     console.log('SampleChatLog: Message received', msg);
   }, []);
+  const onConnectionChanged = React.useCallback((connected: boolean) => {
+    console.log('Connection changed: ', connected);
+  }, []);
 
   return (
     <ChatList
@@ -88,6 +84,7 @@ const ChatListWrapper = memo(({ onSelected, onNewChat, selectedChatId }: ChatLis
       onSelected={onSelected}
       onMessageReceived={onMessageReceived}
       onAllMessagesRead={onAllMessagesRead}
+      onConnectionChanged={onConnectionChanged}
     />
   );
 });

@@ -75,9 +75,6 @@ export class ThreadEventEmitter {
   connected() {
     this.emitter.emit('connected');
   }
-  reconnected() {
-    this.emitter.emit('reconnected');
-  }
   graphNotificationClientError(error: Error) {
     this.emitter.emit('graphNotificationClientError', error);
   }
