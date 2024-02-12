@@ -9,6 +9,11 @@ import { onRenderMessage } from '../../utils/chat';
 import { renderMGTMention, mentionLookupOptionsWrapper } from '../../utils/mentions';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
 import { registerAppIcons } from '../styles/registerIcons';
+import { LoadingMessagesErrorIcon } from '../Error/LoadingMessageErrorIcon';
+import { OpenTeamsLinkError } from '../Error/OpenTeams';
+import { RequireValidChatId } from '../Error/RequireAValidChatId';
+import { TypeANewMessage } from '../Error/TypeANewMessage';
+import { Error } from '../Error/Error';
 
 registerAppIcons();
 

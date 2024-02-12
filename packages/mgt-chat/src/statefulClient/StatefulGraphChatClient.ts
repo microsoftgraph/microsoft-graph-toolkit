@@ -8,7 +8,6 @@
 import {
   ChatMessage as AcsChatMessage,
   ContentSystemMessage,
-  ErrorBarProps,
   Message,
   MessageThreadProps,
   SendBoxProps,
@@ -40,8 +39,8 @@ import { produce } from 'immer';
 import { v4 as uuid } from 'uuid';
 import { currentUserId, currentUserName } from '../utils/currentUser';
 import { graph } from '../utils/graph';
-import { rewriteEmojiContent } from '../utils/rewriteEmojiContent';
-import { isChatMessage } from '../utils/types';
+import { rewriteEmojiContentToHTML } from '../utils/rewriteEmojiContent';
+import { GraphChatClientStatus, isChatMessage } from '../utils/types';
 import { updateMessageContentWithImage } from '../utils/updateMessageContentWithImage';
 import { MessageCache } from './Caching/MessageCache';
 import { GraphConfig } from './GraphConfig';

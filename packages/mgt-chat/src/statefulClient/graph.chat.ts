@@ -132,7 +132,7 @@ export const sendChatMessage = async (
   }
   return (await graph
     .api(`/chats/${chatId}/messages`)
-    .middlewareOptions(prepScopes(...chatOperationScopes.sendChatMessage))
+    .middlewareOptions(prepScopes(chatOperationScopes.sendChatMessage))
     .post(payload)) as ChatMessage;
 };
 

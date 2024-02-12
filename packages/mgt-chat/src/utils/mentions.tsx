@@ -54,12 +54,7 @@ export const mentionLookupOptionsWrapper = (chatState: GraphChatClient): Mention
       const userId = matchedResults[suggestion.id] ?? '';
       const key = userId ?? `${participants.length + 1}`;
       return (
-        <Person
-          key={key}
-          userId={userId}
-          view={ViewType.oneline}
-          onClick={() => onSuggestionSelected(suggestion)}
-        ></Person>
+        <Person key={key} userId={userId} view="oneline" onClick={() => onSuggestionSelected(suggestion)}></Person>
       );
     }
   };
