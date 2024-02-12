@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.1](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.0.0...v4.0.1) (2024-02-12)
+
+
+### Bug Fixes
+
+* apply keyboard focus when removing selected person or adding person from suggestion list on people-picker ([#3011](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3011)) ([8c8b138](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/8c8b138e96224fba238d28b6b0776f4b4e1b0176))
+* ensure consistency level header present for user search ([#3029](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3029)) ([3d893b2](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/3d893b2eb291bf58a2df424810c34d1e8b6bc5cc))
+
 ## [4.0.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v3.1.3...v4.0.0) (2024-02-05)
 
 

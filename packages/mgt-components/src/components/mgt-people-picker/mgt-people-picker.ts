@@ -1200,9 +1200,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       }
       return p.id !== person.id;
     });
-    if (this.hasMaxSelections) {
-      this.enableTextInput();
-    }
     this.selectedPeople = filteredPersonArr;
     void this.loadState();
   }
@@ -1216,6 +1213,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   protected handleRemovePersonKeyDown(person: IDynamicPerson, e: KeyboardEvent): void {
     if (e.key === 'Enter') {
       this.removePerson(person, e);
+      this.enableTextInput();
     }
   }
 
@@ -1243,6 +1241,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         this._foundPeople = [];
         this._arrowSelectionCount = -1;
       }
+      this.enableTextInput();
     }
   }
 
