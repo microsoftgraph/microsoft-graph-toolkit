@@ -674,7 +674,9 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
     const hasImage = imageSrc && !this._isInvalidImageSrc && this.avatarType === 'photo';
     const imageOnly = this.avatarType === 'photo' && this.view === 'image';
     const titleText =
-      (personDetailsInternal?.displayName || getEmailFromGraphEntity(personDetailsInternal)) ?? undefined;
+      (personDetailsInternal?.displayName ||
+        `${this.strings.emailAddress} ${getEmailFromGraphEntity(personDetailsInternal)}`) ??
+      undefined;
     const imageTemplate = html`<img
       title="${ifDefined(imageOnly ? titleText : undefined)}"
       alt=${altText}
@@ -831,26 +833,6 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
    * @memberof MgtPersonCard
    */
   protected renderAvatar(personDetailsInternal: IDynamicPerson, image: string, presence: Presence): TemplateResult {
-    const hasInitials = !image || this._isInvalidImageSrc || this.avatarType === 'initials';
-
-    let title = '';
-
-    if (hasInitials && personDetailsInternal) {
-      title = `${this.strings.initials} ${this.getInitials(personDetailsInternal)}`;
-    } else {
-      title = personDetailsInternal ? personDetailsInternal.displayName || '' : '';
-      if (title !== '') {
-        title = `${this.strings.photoFor} ${title}`;
-      }
-    }
-
-    if (title === '') {
-      const emailAddress = getEmailFromGraphEntity(personDetailsInternal);
-      if (emailAddress !== null) {
-        title = `${this.strings.emailAddress} ${emailAddress}`;
-      }
-    }
-
     const imageTemplate: TemplateResult = this.renderImage(personDetailsInternal, image);
     const presenceTemplate: TemplateResult = this.renderPresence(presence);
 
@@ -905,14 +887,14 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
       // Render the line1 template
       const template = this.renderTemplate('line1', { person });
       details.push(html`
-           <div class="line1" @click=${() =>
+           <div class="line1" part="detail-line" @click=${() =>
              this.handleLine1Clicked()} role="presentation" aria-label="${line1text}">${template}</div>
          `);
     } else {
       // Render the line1 property value
       if (line1text) {
         details.push(html`
-             <div class="line1" @click=${() =>
+             <div class="line1" part="detail-line" @click=${() =>
                this.handleLine1Clicked()} role="presentation" aria-label="${line1text}">${line1text}</div>
            `);
       }
@@ -925,14 +907,14 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
         // Render the line2 template
         const template = this.renderTemplate('line2', { person });
         details.push(html`
-           <div class="line2" @click=${() =>
+           <div class="line2" part="detail-line" @click=${() =>
              this.handleLine2Clicked()} role="presentation" aria-label="${text}">${template}</div>
          `);
       } else {
         // Render the line2 property value
         if (text) {
           details.push(html`
-             <div class="line2" @click=${() =>
+             <div class="line2" part="detail-line" @click=${() =>
                this.handleLine2Clicked()} role="presentation" aria-label="${text}">${text}</div>
            `);
         }
@@ -946,14 +928,14 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
         // Render the line3 template
         const template = this.renderTemplate('line3', { person });
         details.push(html`
-           <div class="line3" @click=${() =>
+           <div class="line3" part="detail-line" @click=${() =>
              this.handleLine3Clicked()} role="presentation" aria-label="${text}">${template}</div>
          `);
       } else {
         // Render the line3 property value
         if (text) {
           details.push(html`
-             <div class="line3" @click=${() =>
+             <div class="line3" part="detail-line" @click=${() =>
                this.handleLine3Clicked()} role="presentation" aria-label="${text}">${text}</div>
            `);
         }
@@ -967,14 +949,14 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
         // Render the line4 template
         const template = this.renderTemplate('line4', { person });
         details.push(html`
-          <div class="line4" @click=${() =>
+          <div class="line4" part="detail-line" @click=${() =>
             this.handleLine4Clicked()} role="presentation" aria-label="${text}">${template}</div>
         `);
       } else {
         // Render the line4 property value
         if (text) {
           details.push(html`
-            <div class="line4" @click=${() =>
+            <div class="line4" part="detail-line" @click=${() =>
               this.handleLine4Clicked()} role="presentation" aria-label="${text}">${text}</div>
           `);
         }

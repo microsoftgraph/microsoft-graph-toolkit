@@ -385,7 +385,7 @@ export class MgtTodo extends MgtTasksBase {
       complete: isCompleted
     });
 
-    const taskCheckContent = isCompleted ? html`${getSvg(SvgIcon.CheckMark)}` : html`${getSvg(SvgIcon.Radio)}`;
+    const taskCheckContent = html`${getSvg(SvgIcon.CheckMark)}`;
 
     return html`
       <div class=${taskClasses} @blur="${this.handleBlur}">
@@ -555,6 +555,15 @@ export class MgtTodo extends MgtTasksBase {
     this._newTaskName = '';
     this._changedTaskName = '';
     this._isChangedDueDate = false;
+    this.focusOnTaskInput();
+  };
+
+  protected focusOnTaskInput = (): void => {
+    const taskInputWrapper = this.renderRoot.querySelector<HTMLInputElement>('#new-task-name-input');
+    const input = taskInputWrapper?.shadowRoot.querySelector<HTMLInputElement>('input');
+    if (input) {
+      input.focus();
+    }
   };
 
   /**
@@ -586,6 +595,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const taskIndex = this._tasks.findIndex(t => t.id === task.id);
     this._tasks[taskIndex] = task;
+    await this._task.run();
   };
 
   private readonly removeTask = async (taskId: string): Promise<void> => {

@@ -42,7 +42,7 @@ export const Localization = () => html`
           noResultsFound: 'لم يتم العثور على نتائج',
           loadingMessage: 'Loading...'
         },
-        tasks: {
+        planner: {
           removeTaskSubtitle: 'delete',
           cancelNewTaskSubtitle: 'canceltest',
           newTaskPlaceholder: 'newTaskTest',
@@ -90,7 +90,7 @@ export const Localization = () => html`
 `;
 
 export const cache = () => html`
-<button id="ClearCacheButton" type="button">Clear Cache</button>
+<fluent-button id="ClearCacheButton" appearance="accent">Clear Cache</fluent-button>
 <div id="status" class="notes"></div>
 <span class="notes"
   >*Note* Please refer to your browser Developer Tools -> Applications -> Storage -> IndexedDB for cached
