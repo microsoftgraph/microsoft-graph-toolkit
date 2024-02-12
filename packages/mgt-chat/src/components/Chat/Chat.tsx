@@ -60,7 +60,7 @@ const useStyles = makeStyles({
       ...shorthands.overflow('hidden', 'scroll'),
       ...shorthands.gap('6px'),
 
-      '& mgt-person:hover': {
+      '& .suggested-person:hover': {
         backgroundColor: 'var(--colorSubtleBackgroundHover)'
       }
     }
