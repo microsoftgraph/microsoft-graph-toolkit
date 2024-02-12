@@ -580,7 +580,6 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
         ${personTemplate}
       </div>
     `;
-    // return this.renderLoading();
   };
 
   /**
