@@ -418,11 +418,15 @@ export const findUsers = async (graph: IGraph, query: string, top = 10, userFilt
   }
 
   const encodedQuery = `${query.replace(/#/g, '%2523')}`;
-  const graphBuilder = graph.api('users').search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}"`);
+  const graphBuilder = graph
+    .api('users')
+    .search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}"`)
+    .header('ConsistencyLevel', 'eventual')
+    .count(true);
   let graphResult: CollectionResponse<User>;
 
   if (userFilters !== '') {
-    graphBuilder.filter(userFilters).header('ConsistencyLevel', 'eventual').count(true);
+    graphBuilder.filter(userFilters);
   }
   try {
     graphResult = (await graphBuilder.top(top).middlewareOptions(prepScopes(scopes)).get()) as CollectionResponse<User>;
