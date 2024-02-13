@@ -235,6 +235,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
 
   public setInternalSelectedChat = (chatThread: GraphChatThread): void => {
     const state = this.getState();
+
     if (state.internalSelectedChat) {
       this.notifyStateChange((draft: GraphChatListClient) => {
         draft.status = 'chat unselected';
@@ -245,19 +246,19 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
 
     this.notifyStateChange((draft: GraphChatListClient) => {
       draft.status = 'chat selected';
-      draft.internalSelectedChat = chatThread;
-      draft.internalSelectedChat.isRead = true;
+      draft.internalSelectedChat = {
+        ...chatThread,
+        isRead: true
+      };
     });
   };
 
   public markAllChatThreadsAsRead = () => {
     // mark as read after chat thread is found in current state
-    const markedChatThreads: string[] = [];
     this.notifyStateChange((draft: GraphChatListClient) => {
       draft.status = 'chats read';
       draft.chatThreads = this._state.chatThreads.map((chatThread: GraphChatThread) => {
         if (chatThread.id && !chatThread.isRead) {
-          markedChatThreads.push(chatThread.id);
           return {
             ...chatThread,
             isRead: true
@@ -456,10 +457,10 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         chatThread.lastMessagePreview = event.message as ChatMessageInfo;
         chatThread.lastUpdatedDateTime = event.message.lastModifiedDateTime;
         // this resets the chat thread read state for all chats including the active chat
-        chatThread.isRead = false;
-        // change isread
-        if (draft.internalSelectedChat && draft.chatMessage.id === draft.internalSelectedChat.id) {
-          draft.internalSelectedChat.isRead = true;
+        if (draft.internalSelectedChat && draft.internalSelectedChat.id === draft.chatMessage.chatId) {
+          chatThread.isRead = true;
+        } else {
+          chatThread.isRead = false;
         }
 
         bringToTop();
