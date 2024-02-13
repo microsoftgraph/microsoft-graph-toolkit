@@ -28,16 +28,14 @@
   "scripts": {
     "build": "npm-run-all clean build:compile build:bundle",
     "build:bundle": "npm run rollup",
-    "build:compile": "npm-run-all sass compile",
-    "build:watch": "npm-run-all -p sass:watch compile:watch",
+    "build:compile": "npm-run-all compile",
+    "build:watch": "npm-run-all -p compile:watch",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts",
-    "rollup": "rollup -c",
-    "sass": "gulp sass --cwd .",
-    "sass:watch": "gulp watchSass --cwd ."
+    "rollup": "rollup -c"
   },
   "sideEffects": false,
   "dependencies": {

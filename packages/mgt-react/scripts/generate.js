@@ -26,6 +26,15 @@ const gaTags = new Set([
 ]);
 const barrelFileName = 'react';
 
+const licenseStr = `/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+`;
+
 const generateTags = (tags, fileName) => {
   const mgtComponentImports = new Set();
   const mgtElementImports = new Set();
@@ -166,7 +175,7 @@ const generateTags = (tags, fileName) => {
     ? `import { ${componentTypeImports} } from '@microsoft/mgt-components';
 `
     : '';
-  output = `/* eslint-disable @typescript-eslint/no-explicit-any */
+  output = `${licenseStr}/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 ${initialLine}import { ${Array.from(registrationFunctions).join(',')} } from '@microsoft/mgt-components';
 ${
@@ -195,7 +204,7 @@ gaTags.forEach(tag => {
   generateTags(new Set([tag]), tag);
 });
 
-output = '';
+output = `${licenseStr}`;
 // generate a barrel file
 gaTags.forEach(tag => {
   output += `export * from './${tag}';\n`;

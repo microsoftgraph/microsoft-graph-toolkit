@@ -20,6 +20,7 @@ $font-family: var(
   sans-serif
 );
 $font-size: var(--default-font-size, 14px);
+$focus-ring-color: var(--focus-ring-color, Highlight);
 
 :host([hidden]) {
   display: none;
@@ -36,7 +37,7 @@ $font-size: var(--default-font-size, 14px);
 
 :focus-visible {
   // ensure default is correctly set for Firefox
-  outline-color: var(--focus-ring-color, Highlight);
+  outline-color: $focus-ring-color;
 
   // ensure default is set for other browsers
   /* stylelint-disable-next-line declaration-block-no-duplicate-properties */

@@ -4,6 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
 import { fixture, html, expect, oneEvent } from '@open-wc/testing';
 import { LocalizationHelper, MockProvider, Providers } from '@microsoft/mgt-element';
 import { registerMgtPersonComponent } from './mgt-person';

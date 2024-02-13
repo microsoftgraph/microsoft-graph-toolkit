@@ -27,8 +27,8 @@
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
-    "setVersion": "gulp setVersion --cwd .",
-    "postpack": "cpx *.tgz ../../artifacts"
+    "postpack": "cpx *.tgz ../../artifacts",
+    "setVersion": "node ./scripts/setVersion.js"
   },
   "sideEffects": false,
   "dependencies": {

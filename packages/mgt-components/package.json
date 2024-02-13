@@ -32,8 +32,8 @@
     "compile:watch": "tsc -w",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts",
-    "sass": "gulp sass --cwd .",
-    "sass:watch": "gulp watchSass --cwd ."
+    "sass": "node ./scripts/compileSass.js",
+    "sass:watch": "nodemon -e scss -x npm run sass"
   },
   "sideEffects": [
     "./dist/es6/index.js",
