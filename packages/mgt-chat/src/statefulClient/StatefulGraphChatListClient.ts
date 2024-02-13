@@ -238,7 +238,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     if (state.internalSelectedChat) {
       this.notifyStateChange((draft: GraphChatListClient) => {
         draft.status = 'chat unselected';
-        draft.internalPrevSelectedChat = draft.internalPrevSelectedChat;
+        draft.internalPrevSelectedChat = state.internalSelectedChat;
         draft.internalSelectedChat = undefined;
       });
     }
@@ -552,9 +552,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       draft.chatThreads = chatThreads;
       draft.moreChatThreadsToLoad = nextLink !== undefined && nextLink !== '';
       if (this._initialSelectedChatId) {
-        draft.internalSelectedChat = chatThreads.filter(c => {
-          c.id === this._initialSelectedChatId;
-        })[0];
+        draft.internalSelectedChat = chatThreads.filter(c => c.id === this._initialSelectedChatId)[0];
         this._initialSelectedChatId = undefined;
         draft.initialSelectedChatSet = true;
       }
