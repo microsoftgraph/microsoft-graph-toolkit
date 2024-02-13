@@ -24,6 +24,8 @@ import type {
 import { GraphConfig } from './GraphConfig';
 import { SubscriptionsCache, ComponentType } from './Caching/SubscriptionCache';
 import { Timer } from '../utils/Timer';
+import { getOrGenerateGroupId } from './getOrGenerateGroupId';
+import { v4 as uuid } from 'uuid';
 
 export const appSettings = {
   defaultSubscriptionLifetimeInMinutes: 10,
@@ -174,7 +176,8 @@ export class GraphNotificationUserClient {
   };
 
   private async createSubscription(userId: string): Promise<Subscription> {
-    log('Creating a new subscription.');
+    const groupId = getOrGenerateGroupId(userId);
+    log('Creating a new subscription with group Id:', groupId);
     const resourcePath = `/users/${userId}/chats/getAllmessages`;
     const changeTypes: ChangeTypes[] = ['created', 'updated', 'deleted'];
 
@@ -184,7 +187,7 @@ export class GraphNotificationUserClient {
     ).toISOString();
     const subscriptionDefinition: Subscription = {
       changeType: changeTypes.join(','),
-      notificationUrl: `${GraphConfig.webSocketsPrefix}?groupId=${userId}&sessionId=default`,
+      notificationUrl: `${GraphConfig.webSocketsPrefix}?groupId=${groupId}`,
       resource: resourcePath,
       expirationDateTime,
       includeResourceData: true,
@@ -221,6 +224,7 @@ export class GraphNotificationUserClient {
     this.currentUserId = this.userId;
 
     let isRenewalInError = false;
+    let nextRenewalTimeInMs = appSettings.renewalTimerInterval * 1000;
 
     try {
       let subscription = await this.getSubscription(this.currentUserId);
@@ -254,15 +258,27 @@ export class GraphNotificationUserClient {
       }
 
       if (!subscription) {
-        subscription = await this.createSubscription(this.currentUserId);
+        try {
+          subscription = await this.createSubscription(this.currentUserId);
+        } catch (e) {
+          subscription = undefined;
+          isRenewalInError = true;
+          error(e);
+
+          // rather than 3 seconds, back off to 10 seconds if we get a 403
+          if ((e as { statusCode?: number }).statusCode === 403) {
+            nextRenewalTimeInMs = 10 * 1000;
+          }
+        }
       }
 
       // notificationUrl comes in the form of websockets:https://graph.microsoft.com/beta/subscriptions/notificationChannel/websockets/<Id>?groupid=<UserId>&sessionid=default
       // if <Id> changes, we need to create a new connection
       if (
-        !this.connection ||
-        this.connection.state !== HubConnectionState.Connected ||
-        this.lastNotificationUrl !== subscription.notificationUrl
+        subscription &&
+        (!this.connection ||
+          this.connection.state !== HubConnectionState.Connected ||
+          this.lastNotificationUrl !== subscription.notificationUrl)
       ) {
         if (subscription.notificationUrl) {
           this.lastNotificationUrl = subscription.notificationUrl;
@@ -296,12 +312,17 @@ export class GraphNotificationUserClient {
     }
 
     this.isRewnewalInProgress = false;
-    this.renewalInterval = this.timer.setTimeout(this.renewalSync, appSettings.renewalTimerInterval * 1000);
+    this.renewalInterval = this.timer.setTimeout(this.renewalSync, nextRenewalTimeInMs);
   };
 
   private async getSubscription(userId: string): Promise<Subscription | undefined> {
     const subscriptions = (await this.subscriptionCache.loadSubscriptions(userId))?.subscriptions || [];
     return subscriptions.length > 0 ? subscriptions[0] : undefined;
+  }
+
+  // this is used to create a unique session id for the web socket connection
+  private getSessionId(): string {
+    return uuid();
   }
 
   private readonly renewSubscription = async (userId: string, subscription: Subscription): Promise<void> => {
@@ -329,7 +350,7 @@ export class GraphNotificationUserClient {
     };
 
     const connection = new HubConnectionBuilder()
-      .withUrl(GraphConfig.adjustNotificationUrl(notificationUrl), connectionOptions)
+      .withUrl(GraphConfig.adjustNotificationUrl(notificationUrl, this.getSessionId()), connectionOptions)
       .configureLogging(LogLevel.Information)
       .build();
 
