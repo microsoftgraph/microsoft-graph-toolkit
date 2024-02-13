@@ -43,7 +43,7 @@ const useStyles = makeStyles({
 });
 
 interface ChatListWrapperProps {
-  onSelected: (e: GraphChat) => void;
+  onSelected: (e: GraphChatThread) => void;
   onNewChat: () => void;
   selectedChatId: string | undefined;
 }
@@ -94,7 +94,7 @@ const ChatPage: React.FunctionComponent = () => {
   const [chatId, setChatId] = React.useState<string>('');
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
 
-  const onChatSelected = React.useCallback((e: GraphChat) => {
+  const onChatSelected = React.useCallback((e: GraphChatThread) => {
     if (chatId !== e.id) {
       setChatId(e.id ?? '');
     }
