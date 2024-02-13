@@ -73,6 +73,9 @@ const ChatListWrapper = memo(({ onSelected, onNewChat, selectedChatId }: ChatLis
   const onConnectionChanged = React.useCallback((connected: boolean) => {
     console.log('Connection changed: ', connected);
   }, []);
+  const onUnselected = useCallback((chatThread: GraphChatThread) => {
+    console.log('Unselected: ', chatThread.id);
+  }, []);
 
   return (
     <ChatList
@@ -85,6 +88,7 @@ const ChatListWrapper = memo(({ onSelected, onNewChat, selectedChatId }: ChatLis
       onMessageReceived={onMessageReceived}
       onAllMessagesRead={onAllMessagesRead}
       onConnectionChanged={onConnectionChanged}
+      onUnselected={onUnselected}
     />
   );
 });

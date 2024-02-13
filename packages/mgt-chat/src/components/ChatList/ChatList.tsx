@@ -4,7 +4,7 @@ import { MgtTemplateProps, ProviderState, Providers, Spinner, log } from '@micro
 import { makeStyles, Button, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
-import { Chat as GraphChat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import { ChatMessage } from '@microsoft/microsoft-graph-types';
 import {
   StatefulGraphChatListClient,
   GraphChatListClient,
@@ -261,7 +261,7 @@ export const ChatList = ({
                       chat={c}
                       myId={chatListState.userId}
                       isSelected={c.id === chatListState?.internalSelectedChat?.id}
-                      isRead={c.id === chatListState?.internalSelectedChat?.id || c.isRead}
+                      isRead={c.isRead}
                     />
                   </Button>
                 ))}

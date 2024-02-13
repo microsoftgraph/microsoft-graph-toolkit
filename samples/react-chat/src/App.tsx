@@ -44,6 +44,10 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChatThread)
     console.log('Connection changed: ', connected);
   }, []);
 
+  const onUnselected = useCallback((chatThread: GraphChatThread) => {
+    console.log('Unselected: ', chatThread.id);
+  }, []);
+
   return (
     <ChatList
       onLoaded={onLoaded}
@@ -54,6 +58,7 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChatThread)
       onMessageReceived={onMessageReceived}
       onAllMessagesRead={onAllMessagesRead}
       onConnectionChanged={onConnectionChanged}
+      onUnselected={onUnselected}
     />
   );
 });
@@ -63,6 +68,7 @@ function App() {
   const [showNewChat, setShowNewChat] = useState<boolean>(false);
 
   const chatSelected = useCallback((e: GraphChatThread) => {
+    console.log('Selected: ', e.id);
     setChatId(e.id ?? '');
   }, []);
 

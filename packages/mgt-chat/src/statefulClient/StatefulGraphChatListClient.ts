@@ -250,6 +250,12 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         ...chatThread,
         isRead: true
       };
+      draft.chatThreads = state.chatThreads.map((c: GraphChatThread) => {
+        if (c.id === chatThread.id && draft.internalSelectedChat) {
+          return draft.internalSelectedChat;
+        }
+        return c;
+      });
     });
   };
 
@@ -257,7 +263,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     // mark as read after chat thread is found in current state
     this.notifyStateChange((draft: GraphChatListClient) => {
       draft.status = 'chats read';
-      draft.chatThreads = this._state.chatThreads.map((chatThread: GraphChatThread) => {
+      draft.chatThreads = this.getState().chatThreads.map((chatThread: GraphChatThread) => {
         if (chatThread.id && !chatThread.isRead) {
           return {
             ...chatThread,
@@ -284,9 +290,10 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
 
     // cache last read time after chat thread is found in current state
     if (action === 'selected') {
-      if (state.internalSelectedChat?.id) {
-        log(`caching the last-read timestamp of now to chat ID '${state.internalSelectedChat.id}'...`);
-        void this._cache.cacheLastReadTime(state.internalSelectedChat.id, new Date());
+      const selectedChatId = state.internalSelectedChat?.id;
+      if (selectedChatId) {
+        log(`caching the last-read timestamp of now to chat ID '${selectedChatId}'...`);
+        void this._cache.cacheLastReadTime(selectedChatId, new Date());
       }
     }
   };
