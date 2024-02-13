@@ -197,6 +197,13 @@ export class ElectronAuthenticator {
   private static authInstance: ElectronAuthenticator;
 
   private _approvedScopes: string[];
+  protected get approvedScopes(): string[] {
+    return this._approvedScopes;
+  }
+  protected set approvedScopes(value: string[]) {
+    this._approvedScopes = value;
+    this.mainWindow.webContents.send('mgtApprovedScopes', value);
+  }
 
   /**
    * Creates an instance of ElectronAuthenticator.
@@ -346,7 +353,7 @@ export class ElectronAuthenticator {
       authResponse = await this.getTokenSilent(request, scopes);
     }
     if (authResponse) {
-      this._approvedScopes = authResponse.scopes;
+      this.approvedScopes = authResponse.scopes;
       return authResponse.accessToken;
     }
     return undefined;
@@ -410,7 +417,7 @@ export class ElectronAuthenticator {
    */
   private async setAccountFromResponse(response: AuthenticationResult) {
     if (response) {
-      this._approvedScopes = response.scopes;
+      this.approvedScopes = response.scopes;
       this.account = response?.account || undefined;
     } else {
       this.account = await this.getAccount();
