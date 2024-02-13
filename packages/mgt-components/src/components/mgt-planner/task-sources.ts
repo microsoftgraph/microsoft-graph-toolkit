@@ -4,6 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
 /* eslint-disable max-classes-per-file */
 
 import { IGraph, BetaGraph } from '@microsoft/mgt-element';
