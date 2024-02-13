@@ -10,8 +10,7 @@ import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
-import { MgtBaseTaskComponent } from '@microsoft/mgt-element/';
-import { registerComponent } from '@microsoft/mgt-element';
+import { MgtBaseTaskComponent, registerComponent } from '@microsoft/mgt-element';
 
 export const registerMgtFlyoutComponent = () => registerComponent('flyout', MgtFlyout);
 
