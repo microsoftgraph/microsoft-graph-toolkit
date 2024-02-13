@@ -16,7 +16,7 @@ import {
 
 import { SkeletonItem } from '@fluentui/react-components';
 import { FeedRegular } from '@fluentui/react-icons';
-import { Get, MgtTemplateProps, Person, PersonCardInteraction, ViewType } from '@microsoft/mgt-react';
+import { Get, MgtTemplateProps, Person } from '@microsoft/mgt-react';
 import React from 'react';
 
 export interface IIndicentsProps {}
@@ -39,7 +39,7 @@ const getColumns = (shimmered: boolean): TableColumnDefinition<any>[] => {
             {shimmered ? (
               <SkeletonItem shape="rectangle" style={{ width: '120px' }} />
             ) : (
-              <Person userId={item.id} view={ViewType.oneline} personCardInteraction={PersonCardInteraction.hover} />
+              <Person userId={item.id} view="oneline" personCardInteraction="hover" />
             )}
           </TableCellLayout>
         );

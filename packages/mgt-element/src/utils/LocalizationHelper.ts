@@ -12,7 +12,7 @@ type LocalizationRecord = Record<string, ComponentLocalizationRecord>;
 
 type LocalizationStorage = {
   _components: LocalizationRecord;
-} & Record<string, string>;
+} & Record<string, string | LocalizationRecord>;
 
 /**
  * Helper class for Localization

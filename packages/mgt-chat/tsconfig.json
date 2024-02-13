@@ -9,7 +9,7 @@
     "strict": true,
     "sourceMap": true,
     "jsx": "react",
-    "lib": ["dom", "es5", "DOM.Iterable", "WebWorker"]
+    "lib": ["dom", "es5", "ES2019.Array", "DOM.Iterable", "WebWorker"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"],

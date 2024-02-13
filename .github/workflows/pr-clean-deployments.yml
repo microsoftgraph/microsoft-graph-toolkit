@@ -8,14 +8,18 @@ on:
     types: [closed]
     branches: [main, release/**, next/**]
 
+permissions:
+  pull-requests: write
+  contents: write
+
 jobs:
-  storybook:
-    if: "contains(github.event.pull_request.labels.*.name, 'Build: Storybook')"
+  cleanup:
+    if: "contains(github.event.pull_request.labels.*.name, 'Build: Storybook') || contains(github.event.pull_request.labels.*.name, 'Build: React Contoso')"
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -26,33 +30,20 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
-      - run: |
+      - name: Setup git user
+        run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
+      - name: Remove pr storybook deployment
+        if: "contains(github.event.pull_request.labels.*.name, 'Build: Storybook')"
+        run: |
           git rm -r next/pr/${{ github.event.number }}
           git commit -m "PR ${{ github.event.number }} closed - remove storybook"
-          git push
-
-  react-contoso:
-    if: "contains(github.event.pull_request.labels.*.name, 'Build: React Contoso')"
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x]
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: 'https://registry.npmjs.org'
-      - run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+      - name: Remove pr test app deployment
+        if: "contains(github.event.pull_request.labels.*.name, 'Build: React Contoso')"
+        run: |
           git rm -r next/sample/pr/${{ github.event.number }}
           git commit -m "PR ${{ github.event.number }} closed - remove react-contoso"
+      - name: Push changes
+        run: |
           git push

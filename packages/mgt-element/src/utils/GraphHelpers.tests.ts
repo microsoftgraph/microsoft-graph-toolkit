@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /**
  * -------------------------------------------------------------------------------------------
@@ -21,13 +28,13 @@ describe('GraphHelpers - prepScopes', () => {
     Providers.globalProvider = new MockProvider(true);
     Providers.globalProvider.isIncrementalConsentDisabled = true;
     // eql for loose equality
-    await expect(prepScopes(...scopes)).to.eql([]);
+    await expect(prepScopes(scopes)).to.eql([]);
   });
-  it('should return an array of AuthenticationHandlerOptions when incremental consent is enabled', async () => {
+  it('should return an array of AuthenticationHandlerOptions when incremental consent is enabled with only the first scope in the list', async () => {
     const scopes = ['scope1', 'scope2'];
     Providers.globalProvider = new MockProvider(true);
     Providers.globalProvider.isIncrementalConsentDisabled = false;
-    await expect(prepScopes(...scopes)).to.eql([new AuthenticationHandlerOptions(undefined, { scopes })]);
+    await expect(prepScopes(scopes)).to.eql([new AuthenticationHandlerOptions(undefined, { scopes: ['scope1'] })]);
   });
 });
 

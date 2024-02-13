@@ -8,7 +8,7 @@ import {
   TeamworkApplicationIdentity,
   TeamsAppInstallation
 } from '@microsoft/microsoft-graph-types';
-import { Person, PersonCardInteraction } from '@microsoft/mgt-react';
+import { Person } from '@microsoft/mgt-react';
 import { ProviderState, Providers, error } from '@microsoft/mgt-element';
 import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
 import { rewriteEmojiContentToText } from '../../utils/rewriteEmojiContent';
@@ -17,7 +17,7 @@ import { loadChatWithPreview, loadAppsInChat } from '../../statefulClient/graph.
 import { DefaultProfileIcon } from './DefaultProfileIcon';
 import { GraphChatThread } from '../../statefulClient/StatefulGraphChatListClient';
 
-interface IMgtChatListItemProps {
+interface IChatListItemProps {
   chat: GraphChatThread;
   myId: string | undefined;
   isSelected: boolean;
@@ -125,7 +125,7 @@ const imageTagRegex = /(<img[^>]+)/;
 const attachmentTagRegex = /(<attachment[^>]+)/;
 const systemEventTagRegex = /(<systemEventMessage[^>]+)/;
 
-export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListItemProps) => {
+export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemProps) => {
   const styles = useStyles();
 
   // manage the internal state of the chat
@@ -276,13 +276,13 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
 
     // when there are no people, and we don't have any bot information but we do have application information
     if (others.length === 0 && application) {
-      startLoadingAppsInChat(c.id!);
+      void startLoadingAppsInChat(c.id!);
       return application.displayName ? application.displayName : application.id;
     }
 
     // when there are no people, and we don't have any bot or application information
     if (others.length === 0) {
-      startLoadingAppsInChat(c.id!);
+      void startLoadingAppsInChat(c.id!);
       return c.id;
     }
 
@@ -365,7 +365,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
             userId={otherAad?.userId ?? undefined}
             avatarSize="small"
             showPresence={true}
-            personCardInteraction={PersonCardInteraction.hover}
+            personCardInteraction="hover"
           >
             <DefaultProfileIcon template="no-data" />
           </Person>
@@ -398,14 +398,14 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IMgtChatListIte
     // if the last message is from a bot and we have all the app info, use the app name
     if (c.lastMessagePreview?.from?.application?.id && apps) {
       const app = apps.find(a => a.teamsAppDefinition?.bot?.id === c.lastMessagePreview?.from?.application?.id);
-      if (app && app.teamsAppDefinition?.displayName) {
+      if (app?.teamsAppDefinition?.displayName) {
         return `${app.teamsAppDefinition.displayName}: `;
       }
     }
 
     // if the last message is from a bot and we don't have all the app info, load it
     if (c.lastMessagePreview?.from?.application?.displayName) {
-      startLoadingAppsInChat(c.id!);
+      void startLoadingAppsInChat(c.id!);
       return `${c.lastMessagePreview.from.application.displayName}: `;
     }
 

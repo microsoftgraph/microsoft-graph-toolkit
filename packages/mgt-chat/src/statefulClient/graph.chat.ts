@@ -48,7 +48,7 @@ export type AppCollection = GraphCollection<TeamsAppInstallation>;
 export const loadChat = async (graph: IGraph, chatId: string): Promise<Chat> =>
   (await graph
     .api(`/chats/${chatId}?$expand=members`)
-    .middlewareOptions(prepScopes(...chatOperationScopes.loadChat))
+    .middlewareOptions(prepScopes(chatOperationScopes.loadChat))
     .get()) as Chat;
 
 /**
@@ -61,7 +61,7 @@ export const loadChat = async (graph: IGraph, chatId: string): Promise<Chat> =>
 export const loadChatWithPreview = async (graph: IGraph, chatId: string): Promise<Chat> =>
   (await graph
     .api(`/chats/${chatId}?$expand=members,lastMessagePreview`)
-    .middlewareOptions(prepScopes(...chatOperationScopes.loadChat))
+    .middlewareOptions(prepScopes(chatOperationScopes.loadChat))
     .get()) as Chat;
 
 /**
@@ -82,7 +82,7 @@ export const loadChatThread = async (
     .api(`/chats/${chatId}/messages`)
     .orderby('createdDateTime DESC')
     .top(messageCount)
-    .middlewareOptions(prepScopes(...chatOperationScopes.loadChatMessages))
+    .middlewareOptions(prepScopes(chatOperationScopes.loadChatMessages))
     .get()) as MessageCollection;
   // split the nextLink on version to maintain a relative path
   response.nextLink = response['@odata.nextLink']?.split(graph.version)[1];
@@ -110,7 +110,7 @@ export const loadChatThreadDelta = async (
     .filter(`lastModifiedDateTime gt ${lastModified}`)
     .orderby('lastModifiedDateTime DESC')
     .top(messageCount)
-    .middlewareOptions(prepScopes(...chatOperationScopes.loadChatMessages))
+    .middlewareOptions(prepScopes(chatOperationScopes.loadChatMessages))
     .get()) as MessageCollection;
   // split the nextLink on version to maintain a relative path
   response.nextLink = response['@odata.nextLink']?.split(graph.version)[1];
@@ -136,7 +136,7 @@ export const loadAppsInChat = async (graph: IGraph, chatId: string): Promise<App
   const response = (await graph
     .api(`/chats/${chatId}/installedApps`)
     .expand('teamsAppDefinition($expand=bot)')
-    .middlewareOptions(prepScopes(...chatOperationScopes.loadAppsInChat))
+    .middlewareOptions(prepScopes(chatOperationScopes.loadAppsInChat))
     .get()) as AppCollection;
   return response;
 };
@@ -158,7 +158,7 @@ export const sendChatMessage = async (graph: IGraph, chatId: string, content: st
 
   return (await graph
     .api(`/chats/${chatId}/messages`)
-    .middlewareOptions(prepScopes(...chatOperationScopes.sendChatMessage))
+    .middlewareOptions(prepScopes(chatOperationScopes.sendChatMessage))
     .post({ body: { content } })) as ChatMessage;
 };
 
@@ -185,7 +185,7 @@ export const updateChatMessage = async (
 
   await graph
     .api(`/chats/${chatId}/messages/${messageId}`)
-    .middlewareOptions(prepScopes(...chatOperationScopes.updateChatMessage))
+    .middlewareOptions(prepScopes(chatOperationScopes.updateChatMessage))
     .patch({ body: { content } });
 };
 
@@ -200,14 +200,14 @@ export const updateChatMessage = async (
 export const deleteChatMessage = async (graph: IGraph, chatId: string, messageId: string): Promise<void> => {
   await graph
     .api(`/me/chats/${chatId}/messages/${messageId}/softDelete`)
-    .middlewareOptions(prepScopes(...chatOperationScopes.deleteChatMessage))
+    .middlewareOptions(prepScopes(chatOperationScopes.deleteChatMessage))
     .post({});
 };
 
 export const removeChatMember = async (graph: IGraph, chatId: string, membershipId: string): Promise<void> => {
   await graph
     .api(`/chats/${chatId}/members/${membershipId}`)
-    .middlewareOptions(prepScopes(...chatOperationScopes.removeChatMember))
+    .middlewareOptions(prepScopes(chatOperationScopes.removeChatMember))
     .delete();
 };
 
@@ -239,10 +239,7 @@ export const addChatMembers = async (
     })
   };
 
-  await graph
-    .api('$batch')
-    .middlewareOptions(prepScopes(...chatOperationScopes.addChatMember))
-    .post(body);
+  await graph.api('$batch').middlewareOptions(prepScopes(chatOperationScopes.addChatMember)).post(body);
 };
 /**
  * Whether or not the cache is enabled
@@ -267,7 +264,7 @@ export const loadChatImage = async (graph: IGraph, url: string): Promise<string 
   const response = (await graph
     .api(url)
     .responseType(ResponseType.RAW)
-    .middlewareOptions(prepScopes(...chatOperationScopes.loadChatImage))
+    .middlewareOptions(prepScopes(chatOperationScopes.loadChatImage))
     .get()) as Response & { '@odata.mediaEtag'?: string };
 
   if (response.status === 404) {
@@ -318,7 +315,7 @@ export const createChatThread = async (
 
   const chat = (await graph
     .api('/chats')
-    .middlewareOptions(prepScopes(...chatOperationScopes.createChat))
+    .middlewareOptions(prepScopes(chatOperationScopes.createChat))
     .post(body)) as Chat;
   if (!chat?.id) throw new Error('Chat id not returned from create chat thread');
   if (chatMessage) {
@@ -338,7 +335,7 @@ export const createChatThread = async (
 export const updateChatTopic = async (graph: IGraph, chatId: string, topic: string | null): Promise<void> => {
   await graph
     .api(`/chats/${chatId}`)
-    .middlewareOptions(prepScopes(...chatOperationScopes.updateChatMessage))
+    .middlewareOptions(prepScopes(chatOperationScopes.updateChatMessage))
     .patch({ topic });
 };
 
@@ -351,7 +348,7 @@ export const updateChatTopic = async (graph: IGraph, chatId: string, topic: stri
 export const loadChatThreads = async (graph: IGraph, maxPage: number): Promise<ChatThreadCollection> =>
   (await graph
     .api(`me/chats?$top=${maxPage}&$expand=members,lastMessagePreview&orderby=lastMessagePreview/createdDateTime desc`)
-    .middlewareOptions(prepScopes(...chatOperationScopes.loadChat))
+    .middlewareOptions(prepScopes(chatOperationScopes.loadChat))
     .get()) as ChatThreadCollection;
 
 /**
@@ -363,5 +360,5 @@ export const loadChatThreads = async (graph: IGraph, maxPage: number): Promise<C
 export const loadChatThreadsByPage = async (graph: IGraph, filter: string): Promise<ChatThreadCollection> =>
   (await graph
     .api(`me/chats?${filter}`)
-    .middlewareOptions(prepScopes(...chatOperationScopes.loadChat))
+    .middlewareOptions(prepScopes(chatOperationScopes.loadChat))
     .get()) as ChatThreadCollection;

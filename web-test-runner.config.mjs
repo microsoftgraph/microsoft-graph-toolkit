@@ -48,6 +48,7 @@ export default {
     }),
     // https://modern-web.dev/docs/dev-server/plugins/esbuild/
     esbuildPlugin({
+      target: 'auto',
       ts: true,
       tsconfig: fileURLToPath(new URL('./tsconfig.web-test-runner.json', import.meta.url))
     })

@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { MgtTemplatedComponent, customElementHelper, mgtHtml } from '@microsoft/mgt-element';
+import { MgtTemplatedTaskComponent, customElementHelper, mgtHtml } from '@microsoft/mgt-element';
 import { html, TemplateResult } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 
 import { IDynamicPerson } from '../graph/types';
 import { MgtPersonCard } from './mgt-person-card/mgt-person-card';
@@ -33,7 +33,7 @@ export interface CardSection {
  * @class BasePersonCardSection
  * @extends {MgtTemplatedComponent}
  */
-export abstract class BasePersonCardSection extends MgtTemplatedComponent implements CardSection {
+export abstract class BasePersonCardSection extends MgtTemplatedTaskComponent implements CardSection {
   /**
    * Set the person details to render
    *
@@ -44,17 +44,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent implem
     attribute: 'person-details',
     type: Object
   })
-  public get personDetails(): IDynamicPerson {
-    return this._personDetails;
-  }
-  public set personDetails(value: IDynamicPerson) {
-    if (this._personDetails === value) {
-      return;
-    }
-
-    this._personDetails = value;
-    void this.requestStateUpdate();
-  }
+  public personDetails: IDynamicPerson | null = null;
 
   /**
    * The name for display in the overview section.
@@ -85,13 +75,12 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent implem
     return this._isCompact;
   }
 
+  @state()
   private _isCompact: boolean;
-  private _personDetails: IDynamicPerson;
 
   constructor() {
     super();
     this._isCompact = false;
-    this._personDetails = null;
   }
 
   /**
@@ -112,7 +101,6 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent implem
    */
   public asCompactView() {
     this._isCompact = true;
-    this.requestUpdate();
     return this;
   }
 
@@ -124,7 +112,6 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent implem
    */
   public asFullView() {
     this._isCompact = false;
-    this.requestUpdate();
     return this;
   }
 
@@ -132,12 +119,11 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent implem
    * Reset any state in the section
    *
    * @protected
-   * @abstract
    * @memberof BasePersonCardSection
    */
   protected clearState(): void {
     this._isCompact = false;
-    this._personDetails = null;
+    this.personDetails = null;
   }
 
   /**
@@ -156,13 +142,13 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent implem
    * @returns {TemplateResult}
    * @memberof BasePersonCardSection
    */
-  protected renderLoading(): TemplateResult {
+  protected renderLoading = (): TemplateResult => {
     return mgtHtml`
       <div class="loading">
         <mgt-spinner></mgt-spinner>
       </div>
     `;
-  }
+  };
 
   /**
    * Render the section in a empty data state

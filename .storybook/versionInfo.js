@@ -20,3 +20,15 @@ export const versionInfo = {
   patch,
   postfix
 };
+
+export const getCleanVersionInfo = (majorOnly = false) => {
+  if (versionInfo.postfix || window.location.href.indexOf('localhost') > -1) {
+    return `next`;
+  } else {
+    if (majorOnly) {
+      return `${versionInfo.major}`;
+    } else {
+      return `${versionInfo.major}.${versionInfo.minor}.${versionInfo.patch}`;
+    }
+  }
+};

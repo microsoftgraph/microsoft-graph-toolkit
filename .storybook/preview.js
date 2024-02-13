@@ -12,6 +12,7 @@ import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import customElements from '../custom-elements.json';
 import { versionInfo } from './versionInfo';
 import { defaultDocsPage } from './story-elements/defaultDocsPage';
+import './preview.css';
 
 const setCustomElementsManifestWithOptions = (customElements, options) => {
   let { privateFields = true } = options;

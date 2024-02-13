@@ -9,10 +9,8 @@ import { MockProvider, Providers } from '@microsoft/mgt-element';
 import { MgtFileUpload, registerMgtFileUploadComponent } from './mgt-file-upload';
 
 describe('mgt-file-upload - tests', () => {
-  before(() => {
-    registerMgtFileUploadComponent();
-    Providers.globalProvider = new MockProvider(true);
-  });
+  registerMgtFileUploadComponent();
+  Providers.globalProvider = new MockProvider(true);
 
   it('should render', async () => {
     const mgtFileUpload = await fixture(html`<mgt-file-upload></mgt-file-upload>`);

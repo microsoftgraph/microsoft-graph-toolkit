@@ -1,11 +1,12 @@
 import ReactDOM from 'react-dom';
-import { App } from './App';
+import { Suspense } from 'react';
 import { mergeStyles } from '@fluentui/react';
 import { Msal2Provider } from '@microsoft/mgt-msal2-provider/dist/es6/exports';
-import { Providers, LoginType } from '@microsoft/mgt-element';
-import { MgtPersonCardConfig } from '@microsoft/mgt-components/dist/es6/exports';
+import { Providers, LoginType, customElementHelper } from '@microsoft/mgt-element';
+import { lazy } from 'react';
+const App = lazy(() => import('./App'));
 
-MgtPersonCardConfig.isSendMessageVisible = false;
+customElementHelper.withDisambiguation('foo');
 
 // Inject some global styles
 mergeStyles({
@@ -29,26 +30,25 @@ Providers.globalProvider = new Msal2Provider({
     'Chat.ReadWrite',
     'ChatMember.ReadWrite',
     'ChatMessage.Send',
+    'Channel.ReadBasic.All',
     'ExternalItem.Read.All',
-    'Files.Read',
-    'Files.Read.All',
     'Files.ReadWrite.All',
-    'Group.Read.All',
     'Group.ReadWrite.All',
     'Mail.Read',
-    'Mail.ReadBasic',
     'People.Read',
-    'People.Read.All',
     'Presence.Read.All',
     'User.Read',
-    'Sites.Read.All',
     'Sites.ReadWrite.All',
-    'Tasks.Read',
     'Tasks.ReadWrite',
     'Team.ReadBasic.All',
-    'User.ReadBasic.All',
+    'TermStore.Read.All',
     'User.Read.All'
   ]
 });
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+  <Suspense fallback="...">
+    <App />
+  </Suspense>,
+  document.getElementById('root')
+);

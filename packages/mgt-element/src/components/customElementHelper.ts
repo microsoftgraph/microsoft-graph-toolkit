@@ -14,12 +14,18 @@ class CustomElementHelper {
   /**
    * Adds a disambiguation segment to the custom elements registered with the browser
    *
-   * @param {string} disambiguation
+   * @param {string} disambiguation the disambiguation value to be used, should be lowercase
    * @return {CustomElementHelper} the current object
    * @memberof CustomElementHelper
    */
   public withDisambiguation(disambiguation: string) {
-    if (disambiguation && !this._disambiguation) this._disambiguation = disambiguation;
+    if (disambiguation && !this._disambiguation) {
+      this._disambiguation = disambiguation.toLowerCase();
+      if (disambiguation !== this._disambiguation)
+        console.warn(
+          `🦒: Disambiguation value, ${disambiguation}, should be lowercase. Value has been converted to lowercase, ${this._disambiguation}.`
+        );
+    }
     return this;
   }
 
