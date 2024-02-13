@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist/es6",
+    "sourceRoot": "src",
+    "rootDir": "src",
+    "composite": true,
+    "allowJs": true
+  },
+  "include": ["./"]
+}
