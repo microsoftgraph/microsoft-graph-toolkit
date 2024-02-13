@@ -4,7 +4,7 @@ import { Login } from '@microsoft/mgt-react';
 import { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem } from '@microsoft/mgt-chat';
 import { ChatMessage, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { Compose24Filled, Compose24Regular, bundleIcon } from '@fluentui/react-icons';
-import { GraphChatThread } from '@microsoft/mgt-chat/src/statefulClient/StatefulGraphChatListClient';
+import { GraphChatThread } from '../../../packages/mgt-chat/src/statefulClient/StatefulGraphChatListClient';
 
 const ChatAddIconBundle = bundleIcon(Compose24Filled, Compose24Regular);
 
