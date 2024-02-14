@@ -78,8 +78,11 @@ export function Messages(props: MgtTemplateProps) {
           <h3 className={styles.subject}>{email.subject}</h3>
           <span className={styles.date}>{new Date(email.receivedDateTime).toLocaleDateString()}</span>
         </div>
-        {email.bodyPreview ?? <div className={styles.body}>{email.bodyPreview}</div>}
-        {!email.bodyPreview ?? <div className={mergeClasses(styles.body, styles.emptyBody)}>...</div>}
+        {email?.bodyPreview ? (
+          <div className={styles.body}>{email.bodyPreview}</div>
+        ) : (
+          <div className={mergeClasses(styles.body, styles.emptyBody)}>...</div>
+        )}
       </a>
     </div>
   );

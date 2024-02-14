@@ -67,7 +67,7 @@ export const Layout: React.FunctionComponent = theme => {
   return (
     <FluentProvider theme={appContext.state.theme.fluentTheme}>
       <div className={styles.page}>
-        <BrowserRouter basename={process.env.REACT_APP_BASE_DIR ?? '/'}>
+        <BrowserRouter basename={import.meta.env.VITE_BASE_DIR ?? '/'}>
           <Header></Header>
           <div className={styles.main}>
             <div
