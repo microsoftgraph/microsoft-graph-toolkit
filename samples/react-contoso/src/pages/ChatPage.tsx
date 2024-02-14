@@ -3,7 +3,7 @@ import { memo, useCallback } from 'react';
 import { PageHeader } from '../components/PageHeader';
 import { shorthands, makeStyles, Dialog, DialogSurface, DialogBody, DialogTitle } from '@fluentui/react-components';
 import { Chat as GraphChat, ChatMessage } from '@microsoft/microsoft-graph-types';
-import { ChatList, Chat, NewChat, ChatListButtonItem, ChatListMenuItem } from '@microsoft/mgt-chat';
+import { ChatList, Chat, NewChat, ChatListButtonItem, ChatListMenuItem, IChatListActions } from '@microsoft/mgt-chat';
 import { Compose24Filled, Compose24Regular, bundleIcon } from '@fluentui/react-icons';
 import { GraphChatThread } from '../../../../packages/mgt-chat/src/statefulClient/StatefulGraphChatListClient';
 
@@ -44,7 +44,7 @@ const useStyles = makeStyles({
 
 interface ChatListWrapperProps {
   onSelected: (e: GraphChatThread) => void;
-  onNewChat: () => void;
+  onNewChat: (actions: IChatListActions) => void;
   selectedChatId: string | undefined;
 }
 
@@ -57,8 +57,12 @@ const ChatListWrapper = memo(({ onSelected, onNewChat, selectedChatId }: ChatLis
   ];
   const menus: ChatListMenuItem[] = [
     {
+      displayText: 'Mark all as read',
+      onClick: (actions: IChatListActions) => actions.markAllChatThreadsAsRead()
+    },
+    {
       displayText: 'My custom menu item',
-      onClick: () => console.log('My custom menu item clicked')
+      onClick: (actions: IChatListActions) => console.log('My custom menu item clicked')
     }
   ];
   const onAllMessagesRead = useCallback((chatIds: string[]) => {

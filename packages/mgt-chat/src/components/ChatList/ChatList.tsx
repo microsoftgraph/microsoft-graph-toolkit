@@ -18,6 +18,7 @@ import { LoadingMessagesErrorIcon } from '../Error/LoadingMessageErrorIcon';
 import { CreateANewChat } from '../Error/CreateANewChat';
 import { PleaseSignIn } from '../Error/PleaseSignIn';
 import { OpenTeamsLinkError } from '../Error/OpenTeams';
+import IChatListActions from '../ChatListHeader/IChatListActions';
 
 export interface IChatListProps {
   onSelected: (e: GraphChatThread) => void;
@@ -103,6 +104,7 @@ export const ChatList = ({
 
   const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
+  const [chatListActions, setChatListActions] = useState<IChatListActions | undefined>();
   const loadingRef = useRef(false);
   // wait for provider to be ready before setting client and state
   useEffect(() => {
@@ -119,6 +121,12 @@ export const ChatList = ({
     });
     conditionalLoad(provider?.state);
   }, [chatListClient, chatThreadsPerPage, selectedChatId]);
+
+  useEffect(() => {
+    setChatListActions({
+      markAllChatThreadsAsRead: () => chatListClient?.markAllChatThreadsAsRead()
+    });
+  }, [chatListClient]);
 
   // Store last read time in cache so that when the user comes back to the chat list,
   // we know what messages they are likely to have not read. This is not perfect because
@@ -200,11 +208,7 @@ export const ChatList = ({
   };
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
-
-  const markAllAsRead = {
-    displayText: 'Mark all as read',
-    onClick: () => chatListClient?.markAllChatThreadsAsRead()
-  };
+  const chatListMenuItems = props.menuItems === undefined ? [] : props.menuItems;
 
   const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
     chatListState?.status ?? ''
@@ -245,10 +249,12 @@ export const ChatList = ({
       <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.chatList}>
           {Providers.globalProvider?.state === ProviderState.SignedIn &&
-            chatListState?.status !== 'server connection lost' && (
+            chatListState?.status !== 'server connection lost' &&
+            chatListActions && (
               <ChatListHeader
+                actions={chatListActions}
                 buttonItems={chatListButtonItems}
-                menuItems={[markAllAsRead, ...(props.menuItems ?? [])]}
+                menuItems={chatListMenuItems}
               />
             )}
           {chatListState && chatListState.chatThreads.length > 0 ? (

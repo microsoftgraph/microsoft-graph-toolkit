@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { MgtTemplateProps } from '@microsoft/mgt-react';
 import { makeStyles, shorthands, Button } from '@fluentui/react-components';
 import { EllipsisMenu, IChatListMenuItemsProps } from './EllipsisMenu';
 import { ChatListButtonItem } from './ChatListButtonItem';
 import { Circle } from '../Circle/Circle';
+import IChatListActions from './IChatListActions';
 
 const useStyles = makeStyles({
   headerContainer: {
@@ -48,28 +49,39 @@ export const ChatListHeader = (
   props: MgtTemplateProps &
     IChatListMenuItemsProps & {
       buttonItems?: ChatListButtonItem[];
+      actions: IChatListActions;
     }
 ) => {
   const classes = useStyles();
 
   const buttonItems: ChatListButtonItem[] = props.buttonItems === undefined ? [] : props.buttonItems;
+  const clickButton = useCallback((buttonItem: ChatListButtonItem) => {
+    buttonItem.onClick(props.actions);
+  }, []);
+
   return (
-    <div className={classes.headerContainer}>
-      <div className={classes.controlsContainer}>
-        <div>
-          {buttonItems.map((buttonItem, index) => (
-            <Button key={index} className={classes.button} onClick={buttonItem.onClick}>
-              <div className={classes.buttonIcon}>
-                <Circle>{buttonItem.renderIcon()}</Circle>
-              </div>
-            </Button>
-          ))}
+    <>
+      {buttonItems.length === 0 && (props.menuItems === undefined || props.menuItems?.length === 0) ? (
+        <></>
+      ) : (
+        <div className={classes.headerContainer}>
+          <div className={classes.controlsContainer}>
+            <div>
+              {buttonItems.map((buttonItem, index) => (
+                <Button key={index} className={classes.button} onClick={() => clickButton(buttonItem)}>
+                  <div className={classes.buttonIcon}>
+                    <Circle>{buttonItem.renderIcon()}</Circle>
+                  </div>
+                </Button>
+              ))}
+            </div>
+            <div>
+              <EllipsisMenu actions={props.actions} menuItems={props.menuItems} />
+            </div>
+          </div>
         </div>
-        <div>
-          <EllipsisMenu menuItems={props.menuItems} />
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
