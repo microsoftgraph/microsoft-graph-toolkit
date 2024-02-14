@@ -98,22 +98,28 @@ const ChatPage: React.FunctionComponent = () => {
   const [chatId, setChatId] = React.useState<string>('');
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
 
-  const onChatSelected = React.useCallback((e: GraphChatThread) => {
-    if (chatId !== e.id) {
-      setChatId(e.id ?? '');
-    }
-  }, []);
+  const onChatSelected = React.useCallback(
+    (e: GraphChatThread) => {
+      if (chatId !== e.id) {
+        setChatId(e.id ?? '');
+      }
+    },
+    [chatId]
+  );
 
   const onNewChat = React.useCallback(() => {
     setIsNewChatOpen(true);
   }, []);
 
-  const onChatCreated = (e: GraphChat) => {
-    setIsNewChatOpen(false);
-    if (chatId !== e.id) {
-      setChatId(e.id ?? '');
-    }
-  };
+  const onChatCreated = React.useCallback(
+    (e: GraphChat) => {
+      setIsNewChatOpen(false);
+      if (chatId !== e.id) {
+        setChatId(e.id ?? '');
+      }
+    },
+    [chatId]
+  );
 
   return (
     <>
