@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import './App.css';
 import { Login } from '@microsoft/mgt-react';
 import { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem, IChatListActions } from '@microsoft/mgt-chat';
@@ -13,11 +13,24 @@ export const ChatAddIcon = (): JSX.Element => {
   return <ChatAddIconBundle color={iconColor} />;
 };
 
-const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChatThread) => void }) => {
+function App() {
+  const [chatId, setChatId] = useState<string>('');
+  const [showNewChat, setShowNewChat] = useState<boolean>(false);
+
+  const onChatSelected = useCallback((e: GraphChatThread) => {
+    console.log('Selected: ', e.id);
+    setChatId(e.id ?? '');
+  }, []);
+
+  const onChatCreated = useCallback((chat: GraphChat) => {
+    setChatId(chat.id ?? '');
+    setShowNewChat(false);
+  }, []);
+
   const buttons: ChatListButtonItem[] = [
     {
       renderIcon: () => <ChatAddIcon />,
-      onClick: (actions: IChatListActions) => console.log('Add chat clicked')
+      onClick: (actions: IChatListActions) => setShowNewChat(true)
     }
   ];
 
@@ -53,35 +66,6 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChatThread)
   }, []);
 
   return (
-    <ChatList
-      onLoaded={onLoaded}
-      chatThreadsPerPage={10}
-      menuItems={menus}
-      buttonItems={buttons}
-      onSelected={onSelected}
-      onMessageReceived={onMessageReceived}
-      onAllMessagesRead={onAllMessagesRead}
-      onConnectionChanged={onConnectionChanged}
-      onUnselected={onUnselected}
-    />
-  );
-});
-
-function App() {
-  const [chatId, setChatId] = useState<string>('');
-  const [showNewChat, setShowNewChat] = useState<boolean>(false);
-
-  const chatSelected = useCallback((e: GraphChatThread) => {
-    console.log('Selected: ', e.id);
-    setChatId(e.id ?? '');
-  }, []);
-
-  const onChatCreated = useCallback((chat: GraphChat) => {
-    setChatId(chat.id ?? '');
-    setShowNewChat(false);
-  }, []);
-
-  return (
     <div className="App">
       <header className="App-header">
         Mgt Chat test harness
@@ -103,7 +87,17 @@ function App() {
           )}
         </div>
         <div className="chat-pane">
-          <ChatListWrapper onSelected={chatSelected} />
+          <ChatList
+            onLoaded={onLoaded}
+            chatThreadsPerPage={10}
+            menuItems={menus}
+            buttonItems={buttons}
+            onSelected={onChatSelected}
+            onMessageReceived={onMessageReceived}
+            onAllMessagesRead={onAllMessagesRead}
+            onConnectionChanged={onConnectionChanged}
+            onUnselected={onUnselected}
+          />
         </div>
         {/* NOTE: removed the chatId guard as this case has an error state. */}
         <div className="chat-pane">{<Chat chatId={chatId} />}</div>
