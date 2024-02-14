@@ -429,6 +429,18 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   public ariaLabel: string;
 
   /**
+   * Sets whether the people suggestions should apper on the suggestion list
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'disable-suggestions',
+    type: Boolean
+  })
+  public disableSuggestions = false;
+
+  /**
    * Get the scopes required for people picker
    *
    * @static
@@ -1006,6 +1018,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
             people = groups;
           }
           this.defaultPeople = people;
+          people = this.disableSuggestions ? [] : people;
         }
       }
 
