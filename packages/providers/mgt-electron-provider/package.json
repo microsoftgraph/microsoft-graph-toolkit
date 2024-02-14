@@ -54,8 +54,5 @@
   },
   "publishConfig": {
     "directory": "dist"
-  },
-  "resolutions": {
-    "responselike": "2.0.0"
   }
 }
