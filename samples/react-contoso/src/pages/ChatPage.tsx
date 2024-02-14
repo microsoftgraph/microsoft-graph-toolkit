@@ -43,7 +43,7 @@ const useStyles = makeStyles({
 });
 
 interface ChatListWrapperProps {
-  onSelected: (e: GraphChat) => void;
+  onSelected: (e: GraphChatThread) => void;
   onNewChat: () => void;
   selectedChatId: string | undefined;
 }
@@ -73,6 +73,9 @@ const ChatListWrapper = memo(({ onSelected, onNewChat, selectedChatId }: ChatLis
   const onConnectionChanged = React.useCallback((connected: boolean) => {
     console.log('Connection changed: ', connected);
   }, []);
+  const onUnselected = useCallback((chatThread: GraphChatThread) => {
+    console.log('Unselected: ', chatThread.id);
+  }, []);
 
   return (
     <ChatList
@@ -85,6 +88,7 @@ const ChatListWrapper = memo(({ onSelected, onNewChat, selectedChatId }: ChatLis
       onMessageReceived={onMessageReceived}
       onAllMessagesRead={onAllMessagesRead}
       onConnectionChanged={onConnectionChanged}
+      onUnselected={onUnselected}
     />
   );
 });
@@ -94,22 +98,28 @@ const ChatPage: React.FunctionComponent = () => {
   const [chatId, setChatId] = React.useState<string>('');
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
 
-  const onChatSelected = React.useCallback((e: GraphChat) => {
-    if (chatId !== e.id) {
-      setChatId(e.id ?? '');
-    }
-  }, []);
+  const onChatSelected = React.useCallback(
+    (e: GraphChatThread) => {
+      if (chatId !== e.id) {
+        setChatId(e.id ?? '');
+      }
+    },
+    [chatId]
+  );
 
   const onNewChat = React.useCallback(() => {
     setIsNewChatOpen(true);
   }, []);
 
-  const onChatCreated = (e: GraphChat) => {
-    setIsNewChatOpen(false);
-    if (chatId !== e.id) {
-      setChatId(e.id ?? '');
-    }
-  };
+  const onChatCreated = React.useCallback(
+    (e: GraphChat) => {
+      setIsNewChatOpen(false);
+      if (chatId !== e.id) {
+        setChatId(e.id ?? '');
+      }
+    },
+    [chatId]
+  );
 
   return (
     <>

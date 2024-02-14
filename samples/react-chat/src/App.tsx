@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import './App.css';
 import { Login } from '@microsoft/mgt-react';
 import { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem } from '@microsoft/mgt-chat';
@@ -13,7 +13,7 @@ export const ChatAddIcon = (): JSX.Element => {
   return <ChatAddIconBundle color={iconColor} />;
 };
 
-const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => void }) => {
+const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChatThread) => void }) => {
   const buttons: ChatListButtonItem[] = [
     {
       renderIcon: () => <ChatAddIcon />,
@@ -44,6 +44,10 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => vo
     console.log('Connection changed: ', connected);
   }, []);
 
+  const onUnselected = useCallback((chatThread: GraphChatThread) => {
+    console.log('Unselected: ', chatThread.id);
+  }, []);
+
   return (
     <ChatList
       onLoaded={onLoaded}
@@ -54,6 +58,7 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChat) => vo
       onMessageReceived={onMessageReceived}
       onAllMessagesRead={onAllMessagesRead}
       onConnectionChanged={onConnectionChanged}
+      onUnselected={onUnselected}
     />
   );
 });
@@ -62,7 +67,8 @@ function App() {
   const [chatId, setChatId] = useState<string>('');
   const [showNewChat, setShowNewChat] = useState<boolean>(false);
 
-  const chatSelected = useCallback((e: GraphChat) => {
+  const chatSelected = useCallback((e: GraphChatThread) => {
+    console.log('Selected: ', e.id);
     setChatId(e.id ?? '');
   }, []);
 
