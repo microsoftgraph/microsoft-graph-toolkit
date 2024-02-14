@@ -9,8 +9,9 @@ import {
   makeStyles
 } from '@fluentui/react-components';
 import { MoreHorizontal24Filled, MoreHorizontal24Regular, bundleIcon } from '@fluentui/react-icons';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ChatListMenuItem } from './ChatListMenuItem';
+import IChatListActions from './IChatListActions';
 
 const EllipsisIcon = bundleIcon(MoreHorizontal24Filled, MoreHorizontal24Regular);
 
@@ -36,10 +37,18 @@ export interface IChatListMenuItemsProps {
   menuItems?: ChatListMenuItem[];
 }
 
-const EllipsisMenu = (props: IChatListMenuItemsProps) => {
+const EllipsisMenu = (
+  props: IChatListMenuItemsProps & {
+    actions: IChatListActions;
+  }
+) => {
   const styles = ellipsisMenuStyles();
 
   const menuItems: ChatListMenuItem[] = props.menuItems === undefined ? [] : props.menuItems;
+
+  const clickMenuItem = useCallback((menuItem: ChatListMenuItem) => {
+    menuItem.onClick(props.actions);
+  }, []);
 
   return (
     <Menu {...menuProps}>
@@ -49,7 +58,7 @@ const EllipsisMenu = (props: IChatListMenuItemsProps) => {
       <MenuPopover className={styles.menuPopover}>
         <MenuList>
           {menuItems.map((menuItem, index) => (
-            <MenuItem key={index} content={menuItem.displayText} onClick={menuItem.onClick} />
+            <MenuItem key={index} content={menuItem.displayText} onClick={() => clickMenuItem(menuItem)} />
           ))}
         </MenuList>
       </MenuPopover>

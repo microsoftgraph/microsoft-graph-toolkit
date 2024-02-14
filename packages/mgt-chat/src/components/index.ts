@@ -9,5 +9,6 @@ import { Chat } from './Chat/Chat';
 import { ChatList } from './ChatList/ChatList';
 import { ChatListButtonItem } from './ChatListHeader/ChatListButtonItem';
 import { ChatListMenuItem } from './ChatListHeader/ChatListMenuItem';
+import IChatListActions from './ChatListHeader/IChatListActions';
 import { NewChat } from './NewChat/NewChat';
-export { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem };
+export { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem, IChatListActions };

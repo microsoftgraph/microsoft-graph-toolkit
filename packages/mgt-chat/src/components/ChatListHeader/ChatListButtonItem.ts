@@ -5,8 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import IChatListActions from './IChatListActions';
+
 export interface ChatListButtonItem {
-  onClick: () => void;
+  onClick: (actions: IChatListActions) => void;
   renderIcon: () => JSX.Element;
 }
 

@@ -1,7 +1,7 @@
-import { memo, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import './App.css';
 import { Login } from '@microsoft/mgt-react';
-import { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem } from '@microsoft/mgt-chat';
+import { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem, IChatListActions } from '@microsoft/mgt-chat';
 import { ChatMessage, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { Compose24Filled, Compose24Regular, bundleIcon } from '@fluentui/react-icons';
 import { GraphChatThread } from '../../../packages/mgt-chat/src/statefulClient/StatefulGraphChatListClient';
@@ -13,18 +13,35 @@ export const ChatAddIcon = (): JSX.Element => {
   return <ChatAddIconBundle color={iconColor} />;
 };
 
-const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChatThread) => void }) => {
+function App() {
+  const [chatId, setChatId] = useState<string>('');
+  const [showNewChat, setShowNewChat] = useState<boolean>(false);
+
+  const onChatSelected = useCallback((e: GraphChatThread) => {
+    console.log('Selected: ', e.id);
+    setChatId(e.id ?? '');
+  }, []);
+
+  const onChatCreated = useCallback((chat: GraphChat) => {
+    setChatId(chat.id ?? '');
+    setShowNewChat(false);
+  }, []);
+
   const buttons: ChatListButtonItem[] = [
     {
       renderIcon: () => <ChatAddIcon />,
-      onClick: () => console.log('Add chat clicked')
+      onClick: (actions: IChatListActions) => setShowNewChat(true)
     }
   ];
 
   const menus: ChatListMenuItem[] = [
     {
+      displayText: 'Mark all as read',
+      onClick: (actions: IChatListActions) => actions.markAllChatThreadsAsRead()
+    },
+    {
       displayText: 'My custom menu item',
-      onClick: () => console.log('My custom menu item clicked')
+      onClick: (actions: IChatListActions) => console.log('My custom menu item clicked')
     }
   ];
 
@@ -49,35 +66,6 @@ const ChatListWrapper = memo(({ onSelected }: { onSelected: (e: GraphChatThread)
   }, []);
 
   return (
-    <ChatList
-      onLoaded={onLoaded}
-      chatThreadsPerPage={10}
-      menuItems={menus}
-      buttonItems={buttons}
-      onSelected={onSelected}
-      onMessageReceived={onMessageReceived}
-      onAllMessagesRead={onAllMessagesRead}
-      onConnectionChanged={onConnectionChanged}
-      onUnselected={onUnselected}
-    />
-  );
-});
-
-function App() {
-  const [chatId, setChatId] = useState<string>('');
-  const [showNewChat, setShowNewChat] = useState<boolean>(false);
-
-  const chatSelected = useCallback((e: GraphChatThread) => {
-    console.log('Selected: ', e.id);
-    setChatId(e.id ?? '');
-  }, []);
-
-  const onChatCreated = useCallback((chat: GraphChat) => {
-    setChatId(chat.id ?? '');
-    setShowNewChat(false);
-  }, []);
-
-  return (
     <div className="App">
       <header className="App-header">
         Mgt Chat test harness
@@ -99,7 +87,17 @@ function App() {
           )}
         </div>
         <div className="chat-pane">
-          <ChatListWrapper onSelected={chatSelected} />
+          <ChatList
+            onLoaded={onLoaded}
+            chatThreadsPerPage={10}
+            menuItems={menus}
+            buttonItems={buttons}
+            onSelected={onChatSelected}
+            onMessageReceived={onMessageReceived}
+            onAllMessagesRead={onAllMessagesRead}
+            onConnectionChanged={onConnectionChanged}
+            onUnselected={onUnselected}
+          />
         </div>
         {/* NOTE: removed the chatId guard as this case has an error state. */}
         <div className="chat-pane">{<Chat chatId={chatId} />}</div>
