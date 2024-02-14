@@ -18,7 +18,7 @@ import {
   SilentFlowRequest
 } from '@azure/msal-node';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
-import { GraphEndpoint } from '@microsoft/mgt-element';
+import { arraysAreEqual, GraphEndpoint } from '@microsoft/mgt-element';
 import { BrowserWindow, ipcMain } from 'electron';
 import { CustomFileProtocolListener } from './CustomFileProtocol';
 import { REDIRECT_URI, COMMON_AUTHORITY_URL } from './Constants';
@@ -201,8 +201,10 @@ export class ElectronAuthenticator {
     return this._approvedScopes;
   }
   protected set approvedScopes(value: string[]) {
-    this._approvedScopes = value;
-    this.mainWindow.webContents.send('mgtApprovedScopes', value);
+    if (!arraysAreEqual(value, this._approvedScopes)) {
+      this._approvedScopes = value;
+      this.mainWindow.webContents.send('approvedScopes', value);
+    }
   }
 
   /**
