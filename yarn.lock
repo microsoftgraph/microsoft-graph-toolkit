@@ -4642,7 +4642,7 @@ __metadata:
     "@microsoft/microsoft-graph-client": 3.0.2
     electron: ^28.2.2
   peerDependencies:
-    electron: ">22.3.25 <29.0.0"
+    electron: ">=11.0.2 <29.0.0"
   languageName: unknown
   linkType: soft
 
