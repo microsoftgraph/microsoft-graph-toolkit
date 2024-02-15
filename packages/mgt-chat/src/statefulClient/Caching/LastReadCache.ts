@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { CacheItem, CacheSchema, CacheService, CacheStore, schemas } from '@microsoft/mgt-react';
+import { CacheItem, CacheSchema, CacheService, CacheStore, Providers, schemas } from '@microsoft/mgt-react';
 import { isConversationCacheEnabled } from './isConversationCacheEnabled';
 import { cacheEntryIsValid } from './cacheEntryIsValid';
 
@@ -25,7 +25,19 @@ interface LastReadData extends CacheItem {
 export class LastReadCache {
   private get cache(): CacheStore<LastReadData> {
     const conversation: CacheSchema = schemas.conversation;
-    return CacheService.getCache<LastReadData>(conversation, conversation.stores.lastRead);
+    const cache = CacheService.getCache<LastReadData>(conversation, conversation.stores.lastRead);
+    cache.getDBName = async () => {
+      const id = await Providers.getCacheId();
+      if (id) {
+        // this removal of dashes is done because when a user signs out, the code looks for contains matches
+        // from getCacheId to remove the cache/db. If the id has no dashes, it will not be removed.
+        return `mgt-lastreadcache-${id.replace(/-/g, '')}`;
+      }
+
+      // needed for build error
+      throw new Error('CacheId is not available');
+    };
+    return cache;
   }
 
   public async loadLastReadTime(chatId: string): Promise<LastReadData | null | undefined> {

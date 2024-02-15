@@ -134,13 +134,16 @@ export const ChatList = ({
   // we know what messages they are likely to have not read. This is not perfect because
   // the user could have read messages in another client (for instance, the Teams client).
   useEffect(() => {
-    const timer = setInterval(() => {
-      chatListClient?.cacheLastReadTime('selected');
-    }, lastReadTimeInterval);
+    // setup timer only after we have a defined chatListClient
+    if (chatListClient) {
+      const timer = setInterval(() => {
+        chatListClient.cacheLastReadTime('selected');
+      }, lastReadTimeInterval);
 
-    return () => {
-      clearInterval(timer);
-    };
+      return () => {
+        clearInterval(timer);
+      };
+    }
   }, [chatListClient, lastReadTimeInterval]);
 
   useEffect(() => {
