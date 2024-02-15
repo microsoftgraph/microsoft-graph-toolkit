@@ -1088,7 +1088,7 @@ detail: ${JSON.stringify(eventDetail)}`);
     messageId: string,
     content: string
   ): GraphChatMessage {
-    const senderId = graphMessage.from?.user?.id || undefined;
+    const senderId = graphMessage.from?.user?.id ?? graphMessage.from?.application?.id ?? undefined;
     const chatId = graphMessage?.chatId ?? '';
     const id = graphMessage?.id ?? '';
     const chatUrl = `https://teams.microsoft.com/l/message/${chatId}/${id}?context={"contextType":"chat"}`;
@@ -1099,7 +1099,8 @@ detail: ${JSON.stringify(eventDetail)}`);
       contentType: graphMessage.body?.contentType ?? 'text',
       messageType: 'chat',
       content,
-      senderDisplayName: graphMessage.from?.user?.displayName ?? undefined,
+      senderDisplayName:
+        graphMessage.from?.user?.displayName ?? graphMessage.from?.application?.displayName ?? undefined,
       createdOn: new Date(graphMessage.createdDateTime ?? Date.now()),
       editedOn: graphMessage.lastEditedDateTime ? new Date(graphMessage.lastEditedDateTime) : undefined,
       senderId,
