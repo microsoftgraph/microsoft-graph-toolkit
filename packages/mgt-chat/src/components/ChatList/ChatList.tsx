@@ -43,21 +43,26 @@ const useStyles = makeStyles({
   },
   chatListItems: {
     height: '100%',
-    ...shorthands.paddingInline('20px'),
-    '&': {
-      paddingRight: '8px' // reserved some space for the scrollbar
-    },
-    '&:hover': {
-      paddingRight: '0', // we got the scrollbar, no need to reserve space
-      ...shorthands.overflow('auto'),
-      scrollbarWidth: 'auto'
-    },
-    '&:hover::-webkit-scrollbar': {
+    visibility: 'visible',
+    paddingRight: '2px'
+  },
+  scrollbox: {
+    ...shorthands.overflow('auto'),
+    visibility: 'hidden',
+    '::-webkit-scrollbar': {
       width: '8px'
     },
-    '&:hover::-webkit-scrollbar-thumb': {
-      backgroundColor: 'darkgrey',
-      'border-radius': '5px'
+    '::-webkit-scrollbar-track': {
+      backgroundColor: 'transparent'
+    },
+    '::-webkit-scrollbar-thumb': {
+      backgroundColor: '#a0a0a0'
+    },
+    ':hover': {
+      visibility: 'visible'
+    },
+    ':focus': {
+      visibility: 'visible'
     }
   },
   fullHeight: {
@@ -239,7 +244,7 @@ export const ChatList = ({
     const observer = new IntersectionObserver(handleIntersection, {
       root: null, // observing intersections with the viewport
       rootMargin: '0px',
-      threshold: 0.1 // Callback is invoked when 10% of the target is visible
+      threshold: 0.03 // Callback is invoked when 3% of the target is visible
     });
 
     if (targetElementRef.current) {
@@ -264,23 +269,25 @@ export const ChatList = ({
             )}
           {chatListState && chatListState.chatThreads.length > 0 ? (
             <>
-              <div className={styles.chatListItems}>
-                {chatListState?.chatThreads.map(c => (
-                  <Button className={styles.button} key={c.id} onClick={() => onClickChatListItem(c)}>
-                    <ChatListItem
-                      key={c.id}
-                      chat={c}
-                      myId={chatListState.userId}
-                      isSelected={c.id === chatListState?.internalSelectedChat?.id}
-                      isRead={c.isRead}
-                    />
-                  </Button>
-                ))}
-                {chatListState?.moreChatThreadsToLoad && (
-                  <div ref={targetElementRef} className={styles.bottomWhitespace}>
-                    &nbsp;
-                  </div>
-                )}
+              <div className={styles.scrollbox}>
+                <div className={styles.chatListItems}>
+                  {chatListState?.chatThreads.map(c => (
+                    <Button className={styles.button} key={c.id} onClick={() => onClickChatListItem(c)}>
+                      <ChatListItem
+                        key={c.id}
+                        chat={c}
+                        myId={chatListState.userId}
+                        isSelected={c.id === chatListState?.internalSelectedChat?.id}
+                        isRead={c.isRead}
+                      />
+                    </Button>
+                  ))}
+                  {chatListState?.moreChatThreadsToLoad && (
+                    <div ref={targetElementRef} className={styles.bottomWhitespace}>
+                      &nbsp;
+                    </div>
+                  )}
+                </div>
               </div>
             </>
           ) : (

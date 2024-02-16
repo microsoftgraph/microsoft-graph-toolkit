@@ -62,7 +62,7 @@ const ChatListWrapper = memo(({ onSelected, onNewChat, selectedChatId }: ChatLis
     },
     {
       displayText: 'My custom menu item',
-      onClick: (actions: IChatListActions) => console.log('My custom menu item clicked')
+      onClick: () => console.log('My custom menu item clicked')
     }
   ];
   const onAllMessagesRead = useCallback((chatIds: string[]) => {

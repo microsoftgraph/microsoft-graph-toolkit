@@ -30,9 +30,20 @@
   height: 90vh;
 }
 
-.chat-selector,
+.chat-selector {
+  width: 30%;
+  height: 99%;  /* 100% causes a rightmost scrollbar to appear */
+  border: 1px solid;
+}
+
+.chatlist-pane {
+  width: 30%;
+  height: 99%;  /* 100% causes a rightmost scrollbar to appear */
+  border: 1px solid;
+}
+
 .chat-pane {
-  width: 50%;
+  width: 40%;
   height: 99%;  /* 100% causes a rightmost scrollbar to appear */
   border: 1px solid;
 }

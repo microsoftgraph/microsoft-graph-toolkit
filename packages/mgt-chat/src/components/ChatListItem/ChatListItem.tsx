@@ -100,7 +100,8 @@ const useStyles = makeStyles({
     textOverflow: 'ellipsis',
     ...shorthands.overflow('hidden'),
     whiteSpace: 'nowrap',
-    width: 'auto'
+    width: 'auto',
+    minHeight: '20px' // ensures formatting is consistent with empty previewMessage
   },
 
   chatTimestamp: {

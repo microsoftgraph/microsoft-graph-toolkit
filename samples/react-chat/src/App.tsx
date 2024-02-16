@@ -30,7 +30,7 @@ function App() {
   const buttons: ChatListButtonItem[] = [
     {
       renderIcon: () => <ChatAddIcon />,
-      onClick: (actions: IChatListActions) => setShowNewChat(true)
+      onClick: () => setShowNewChat(true)
     }
   ];
 
@@ -41,7 +41,7 @@ function App() {
     },
     {
       displayText: 'My custom menu item',
-      onClick: (actions: IChatListActions) => console.log('My custom menu item clicked')
+      onClick: () => console.log('My custom menu item clicked')
     }
   ];
 
@@ -86,7 +86,7 @@ function App() {
             </div>
           )}
         </div>
-        <div className="chat-pane">
+        <div className="chatlist-pane">
           <ChatList
             onLoaded={onLoaded}
             chatThreadsPerPage={10}
