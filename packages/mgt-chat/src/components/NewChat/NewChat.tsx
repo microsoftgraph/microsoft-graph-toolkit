@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useState } from 'react';
 import { IDynamicPerson } from '@microsoft/mgt-components';
 import { Chat } from '@microsoft/microsoft-graph-types';
-import { IGraph, PeoplePicker, Spinner } from '@microsoft/mgt-react';
+import { IGraph, PeoplePicker, Spinner, error } from '@microsoft/mgt-react';
 import {
   Button,
   Field,
@@ -99,10 +99,17 @@ const NewChat: FC<NewChatProps> = ({ mode = 'auto', enableToLabel, onChatCreated
       if (person.id) acc.push(person.id);
       return acc;
     }, chatMembers);
-    void createChatThread(graphClient, chatMembers, isGroup, initialMessage, chatName).then(chat => {
-      setState('done');
-      onChatCreated(chat);
-    });
+    void createChatThread(graphClient, chatMembers, isGroup, initialMessage, chatName)
+      .then(chat => {
+        setState('done');
+        onChatCreated(chat);
+      })
+      .catch(e => {
+        // To be consistent with Teams, more specific behavior should be implemented
+        // to handle scenarios like no selectedPeople and empty initialMessage
+        error('Failed to create chat thread:', e);
+        setState('initial');
+      });
   }, [onChatCreated, selectedPeople, initialMessage, chatName, isGroup]);
 
   return (
@@ -115,6 +122,8 @@ const NewChat: FC<NewChatProps> = ({ mode = 'auto', enableToLabel, onChatCreated
               ariaLabel="Select people to chat with"
               selectedPeople={selectedPeople}
               selectionChanged={onSelectedPeopleChange}
+              userFilters={`not(id eq '${currentUserId()}')`} // Filters self; self chat is not supported
+              userType={'user'} // Needed for above filter
             />
           </Field>
 
