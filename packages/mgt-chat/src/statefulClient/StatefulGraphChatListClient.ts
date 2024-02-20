@@ -84,7 +84,7 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
   moreChatThreadsToLoad: boolean | undefined;
   internalSelectedChat: GraphChatThread | undefined;
   internalPrevSelectedChat: GraphChatThread | undefined;
-  initialSelectedChatSet: boolean;
+  fireOnSelected: boolean; // takes care of a case when we first init ChatList and sets the selected chat Id but onselected is not fired.
 } & Pick<ErrorBarProps, 'activeErrorMessages'>;
 
 interface StatefulClient<T> {
@@ -104,7 +104,9 @@ interface StatefulClient<T> {
    * @param handler Callback to be unregistered
    */
   offStateChange(handler: (state: T) => void): void;
-
+  /**
+   * Provides the number of chat threads to display with each load more.
+   */
   chatThreadsPerPage: number;
   /**
    * Method for loading more chat threads
@@ -122,7 +124,12 @@ interface StatefulClient<T> {
    * Method for setting the currently selected chat
    * @param chatThread - currently selected chat
    */
-  setInternalSelectedChat(chatThread: GraphChatThread): void;
+  setSelectedChat(chatThread: GraphChatThread): void;
+  /**
+   * Method for setting the currently selected chat
+   * @param chatId - currently selected chat id
+   */
+  setSelectedChatId(chatId: string): void;
 }
 
 type MessageEventType =
@@ -161,15 +168,15 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   private readonly _graph: IGraph;
   private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
   private _initialSelectedChatId: string | undefined;
-  constructor(chatThreadsPerPage: number, initialSelectedChatId: string | undefined) {
+
+  constructor() {
     this.userId = currentUserId();
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
     this._cache = new LastReadCache();
     this._graph = graph('mgt-chat', GraphConfig.version);
-    this.chatThreadsPerPage = chatThreadsPerPage;
-    this._initialSelectedChatId = initialSelectedChatId;
+
     this._notificationClient = new GraphNotificationUserClient(this._eventEmitter, this._graph);
 
     void this.updateUserSubscription(this.userId);
@@ -178,7 +185,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /**
    * Provides the number of chat threads to display with each load more.
    */
-  public chatThreadsPerPage: number;
+  public chatThreadsPerPage = 20;
 
   /**
    * Provides a method to clean up any resources being used internally when a consuming component is being removed from the DOM
@@ -215,7 +222,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         return;
       }
 
-      if (items.length < maxItems && handlerNextLink && handlerNextLink !== '') {
+      if (items.length < maxItems && handlerNextLink) {
         await this.loadAndAppendChatThreads(handlerNextLink, items, maxItems);
         return;
       }
@@ -223,7 +230,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       this.handleChatThreads(items, handlerNextLink);
     };
 
-    if (nextLink === '') {
+    if (!nextLink) {
       // max page count cannot exceed 50 per documentation
       const pageCount = maxItems > 50 ? 50 : maxItems;
       loadChatThreads(this._graph, pageCount).then(handler, err => error(err));
@@ -233,7 +240,37 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     }
   }
 
-  public setInternalSelectedChat = (chatThread: GraphChatThread): void => {
+  public clearSelectedChat = () => {
+    const state = this.getState();
+
+    if (state.internalSelectedChat) {
+      this.notifyStateChange((draft: GraphChatListClient) => {
+        draft.status = 'chat unselected';
+        draft.internalPrevSelectedChat = state.internalSelectedChat;
+        draft.internalSelectedChat = undefined;
+      });
+    }
+  };
+
+  public setSelectedChatId = (chatId: string) => {
+    // the first time we are setting the selected chat, we may still be loading chat threads.
+    // so trying the code block after this will not work as there are no chat threads yet.
+    // we are setting this flag so that the `chats loaded` on ChatList can fire onselected.
+    if (!this._initialSelectedChatId) {
+      this._initialSelectedChatId = chatId;
+      return;
+    }
+
+    const state = this.getState();
+    if (!state.internalSelectedChat || state.internalSelectedChat.id !== chatId) {
+      const chatThread = state.chatThreads.find(c => c.id === chatId);
+      if (chatThread) {
+        this.setSelectedChat(chatThread);
+      }
+    }
+  };
+
+  public setSelectedChat = (chatThread: GraphChatThread): void => {
     const state = this.getState();
 
     if (state.internalSelectedChat) {
@@ -367,7 +404,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     chatMessage: undefined,
     internalSelectedChat: undefined,
     internalPrevSelectedChat: undefined,
-    initialSelectedChatSet: false
+    fireOnSelected: false
   };
 
   /**
@@ -565,11 +602,19 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this.notifyStateChange((draft: GraphChatListClient) => {
       draft.status = chatThreads.length > 0 ? 'chats loaded' : 'no chats';
       draft.chatThreads = chatThreads;
-      draft.moreChatThreadsToLoad = nextLink !== undefined && nextLink !== '';
+      draft.moreChatThreadsToLoad = Boolean(nextLink);
+      draft.fireOnSelected = false;
       if (this._initialSelectedChatId) {
-        draft.internalSelectedChat = chatThreads.filter(c => c.id === this._initialSelectedChatId)[0];
-        this._initialSelectedChatId = undefined;
-        draft.initialSelectedChatSet = true;
+        // again, we expect this code to only run once, during the init of ChatList component if and only if _initialSelectedChatId is set.
+        const toFindId = this._initialSelectedChatId;
+        const chat = chatThreads.find(c => c.id === toFindId);
+        this._initialSelectedChatId = ''; // ensure we only set the selected chat once
+        if (chat) {
+          draft.internalSelectedChat = chat;
+          draft.fireOnSelected = true;
+        } else {
+          log('Chat with id ' + toFindId + ' not found in loaded chat threads.');
+        }
       }
     });
   };
@@ -634,7 +679,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    * @memberof StatefulGraphChatListClient
    */
   private async updateUserSubscription(userId: string) {
-    if (userId === '') return;
+    if (!userId) return;
 
     // reset state to initial
     this.notifyStateChange((draft: GraphChatListClient) => {
