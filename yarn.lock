@@ -144,22 +144,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/communication-common@npm:3.0.0-beta.1":
-  version: 3.0.0-beta.1
-  resolution: "@azure/communication-common@npm:3.0.0-beta.1"
-  dependencies:
-    "@azure/abort-controller": ^1.0.0
-    "@azure/core-auth": ^1.3.0
-    "@azure/core-rest-pipeline": ^1.3.2
-    "@azure/core-tracing": ^1.0.0
-    "@azure/core-util": ^1.0.0
-    events: ^3.0.0
-    jwt-decode: ^3.1.2
-    tslib: ^2.2.0
-  checksum: 6de17c76d2d161828debf08ba11d8c5a7c50f80b11b91cbc8682a91779d370ee4fc764a7ea4cc435feb33a53c05b1cd21209fa36550118a395089d235f5ae7c2
-  languageName: node
-  linkType: hard
-
 "@azure/communication-identity@npm:1.3.0":
   version: 1.3.0
   resolution: "@azure/communication-identity@npm:1.3.0"
@@ -179,45 +163,49 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/communication-react@npm:1.9.0-beta.1":
-  version: 1.9.0-beta.1
-  resolution: "@azure/communication-react@npm:1.9.0-beta.1"
+"@azure/communication-react@npm:1.13.0-beta.1":
+  version: 1.13.0-beta.1
+  resolution: "@azure/communication-react@npm:1.13.0-beta.1"
   dependencies:
-    "@azure/communication-common": 3.0.0-beta.1
+    "@azure/communication-common": ^2.3.0
     "@azure/core-client": ^1.7.3
     "@azure/core-paging": ^1.5.0
-    "@azure/core-rest-pipeline": ^1.11.0
+    "@azure/core-rest-pipeline": ^1.13.0
     "@azure/logger": ^1.0.4
-    "@fluentui-contrib/react-chat": 0.1.6
-    "@fluentui/react": ^8.110.4
-    "@fluentui/react-components": ^9.30.0
-    "@fluentui/react-file-type-icons": 8.8.13
-    "@fluentui/react-hooks": ^8.6.12
-    "@fluentui/react-icons": ^2.0.194
-    "@fluentui/react-window-provider": ^2.2.3
-    "@griffel/react": ^1.5.15
+    "@fluentui-contrib/react-chat": 0.1.7
+    "@fluentui/react": ^8.115.2
+    "@fluentui/react-components": ^9.46.2
+    "@fluentui/react-file-type-icons": 8.11.2
+    "@fluentui/react-hooks": ^8.6.36
+    "@fluentui/react-icons": ^2.0.226
+    "@fluentui/react-window-provider": ^2.2.18
+    "@griffel/react": ^1.5.20
     copy-to-clipboard: ^3.3.1
-    dompurify: ^3.0.3
+    dompurify: ^3.0.8
     events: ^3.3.0
-    html-to-react: 1.5.1
-    immer: 9.0.6
+    html-react-parser: ^5.1.1
+    immer: 10.0.3
     memoize-one: ^5.2.1
     nanoid: 3.3.6
     react-linkify: ^1.0.0-alpha
     react-use-draggable-scroll: ^0.4.7
     reselect: ^4.0.0
+    roosterjs-editor-core: ^8.54.0
+    roosterjs-editor-plugins: ^8.54.0
+    roosterjs-editor-types: ^8.54.0
+    roosterjs-react: ^8.54.0
     textarea-caret-ts: ^4.1.1
-    use-debounce: ^9.0.4
+    use-debounce: ^10.0.0
     uuid: ^9.0.0
   peerDependencies:
-    "@azure/communication-calling": 1.17.1-beta.5
+    "@azure/communication-calling": 1.21.1-beta.4
     "@azure/communication-calling-effects": 1.0.1
-    "@azure/communication-chat": 1.4.0-beta.1
+    "@azure/communication-chat": 1.5.0-beta.1
     "@types/react": ">=16.8.0 <19.0.0"
     "@types/react-dom": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
     react-dom: ">=16.8.0 <19.0.0"
-  checksum: 69f993b7aaee45dbc98507a8bab896b0dc6c8a4b2cb7de5cfde656fe5ca1251b8cfd3435b0164cf73e2143efd0779c0f1aad5b38e87966882b550c69ede1c033
+  checksum: e3720b6d4403d87f90bfabdf656fea00a9193e221ebfbb1c40f238b8fbccfc98cb4f2ca50669576dd33df5cd4c8cb4c306f67f241597397ad56324a14baccba5
   languageName: node
   linkType: hard
 
@@ -304,7 +292,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/core-rest-pipeline@npm:^1.11.0, @azure/core-rest-pipeline@npm:^1.3.0, @azure/core-rest-pipeline@npm:^1.3.2, @azure/core-rest-pipeline@npm:^1.9.1":
+"@azure/core-rest-pipeline@npm:^1.13.0, @azure/core-rest-pipeline@npm:^1.3.0, @azure/core-rest-pipeline@npm:^1.3.2, @azure/core-rest-pipeline@npm:^1.9.1":
   version: 1.14.0
   resolution: "@azure/core-rest-pipeline@npm:1.14.0"
   dependencies:
@@ -1989,7 +1977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.4.5, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.23.9
   resolution: "@babel/runtime@npm:7.23.9"
   dependencies:
@@ -2860,9 +2848,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui-contrib/react-chat@npm:0.1.6":
-  version: 0.1.6
-  resolution: "@fluentui-contrib/react-chat@npm:0.1.6"
+"@fluentui-contrib/react-chat@npm:0.1.7":
+  version: 0.1.7
+  resolution: "@fluentui-contrib/react-chat@npm:0.1.7"
   dependencies:
     "@swc/helpers": ~0.5.1
   peerDependencies:
@@ -2872,7 +2860,7 @@ __metadata:
     "@types/react-dom": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
     react-dom: ">=16.8.0 <19.0.0"
-  checksum: 3811862315845b9cfd61e9d6c087c562bb4273e1bae69b9ee995ef44fab0f474e9023da3e455c8a2a517e6cf3fd51e6d1b24b2ca5e97fbaf2df20406899ece46
+  checksum: 41b1a4be48409d1bfe15f881cf5b6c104b4f445c94e3f5a1d0fb08fa15c8e0f0bc405782c66ac8cf79b27776b2420d800fac866e564befbe4cb093816482a0e9
   languageName: node
   linkType: hard
 
@@ -3257,19 +3245,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-component-nesting-registry@npm:^0.66.5":
-  version: 0.66.5
-  resolution: "@fluentui/react-component-nesting-registry@npm:0.66.5"
-  dependencies:
-    "@babel/runtime": ^7.10.4
-    prop-types: ^15.7.2
-  peerDependencies:
-    react: ^16.8.0 || ^17
-    react-dom: ^16.8.0 || ^17
-  checksum: 39f1b72fce65f58aaa7622492d9bd2456192d1eaa041b0c479c3e83a6c1d5e5fe1673028fc19061bbeb8bc9253f16f37eb5d58467fc3a1a2890d20b9926d672c
-  languageName: node
-  linkType: hard
-
 "@fluentui/react-component-ref@npm:^0.66.5":
   version: 0.66.5
   resolution: "@fluentui/react-component-ref@npm:0.66.5"
@@ -3283,7 +3258,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-components@npm:^9.19.1, @fluentui/react-components@npm:^9.30.0":
+"@fluentui/react-components@npm:^9.19.1, @fluentui/react-components@npm:^9.46.2, @fluentui/react-components@npm:^9.46.4":
   version: 9.46.4
   resolution: "@fluentui/react-components@npm:9.46.4"
   dependencies:
@@ -3469,17 +3444,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-file-type-icons@npm:8.8.13":
-  version: 8.8.13
-  resolution: "@fluentui/react-file-type-icons@npm:8.8.13"
+"@fluentui/react-file-type-icons@npm:8.11.2":
+  version: 8.11.2
+  resolution: "@fluentui/react-file-type-icons@npm:8.11.2"
   dependencies:
-    "@fluentui/set-version": ^8.2.6
-    "@fluentui/style-utilities": ^8.9.6
+    "@fluentui/set-version": ^8.2.14
+    "@fluentui/style-utilities": ^8.10.2
     tslib: ^2.1.0
   peerDependencies:
     "@types/react": ">=16.8.0 <19.0.0"
     react: ">=16.8.0 <19.0.0"
-  checksum: 298bd41316a00289e429c8b285af51908f89f4256f5d5d469b4c6a4c935e8760b29d7bd7cb6d9162accc974bd2bb844b5b93d87e0a01f01d81ca72d8cf8e5b37
+  checksum: 8fdd36bfa83fa7e0bd7a48b4e7ffd4278c6c67e1652641fca32414bd9950ab6df157db93635b7cfa88f2228cb36810df77d384b9d800d1ba954d6a59c4fbf80b
   languageName: node
   linkType: hard
 
@@ -3500,7 +3475,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-hooks@npm:^8.2.0, @fluentui/react-hooks@npm:^8.6.12, @fluentui/react-hooks@npm:^8.6.20, @fluentui/react-hooks@npm:^8.6.36":
+"@fluentui/react-hooks@npm:^8.2.0, @fluentui/react-hooks@npm:^8.6.20, @fluentui/react-hooks@npm:^8.6.36":
   version: 8.6.36
   resolution: "@fluentui/react-hooks@npm:8.6.36"
   dependencies:
@@ -3531,7 +3506,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-icons@npm:^2.0.194, @fluentui/react-icons@npm:^2.0.210, @fluentui/react-icons@npm:^2.0.224":
+"@fluentui/react-icons@npm:^2.0.210, @fluentui/react-icons@npm:^2.0.224, @fluentui/react-icons@npm:^2.0.226":
   version: 2.0.226
   resolution: "@fluentui/react-icons@npm:2.0.226"
   dependencies:
@@ -3729,6 +3704,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui/react-migration-v0-v9@npm:^9.1.15":
+  version: 9.1.15
+  resolution: "@fluentui/react-migration-v0-v9@npm:9.1.15"
+  dependencies:
+    "@fluentui/react-aria": ^9.8.2
+    "@fluentui/react-components": ^9.46.4
+    "@fluentui/react-context-selector": ^9.1.51
+    "@fluentui/react-icons": ^2.0.224
+    "@fluentui/react-jsx-runtime": ^9.0.29
+    "@fluentui/react-shared-contexts": ^9.14.0
+    "@fluentui/react-tabster": ^9.19.0
+    "@fluentui/react-theme": ^9.1.16
+    "@fluentui/react-utilities": ^9.18.0
+    "@griffel/react": ^1.5.14
+    "@swc/helpers": ^0.5.1
+  peerDependencies:
+    "@fluentui/react-northstar": ^0.66.5
+    "@types/react": ">=16.14.0 <19.0.0"
+    "@types/react-dom": ">=16.9.0 <19.0.0"
+    react: ">=16.14.0 <19.0.0"
+    react-dom: ">=16.14.0 <19.0.0"
+  checksum: 15586d7b6a646beb582bc3a435130e78e24bab11ef91a7bc57b875a6dce903e8f5bb982a8e3ddf618a49f968cbc4a8b443095da02a93c7c4d51566150b5497ea
+  languageName: node
+  linkType: hard
+
 "@fluentui/react-motion-preview@npm:^0.5.12":
   version: 0.5.12
   resolution: "@fluentui/react-motion-preview@npm:0.5.12"
@@ -3783,39 +3783,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17
   checksum: e64ef8a187ef147a36099c72e83dbf7327153b0a3970a4160be01770d1698f0126791b642ada13203034f9a6796613cc776cf2351912957a803f316eeb525fc8
-  languageName: node
-  linkType: hard
-
-"@fluentui/react-northstar@npm:^0.66.4":
-  version: 0.66.5
-  resolution: "@fluentui/react-northstar@npm:0.66.5"
-  dependencies:
-    "@babel/runtime": ^7.10.4
-    "@fluentui/accessibility": ^0.66.5
-    "@fluentui/dom-utilities": ^1.1.1
-    "@fluentui/react-bindings": ^0.66.5
-    "@fluentui/react-component-event-listener": ^0.66.5
-    "@fluentui/react-component-nesting-registry": ^0.66.5
-    "@fluentui/react-component-ref": ^0.66.5
-    "@fluentui/react-icons-northstar": ^0.66.5
-    "@fluentui/react-northstar-styles-renderer": ^0.66.5
-    "@fluentui/react-portal-compat-context": ^9.0.6
-    "@fluentui/react-proptypes": ^0.66.5
-    "@fluentui/state": ^0.66.5
-    "@fluentui/styles": ^0.66.5
-    "@popperjs/core": ~2.4.3
-    body-scroll-lock: ^3.1.5
-    classnames: ^2.2.6
-    compute-scroll-into-view: 1.0.11
-    downshift: 5.0.5
-    lodash: ^4.17.15
-    prop-types: ^15.7.2
-    react-is: ^17.0.2
-    react-transition-group: ^4.4.1
-  peerDependencies:
-    react: ^16.8.0 || ^17
-    react-dom: ^16.8.0 || ^17
-  checksum: 2fe64782e2f546de7b948852d6fca058e1063dd80010a6882d1b1cd26df273589f03a3cace569b73ab690e0e43737689153de3f69e5e4cc339fb4976d86f5b92
   languageName: node
   linkType: hard
 
@@ -3886,7 +3853,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-portal-compat-context@npm:^9.0.11, @fluentui/react-portal-compat-context@npm:^9.0.5, @fluentui/react-portal-compat-context@npm:^9.0.6":
+"@fluentui/react-portal-compat-context@npm:^9.0.11, @fluentui/react-portal-compat-context@npm:^9.0.5":
   version: 9.0.11
   resolution: "@fluentui/react-portal-compat-context@npm:9.0.11"
   dependencies:
@@ -3954,17 +3921,6 @@ __metadata:
     react: ">=16.14.0 <19.0.0"
     react-dom: ">=16.14.0 <19.0.0"
   checksum: 78f281316879069e25270f83d0d1c131eeed04c4e7952e3e2d25551ad31a091b2b02eab87fff02373e8a9065fe4e260e06055d97b7aab84f2611ce1f3f43a9ac
-  languageName: node
-  linkType: hard
-
-"@fluentui/react-proptypes@npm:^0.66.5":
-  version: 0.66.5
-  resolution: "@fluentui/react-proptypes@npm:0.66.5"
-  dependencies:
-    "@babel/runtime": ^7.10.4
-    lodash: ^4.17.15
-    prop-types: ^15.7.2
-  checksum: 3a75420934effad6cdca0622701eb246406462e946bc115aba9878df825ecaadfad2be7a52dde324ff2d5aec150ad1f260eb5a8a2ddcfb25f6e4ad61bc4d51cf
   languageName: node
   linkType: hard
 
@@ -4476,7 +4432,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-window-provider@npm:^2.2.18, @fluentui/react-window-provider@npm:^2.2.3, @fluentui/react-window-provider@npm:^2.2.9":
+"@fluentui/react-window-provider@npm:^2.2.18, @fluentui/react-window-provider@npm:^2.2.9":
   version: 2.2.18
   resolution: "@fluentui/react-window-provider@npm:2.2.18"
   dependencies:
@@ -4489,7 +4445,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react@npm:^8.0.0, @fluentui/react@npm:^8.110.4, @fluentui/react@npm:^8.115.5":
+"@fluentui/react@npm:^8.0.0, @fluentui/react@npm:^8.115.2, @fluentui/react@npm:^8.115.5":
   version: 8.115.5
   resolution: "@fluentui/react@npm:8.115.5"
   dependencies:
@@ -4561,7 +4517,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/style-utilities@npm:^8.10.3, @fluentui/style-utilities@npm:^8.9.6":
+"@fluentui/style-utilities@npm:^8.10.2, @fluentui/style-utilities@npm:^8.10.3, @fluentui/style-utilities@npm:^8.9.6":
   version: 8.10.3
   resolution: "@fluentui/style-utilities@npm:8.10.3"
   dependencies:
@@ -4683,7 +4639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@griffel/react@npm:^1.0.0, @griffel/react@npm:^1.5.14, @griffel/react@npm:^1.5.15":
+"@griffel/react@npm:^1.0.0, @griffel/react@npm:^1.5.14, @griffel/react@npm:^1.5.20":
   version: 1.5.20
   resolution: "@griffel/react@npm:1.5.20"
   dependencies:
@@ -5342,12 +5298,13 @@ __metadata:
     "@azure/communication-chat": 1.4.0
     "@azure/communication-common": 2.3.0
     "@azure/communication-identity": 1.3.0
-    "@azure/communication-react": 1.9.0-beta.1
+    "@azure/communication-react": 1.13.0-beta.1
     "@azure/msal-browser": 2.33.0
     "@fluentui/react": ~8.106.1
     "@fluentui/react-components": ^9.19.1
     "@fluentui/react-icons": ^2.0.210
-    "@fluentui/react-northstar": ^0.66.4
+    "@fluentui/react-icons-northstar": ^0.66.5
+    "@fluentui/react-migration-v0-v9": ^9.1.15
     "@microsoft/mgt-components": "*"
     "@microsoft/mgt-element": "*"
     "@microsoft/mgt-msal2-provider": "*"
@@ -6214,13 +6171,6 @@ __metadata:
     webpack-plugin-serve:
       optional: true
   checksum: a82eced9519f4dcac424acae719f819ab4150bfcf2874ac7daaf25a4f1c409e3d8b9d693fea0c686c24d520a5473756df32da90d8b89739670f8f8084c600bb4
-  languageName: node
-  linkType: hard
-
-"@popperjs/core@npm:~2.4.3":
-  version: 2.4.4
-  resolution: "@popperjs/core@npm:2.4.4"
-  checksum: 77bf4fb8fa16c67a7b017172264533d6a04481def64f99b503cd4d99195a541235f46c26afdcb212d9fc08e72c4f8012769422cd491831e6520b0c8367f8cd86
   languageName: node
   linkType: hard
 
@@ -11681,13 +11631,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-scroll-lock@npm:^3.1.5":
-  version: 3.1.5
-  resolution: "body-scroll-lock@npm:3.1.5"
-  checksum: 52c25b81d6e7a87cfbdd7870363c3e20a439dbc76535b735916e2df907abbce95c0da0d2c7a2cfe88f49775d53bbc4bd09445ffda2d61b999efa3f0b1dedfc5e
-  languageName: node
-  linkType: hard
-
 "bonjour-service@npm:^1.0.11":
   version: 1.2.1
   resolution: "bonjour-service@npm:1.2.1"
@@ -12670,7 +12613,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-convert@npm:^1.9.0":
+"color-convert@npm:^1.9.0, color-convert@npm:^1.9.3":
   version: 1.9.3
   resolution: "color-convert@npm:1.9.3"
   dependencies:
@@ -12695,10 +12638,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-name@npm:~1.1.4":
+"color-name@npm:^1.0.0, color-name@npm:~1.1.4":
   version: 1.1.4
   resolution: "color-name@npm:1.1.4"
   checksum: b0445859521eb4021cd0fb0cc1a75cecf67fceecae89b63f62b201cca8d345baf8b952c966862a9d9a2632987d4f6581f0ec8d957dfacece86f0a7919316f610
+  languageName: node
+  linkType: hard
+
+"color-string@npm:^1.6.0":
+  version: 1.9.1
+  resolution: "color-string@npm:1.9.1"
+  dependencies:
+    color-name: ^1.0.0
+    simple-swizzle: ^0.2.2
+  checksum: c13fe7cff7885f603f49105827d621ce87f4571d78ba28ef4a3f1a104304748f620615e6bf065ecd2145d0d9dad83a3553f52bb25ede7239d18e9f81622f1cc5
   languageName: node
   linkType: hard
 
@@ -12708,6 +12661,16 @@ __metadata:
   bin:
     color-support: bin.js
   checksum: 9b7356817670b9a13a26ca5af1c21615463b500783b739b7634a0c2047c16cef4b2865d7576875c31c3cddf9dd621fa19285e628f20198b233a5cfdda6d0793b
+  languageName: node
+  linkType: hard
+
+"color@npm:^3.0.0":
+  version: 3.2.1
+  resolution: "color@npm:3.2.1"
+  dependencies:
+    color-convert: ^1.9.3
+    color-string: ^1.6.0
+  checksum: f81220e8b774d35865c2561be921f5652117638dcda7ca4029262046e37fc2444ac7bbfdd110cf1fd9c074a4ee5eda8f85944ffbdda26186b602dd9bb05f6400
   languageName: node
   linkType: hard
 
@@ -12902,20 +12865,6 @@ __metadata:
     safe-buffer: 5.1.2
     vary: ~1.1.2
   checksum: 35c0f2eb1f28418978615dc1bc02075b34b1568f7f56c62d60f4214d4b7cc00d0f6d282b5f8a954f59872396bd770b6b15ffd8aa94c67d4bce9b8887b906999b
-  languageName: node
-  linkType: hard
-
-"compute-scroll-into-view@npm:1.0.11":
-  version: 1.0.11
-  resolution: "compute-scroll-into-view@npm:1.0.11"
-  checksum: ecc7b84905fc93639491f0b482c6a419abfdc876d8c5043ad66a9bd601e00c3bfc5ae5d20cee468c5fd993b3463b4540791494da1fc437b42889928bb3e34b7f
-  languageName: node
-  linkType: hard
-
-"compute-scroll-into-view@npm:^1.0.9":
-  version: 1.0.20
-  resolution: "compute-scroll-into-view@npm:1.0.20"
-  checksum: f15fab29221953620735393ac1866541aab0d27d28078bedbba071a291ee9c8cc1a72bee302cf0bc06ed83c5e55afb74ebcbd634a63671ba33cf1fb1c51d3308
   languageName: node
   linkType: hard
 
@@ -14308,6 +14257,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"domhandler@npm:5.0.3, domhandler@npm:^5.0.2, domhandler@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "domhandler@npm:5.0.3"
+  dependencies:
+    domelementtype: ^2.3.0
+  checksum: 0f58f4a6af63e6f3a4320aa446d28b5790a009018707bce2859dcb1d21144c7876482b5188395a188dfa974238c019e0a1e610d2fc269a12b2c192ea2b0b131c
+  languageName: node
+  linkType: hard
+
 "domhandler@npm:^4.0.0, domhandler@npm:^4.2.0, domhandler@npm:^4.3.1":
   version: 4.3.1
   resolution: "domhandler@npm:4.3.1"
@@ -14317,16 +14275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"domhandler@npm:^5.0, domhandler@npm:^5.0.2, domhandler@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "domhandler@npm:5.0.3"
-  dependencies:
-    domelementtype: ^2.3.0
-  checksum: 0f58f4a6af63e6f3a4320aa446d28b5790a009018707bce2859dcb1d21144c7876482b5188395a188dfa974238c019e0a1e610d2fc269a12b2c192ea2b0b131c
-  languageName: node
-  linkType: hard
-
-"dompurify@npm:^3.0.3":
+"dompurify@npm:^3.0.8":
   version: 3.0.8
   resolution: "dompurify@npm:3.0.8"
   checksum: cac660ccae15a9603f06a85344da868a4c3732d8b57f7998de0f421eb4b9e67d916be52e9bb2a57b2f95b49e994cc50bcd06bb87f2cb2849cf058bdf15266237
@@ -14354,7 +14303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"domutils@npm:^3.0.1":
+"domutils@npm:^3.0.1, domutils@npm:^3.1.0":
   version: 3.1.0
   resolution: "domutils@npm:3.1.0"
   dependencies:
@@ -14416,20 +14365,6 @@ __metadata:
   version: 16.3.2
   resolution: "dotenv@npm:16.3.2"
   checksum: 917b27eeb654b95846484009326b1c52af7a7c25f7b09e2939ed49de8f98cb9895dcc04f13a39cdb078d247985e21147311ccb5bfbf2fd151afb20fa8f96de15
-  languageName: node
-  linkType: hard
-
-"downshift@npm:5.0.5":
-  version: 5.0.5
-  resolution: "downshift@npm:5.0.5"
-  dependencies:
-    "@babel/runtime": ^7.4.5
-    compute-scroll-into-view: ^1.0.9
-    prop-types: ^15.7.2
-    react-is: ^16.9.0
-  peerDependencies:
-    react: ">=0.14.9"
-  checksum: 47260ef61c73148affecc2beb8fd3d57ac67486ba29fc4de683089baf003db364ad6439e2628a57e322c2c018d3bcfa75989915e03b2ae77842cfb6b6d3d652a
   languageName: node
   linkType: hard
 
@@ -14632,7 +14567,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"entities@npm:^4.2.0, entities@npm:^4.4.0":
+"entities@npm:^4.2.0, entities@npm:^4.4.0, entities@npm:^4.5.0":
   version: 4.5.0
   resolution: "entities@npm:4.5.0"
   checksum: 853f8ebd5b425d350bffa97dd6958143179a5938352ccae092c62d1267c4e392a039be1bae7d51b6e4ffad25f51f9617531fedf5237f15df302ccfb452cbf2d7
@@ -17835,6 +17770,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"html-dom-parser@npm:5.0.7":
+  version: 5.0.7
+  resolution: "html-dom-parser@npm:5.0.7"
+  dependencies:
+    domhandler: 5.0.3
+    htmlparser2: 9.1.0
+  checksum: 92a40338753520d77e356b943524353acb822d5149929384533367a5a3e9c44c69699c1a7725a7ba65d1216266f40599702f60891c20baae2cea1ec06fe6be35
+  languageName: node
+  linkType: hard
+
 "html-encoding-sniffer@npm:^2.0.1":
   version: 2.0.1
   resolution: "html-encoding-sniffer@npm:2.0.1"
@@ -17875,22 +17820,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"html-react-parser@npm:^5.1.1":
+  version: 5.1.2
+  resolution: "html-react-parser@npm:5.1.2"
+  dependencies:
+    domhandler: 5.0.3
+    html-dom-parser: 5.0.7
+    react-property: 2.0.2
+    style-to-js: 1.1.10
+  peerDependencies:
+    react: 0.14 || 15 || 16 || 17 || 18
+  checksum: 5d0dd25f3ed48fd46e9044e78345dfce77d3bf318940fd9c95dd779fce6ac5100a153cd0c6939c05bceaa3ce014a681d015983ccea999ffcf4a6f37a78daba1d
+  languageName: node
+  linkType: hard
+
 "html-tags@npm:^3.3.1":
   version: 3.3.1
   resolution: "html-tags@npm:3.3.1"
   checksum: b4ef1d5a76b678e43cce46e3783d563607b1d550cab30b4f511211564574770aa8c658a400b100e588bc60b8234e59b35ff72c7851cc28f3b5403b13a2c6cbce
-  languageName: node
-  linkType: hard
-
-"html-to-react@npm:1.5.1":
-  version: 1.5.1
-  resolution: "html-to-react@npm:1.5.1"
-  dependencies:
-    domhandler: ^5.0
-    htmlparser2: ^8.0
-    lodash.camelcase: ^4.3.0
-    react: ^18.0
-  checksum: 8fc6f4c0355be2e5cbd11a39de7795657e3cf9be45cdd7d35ace03ceffe62b884ce246e4831df9a7cfe1bdef93242d728ded2b7165b37d7f4393f0e4158f2f04
   languageName: node
   linkType: hard
 
@@ -17928,6 +17875,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"htmlparser2@npm:9.1.0":
+  version: 9.1.0
+  resolution: "htmlparser2@npm:9.1.0"
+  dependencies:
+    domelementtype: ^2.3.0
+    domhandler: ^5.0.3
+    domutils: ^3.1.0
+    entities: ^4.5.0
+  checksum: e5f8d5193967e4a500226f37bdf2c0f858cecb39dde14d0439f24bf2c461a4342778740d988fbaba652b0e4cb6052f7f2e99e69fc1a329a86c629032bb76e7c8
+  languageName: node
+  linkType: hard
+
 "htmlparser2@npm:^6.1.0":
   version: 6.1.0
   resolution: "htmlparser2@npm:6.1.0"
@@ -17940,7 +17899,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"htmlparser2@npm:^8.0, htmlparser2@npm:^8.0.2":
+"htmlparser2@npm:^8.0.2":
   version: 8.0.2
   resolution: "htmlparser2@npm:8.0.2"
   dependencies:
@@ -18252,10 +18211,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immer@npm:9.0.6":
-  version: 9.0.6
-  resolution: "immer@npm:9.0.6"
-  checksum: 75da22f3b32f3f14604eb389b4f50e84a14f2e42f306f0cbe4d2969aed54ec7fda9a7e9ca42ebae2ba73ec9bb6ec1001fafbac535accaf03860054ab0f7e8388
+"immer@npm:10.0.3":
+  version: 10.0.3
+  resolution: "immer@npm:10.0.3"
+  checksum: 76acabe6f40e752028313762ba477a5d901e57b669f3b8fb406b87b9bb9b14e663a6fbbf5a6d1ab323737dd38f4b2494a4e28002045b88948da8dbf482309f28
   languageName: node
   linkType: hard
 
@@ -18408,6 +18367,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"inline-style-parser@npm:0.2.2":
+  version: 0.2.2
+  resolution: "inline-style-parser@npm:0.2.2"
+  checksum: 698893d6542d4e7c0377936a1c7daec34a197765bd77c5599384756a95ce8804e6b79347b783aa591d5e9c6f3d33dae74c6d4cad3a94647eb05f3a785e927a3f
+  languageName: node
+  linkType: hard
+
 "inquirer@npm:^8.2.4":
   version: 8.2.6
   resolution: "inquirer@npm:8.2.6"
@@ -18543,6 +18509,13 @@ __metadata:
   version: 0.2.1
   resolution: "is-arrayish@npm:0.2.1"
   checksum: eef4417e3c10e60e2c810b6084942b3ead455af16c4509959a27e490e7aee87cfb3f38e01bbde92220b528a0ee1a18d52b787e1458ee86174d8c7f0e58cd488f
+  languageName: node
+  linkType: hard
+
+"is-arrayish@npm:^0.3.1":
+  version: 0.3.2
+  resolution: "is-arrayish@npm:0.3.2"
+  checksum: 977e64f54d91c8f169b59afcd80ff19227e9f5c791fa28fa2e5bce355cbaf6c2c356711b734656e80c9dd4a854dd7efcf7894402f1031dfc5de5d620775b4d5f
   languageName: node
   linkType: hard
 
@@ -26023,7 +25996,7 @@ __metadata:
     "@fluentui/react": ^8.0.0
     "@fluentui/react-components": ^9.19.1
     "@fluentui/react-hooks": ^8.2.0
-    "@fluentui/react-northstar": ^0.66.4
+    "@fluentui/react-migration-v0-v9": ^9.1.15
     "@fluentui/react-theme-provider": ^0.18.5
     "@microsoft/mgt-element": "*"
     "@microsoft/mgt-msal2-provider": "*"
@@ -26097,7 +26070,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.13.1, react-is@npm:^16.7.0, react-is@npm:^16.9.0":
+"react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
@@ -26132,6 +26105,13 @@ __metadata:
     linkify-it: ^2.0.3
     tlds: ^1.199.0
   checksum: abff36e1fdd9db822278292379e070d471d96ddda2d199565edd9ecff3d17faa31a3c83bd2be8fa4c0f9589dd97553ba77c553047b94cfd94e0f528b9e91fafa
+  languageName: node
+  linkType: hard
+
+"react-property@npm:2.0.2":
+  version: 2.0.2
+  resolution: "react-property@npm:2.0.2"
+  checksum: c67fb2590dad9102239b2e574fbc078b472e227b66c3d64e1949426e33889d78c2ac5369cc4c740bb8fe61665505940e39a78d113261ac52410f7538089fe367
   languageName: node
   linkType: hard
 
@@ -26346,15 +26326,6 @@ __metadata:
     loose-envify: ^1.1.0
     object-assign: ^4.1.1
   checksum: b254cc17ce3011788330f7bbf383ab653c6848902d7936a87b09d835d091e3f295f7e9dd1597c6daac5dc80f90e778c8230218ba8ad599f74adcc11e33b9d61b
-  languageName: node
-  linkType: hard
-
-"react@npm:^18.0":
-  version: 18.2.0
-  resolution: "react@npm:18.2.0"
-  dependencies:
-    loose-envify: ^1.1.0
-  checksum: 88e38092da8839b830cda6feef2e8505dec8ace60579e46aa5490fc3dc9bba0bd50336507dc166f43e3afc1c42939c09fe33b25fae889d6f402721dcd78fca1b
   languageName: node
   linkType: hard
 
@@ -27290,6 +27261,95 @@ __metadata:
   languageName: node
   linkType: hard
 
+"roosterjs-color-utils@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "roosterjs-color-utils@npm:1.1.0"
+  dependencies:
+    color: ^3.0.0
+  checksum: 760071c46972a744a34e54de591119f4222b571f9b800dd31d0ac8506333dbec8448b75d759ca8d8762f59994c547c456d6e6e284e53ac4ea674d4cedfa36c0a
+  languageName: node
+  linkType: hard
+
+"roosterjs-editor-api@npm:^8.59.0, roosterjs-editor-api@npm:^8.60.0":
+  version: 8.60.0
+  resolution: "roosterjs-editor-api@npm:8.60.0"
+  dependencies:
+    roosterjs-editor-dom: ^8.60.0
+    roosterjs-editor-types: ^8.60.0
+    tslib: ^2.3.1
+  checksum: 9b2ea56c412284b27f08de697f481306277b18c3ae376d613f92680efb2a7b4e5714a02ba93bd95076a9e1c28f6005d951d994c65cc52c1b276bd585e045ee29
+  languageName: node
+  linkType: hard
+
+"roosterjs-editor-core@npm:^8.54.0, roosterjs-editor-core@npm:^8.59.1":
+  version: 8.60.0
+  resolution: "roosterjs-editor-core@npm:8.60.0"
+  dependencies:
+    roosterjs-editor-dom: ^8.60.0
+    roosterjs-editor-types: ^8.60.0
+    tslib: ^2.3.1
+  checksum: e88cebff5bd4aa9f4b73b8c326d21623e73e0f32c547731b77f55b50d88261f3b4b178c4553981c8e8ebdb6ec90ab56fa147f76334b4e0be7e523fd02a7ff628
+  languageName: node
+  linkType: hard
+
+"roosterjs-editor-dom@npm:^8.59.0, roosterjs-editor-dom@npm:^8.60.0":
+  version: 8.60.0
+  resolution: "roosterjs-editor-dom@npm:8.60.0"
+  dependencies:
+    roosterjs-editor-types: ^8.60.0
+    tslib: ^2.3.1
+  checksum: cc749c1b699aa14abe9ef9d3ac9ef4bedc60e6dc561db4a2c2e8fd2449b0ee26c6d1df25de3b74e71c49f5759483fe6936e1012b382c2fa7e2ff9b92cdce5231
+  languageName: node
+  linkType: hard
+
+"roosterjs-editor-plugins@npm:^8.54.0, roosterjs-editor-plugins@npm:^8.60.1":
+  version: 8.60.2
+  resolution: "roosterjs-editor-plugins@npm:8.60.2"
+  dependencies:
+    roosterjs-editor-api: ^8.60.0
+    roosterjs-editor-dom: ^8.60.0
+    roosterjs-editor-types: ^8.60.0
+    tslib: ^2.3.1
+  checksum: 23ef0770565663c9e9347faf581e42e87b2e812743218dcf81dd65b361673c4e73702e940bde10f0afb394a04c49c39d770addde002a0d270b7fef774eee2de3
+  languageName: node
+  linkType: hard
+
+"roosterjs-editor-types-compatible@npm:^8.59.0":
+  version: 8.60.0
+  resolution: "roosterjs-editor-types-compatible@npm:8.60.0"
+  dependencies:
+    roosterjs-editor-types: ^8.60.0
+  checksum: 9e49adcca14ae42facf5148957cdde4b3194fa0ce551efc8a6afc365d267709228efa0b4874861a447f65e354ccd6c6692d6a1e0a76fb953a1d1bd7003bdd6b6
+  languageName: node
+  linkType: hard
+
+"roosterjs-editor-types@npm:^8.54.0, roosterjs-editor-types@npm:^8.59.0, roosterjs-editor-types@npm:^8.60.0":
+  version: 8.60.0
+  resolution: "roosterjs-editor-types@npm:8.60.0"
+  checksum: cca5f22dee7e83a1ea4d6ab38464ad9d88279eb14615828a4b37c2abd780bffea648814c19c7ec584edf5a95eba1bd044d10036a4e3e50d1786fa94e0cc1571e
+  languageName: node
+  linkType: hard
+
+"roosterjs-react@npm:^8.54.0":
+  version: 8.55.0
+  resolution: "roosterjs-react@npm:8.55.0"
+  dependencies:
+    roosterjs-color-utils: ^1.1.0
+    roosterjs-editor-api: ^8.59.0
+    roosterjs-editor-core: ^8.59.1
+    roosterjs-editor-dom: ^8.59.0
+    roosterjs-editor-plugins: ^8.60.1
+    roosterjs-editor-types: ^8.59.0
+    roosterjs-editor-types-compatible: ^8.59.0
+    tslib: ^2.3.1
+  peerDependencies:
+    "@fluentui/react": ">=8.0.0"
+    react: ">=16.0.0"
+    react-dom: ">=16.0.0"
+  checksum: bc14cfc1a93b382aa3ffc717742e171443aed2ad1d4562f6d372dcc7b600864c603289415ef45463fe8e2946f05a787394900afdafbd7eee9526a93335eed15d
+  languageName: node
+  linkType: hard
+
 "root@workspace:.":
   version: 0.0.0-use.local
   resolution: "root@workspace:."
@@ -27945,6 +28005,15 @@ __metadata:
   bin:
     sigstore: bin/sigstore.js
   checksum: b3f1ccf4d2d5e6af294ad851981cc9dc4c01b6b5b7aeb98582765f5d2e75aa2b9221133b8e572179bb305e16ce589339d9617b26b9fa0bea0c38c9adef792912
+  languageName: node
+  linkType: hard
+
+"simple-swizzle@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "simple-swizzle@npm:0.2.2"
+  dependencies:
+    is-arrayish: ^0.3.1
+  checksum: a7f3f2ab5c76c4472d5c578df892e857323e452d9f392e1b5cf74b74db66e6294a1e1b8b390b519fa1b96b5b613f2a37db6cffef52c3f1f8f3c5ea64eb2d54c0
   languageName: node
   linkType: hard
 
@@ -28787,6 +28856,24 @@ __metadata:
   version: 0.1.0
   resolution: "style-search@npm:0.1.0"
   checksum: 3cfefe335033aad6d47da0725cb48f5db91a73935954c77eab77d9e415e6668cdb406da4a4f7ef9f1aca77853cf5ba7952c45e869caa5bd6439691d88098d468
+  languageName: node
+  linkType: hard
+
+"style-to-js@npm:1.1.10":
+  version: 1.1.10
+  resolution: "style-to-js@npm:1.1.10"
+  dependencies:
+    style-to-object: 1.0.5
+  checksum: 2db181d838b0076161f1ac0959e64841efd91ad9f03d80aabd11769e88f7d979a6b4d73c59810dfb47a2e87543fb02693447a03c385dda86d8750e8cf1802d62
+  languageName: node
+  linkType: hard
+
+"style-to-object@npm:1.0.5":
+  version: 1.0.5
+  resolution: "style-to-object@npm:1.0.5"
+  dependencies:
+    inline-style-parser: 0.2.2
+  checksum: 6201063204b6a94645f81b189452b2ca3e63d61867ec48523f4d52609c81e96176739fa12020d97fbbf023efb57a6f7ec3a15fb3a7fb7eb3ffea0b52b9dd6b8c
   languageName: node
   linkType: hard
 
@@ -30573,12 +30660,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-debounce@npm:^9.0.4":
-  version: 9.0.4
-  resolution: "use-debounce@npm:9.0.4"
+"use-debounce@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "use-debounce@npm:10.0.0"
   peerDependencies:
     react: ">=16.8.0"
-  checksum: 37da4ecbe4e10a6230580cac03a8cae1788ea3e417dfdd92fcf654325458cf1b4567fd57bebf888edab62701a6abe47059a585008fd04228784f223f94d66ce4
+  checksum: b296fedba916ca721eeb7117f29a13c252966d03411abccc5e5894ed4de0f32b9cb6f6b150555b8b4cb9b0acf53b84022ad4cd43b89253389e9cd13779eebca7
   languageName: node
   linkType: hard
 

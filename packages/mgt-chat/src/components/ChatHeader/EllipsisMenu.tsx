@@ -15,7 +15,7 @@ import {
   makeStyles
 } from '@fluentui/react-components';
 import { MoreHorizontal24Filled, MoreHorizontal24Regular, bundleIcon } from '@fluentui/react-icons';
-import { createSvgIcon } from '@fluentui/react-northstar';
+import { createSvgIcon } from '@fluentui/react-icons-northstar';
 import React from 'react';
 
 const TeamsIcon = createSvgIcon({
