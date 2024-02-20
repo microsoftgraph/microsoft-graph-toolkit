@@ -101,8 +101,15 @@ body {
 }
 
 /* fix attribute names in html rendering */
-.mtk4, .css-zj0253 * .token.attr-name {
+.mtk4,
+.language-html .token.attr-name,
+span.token.script.language-javascript.literal-property.property {
   color: #e50000 !important;
+}
+
+/* fix javascript class name */
+span.token.script.language-javascript.class-name {
+  color: #247b95;
 }
 
 /* fix number colors in monaco editor */
