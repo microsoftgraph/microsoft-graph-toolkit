@@ -346,25 +346,35 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   private readonly checkWhetherToMarkAsRead = async (c: GraphChatThread[]): Promise<GraphChatThread[]> => {
     const result = await Promise.all(
       c.map(async (chatThread: GraphChatThread) => {
-        const lastReadData = await this._cache.loadLastReadTime(chatThread.id!);
-        if (lastReadData) {
-          const lastUpdatedDateTime = chatThread.lastUpdatedDateTime ? new Date(chatThread.lastUpdatedDateTime) : null;
-          const lastMessagePreviewCreatedDateTime = chatThread.lastMessagePreview?.createdDateTime
-            ? new Date(chatThread.lastMessagePreview?.createdDateTime)
-            : null;
-          const lastReadTime = new Date(lastReadData.lastReadTime);
-          const isRead = !(
-            (lastUpdatedDateTime && lastUpdatedDateTime > lastReadTime) ||
-            (lastMessagePreviewCreatedDateTime && lastMessagePreviewCreatedDateTime > lastReadTime) ||
-            !lastReadData.lastReadTime
-          );
+        // when the last message is from you, the thread is read
+        if (this.userId === chatThread.lastMessagePreview?.from?.user?.id) {
           return {
             ...chatThread,
-            isRead
+            isRead: true
           };
-        } else {
+        }
+
+        // when there is not a last read time, the thread is unread
+        const lastReadData = await this._cache.loadLastReadTime(chatThread.id!);
+        if (!lastReadData) {
           return chatThread;
         }
+
+        // when the last message is newer than the last read time, the thread is unread
+        const lastUpdatedDateTime = chatThread.lastUpdatedDateTime ? new Date(chatThread.lastUpdatedDateTime) : null;
+        const lastMessagePreviewCreatedDateTime = chatThread.lastMessagePreview?.createdDateTime
+          ? new Date(chatThread.lastMessagePreview?.createdDateTime)
+          : null;
+        const lastReadTime = new Date(lastReadData.lastReadTime);
+        const isRead = !(
+          (lastUpdatedDateTime && lastUpdatedDateTime > lastReadTime) ||
+          (lastMessagePreviewCreatedDateTime && lastMessagePreviewCreatedDateTime > lastReadTime) ||
+          !lastReadData.lastReadTime
+        );
+        return {
+          ...chatThread,
+          isRead
+        };
       })
     );
     return result;
@@ -509,6 +519,8 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         chatThread.lastUpdatedDateTime = event.message.lastModifiedDateTime;
         // this resets the chat thread read state for all chats including the active chat
         if (draft.internalSelectedChat && draft.internalSelectedChat.id === draft.chatMessage.chatId) {
+          chatThread.isRead = true;
+        } else if (this.userId === event.message.from?.user?.id) {
           chatThread.isRead = true;
         } else {
           chatThread.isRead = false;
