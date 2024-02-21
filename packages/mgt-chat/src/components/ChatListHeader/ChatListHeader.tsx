@@ -86,4 +86,5 @@ export const ChatListHeader = (
   );
 };
 
+// todo: remove duplicate export, check other areas for this as well
 export default ChatListHeader;

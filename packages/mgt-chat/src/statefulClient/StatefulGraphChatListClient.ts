@@ -209,9 +209,12 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       return;
     }
 
+    // todo: it's own class level method
     const handler = async (latestChatThreads: ChatThreadCollection) => {
+      // todo: test if we need this filter
       const latestItems = (latestChatThreads.value as GraphChatThread[]).filter(chatThread => chatThread.id);
       const checkedItems = await this.checkWhetherToMarkAsRead(latestItems);
+      // todo: we should check for duplicate ids and splice (remove dups)
       items = items.concat(checkedItems);
 
       const handlerNextLink = latestChatThreads['@odata.nextLink'];
@@ -230,6 +233,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       this.handleChatThreads(items, handlerNextLink);
     };
 
+    // todo: asyc await on loadChatThreads
     if (!nextLink) {
       // max page count cannot exceed 50 per documentation
       const pageCount = maxItems > 50 ? 50 : maxItems;

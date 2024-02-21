@@ -58,6 +58,7 @@ export const useGraphChatClient = (
     };
   }, [chatClient]);
 
+  // todo: take out pre/post and move useeffect on line 46 back to Chat.
   // post
   useEffect(() => {
     if (post) post();

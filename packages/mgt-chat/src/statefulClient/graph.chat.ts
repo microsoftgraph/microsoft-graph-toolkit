@@ -132,6 +132,7 @@ export const loadMoreChatMessages = async (graph: IGraph, nextLink: string): Pro
   return response;
 };
 
+// todo: $filter=teamsAppDefinition/bot/id+ne+null
 export const loadAppsInChat = async (graph: IGraph, chatId: string): Promise<AppCollection> => {
   const response = (await graph
     .api(`/chats/${chatId}/installedApps`)

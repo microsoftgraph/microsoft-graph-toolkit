@@ -221,6 +221,8 @@ export class GraphNotificationUserClient {
     }
 
     this.isRewnewalInProgress = true;
+
+    // todo: make this var local
     this.currentUserId = this.userId;
 
     let isRenewalInError = false;
@@ -261,6 +263,9 @@ export class GraphNotificationUserClient {
         try {
           subscription = await this.createSubscription(this.currentUserId);
         } catch (e) {
+          // todo: if its a true 403, stop renewal
+          // todo: if it's a 429, disgused as a 403, we can back off
+
           subscription = undefined;
           isRenewalInError = true;
           error(e);
