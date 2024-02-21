@@ -940,6 +940,10 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       const graph = provider.graph.forComponent(this);
 
       if (!input.length) {
+        if (this.disableSuggestions) {
+          this._foundPeople = [];
+          return;
+        }
         if (this.defaultPeople) {
           people = this.defaultPeople;
         } else {
@@ -1018,7 +1022,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
             people = groups;
           }
           this.defaultPeople = people;
-          people = this.disableSuggestions ? [] : people;
         }
       }
 
