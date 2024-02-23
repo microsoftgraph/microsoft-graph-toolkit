@@ -28,8 +28,6 @@ interface EventMessageDetailWithType {
   '@odata.type': string;
 }
 
-const ignoreBotsWithName = ['Updates'];
-
 const useStyles = makeStyles({
   // highlight selection
   isSelected: {
@@ -120,6 +118,8 @@ const useStyles = makeStyles({
     '--person-alignment': 'center'
   }
 });
+
+const IGNORE_BOTS_WITH_NAME = ['Updates'];
 
 // regex to match different tags
 const imageTagRegex = /(<img[^>]+)/;
@@ -262,7 +262,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
           a =>
             a.teamsAppDefinition?.bot?.id &&
             a.teamsAppDefinition?.displayName &&
-            ignoreBotsWithName.indexOf(a.teamsAppDefinition?.displayName) === -1
+            IGNORE_BOTS_WITH_NAME.indexOf(a.teamsAppDefinition?.displayName) === -1
         )
         .map(a => a.teamsAppDefinition!.displayName!);
       if (names.length > 0) {
