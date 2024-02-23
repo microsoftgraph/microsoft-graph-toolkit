@@ -9,12 +9,17 @@ import { getMgtPersonCardScopes } from '@microsoft/mgt-components/dist/es6/expor
 /**
  * The lowest count of scopes required to perform all chat operations
  */
-export const minimalChatScopesList = ['ChatMember.ReadWrite', 'Chat.ReadWrite'];
+export const minimalChatScopesList = [
+  'ChatMember.ReadWrite',
+  'Chat.ReadWrite',
+  'TeamsAppInstallation.ReadForChat',
+  'AppCatalog.Read.All'
+];
 
 /**
  * Object mapping chat operations to the scopes required to perform them
  */
-export const chatOperationScopes: Record<string, string[]> = {
+export const chatOperationScopesMin: Record<string, string[]> = {
   loadChat: ['Chat.ReadWrite'],
   loadChatMessages: ['Chat.ReadWrite'],
   loadChatImage: ['Chat.ReadWrite'],
@@ -23,14 +28,16 @@ export const chatOperationScopes: Record<string, string[]> = {
   deleteChatMessage: ['Chat.ReadWrite'],
   removeChatMember: ['ChatMember.ReadWrite'],
   addChatMember: ['ChatMember.ReadWrite'],
-  createChat: ['Chat.ReadWrite']
+  createChat: ['Chat.ReadWrite'],
+  loadBotsInChat: ['TeamsAppInstallation.ReadForChat'],
+  loadBotIcon: ['AppCatalog.Read.All']
 };
 
 /**
  * Object mapping chat operations to the scopes required to perform them
  * This should be used when we migrate this code to use scope aware requests
  */
-export const chatOperationScopesFullListing: Record<string, string[]> = {
+export const chatOperationScopes: Record<string, string[]> = {
   loadChat: ['Chat.ReadBasic', 'Chat.Read', 'Chat.ReadWrite'],
   loadChatMessages: ['Chat.Read', 'Chat.ReadWrite'],
   loadChatImage: ['ChannelMessage.Read.All', 'Chat.Read', 'Chat.ReadWrite', 'Group.Read.All', 'Group.ReadWrite.All'],
@@ -39,7 +46,13 @@ export const chatOperationScopesFullListing: Record<string, string[]> = {
   deleteChatMessage: ['ChannelMessage.ReadWrite', 'Chat.ReadWrite'],
   removeChatMember: ['ChatMember.ReadWrite'],
   addChatMember: ['ChatMember.ReadWrite', 'Chat.ReadWrite'],
-  createChat: ['Chat.Create', 'Chat.ReadWrite']
+  createChat: ['Chat.Create', 'Chat.ReadWrite'],
+  loadBotsInChat: [
+    'TeamsAppInstallation.ReadForChat',
+    'TeamsAppInstallation.ReadWriteSelfForChat',
+    'TeamsAppInstallation.ReadWriteForChat'
+  ],
+  loadBotIcon: ['AppCatalog.Read.All', 'AppCatalog.ReadWrite.All', 'AppCatalog.Submit']
 };
 
 /**
