@@ -299,7 +299,6 @@ export class GraphNotificationUserClient {
       // create or reconnect the SignalR connection
       // notificationUrl comes in the form of websockets:https://graph.microsoft.com/beta/subscriptions/notificationChannel/websockets/<Id>?groupid=<UserId>&sessionid=default
       // if <Id> changes, we need to create a new connection
-      log(`Checking SignalR connection for subscription ${subscription.id!} [${this.connection?.state}]...`); // todo: remove this
       if (this.connection?.state === HubConnectionState.Connected) {
         await this.connection?.send('ping'); // ensure the connection is still alive
       }
@@ -322,7 +321,6 @@ export class GraphNotificationUserClient {
         await this.createSignalRConnection(subscription.notificationUrl!);
         log(`Successfully updated SignalR connection for subscription ${subscription.id!}.`);
       }
-      log(`Done checking SignalR connection for subscription ${subscription.id!}.`); // todo: remove this
 
       // emit the new connection event if necessary
       this.trySwitchToConnected();
