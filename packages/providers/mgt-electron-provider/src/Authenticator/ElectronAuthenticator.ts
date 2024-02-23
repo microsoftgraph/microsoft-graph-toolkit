@@ -18,7 +18,7 @@ import {
   SilentFlowRequest
 } from '@azure/msal-node';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
-import { GraphEndpoint } from '@microsoft/mgt-element';
+import { arraysAreEqual, GraphEndpoint } from '@microsoft/mgt-element';
 import { BrowserWindow, ipcMain } from 'electron';
 import { CustomFileProtocolListener } from './CustomFileProtocol';
 import { REDIRECT_URI, COMMON_AUTHORITY_URL } from './Constants';
@@ -197,6 +197,15 @@ export class ElectronAuthenticator {
   private static authInstance: ElectronAuthenticator;
 
   private _approvedScopes: string[];
+  protected get approvedScopes(): string[] {
+    return this._approvedScopes;
+  }
+  protected set approvedScopes(value: string[]) {
+    if (!arraysAreEqual(value, this._approvedScopes)) {
+      this._approvedScopes = value;
+      this.mainWindow.webContents.send('approvedScopes', value);
+    }
+  }
 
   /**
    * Creates an instance of ElectronAuthenticator.
@@ -346,7 +355,7 @@ export class ElectronAuthenticator {
       authResponse = await this.getTokenSilent(request, scopes);
     }
     if (authResponse) {
-      this._approvedScopes = authResponse.scopes;
+      this.approvedScopes = authResponse.scopes;
       return authResponse.accessToken;
     }
     return undefined;
@@ -410,7 +419,7 @@ export class ElectronAuthenticator {
    */
   private async setAccountFromResponse(response: AuthenticationResult) {
     if (response) {
-      this._approvedScopes = response.scopes;
+      this.approvedScopes = response.scopes;
       this.account = response?.account || undefined;
     } else {
       this.account = await this.getAccount();

@@ -156,8 +156,5 @@
       "pre-commit": "npm run prettier:check && npm run lint"
     }
   },
-  "resolutions": {
-    "responselike": "2.0.0"
-  },
   "packageManager": "yarn@3.6.3"
 }
