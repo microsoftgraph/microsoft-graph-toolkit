@@ -47,7 +47,7 @@
     "@microsoft/mgt-sharepoint-provider": "*"
   },
   "devDependencies": {
-    "@webcomponents/webcomponentsjs": "^2.5.0"
+    "@webcomponents/webcomponentsjs": "^2.8.0"
   },
   "publishConfig": {
     "directory": "dist"

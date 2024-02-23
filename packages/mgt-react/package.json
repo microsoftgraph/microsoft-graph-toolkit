@@ -37,9 +37,9 @@
   "dependencies": {
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",
-    "@microsoft/microsoft-graph-types": "^2.0.0",
+    "@microsoft/microsoft-graph-types": "^2.40.0",
     "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
-    "wc-react": "^0.5.0"
+    "wc-react": "^0.5.1"
   },
   "peerDependencies": {
     "react": "^17.0.1 || ^18.0.0",
