@@ -224,24 +224,24 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    * Load more chat threads if applicable.
    */
   public async tryLoadMoreChatThreads() {
-    // todo: fix this. Consider if it should be tryLoadMoreChatThreads
-    // what do we do if it fails?
+    try {
+      // do not load if another activity is in progress
+      if (this._loadPromise || this._loadMorePromise) {
+        return;
+      }
 
-    // do not load if another activity is in progress
-    if (this._loadPromise || this._loadMorePromise) {
-      return;
+      // make sure there is something to load
+      const state = this.getState();
+      if (!state.moreChatThreadsToLoad) {
+        return;
+      }
+
+      // set promise; load and append
+      this._loadMorePromise = this.loadAndAppendChatThreads('', [], state.chatThreads.length + this.chatThreadsPerPage);
+      await this._loadMorePromise;
+    } finally {
+      this._loadMorePromise = undefined;
     }
-
-    // make sure there is something to load
-    const state = this.getState();
-    if (!state.moreChatThreadsToLoad) {
-      return;
-    }
-
-    // set promise; load and append
-    this._loadMorePromise = this.loadAndAppendChatThreads('', [], state.chatThreads.length + this.chatThreadsPerPage);
-    await this._loadMorePromise;
-    this._loadMorePromise = undefined;
   }
 
   /**
@@ -267,24 +267,27 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     });
 
     // try several times to load more chats
-    let loaded = false;
-    let count = 0;
-    do {
-      count++;
-      try {
-        this._loadPromise = this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
-        await this._loadPromise;
-        this._loadPromise = undefined;
-        loaded = true;
-      } catch (e) {
-        if (count > 3) {
-          error('Failed to load chat threads; aborting...', e);
-          throw Error('Failed to load chat threads even after 3 attempts; no more attempts will be made.');
+    try {
+      let loaded = false;
+      let count = 0;
+      do {
+        count++;
+        try {
+          this._loadPromise = this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
+          await this._loadPromise;
+          loaded = true;
+        } catch (e) {
+          if (count > 3) {
+            error('Failed to load chat threads; aborting...', e);
+            throw Error('Failed to load chat threads even after 3 attempts; no more attempts will be made.');
+          }
+          error('Failed to load chat threads; retrying...', e);
+          await this.sleep(2000);
         }
-        error('Failed to load chat threads; retrying...', e);
-        await this.sleep(2000);
-      }
-    } while (!loaded);
+      } while (!loaded);
+    } finally {
+      this._loadPromise = undefined;
+    }
   }
 
   private async loadAndAppendChatThreads(nextLink: string, items: GraphChatThread[], maxItems: number) {
