@@ -69,6 +69,10 @@ closeModal.addEventListener('click', () => {
 </script>
 `;
 
+export const disableSuggestions = () => html`
+  <mgt-people-picker disable-suggestions></mgt-people-picker>
+`;
+
 export const dynamicGroupId = () => html`
   <mgt-people-picker id="picker"></mgt-people-picker>
   <div>
