@@ -2,7 +2,8 @@ import { FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from
 import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
 import { Person, Spinner } from '@microsoft/mgt-react';
-import React, { useState } from 'react';
+import { v4 as uuid } from 'uuid';
+import React, { useState, useEffect } from 'react';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { onRenderMessage } from '../../utils/chat';
@@ -105,15 +106,35 @@ const messageThreadStyles: MessageThreadStyles = {
   }
 };
 
+/**
+ * Provides a stable sessionId for the lifetime of the browser tab.
+ * @returns a string that is either read from session storage or generated and placed in session storage
+ */
+const useSessionId = (): string => {
+  const [sessionId] = useState<string>(() => uuid());
+  return sessionId;
+};
+
 export const Chat = ({ chatId }: IMgtChatProps) => {
   const styles = useStyles();
-  const chatClient: StatefulGraphChatClient = useGraphChatClient(chatId, () => {
+  const chatClient: StatefulGraphChatClient = useGraphChatClient();
+  const [chatState, setChatState] = useState(chatClient.getState());
+  const sessionId = useSessionId();
+
+  useEffect(() => {
     chatClient.onStateChange(setChatState);
     return () => {
       chatClient.offStateChange(setChatState);
     };
-  });
-  const [chatState, setChatState] = useState(chatClient.getState());
+  }, [chatClient]);
+
+  // when chatId or sessionId changes this effect subscribes or unsubscribes
+  // the component to/from web socket based notifications for the given chatId
+  useEffect(() => {
+    // we must have both a chatId & sessionId to subscribe.
+    if (chatId && sessionId) chatClient.subscribeToChat(chatId, sessionId);
+    else chatClient.setStatus('no chat id');
+  }, [chatId, sessionId, chatClient]);
 
   const isLoading = [
     'initial',
