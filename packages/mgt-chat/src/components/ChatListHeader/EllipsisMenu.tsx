@@ -11,7 +11,7 @@ import {
 import { MoreHorizontal24Filled, MoreHorizontal24Regular, bundleIcon } from '@fluentui/react-icons';
 import React, { useCallback } from 'react';
 import { ChatListMenuItem } from './ChatListMenuItem';
-import IChatListActions from './IChatListActions';
+import { IChatListActions } from './IChatListActions';
 
 const EllipsisIcon = bundleIcon(MoreHorizontal24Filled, MoreHorizontal24Regular);
 
@@ -37,7 +37,7 @@ export interface IChatListMenuItemsProps {
   menuItems?: ChatListMenuItem[];
 }
 
-const EllipsisMenu = (
+export const EllipsisMenu = (
   props: IChatListMenuItemsProps & {
     actions: IChatListActions;
   }
@@ -65,5 +65,3 @@ const EllipsisMenu = (
     </Menu>
   );
 };
-
-export { EllipsisMenu };

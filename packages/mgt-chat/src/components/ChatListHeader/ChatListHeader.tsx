@@ -4,7 +4,7 @@ import { makeStyles, shorthands, Button } from '@fluentui/react-components';
 import { EllipsisMenu, IChatListMenuItemsProps } from './EllipsisMenu';
 import { ChatListButtonItem } from './ChatListButtonItem';
 import { Circle } from '../Circle/Circle';
-import IChatListActions from './IChatListActions';
+import { IChatListActions } from './IChatListActions';
 
 const useStyles = makeStyles({
   headerContainer: {
@@ -85,6 +85,3 @@ export const ChatListHeader = (
     </>
   );
 };
-
-// todo: remove duplicate export, check other areas for this as well
-export default ChatListHeader;

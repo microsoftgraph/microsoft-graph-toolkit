@@ -8,5 +8,3 @@
 export interface IChatListActions {
   markAllChatThreadsAsRead: () => void;
 }
-
-export default IChatListActions;

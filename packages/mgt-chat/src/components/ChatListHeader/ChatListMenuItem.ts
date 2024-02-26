@@ -5,11 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import IChatListActions from './IChatListActions';
+import { IChatListActions } from './IChatListActions';
 
 export interface ChatListMenuItem {
   displayText: string;
   onClick: (actions: IChatListActions) => void;
 }
-
-export default ChatListMenuItem;
