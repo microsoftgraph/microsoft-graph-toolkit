@@ -78,7 +78,8 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
     | 'chat message received'
     | 'chats read'
     | 'chat selected'
-    | 'chat unselected';
+    | 'chat unselected'
+    | 'fatal error';
   chatThreads: GraphChatThread[];
   chatMessage: ChatMessage | undefined;
   moreChatThreadsToLoad: boolean | undefined;
@@ -109,9 +110,17 @@ interface StatefulClient<T> {
    */
   chatThreadsPerPage: number;
   /**
+   * Method for setting to a fatal error condition
+   */
+  raiseFatalError(e: Error): void;
+  /**
    * Method for loading more chat threads
    */
-  loadMoreChatThreads(): void;
+  tryLoadChatThreads(): void;
+  /**
+   * Method for loading more chat threads
+   */
+  tryLoadMoreChatThreads(): void;
   /**
    * Method for marking all chat threads as read
    */
@@ -147,6 +156,18 @@ export type GraphChatMessage = Message & {
   rawChatUrl: string;
 };
 
+const GraphChatThreadLastMsgPreviewCreatedComparator = (a: GraphChatThread, b: GraphChatThread): number => {
+  if (a.lastMessagePreview?.createdDateTime && b.lastMessagePreview?.createdDateTime) {
+    const dateA = new Date(a.lastMessagePreview.createdDateTime);
+    const dateB = new Date(b.lastMessagePreview.createdDateTime);
+    if (dateA === dateB) return 0;
+    return dateB > dateA ? 1 : -1;
+  } else if (b.lastMessagePreview?.createdDateTime) {
+    return 1;
+  }
+  return -1;
+};
+
 export interface ChatListEvent {
   type:
     | 'chatMessageReceived'
@@ -168,6 +189,8 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   private readonly _graph: IGraph;
   private _stateSubscribers: ((state: GraphChatListClient) => void)[] = [];
   private _initialSelectedChatId: string | undefined;
+  private _loadPromise: Promise<void> | undefined;
+  private _loadMorePromise: Promise<void> | undefined;
 
   constructor() {
     this.userId = currentUserId();
@@ -179,7 +202,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
 
     this._notificationClient = new GraphNotificationUserClient(this._eventEmitter, this._graph);
 
-    void this.updateUserSubscription(this.userId);
+    this.updateUserSubscription(this.userId);
   }
 
   /**
@@ -194,13 +217,118 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     this._notificationClient.tearDown();
   }
 
+  private sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Switches to a fatal error state and logs the error.
+   */
+  public raiseFatalError(e: Error) {
+    error(e);
+    this.notifyStateChange((draft: GraphChatListClient) => {
+      draft.status = 'fatal error';
+      draft.chatThreads = [];
+    });
+  }
+
   /**
    * Load more chat threads if applicable.
    */
-  public async loadMoreChatThreads() {
-    const state = this.getState();
-    const items: GraphChatThread[] = [];
-    await this.loadAndAppendChatThreads('', items, state.chatThreads.length + this.chatThreadsPerPage);
+  public async tryLoadMoreChatThreads() {
+    try {
+      // do not load if another activity is in progress
+      if (this._loadPromise || this._loadMorePromise) {
+        return;
+      }
+
+      // make sure there is something to load
+      const state = this.getState();
+      if (!state.moreChatThreadsToLoad) {
+        return;
+      }
+
+      // set promise; load and append
+      this._loadMorePromise = this.loadAndAppendChatThreads('', [], state.chatThreads.length + this.chatThreadsPerPage);
+      await this._loadMorePromise;
+    } finally {
+      this._loadMorePromise = undefined;
+    }
+  }
+
+  /**
+   * Loads chat threads without regard for the existing threads.
+   */
+  public async tryLoadChatThreads() {
+    // set the state to loading and clear all chats
+
+    // do not load if there is another load already running
+    if (this._loadPromise) {
+      return;
+    }
+
+    // wait for any load more to finish
+    if (this._loadMorePromise) {
+      await this._loadMorePromise;
+    }
+
+    // clear and announce loading
+    this.notifyStateChange((draft: GraphChatListClient) => {
+      draft.status = 'loading chats';
+      draft.chatThreads = [];
+    });
+
+    // try several times to load more chats
+    try {
+      let loaded = false;
+      let count = 0;
+      do {
+        count++;
+        try {
+          this._loadPromise = this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
+          await this._loadPromise;
+          loaded = true;
+        } catch (e) {
+          if (count > 3) {
+            error('Failed to load chat threads; aborting...', e);
+            throw Error('Failed to load chat threads even after 3 attempts; no more attempts will be made.');
+          }
+          error('Failed to load chat threads; retrying...', e);
+          await this.sleep(2000);
+        }
+      } while (!loaded);
+    } finally {
+      this._loadPromise = undefined;
+    }
+  }
+
+  private async handleChatThreadsResponse(
+    latestChatThreads: ChatThreadCollection,
+    items: GraphChatThread[],
+    maxItems: number
+  ) {
+    const latestItems = latestChatThreads.value as GraphChatThread[];
+    const checkedItems = await this.checkWhetherToMarkAsRead(latestItems);
+
+    const idsIncheckedItems = new Set(checkedItems.map(item => item.id));
+    items = items.filter(item => !idsIncheckedItems.has(item.id));
+    items = items.concat(checkedItems);
+    items.sort(GraphChatThreadLastMsgPreviewCreatedComparator);
+
+    const handlerNextLink = latestChatThreads['@odata.nextLink'];
+
+    if (items.length > maxItems) {
+      // return exact page size
+      this.handleChatThreads(items.slice(0, maxItems), 'more');
+      return;
+    }
+
+    if (items.length < maxItems && handlerNextLink) {
+      await this.loadAndAppendChatThreads(handlerNextLink, items, maxItems);
+      return;
+    }
+
+    this.handleChatThreads(items, handlerNextLink);
   }
 
   private async loadAndAppendChatThreads(nextLink: string, items: GraphChatThread[], maxItems: number) {
@@ -209,38 +337,13 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       return;
     }
 
-    // todo: it's own class level method
-    const handler = async (latestChatThreads: ChatThreadCollection) => {
-      // todo: test if we need this filter
-      const latestItems = (latestChatThreads.value as GraphChatThread[]).filter(chatThread => chatThread.id);
-      const checkedItems = await this.checkWhetherToMarkAsRead(latestItems);
-      // todo: we should check for duplicate ids and splice (remove dups)
-      items = items.concat(checkedItems);
-
-      const handlerNextLink = latestChatThreads['@odata.nextLink'];
-
-      if (items.length > maxItems) {
-        // return exact page size
-        this.handleChatThreads(items.slice(0, maxItems), 'more');
-        return;
-      }
-
-      if (items.length < maxItems && handlerNextLink) {
-        await this.loadAndAppendChatThreads(handlerNextLink, items, maxItems);
-        return;
-      }
-
-      this.handleChatThreads(items, handlerNextLink);
-    };
-
-    // todo: asyc await on loadChatThreads
-    if (!nextLink) {
-      // max page count cannot exceed 50 per documentation
-      const pageCount = maxItems > 50 ? 50 : maxItems;
-      loadChatThreads(this._graph, pageCount).then(handler, err => error(err));
-    } else {
-      const filter = nextLink.split('?')[1];
-      await loadChatThreadsByPage(this._graph, filter).then(handler, err => error(err));
+    try {
+      const response = !nextLink
+        ? await loadChatThreads(this._graph, maxItems > 50 ? 50 : maxItems) // max page count cannot exceed 50 per documentation
+        : await loadChatThreadsByPage(this._graph, nextLink.split('?')[1]);
+      await this.handleChatThreadsResponse(response, items, maxItems);
+    } catch (err) {
+      error(err);
     }
   }
 
@@ -350,25 +453,35 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   private readonly checkWhetherToMarkAsRead = async (c: GraphChatThread[]): Promise<GraphChatThread[]> => {
     const result = await Promise.all(
       c.map(async (chatThread: GraphChatThread) => {
-        const lastReadData = await this._cache.loadLastReadTime(chatThread.id!);
-        if (lastReadData) {
-          const lastUpdatedDateTime = chatThread.lastUpdatedDateTime ? new Date(chatThread.lastUpdatedDateTime) : null;
-          const lastMessagePreviewCreatedDateTime = chatThread.lastMessagePreview?.createdDateTime
-            ? new Date(chatThread.lastMessagePreview?.createdDateTime)
-            : null;
-          const lastReadTime = new Date(lastReadData.lastReadTime);
-          const isRead = !(
-            (lastUpdatedDateTime && lastUpdatedDateTime > lastReadTime) ||
-            (lastMessagePreviewCreatedDateTime && lastMessagePreviewCreatedDateTime > lastReadTime) ||
-            !lastReadData.lastReadTime
-          );
+        // when the last message is from you, the thread is read
+        if (this.userId === chatThread.lastMessagePreview?.from?.user?.id) {
           return {
             ...chatThread,
-            isRead
+            isRead: true
           };
-        } else {
+        }
+
+        // when there is not a last read time, the thread is unread
+        const lastReadData = await this._cache.loadLastReadTime(chatThread.id!);
+        if (!lastReadData) {
           return chatThread;
         }
+
+        // when the last message is newer than the last read time, the thread is unread
+        const lastUpdatedDateTime = chatThread.lastUpdatedDateTime ? new Date(chatThread.lastUpdatedDateTime) : null;
+        const lastMessagePreviewCreatedDateTime = chatThread.lastMessagePreview?.createdDateTime
+          ? new Date(chatThread.lastMessagePreview?.createdDateTime)
+          : null;
+        const lastReadTime = new Date(lastReadData.lastReadTime);
+        const isRead = !(
+          (lastUpdatedDateTime && lastUpdatedDateTime > lastReadTime) ||
+          (lastMessagePreviewCreatedDateTime && lastMessagePreviewCreatedDateTime > lastReadTime) ||
+          !lastReadData.lastReadTime
+        );
+        return {
+          ...chatThread,
+          isRead
+        };
       })
     );
     return result;
@@ -514,6 +627,8 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         // this resets the chat thread read state for all chats including the active chat
         if (draft.internalSelectedChat && draft.internalSelectedChat.id === draft.chatMessage.chatId) {
           chatThread.isRead = true;
+        } else if (this.userId === event.message.from?.user?.id) {
+          chatThread.isRead = true;
         } else {
           chatThread.isRead = false;
         }
@@ -635,13 +750,16 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   };
 
   private readonly handleAccountChange = async (userId: string) => {
-    await this._notificationClient.unsubscribeFromUserNotifications(this.userId);
-
     this.clearCurrentUserMessages();
 
+    // need to ensure that we close any existing connection if present
+    await this._notificationClient?.closeSignalRConnection();
+
+    // update user info
     this.userId = userId;
+
     // by updating the followed chat the notification client will reconnect to SignalR
-    await this.updateUserSubscription(userId);
+    this.updateUserSubscription(userId);
   };
 
   private clearCurrentUserMessages() {
@@ -682,7 +800,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
    * @private
    * @memberof StatefulGraphChatListClient
    */
-  private async updateUserSubscription(userId: string) {
+  private updateUserSubscription(userId: string) {
     if (!userId) return;
 
     // reset state to initial
@@ -694,7 +812,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       draft.status = 'creating server connections';
     });
     try {
-      await this._notificationClient.subscribeToUserNotifications(userId);
+      this._notificationClient.subscribeToUserNotifications(userId);
     } catch (e) {
       error('Failed to load chat data or subscribe to notications: ', e);
       if (e instanceof GraphError) {
@@ -719,7 +837,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       });
     });
     this._eventEmitter.on('connected', () => {
-      void this.loadAndAppendChatThreads('', [], this.chatThreadsPerPage);
       this.notifyStateChange((draft: GraphChatListClient) => {
         draft.status = 'server connection established';
       });

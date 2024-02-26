@@ -132,10 +132,10 @@ export const loadMoreChatMessages = async (graph: IGraph, nextLink: string): Pro
   return response;
 };
 
-// todo: $filter=teamsAppDefinition/bot/id+ne+null
-export const loadAppsInChat = async (graph: IGraph, chatId: string): Promise<AppCollection> => {
+export const loadBotsInChat = async (graph: IGraph, chatId: string): Promise<AppCollection> => {
   const response = (await graph
     .api(`/chats/${chatId}/installedApps`)
+    .filter('teamsAppDefinition/bot/id ne null')
     .expand('teamsAppDefinition($expand=bot)')
     .middlewareOptions(prepScopes(chatOperationScopes.loadAppsInChat))
     .get()) as AppCollection;

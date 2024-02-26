@@ -13,7 +13,7 @@ import { ProviderState, Providers, error } from '@microsoft/mgt-element';
 import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
 import { rewriteEmojiContentToText } from '../../utils/rewriteEmojiContent';
 import { convert } from 'html-to-text';
-import { loadChatWithPreview, loadAppsInChat } from '../../statefulClient/graph.chat';
+import { loadChatWithPreview, loadBotsInChat } from '../../statefulClient/graph.chat';
 import { DefaultProfileIcon } from './DefaultProfileIcon';
 import { GraphChatThread } from '../../statefulClient/StatefulGraphChatListClient';
 
@@ -27,8 +27,6 @@ interface IChatListItemProps {
 interface EventMessageDetailWithType {
   '@odata.type': string;
 }
-
-const ignoreBotsWithName = ['Updates'];
 
 const useStyles = makeStyles({
   // highlight selection
@@ -121,6 +119,8 @@ const useStyles = makeStyles({
   }
 });
 
+const IGNORE_BOTS_WITH_NAME = ['Updates'];
+
 // regex to match different tags
 const imageTagRegex = /(<img[^>]+)/;
 const attachmentTagRegex = /(<attachment[^>]+)/;
@@ -131,14 +131,14 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
 
   // manage the internal state of the chat
   const [chatInternal, setChatInternal] = useState(chat);
-  const [apps, setApps] = useState<TeamsAppInstallation[]>();
-  const isAppsLoadingOrLoaded = useRef(false);
+  const [bots, setBots] = useState<TeamsAppInstallation[]>();
+  const isBotsLoadingOrLoaded = useRef(false);
 
   // if chat changes, update the internal state to match
   useEffect(() => {
     if (chatInternal.id !== chat.id) {
-      setApps(undefined);
-      isAppsLoadingOrLoaded.current = false;
+      setBots(undefined);
+      isBotsLoadingOrLoaded.current = false;
     }
 
     setChatInternal(chat);
@@ -168,9 +168,9 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
     }
   }, [chatInternal]);
 
-  const startLoadingAppsInChat = async (chatId: string) => {
+  const startLoadingBotsInChat = async (chatId: string) => {
     // ensure this is only called once
-    if (isAppsLoadingOrLoaded.current) {
+    if (isBotsLoadingOrLoaded.current) {
       return;
     }
 
@@ -181,16 +181,16 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
     }
 
     // set to loading
-    isAppsLoadingOrLoaded.current = true;
+    isBotsLoadingOrLoaded.current = true;
 
-    // load the apps
+    // load the bots
     const graph = provider.graph.forComponent('ChatListItem');
     try {
-      const appsResponse = await loadAppsInChat(graph, chatId);
-      setApps(appsResponse.value);
+      const botsResponse = await loadBotsInChat(graph, chatId);
+      setBots(botsResponse.value);
     } catch (e) {
       error(e);
-      setApps([]);
+      setBots([]);
     }
   };
 
@@ -257,13 +257,13 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
     const others = (c.members || []).filter(m => (m as AadUserConversationMember).userId !== myId);
 
     // when there are no other people, and we have bot information to make the most informed decision
-    if (others.length === 0 && apps) {
-      const names = apps
+    if (others.length === 0 && bots) {
+      const names = bots
         .filter(
           a =>
             a.teamsAppDefinition?.bot?.id &&
             a.teamsAppDefinition?.displayName &&
-            ignoreBotsWithName.indexOf(a.teamsAppDefinition?.displayName) === -1
+            IGNORE_BOTS_WITH_NAME.indexOf(a.teamsAppDefinition?.displayName) === -1
         )
         .map(a => a.teamsAppDefinition!.displayName!);
       if (names.length > 0) {
@@ -278,13 +278,13 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
 
     // when there are no people, and we don't have any bot information but we do have application information
     if (others.length === 0 && application) {
-      void startLoadingAppsInChat(c.id!);
+      void startLoadingBotsInChat(c.id!);
       return application.displayName ? application.displayName : application.id;
     }
 
     // when there are no people, and we don't have any bot or application information
     if (others.length === 0) {
-      void startLoadingAppsInChat(c.id!);
+      void startLoadingBotsInChat(c.id!);
       return c.id;
     }
 
@@ -400,16 +400,16 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
     }
 
     // if the last message is from a bot and we have all the app info, use the app name
-    if (c.lastMessagePreview?.from?.application?.id && apps) {
-      const app = apps.find(a => a.teamsAppDefinition?.bot?.id === c.lastMessagePreview?.from?.application?.id);
-      if (app?.teamsAppDefinition?.displayName) {
-        return `${app.teamsAppDefinition.displayName}: `;
+    if (c.lastMessagePreview?.from?.application?.id && bots) {
+      const bot = bots.find(a => a.teamsAppDefinition?.bot?.id === c.lastMessagePreview?.from?.application?.id);
+      if (bot?.teamsAppDefinition?.displayName) {
+        return `${bot.teamsAppDefinition.displayName}: `;
       }
     }
 
     // if the last message is from a bot and we don't have all the app info, load it
     if (c.lastMessagePreview?.from?.application?.displayName) {
-      void startLoadingAppsInChat(c.id!);
+      void startLoadingBotsInChat(c.id!);
       return `${c.lastMessagePreview.from.application.displayName}: `;
     }
 

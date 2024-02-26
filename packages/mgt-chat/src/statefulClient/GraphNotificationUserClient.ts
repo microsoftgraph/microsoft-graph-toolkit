@@ -56,13 +56,12 @@ const isMembershipNotification = (o: Notification<Entity>): o is Notification<Aa
   o.resource.includes('/members');
 
 export class GraphNotificationUserClient {
+  private readonly instanceId = uuid();
   private connection?: HubConnection = undefined;
-  private renewalInterval?: string;
+  private renewalTimeout?: string;
   private renewalCount = 0;
-  private isRewnewalInProgress = false;
   private wasConnected?: boolean | undefined;
   private userId = '';
-  private currentUserId = '';
   private lastNotificationUrl = '';
 
   private readonly subscriptionCache: SubscriptionsCache = new SubscriptionsCache();
@@ -93,7 +92,9 @@ export class GraphNotificationUserClient {
    * i.e
    */
   public tearDown() {
-    void this.unsubscribeFromUserNotifications(this.userId);
+    log('cleaning up graph user notification resources');
+    if (this.renewalTimeout) this.timer.clearTimeout(this.renewalTimeout);
+    this.timer.close();
   }
 
   private readonly getToken = async () => {
@@ -210,114 +211,128 @@ export class GraphNotificationUserClient {
     return subscription;
   }
 
+  private async deleteCachedSubscriptions(userId: string) {
+    try {
+      log('Removing all user subscriptions from cache...');
+      await this.subscriptionCache.deleteCachedSubscriptions(userId);
+      log('Successfully removed all user subscriptions from cache.');
+    } catch (e) {
+      error('Failed to remove all user subscriptions from cache.', e);
+    }
+  }
+
+  private trySwitchToConnected() {
+    if (!this.wasConnected) {
+      log('The user can now receive notifications from the user subscription.');
+      this.wasConnected = true;
+      this.emitter?.connected();
+    }
+  }
+
+  private trySwitchToDisconnected() {
+    if (this.wasConnected) {
+      log('The user can no receive notifications from the user subscription.');
+      this.wasConnected = false;
+      this.emitter?.disconnected();
+    }
+  }
+
   private readonly renewalSync = () => {
     void this.renewal();
   };
 
   private readonly renewal = async () => {
-    if (this.isRewnewalInProgress) {
-      log('Renewal already in progress');
-      return;
-    }
-
-    this.isRewnewalInProgress = true;
-
-    // todo: make this var local
-    this.currentUserId = this.userId;
-
-    let isRenewalInError = false;
-    let nextRenewalTimeInMs = appSettings.renewalTimerInterval * 1000;
-
+    let nextRenewalTimeInSec = appSettings.renewalTimerInterval;
     try {
-      let subscription = await this.getSubscription(this.currentUserId);
+      const currentUserId = this.userId;
 
+      // if there is a current subscription...
+      let subscription = await this.getSubscription(currentUserId);
       if (subscription) {
-        if (!subscription.expirationDateTime || !subscription.id) {
-          // this should never happen.
-          throw new Error('Subscription is invalid.');
-        }
-
+        // attempt a renewal if necessary
         try {
-          const expirationTime = new Date(subscription.expirationDateTime);
-          const now = new Date();
-          const diff = Math.round((expirationTime.getTime() - now.getTime()) / 1000);
-
-          if (diff <= appSettings.renewalThreshold) {
-            await this.renewSubscription(this.currentUserId, subscription);
+          const expirationTime = new Date(subscription.expirationDateTime!);
+          const diff = Math.round((expirationTime.getTime() - new Date().getTime()) / 1000);
+          if (diff <= 0) {
+            log(`Renewing user subscription ${subscription.id!} that has already expired...`);
+            this.trySwitchToDisconnected();
+            await this.renewSubscription(currentUserId, subscription);
+            log(`Successfully renewed user subscription ${subscription.id!}.`);
+          } else if (diff <= appSettings.renewalThreshold) {
+            log(`Renewing user subscription ${subscription.id!} that will expire in ${diff} seconds...`);
+            await this.renewSubscription(currentUserId, subscription);
+            log(`Successfully renewed user subscription ${subscription.id!}.`);
           }
-        } catch (renewalEx) {
-          isRenewalInError = true;
-          // this error indicates we are not able to successfully renew the subscription, so we should create a new one.
-          if ((renewalEx as { statusCode?: number }).statusCode === 404) {
-            log('Removing subscription from cache');
-            await this.subscriptionCache.deleteCachedSubscriptions(this.currentUserId);
-            subscription = undefined;
-          } else {
-            // log and continue (we will try again later)
-            error(renewalEx);
-          }
+        } catch (e) {
+          error(`Failed to renew user subscription ${subscription.id!}.`, e);
+          await this.deleteCachedSubscriptions(currentUserId);
+          subscription = undefined;
         }
       }
 
+      // if there is no subscription, try to create one
       if (!subscription) {
         try {
-          subscription = await this.createSubscription(this.currentUserId);
+          this.trySwitchToDisconnected();
+          subscription = await this.createSubscription(currentUserId);
         } catch (e) {
-          // todo: if its a true 403, stop renewal
-          // todo: if it's a 429, disgused as a 403, we can back off
-
-          subscription = undefined;
-          isRenewalInError = true;
-          error(e);
-
-          // rather than 3 seconds, back off to 10 seconds if we get a 403
-          if ((e as { statusCode?: number }).statusCode === 403) {
-            nextRenewalTimeInMs = 10 * 1000;
+          const err = e as { statusCode?: number; message: string };
+          if (err.statusCode === 403 && err.message.indexOf('has reached its limit') > 0) {
+            // if the limit is reached, back-off (NOTE: this should probably be a 429)
+            nextRenewalTimeInSec = appSettings.renewalTimerInterval * 3;
+            throw new Error(
+              `Failed to create a new subscription due to a limitation; retrying in ${nextRenewalTimeInSec} seconds: ${err.message}.`
+            );
+          } else if (err.statusCode === 403 || err.statusCode === 402) {
+            // permanent error, stop renewal
+            error('Failed to create a new subscription due to a permanent condition; stopping renewals.', e);
+            return; // exit without setting the next renewal timer
+          } else {
+            // transient error, retry
+            throw new Error(
+              `Failed to create a new subscription due to a transient condition; retrying in ${nextRenewalTimeInSec} seconds: ${err.message}.`
+            );
           }
         }
       }
 
+      // create or reconnect the SignalR connection
       // notificationUrl comes in the form of websockets:https://graph.microsoft.com/beta/subscriptions/notificationChannel/websockets/<Id>?groupid=<UserId>&sessionid=default
       // if <Id> changes, we need to create a new connection
-      if (
-        subscription &&
-        (!this.connection ||
-          this.connection.state !== HubConnectionState.Connected ||
-          this.lastNotificationUrl !== subscription.notificationUrl)
-      ) {
-        if (subscription.notificationUrl) {
-          this.lastNotificationUrl = subscription.notificationUrl;
-          await this.createSignalRConnection(subscription.notificationUrl);
-        } else {
-          // this should never happen.
-          throw new Error('Subscription notificationUrl is invalid.');
-        }
+      if (this.connection?.state === HubConnectionState.Connected) {
+        await this.connection?.send('ping'); // ensure the connection is still alive
       }
+      if (!this.connection) {
+        log(`Creating a new SignalR connection for subscription ${subscription.id!}...`);
+        this.trySwitchToDisconnected();
+        this.lastNotificationUrl = subscription.notificationUrl!;
+        await this.createSignalRConnection(subscription.notificationUrl!);
+        log(`Successfully created a new SignalR connection for subscription ${subscription.id!}.`);
+      } else if (this.connection.state !== HubConnectionState.Connected) {
+        log(`Reconnecting SignalR connection for subscription ${subscription.id!}...`);
+        this.trySwitchToDisconnected();
+        await this.connection.start();
+        log(`Successfully reconnected SignalR connection for subscription ${subscription.id!}.`);
+      } else if (this.lastNotificationUrl !== subscription.notificationUrl) {
+        log(`Updating SignalR connection for subscription ${subscription.id!} due to new notification URL...`);
+        this.trySwitchToDisconnected();
+        await this.closeSignalRConnection();
+        this.lastNotificationUrl = subscription.notificationUrl!;
+        await this.createSignalRConnection(subscription.notificationUrl!);
+        log(`Successfully updated SignalR connection for subscription ${subscription.id!}.`);
+      }
+
+      // emit the new connection event if necessary
+      this.trySwitchToConnected();
     } catch (e) {
-      isRenewalInError = true;
-      // log and continue (we will try again later)
-      error(e);
+      error('Error in user subscription connection process.', e);
+      this.trySwitchToDisconnected();
     }
-
-    const isConnected = !isRenewalInError && this.connection?.state === HubConnectionState.Connected;
-    if (this.wasConnected !== isConnected) {
-      this.wasConnected = isConnected;
-      const emitter: ThreadEventEmitter | undefined = this.emitter;
-
-      try {
-        if (isConnected) {
-          emitter?.connected();
-        } else {
-          emitter?.disconnected();
-        }
-      } catch (e) {
-        // log emitter thrown exception and continue
-        error(e);
-      }
-    }
-
-    this.isRewnewalInProgress = false;
-    this.renewalInterval = this.timer.setTimeout(this.renewalSync, nextRenewalTimeInMs);
+    this.renewalTimeout = this.timer.setTimeout(
+      'renewal:' + this.instanceId,
+      this.renewalSync,
+      nextRenewalTimeInSec * 1000
+    );
   };
 
   private async getSubscription(userId: string): Promise<Subscription | undefined> {
@@ -347,8 +362,6 @@ export class GraphNotificationUserClient {
   };
 
   private async createSignalRConnection(notificationUrl: string) {
-    log('Creating SignalR connection');
-
     const connectionOptions: IHttpConnectionOptions = {
       accessTokenFactory: this.getToken,
       withCredentials: false
@@ -363,58 +376,24 @@ export class GraphNotificationUserClient {
     connection.on('EchoMessage', log);
 
     this.connection = connection;
-    try {
-      await connection.start();
-      log(connection);
-    } catch (e) {
-      error('An error occurred connecting to the notification web socket', e);
-    }
-  }
-
-  private async deleteSubscription(id: string) {
-    try {
-      await this.graph.api(`${GraphConfig.subscriptionEndpoint}/${id}`).delete();
-      log(`Deleted subscription with id: ${id}`);
-    } catch (e) {
-      error(e);
-    }
-  }
-
-  private async removeSubscriptions(subscriptions: Subscription[]): Promise<unknown[]> {
-    const tasks: Promise<unknown>[] = [];
-    for (const s of subscriptions) {
-      // if there is no id or the subscription is expired, skip
-      if (!s.id || (s.expirationDateTime && new Date(s.expirationDateTime) <= new Date())) continue;
-      tasks.push(this.deleteSubscription(s.id));
-    }
-    return Promise.all(tasks);
+    await connection.start();
   }
 
   public async closeSignalRConnection() {
     // stop the connection and set it to undefined so it will reconnect when next subscription is created.
-    await this.connection?.stop();
+    this.trySwitchToDisconnected();
+    try {
+      await this.connection?.stop();
+    } catch (e) {
+      error('Error closing a prior SignalR connection.', e);
+    }
     this.connection = undefined;
   }
 
-  public async unsubscribeFromUserNotifications(userId: string) {
-    if (this.renewalInterval) {
-      this.timer.clearTimeout(this.renewalInterval);
-    }
-
-    await this.closeSignalRConnection();
-    const cacheData = await this.subscriptionCache.loadSubscriptions(userId);
-    if (cacheData) {
-      await Promise.all([
-        this.removeSubscriptions(cacheData.subscriptions),
-        this.subscriptionCache.deleteCachedSubscriptions(userId)
-      ]);
-    }
-  }
-
-  public async subscribeToUserNotifications(userId: string) {
+  public subscribeToUserNotifications(userId: string) {
     log(`User subscription with id: ${userId}`);
     this.wasConnected = undefined;
     this.userId = userId;
-    await this.renewal();
+    this.renewalTimeout = this.timer.setTimeout('renewal:' + this.instanceId, this.renewalSync, 0);
   }
 }

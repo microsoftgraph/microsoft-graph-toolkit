@@ -111,7 +111,6 @@ export const ChatList = ({
   const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
   const [chatListActions, setChatListActions] = useState<IChatListActions | undefined>();
-  const loadingRef = useRef(false);
 
   // todo: assume we are signed in when this component is mounted, remove auth guard.
   // wait for provider to be ready before setting client and state
@@ -218,8 +217,6 @@ export const ChatList = ({
 
       if (state.status === 'chats loaded' && onLoaded) {
         onLoaded(state?.chatThreads ?? []);
-        // the loadingRef is used to prevent multiple calls to loadMoreChatThreads
-        loadingRef.current = false;
       }
 
       if (state.status === 'chats loaded' && state.fireOnSelected && onSelected && state.internalSelectedChat) {
@@ -232,6 +229,7 @@ export const ChatList = ({
 
       if (state.status === 'server connection established' && onConnectionChanged) {
         onConnectionChanged(true);
+        chatListClient.tryLoadChatThreads().catch(e => chatListClient.raiseFatalError(e as Error));
       }
 
       if (state.status === 'server connection lost' && onConnectionChanged) {
@@ -261,33 +259,31 @@ export const ChatList = ({
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
   const chatListMenuItems = props.menuItems === undefined ? [] : props.menuItems;
 
-  const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
+  const isLoading = ['creating server connections', 'subscribing to notifications', 'loading chats'].includes(
     chatListState?.status ?? ''
   );
 
   const targetElementRef = useRef(null);
 
   useEffect(() => {
+    // define the intersection observer callback
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       for (const entry of entries) {
-        if (entry.isIntersecting) {
-          // The element has come into view, you can perform your actions here
-          if (chatListClient && !loadingRef.current) {
-            // Prevent the function from being called multiple times
-            if (chatListState?.moreChatThreadsToLoad) {
-              void chatListClient.loadMoreChatThreads().then(() => (loadingRef.current = true));
-            }
-          }
+        // The element has come into view, you can perform your actions here
+        if (entry.isIntersecting && chatListClient) {
+          chatListClient.tryLoadMoreChatThreads().catch(e => error('Failed to load more chat threads.', e));
         }
       }
     };
-    // Create a new Intersection Observer instance
+
+    // create a new Intersection Observer instance
     const observer = new IntersectionObserver(handleIntersection, {
       root: null, // observing intersections with the viewport
       rootMargin: '0px',
       threshold: 0.03 // Callback is invoked when 3% of the target is visible
     });
 
+    // start observing
     if (targetElementRef.current) {
       observer.observe(targetElementRef.current);
     }
