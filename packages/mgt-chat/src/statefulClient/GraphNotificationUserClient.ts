@@ -283,8 +283,8 @@ export class GraphNotificationUserClient {
             throw new Error(
               `Failed to create a new subscription due to a limitation; retrying in ${nextRenewalTimeInSec} seconds: ${err.message}.`
             );
-          } else if (err.statusCode === 403) {
-            // if true 403, stop renewal
+          } else if (err.statusCode === 403 || err.statusCode === 402) {
+            // permanent error, stop renewal
             error('Failed to create a new subscription due to a permanent condition; stopping renewals.', e);
             return; // exit without setting the next renewal timer
           } else {
@@ -377,25 +377,6 @@ export class GraphNotificationUserClient {
 
     this.connection = connection;
     await connection.start();
-  }
-
-  private async deleteSubscription(id: string) {
-    try {
-      await this.graph.api(`${GraphConfig.subscriptionEndpoint}/${id}`).delete();
-      log(`Deleted subscription with id: ${id}`);
-    } catch (e) {
-      error(e);
-    }
-  }
-
-  private async removeSubscriptions(subscriptions: Subscription[]): Promise<unknown[]> {
-    const tasks: Promise<unknown>[] = [];
-    for (const s of subscriptions) {
-      // if there is no id or the subscription is expired, skip
-      if (!s.id || (s.expirationDateTime && new Date(s.expirationDateTime) <= new Date())) continue;
-      tasks.push(this.deleteSubscription(s.id));
-    }
-    return Promise.all(tasks);
   }
 
   public async closeSignalRConnection() {
