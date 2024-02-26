@@ -11,32 +11,11 @@ import { StatefulGraphChatClient } from './StatefulGraphChatClient';
 import { log } from '@microsoft/mgt-element';
 
 /**
- * The key name to use for storing the sessionId in session storage
- */
-const keyName = 'mgt-chat-session-id';
-
-/**
- * reads a string from session storage, or if there is no string for the keyName, generate a new uuid and place in storage
- */
-const getOrGenerateSessionId = () => {
-  const value = sessionStorage.getItem(keyName);
-
-  if (value) {
-    return value;
-  } else {
-    const newValue = uuid();
-    sessionStorage.setItem(keyName, newValue);
-    return newValue;
-  }
-};
-
-/**
  * Provides a stable sessionId for the lifetime of the browser tab.
  * @returns a string that is either read from session storage or generated and placed in session storage
  */
 const useSessionId = (): string => {
-  // when a function is passed to useState, it is only invoked on the first render
-  const [sessionId] = useState<string>(getOrGenerateSessionId);
+  const [sessionId] = useState<string>(() => uuid());
 
   return sessionId;
 };
@@ -63,7 +42,7 @@ export const useGraphChatClient = (chatId: string): StatefulGraphChatClient => {
   useEffect(() => {
     return () => {
       log('invoked clean up effect');
-      void chatClient.tearDown();
+      chatClient.tearDown();
     };
   }, [chatClient]);
 

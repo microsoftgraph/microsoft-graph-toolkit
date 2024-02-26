@@ -6,6 +6,7 @@
  */
 
 import { GraphEndpoint } from '@microsoft/mgt-element';
+import { replaceOrAppendSessionId } from './replaceOrAppendSessionId';
 
 export class GraphConfig {
   public static ackAsString = false;
@@ -31,11 +32,14 @@ export class GraphConfig {
     return GraphConfig.useCanary ? `${GraphConfig.baseCanaryUrl}/subscriptions` : '/subscriptions';
   }
 
-  public static adjustNotificationUrl(url: string): string {
+  public static adjustNotificationUrl(url: string, sessionId = 'default'): string {
     if (GraphConfig.useCanary && url) {
       url = url.replace('https://graph.microsoft.com/1.0', GraphConfig.baseCanaryUrl);
       url = url.replace('https://graph.microsoft.com/beta', GraphConfig.baseCanaryUrl);
     }
-    return url.replace(GraphConfig.webSocketsPrefix, '');
+    url = url.replace(GraphConfig.webSocketsPrefix, '');
+    // update or append sessionid
+    url = replaceOrAppendSessionId(url, sessionId);
+    return url;
   }
 }

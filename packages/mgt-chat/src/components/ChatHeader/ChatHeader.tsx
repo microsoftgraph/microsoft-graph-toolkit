@@ -11,7 +11,7 @@ const useHeaderStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     rowGap: 0,
-    zIndex: 2
+    zIndex: 4
   },
   secondRow: {
     display: 'flex',

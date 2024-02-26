@@ -33,7 +33,7 @@ const useStyles = makeStyles({
     backgroundColor: 'var(--Neutral-Background-2-Rest, #FAFAFA)'
   },
   chatMessages: {
-    height: 'auto',
+    height: '100%',
     ...shorthands.paddingInline('20px'),
     ...shorthands.overflow('auto'),
     '& img': {
