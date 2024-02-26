@@ -94,6 +94,7 @@
     "@storybook/cli": "^7.6.17",
     "@storybook/web-components": "^7.6.17",
     "@storybook/web-components-webpack5": "^7.6.17",
+    "@types/mocha": "^10.0.6",
     "@types/node": "12.20.55",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",

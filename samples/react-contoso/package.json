@@ -13,10 +13,6 @@
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-msal2-provider": "*",
     "@microsoft/mgt-react": "*",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
     "@types/node": "^16.18.83",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
@@ -40,8 +36,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ],
     "parserOptions": {
       "warnOnUnsupportedTypeScriptVersion": false

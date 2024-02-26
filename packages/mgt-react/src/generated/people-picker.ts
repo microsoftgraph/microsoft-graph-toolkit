@@ -40,6 +40,7 @@ export type PeoplePickerProps = {
 	peopleFilters?: string;
 	groupFilters?: string;
 	ariaLabel?: string;
+	disableSuggestions?: boolean;
 	templateContext?: TemplateContext;
 	selectionChanged?: (e: CustomEvent<IDynamicPerson[]>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
