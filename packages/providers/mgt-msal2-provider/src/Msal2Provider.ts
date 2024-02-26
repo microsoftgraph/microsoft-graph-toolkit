@@ -532,10 +532,10 @@ export class Msal2Provider extends IProvider {
   public getActiveAccount() {
     const account = this._publicClientApplication.getActiveAccount();
     return {
-      name: account.name,
-      mail: account.username,
-      id: account.homeAccountId,
-      tenantId: account.tenantId
+      name: account?.name,
+      mail: account?.username,
+      id: account?.homeAccountId,
+      tenantId: account?.tenantId
     } as IProviderAccount;
   }
 
