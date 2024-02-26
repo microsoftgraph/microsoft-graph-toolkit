@@ -61,7 +61,8 @@
     "version:tsc": "tsc -v",
     "wtr": "wtr --playwright",
     "wtr:coverage": "wtr --playwright --coverage",
-    "wtr:watch": "wtr --playwright --watch"
+    "wtr:watch": "wtr --playwright --watch",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -118,7 +119,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-storybook": "^0.6.15",
     "fs-extra": "^9.1.0",
-    "husky": "^4.3.8",
+    "husky": "^9.0.11",
     "js-beautify": "^1.15.1",
     "lerna": "^8.1.2",
     "lit": "^3.1.2",
@@ -149,11 +150,6 @@
     "web-component-analyzer": "^2.0.0",
     "webpack": "^5.90.3",
     "whatwg-fetch": "^3.6.20"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run prettier:check && npm run lint"
-    }
   },
   "packageManager": "yarn@4.1.0"
 }
