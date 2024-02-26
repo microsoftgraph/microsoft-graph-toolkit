@@ -25,6 +25,7 @@ export interface IContextBridgeImpl {
   token: (options?: AuthenticationProviderOptions) => Promise<string>;
   login: () => Promise<void>;
   logout: () => Promise<void>;
+  approvedScopes: (callback: (event: IpcRendererEvent, approvedScopes: string[]) => void) => void;
 }
 
 /**
@@ -71,6 +72,9 @@ export class ElectronContextBridgeProvider extends IProvider {
       } else if (authState === 'logged_out') {
         Providers.globalProvider.setState(ProviderState.SignedOut);
       }
+    });
+    this.contextBridge.approvedScopes((_event, approvedScopes) => {
+      Providers.globalProvider.approvedScopes = approvedScopes;
     });
   }
 
