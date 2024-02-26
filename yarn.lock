@@ -4640,7 +4640,7 @@ __metadata:
   dependencies:
     "@lit/task": "npm:^1.0.0"
     "@microsoft/microsoft-graph-client": "npm:3.0.2"
-    idb: "npm:6.1.5"
+    idb: "npm:8.0.0"
     lit: "npm:^3.1.2"
   languageName: unknown
   linkType: soft
@@ -14215,10 +14215,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"idb@npm:6.1.5":
-  version: 6.1.5
-  resolution: "idb@npm:6.1.5"
-  checksum: 10/dc7f2dc250b2fafc126ba455a895a0a9c4cc6495eb1fd5c3ec267f4c0e9d0e3714d6575d208ebc02a16ca6cc82aeb7611cec02259fcb6f9d6043397980329ec1
+"idb@npm:8.0.0":
+  version: 8.0.0
+  resolution: "idb@npm:8.0.0"
+  checksum: 10/6ff47b46ead4bf02ac3a9145bb2f48bac707b950cf33282a72eec8efcda610ffb0a09aab6eea58450f6c87373060bf50998d307085830a302e9e231eee6cd37d
   languageName: node
   linkType: hard
 

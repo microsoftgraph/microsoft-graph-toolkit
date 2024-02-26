@@ -34,7 +34,7 @@
   "dependencies": {
     "@lit/task": "^1.0.0",
     "@microsoft/microsoft-graph-client": "3.0.2",
-    "idb": "6.1.5",
+    "idb": "8.0.0",
     "lit": "^3.1.2"
   },
   "publishConfig": {
