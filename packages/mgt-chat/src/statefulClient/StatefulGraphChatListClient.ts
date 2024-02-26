@@ -147,6 +147,18 @@ export type GraphChatMessage = Message & {
   rawChatUrl: string;
 };
 
+const GraphChatThreadLastMsgPreviewCreatedComparator = (a: GraphChatThread, b: GraphChatThread): number => {
+  if (a.lastMessagePreview?.createdDateTime && b.lastMessagePreview?.createdDateTime) {
+    const dateA = new Date(a.lastMessagePreview.createdDateTime);
+    const dateB = new Date(b.lastMessagePreview.createdDateTime);
+    if (dateA === dateB) return 0;
+    return dateB > dateA ? 1 : -1;
+  } else if (b.lastMessagePreview?.createdDateTime) {
+    return 1;
+  }
+  return -1;
+};
+
 export interface ChatListEvent {
   type:
     | 'chatMessageReceived'
@@ -203,40 +215,48 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     await this.loadAndAppendChatThreads('', items, state.chatThreads.length + this.chatThreadsPerPage);
   }
 
+  private async handleChatThreadsResponse(
+    latestChatThreads: ChatThreadCollection,
+    items: GraphChatThread[],
+    maxItems: number
+  ) {
+    const latestItems = latestChatThreads.value as GraphChatThread[];
+    const checkedItems = await this.checkWhetherToMarkAsRead(latestItems);
+
+    const idsIncheckedItems = new Set(checkedItems.map(item => item.id));
+    items = items.filter(item => !idsIncheckedItems.has(item.id));
+    items = items.concat(checkedItems);
+    items.sort(GraphChatThreadLastMsgPreviewCreatedComparator);
+
+    const handlerNextLink = latestChatThreads['@odata.nextLink'];
+
+    if (items.length > maxItems) {
+      // return exact page size
+      this.handleChatThreads(items.slice(0, maxItems), 'more');
+      return;
+    }
+
+    if (items.length < maxItems && handlerNextLink) {
+      await this.loadAndAppendChatThreads(handlerNextLink, items, maxItems);
+      return;
+    }
+
+    this.handleChatThreads(items, handlerNextLink);
+  }
+
   private async loadAndAppendChatThreads(nextLink: string, items: GraphChatThread[], maxItems: number) {
     if (maxItems < 1) {
       error('maxItem is invalid: ' + maxItems);
       return;
     }
 
-    const handler = async (latestChatThreads: ChatThreadCollection) => {
-      const latestItems = (latestChatThreads.value as GraphChatThread[]).filter(chatThread => chatThread.id);
-      const checkedItems = await this.checkWhetherToMarkAsRead(latestItems);
-      items = items.concat(checkedItems);
-
-      const handlerNextLink = latestChatThreads['@odata.nextLink'];
-
-      if (items.length > maxItems) {
-        // return exact page size
-        this.handleChatThreads(items.slice(0, maxItems), 'more');
-        return;
-      }
-
-      if (items.length < maxItems && handlerNextLink) {
-        await this.loadAndAppendChatThreads(handlerNextLink, items, maxItems);
-        return;
-      }
-
-      this.handleChatThreads(items, handlerNextLink);
-    };
-
-    if (!nextLink) {
-      // max page count cannot exceed 50 per documentation
-      const pageCount = maxItems > 50 ? 50 : maxItems;
-      loadChatThreads(this._graph, pageCount).then(handler, err => error(err));
-    } else {
-      const filter = nextLink.split('?')[1];
-      await loadChatThreadsByPage(this._graph, filter).then(handler, err => error(err));
+    try {
+      const response = !nextLink
+        ? await loadChatThreads(this._graph, maxItems > 50 ? 50 : maxItems) // max page count cannot exceed 50 per documentation
+        : await loadChatThreadsByPage(this._graph, nextLink.split('?')[1]);
+      await this.handleChatThreadsResponse(response, items, maxItems);
+    } catch (err) {
+      error(err);
     }
   }
 

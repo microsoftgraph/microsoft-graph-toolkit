@@ -270,7 +270,8 @@ export const ChatList = ({
           if (chatListClient && !loadingRef.current) {
             // Prevent the function from being called multiple times
             if (chatListState?.moreChatThreadsToLoad) {
-              void chatListClient.loadMoreChatThreads().then(() => (loadingRef.current = true));
+              loadingRef.current = true;
+              void chatListClient.loadMoreChatThreads();
             }
           }
         }
