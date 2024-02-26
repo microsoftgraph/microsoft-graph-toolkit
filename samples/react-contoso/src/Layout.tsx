@@ -7,7 +7,7 @@ import { NavigationItem } from './models/NavigationItem';
 import { getNavigation } from './services/Navigation';
 import { FluentProvider, makeStyles, mergeClasses, shorthands } from '@fluentui/react-components';
 import { tokens } from '@fluentui/react-theme';
-import { applyTheme } from '@microsoft/mgt-react';
+import { applyTheme } from '@microsoft/mgt-components';
 import { useAppContext } from './AppContext';
 const HomePage = lazy(() => import('./pages/HomePage'));
 
