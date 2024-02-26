@@ -7759,13 +7759,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:12.20.55":
-  version: 12.20.55
-  resolution: "@types/node@npm:12.20.55"
-  checksum: 10/1f916a06fff02faadb09a16ed6e31820ce170798b202ef0b14fc244bfbd721938c54a3a99836e185e4414ca461fe96c5bb5c67c3d248f153555b7e6347f061dd
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:^16.18.83":
   version: 16.18.83
   resolution: "@types/node@npm:16.18.83"
@@ -20483,9 +20476,6 @@ __metadata:
     "@storybook/web-components": "npm:^7.6.17"
     "@storybook/web-components-webpack5": "npm:^7.6.17"
     "@types/mocha": "npm:^10.0.6"
-    "@types/node": "npm:12.20.55"
-    "@types/react": "npm:^17.0.0"
-    "@types/react-dom": "npm:^17.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
     "@typescript-eslint/parser": "npm:^6.21.0"
     "@web/dev-server": "npm:^0.4.3"
