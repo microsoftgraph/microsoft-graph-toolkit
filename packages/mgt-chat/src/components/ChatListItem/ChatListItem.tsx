@@ -124,7 +124,7 @@ const IGNORE_BOTS_WITH_NAME = ['Updates'];
 // regex to match different tags
 const imageTagRegex = /(<img[^>]+)/;
 const attachmentTagRegex = /(<attachment[^>]+)/;
-const systemEventTagRegex = /(<systemEventMessage[^>]+)/;
+const systemEventTagRegex = /(<systemEventMessage[^>]+)/; // todo: Use common logic
 
 export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemProps) => {
   const styles = useStyles();
@@ -147,6 +147,7 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
   // enrich the chat if necessary
   useEffect(() => {
     if (isLoaded()) {
+      // todo: refactor to move this logic to the stateful client
       const provider = Providers.globalProvider;
       if (provider && provider.state === ProviderState.SignedIn) {
         const graph = provider.graph.forComponent('ChatListItem');
@@ -349,7 +350,9 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
     return timestamp;
   };
 
+  // todo: move into own component file
   const getDefaultProfileImage = (c: Chat) => {
+    // todo: review var naming, casing like line 360
     // define the JSX for FluentUI Icons + Styling
     const oneOnOneProfilePicture = <ChatListItemIcon chatType="oneOnOne" />;
     const GroupProfilePicture = <ChatListItemIcon chatType="group" />;

@@ -112,6 +112,7 @@ export const ChatList = ({
   const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
   const [chatListActions, setChatListActions] = useState<IChatListActions | undefined>();
 
+  // todo: assume we are signed in when this component is mounted, remove auth guard.
   // wait for provider to be ready before setting client and state
   useEffect(() => {
     const provider = Providers.globalProvider;
@@ -185,8 +186,10 @@ export const ChatList = ({
         clearInterval(timer);
       };
     }
-  }, [chatListClient, lastReadTimeInterval]);
+  }, [chatListClient, lastReadTimeInterval]); // todo: add doc to indicate why we are not adding deps
 
+  // todo: replace onstatechange w/ useEffect for chatListState
+  // todo: implement offStateChange on line 199
   useEffect(() => {
     // shortcut if we don't have a chat list client
     if (!chatListClient) {
@@ -246,8 +249,9 @@ export const ChatList = ({
         chatListClient.tearDown();
       };
     }
-  }, []);
+  }, []); // todo: add doc to indicate why we are not adding deps
 
+  // todo: in usecallback
   const onClickChatListItem = (chat: GraphChatThread) => {
     chatListClient?.setSelectedChat(chat);
   };
