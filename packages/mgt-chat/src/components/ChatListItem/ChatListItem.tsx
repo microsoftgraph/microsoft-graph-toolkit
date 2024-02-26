@@ -8,12 +8,10 @@ import {
   TeamworkApplicationIdentity,
   TeamsAppInstallation
 } from '@microsoft/microsoft-graph-types';
-import { Person } from '@microsoft/mgt-react';
 import { ProviderState, Providers, error } from '@microsoft/mgt-element';
-import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
 import { rewriteEmojiContentToText } from '../../utils/rewriteEmojiContent';
 import { convert } from 'html-to-text';
-import { loadChatWithPreview, loadBotsInChat } from '../../statefulClient/graph.chat';
+import { loadBotsInChat } from '../../statefulClient/graph.chat';
 import { DefaultProfileIcon } from './DefaultProfileIcon';
 import { GraphChatThread } from '../../statefulClient/StatefulGraphChatListClient';
 
@@ -124,49 +122,20 @@ const IGNORE_BOTS_WITH_NAME = ['Updates'];
 // regex to match different tags
 const imageTagRegex = /(<img[^>]+)/;
 const attachmentTagRegex = /(<attachment[^>]+)/;
-const systemEventTagRegex = /(<systemEventMessage[^>]+)/; // todo: Use common logic
+const systemEventTagRegex = /(<systemEventMessage[^>]+)/;
 
 export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemProps) => {
   const styles = useStyles();
 
   // manage the internal state of the chat
-  const [chatInternal, setChatInternal] = useState(chat);
   const [bots, setBots] = useState<TeamsAppInstallation[]>();
   const isBotsLoadingOrLoaded = useRef(false);
 
-  // if chat changes, update the internal state to match
+  // if chat changes, the bots need to change too
   useEffect(() => {
-    if (chatInternal.id !== chat.id) {
-      setBots(undefined);
-      isBotsLoadingOrLoaded.current = false;
-    }
-
-    setChatInternal(chat);
+    setBots(undefined);
+    isBotsLoadingOrLoaded.current = false;
   }, [chat]);
-
-  // enrich the chat if necessary
-  useEffect(() => {
-    if (isLoaded()) {
-      // todo: refactor to move this logic to the stateful client
-      const provider = Providers.globalProvider;
-      if (provider && provider.state === ProviderState.SignedIn) {
-        const graph = provider.graph.forComponent('ChatListItem');
-        const load = (id: string): Promise<Chat> => {
-          return loadChatWithPreview(graph, id);
-        };
-        load(chatInternal.id!).then(
-          c => {
-            const chatThread = {
-              ...(c as GraphChatThread),
-              isRead: chat.isRead
-            };
-            setChatInternal(chatThread);
-          },
-          e => error(e)
-        );
-      }
-    }
-  }, [chatInternal]);
 
   const startLoadingBotsInChat = async (chatId: string) => {
     // ensure this is only called once
@@ -192,10 +161,6 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
       error(e);
       setBots([]);
     }
-  };
-
-  const isLoaded = () => {
-    return chatInternal.id && (!chatInternal.chatType || !chatInternal.members);
   };
 
   // shortcut if no valid user
@@ -350,39 +315,6 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
     return timestamp;
   };
 
-  // todo: move into own component file
-  const getDefaultProfileImage = (c: Chat) => {
-    // todo: review var naming, casing like line 360
-    // define the JSX for FluentUI Icons + Styling
-    const oneOnOneProfilePicture = <ChatListItemIcon chatType="oneOnOne" />;
-    const GroupProfilePicture = <ChatListItemIcon chatType="group" />;
-    const meetingProfilePicture = <ChatListItemIcon chatType="meeting" />;
-
-    const other = c.members?.find(m => (m as AadUserConversationMember).userId !== myId);
-    const otherAad = other as AadUserConversationMember;
-
-    switch (true) {
-      case c.chatType === 'oneOnOne':
-        return (
-          <Person
-            className={styles.person}
-            userId={otherAad?.userId ?? undefined}
-            avatarSize="small"
-            showPresence={true}
-            personCardInteraction="hover"
-          >
-            <DefaultProfileIcon template="no-data" />
-          </Person>
-        );
-      case c.chatType === 'group':
-        return GroupProfilePicture;
-      case c.chatType === 'meeting':
-        return meetingProfilePicture;
-      default:
-        return oneOnOneProfilePicture;
-    }
-  };
-
   const getLastMessagePreviewPrefix = (c: Chat) => {
     // if the last message was sent by the current user, display 'You: '
     if (c.lastMessagePreview?.from?.user?.id === myId) {
@@ -487,12 +419,14 @@ export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemPr
   }
   return (
     <div className={container}>
-      <div className={styles.profileImage}>{getDefaultProfileImage(chatInternal)}</div>
-      <div className={styles.chatInfo}>
-        <p className={styles.chatTitle}>{getTitleFromChat(chatInternal)}</p>
-        <p className={styles.chatMessage}>{enrichPreviewMessage(chatInternal)}</p>
+      <div className={styles.profileImage}>
+        <DefaultProfileIcon chat={chat} userId={myId} />
       </div>
-      <div className={styles.chatTimestamp}>{extractTimestamp(determineCorrectTimestamp(chatInternal))}</div>
+      <div className={styles.chatInfo}>
+        <p className={styles.chatTitle}>{getTitleFromChat(chat)}</p>
+        <p className={styles.chatMessage}>{enrichPreviewMessage(chat)}</p>
+      </div>
+      <div className={styles.chatTimestamp}>{extractTimestamp(determineCorrectTimestamp(chat))}</div>
     </div>
   );
 };
