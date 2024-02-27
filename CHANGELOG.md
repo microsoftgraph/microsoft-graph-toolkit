@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.0.1...v4.1.0) (2024-02-26)
+
+
+### Features
+
+* add ability to disable suggestions on people-picker ([#3048](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3048)) ([f174714](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/f174714d075facb6d085c141de09e9f3eef18f43))
+* move electron to peer dependency ([#3046](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3046)) ([c572c01](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/c572c01cc6cb8e5a20c6703cfb1574557c4f1299))
+
+
+### Bug Fixes
+
+* make scope aware requests work for electron apps ([c572c01](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/c572c01cc6cb8e5a20c6703cfb1574557c4f1299))
+
 ## [4.0.1](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.0.0...v4.0.1) (2024-02-12)
 
 
