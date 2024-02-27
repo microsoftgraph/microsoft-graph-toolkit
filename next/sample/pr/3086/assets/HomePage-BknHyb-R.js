@@ -1,1 +1,0 @@
-import{j as e}from"./index-4aN9tDwu.js";import{P as o}from"./PageHeader-DPoFmWE1.js";import"./App-ZYGtWVu9.js";const s=()=>e.jsx(e.Fragment,{children:e.jsx(o,{title:"Home",description:"Welcome to Contoso!"})});export{s as default};
