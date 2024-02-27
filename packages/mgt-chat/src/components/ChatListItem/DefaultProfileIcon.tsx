@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { makeStyles, shorthands } from '@fluentui/react-components';
+import { makeStyles } from '@fluentui/react-components';
 import { ChatListItemIcon } from '../ChatListItemIcon/ChatListItemIcon';
 import { Chat, AadUserConversationMember } from '@microsoft/microsoft-graph-types';
 import { Person } from '@microsoft/mgt-react';
@@ -11,14 +11,6 @@ interface IDefaultProfileIconProps {
 }
 
 const useStyles = makeStyles({
-  defaultProfileImage: {
-    ...shorthands.borderRadius('50%'),
-    objectFit: 'cover',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-
   person: {
     '--person-avatar-size': '32px',
     '--person-alignment': 'center'
@@ -43,9 +35,7 @@ export const DefaultProfileIcon = ({ chat, userId }: IDefaultProfileIconProps & 
           showPresence={true}
           personCardInteraction="hover"
         >
-          <div className={styles.defaultProfileImage}>
-            <ChatListItemIcon chatType="oneOnOne" />
-          </div>
+          <ChatListItemIcon chatType="oneOnOne" template="no-data" />
         </Person>
       )}
       {chat.chatType === 'group' && <ChatListItemIcon chatType="group" />}
