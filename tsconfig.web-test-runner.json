@@ -4,7 +4,7 @@
     // Needed to mix class fields and reactive properties in Lit elements https://lit.dev/docs/components/properties/#avoiding-issues-with-class-fields
     "useDefineForClassFields": false,
     // Needed to ensure that string union types work as expected in tests
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": false
   },
   "include": ["packages/**/src/**/*.ts"],
   "exclude": ["node_modules", "lib"]

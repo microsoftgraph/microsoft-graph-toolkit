@@ -42,7 +42,7 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@azure/msal-node": "^1.0.3",
+    "@azure/msal-node": "^1.18.4",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "3.0.2"
   },
@@ -50,7 +50,7 @@
     "electron": ">=11.0.2 <29.0.0"
   },
   "devDependencies": {
-    "electron": "^28.2.2"
+    "electron": "^28.2.4"
   },
   "publishConfig": {
     "directory": "dist"
