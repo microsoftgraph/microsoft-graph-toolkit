@@ -6,20 +6,20 @@ export interface BotInfo {
   botInfo: Map<string, TeamsAppInstallation>;
   chatBots: Map<string, Set<TeamsAppInstallation>>;
   botIcons: Map<string, string>;
-  loadBotInfo: (chatId: string, appId: string) => Promise<void>;
+  loadBotInfo: (chatId: string, botId: string) => Promise<void>;
 }
 
-const requestKey = (chatId: string, appId: string) => `${chatId}::${appId}`;
+const requestKey = (chatId: string, botId: string) => `${chatId}::${botId}`;
 
 export class BotInfoClient extends BaseStatefulClient<BotInfo> {
   private readonly infoRequestMap = new Map<string, Promise<unknown>>();
 
-  public loadBotInfo = async (chatId: string, appId: string) => {
+  public loadBotInfo = async (chatId: string, botId: string) => {
     const beta = this.betaGraph;
     if (!beta) return;
-    const key = requestKey(chatId, appId);
+    const key = requestKey(chatId, botId);
     if (!this.infoRequestMap.has(key)) {
-      const requestPromise = loadBotInChat(beta, chatId, appId);
+      const requestPromise = loadBotInChat(beta, chatId, botId);
       this.infoRequestMap.set(key, requestPromise);
       const botInfo = await requestPromise;
       if (botInfo?.value.length > 0) {
