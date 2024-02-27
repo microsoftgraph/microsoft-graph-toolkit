@@ -4,6 +4,7 @@ import { loadBotInChat, loadBotIcon } from './graph.chat';
 
 export interface BotInfo {
   botInfo: Map<string, TeamsAppInstallation>;
+  chatBots: Map<string, Set<TeamsAppInstallation>>;
   botIcons: Map<string, string>;
   loadBotInfo: (chatId: string, appId: string) => Promise<void>;
 }
@@ -27,6 +28,10 @@ export class BotInfoClient extends BaseStatefulClient<BotInfo> {
           botInfo.value.forEach(app => {
             if (app.teamsAppDefinition?.bot?.id) {
               draft.botInfo.set(app.teamsAppDefinition?.bot?.id, app);
+              if (!draft.chatBots.has(chatId)) {
+                draft.chatBots.set(chatId, new Set());
+              }
+              draft.chatBots.get(chatId)?.add(app);
             }
           });
         });
@@ -44,6 +49,7 @@ export class BotInfoClient extends BaseStatefulClient<BotInfo> {
   };
   protected state: BotInfo = {
     botInfo: new Map<string, TeamsAppInstallation>(),
+    chatBots: new Map<string, Set<TeamsAppInstallation>>(),
     botIcons: new Map<string, string>(),
     loadBotInfo: this.loadBotInfo
   };
