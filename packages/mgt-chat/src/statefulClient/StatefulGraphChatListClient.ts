@@ -24,7 +24,7 @@ import { graph } from '../utils/graph';
 import { GraphConfig } from './GraphConfig';
 import { GraphNotificationUserClient } from './GraphNotificationUserClient';
 import { ThreadEventEmitter } from './ThreadEventEmitter';
-import { ChatThreadCollection, loadChatThreads, loadChatThreadsByPage } from './graph.chat';
+import { ChatThreadCollection, loadChatThreads, loadChatThreadsByPage, loadChatWithPreview } from './graph.chat';
 import { ChatMessageInfo, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { error } from '@microsoft/mgt-element';
 import { LastReadCache } from '../statefulClient/Caching/LastReadCache';
@@ -76,6 +76,7 @@ export type GraphChatListClient = Pick<MessageThreadProps, 'userId'> & {
     | 'no chats'
     | 'chats loaded'
     | 'chat message received'
+    | 'chat details loaded'
     | 'chats read'
     | 'chat selected'
     | 'chat unselected'
@@ -632,7 +633,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         } else {
           chatThread.isRead = false;
         }
-
         bringToTop();
       } else if (event.type === 'chatMessageReceived' && event.message?.chatId) {
         draft.status = 'chat message received';
@@ -645,10 +645,27 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
           isRead: false
         };
         draft.chatThreads.unshift(newChatThread);
+        // async load more info
+        void this.loadChatDetails(event.message.chatId);
       } else {
         log(`received unrecognized event type '${event.type}' from the user subscription.`);
       }
     });
+  }
+
+  private async loadChatDetails(chatId: string) {
+    try {
+      const loaded = await loadChatWithPreview(this._graph, chatId);
+      this.notifyStateChange((draft: GraphChatListClient) => {
+        draft.status = 'chat details loaded';
+        const chatThread = draft.chatThreads?.findIndex(c => c.id === chatId) ?? -1;
+        if (chatThread > -1) {
+          draft.chatThreads[chatThread] = Object.assign(draft.chatThreads[chatThread], loaded);
+        }
+      });
+    } catch (e) {
+      error(`Failed to load chat details for chat ID ${chatId}.`, e);
+    }
   }
 
   /*
