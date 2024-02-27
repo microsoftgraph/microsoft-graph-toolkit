@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { BotInfoContext } from "../components/Context/BotInfoContext";
+import { useContext, useEffect, useState } from 'react';
+import { BotInfoContext } from '../components/Context/BotInfoContext';
 
 export const useBotInfo = () => {
   const botInfoClient = useContext(BotInfoContext);
