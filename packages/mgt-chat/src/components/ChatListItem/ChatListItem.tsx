@@ -17,7 +17,7 @@ import { GraphChatThread } from '../../statefulClient/StatefulGraphChatListClien
 
 interface IChatListItemProps {
   chat: GraphChatThread;
-  myId: string | undefined;
+  userId: string | undefined;
   isSelected: boolean;
   isRead: boolean;
 }
@@ -124,7 +124,7 @@ const imageTagRegex = /(<img[^>]+)/;
 const attachmentTagRegex = /(<attachment[^>]+)/;
 const systemEventTagRegex = /(<systemEventMessage[^>]+)/;
 
-export const ChatListItem = ({ chat, myId, isSelected, isRead }: IChatListItemProps) => {
+export const ChatListItem = ({ chat, userId: myId, isSelected, isRead }: IChatListItemProps) => {
   const styles = useStyles();
 
   // manage the internal state of the chat

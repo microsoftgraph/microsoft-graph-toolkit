@@ -313,7 +313,7 @@ export const ChatList = ({
                       <ChatListItem
                         key={c.id}
                         chat={c}
-                        myId={chatListState.userId}
+                        userId={chatListState.userId}
                         isSelected={c.id === chatListState?.internalSelectedChat?.id}
                         isRead={c.isRead}
                       />

@@ -645,7 +645,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
           isRead: false
         };
         draft.chatThreads.unshift(newChatThread);
-        // lazy load more info
+        // async load more info
         void this.loadChatDetails(event.message.chatId);
       } else {
         log(`received unrecognized event type '${event.type}' from the user subscription.`);
@@ -653,18 +653,18 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     });
   }
 
-  private async loadChatDetails(id: string) {
+  private async loadChatDetails(chatId: string) {
     try {
-      const loaded = await loadChatWithPreview(this._graph, id);
+      const loaded = await loadChatWithPreview(this._graph, chatId);
       this.notifyStateChange((draft: GraphChatListClient) => {
         draft.status = 'chat details loaded';
-        const chatThread = draft.chatThreads?.findIndex(c => c.id === id) ?? -1;
+        const chatThread = draft.chatThreads?.findIndex(c => c.id === chatId) ?? -1;
         if (chatThread > -1) {
           draft.chatThreads[chatThread] = Object.assign(draft.chatThreads[chatThread], loaded);
         }
       });
     } catch (e) {
-      error(`Failed to load chat details for chat ID ${id}.`, e);
+      error(`Failed to load chat details for chat ID ${chatId}.`, e);
     }
   }
 
@@ -829,7 +829,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       draft.status = 'creating server connections';
     });
     try {
-      void this._notificationClient.subscribeToUserNotifications(userId);
+      this._notificationClient.subscribeToUserNotifications(userId);
     } catch (e) {
       error('Failed to load chat data or subscribe to notications: ', e);
       if (e instanceof GraphError) {
