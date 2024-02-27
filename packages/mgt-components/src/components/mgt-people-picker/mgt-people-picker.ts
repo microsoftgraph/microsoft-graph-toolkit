@@ -429,6 +429,18 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   public ariaLabel: string;
 
   /**
+   * Sets whether the people suggestions should apper on the suggestion list
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'disable-suggestions',
+    type: Boolean
+  })
+  public disableSuggestions = false;
+
+  /**
    * Get the scopes required for people picker
    *
    * @static
@@ -928,6 +940,10 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       const graph = provider.graph.forComponent(this);
 
       if (!input.length) {
+        if (this.disableSuggestions) {
+          this._foundPeople = [];
+          return;
+        }
         if (this.defaultPeople) {
           people = this.defaultPeople;
         } else {
