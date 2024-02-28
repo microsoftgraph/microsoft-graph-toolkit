@@ -37,6 +37,7 @@ export const customCSSProperties = () => html`
     --people-picker-input-placeholder-text-color: white;
     --people-picker-search-icon-color: yellow;
     --people-picker-remove-selected-close-icon-color: blue;
+    --people-picker-font-size: 16px;
 
     /** You can also change the person tokens **/
     --person-line1-text-color: blue;
