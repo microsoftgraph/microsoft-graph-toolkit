@@ -328,8 +328,8 @@ export class MgtTodo extends MgtTasksBase {
             task.dueDateTime
               ? this.dateToInputValue(new Date(task.dueDateTime.dateTime))
               : this._taskBeingUpdated === task
-              ? this.dateToInputValue(this._newTaskDueDate)
-              : nothing
+                ? this.dateToInputValue(this._newTaskDueDate)
+                : nothing
           }"
           @change="${this.handleDateUpdate}"
           @focus="${(e: KeyboardEvent) => this.updatingTask(e, task)}"
