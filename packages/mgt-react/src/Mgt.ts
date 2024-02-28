@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import React, { ReactNode, ReactElement } from 'react';
+import React, { ReactNode, ReactElement, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Wc, WcProps, WcTypeProps } from 'wc-react';
-import { customElementHelper, TemplateRenderedData } from '@microsoft/mgt-element';
+import { customElementHelper, TemplateRenderedData, signedInState, Providers } from '@microsoft/mgt-element';
 
 export class Mgt extends Wc {
   private _templates: Record<string, ReactElement>;
@@ -153,4 +153,26 @@ export const wrapMgt = <T = WcProps>(tag: string, registerElementFunction: () =>
     React.PropsWithoutRef<T & React.HTMLAttributes<unknown>> & React.RefAttributes<unknown>
   > = React.forwardRef(WrapMgt);
   return component;
+};
+
+/**
+ * Hook to check if a user is signed in.
+ * 
+ * @returns true if a user is signed on, otherwise false.
+ */
+export const useIsSignedIn = (): [boolean] => {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  useEffect(() => {
+    const updateState = () => {
+      setIsSignedIn(signedInState());
+    };
+
+    Providers.onProviderUpdated(updateState);
+    updateState();
+    
+    return () => {
+      Providers.removeProviderUpdatedListener(updateState);
+    };
+  }, [setIsSignedIn]);
+  return [isSignedIn];
 };
