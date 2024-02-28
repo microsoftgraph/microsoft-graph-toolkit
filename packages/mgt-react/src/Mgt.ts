@@ -154,25 +154,3 @@ export const wrapMgt = <T = WcProps>(tag: string, registerElementFunction: () =>
   > = React.forwardRef(WrapMgt);
   return component;
 };
-
-/**
- * Hook to check if a user is signed in.
- *
- * @returns true if a user is signed on, otherwise false.
- */
-export const useIsSignedIn = (): [boolean] => {
-  const [isSignedIn, setIsSignedIn] = useState(false);
-  useEffect(() => {
-    const updateState = () => {
-      setIsSignedIn(signedInState());
-    };
-
-    Providers.onProviderUpdated(updateState);
-    updateState();
-
-    return () => {
-      Providers.removeProviderUpdatedListener(updateState);
-    };
-  }, [setIsSignedIn]);
-  return [isSignedIn];
-};
