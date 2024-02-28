@@ -10,7 +10,7 @@ import { Providers } from '../providers/Providers';
 
 /**
  * Checks the provider state if it's in signed in.
- * 
+ *
  * @returns true if signed in, otherwise false.
  */
 export const signedInState = (): boolean => {

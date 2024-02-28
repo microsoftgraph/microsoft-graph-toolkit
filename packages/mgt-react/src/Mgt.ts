@@ -157,7 +157,7 @@ export const wrapMgt = <T = WcProps>(tag: string, registerElementFunction: () =>
 
 /**
  * Hook to check if a user is signed in.
- * 
+ *
  * @returns true if a user is signed on, otherwise false.
  */
 export const useIsSignedIn = (): [boolean] => {
@@ -169,7 +169,7 @@ export const useIsSignedIn = (): [boolean] => {
 
     Providers.onProviderUpdated(updateState);
     updateState();
-    
+
     return () => {
       Providers.removeProviderUpdatedListener(updateState);
     };
