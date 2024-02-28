@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import React, { ReactNode, ReactElement, useState, useEffect } from 'react';
+import React, { ReactNode, ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 import { Wc, WcProps, WcTypeProps } from 'wc-react';
-import { customElementHelper, TemplateRenderedData, signedInState, Providers } from '@microsoft/mgt-element';
+import { customElementHelper, TemplateRenderedData } from '@microsoft/mgt-element';
 
 export class Mgt extends Wc {
   private _templates: Record<string, ReactElement>;
