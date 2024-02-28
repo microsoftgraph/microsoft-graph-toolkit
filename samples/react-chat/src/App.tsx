@@ -1,10 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import './App.css';
 import { Login } from '@microsoft/mgt-react';
 import { Chat, ChatList, NewChat, ChatListButtonItem, ChatListMenuItem, IChatListActions } from '@microsoft/mgt-chat';
 import { ChatMessage, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { Compose24Filled, Compose24Regular, bundleIcon } from '@fluentui/react-icons';
 import { GraphChatThread } from '../../../packages/mgt-chat/src/statefulClient/StatefulGraphChatListClient';
+import { Providers, ProviderState } from '@microsoft/mgt-element';
 
 const ChatAddIconBundle = bundleIcon(Compose24Filled, Compose24Regular);
 
@@ -13,17 +14,38 @@ export const ChatAddIcon = (): JSX.Element => {
   return <ChatAddIconBundle color={iconColor} />;
 };
 
+function useIsSignedIn(): [boolean] {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  useEffect(() => {
+    const updateState = () => {
+      const provider = Providers.globalProvider;
+      setIsSignedIn(provider?.state === ProviderState.SignedIn);
+    };
+
+    Providers.onProviderUpdated(updateState);
+    updateState();
+
+    return () => {
+      Providers.removeProviderUpdatedListener(updateState);
+    };
+  }, []);
+
+  return [isSignedIn];
+}
+
 function App() {
   let sessionChatId = sessionStorage.getItem('chatId') ?? '';
   console.log('sessionChatId: ', sessionChatId);
 
+  const [isSignedIn] = useIsSignedIn();
   const [chatId, setChatId] = useState<string>(sessionChatId);
   const [chatThreadsPerPage, setChatThreadsPerPage] = useState<number>(10);
   const [showNewChat, setShowNewChat] = useState<boolean>(false);
   // we are using a different state to track the selected chat id fired from chat list.
   const [selectedChatListChatId, setSelectedChatListChatId] = useState<string>('');
 
-  sessionStorage.clear();
+  sessionStorage.removeItem('chatId');
 
   const saveChatAndRefresh = () => {
     if (chatId !== '') {
@@ -129,18 +151,20 @@ function App() {
           )}
         </div>
         <div className="chatlist-pane">
-          <ChatList
-            selectedChatId={chatId}
-            onLoaded={onLoaded}
-            chatThreadsPerPage={chatThreadsPerPage}
-            menuItems={menus}
-            buttonItems={buttons}
-            onSelected={onChatSelected}
-            onMessageReceived={onMessageReceived}
-            onAllMessagesRead={onAllMessagesRead}
-            onConnectionChanged={onConnectionChanged}
-            onUnselected={onUnselected}
-          />
+          {isSignedIn && (
+            <ChatList
+              selectedChatId={chatId}
+              onLoaded={onLoaded}
+              chatThreadsPerPage={chatThreadsPerPage}
+              menuItems={menus}
+              buttonItems={buttons}
+              onSelected={onChatSelected}
+              onMessageReceived={onMessageReceived}
+              onAllMessagesRead={onAllMessagesRead}
+              onConnectionChanged={onConnectionChanged}
+              onUnselected={onUnselected}
+            />
+          )}
         </div>
         {/* NOTE: removed the chatId guard as this case has an error state. */}
         <div className="chat-pane">{<Chat chatId={selectedChatListChatId} />}</div>

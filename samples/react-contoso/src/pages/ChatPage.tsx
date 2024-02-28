@@ -6,6 +6,7 @@ import { Chat as GraphChat, ChatMessage } from '@microsoft/microsoft-graph-types
 import { ChatList, Chat, NewChat, ChatListButtonItem, ChatListMenuItem, IChatListActions } from '@microsoft/mgt-chat';
 import { Compose24Filled, Compose24Regular, bundleIcon } from '@fluentui/react-icons';
 import { GraphChatThread } from '../../../../packages/mgt-chat/src/statefulClient/StatefulGraphChatListClient';
+import { useIsSignedIn } from '../hooks/useIsSignedIn';
 
 const ChatAddIconBundle = bundleIcon(Compose24Filled, Compose24Regular);
 
@@ -101,7 +102,7 @@ const ChatPage: React.FunctionComponent = () => {
   const styles = useStyles();
   const [chatId, setChatId] = React.useState<string>('');
   const [isNewChatOpen, setIsNewChatOpen] = React.useState(false);
-
+  const [isSignedIn] = useIsSignedIn();
   const onChatSelected = React.useCallback(
     (e: GraphChatThread) => {
       if (chatId !== e.id) {
@@ -143,7 +144,7 @@ const ChatPage: React.FunctionComponent = () => {
           </Dialog>
         </div>
         <div className={styles.side}>
-          <ChatListWrapper selectedChatId={chatId} onSelected={onChatSelected} onNewChat={onNewChat} />
+          {isSignedIn && <ChatListWrapper selectedChatId={chatId} onSelected={onChatSelected} onNewChat={onNewChat} />}
         </div>
         <div className={styles.side}>
           <Chat chatId={chatId} />

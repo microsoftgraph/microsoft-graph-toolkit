@@ -8,7 +8,7 @@ import {
   TeamworkApplicationIdentity,
   TeamsAppInstallation
 } from '@microsoft/microsoft-graph-types';
-import { ProviderState, Providers, error } from '@microsoft/mgt-element';
+import { Providers, error } from '@microsoft/mgt-element';
 import { rewriteEmojiContentToText } from '../../utils/rewriteEmojiContent';
 import { convert } from 'html-to-text';
 import { loadBotsInChat } from '../../statefulClient/graph.chat';
@@ -143,11 +143,7 @@ export const ChatListItem = ({ chat, userId: myId, isSelected, isRead }: IChatLi
       return;
     }
 
-    // make sure there is a logged in graph provider
     const provider = Providers.globalProvider;
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
-    }
 
     // set to loading
     isBotsLoadingOrLoaded.current = true;

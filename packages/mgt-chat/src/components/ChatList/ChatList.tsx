@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import { ChatListItem } from '../ChatListItem/ChatListItem';
-import { MgtTemplateProps, ProviderState, Providers, Spinner, log, error } from '@microsoft/mgt-react';
+import { MgtTemplateProps, Spinner, log, error } from '@microsoft/mgt-react';
 import { makeStyles, Button, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
 import { FluentThemeProvider } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
@@ -16,7 +16,6 @@ import { ChatListButtonItem } from '../ChatListHeader/ChatListButtonItem';
 import { Error } from '../Error/Error';
 import { LoadingMessagesErrorIcon } from '../Error/LoadingMessageErrorIcon';
 import { CreateANewChat } from '../Error/CreateANewChat';
-import { PleaseSignIn } from '../Error/PleaseSignIn';
 import { OpenTeamsLinkError } from '../Error/OpenTeams';
 import { IChatListActions } from '../ChatListHeader/IChatListActions';
 
@@ -106,56 +105,37 @@ export const ChatList = ({
   ...props
 }: MgtTemplateProps & IChatListProps & IChatListMenuItemsProps) => {
   const styles = useStyles();
-
-  const [initialLastReadTimeInterval, setInitialLastReadTimeInterval] = useState<number | undefined>();
-  const [chatListClient, setChatListClient] = useState<StatefulGraphChatListClient | undefined>();
-  const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
-  const [chatListActions, setChatListActions] = useState<IChatListActions | undefined>();
-
-  // todo: assume we are signed in when this component is mounted, remove auth guard.
-  // wait for provider to be ready before setting client and state
-  useEffect(() => {
-    const provider = Providers.globalProvider;
-    const conditionalLoad = (state: ProviderState | undefined) => {
-      if (state === ProviderState.SignedIn && !chatListClient) {
-        const client = new StatefulGraphChatListClient();
-        setChatListClient(client);
-        setChatListState(client.getState());
-      }
+  const [chatListClient] = useState<StatefulGraphChatListClient>(() => new StatefulGraphChatListClient());
+  const [chatListActions] = useState<IChatListActions>(() => {
+    return {
+      markAllChatThreadsAsRead: () => chatListClient.markAllChatThreadsAsRead()
     };
-    provider?.onStateChanged(evt => {
-      conditionalLoad(evt.detail);
-    });
-    conditionalLoad(provider?.state);
+  });
+  const [initialLastReadTimeInterval, setInitialLastReadTimeInterval] = useState<number | undefined>();
+  const [chatListState, setChatListState] = useState<GraphChatListClient | undefined>();
+
+  useEffect(() => {
+    chatListClient.onStateChange(setChatListState);
+    return () => {
+      chatListClient.offStateChange(setChatListState);
+    };
   }, [chatListClient]);
 
   useEffect(() => {
-    if (chatListClient) {
-      setChatListActions({
-        markAllChatThreadsAsRead: () => chatListClient.markAllChatThreadsAsRead()
-      });
+    if (chatThreadsPerPage < 1) {
+      error('chatThreadsPerPage must be greater than 0!');
+      return;
     }
-  }, [chatListClient]);
 
-  useEffect(() => {
-    if (chatListClient) {
-      if (chatThreadsPerPage < 1) {
-        error('chatThreadsPerPage must be greater than 0!');
-        return;
-      }
-
-      // todo: implement a upperbound limit for chatThreadsPerPage
-      chatListClient.chatThreadsPerPage = chatThreadsPerPage;
-    }
+    // todo: implement a upperbound limit for chatThreadsPerPage
+    chatListClient.chatThreadsPerPage = chatThreadsPerPage;
   }, [chatListClient, chatThreadsPerPage]);
 
   useEffect(() => {
-    if (chatListClient) {
-      if (!selectedChatId) {
-        chatListClient.clearSelectedChat();
-      } else {
-        chatListClient.setSelectedChatId(selectedChatId);
-      }
+    if (!selectedChatId) {
+      chatListClient.clearSelectedChat();
+    } else {
+      chatListClient.setSelectedChatId(selectedChatId);
     }
   }, [chatListClient, selectedChatId]);
 
@@ -164,97 +144,96 @@ export const ChatList = ({
   // the user could have read messages in another client (for instance, the Teams client).
   useEffect(() => {
     // setup timer only after we have a defined chatListClient
-    if (chatListClient) {
-      if (initialLastReadTimeInterval) {
-        error('lastReadTimeInterval can only be set once.');
-        return;
-      }
-
-      if (lastReadTimeInterval < 1) {
-        error('lastReadTimeInterval must be greater than 0!');
-        return;
-      }
-
-      // todo: implement a upperbound limit for lastReadTimeInterval
-      setInitialLastReadTimeInterval(lastReadTimeInterval);
-
-      const timer = setInterval(() => {
-        chatListClient.cacheLastReadTime('selected');
-      }, lastReadTimeInterval);
-
-      return () => {
-        clearInterval(timer);
-      };
+    if (initialLastReadTimeInterval) {
+      error('lastReadTimeInterval can only be set once.');
+      return;
     }
-  }, [chatListClient, lastReadTimeInterval]); // todo: add doc to indicate why we are not adding deps
 
-  // todo: replace onstatechange w/ useEffect for chatListState
-  // todo: implement offStateChange on line 199
+    if (lastReadTimeInterval < 1) {
+      error('lastReadTimeInterval must be greater than 0!');
+      return;
+    }
+
+    // todo: implement a upperbound limit for lastReadTimeInterval
+    setInitialLastReadTimeInterval(lastReadTimeInterval);
+
+    const timer = setInterval(() => {
+      chatListClient.cacheLastReadTime('selected');
+    }, lastReadTimeInterval);
+
+    return () => {
+      clearInterval(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatListClient, lastReadTimeInterval]); // initialLastReadTimeInterval is used to ensure we only set interval once.
+
   useEffect(() => {
-    // shortcut if we don't have a chat list client
-    if (!chatListClient) {
+    if (!chatListState) {
       return;
     }
 
     // handle state changes
-    chatListClient.onStateChange(setChatListState);
-    chatListClient.onStateChange(state => {
-      if (state.status === 'chat message received' && onMessageReceived && state.chatMessage) {
-        onMessageReceived(state.chatMessage);
-      }
+    if (chatListState.status === 'chat message received' && onMessageReceived && chatListState.chatMessage) {
+      onMessageReceived(chatListState.chatMessage);
+    }
 
-      if (state.status === 'chat selected' && onSelected && state.internalSelectedChat) {
-        onSelected(state.internalSelectedChat);
-      }
+    if (chatListState.status === 'chat selected' && onSelected && chatListState.internalSelectedChat) {
+      onSelected(chatListState.internalSelectedChat);
+    }
 
-      if (state.status === 'chat unselected' && onUnselected && state.internalPrevSelectedChat) {
-        onUnselected(state.internalPrevSelectedChat);
-      }
+    if (chatListState.status === 'chat unselected' && onUnselected && chatListState.internalPrevSelectedChat) {
+      onUnselected(chatListState.internalPrevSelectedChat);
+    }
 
-      if (state.status === 'chats read' && onAllMessagesRead && state.chatThreads) {
-        onAllMessagesRead(state.chatThreads.map(c => c.id!));
-      }
+    if (chatListState.status === 'chats read' && onAllMessagesRead && chatListState.chatThreads) {
+      onAllMessagesRead(chatListState.chatThreads.map(c => c.id!));
+    }
 
-      if (state.status === 'chats loaded' && onLoaded) {
-        onLoaded(state?.chatThreads ?? []);
-      }
+    if (chatListState.status === 'chats loaded' && onLoaded) {
+      onLoaded(chatListState?.chatThreads ?? []);
+    }
 
-      if (state.status === 'chats loaded' && state.fireOnSelected && onSelected && state.internalSelectedChat) {
-        onSelected(state.internalSelectedChat);
-      }
+    if (
+      chatListState.status === 'chats loaded' &&
+      chatListState.fireOnSelected &&
+      onSelected &&
+      chatListState.internalSelectedChat
+    ) {
+      onSelected(chatListState.internalSelectedChat);
+    }
 
-      if (state.status === 'no chats' && onLoaded) {
-        onLoaded([]);
-      }
+    if (chatListState.status === 'no chats' && onLoaded) {
+      onLoaded([]);
+    }
 
-      if (state.status === 'server connection established' && onConnectionChanged) {
-        onConnectionChanged(true);
-        chatListClient.tryLoadChatThreads().catch(e => chatListClient.raiseFatalError(e as Error));
-      }
+    if (chatListState.status === 'server connection established' && onConnectionChanged) {
+      onConnectionChanged(true);
+    }
 
-      if (state.status === 'server connection lost' && onConnectionChanged) {
-        onConnectionChanged(false);
-      }
-    });
-  }, [chatListClient, onLoaded, onMessageReceived, onSelected, onUnselected, onAllMessagesRead, onConnectionChanged]);
+    if (chatListState.status === 'server connection lost' && onConnectionChanged) {
+      onConnectionChanged(false);
+    }
+  }, [chatListState, onLoaded, onMessageReceived, onSelected, onUnselected, onAllMessagesRead, onConnectionChanged]);
 
   // this only runs once when the component is unmounted
   useEffect(() => {
-    if (chatListClient) {
-      // tear down
-      return () => {
-        // log state of chatlistclient for debugging purposes
-        log('ChatList unmounted.', chatListClient.getState());
-        chatListClient.offStateChange(setChatListState);
-        chatListClient.tearDown();
-      };
-    }
-  }, []); // todo: add doc to indicate why we are not adding deps
+    // tear down
+    return () => {
+      // log state of chatlistclient for debugging purposes
+      log('ChatList unmounted.', chatListClient.getState());
+      chatListClient.tearDown();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // required for the teardown to only run once
 
-  // todo: in usecallback
-  const onClickChatListItem = (chat: GraphChatThread) => {
-    chatListClient?.setSelectedChat(chat);
-  };
+  const onClickChatListItem = useCallback(
+    (chat: GraphChatThread) => {
+      if (chatListClient) {
+        chatListClient.setSelectedChat(chat);
+      }
+    },
+    [chatListClient]
+  );
 
   const chatListButtonItems = props.buttonItems === undefined ? [] : props.buttonItems;
   const chatListMenuItems = props.menuItems === undefined ? [] : props.menuItems;
@@ -295,15 +274,9 @@ export const ChatList = ({
     <FluentThemeProvider fluentTheme={FluentTheme}>
       <FluentProvider theme={webLightTheme} className={styles.fullHeight}>
         <div className={styles.chatList}>
-          {Providers.globalProvider?.state === ProviderState.SignedIn &&
-            chatListState?.status !== 'server connection lost' &&
-            chatListActions && (
-              <ChatListHeader
-                actions={chatListActions}
-                buttonItems={chatListButtonItems}
-                menuItems={chatListMenuItems}
-              />
-            )}
+          {chatListState?.status !== 'server connection lost' && chatListActions && (
+            <ChatListHeader actions={chatListActions} buttonItems={chatListButtonItems} menuItems={chatListMenuItems} />
+          )}
           {chatListState && chatListState.chatThreads.length > 0 ? (
             <>
               <div className={styles.scrollbox}>
@@ -330,7 +303,6 @@ export const ChatList = ({
           ) : (
             <>
               <div className={styles.error}>
-                {!chatListState?.userId && <Error message="User not signed-in." subheading={PleaseSignIn}></Error>}
                 {isLoading && (
                   <div className={styles.spinner}>
                     <Spinner /> <br />

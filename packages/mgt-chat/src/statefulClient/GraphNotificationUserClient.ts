@@ -63,6 +63,7 @@ export class GraphNotificationUserClient {
   private wasConnected?: boolean | undefined;
   private userId = '';
   private lastNotificationUrl = '';
+  private subscriptionId = '';
 
   private readonly subscriptionCache: SubscriptionsCache = new SubscriptionsCache();
   private readonly timer = new Timer();
@@ -106,7 +107,14 @@ export class GraphNotificationUserClient {
   private readonly receiveNotificationMessage = (message: string) => {
     if (typeof message !== 'string') throw new Error('Expected string from receivenotificationmessageasync');
 
+    const ackMessage: unknown = { StatusCode: '200' };
     const notification: ReceivedNotification = JSON.parse(message) as ReceivedNotification;
+    // only process notifications for the current subscription
+    if (this.subscriptionId && this.subscriptionId !== notification.subscriptionId) {
+      log('Received notification for a different subscription', notification);
+      return ackMessage;
+    }
+
     log('received user notification message', notification);
     const emitter: ThreadEventEmitter | undefined = this.emitter;
     if (!notification.resourceData) throw new Error('Message did not contain resourceData');
@@ -118,7 +126,6 @@ export class GraphNotificationUserClient {
       this.processChatPropertiesNotification(notification, emitter);
     }
     // Need to return a status code string of 200 so that graph knows the message was received and doesn't re-send the notification
-    const ackMessage: unknown = { StatusCode: '200' };
     return GraphConfig.ackAsString ? JSON.stringify(ackMessage) : ackMessage;
   };
 
@@ -204,6 +211,7 @@ export class GraphNotificationUserClient {
     if (!subscription?.notificationUrl) throw new Error('Subscription not created');
     log(subscription);
 
+    this.subscriptionId = subscription.id!;
     await this.cacheSubscription(userId, subscription);
 
     log('Subscription created.');
@@ -215,6 +223,7 @@ export class GraphNotificationUserClient {
     try {
       log('Removing all user subscriptions from cache...');
       await this.subscriptionCache.deleteCachedSubscriptions(userId);
+      this.subscriptionId = '';
       log('Successfully removed all user subscriptions from cache.');
     } catch (e) {
       error('Failed to remove all user subscriptions from cache.', e);
@@ -231,7 +240,7 @@ export class GraphNotificationUserClient {
 
   private trySwitchToDisconnected() {
     if (this.wasConnected) {
-      log('The user can no receive notifications from the user subscription.');
+      log('The user can now receive notifications from the user subscription.');
       this.wasConnected = false;
       this.emitter?.disconnected();
     }
