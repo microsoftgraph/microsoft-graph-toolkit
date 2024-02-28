@@ -793,7 +793,7 @@ export class MgtSearchResults extends MgtTemplatedTaskComponent {
                  @click="${this.onFirstPageClick}">
                  1
                </fluent-button>`
-          ? html`
+            ? html`
               <fluent-button
                 id="page-back-dot"
                 appearance="stealth"
@@ -803,7 +803,7 @@ export class MgtSearchResults extends MgtTemplatedTaskComponent {
               >
                 ...
               </fluent-button>`
-          : nothing
+            : nothing
       }`;
   }
 
