@@ -18,6 +18,7 @@ export class GraphConfig {
   public static canarySubscriptionVersion = 'testprodv1.0e2ewebsockets';
 
   public static webSocketsPrefix = 'websockets:';
+  static usePremiumApis = false;
 
   public static get graphEndpoint(): GraphEndpoint {
     return GraphConfig.useCanary ? 'https://canary.graph.microsoft.com' : 'https://graph.microsoft.com';

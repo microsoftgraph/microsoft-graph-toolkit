@@ -16,6 +16,7 @@ import { CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { chatOperationScopes } from './chatOperationScopes';
+import { addPremiumApiSegment } from '../utils/addPremiumApiSegment';
 
 /**
  * Generic collection response from graph
@@ -59,7 +60,7 @@ export const loadChatThread = async (
   messageCount: number
 ): Promise<MessageCollection> => {
   const response = (await graph
-    .api(`/chats/${chatId}/messages`)
+    .api(addPremiumApiSegment(`/chats/${chatId}/messages`))
     .orderby('createdDateTime DESC')
     .top(messageCount)
     .middlewareOptions(prepScopes(chatOperationScopes.loadChatMessages))
@@ -86,7 +87,7 @@ export const loadChatThreadDelta = async (
   messageCount: number
 ): Promise<MessageCollection> => {
   const response = (await graph
-    .api(`/chats/${chatId}/messages`)
+    .api(addPremiumApiSegment(`/chats/${chatId}/messages`))
     .filter(`lastModifiedDateTime gt ${lastModified}`)
     .orderby('lastModifiedDateTime DESC')
     .top(messageCount)

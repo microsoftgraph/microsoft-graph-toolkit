@@ -18,6 +18,7 @@ import type {
 import { GraphConfig } from './GraphConfig';
 import { SubscriptionsCache } from './Caching/SubscriptionCache';
 import { Timer } from '../utils/Timer';
+import { addPremiumApiSegment } from '../utils/addPremiumApiSegment';
 import { getOrGenerateGroupId } from './getOrGenerateGroupId';
 
 export const appSettings = {
@@ -396,7 +397,9 @@ export class GraphNotificationClient {
       await this.subscriptionCache.deleteCachedSubscriptions(chatId);
     }
     const promises: Promise<unknown>[] = [];
-    promises.push(this.subscribeToResource(`/chats/${chatId}/messages`, ['created', 'updated', 'deleted']));
+    promises.push(
+      this.subscribeToResource(addPremiumApiSegment(`/chats/${chatId}/messages`), ['created', 'updated', 'deleted'])
+    );
     promises.push(this.subscribeToResource(`/chats/${chatId}/members`, ['created', 'deleted']));
     promises.push(this.subscribeToResource(`/chats/${chatId}`, ['updated', 'deleted']));
     await Promise.all(promises).catch((e: Error) => {
