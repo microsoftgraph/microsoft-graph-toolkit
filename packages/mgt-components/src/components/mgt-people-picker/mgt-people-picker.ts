@@ -99,6 +99,7 @@ export const registerMgtPeoplePickerComponent = () => {
  * @cssprop --people-picker-remove-selected-close-icon-color - {Color} the remove selected person close icon color.
  * @cssprop --people-picker-result-person-avatar-size - {Length} the avatar size of the person in the result. Default is 40px.
  * @cssprop --people-picker-selected-person-avatar-size - {Length} the avatar size of the selected person. Default is 24px.
+ * @cssprop --people-picker-font-size - {Length} the font size of the text in the people picker input. Default is 14px.
  */
 export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   /**
