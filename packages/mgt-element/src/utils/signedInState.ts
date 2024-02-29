@@ -13,7 +13,7 @@ import { Providers } from '../providers/Providers';
  *
  * @returns true if signed in, otherwise false.
  */
-export const signedInState = (): boolean => {
+export const isSignedIn = (): boolean => {
   const provider = Providers.globalProvider;
   return provider && provider.state === ProviderState.SignedIn;
 };

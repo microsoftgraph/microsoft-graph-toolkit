@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { signedInState, Providers } from '@microsoft/mgt-element';
+import { isSignedIn, Providers } from '@microsoft/mgt-element';
 import { useState, useEffect } from 'react';
 
 /**
@@ -14,10 +14,10 @@ import { useState, useEffect } from 'react';
  * @returns true if a user is signed on, otherwise false.
  */
 export const useIsSignedIn = (): [boolean] => {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [signedIn, setIsSignedIn] = useState(false);
   useEffect(() => {
     const updateState = () => {
-      setIsSignedIn(signedInState());
+      setIsSignedIn(isSignedIn());
     };
 
     Providers.onProviderUpdated(updateState);
@@ -27,5 +27,5 @@ export const useIsSignedIn = (): [boolean] => {
       Providers.removeProviderUpdatedListener(updateState);
     };
   }, [setIsSignedIn]);
-  return [isSignedIn];
+  return [signedIn];
 };
