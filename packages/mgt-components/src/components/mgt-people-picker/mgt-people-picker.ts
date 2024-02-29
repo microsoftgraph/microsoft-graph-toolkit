@@ -543,7 +543,12 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   };
 
   private get hasMaxSelections(): boolean {
-    return this.selectionMode === 'single' && this.selectedPeople.length >= 1;
+    return (
+      this.selectionMode === 'single' &&
+      (this.selectedPeople.length >= 1 ||
+        this.defaultSelectedUserIds.length >= 1 ||
+        this.defaultSelectedGroupIds.length >= 1)
+    );
   }
 
   /**
@@ -1032,6 +1037,9 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         !this.defaultSelectedUsers.length &&
         !this.defaultSelectedGroups.length
       ) {
+        if (this.hasMaxSelections) {
+          this.disableTextInput();
+        }
         this.defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds, '', this.userFilters);
         this.defaultSelectedGroups = await getGroupsForGroupIds(
           graph,
