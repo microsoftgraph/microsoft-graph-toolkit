@@ -638,7 +638,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
           id: event.message.chatId,
           lastMessagePreview: event.message as ChatMessageInfo,
           lastUpdatedDateTime: event.message.lastModifiedDateTime,
-          isRead: false
+          isRead: this.userId === event.message.from?.user?.id
         };
         draft.chatThreads.unshift(newChatThread);
         // async load more info
