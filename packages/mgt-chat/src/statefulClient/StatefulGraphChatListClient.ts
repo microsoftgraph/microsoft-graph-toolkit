@@ -575,10 +575,10 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         chatThread.topic =
           (event.message.eventDetail as ChatRenamedEventMessageDetail)?.chatDisplayName ?? chatThread.topic;
       } else if (event.type === 'memberAdded' && chatThread) {
-        // inject a chat thread with only the id to force a reload; this is necessary because the
-        // notification does not include the displayName of the user who was added
-        const newThread = { id: chatThread.id } as GraphChatThread;
-        bringToTop(newThread);
+        // async load the updated chat details because the notification does not include the displayName
+        // of the user that was added.
+        void this.loadChatDetails(chatThread.id!);
+        bringToTop();
       } else if (event.type === 'memberRemoved' && event.message?.eventDetail && chatThread) {
         // update the user list to remove the user; while we could add a "User removed" message
         // the Teams client doesn't show a message and the Graph API does not show a message either
@@ -601,7 +601,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
           } as ItemBody,
           lastModifiedDateTime: event.message.lastModifiedDateTime
         } as ChatMessageInfo;
-        log('injected', chatThread.lastMessagePreview);
         bringToTop();
       } else if (event.type === 'teamsAppRemoved' && event.message?.eventDetail && chatThread) {
         // there is no behavior in teams for an app being removed
