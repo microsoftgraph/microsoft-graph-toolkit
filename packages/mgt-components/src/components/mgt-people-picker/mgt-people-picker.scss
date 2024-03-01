@@ -11,6 +11,7 @@
 
 $people-picker-result-person-avatar-size: var(--people-picker-result-person-avatar-size, 40px);
 $people-picker-selected-person-avatar-size: var(--people-picker-selected-person-avatar-size, 24px);
+$people-picker-font-size: var(--people-picker-font-size, 14px);
 
 :host {
   --person-details-wrapper-width: 0;
@@ -19,6 +20,7 @@ $people-picker-selected-person-avatar-size: var(--people-picker-selected-person-
 
   fluent-text-field {
     width: 100%;
+    font-size: $people-picker-font-size;
 
     &::part(root) {
       display: flex;

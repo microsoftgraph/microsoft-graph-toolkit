@@ -37,14 +37,14 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@fluentui/web-components": "^2.5.12",
+    "@fluentui/web-components": "^2.5.16",
     "@lit/task": "^1.0.0",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "3.0.2",
-    "@microsoft/microsoft-graph-types": "^2.0.0",
+    "@microsoft/microsoft-graph-types": "^2.40.0",
     "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
-    "lit": "^3.0.0",
-    "office-ui-fabric-core": "^11.0.0"
+    "lit": "^3.1.2",
+    "office-ui-fabric-core": "^11.1.0"
   },
   "publishConfig": {
     "directory": "dist"
