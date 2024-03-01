@@ -231,16 +231,16 @@ export class GraphNotificationUserClient {
   }
 
   private trySwitchToConnected() {
-    if (!this.wasConnected) {
-      log('The user can now receive notifications from the user subscription.');
+    if (this.wasConnected !== true) {
+      log('The user will receive notifications from the user subscription.');
       this.wasConnected = true;
       this.emitter?.connected();
     }
   }
 
   private trySwitchToDisconnected() {
-    if (this.wasConnected) {
-      log('The user can now receive notifications from the user subscription.');
+    if (this.wasConnected !== false) {
+      log('The user will NOT receive notifications from the user subscription.');
       this.wasConnected = false;
       this.emitter?.disconnected();
     }
