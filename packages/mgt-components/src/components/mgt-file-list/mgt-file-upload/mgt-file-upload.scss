@@ -30,6 +30,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
     margin-inline-end: 36px;
     margin-top: 30px;
   }
+
   fluent-button {
     .upload-icon {
       path {
@@ -250,6 +251,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
           fill: highlighttext;
         }
       }
+
       &.file-upload-button {
         &::part(control) {
           border-width: 1px;
@@ -267,17 +269,20 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
           color: highlighttext;
         }
       }
+
       &:hover {
         .upload-icon {
           path {
             fill: highlight;
           }
         }
+
         &.file-upload-button {
           &::part(control) {
             border-color: highlight;
             background: highlighttext;
           }
+
           .upload-text {
             color: highlight;
           }
