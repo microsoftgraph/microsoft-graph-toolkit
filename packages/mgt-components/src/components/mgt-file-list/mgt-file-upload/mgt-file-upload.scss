@@ -9,9 +9,11 @@
 @import '../../../styles/shared-sass-variables';
 @import './mgt-file-upload.theme';
 
-
 $file-upload-button-border: var(--file-upload-button-border, none);
-$file-upload-dialog-replace-button-border: var(--file-upload-dialog-replace-button-border, 1px solid var(--neutral-foreground-rest));
+$file-upload-dialog-replace-button-border: var(
+  --file-upload-dialog-replace-button-border,
+  1px solid var(--neutral-foreground-rest)
+);
 $file-upload-dialog-keep-both-button-border: var(--file-upload-dialog-keep-both-button-border, none);
 $file-upload-dialog-border: var(--file-upload-dialog-border, 1px solid var(--neutral-fill-rest));
 $file-upload-dialog-width: var(--file-upload-dialog-width, auto);
@@ -28,7 +30,6 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
     margin-inline-end: 36px;
     margin-top: 30px;
   }
-
   fluent-button {
     .upload-icon {
       path {
@@ -234,9 +235,54 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
   }
 }
 
-[dir="rtl"] {
-  :host .file-upload-status{
+[dir='rtl'] {
+  :host .file-upload-status {
     left: 0;
     right: 28px;
+  }
+}
+
+@media (forced-colors: active) {
+  :host {
+    fluent-button {
+      .upload-icon {
+        path {
+          fill: highlighttext;
+        }
+      }
+      &.file-upload-button {
+        &::part(control) {
+          border-width: 1px;
+          border-style: solid;
+          border-color: buttontext;
+          background: highlight;
+
+          &:hover {
+            background: highlighttext;
+            border-color: highlight;
+          }
+        }
+
+        .upload-text {
+          color: highlighttext;
+        }
+      }
+      &:hover {
+        .upload-icon {
+          path {
+            fill: highlight;
+          }
+        }
+        &.file-upload-button {
+          &::part(control) {
+            border-color: highlight;
+            background: highlighttext;
+          }
+          .upload-text {
+            color: highlight;
+          }
+        }
+      }
+    }
   }
 }
