@@ -208,12 +208,22 @@ export const ChatList = ({
 
     if (chatListState.status === 'server connection established' && onConnectionChanged) {
       onConnectionChanged(true);
+      void chatListClient.tryLoadChatThreads().catch(e => chatListClient.raiseFatalError(e as Error));
     }
 
     if (chatListState.status === 'server connection lost' && onConnectionChanged) {
       onConnectionChanged(false);
     }
-  }, [chatListState, onLoaded, onMessageReceived, onSelected, onUnselected, onAllMessagesRead, onConnectionChanged]);
+  }, [
+    chatListClient,
+    chatListState,
+    onLoaded,
+    onMessageReceived,
+    onSelected,
+    onUnselected,
+    onAllMessagesRead,
+    onConnectionChanged
+  ]);
 
   // this only runs once when the component is unmounted
   useEffect(() => {

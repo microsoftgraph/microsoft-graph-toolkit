@@ -221,7 +221,7 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
   /**
    * Switches to a fatal error state and logs the error.
    */
-  private raiseFatalError(e: Error) {
+  public raiseFatalError(e: Error) {
     error(e);
     this.notifyStateChange((draft: GraphChatListClient) => {
       draft.status = 'fatal error';
@@ -852,7 +852,6 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       this.notifyStateChange((draft: GraphChatListClient) => {
         draft.status = 'server connection established';
       });
-      void this.tryLoadChatThreads().catch(e => this.raiseFatalError(e as Error));
     });
   }
 }
