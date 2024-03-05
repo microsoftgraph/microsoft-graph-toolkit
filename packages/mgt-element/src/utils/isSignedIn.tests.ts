@@ -6,7 +6,7 @@
  */
 
 import { assert, expect } from '@open-wc/testing';
-import { isSignedIn } from './signedInState';
+import { isSignedIn } from './isSignedIn';
 import { MockProvider } from '../mock/MockProvider';
 import { Providers } from '../providers/Providers';
 import { ProviderState } from '../providers/IProvider';
