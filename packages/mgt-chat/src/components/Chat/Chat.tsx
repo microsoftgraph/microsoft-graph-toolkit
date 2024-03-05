@@ -60,8 +60,17 @@ const useStyles = makeStyles({
       ...shorthands.overflow('hidden', 'scroll'),
       ...shorthands.gap('6px'),
 
+      '& .suggested-person': {
+        ...shorthands.padding('4px'),
+        '--person-details-wrapper-width': 'fit-content'
+      },
       '& .suggested-person:hover': {
         backgroundColor: 'var(--colorSubtleBackgroundHover)'
+      },
+      '& .suggested-person.active': {
+        backgroundColor: 'var(--colorNeutralBackground1Selected)',
+        ...shorthands.outline('calc(var(--focus-stroke-width) * 1px)', 'solid', 'var(--focus-stroke-outer)'),
+        ...shorthands.borderRadius('calc(var(--control-corner-radius) * 1px)')
       }
     }
   },

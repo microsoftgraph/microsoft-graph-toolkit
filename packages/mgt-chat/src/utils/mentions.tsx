@@ -3,8 +3,11 @@ import { MgtTemplateProps, Person } from '@microsoft/mgt-react';
 import { ChatMessageMention, User } from '@microsoft/microsoft-graph-types';
 import { GraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
 import { Mention, MentionLookupOptions } from '@azure/communication-react';
+import { makeStyles } from '@fluentui/react-components';
 
 const buildKey = (mention: Mention) => `${mention?.id}-${mention?.displayText}`;
+
+const mentionStyles = makeStyles({});
 
 export const renderMGTMention = (chatState: GraphChatClient) => {
   return (mention: Mention, defaultRenderer: (mention: Mention) => JSX.Element): JSX.Element => {
@@ -52,12 +55,17 @@ export const mentionLookupOptionsWrapper = (chatState: GraphChatClient): Mention
       });
       return Promise.resolve(mentions);
     },
-    onRenderSuggestionItem: (suggestion: Mention, onSuggestionSelected: (suggestion: Mention) => void): JSX.Element => {
+    onRenderSuggestionItem: (
+      suggestion: Mention,
+      onSuggestionSelected: (suggestion: Mention) => void,
+      isActive: boolean
+    ): JSX.Element => {
       const userId = matchedResults[suggestion.id] ?? '';
       const key = userId ?? `${participants.length + 1}`;
+      const cssClasses = getSuggestionItemClasses(isActive);
       return (
         <Person
-          className="suggested-person"
+          className={cssClasses}
           key={key}
           userId={userId}
           view="oneline"
@@ -66,4 +74,8 @@ export const mentionLookupOptionsWrapper = (chatState: GraphChatClient): Mention
       );
     }
   };
+};
+
+const getSuggestionItemClasses = (isActive: boolean): string => {
+  return isActive ? 'suggested-person active' : 'suggested-person';
 };
