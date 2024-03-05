@@ -18,5 +18,7 @@ export const strings = {
   loadingMessage: 'Loading...',
   photoFor: 'Teams photo for',
   teamsChannels: 'Teams and channels results',
-  closeButtonAriaLabel: 'remove the selected channel'
+  closeButtonAriaLabel: 'remove the selected channel',
+  downChevronButtonAriaLabel: 'Teams show results button',
+  upChevronButtonAriaLabel: 'Teams hide results button'
 };
