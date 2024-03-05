@@ -12,10 +12,11 @@ import {
   storePhotoInCache,
   blobToBase64
 } from '@microsoft/mgt-components';
-import { CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
+import { BetaGraph, CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { chatOperationScopes } from './chatOperationScopes';
+import { TeamsAppInstallation } from '@microsoft/microsoft-graph-types-beta';
 
 /**
  * Generic collection response from graph
@@ -30,6 +31,8 @@ export interface GraphCollection<T = any> {
  * Object representing a collection of chat messages
  */
 export type MessageCollection = GraphCollection<ChatMessage>;
+
+export type AppCollection = GraphCollection<TeamsAppInstallation>;
 
 /**
  * Load the specified chat from graph with the members expanded
@@ -67,6 +70,55 @@ export const loadChatThread = async (
   // split the nextLink on version to maintain a relative path
   response.nextLink = response['@odata.nextLink']?.split(graph.version)[1];
   return response;
+};
+
+/**
+ * Load the app information for the specified botId in a given chat
+ *
+ * @param graph {BetaGraph} - authenticated graph client from mgt for the beta endpoints
+ * @param chatId {string} - the id of the chat to load apps for
+ * @param botId {string} - the id of the bot to load apps for
+ * @returns {Promise<AppCollection>} - a collection of apps installed in the chat
+ */
+export const loadBotInChat = async (graph: BetaGraph, chatId: string, botId: string): Promise<AppCollection> => {
+  const response = (await graph
+    .api(`/chats/${chatId}/installedApps`)
+    .expand('teamsApp,teamsAppDefinition($expand=bot,colorIcon)')
+    .filter(`teamsAppDefinition/bot/id+eq+'${botId}'`)
+    .middlewareOptions(prepScopes(chatOperationScopes.loadBotsInChat))
+    .get()) as AppCollection;
+  return response;
+};
+
+export const loadBotIcon = async (graph: BetaGraph, installedApp: TeamsAppInstallation): Promise<string> => {
+  if (installedApp.teamsApp?.distributionMethod === 'store') {
+    return loadStoreBotIcon(installedApp);
+  }
+  return loadLobBotIcon(graph, installedApp);
+};
+
+const loadLobBotIcon = async (graph: BetaGraph, installedApp: TeamsAppInstallation): Promise<string> => {
+  // GET /appCatalogs/teamsApps/{teams-app-id}/appDefinitions/{app-definition-id}/colorIcon/hostedContent/$value
+  if (installedApp.teamsApp?.id && installedApp.teamsAppDefinition?.id) {
+    const teamsAppId = installedApp.teamsApp.id;
+    const appDefinitionId = installedApp.teamsAppDefinition.id;
+    const response = (await graph
+      .api(`/appCatalogs/teamsApps/${teamsAppId}/appDefinitions/${appDefinitionId}/colorIcon/hostedContent/$value`)
+      .responseType(ResponseType.RAW)
+      .middlewareOptions(prepScopes(chatOperationScopes.loadBotIcon))
+      .get()) as Response;
+
+    return await blobToBase64(await response.blob());
+  }
+  return '';
+};
+
+const loadStoreBotIcon = async (installedApp: TeamsAppInstallation): Promise<string> => {
+  if (!installedApp.teamsAppDefinition?.colorIcon?.webUrl) return '';
+
+  const response = await fetch(installedApp.teamsAppDefinition.colorIcon.webUrl);
+
+  return await blobToBase64(await response.blob());
 };
 
 /**

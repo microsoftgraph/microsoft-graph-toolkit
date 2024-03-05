@@ -66,6 +66,11 @@ describe('reduceScopes tests', () => {
     const actual = reduceScopes(input);
     // NOTE: the idea result here is ['user.read', 'user.write']
     // however the given result results in a higher scope count and not higher effective permissions
-    await expect(actual).to.eql(['Chat.ReadWrite', 'ChatMember.ReadWrite']);
+    await expect(actual).to.eql([
+      'Chat.ReadWrite',
+      'ChatMember.ReadWrite',
+      'TeamsAppInstallation.ReadForChat',
+      'AppCatalog.Read.All'
+    ]);
   });
 });
