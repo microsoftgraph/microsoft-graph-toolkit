@@ -46,6 +46,17 @@ The people picker components provides a way for developers to select users, grou
 <mgt-people-picker group-ids="02bd9fd6-8f93-4758-87c3-1fb73740a315,06f62f70-9827-4e6e-93ef-8e0f2d9b7b23"></mgt-people-picker>
 ```
 
+## Form-based validation Elements
+
+| Attribute                  | Implementation                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| -------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |                                                            
+| selected-people            | selectedPeople          | An array of selected people. Set this value to select people programmatically.                                 |                                                                                                                                                                                                                                            
+| selection-mode             | selectionMode           | Used to indicate whether to allow selecting multiple items (users or groups) or just a single item. Available options are: `single`, `multiple`. Default value is `multiple`.                         |
+
+
+| disabled                   | disabled                | Sets whether the people picker is disabled. When disabled, the user is not able to search or select people.                                                                                                                                                                                                                                                                     |  
+| required | required |                                                                                                                                            
+
 ## Events
 
 The following events are fired from the component.
