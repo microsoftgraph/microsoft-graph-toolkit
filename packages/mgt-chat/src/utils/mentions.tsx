@@ -3,11 +3,8 @@ import { MgtTemplateProps, Person } from '@microsoft/mgt-react';
 import { ChatMessageMention, User } from '@microsoft/microsoft-graph-types';
 import { GraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
 import { Mention, MentionLookupOptions } from '@azure/communication-react';
-import { makeStyles } from '@fluentui/react-components';
 
 const buildKey = (mention: Mention) => `${mention?.id}-${mention?.displayText}`;
-
-const mentionStyles = makeStyles({});
 
 export const renderMGTMention = (chatState: GraphChatClient) => {
   return (mention: Mention, defaultRenderer: (mention: Mention) => JSX.Element): JSX.Element => {
