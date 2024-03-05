@@ -184,16 +184,10 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       position: relative;
       box-sizing: border-box;
 
-      .shimmer {
-        &.icon {
-          width: 100%;
-          height: 100%;
-        }
-      }
-
       img,
       .initials,
-      .contact-icon {
+      .contact-icon,
+      .shimmer {
         height: 100%;
         width: 100%;
         border: $person-avatar-border;
@@ -204,7 +198,8 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       }
 
       .initials,
-      .contact-icon {
+      .contact-icon,
+      .shimmer {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -242,7 +237,8 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       .shimmer {
         &.text {
           width: 200px;
-          height: 24px;
+          height: 16px;
+          margin: 2px 0;
         }
       }
 

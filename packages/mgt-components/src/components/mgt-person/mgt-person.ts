@@ -590,20 +590,68 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
    * @memberof MgtPerson
    */
   protected renderLoading = (): TemplateResult => {
+    const rootClasses = classMap({
+      'person-root': true,
+      small: !this.isThreeLines() && !this.isFourLines() && !this.isLargeAvatar(),
+      large: this.avatarSize !== 'auto' && this.isLargeAvatar(),
+      noline: this.isNoLine(),
+      oneline: this.isOneLine(),
+      twolines: this.isTwoLines(),
+      threelines: this.isThreeLines(),
+      fourlines: this.isFourLines(),
+      vertical: this.isVertical()
+    });
+
+    const detailsClasses = classMap({
+      'details-wrapper': true,
+      vertical: this.isVertical()
+    });
+
     return (
       this.renderTemplate('loading', null) ||
       html`
-        <div class="person-root small oneline">
+        <div class="${rootClasses}">
           <div class="avatar-wrapper">
-            <fluent-skeleton shimmer class="shimmer icon" shape="circle"></fluent-skeleton>
+            <fluent-skeleton shimmer class="shimmer" shape="circle"></fluent-skeleton>
           </div>
-          <div class="details-wrapper">
-            <div class="line1">
-              <fluent-skeleton shimmer class="shimmer text" shape="rect"></fluent-skeleton>
-            </div>
+          <div class=${detailsClasses}>
+            ${this.renderLoadingLines()}
           </div>
         </div>`
     );
+  };
+
+  protected renderLoadingLines = (): TemplateResult[] => {
+    const lines: TemplateResult[] = [];
+    if (this.isNoLine()) return lines;
+    if (this.isOneLine()) {
+      lines.push(this.renderLoadingLine(1));
+    }
+    if (this.isTwoLines()) {
+      lines.push(this.renderLoadingLine(1));
+      lines.push(this.renderLoadingLine(2));
+    }
+    if (this.isThreeLines()) {
+      lines.push(this.renderLoadingLine(1));
+      lines.push(this.renderLoadingLine(2));
+      lines.push(this.renderLoadingLine(3));
+    }
+    if (this.isFourLines()) {
+      lines.push(this.renderLoadingLine(1));
+      lines.push(this.renderLoadingLine(2));
+      lines.push(this.renderLoadingLine(3));
+      lines.push(this.renderLoadingLine(4));
+    }
+    return lines;
+  };
+
+  protected renderLoadingLine = (line: number): TemplateResult => {
+    const lineNumber = `line${line}`;
+    return html`
+      <div class=${lineNumber}>
+        <fluent-skeleton shimmer class="shimmer text" shape="rect"></fluent-skeleton>
+      </div>
+    `;
   };
 
   /**
