@@ -4,6 +4,8 @@ import { ChatMessageMention, User } from '@microsoft/microsoft-graph-types';
 import { GraphChatClient } from 'src/statefulClient/StatefulGraphChatClient';
 import { Mention, MentionLookupOptions } from '@azure/communication-react';
 
+const buildKey = (mention: Mention) => `${mention?.id}-${mention?.displayText}`;
+
 export const renderMGTMention = (chatState: GraphChatClient) => {
   return (mention: Mention, defaultRenderer: (mention: Mention) => JSX.Element): JSX.Element => {
     let render: JSX.Element = defaultRenderer(mention);
@@ -30,7 +32,7 @@ export const renderMGTMention = (chatState: GraphChatClient) => {
         </Person>
       );
     }
-    render = <>{render}&nbsp;</>;
+    render = <span key={buildKey(mention)}>{render}&nbsp;</span>;
     return render;
   };
 };

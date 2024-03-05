@@ -11,7 +11,7 @@ import {
   DialogSurface,
   DialogTitle
 } from '@fluentui/react-components';
-import { List, ListItem } from '@fluentui/react-northstar';
+import { List, ListItem } from '@fluentui/react-migration-v0-v9';
 import { Person } from '@microsoft/mgt-react';
 import { AadUserConversationMember } from '@microsoft/microsoft-graph-types';
 import { Dismiss20Filled, bundleIcon, iconFilledClassName, iconRegularClassName } from '@fluentui/react-icons';
@@ -117,25 +117,12 @@ const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParent
         </DialogSurface>
       </Dialog>
       <List navigable className={styles.memberList}>
-        {members.map((member, index) => {
+        {members.map(member => {
           const isCurrentUser = currentUserId === member.userId;
           return member?.userId ? (
             <ListItem
               key={member.userId}
               className={styles.listItem}
-              index={index}
-              content={
-                <div className={mergeClasses(styles.personRow, styles.fullWidth)}>
-                  <Person
-                    className={styles.fullWidth}
-                    tabIndex={-1}
-                    userId={member.userId}
-                    view="oneline"
-                    showPresence
-                  />
-                  <span className={styles.iconPlaceholder}>{!isCurrentUser && <RemovePerson />}</span>
-                </div>
-              }
               onClick={() => {
                 if (isCurrentUser) {
                   closeDialog();
@@ -143,7 +130,12 @@ const ListChatMembers = ({ members, currentUserId, removeChatMember, closeParent
                   openRemoveDialog(member);
                 }
               }}
-            />
+            >
+              <div className={mergeClasses(styles.personRow, styles.fullWidth)}>
+                <Person className={styles.fullWidth} tabIndex={-1} userId={member.userId} view="oneline" showPresence />
+                <span className={styles.iconPlaceholder}>{!isCurrentUser && <RemovePerson />}</span>
+              </div>
+            </ListItem>
           ) : null;
         })}
       </List>
