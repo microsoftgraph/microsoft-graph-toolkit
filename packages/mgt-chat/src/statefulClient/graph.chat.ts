@@ -118,6 +118,7 @@ export const loadMoreChatMessages = async (graph: IGraph, nextLink: string): Pro
  * @param graph authenticated graph client from mgt
  * @param chatId id of the chat to send the message to
  * @param content content of the message to send
+ * @param mentions chat message mentioned users list
  * @returns {Promise<ChatMessage>} the newly created message
  */
 export const sendChatMessage = async (
