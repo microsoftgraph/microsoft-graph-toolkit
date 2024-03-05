@@ -4,6 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
 export const strings = {
   dotOptionsTitle: 'More options'
 };

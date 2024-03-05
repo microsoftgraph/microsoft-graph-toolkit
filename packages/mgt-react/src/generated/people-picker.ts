@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { PersonType,GroupType,UserType,IDynamicPerson,PersonCardInteraction } from '@microsoft/mgt-components';
@@ -33,6 +40,7 @@ export type PeoplePickerProps = {
 	peopleFilters?: string;
 	groupFilters?: string;
 	ariaLabel?: string;
+	disableSuggestions?: boolean;
 	templateContext?: TemplateContext;
 	selectionChanged?: (e: CustomEvent<IDynamicPerson[]>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;

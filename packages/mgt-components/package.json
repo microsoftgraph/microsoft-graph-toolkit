@@ -32,22 +32,19 @@
     "compile:watch": "tsc -w",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../artifacts",
-    "sass": "gulp sass --cwd .",
-    "sass:watch": "gulp watchSass --cwd ."
+    "sass": "node ./scripts/compileSass.js",
+    "sass:watch": "nodemon -e scss -x npm run sass"
   },
-  "sideEffects": [
-    "./dist/es6/index.js",
-    "./src/index.ts"
-  ],
+  "sideEffects": false,
   "dependencies": {
-    "@fluentui/web-components": "^2.5.12",
+    "@fluentui/web-components": "^2.5.16",
     "@lit/task": "^1.0.0",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "3.0.2",
-    "@microsoft/microsoft-graph-types": "^2.0.0",
+    "@microsoft/microsoft-graph-types": "^2.40.0",
     "@microsoft/microsoft-graph-types-beta": "^0.29.0-preview",
-    "lit": "^3.0.0",
-    "office-ui-fabric-core": "^11.0.0"
+    "lit": "^3.1.2",
+    "office-ui-fabric-core": "^11.1.0"
   },
   "publishConfig": {
     "directory": "dist"

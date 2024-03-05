@@ -27,15 +27,15 @@
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
     "lint": "eslint -c ../../.eslintrc.js 'src/**/*.ts'",
-    "setVersion": "gulp setVersion --cwd .",
-    "postpack": "cpx *.tgz ../../artifacts"
+    "postpack": "cpx *.tgz ../../artifacts",
+    "setVersion": "node ./scripts/setVersion.js"
   },
   "sideEffects": false,
   "dependencies": {
     "@lit/task": "^1.0.0",
     "@microsoft/microsoft-graph-client": "3.0.2",
-    "idb": "6.0.0",
-    "lit": "^3.0.0"
+    "idb": "8.0.0",
+    "lit": "^3.1.2"
   },
   "publishConfig": {
     "directory": "dist"
