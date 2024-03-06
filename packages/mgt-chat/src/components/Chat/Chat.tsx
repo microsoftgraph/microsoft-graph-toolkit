@@ -1,20 +1,24 @@
 import { FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
-import { Person, Spinner } from '@microsoft/mgt-react';
 import { v4 as uuid } from 'uuid';
-import React, { useState, useEffect } from 'react';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { onRenderMessage } from '../../utils/chat';
 import { renderMGTMention } from '../../utils/mentions';
 import { registerAppIcons } from '../styles/registerIcons';
+import { Spinner } from '@microsoft/mgt-react';
+import { enableMapSet } from 'immer';
+import React, { useEffect, useState } from 'react';
+import { ChatAvatar } from '../ChatAvatar/ChatAvatar';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
+import { BotInfoContext } from '../Context/BotInfoContext';
 import { Error } from '../Error/Error';
 import { LoadingMessagesErrorIcon } from '../Error/LoadingMessageErrorIcon';
 import { OpenTeamsLinkError } from '../Error/OpenTeams';
 import { RequireValidChatId } from '../Error/RequireAValidChatId';
 import { TypeANewMessage } from '../Error/TypeANewMessage';
+import { BotInfoClient } from '../../statefulClient/BotInfoClient';
 
 registerAppIcons();
 
@@ -80,7 +84,8 @@ const messageThreadStyles: MessageThreadStyles = {
       zIndex: 'unset',
       '& div[data-ui-status]': {
         display: 'inline-flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexDirection: 'column'
       }
     }
   },
@@ -116,8 +121,12 @@ const useSessionId = (): string => {
 };
 
 export const Chat = ({ chatId }: IMgtChatProps) => {
+  useEffect(() => {
+    enableMapSet();
+  }, []);
   const styles = useStyles();
   const chatClient: StatefulGraphChatClient = useGraphChatClient();
+  const [botInfoClient] = useState(() => new BotInfoClient());
   const [chatState, setChatState] = useState(chatClient.getState());
   const sessionId = useSessionId();
 
@@ -147,74 +156,74 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
   const placeholderText = disabled ? 'You cannot send a message' : 'Type a message...';
 
   return (
-    <FluentThemeProvider fluentTheme={FluentTheme}>
-      <FluentProvider id="fluentui" theme={webLightTheme} className={styles.fullHeight}>
-        <div className={styles.chat}>
-          <ChatHeader chatState={chatState} />
-          {chatState.userId && chatId && chatState.messages.length > 0 ? (
-            <>
-              <div className={styles.chatMessages}>
-                <MessageThread
-                  userId={chatState.userId}
-                  messages={chatState.messages}
-                  showMessageDate={true}
-                  disableEditing={chatState.disableEditing}
-                  numberOfChatMessagesToReload={chatState.numberOfChatMessagesToReload}
-                  onLoadPreviousChatMessages={chatState.onLoadPreviousChatMessages}
-                  // TODO: Messages date rendering is behind beta flag, find out how to enable it
-                  // onDisplayDateTimeString={(date: Date) => date.toISOString()}
+    <BotInfoContext.Provider value={botInfoClient}>
+      <FluentThemeProvider fluentTheme={FluentTheme}>
+        <FluentProvider id="fluentui" theme={webLightTheme} className={styles.fullHeight}>
+          <div className={styles.chat}>
+            <ChatHeader chatState={chatState} />
+            {chatState.userId && chatId && chatState.messages.length > 0 ? (
+              <>
+                <div className={styles.chatMessages}>
+                  <MessageThread
+                    userId={chatState.userId}
+                    messages={chatState.messages}
+                    showMessageDate={true}
+                    disableEditing={chatState.disableEditing}
+                    numberOfChatMessagesToReload={chatState.numberOfChatMessagesToReload}
+                    onLoadPreviousChatMessages={chatState.onLoadPreviousChatMessages}
+                    // TODO: Messages date rendering is behind beta flag, find out how to enable it
+                    // onDisplayDateTimeString={(date: Date) => date.toISOString()}
 
-                  // current behavior for re-send is a delete call with the clientMessageId and the a new send call
-                  onDeleteMessage={chatState.onDeleteMessage}
-                  onSendMessage={chatState.onSendMessage}
-                  onUpdateMessage={chatState.onUpdateMessage}
-                  // render props
-                  onRenderAvatar={(userId?: string) => {
-                    return (
-                      <Person userId={userId} avatarSize="small" personCardInteraction="hover" showPresence={true} />
-                    );
-                  }}
-                  styles={messageThreadStyles}
-                  mentionOptions={{
-                    displayOptions: {
-                      onRenderMention: renderMGTMention(chatState)
-                    }
-                  }}
-                  onRenderMessage={onRenderMessage}
-                />
-              </div>
-              <div className={styles.chatInput}>
-                <SendBox onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />
-              </div>
-            </>
-          ) : (
-            <>
-              {isLoading && (
-                <div className={styles.spinner}>
-                  <Spinner /> <br />
-                  {chatState.status}
+                    // current behavior for re-send is a delete call with the clientMessageId and the a new send call
+                    onDeleteMessage={chatState.onDeleteMessage}
+                    onSendMessage={chatState.onSendMessage}
+                    onUpdateMessage={chatState.onUpdateMessage}
+                    // render props
+                    onRenderAvatar={(userId?: string) => {
+                      return userId ? <ChatAvatar chatId={chatId} avatarId={userId} /> : <></>;
+                    }}
+                    styles={messageThreadStyles}
+                    mentionOptions={{
+                      displayOptions: {
+                        onRenderMention: renderMGTMention(chatState)
+                      }
+                    }}
+                    onRenderMessage={onRenderMessage}
+                  />
                 </div>
-              )}
-              {chatState.status === 'no messages' && (
-                <Error
-                  icon={LoadingMessagesErrorIcon}
-                  message="No messages were found for this chat."
-                  subheading={TypeANewMessage}
-                ></Error>
-              )}
-              {chatState.status === 'no chat id' && (
-                <Error message="No chat id has been provided." subheading={RequireValidChatId}></Error>
-              )}
-              {chatState.status === 'error' && (
-                <Error message="We're sorry—we've run into an issue." subheading={OpenTeamsLinkError}></Error>
-              )}
-              <div className={styles.chatInput}>
-                <SendBox disabled={disabled} onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />
-              </div>
-            </>
-          )}
-        </div>
-      </FluentProvider>
-    </FluentThemeProvider>
+                <div className={styles.chatInput}>
+                  <SendBox onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />
+                </div>
+              </>
+            ) : (
+              <>
+                {isLoading && (
+                  <div className={styles.spinner}>
+                    <Spinner /> <br />
+                    {chatState.status}
+                  </div>
+                )}
+                {chatState.status === 'no messages' && (
+                  <Error
+                    icon={LoadingMessagesErrorIcon}
+                    message="No messages were found for this chat."
+                    subheading={TypeANewMessage}
+                  ></Error>
+                )}
+                {chatState.status === 'no chat id' && (
+                  <Error message="No chat id has been provided." subheading={RequireValidChatId}></Error>
+                )}
+                {chatState.status === 'error' && (
+                  <Error message="We're sorry—we've run into an issue.." subheading={OpenTeamsLinkError}></Error>
+                )}
+                <div className={styles.chatInput}>
+                  <SendBox disabled={disabled} onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />
+                </div>
+              </>
+            )}
+          </div>
+        </FluentProvider>
+      </FluentThemeProvider>
+    </BotInfoContext.Provider>
   );
 };
