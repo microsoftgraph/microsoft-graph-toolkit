@@ -238,7 +238,8 @@ export class GraphNotificationUserClient {
     }
   }
 
-  private trySwitchToDisconnected() {
+  private trySwitchToDisconnected(ignoreIfUndefined = false) {
+    if (ignoreIfUndefined && this.wasConnected === undefined) return;
     if (this.wasConnected !== false) {
       log('The user will NOT receive notifications from the user subscription.');
       this.wasConnected = false;
@@ -264,7 +265,7 @@ export class GraphNotificationUserClient {
           const diff = Math.round((expirationTime.getTime() - new Date().getTime()) / 1000);
           if (diff <= 0) {
             log(`Renewing user subscription ${subscription.id!} that has already expired...`);
-            this.trySwitchToDisconnected();
+            this.trySwitchToDisconnected(true);
             await this.renewSubscription(currentUserId, subscription);
             log(`Successfully renewed user subscription ${subscription.id!}.`);
           } else if (diff <= appSettings.renewalThreshold) {
@@ -282,7 +283,7 @@ export class GraphNotificationUserClient {
       // if there is no subscription, try to create one
       if (!subscription) {
         try {
-          this.trySwitchToDisconnected();
+          this.trySwitchToDisconnected(true);
           subscription = await this.createSubscription(currentUserId);
         } catch (e) {
           const err = e as { statusCode?: number; message: string };
@@ -313,18 +314,18 @@ export class GraphNotificationUserClient {
       }
       if (!this.connection) {
         log(`Creating a new SignalR connection for subscription ${subscription.id!}...`);
-        this.trySwitchToDisconnected();
+        this.trySwitchToDisconnected(true);
         this.lastNotificationUrl = subscription.notificationUrl!;
         await this.createSignalRConnection(subscription.notificationUrl!);
         log(`Successfully created a new SignalR connection for subscription ${subscription.id!}.`);
       } else if (this.connection.state !== HubConnectionState.Connected) {
         log(`Reconnecting SignalR connection for subscription ${subscription.id!}...`);
-        this.trySwitchToDisconnected();
+        this.trySwitchToDisconnected(true);
         await this.connection.start();
         log(`Successfully reconnected SignalR connection for subscription ${subscription.id!}.`);
       } else if (this.lastNotificationUrl !== subscription.notificationUrl) {
         log(`Updating SignalR connection for subscription ${subscription.id!} due to new notification URL...`);
-        this.trySwitchToDisconnected();
+        this.trySwitchToDisconnected(true);
         await this.closeSignalRConnection();
         this.lastNotificationUrl = subscription.notificationUrl!;
         await this.createSignalRConnection(subscription.notificationUrl!);
