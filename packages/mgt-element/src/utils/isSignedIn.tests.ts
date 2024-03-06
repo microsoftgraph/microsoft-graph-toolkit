@@ -5,19 +5,17 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { assert } from '@open-wc/testing';
-import { isSignedIn } from './isSignedIn';
+import { expect } from '@open-wc/testing';
 import { MockProvider } from '../mock/MockProvider';
+import { ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
+import { isSignedIn } from './isSignedIn';
 
 describe('signedInState', () => {
-  it('should be false', () => {
+  it('should change', () => {
     Providers.globalProvider = new MockProvider(false);
-    assert(!isSignedIn());
-  });
-
-  it('should be true', () => {
-    Providers.globalProvider = new MockProvider(true);
-    assert(isSignedIn);
+    expect(isSignedIn()).to.be.false;
+    Providers.globalProvider.setState(ProviderState.SignedIn);
+    expect(isSignedIn()).to.be.true;
   });
 });
