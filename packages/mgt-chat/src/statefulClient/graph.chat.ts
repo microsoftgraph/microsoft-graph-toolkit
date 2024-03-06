@@ -182,7 +182,7 @@ export const loadBotsInChat = async (graph: IGraph, chatId: string): Promise<App
     .api(`/chats/${chatId}/installedApps`)
     .filter('teamsAppDefinition/bot/id ne null')
     .expand('teamsAppDefinition($expand=bot)')
-    .middlewareOptions(prepScopes(chatOperationScopes.loadAppsInChat))
+    .middlewareOptions(prepScopes(chatOperationScopes.loadBotsInChat))
     .get()) as AppCollection;
   return response;
 };
