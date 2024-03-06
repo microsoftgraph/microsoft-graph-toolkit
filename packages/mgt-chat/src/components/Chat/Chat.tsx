@@ -57,7 +57,7 @@ const useStyles = makeStyles({
     ...shorthands.overflow('unset'),
     '& [data-ui-id="mention-suggestion-list"]': {
       ...shorthands.padding('6px'),
-      ...shorthands.overflow('hidden', 'scroll'),
+      ...shorthands.overflow('hidden', 'auto'),
       ...shorthands.gap('6px'),
 
       '& .suggested-person': {
@@ -65,7 +65,8 @@ const useStyles = makeStyles({
         '--person-details-wrapper-width': 'fit-content'
       },
       '& .suggested-person:hover': {
-        backgroundColor: 'var(--colorSubtleBackgroundHover)'
+        backgroundColor: 'var(--colorSubtleBackgroundHover)',
+        cursor: 'pointer'
       },
       '& .suggested-person.active': {
         backgroundColor: 'var(--colorNeutralBackground1Selected)',
@@ -208,12 +209,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                 <Error message="We're sorry—we've run into an issue.." subheading={OpenTeamsLinkError}></Error>
               )}
               <div className={styles.chatInput}>
-                <SendBox
-                  disabled={disabled}
-                  onSendMessage={chatState.onSendMessage}
-                  strings={{ placeholderText }}
-                  mentionLookupOptions={mentionLookupOptionsWrapper(chatState)}
-                />
+                <SendBox disabled={disabled} strings={{ placeholderText }} />
               </div>
             </>
           )}
