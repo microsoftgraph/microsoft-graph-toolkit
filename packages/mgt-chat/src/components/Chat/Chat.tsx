@@ -98,13 +98,13 @@ const useStyles = makeStyles({
  */
 const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
-    '& .ui-box': {
+    '& .ui-box,.ui-chat__message__content': {
       zIndex: 'unset',
       // some messages are in a div, some in a p inside the div
       '& div[data-ui-status],& div[data-ui-status]>p': {
         display: 'inline-flex',
         justifyContent: 'center',
-        flexDirection: 'column'
+        gap: '0.2rem'
       }
     }
   },
