@@ -7,7 +7,6 @@
 
 import { Client } from '@microsoft/microsoft-graph-client';
 import { User } from '@microsoft/microsoft-graph-types';
-
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 import { IProvider, ProviderState } from './IProvider';
 
@@ -100,18 +99,17 @@ export class Providers {
    * @static
    * @memberof Providers
    */
-  public static me(): Promise<User> {
+  public static async me(): Promise<User> {
     if (!this.client) {
-      this._mePromise = null;
+      this._me = null;
       return null;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    if (!this._mePromise) {
-      this._mePromise = this.getMe();
+    if (!this._me) {
+      this._me = await this.getMe();
     }
 
-    return this._mePromise;
+    return this._me;
   }
 
   /**
@@ -168,7 +166,7 @@ export class Providers {
    */
   private static unsetCacheId() {
     this._cacheId = null;
-    this._mePromise = null;
+    this._me = null;
   }
 
   /**
@@ -240,12 +238,13 @@ export class Providers {
 
   private static _globalProvider: IProvider;
   private static _cacheId: string;
-  private static _mePromise: Promise<User>;
+  private static _me: User; // NOTE: the prior implementation of _mePromise meant that the promise was cached as
+  // fulfilled with null for the user and was never updated if the /me call failed.
 
   private static readonly handleProviderStateChanged = () => {
     if (!Providers.globalProvider || Providers.globalProvider.state !== ProviderState.SignedIn) {
       // clear current signed in user info
-      Providers._mePromise = null;
+      Providers._me = null;
     }
 
     Providers._eventDispatcher.fire(ProvidersChangedState.ProviderStateChanged);
