@@ -63,7 +63,7 @@ export class GraphNotificationClient {
     return this._graph;
   }
   private get beta() {
-    return BetaGraph.fromGraph(this._graph);
+    return this._graph ? BetaGraph.fromGraph(this._graph) : undefined;
   }
   private get subscriptionGraph() {
     return GraphConfig.useCanary
@@ -76,7 +76,7 @@ export class GraphNotificationClient {
    */
   constructor(
     private readonly emitter: ThreadEventEmitter,
-    private readonly _graph: IGraph
+    private readonly _graph: IGraph | undefined
   ) {
     // start the cleanup timer when we create the notification client.
     this.startCleanupTimer();
@@ -198,8 +198,10 @@ export class GraphNotificationClient {
 
     log('subscribing to changes for ' + resourcePath);
     const subscriptionEndpoint = GraphConfig.subscriptionEndpoint;
+    const subscriptionGraph = this.subscriptionGraph;
+    if (!subscriptionGraph) return;
     // send subscription POST to Graph
-    const subscription: Subscription = (await this.subscriptionGraph
+    const subscription: Subscription = (await subscriptionGraph
       .api(subscriptionEndpoint)
       .post(subscriptionDefinition)) as Subscription;
     if (!subscription?.notificationUrl) throw new Error('Subscription not created');
@@ -277,10 +279,10 @@ export class GraphNotificationClient {
 
   public renewSubscription = async (subscriptionId: string, expirationDateTime: string): Promise<void> => {
     // PATCH /subscriptions/{id}
-    const renewedSubscription = (await this.graph.api(`${GraphConfig.subscriptionEndpoint}/${subscriptionId}`).patch({
+    const renewedSubscription = (await this.graph?.api(`${GraphConfig.subscriptionEndpoint}/${subscriptionId}`).patch({
       expirationDateTime
-    })) as Subscription;
-    return this.cacheSubscription(renewedSubscription);
+    })) as Subscription | undefined;
+    if (renewedSubscription) return this.cacheSubscription(renewedSubscription);
   };
 
   public async createSignalRConnection(notificationUrl: string) {
@@ -311,7 +313,7 @@ export class GraphNotificationClient {
 
   private async deleteSubscription(id: string) {
     try {
-      await this.graph.api(`${GraphConfig.subscriptionEndpoint}/${id}`).delete();
+      await this.graph?.api(`${GraphConfig.subscriptionEndpoint}/${id}`).delete();
     } catch (e) {
       error(e);
     }

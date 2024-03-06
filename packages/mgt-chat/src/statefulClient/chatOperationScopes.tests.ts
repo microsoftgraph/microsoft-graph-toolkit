@@ -22,7 +22,9 @@ describe('chatOperationScopes tests', () => {
       'Mail.ReadBasic',
       'Contacts.Read',
       'Chat.ReadWrite',
-      'ChatMember.ReadWrite'
+      'ChatMember.ReadWrite',
+      'TeamsAppInstallation.ReadForChat',
+      'AppCatalog.Read.All'
     ];
     expect(allChatScopes).to.have.members(expectedScopes);
   });

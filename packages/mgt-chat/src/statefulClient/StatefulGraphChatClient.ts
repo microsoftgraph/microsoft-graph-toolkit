@@ -16,7 +16,6 @@ import {
 import { IDynamicPerson, getUserWithPhoto } from '@microsoft/mgt-components';
 import {
   ActiveAccountChanged,
-  IGraph,
   LoginChangedEvent,
   ProviderState,
   Providers,
@@ -35,7 +34,6 @@ import {
   MembersDeletedEventMessageDetail,
   NullableOption
 } from '@microsoft/microsoft-graph-types';
-import { produce } from 'immer';
 import { v4 as uuid } from 'uuid';
 import { currentUserId, currentUserName } from '../utils/currentUser';
 import { graph } from '../utils/graph';
@@ -60,6 +58,85 @@ import {
   updateChatMessage,
   updateChatTopic
 } from './graph.chat';
+import { buildBotId } from './buildBotId';
+import { BaseStatefulClient } from './BaseStatefulClient';
+
+const hasUnsupportedContent = (content: string, attachments: ChatMessageAttachment[]): boolean => {
+  const unsupportedContentTypes = [
+    'application/vnd.microsoft.card.codesnippet',
+    'application/vnd.microsoft.card.fluid',
+    'application/vnd.microsoft.card.fluidEmbedCard',
+    'reference'
+  ];
+  const isUnsupported: boolean[] = [];
+
+  if (attachments.length) {
+    for (const attachment of attachments) {
+      const contentType = attachment?.contentType ?? '';
+      isUnsupported.push(unsupportedContentTypes.includes(contentType));
+    }
+  } else {
+    // checking content with <attachment> tags
+    const unsupportedContentRegex = /<\/?attachment>/gim;
+    const contentUnsupported = Boolean(content) && unsupportedContentRegex.test(content);
+    isUnsupported.push(contentUnsupported);
+  }
+  return isUnsupported.every(e => e === true);
+};
+
+const buildAcsMessage = (
+  graphMessage: ChatMessage,
+  currentUser: string,
+  messageId: string,
+  content: string
+): GraphChatMessage => {
+  const senderId = graphMessage.from?.user?.id ?? buildBotId(graphMessage.from?.application) ?? undefined;
+  const chatId = graphMessage?.chatId ?? '';
+  const id = graphMessage?.id ?? '';
+  const chatUrl = `https://teams.microsoft.com/l/message/${chatId}/${id}?context={"contextType":"chat"}`;
+  const attachments = graphMessage?.attachments ?? [];
+
+  let messageData: GraphChatMessage = {
+    messageId,
+    contentType: graphMessage.body?.contentType ?? 'text',
+    messageType: 'chat',
+    content,
+    senderDisplayName: graphMessage.from?.user?.displayName ?? graphMessage.from?.application?.displayName ?? undefined,
+    createdOn: new Date(graphMessage.createdDateTime ?? Date.now()),
+    editedOn: graphMessage.lastEditedDateTime ? new Date(graphMessage.lastEditedDateTime) : undefined,
+    senderId,
+    mine: senderId === currentUser,
+    status: 'seen',
+    attached: 'top',
+    hasUnsupportedContent: hasUnsupportedContent(content, attachments),
+    rawChatUrl: chatUrl
+  };
+  if (graphMessage?.policyViolation) {
+    messageData = Object.assign(messageData, {
+      messageType: 'blocked',
+      link: 'https://go.microsoft.com/fwlink/?LinkId=2132837'
+    });
+  }
+  return messageData;
+};
+
+/**
+ * Teams mentions are in the pattern <at id="1">User</at>. This replacement
+ * changes the mentions pattern to <msft-mention id="1">User</msft-mention>
+ * which will trigger the `mentionOptions` prop to be called in MessageThread.
+ *
+ * @param content is the message with mentions.
+ * @returns string with replaced mention parts.
+ */
+const updateMentionsContent = (content: string): string => {
+  const msftMention = `<msft-mention id="$1">$2</msft-mention>`;
+  const atRegex = /<at\sid="(\d+)">([a-z0-9_.-\s]+)<\/at>/gim;
+  content = content
+    .replace(/&nbsp;<at/gim, '<at')
+    .replace(/at>&nbsp;/gim, 'at>')
+    .replace(atRegex, msftMention);
+  return content;
+};
 
 // 1x1 grey pixel
 const placeholderImageContent =
@@ -115,25 +192,6 @@ export type GraphChatClient = Pick<
     activeErrorMessages: Error[];
   };
 
-interface StatefulClient<T> {
-  /**
-   * Get the current state of the client
-   */
-  getState(): T;
-  /**
-   * Register a callback to receive state updates
-   *
-   * @param handler Callback to receive state updates
-   */
-  onStateChange(handler: (state: T) => void): void;
-  /**
-   * Remove a callback from receiving state updates
-   *
-   * @param handler Callback to be unregistered
-   */
-  offStateChange(handler: (state: T) => void): void;
-}
-
 interface CreatedOn {
   createdOn: Date;
 }
@@ -185,12 +243,10 @@ interface MessageConversion {
  */
 const graphImageUrlRegex = /(<img[^>]+)src=(["']https:\/\/graph\.microsoft\.com[^"']*["'])/;
 
-class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
+class StatefulGraphChatClient extends BaseStatefulClient<GraphChatClient> {
   private readonly _eventEmitter: ThreadEventEmitter;
   private readonly _cache: MessageCache;
-  private _graph: IGraph = Providers.globalProvider.graph;
-  private _notificationClient: GraphNotificationClient;
-  private _subscribers: ((state: GraphChatClient) => void)[] = [];
+  private _notificationClient: GraphNotificationClient | undefined;
   private get _messagesPerCall() {
     return 5;
   }
@@ -199,12 +255,12 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private _userDisplayName = '';
 
   constructor() {
+    super();
     this.updateUserInfo();
     Providers.globalProvider.onStateChanged(this.onLoginStateChanged);
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
-    this._notificationClient = new GraphNotificationClient(this._eventEmitter, this._graph);
     this._cache = new MessageCache();
   }
 
@@ -214,7 +270,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
    * and won't throw a TypeError when you access graph.forComponent.
    */
   private updateGraphNotificationClient() {
-    this._graph = graph('mgt-chat', GraphConfig.version);
+    this.graph = graph('mgt-chat', GraphConfig.version);
     this._notificationClient = new GraphNotificationClient(this._eventEmitter, this.graph);
   }
 
@@ -223,51 +279,6 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
    */
   public tearDown() {
     this._notificationClient?.tearDown();
-  }
-
-  /**
-   * Register a callback to receive state updates
-   *
-   * @param {(state: GraphChatClient) => void} handler
-   * @memberof StatefulGraphChatClient
-   */
-  public onStateChange(handler: (state: GraphChatClient) => void): void {
-    if (!this._subscribers.includes(handler)) {
-      this._subscribers.push(handler);
-    }
-  }
-
-  /**
-   * Unregister a callback from receiving state updates
-   *
-   * @param {(state: GraphChatClient) => void} handler
-   * @memberof StatefulGraphChatClient
-   */
-  public offStateChange(handler: (state: GraphChatClient) => void): void {
-    const index = this._subscribers.indexOf(handler);
-    if (index !== -1) {
-      this._subscribers = this._subscribers.splice(index, 1);
-    }
-  }
-
-  /**
-   * Calls each subscriber with the next state to be emitted
-   *
-   * @param recipe - a function which produces the next state to be emitted
-   */
-  private notifyStateChange(recipe: (draft: GraphChatClient) => void) {
-    this._state = produce(this._state, recipe);
-    this._subscribers.forEach(handler => handler(this._state));
-  }
-
-  /**
-   * Return the current state of the chat client
-   *
-   * @return {{GraphChatClient}
-   * @memberof StatefulGraphChatClient
-   */
-  public getState(): GraphChatClient {
-    return this._state;
   }
 
   /**
@@ -444,8 +455,10 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
         const tasks: Promise<unknown>[] = [this.loadChatData()];
         // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
         // this client will then load the chat and messages when that event listener is called
-        tasks.push(this._notificationClient.subscribeToChatNotifications(this._chatId, this._sessionId));
-        await Promise.all(tasks);
+        if (this._notificationClient) {
+          tasks.push(this._notificationClient.subscribeToChatNotifications(this._chatId, this._sessionId));
+          await Promise.all(tasks);
+        }
       } catch (e) {
         this.updateErrorState(e as Error);
       }
@@ -458,6 +471,13 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   }
 
   private async loadChatData() {
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      return;
+    }
     this.notifyStateChange((draft: GraphChatClient) => {
       draft.status = 'loading messages';
     });
@@ -486,6 +506,13 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   }
 
   private async loadDeltaData(chatId: string, lastModified: string): Promise<ChatMessage[]> {
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      throw new Error('Graph client not available');
+    }
     const result: ChatMessage[] = [];
     let response = await loadChatThreadDelta(this.graph, chatId, lastModified, this._messagesPerCall);
     result.push(...response.value);
@@ -597,6 +624,13 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   };
 
   private async buildSystemContentMessage(message: ChatMessage): Promise<SystemMessage> {
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      throw new Error('Graph client not available');
+    }
     const eventDetail = message.eventDetail as ChatMessageEvents;
     let messageContent = '';
     const awaits: Promise<IDynamicPerson>[] = [];
@@ -669,6 +703,13 @@ detail: ${JSON.stringify(eventDetail)}`);
     if (!this._nextLink) {
       return true;
     }
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      throw new Error('Graph client not available');
+    }
     const messages: MessageCollection = await loadMoreChatMessages(this.graph, this._nextLink);
     await this._cache.cacheMessages(this._chatId, messages.value, true, messages.nextLink);
     await this.writeMessagesToState(messages);
@@ -684,6 +725,13 @@ detail: ${JSON.stringify(eventDetail)}`);
    */
   public sendMessage = async (content: string) => {
     if (!content) return;
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      return;
+    }
 
     const msftMentionRegex = /<msft-mention\s+id=["'](\w*[^"']*)["']>(\w*[^"']*)<\/msft-mention>/;
     let updatedContent = content;
@@ -718,47 +766,47 @@ detail: ${JSON.stringify(eventDetail)}`);
       updatedContent = updatedContent.replace(msftMentionRegex, teamsMention);
       tmpMentionView = tmpMentionView.replace(msftMentionRegex, tmpDisplayName);
       match = updatedContent.match(msftMentionRegex);
-    }
 
-    const pendingId = uuid();
+      const pendingId = uuid();
 
-    // add a pending message to the state.
-    this.notifyStateChange((draft: GraphChatClient) => {
-      const pendingMessage: Message = {
-        clientMessageId: pendingId,
-        messageId: pendingId,
-        contentType: 'text',
-        messageType: 'chat',
-        content: tmpMentionView,
-        senderDisplayName: this._userDisplayName,
-        createdOn: new Date(),
-        senderId: this.userId,
-        mine: true,
-        status: 'sending'
-      };
-      draft.messages.push(pendingMessage);
-    });
-    try {
-      // send message
-      const chat: ChatMessage = await sendChatMessage(this.graph, this.chatId, updatedContent, mentions);
-      // emit new state
+      // add a pending message to the state.
       this.notifyStateChange((draft: GraphChatClient) => {
-        const draftIndex = draft.messages.findIndex(m => m.messageId === pendingId);
-        const message = this.graphChatMessageToAcsChatMessage(chat, this.userId).currentValue;
-        // we only need use the current value of the message
-        // this message can't have a future value as it's not been sent yet
-        if (message) draft.messages.splice(draftIndex, 1, message);
-        const updatedMentions = chat?.mentions ?? [];
-        draft.mentions = draft.mentions?.concat(
-          ...Array.from(updatedMentions as Iterable<ChatMessageMention>)
-        ) as NullableOption<ChatMessageMention[]>;
+        const pendingMessage: Message = {
+          clientMessageId: pendingId,
+          messageId: pendingId,
+          contentType: 'text',
+          messageType: 'chat',
+          content: tmpMentionView,
+          senderDisplayName: this._userDisplayName,
+          createdOn: new Date(),
+          senderId: this.userId,
+          mine: true,
+          status: 'sending'
+        };
+        draft.messages.push(pendingMessage);
       });
-    } catch (e) {
-      this.notifyStateChange((draft: GraphChatClient) => {
-        const draftMessage = draft.messages.find(m => m.messageId === pendingId);
-        (draftMessage as AcsChatMessage).status = 'failed';
-      });
-      throw new Error('Failed to send message');
+      try {
+        // send message
+        const chat: ChatMessage = await sendChatMessage(this.graph, this.chatId, updatedContent, mentions);
+        // emit new state
+        this.notifyStateChange((draft: GraphChatClient) => {
+          const draftIndex = draft.messages.findIndex(m => m.messageId === pendingId);
+          const message = this.graphChatMessageToAcsChatMessage(chat, this.userId).currentValue;
+          // we only need use the current value of the message
+          // this message can't have a future value as it's not been sent yet
+          if (message) draft.messages.splice(draftIndex, 1, message);
+          const updatedMentions = chat?.mentions ?? [];
+          draft.mentions = draft.mentions?.concat(
+            ...Array.from(updatedMentions as Iterable<ChatMessageMention>)
+          ) as NullableOption<ChatMessageMention[]>;
+        });
+      } catch (e) {
+        this.notifyStateChange((draft: GraphChatClient) => {
+          const draftMessage = draft.messages.find(m => m.messageId === pendingId);
+          (draftMessage as AcsChatMessage).status = 'failed';
+        });
+        throw new Error('Failed to send message');
+      }
     }
   };
 
@@ -778,9 +826,17 @@ detail: ${JSON.stringify(eventDetail)}`);
    */
   public deleteMessage = async (messageId: string): Promise<void> => {
     if (!messageId) return;
-    const message = this._state.messages.find(m => m.messageId === messageId) as AcsChatMessage;
+
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      return;
+    }
+    const message = this.state.messages.find(m => m.messageId === messageId) as AcsChatMessage;
     // only messages not persisted to graph should have a clientMessageId
-    const uncommitted = this._state.messages.find(
+    const uncommitted = this.state.messages.find(
       m => (m as AcsChatMessage).clientMessageId === messageId
     ) as AcsChatMessage;
     if (message?.mine) {
@@ -814,7 +870,15 @@ detail: ${JSON.stringify(eventDetail)}`);
    */
   public updateMessage = async (messageId: string, content: string) => {
     if (!messageId || !content) return;
-    const message = this._state.messages.find(m => m.messageId === messageId) as AcsChatMessage;
+
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      return;
+    }
+    const message = this.state.messages.find(m => m.messageId === messageId) as AcsChatMessage;
     if (message?.mine && message.content) {
       this.notifyStateChange((draft: GraphChatClient) => {
         const updating = draft.messages.find(m => m.messageId === messageId) as AcsChatMessage;
@@ -898,6 +962,13 @@ detail: ${JSON.stringify(eventDetail)}`);
   };
 
   private readonly checkForMissedMessages = async () => {
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      return;
+    }
     const messages: MessageCollection = await loadChatThread(this.graph, this.chatId, this._messagesPerCall);
     const messageConversions = messages.value
       // trying to filter out messages on the graph request causes a 400
@@ -926,7 +997,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       });
     }
     const hasOverlapWithExistingMessages = messages.value.some(m =>
-      this._state.messages.find(sm => sm.messageId === m.id)
+      this.state.messages.find(sm => sm.messageId === m.id)
     );
     if (!hasOverlapWithExistingMessages) {
       // TODO handle the case where there were a lot of missed messages and we ned to get the next page of messages.
@@ -995,6 +1066,13 @@ detail: ${JSON.stringify(eventDetail)}`);
   }
 
   private readonly addChatMembers = async (userIds: string[], history?: Date): Promise<void> => {
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      return;
+    }
     await addChatMembers(this.graph, this.chatId, userIds, history);
   };
 
@@ -1007,6 +1085,13 @@ detail: ${JSON.stringify(eventDetail)}`);
    */
   private readonly removeChatMember = async (membershpId: string): Promise<void> => {
     if (!membershpId) return;
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      return;
+    }
     const isPresent = this._chat?.members?.findIndex(m => m.id === membershpId) ?? -1;
     if (isPresent === -1) return;
     await removeChatMember(this.graph, this.chatId, membershpId);
@@ -1018,6 +1103,13 @@ detail: ${JSON.stringify(eventDetail)}`);
   }
 
   private processMessageContent(graphMessage: ChatMessage, currentUser: string): MessageConversion {
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      throw new Error('Graph client not available');
+    }
     const conversion: MessageConversion = {};
     // using a record here lets us track which image in the content each request is for
     const futureImages: Record<number, Promise<string | null>> = {};
@@ -1037,7 +1129,7 @@ detail: ${JSON.stringify(eventDetail)}`);
       index++;
       match = this.graphImageMatch(messageResult);
     }
-    let placeholderMessage = this.buildAcsMessage(graphMessage, currentUser, messageId, messageResult);
+    let placeholderMessage = buildAcsMessage(graphMessage, currentUser, messageId, messageResult);
     conversion.currentValue = placeholderMessage;
     // local function to update the message with data from each of the resolved image requests
     const updateMessage = async () => {
@@ -1068,96 +1160,26 @@ detail: ${JSON.stringify(eventDetail)}`);
     let result: MessageConversion = {};
     content = rewriteEmojiContentToHTML(content);
     // Handle any mentions in the content
-    content = this.updateMentionsContent(content);
+    content = updateMentionsContent(content);
 
     const imageMatch = this.graphImageMatch(content ?? '');
     if (imageMatch) {
       // if the message contains an image, we need to fetch the image and replace the placeholder
       result = this.processMessageContent(graphMessage, currentUser);
     } else {
-      result.currentValue = this.buildAcsMessage(graphMessage, currentUser, messageId, content);
+      result.currentValue = buildAcsMessage(graphMessage, currentUser, messageId, content);
     }
     return result;
   }
 
-  /**
-   * Teams mentions are in the pattern <at id="1">User</at>. This replacement
-   * changes the mentions pattern to <msft-mention id="1">User</msft-mention>
-   * which will trigger the `mentionOptions` prop to be called in MessageThread.
-   *
-   * @param content is the message with mentions.
-   * @returns string with replaced mention parts.
-   */
-  private updateMentionsContent(content: string): string {
-    const msftMention = `<msft-mention id="$1">$2</msft-mention>`;
-    const atRegex = /<at\sid="(\d+)">([a-z0-9_.-\s]+)<\/at>/gim;
-    content = content
-      .replace(/&nbsp;<at/gim, '<at')
-      .replace(/at>&nbsp;/gim, 'at>')
-      .replace(atRegex, msftMention);
-    return content;
-  }
-
-  private hasUnsupportedContent(content: string, attachments: ChatMessageAttachment[]): boolean {
-    const unsupportedContentTypes = [
-      'application/vnd.microsoft.card.codesnippet',
-      'application/vnd.microsoft.card.fluid',
-      'application/vnd.microsoft.card.fluidEmbedCard',
-      'reference'
-    ];
-    const isUnsupported: boolean[] = [];
-
-    if (attachments.length) {
-      for (const attachment of attachments) {
-        const contentType = attachment?.contentType ?? '';
-        isUnsupported.push(unsupportedContentTypes.includes(contentType));
-      }
-    } else {
-      // checking content with <attachment> tags
-      const unsupportedContentRegex = /<\/?attachment>/gim;
-      const contentUnsupported = Boolean(content) && unsupportedContentRegex.test(content);
-      isUnsupported.push(contentUnsupported);
-    }
-    return isUnsupported.every(e => e === true);
-  }
-
-  private buildAcsMessage(
-    graphMessage: ChatMessage,
-    currentUser: string,
-    messageId: string,
-    content: string
-  ): GraphChatMessage {
-    const senderId = graphMessage.from?.user?.id || undefined;
-    const chatId = graphMessage?.chatId ?? '';
-    const id = graphMessage?.id ?? '';
-    const chatUrl = `https://teams.microsoft.com/l/message/${chatId}/${id}?context={"contextType":"chat"}`;
-    const attachments = graphMessage?.attachments ?? [];
-
-    let messageData: GraphChatMessage = {
-      messageId,
-      contentType: graphMessage.body?.contentType ?? 'text',
-      messageType: 'chat',
-      content,
-      senderDisplayName: graphMessage.from?.user?.displayName ?? undefined,
-      createdOn: new Date(graphMessage.createdDateTime ?? Date.now()),
-      editedOn: graphMessage.lastEditedDateTime ? new Date(graphMessage.lastEditedDateTime) : undefined,
-      senderId,
-      mine: senderId === currentUser,
-      status: 'seen',
-      attached: 'top',
-      hasUnsupportedContent: this.hasUnsupportedContent(content, attachments),
-      rawChatUrl: chatUrl
-    };
-    if (graphMessage?.policyViolation) {
-      messageData = Object.assign(messageData, {
-        messageType: 'blocked',
-        link: 'https://go.microsoft.com/fwlink/?LinkId=2132837'
-      });
-    }
-    return messageData;
-  }
-
   private readonly renameChat = async (topic: string | null): Promise<void> => {
+    if (!this.graph) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        draft.status = 'error';
+        draft.activeErrorMessages.push(new Error('Graph client not available'));
+      });
+      return;
+    }
     await updateChatTopic(this.graph, this.chatId, topic);
     this.notifyStateChange(() => void (this._chat = { ...this._chat, ...{ topic } }));
   };
@@ -1201,18 +1223,6 @@ detail: ${JSON.stringify(eventDetail)}`);
     });
   };
 
-  /**
-   * Provided the graph instance for the component with the correct SDK version decoration
-   *
-   * @readonly
-   * @private
-   * @type {IGraph}
-   * @memberof StatefulGraphChatClient
-   */
-  private get graph(): IGraph {
-    return graph('mgt-chat');
-  }
-
   private readonly _initialState: GraphChatClient = {
     status: 'initial',
     userId: '',
@@ -1240,7 +1250,7 @@ detail: ${JSON.stringify(eventDetail)}`);
    * @type {GraphChatClient}
    * @memberof StatefulGraphChatClient
    */
-  private _state: GraphChatClient = { ...this._initialState };
+  protected readonly state: GraphChatClient = { ...this._initialState };
 }
 
 export { StatefulGraphChatClient };
