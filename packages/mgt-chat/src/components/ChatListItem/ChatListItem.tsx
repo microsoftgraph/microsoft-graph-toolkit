@@ -135,7 +135,7 @@ export const ChatListItem = ({ chat, userId: myId, isSelected, isRead }: IChatLi
   useEffect(() => {
     setBots(undefined);
     isBotsLoadingOrLoaded.current = false;
-  }, [chat]);
+  }, [chat?.id]);
 
   const startLoadingBotsInChat = async (chatId: string) => {
     // ensure this is only called once
