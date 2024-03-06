@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { ChatListItem } from '../ChatListItem/ChatListItem';
 import { MgtTemplateProps, Spinner, log, error } from '@microsoft/mgt-react';
 import { makeStyles, Button, FluentProvider, shorthands, webLightTheme } from '@fluentui/react-components';
