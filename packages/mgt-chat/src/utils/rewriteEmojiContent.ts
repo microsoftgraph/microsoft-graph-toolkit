@@ -39,7 +39,6 @@ export const rewriteEmojiContentToHTML = (content: string): string => {
     const title = emoji.getAttribute('title') ?? '';
 
     const span = document.createElement('span');
-    span.setAttribute('contentEditable', 'false');
     span.setAttribute('title', title);
     span.setAttribute('type', `(${id})`);
     span.setAttribute('class', `animated-emoticon-${size}-cool`);
