@@ -96,9 +96,11 @@ const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
     '& .ui-box': {
       zIndex: 'unset',
-      '& div[data-ui-status]': {
+      // some messages are in a div, some in a p inside the div
+      '& div[data-ui-status],& div[data-ui-status]>p': {
         display: 'inline-flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        gap: '0.2rem'
       }
     }
   },

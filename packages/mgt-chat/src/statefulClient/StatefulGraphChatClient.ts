@@ -688,6 +688,10 @@ detail: ${JSON.stringify(eventDetail)}`);
     const msftMentionRegex = /<msft-mention\s+id=["'](\w*[^"']*)["']>(\w*[^"']*)<\/msft-mention>/;
     let updatedContent = content;
     const teamsMention = `<at id="$1">$2</at>`;
+    // used to temporarily display the name of the selected user instead of
+    // <msft-mention>Display Name</msft-mention> in a newly sent message with mentions
+    const tmpDisplayName = `$2`;
+    let tmpMentionView = content;
     let match = content.match(msftMentionRegex);
     const chatState = this.getState();
     const participants = chatState?.participants;
@@ -712,6 +716,7 @@ detail: ${JSON.stringify(eventDetail)}`);
         mentions.push(mention);
       }
       updatedContent = updatedContent.replace(msftMentionRegex, teamsMention);
+      tmpMentionView = tmpMentionView.replace(msftMentionRegex, tmpDisplayName);
       match = updatedContent.match(msftMentionRegex);
     }
 
@@ -724,7 +729,7 @@ detail: ${JSON.stringify(eventDetail)}`);
         messageId: pendingId,
         contentType: 'text',
         messageType: 'chat',
-        content,
+        content: tmpMentionView,
         senderDisplayName: this._userDisplayName,
         createdOn: new Date(),
         senderId: this.userId,
