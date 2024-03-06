@@ -1,4 +1,4 @@
-import { FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
+import { FluentThemeProvider, MessageThread, MessageThreadStyles, SendBox } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
 import { Spinner } from '@microsoft/mgt-react';
@@ -17,7 +17,7 @@ import { BotInfoClient } from '../../statefulClient/BotInfoClient';
 import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { onRenderMessage } from '../../utils/chat';
-import { renderMGTMention } from '../../utils/mentions';
+import { mentionLookupOptionsWrapper, renderMGTMention } from '../../utils/mentions';
 
 registerAppIcons();
 
@@ -58,7 +58,26 @@ const useStyles = makeStyles({
   },
   chatInput: {
     ...shorthands.paddingInline('16px'),
-    ...shorthands.overflow('unset')
+    ...shorthands.overflow('unset'),
+    '& [data-ui-id="mention-suggestion-list"]': {
+      ...shorthands.padding('6px'),
+      ...shorthands.overflow('hidden', 'auto'),
+      ...shorthands.gap('6px'),
+
+      '& .suggested-person': {
+        ...shorthands.padding('4px'),
+        '--person-details-wrapper-width': 'fit-content'
+      },
+      '& .suggested-person:hover': {
+        backgroundColor: 'var(--colorSubtleBackgroundHover)',
+        cursor: 'pointer'
+      },
+      '& .suggested-person.active': {
+        backgroundColor: 'var(--colorNeutralBackground1Selected)',
+        ...shorthands.outline('calc(var(--focus-stroke-width) * 1px)', 'solid', 'var(--focus-stroke-outer)'),
+        ...shorthands.borderRadius('calc(var(--control-corner-radius) * 1px)')
+      }
+    }
   },
   fullHeight: {
     height: '100%'
@@ -79,12 +98,13 @@ const useStyles = makeStyles({
  */
 const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
-    '& .ui-box': {
+    '& .ui-box,.ui-chat__message__content': {
       zIndex: 'unset',
-      '& div[data-ui-status]': {
+      // some messages are in a div, some in a p inside the div
+      '& div[data-ui-status],& div[data-ui-status]>p': {
         display: 'inline-flex',
         justifyContent: 'center',
-        flexDirection: 'column'
+        gap: '0.2rem'
       }
     }
   },
@@ -169,7 +189,11 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   />
                 </div>
                 <div className={styles.chatInput}>
-                  <SendBox onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />
+                  <SendBox
+                    mentionLookupOptions={mentionLookupOptionsWrapper(chatState)}
+                    onSendMessage={chatState.onSendMessage}
+                    strings={{ placeholderText }}
+                  />
                 </div>
               </>
             ) : (
@@ -194,7 +218,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   <Error message="We're sorry—we've run into an issue.." subheading={OpenTeamsLinkError}></Error>
                 )}
                 <div className={styles.chatInput}>
-                  <SendBox disabled={disabled} onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />
+                  <SendBox disabled={disabled} strings={{ placeholderText }} />
                 </div>
               </>
             )}
