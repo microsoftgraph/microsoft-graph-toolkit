@@ -6,7 +6,7 @@
  */
 
 import { expect } from '@open-wc/testing';
-import { rewriteEmojiContentToHTML } from './rewriteEmojiContent';
+import { rewriteEmojiContentToHTML, rewriteEmojiContentToText } from './rewriteEmojiContent';
 
 describe('rewrite emoji to standard HTML', () => {
   it('rewrites an emoji correctly', async () => {
@@ -36,5 +36,26 @@ describe('rewrite emoji to standard HTML', () => {
     await expect(result).to.be.equal(
       `<p><span title="Heart eyes" type="(hearteyes)" class="animated-emoticon-20-cool"><img itemscope="" itemtype="http://schema.skype.com/Emoji" itemid="hearteyes" src="https://statics.teams.cdn.office.net/evergreen-assets/personal-expressions/v2/assets/emoticons/hearteyes/default/20_f.png" title="Heart eyes" alt="😍" style="width:20px;height:20px;"></span></p><p><span title="Zany face" type="(1f92a_zanyface)" class="animated-emoticon-20-cool"><img itemscope="" itemtype="http://schema.skype.com/Emoji" itemid="1f92a_zanyface" src="https://statics.teams.cdn.office.net/evergreen-assets/personal-expressions/v2/assets/emoticons/1f92a_zanyface/default/20_f.png" title="Zany face" alt="🤪" style="width:20px;height:20px;"></span></p><p><span title="Cool" type="(cool)" class="animated-emoticon-20-cool"><img itemscope="" itemtype="http://schema.skype.com/Emoji" itemid="cool" src="https://statics.teams.cdn.office.net/evergreen-assets/personal-expressions/v2/assets/emoticons/cool/default/20_f.png" title="Cool" alt="😎" style="width:20px;height:20px;"></span></p>`
     );
+  });
+});
+
+describe('emoji rewrite tests to Text', () => {
+  it('rewrites an emoji correctly', async () => {
+    const result = rewriteEmojiContentToText(`<emoji id="cool" alt="😎" title="Cool"></emoji>`);
+    await expect(result).to.be.equal('😎');
+  });
+  it('rewrites an emoji in a p tag correctly', async () => {
+    const result = rewriteEmojiContentToText(`<p><emoji id="cool" alt="😎" title="Cool"></emoji></p>`);
+    await expect(result).to.be.equal('<p>😎</p>');
+  });
+  it('rewrites multiple emoji in a p correctly', async () => {
+    const result = rewriteEmojiContentToText(
+      `<p><emoji id="cool" alt="😎" title="Cool"></emoji><emoji id="1f92a_zanyface" alt="🤪" title="Zany face"></emoji></p>`
+    );
+    await expect(result).to.be.equal('<p>😎🤪</p>');
+  });
+  it('returns the original value if there is no emoji', async () => {
+    const result = rewriteEmojiContentToText('<p><em>Seb is cool</em></p>');
+    await expect(result).to.be.equal('<p><em>Seb is cool</em></p>');
   });
 });

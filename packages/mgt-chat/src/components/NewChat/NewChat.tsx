@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useState } from 'react';
 import { IDynamicPerson } from '@microsoft/mgt-components';
 import { Chat } from '@microsoft/microsoft-graph-types';
-import { IGraph, PeoplePicker, Spinner } from '@microsoft/mgt-react';
+import { IGraph, PeoplePicker, Spinner, error } from '@microsoft/mgt-react';
 import {
   Button,
   Field,
@@ -15,12 +15,14 @@ import {
   shorthands,
   webLightTheme
 } from '@fluentui/react-components';
+import { Send24Regular } from '@fluentui/react-icons';
 import { createChatThread } from '../../statefulClient/graph.chat';
 import { graph } from '../../utils/graph';
 import { currentUserId } from '../../utils/currentUser';
 
 interface NewChatProps {
   mode?: 'oneOnOne' | 'group' | 'auto';
+  enableToLabel?: boolean;
   onChatCreated: (chat: Chat) => void;
   onCancelClicked: () => void;
 }
@@ -45,12 +47,20 @@ const useStyles = makeStyles({
   formButtons: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     gridColumnGap: '8px'
+  },
+  sendIconContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  sendIcon: {
+    color: 'var(--colorBrandForeground2)',
+    cursor: 'pointer'
   }
 });
 
-const NewChat: FC<NewChatProps> = ({ mode = 'auto', onChatCreated, onCancelClicked }: NewChatProps) => {
+const NewChat: FC<NewChatProps> = ({ mode = 'auto', enableToLabel, onChatCreated, onCancelClicked }: NewChatProps) => {
   const styles = useStyles();
   type NewChatState = 'initial';
 
@@ -89,22 +99,31 @@ const NewChat: FC<NewChatProps> = ({ mode = 'auto', onChatCreated, onCancelClick
       if (person.id) acc.push(person.id);
       return acc;
     }, chatMembers);
-    void createChatThread(graphClient, chatMembers, isGroup, initialMessage, chatName).then(chat => {
-      setState('done');
-      onChatCreated(chat);
-    });
+    void createChatThread(graphClient, chatMembers, isGroup, initialMessage, chatName)
+      .then(chat => {
+        setState('done');
+        onChatCreated(chat);
+      })
+      .catch(e => {
+        // To be consistent with Teams, more specific behavior should be implemented
+        // to handle scenarios like no selectedPeople and empty initialMessage
+        error('Failed to create chat thread:', e);
+        setState('initial');
+      });
   }, [onChatCreated, selectedPeople, initialMessage, chatName, isGroup]);
 
   return (
     <FluentProvider theme={webLightTheme}>
       {state === 'initial' ? (
         <div className={styles.form}>
-          <Field label="To">
+          <Field label={enableToLabel ? 'To' : ''}>
             <PeoplePicker
               disabled={(mode === 'oneOnOne' && selectedPeople?.length > 0) || selectedPeople?.length > 19}
               ariaLabel="Select people to chat with"
               selectedPeople={selectedPeople}
               selectionChanged={onSelectedPeopleChange}
+              userFilters={`not(id eq '${currentUserId()}')`} // Filters self; self chat is not supported
+              userType={'user'} // Needed for above filter
             />
           </Field>
 
@@ -124,9 +143,9 @@ const NewChat: FC<NewChatProps> = ({ mode = 'auto', onChatCreated, onCancelClick
             <Button appearance="secondary" onClick={onCancelClicked}>
               Cancel
             </Button>
-            <Button appearance="primary" onClick={createChat}>
-              Send
-            </Button>
+            <div className={styles.sendIconContainer}>
+              <Send24Regular className={styles.sendIcon} onClick={createChat} />
+            </div>
           </div>
         </div>
       ) : (

@@ -10,10 +10,16 @@ import { Subscription } from '@microsoft/microsoft-graph-types';
 import { isConversationCacheEnabled } from './isConversationCacheEnabled';
 import { IDBPObjectStore } from 'idb';
 
+export enum ComponentType {
+  User = 'user',
+  Chat = 'chat'
+}
+
 type CachedSubscriptionData = CacheItem & {
   chatId: string;
   subscriptions: Subscription[];
   lastAccessDateTime: string;
+  componentType: ComponentType;
 };
 
 export class SubscriptionsCache {
@@ -37,7 +43,11 @@ export class SubscriptionsCache {
     return undefined;
   }
 
-  public async cacheSubscription(chatId: string, subscriptionRecord: Subscription): Promise<void> {
+  public async cacheSubscription(
+    chatId: string,
+    componentType: ComponentType,
+    subscriptionRecord: Subscription
+  ): Promise<void> {
     await this.cache.transaction(async (store: IDBPObjectStore<unknown, [string], string, 'readwrite'>) => {
       log('cacheSubscription', subscriptionRecord);
 
@@ -55,7 +65,8 @@ export class SubscriptionsCache {
           subscriptions: [subscriptionRecord],
           // we're cheating a bit here to ensure that we have a defined lastAccessDateTime
           // but we're updating the value for all cases before storing it.
-          lastAccessDateTime: ''
+          lastAccessDateTime: '',
+          componentType
         };
       }
       cacheEntry.lastAccessDateTime = new Date().toISOString();
@@ -68,7 +79,16 @@ export class SubscriptionsCache {
     return this.cache.delete(chatId);
   }
 
-  public loadInactiveSubscriptions(inactivityThreshold: string): Promise<CachedSubscriptionData[]> {
-    return this.cache.queryDb('lastAccessDateTime', IDBKeyRange.upperBound(inactivityThreshold));
+  public loadInactiveSubscriptions(
+    inactivityThreshold: string,
+    componentType: ComponentType
+  ): Promise<CachedSubscriptionData[]> {
+    return this.cache
+      .queryDb('lastAccessDateTime', IDBKeyRange.upperBound(inactivityThreshold))
+      .then((data: CachedSubscriptionData[]) => data.filter(d => d.componentType === componentType))
+      .catch(err => {
+        // propogate the error back to the call of this function
+        throw err;
+      });
   }
 }
