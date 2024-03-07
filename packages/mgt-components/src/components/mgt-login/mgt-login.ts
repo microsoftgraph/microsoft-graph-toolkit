@@ -242,10 +242,11 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
 
     const provider = Providers.globalProvider;
     if (provider?.logout) {
+      const activeAccount = provider.getActiveAccount();
       await provider.logout();
       this.userDetails = null;
       if (provider.isMultiAccountSupportedAndEnabled) {
-        localStorage.removeItem(provider.getActiveAccount()?.id + this._userDetailsKey);
+        localStorage.removeItem(activeAccount?.id + this._userDetailsKey);
       }
       this.hideFlyout();
       this.fireCustomEvent('logoutCompleted');
