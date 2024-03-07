@@ -214,7 +214,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   <Error message="No chat id has been provided." subheading={RequireValidChatId}></Error>
                 )}
                 {chatState.status === 'error' && (
-                  <Error message="We're sorry—we've run into an issue.." subheading={OpenTeamsLinkError}></Error>
+                  <Error message="We're sorry—we've run into an issue." subheading={OpenTeamsLinkError}></Error>
                 )}
                 <div className={styles.chatInput}>
                   <SendBox disabled={disabled} onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />

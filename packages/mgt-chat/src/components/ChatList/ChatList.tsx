@@ -329,6 +329,9 @@ export const ChatList = ({
                 {chatListState?.status === 'server connection lost' && (
                   <Error message="We ran into a problem. Reconnecting..." subheading={OpenTeamsLinkError}></Error>
                 )}
+                {chatListState?.status === 'fatal error' && (
+                  <Error message="We're sorry—we've run into an issue." subheading={OpenTeamsLinkError}></Error>
+                )}
               </div>
             </>
           )}

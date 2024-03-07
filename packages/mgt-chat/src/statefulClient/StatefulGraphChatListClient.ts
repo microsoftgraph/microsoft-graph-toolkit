@@ -245,12 +245,26 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         return;
       }
 
+      // log
+      log('loading more chat threads...');
+
       // set promise; load and append
-      this._loadMorePromise = this.loadAndAppendChatThreads('', [], state.chatThreads.length + this.chatThreadsPerPage);
-      await this._loadMorePromise;
+      try {
+        this._loadMorePromise = this.loadAndAppendChatThreads(
+          '',
+          [],
+          state.chatThreads.length + this.chatThreadsPerPage
+        );
+        await this._loadMorePromise;
+      } catch (e) {
+        error('Failed to load more chat threads; aborting...', e);
+      }
     } finally {
       this._loadMorePromise = undefined;
     }
+
+    // log
+    log('successfully loaded more chat threads.');
   }
 
   /**
@@ -275,6 +289,9 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       draft.chatThreads = [];
     });
 
+    // log
+    log('loading chat threads...');
+
     // try several times to load more chats
     try {
       let loaded = false;
@@ -297,6 +314,9 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     } finally {
       this._loadPromise = undefined;
     }
+
+    // log
+    log('successfully loaded chat threads.');
   }
 
   private async handleChatThreadsResponse(
@@ -334,14 +354,10 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       return;
     }
 
-    try {
-      const response = !nextLink
-        ? await loadChatThreads(this._graph, maxItems > 50 ? 50 : maxItems) // max page count cannot exceed 50 per documentation
-        : await loadChatThreadsByPage(this._graph, nextLink.split('?')[1]);
-      await this.handleChatThreadsResponse(response, items, maxItems);
-    } catch (err) {
-      error(err);
-    }
+    const response = !nextLink
+      ? await loadChatThreads(this._graph, maxItems > 50 ? 50 : maxItems) // max page count cannot exceed 50 per documentation
+      : await loadChatThreadsByPage(this._graph, nextLink.split('?')[1]);
+    await this.handleChatThreadsResponse(response, items, maxItems);
   }
 
   public clearSelectedChat = () => {

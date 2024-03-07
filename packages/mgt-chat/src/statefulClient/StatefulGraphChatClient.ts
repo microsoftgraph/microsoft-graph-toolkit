@@ -267,7 +267,9 @@ class StatefulGraphChatClient extends BaseStatefulClient<GraphChatClient> {
 
   /**
    * Attempts to create the graph and client objects. This can succeed during construction if the
-   * Provider has already logged in. If not, it will be tried again when the Provider logs in.
+   * Provider has already logged in. If not, it will be tried again when the Provider logs in. Only
+   * calling tryCreateGraphNotificationClient() from onLoginStateChanged() only works if the Chat
+   * component is on the page at the time there is a sign-in - not always a guarantee.
    */
   private tryCreateGraphNotificationClient() {
     try {
