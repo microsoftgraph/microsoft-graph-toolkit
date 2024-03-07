@@ -502,11 +502,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    */
   @state() private _foundPeople: IDynamicPerson[];
 
-  /**
-   * Checks if the input has maximum selected people in single select mode.
-   */
-  @state() private _hasMaxSelections = false;
-
   constructor() {
     super();
 
@@ -546,6 +541,11 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       this.enableTextInput();
     }
   };
+
+  private get hasMaxSelections(): boolean {
+    return this.selectionMode === 'single' && this.selectedPeople.length >= 1;
+  }
+
   /**
    * Focuses the input element when focus is called
    *
@@ -682,7 +682,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    */
   protected renderInput(selectedPeopleTemplate: TemplateResult): TemplateResult {
     const placeholder = this.disabled ? '' : this.placeholder || this.strings.inputPlaceholderText;
-    const maxSelectionsAriaLabel = this._hasMaxSelections ? this.strings.maxSelectionsAriaLabel : '';
+    const maxSelectionsAriaLabel = this.hasMaxSelections ? this.strings.maxSelectionsAriaLabel : '';
 
     const searchIcon = html`<span class="search-icon">${getSvg(SvgIcon.Search)}</span>`;
     const startSlot = this.selectedPeople?.length > 0 ? selectedPeopleTemplate : searchIcon;
@@ -693,13 +693,13 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         slot="anchor"
         id="people-picker-input"
         role="combobox"
-        placeholder=${this._hasMaxSelections ? this.strings.maxSelectionsPlaceHolder : placeholder}
+        placeholder=${this.hasMaxSelections ? this.strings.maxSelectionsPlaceHolder : placeholder}
         aria-label=${this.ariaLabel || maxSelectionsAriaLabel || placeholder || this.strings.selectContact}
         aria-expanded=${this.flyout?.isOpen ?? false}
-        @click="${this._hasMaxSelections ? undefined : this.handleInputClick}"
-        @focus="${this._hasMaxSelections ? undefined : this.gainedFocus}"
-        @keydown="${this._hasMaxSelections ? undefined : this.onUserKeyDown}"
-        @input="${this._hasMaxSelections ? undefined : this.onUserInput}"
+        @click="${this.hasMaxSelections ? undefined : this.handleInputClick}"
+        @focus="${this.hasMaxSelections ? undefined : this.gainedFocus}"
+        @keydown="${this.hasMaxSelections ? undefined : this.onUserKeyDown}"
+        @input="${this.hasMaxSelections ? undefined : this.onUserInput}"
         @blur="${this.lostFocus}"
         ?disabled=${this.disabled}
       >
@@ -931,11 +931,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
     let people = this.people;
     const input = this.userInput.toLowerCase();
     const provider = Providers.globalProvider;
-    this._hasMaxSelections =
-      this.selectionMode === 'single' &&
-      (this.selectedPeople.length >= 1 ||
-        this.defaultSelectedUserIds.length >= 1 ||
-        this.defaultSelectedGroupIds.length >= 1);
 
     if (people?.length) {
       if (input) {
@@ -1054,7 +1049,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
 
         this.selectedPeople = [...this.defaultSelectedUsers, ...this.defaultSelectedGroups];
 
-        if (this._hasMaxSelections) {
+        if (this.hasMaxSelections) {
           this.disableTextInput();
         }
         this.requestUpdate();
@@ -1399,7 +1394,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   // handle suggestion list item click
   private handleSuggestionClick(person: IDynamicPerson): void {
     this.addPerson(person);
-    if (this._hasMaxSelections) {
+    if (this.hasMaxSelections) {
       this.disableTextInput();
       this.input.value = '';
     }
@@ -1483,7 +1478,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
           this.addPerson(foundPerson);
           this.hideFlyout();
           this.input.value = '';
-          if (this._hasMaxSelections) {
+          if (this.hasMaxSelections) {
             this.disableTextInput();
           }
           return;
