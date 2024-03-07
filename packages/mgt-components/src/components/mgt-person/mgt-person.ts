@@ -5,17 +5,22 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { fluentSkeleton } from '@fluentui/web-components';
 import {
   MgtTemplatedTaskComponent,
   ProviderState,
   Providers,
+  buildComponentName,
   customElementHelper,
-  mgtHtml
+  mgtHtml,
+  registerComponent
 } from '@microsoft/mgt-element';
 import { Presence } from '@microsoft/microsoft-graph-types';
-import { html, TemplateResult, nothing } from 'lit';
+import { TemplateResult, html, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { isContact, isUser } from '../../graph/entityType';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
@@ -23,17 +28,15 @@ import { findUsers, getMe, getUser } from '../../graph/graph.user';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { AvatarSize, IDynamicPerson, ViewType, viewTypeConverter } from '../../graph/types';
 import '../../styles/style-helper';
+import { registerFluentComponents } from '../../utils/FluentComponents';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
+import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
 import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
-import { type PersonCardInteraction, personCardConverter } from './../PersonCardInteraction';
+import { personCardConverter, type PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-import { MgtPersonConfig, AvatarType, avatarTypeConverter } from './mgt-person-types';
+import { AvatarType, MgtPersonConfig, avatarTypeConverter } from './mgt-person-types';
 import { strings } from './strings';
-import { isUser, isContact } from '../../graph/entityType';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { buildComponentName, registerComponent } from '@microsoft/mgt-element';
-import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
 
 /**
  * Person properties part of original set provided by graph by default
@@ -55,6 +58,8 @@ export const defaultPersonProperties = [
 ];
 
 export const registerMgtPersonComponent = () => {
+  registerFluentComponents(fluentSkeleton);
+
   // register self first to avoid infinte loop due to circular ref between person and person card
   registerComponent('person', MgtPerson);
 
@@ -585,7 +590,68 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
    * @memberof MgtPerson
    */
   protected renderLoading = (): TemplateResult => {
-    return this.renderTemplate('loading', null) || html``;
+    const rootClasses = classMap({
+      'person-root': true,
+      small: !this.isThreeLines() && !this.isFourLines() && !this.isLargeAvatar(),
+      large: this.avatarSize !== 'auto' && this.isLargeAvatar(),
+      noline: this.isNoLine(),
+      oneline: this.isOneLine(),
+      twolines: this.isTwoLines(),
+      threelines: this.isThreeLines(),
+      fourlines: this.isFourLines(),
+      vertical: this.isVertical()
+    });
+
+    const detailsClasses = classMap({
+      'details-wrapper': true,
+      vertical: this.isVertical()
+    });
+
+    return (
+      this.renderTemplate('loading', null) ||
+      html`
+        <div class="${rootClasses}">
+          <div class="avatar-wrapper">
+            <fluent-skeleton shimmer class="shimmer" shape="circle"></fluent-skeleton>
+          </div>
+          <div class=${detailsClasses}>
+            ${this.renderLoadingLines()}
+          </div>
+        </div>`
+    );
+  };
+
+  protected renderLoadingLines = (): TemplateResult[] => {
+    const lines: TemplateResult[] = [];
+    if (this.isNoLine()) return lines;
+    if (this.isOneLine()) {
+      lines.push(this.renderLoadingLine(1));
+    }
+    if (this.isTwoLines()) {
+      lines.push(this.renderLoadingLine(1));
+      lines.push(this.renderLoadingLine(2));
+    }
+    if (this.isThreeLines()) {
+      lines.push(this.renderLoadingLine(1));
+      lines.push(this.renderLoadingLine(2));
+      lines.push(this.renderLoadingLine(3));
+    }
+    if (this.isFourLines()) {
+      lines.push(this.renderLoadingLine(1));
+      lines.push(this.renderLoadingLine(2));
+      lines.push(this.renderLoadingLine(3));
+      lines.push(this.renderLoadingLine(4));
+    }
+    return lines;
+  };
+
+  protected renderLoadingLine = (line: number): TemplateResult => {
+    const lineNumber = `line${line}`;
+    return html`
+      <div class=${lineNumber}>
+        <fluent-skeleton shimmer class="shimmer text" shape="rect"></fluent-skeleton>
+      </div>
+    `;
   };
 
   /**
