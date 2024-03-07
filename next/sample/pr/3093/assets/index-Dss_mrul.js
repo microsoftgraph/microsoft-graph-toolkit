@@ -1,4 +1,4 @@
-import{m as g,t as x,cz as S,F as k,cA as H,_ as i,b as s,o as p,c3 as I,D as w,n as u,bv as v,bw as A,bx as E,bt as L,aE as O,bu as M,cB as N,x as h,y as f,bA as b,C as r,J as _,I as z,ct as R,cC as D,E as B,G as m,N as q,cD as G,cE as P,cF as j,cG as J,bD as y,cH as K,bE as Q,L as U,cI as W,cJ as V,bQ as X,bP as Y,P as F,Q as o,cK as Z,cb as ee,cc as $,cd as te,ce as ae,cf as oe}from"./App-BCmn6WeN.js";import{g as ie}from"./index-Dg_HGw24.js";const le=(t,a)=>g`
+import{m as g,t as x,cA as S,F as k,cB as H,_ as i,b as s,o as p,c3 as I,D as w,n as u,bu as v,bv as A,bw as L,bs as O,aE as E,bt as M,cC as _,x as h,y as f,bz as b,C as r,J as N,I as z,cu as R,cD as D,E as B,G as m,N as q,cE as G,cF as P,cG as j,cH as J,bC as y,cI as K,bD as U,L as Q,cJ as W,cK as V,bP as X,bO as Y,P as F,Q as o,cL as Z,cb as ee,cc as $,cd as te,ce as ae,cf as oe}from"./App-SuLSc3U_.js";import{_ as ie}from"./index-BBv8IAIi.js";const le=(t,a)=>g`
     <template
         role="checkbox"
         aria-checked="${e=>e.checked}"
@@ -25,7 +25,7 @@ import{m as g,t as x,cz as S,F as k,cA as H,_ as i,b as s,o as p,c3 as I,D as w,
             <slot ${x("defaultSlottedNodes")}></slot>
         </label>
     </template>
-`;class se extends k{}class re extends S(se){constructor(){super(...arguments),this.proxy=document.createElement("input")}}class d extends re{constructor(){super(),this.initialValue="on",this.indeterminate=!1,this.keypressHandler=a=>{if(!this.readOnly)switch(a.key){case H:this.indeterminate&&(this.indeterminate=!1),this.checked=!this.checked;break}},this.clickHandler=a=>{!this.disabled&&!this.readOnly&&(this.indeterminate&&(this.indeterminate=!1),this.checked=!this.checked)},this.proxy.setAttribute("type","checkbox")}readOnlyChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.readOnly=this.readOnly)}}i([s({attribute:"readonly",mode:"boolean"})],d.prototype,"readOnly",void 0);i([p],d.prototype,"defaultSlottedNodes",void 0);i([p],d.prototype,"indeterminate",void 0);class ne extends k{}class de extends I(ne){constructor(){super(...arguments),this.proxy=document.createElement("input")}}const ce={email:"email",password:"password",tel:"tel",text:"text",url:"url"};let l=class extends de{constructor(){super(...arguments),this.type=ce.text}readOnlyChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.readOnly=this.readOnly,this.validate())}autofocusChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.autofocus=this.autofocus,this.validate())}placeholderChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.placeholder=this.placeholder)}typeChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.type=this.type,this.validate())}listChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.setAttribute("list",this.list),this.validate())}maxlengthChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.maxLength=this.maxlength,this.validate())}minlengthChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.minLength=this.minlength,this.validate())}patternChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.pattern=this.pattern,this.validate())}sizeChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.size=this.size)}spellcheckChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.spellcheck=this.spellcheck)}connectedCallback(){super.connectedCallback(),this.proxy.setAttribute("type",this.type),this.validate(),this.autofocus&&w.queueUpdate(()=>{this.focus()})}select(){this.control.select(),this.$emit("select")}handleTextInput(){this.value=this.control.value}handleChange(){this.$emit("change")}validate(){super.validate(this.control)}};i([s({attribute:"readonly",mode:"boolean"})],l.prototype,"readOnly",void 0);i([s({mode:"boolean"})],l.prototype,"autofocus",void 0);i([s],l.prototype,"placeholder",void 0);i([s],l.prototype,"type",void 0);i([s],l.prototype,"list",void 0);i([s({converter:u})],l.prototype,"maxlength",void 0);i([s({converter:u})],l.prototype,"minlength",void 0);i([s],l.prototype,"pattern",void 0);i([s({converter:u})],l.prototype,"size",void 0);i([s({mode:"boolean"})],l.prototype,"spellcheck",void 0);i([p],l.prototype,"defaultSlottedNodes",void 0);class C{}v(C,A);v(l,E,C);const he=(t,a)=>g`
+`;class se extends k{}class re extends S(se){constructor(){super(...arguments),this.proxy=document.createElement("input")}}class d extends re{constructor(){super(),this.initialValue="on",this.indeterminate=!1,this.keypressHandler=a=>{if(!this.readOnly)switch(a.key){case H:this.indeterminate&&(this.indeterminate=!1),this.checked=!this.checked;break}},this.clickHandler=a=>{!this.disabled&&!this.readOnly&&(this.indeterminate&&(this.indeterminate=!1),this.checked=!this.checked)},this.proxy.setAttribute("type","checkbox")}readOnlyChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.readOnly=this.readOnly)}}i([s({attribute:"readonly",mode:"boolean"})],d.prototype,"readOnly",void 0);i([p],d.prototype,"defaultSlottedNodes",void 0);i([p],d.prototype,"indeterminate",void 0);class ne extends k{}class de extends I(ne){constructor(){super(...arguments),this.proxy=document.createElement("input")}}const ce={email:"email",password:"password",tel:"tel",text:"text",url:"url"};let l=class extends de{constructor(){super(...arguments),this.type=ce.text}readOnlyChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.readOnly=this.readOnly,this.validate())}autofocusChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.autofocus=this.autofocus,this.validate())}placeholderChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.placeholder=this.placeholder)}typeChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.type=this.type,this.validate())}listChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.setAttribute("list",this.list),this.validate())}maxlengthChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.maxLength=this.maxlength,this.validate())}minlengthChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.minLength=this.minlength,this.validate())}patternChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.pattern=this.pattern,this.validate())}sizeChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.size=this.size)}spellcheckChanged(){this.proxy instanceof HTMLInputElement&&(this.proxy.spellcheck=this.spellcheck)}connectedCallback(){super.connectedCallback(),this.proxy.setAttribute("type",this.type),this.validate(),this.autofocus&&w.queueUpdate(()=>{this.focus()})}select(){this.control.select(),this.$emit("select")}handleTextInput(){this.value=this.control.value}handleChange(){this.$emit("change")}validate(){super.validate(this.control)}};i([s({attribute:"readonly",mode:"boolean"})],l.prototype,"readOnly",void 0);i([s({mode:"boolean"})],l.prototype,"autofocus",void 0);i([s],l.prototype,"placeholder",void 0);i([s],l.prototype,"type",void 0);i([s],l.prototype,"list",void 0);i([s({converter:u})],l.prototype,"maxlength",void 0);i([s({converter:u})],l.prototype,"minlength",void 0);i([s],l.prototype,"pattern",void 0);i([s({converter:u})],l.prototype,"size",void 0);i([s({mode:"boolean"})],l.prototype,"spellcheck",void 0);i([p],l.prototype,"defaultSlottedNodes",void 0);class C{}v(C,A);v(l,L,C);const he=(t,a)=>g`
     <template
         class="
             ${e=>e.readOnly?"readonly":""}
@@ -37,11 +37,11 @@ import{m as g,t as x,cz as S,F as k,cA as H,_ as i,b as s,o as p,c3 as I,D as w,
             class="${e=>e.defaultSlottedNodes&&e.defaultSlottedNodes.length?"label":"label label__hidden"}"
         >
             <slot
-                ${x({property:"defaultSlottedNodes",filter:N})}
+                ${x({property:"defaultSlottedNodes",filter:_})}
             ></slot>
         </label>
         <div class="root" part="root">
-            ${L(t,a)}
+            ${O(t,a)}
             <input
                 class="control"
                 part="control"
@@ -80,7 +80,7 @@ import{m as g,t as x,cz as S,F as k,cA as H,_ as i,b as s,o as p,c3 as I,D as w,
                 aria-owns="${e=>e.ariaOwns}"
                 aria-relevant="${e=>e.ariaRelevant}"
                 aria-roledescription="${e=>e.ariaRoledescription}"
-                ${O("control")}
+                ${E("control")}
             />
             ${M(t,a)}
         </div>
@@ -97,7 +97,7 @@ import{m as g,t as x,cz as S,F as k,cA as H,_ as i,b as s,o as p,c3 as I,D as w,
       width: calc((${b} / 2 + ${r}) * 1px);
       height: calc((${b} / 2 + ${r}) * 1px);
       box-sizing: border-box;
-      border-radius: calc(${_} * 1px);
+      border-radius: calc(${N} * 1px);
       border: calc(${z} * 1px) solid ${R};
       background: ${D};
       cursor: pointer;
@@ -150,11 +150,11 @@ import{m as g,t as x,cz as S,F as k,cA as H,_ as i,b as s,o as p,c3 as I,D as w,
 
     :host(:${y}) .control {
       background: ${K};
-      ${Q}
+      ${U}
     }
 
     :host(.checked) .control {
-      background: ${U};
+      background: ${Q};
       border-color: transparent;
     }
 
