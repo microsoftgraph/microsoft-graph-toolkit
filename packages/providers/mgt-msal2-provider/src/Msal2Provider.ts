@@ -25,7 +25,8 @@ import {
   InteractionRequiredAuthError,
   SsoSilentRequest,
   EventMessage,
-  AuthenticationResult
+  BrowserAuthError,
+  EventType
 } from '@azure/msal-browser';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 
@@ -424,7 +425,7 @@ export class Msal2Provider extends IProvider {
   }
 
   private readonly handleMsalEvent = (message: EventMessage): void => {
-    if (message.eventType === 'msal:acquireTokenSuccess' && 'scopes' in message.payload) {
+    if (message.eventType === EventType.ACQUIRE_TOKEN_SUCCESS && 'scopes' in message.payload) {
       this.approvedScopes = message.payload.scopes;
     }
   };
@@ -761,6 +762,9 @@ export class Msal2Provider extends IProvider {
             throw popUpErr;
           }
         }
+      } else if (e instanceof BrowserAuthError && e.message.indexOf('no_network_connectivity') > -1) {
+        // don't force a signout; this can maybe be recovered from
+        throw e;
       } else {
         // if we don't know what the error is, just ask the user to sign in again
         this.setState(ProviderState.SignedOut);
