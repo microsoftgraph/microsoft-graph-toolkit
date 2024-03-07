@@ -765,6 +765,9 @@ export class Msal2Provider extends IProvider {
       } else if (e instanceof BrowserAuthError && e.message.indexOf('no_network_connectivity') > -1) {
         // don't force a signout; this can maybe be recovered from
         throw e;
+      } else if (e instanceof BrowserAuthError && e.message.indexOf('post_request_failed') > -1) {
+        // don't force a signout; this can happen if there is a break in network during a call
+        throw e;
       } else {
         // if we don't know what the error is, just ask the user to sign in again
         this.setState(ProviderState.SignedOut);
