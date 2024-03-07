@@ -354,14 +354,10 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
       return;
     }
 
-    try {
-      const response = !nextLink
-        ? await loadChatThreads(this._graph, maxItems > 50 ? 50 : maxItems) // max page count cannot exceed 50 per documentation
-        : await loadChatThreadsByPage(this._graph, nextLink.split('?')[1]);
-      await this.handleChatThreadsResponse(response, items, maxItems);
-    } catch (err) {
-      error(err);
-    }
+    const response = !nextLink
+      ? await loadChatThreads(this._graph, maxItems > 50 ? 50 : maxItems) // max page count cannot exceed 50 per documentation
+      : await loadChatThreadsByPage(this._graph, nextLink.split('?')[1]);
+    await this.handleChatThreadsResponse(response, items, maxItems);
   }
 
   public clearSelectedChat = () => {
