@@ -262,16 +262,27 @@ class StatefulGraphChatClient extends BaseStatefulClient<GraphChatClient> {
     this._eventEmitter = new ThreadEventEmitter();
     this.registerEventListeners();
     this._cache = new MessageCache();
+    this.tryCreateGraphNotificationClient();
   }
 
   /**
-   * Updates the provider graph SDK client and the notification client. By now,
-   * an assumption is made that the Providers.globalProvider.graph is available
-   * and won't throw a TypeError when you access graph.forComponent.
+   * Attempts to create the graph and client objects. This can succeed during construction if the
+   * Provider has already logged in. If not, it will be tried again when the Provider logs in.
    */
-  private updateGraphNotificationClient() {
-    this.graph = graph('mgt-chat', GraphConfig.version);
-    this._notificationClient = new GraphNotificationClient(this._eventEmitter, this.graph);
+  private tryCreateGraphNotificationClient() {
+    try {
+      // exit if already created
+      if (this.graph && this._notificationClient) return;
+
+      // create the graph
+      this.graph = graph('mgt-chat', GraphConfig.version);
+      if (!this.graph) return;
+
+      // create the client
+      this._notificationClient = new GraphNotificationClient(this._eventEmitter, this.graph);
+    } catch (e) {
+      // ignore; it will be tried again later
+    }
   }
 
   /**
@@ -293,7 +304,7 @@ class StatefulGraphChatClient extends BaseStatefulClient<GraphChatClient> {
       case ProviderState.SignedIn:
         // update userId and displayName
         this.updateUserInfo();
-        this.updateGraphNotificationClient();
+        this.tryCreateGraphNotificationClient();
         // load messages?
         // configure subscriptions
         // emit new state;
