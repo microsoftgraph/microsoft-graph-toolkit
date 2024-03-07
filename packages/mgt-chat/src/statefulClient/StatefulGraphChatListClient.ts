@@ -245,6 +245,9 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
         return;
       }
 
+      // log
+      log('loading more chat threads...');
+
       // set promise; load and append
       try {
         this._loadMorePromise = this.loadAndAppendChatThreads(
@@ -259,6 +262,9 @@ class StatefulGraphChatListClient implements StatefulClient<GraphChatListClient>
     } finally {
       this._loadMorePromise = undefined;
     }
+
+    // log
+    log('successfully loaded more chat threads.');
   }
 
   /**
