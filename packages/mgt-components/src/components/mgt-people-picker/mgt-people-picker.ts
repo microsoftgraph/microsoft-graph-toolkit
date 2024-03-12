@@ -1048,6 +1048,10 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         });
 
         this.selectedPeople = [...this.defaultSelectedUsers, ...this.defaultSelectedGroups];
+
+        if (this.hasMaxSelections) {
+          this.disableTextInput();
+        }
         this.requestUpdate();
       }
 
