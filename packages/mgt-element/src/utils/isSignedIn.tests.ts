@@ -13,6 +13,7 @@ import { isSignedIn } from './isSignedIn';
 
 describe('signedInState', () => {
   it('should change', () => {
+    /* eslint-disable @typescript-eslint/no-unused-expressions */
     Providers.globalProvider = new MockProvider(false);
     expect(isSignedIn()).to.be.false;
     Providers.globalProvider.setState(ProviderState.SignedIn);
