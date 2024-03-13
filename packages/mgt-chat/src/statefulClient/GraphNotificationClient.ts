@@ -223,9 +223,15 @@ export class GraphNotificationClient {
     return subscription;
   }
 
-  public renewSubscription = async (subscriptionId: string, expirationDateTime: string): Promise<void> => {
-    // this.renewalCount++;
+  public renewSubscription = async (subscriptionId: string): Promise<void> => {
     log(`Renewing Graph subscription for ChatId. RenewalCount: ${this.renewalCount}.`);
+
+    const newExpirationTime = new Date(
+      new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
+    );
+
+    // this.renewalCount++;
+    const expirationDateTime = newExpirationTime.toISOString();
     const renewedSubscription = (await this.graph?.api(`${GraphConfig.subscriptionEndpoint}/${subscriptionId}`).patch({
       expirationDateTime
     })) as Subscription | undefined;
@@ -364,9 +370,9 @@ export class GraphNotificationClient {
 
   private readonly renewalSync = () => {
     void this.renewal();
-  }
+  };
 
-  private readonly renewal = async () =>{
+  private readonly renewal = async () => {
     let nextRenewalTimeInSec = appSettings.renewalTimerInterval;
     try {
       // if there are current subscriptions for this chat id...
@@ -376,20 +382,17 @@ export class GraphNotificationClient {
       if (subscriptions) {
         // attempt a renewal if necessary
         try {
-          const expirationTime = new Date(
-            new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
-          );
           for (let subscription of subscriptions) {
             const expirationTime = new Date(subscription.expirationDateTime!);
             const diff = Math.round((expirationTime.getTime() - new Date().getTime()) / 1000);
             if (diff <= 0) {
               log(`Renewing chat subscription ${subscription.id} that has already expired...`);
               this.trySwitchToDisconnected(true);
-              await this.renewSubscription(this.chatId, expirationTime.toISOString());
+              await this.renewSubscription(subscription.id!);
               log(`Successfully renewed chat subscription ${subscription.id}.`);
             } else if (diff <= appSettings.renewalThreshold) {
               log(`Renewing chat subscription ${subscription.id} that will expire in ${diff} seconds...`);
-              await this.renewSubscription(this.chatId, expirationTime.toISOString());
+              await this.renewSubscription(subscription.id!);
               log(`Successfully renewed chat subscription ${subscription.id}.`);
             }
           }
@@ -438,7 +441,7 @@ export class GraphNotificationClient {
         await this.connection?.send('ping'); // ensure the connection is still alive
       }
       if (!this.connection) {
-        // log(`Creating a new SignalR connection for subscription ${subscription.id!}...`);
+        log(`Creating a new SignalR connection for subscriptions: ${subscriptionIds}...`);
         this.trySwitchToDisconnected(true);
         this.lastNotificationUrl = subscriptions![0]?.notificationUrl!;
         await this.createSignalRConnection(subscriptions![0]?.notificationUrl!);
@@ -468,7 +471,7 @@ export class GraphNotificationClient {
       this.renewalSync,
       nextRenewalTimeInSec * 1000
     );
-  }
+  };
 
   public async closeSignalRConnection() {
     // stop the connection and set it to undefined so it will reconnect when next subscription is created.
