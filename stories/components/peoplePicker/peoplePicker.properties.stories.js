@@ -41,6 +41,12 @@ export const singleSelectMode = () => html`
     <button aria-label="close modal" id="close-modal">X</button>
 </div>
 
+<h2> Single select with default selected user Ids</h2>
+<mgt-people-picker default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85" selection-mode="single"></mgt-people-picker>
+
+<h2> Single select with default selected group Ids</h2>
+<mgt-people-picker default-selected-group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9" selection-mode="single"></mgt-people-picker>
+
 <style>
 #modal-content {
   height: 200px;
