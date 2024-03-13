@@ -196,14 +196,14 @@ export class GraphNotificationClient {
     await this.subscriptionCache.cacheSubscription(this.chatId, subscriptionRecord);
   };
 
-  private async subscribeToResource(resourcePath: string, changeTypes: ChangeTypes[]) {
+  private async subscribeToResource(resourcePath: string, groupId: string, changeTypes: ChangeTypes[]) {
     // build subscription request
     const expirationDateTime = new Date(
       new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
     ).toISOString();
     const subscriptionDefinition: Subscription = {
       changeType: changeTypes.join(','),
-      notificationUrl: `${GraphConfig.webSocketsPrefix}?groupId=${getOrGenerateGroupId(this.chatId)}`,
+      notificationUrl: `${GraphConfig.webSocketsPrefix}?groupId=${groupId}`,
       resource: resourcePath,
       expirationDateTime,
       includeResourceData: true,
@@ -217,11 +217,7 @@ export class GraphNotificationClient {
     if (!subscriptionGraph) return;
     // send subscription POST to Graph
     let subscription: Subscription;
-    try {
-      subscription = (await subscriptionGraph.api(subscriptionEndpoint).post(subscriptionDefinition)) as Subscription;
-    } catch (error) {
-      throw error;
-    }
+    subscription = (await subscriptionGraph.api(subscriptionEndpoint).post(subscriptionDefinition)) as Subscription;
     if (!subscription?.notificationUrl) throw new Error('Subscription not created');
     log(subscription);
 
@@ -325,9 +321,10 @@ export class GraphNotificationClient {
 
   private createSubscriptions = async (chatId: string) => {
     const promises: Promise<Subscription | undefined>[] = [];
-    promises.push(this.subscribeToResource(`/chats/${chatId}/messages`, ['created', 'updated', 'deleted']));
-    promises.push(this.subscribeToResource(`/chats/${chatId}/members`, ['created', 'deleted']));
-    promises.push(this.subscribeToResource(`/chats/${chatId}`, ['updated', 'deleted']));
+    const groupId = getOrGenerateGroupId(this.chatId);
+    promises.push(this.subscribeToResource(`/chats/${chatId}/messages`, groupId, ['created', 'updated', 'deleted']));
+    promises.push(this.subscribeToResource(`/chats/${chatId}/members`, groupId, ['created', 'deleted']));
+    promises.push(this.subscribeToResource(`/chats/${chatId}`, groupId, ['updated', 'deleted']));
     const results = await Promise.all(promises);
 
     // Cache the subscriptions in storage for re-hydration on page refreshes
