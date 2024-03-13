@@ -229,12 +229,14 @@ export class GraphNotificationClient {
       new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
     );
 
-    // this.renewalCount++;
     const expirationDateTime = newExpirationTime.toISOString();
     const renewedSubscription = (await this.graph?.api(`${GraphConfig.subscriptionEndpoint}/${subscriptionId}`).patch({
       expirationDateTime
     })) as Subscription | undefined;
-    if (renewedSubscription) return this.cacheSubscription(renewedSubscription);
+    if (renewedSubscription) {
+      this.renewalCount++;
+      return this.cacheSubscription(renewedSubscription);
+    }
   };
 
   public async createSignalRConnection(notificationUrl: string) {
