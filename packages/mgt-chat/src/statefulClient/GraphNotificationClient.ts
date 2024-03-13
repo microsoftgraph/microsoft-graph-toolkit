@@ -67,6 +67,7 @@ export class GraphNotificationClient {
   private chatId = '';
   private sessionId = '';
   private lastNotificationUrl = '';
+  private subscriptionIds: string[] = [];
 
   private readonly subscriptionCache: SubscriptionsCache = new SubscriptionsCache();
   private readonly timer = new Timer();
@@ -119,8 +120,15 @@ export class GraphNotificationClient {
   private readonly receiveNotificationMessage = (message: string) => {
     if (typeof message !== 'string') throw new Error('Expected string from receivenotificationmessageasync');
 
+    const ackMessage: unknown = { StatusCode: '200' };
     const notification: ReceivedNotification = JSON.parse(message) as ReceivedNotification;
-    log('received notification message', notification);
+    // only process notifications for the current subscription
+    if (this.subscriptionIds.length > 0 && !this.subscriptionIds.includes(notification.subscriptionId)) {
+      log('Received notification for a different subscription', notification);
+      return ackMessage;
+    }
+
+    log('received chat notification message', notification);
     const emitter: ThreadEventEmitter | undefined = this.emitter;
     if (!notification.resourceData) throw new Error('Message did not contain resourceData');
     if (isMessageNotification(notification)) {
@@ -131,7 +139,6 @@ export class GraphNotificationClient {
       this.processChatPropertiesNotification(notification, emitter);
     }
     // Need to return a status code string of 200 so that graph knows the message was received and doesn't re-send the notification
-    const ackMessage: unknown = { StatusCode: '200' };
     return GraphConfig.ackAsString ? JSON.stringify(ackMessage) : ackMessage;
   };
 
@@ -328,6 +335,7 @@ export class GraphNotificationClient {
     const subscriptions: Subscription[] = (results as (Subscription | undefined)[]).filter(Boolean) as Subscription[];
     for (let subscription of subscriptions) {
       awaits.push(this.cacheSubscription(subscription));
+      this.subscriptionIds.push(subscription.id!);
     }
     await Promise.all(awaits);
 
@@ -339,6 +347,7 @@ export class GraphNotificationClient {
       log('Removing all chat subscriptions from cache for chatId:', chatId);
       await this.subscriptionCache.deleteCachedSubscriptions(chatId);
       log('Successfully removed all chat subscriptions from cache.');
+      this.subscriptionIds = [];
     } catch (e) {
       error(`Failed to remove chat subscription for ${chatId} from cache.`, e);
     }
