@@ -478,7 +478,7 @@ export class GraphNotificationClient {
   }
 
   public async subscribeToChatNotifications(chatId: string, sessionId: string) {
-    log(`Chat subscription with id: ${chatId} and session id: ${sessionId}`);
+    log(`Chat subscription with chat id: ${chatId} and session id: ${sessionId}`);
     this.wasConnected = undefined;
     this.chatId = chatId;
     this.sessionId = sessionId;
