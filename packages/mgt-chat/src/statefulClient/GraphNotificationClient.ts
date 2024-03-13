@@ -294,6 +294,7 @@ export class GraphNotificationClient {
     void this.cleanupTimer();
   };
 
+  // used to remove inactive chatId subscriptions (different from the renewal timer, which renews active subscriptions)
   private readonly cleanupTimer = async () => {
     log(`running cleanup timer`);
     const offset = Math.min(
@@ -336,13 +337,13 @@ export class GraphNotificationClient {
     return subscriptions;
   };
 
-  private async deleteCachedSubscription(subscriptionId: string) {
+  private async deleteCachedSubscriptions(chatId: string) {
     try {
-      log(`Removing subscription ${subscriptionId} from cache...`);
-      await this.subscriptionCache.deleteCachedSubscriptions(subscriptionId);
-      log(`Successfully removed subscription ${subscriptionId} from cache.`);
+      log('Removing all chat subscriptions from cache for chatId:', chatId);
+      await this.subscriptionCache.deleteCachedSubscriptions(chatId);
+      log('Successfully removed all chat subscriptions from cache.');
     } catch (e) {
-      error(`Failed to remove subscription ${subscriptionId} from cache.`, e);
+      error(`Failed to remove chat subscription for ${chatId} from cache.`, e);
     }
   }
 
@@ -381,6 +382,7 @@ export class GraphNotificationClient {
       log(`Retrieved chat subscriptions for chat ${this.chatId}: ${subscriptions?.map(s => s?.id).join(', ')}.`);
       if (subscriptions) {
         // attempt a renewal if necessary
+        const existingSubscriptionIds = subscriptions?.map(s => s?.id).filter(Boolean);
         try {
           for (let subscription of subscriptions) {
             const expirationTime = new Date(subscription.expirationDateTime!);
@@ -397,12 +399,8 @@ export class GraphNotificationClient {
             }
           }
         } catch (e) {
-          error(`Failed to renew subscriptions.`, e);
-          const promises: Promise<unknown>[] = [];
-          for (let subscription of subscriptions) {
-            promises.push(this.deleteCachedSubscription(this.chatId));
-          }
-          await Promise.all(promises);
+          error(`Failed to renew subscriptions for ${existingSubscriptionIds}.`, e);
+          await this.deleteCachedSubscriptions(this.chatId);
           subscriptions = undefined;
         }
       }
