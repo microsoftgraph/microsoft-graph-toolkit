@@ -213,7 +213,6 @@ export class GraphNotificationClient {
     try {
       subscription = (await subscriptionGraph.api(subscriptionEndpoint).post(subscriptionDefinition)) as Subscription;
     } catch (error) {
-      log(`Error creating subscription: ${error}`);
       throw error;
     }
     if (!subscription?.notificationUrl) throw new Error('Subscription not created');
@@ -314,14 +313,12 @@ export class GraphNotificationClient {
     this.startCleanupTimer();
   };
 
-  private createSubscriptions = async (chatId: string, sessionId: string) => {
+  private createSubscriptions = async (chatId: string) => {
     const promises: Promise<Subscription | undefined>[] = [];
     promises.push(this.subscribeToResource(`/chats/${chatId}/messages`, ['created', 'updated', 'deleted']));
     promises.push(this.subscribeToResource(`/chats/${chatId}/members`, ['created', 'deleted']));
     promises.push(this.subscribeToResource(`/chats/${chatId}`, ['updated', 'deleted']));
-    const results = await Promise.all(promises).catch((e: Error) => {
-      this?.emitter.graphNotificationClientError(e);
-    });
+    const results = await Promise.all(promises);
 
     // Cache the subscriptions in storage for re-hydration on page refreshes
     const awaits: Promise<void>[] = [];
@@ -329,9 +326,7 @@ export class GraphNotificationClient {
     for (let subscription of subscriptions) {
       awaits.push(this.cacheSubscription(subscription));
     }
-    await Promise.all(awaits).catch((e: Error) => {
-      this?.emitter.graphNotificationClientError(e);
-    });
+    await Promise.all(awaits);
 
     return subscriptions;
   };
@@ -376,9 +371,7 @@ export class GraphNotificationClient {
     let nextRenewalTimeInSec = appSettings.renewalTimerInterval;
     try {
       // if there are current subscriptions for this chat id...
-      log(`Retrieving chat subscriptions for chat ${this.chatId}...`);
       let subscriptions = await this.getSubscriptions(this.chatId);
-      log(`Retrieved chat subscriptions for chat ${this.chatId}: ${subscriptions?.map(s => s?.id).join(', ')}.`);
       if (subscriptions) {
         // attempt a renewal if necessary
         try {
@@ -411,7 +404,7 @@ export class GraphNotificationClient {
       if (!subscriptions) {
         try {
           this.trySwitchToDisconnected(true);
-          subscriptions = await this.createSubscriptions(this.chatId, this.sessionId);
+          subscriptions = await this.createSubscriptions(this.chatId);
         } catch (e) {
           const err = e as { statusCode?: number; message: string };
           if (err.statusCode === 403 && err.message.indexOf('has reached its limit') > 0) {
