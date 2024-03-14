@@ -73,6 +73,7 @@ export class GraphNotificationClient {
  // use session storage to store the session id so that it is stable for the lifetime of the browser tab
   private sessionId = sessionStorage.getItem('mgt-chat-session-id') || uuid();
   private lastNotificationUrl = '';
+  private subscriptionIds: string[] = [];
 
   private readonly subscriptionCache: SubscriptionsCache = new SubscriptionsCache();
   private readonly timer = new Timer();
@@ -160,8 +161,15 @@ export class GraphNotificationClient {
   private readonly receiveNotificationMessage = (message: string) => {
     if (typeof message !== 'string') throw new Error('Expected string from receivenotificationmessageasync');
 
+    const ackMessage: unknown = { StatusCode: '200' };
     const notification: ReceivedNotification = JSON.parse(message) as ReceivedNotification;
-    log('received notification message', notification);
+    // only process notifications for the current subscription
+    if (this.subscriptionIds.length > 0 && !this.subscriptionIds.includes(notification.subscriptionId)) {
+      log('Received notification for a different subscription', notification);
+      return ackMessage;
+    }
+
+    log('received chat notification message', notification);
     const emitter: ThreadEventEmitter | undefined = this.emitter;
     if (!notification.resourceData) throw new Error('Message did not contain resourceData');
     if (isMessageNotification(notification)) {
@@ -172,7 +180,6 @@ export class GraphNotificationClient {
       this.processChatPropertiesNotification(notification, emitter);
     }
     // Need to return a status code string of 200 so that graph knows the message was received and doesn't re-send the notification
-    const ackMessage: unknown = { StatusCode: '200' };
     return GraphConfig.ackAsString ? JSON.stringify(ackMessage) : ackMessage;
   };
 
@@ -230,14 +237,14 @@ export class GraphNotificationClient {
     await this.subscriptionCache.cacheSubscription(this.chatId, subscriptionRecord);
   };
 
-  private async subscribeToResource(resourcePath: string, changeTypes: ChangeTypes[]) {
+  private async subscribeToResource(resourcePath: string, groupId: string, changeTypes: ChangeTypes[]) {
     // build subscription request
     const expirationDateTime = new Date(
       new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
     ).toISOString();
     const subscriptionDefinition: Subscription = {
       changeType: changeTypes.join(','),
-      notificationUrl: `${GraphConfig.webSocketsPrefix}?groupId=${getOrGenerateGroupId(this.chatId)}`,
+      notificationUrl: `${GraphConfig.webSocketsPrefix}?groupId=${groupId}`,
       resource: resourcePath,
       expirationDateTime,
       includeResourceData: true,
@@ -251,11 +258,7 @@ export class GraphNotificationClient {
     if (!subscriptionGraph) return;
     // send subscription POST to Graph
     let subscription: Subscription;
-    try {
-      subscription = (await subscriptionGraph.api(subscriptionEndpoint).post(subscriptionDefinition)) as Subscription;
-    } catch (error) {
-      throw error;
-    }
+    subscription = (await subscriptionGraph.api(subscriptionEndpoint).post(subscriptionDefinition)) as Subscription;
     if (!subscription?.notificationUrl) throw new Error('Subscription not created');
     log(subscription);
 
@@ -328,9 +331,10 @@ export class GraphNotificationClient {
 
   private createSubscriptions = async (chatId: string) => {
     const promises: Promise<Subscription | undefined>[] = [];
-    promises.push(this.subscribeToResource(`/chats/${chatId}/messages`, ['created', 'updated', 'deleted']));
-    promises.push(this.subscribeToResource(`/chats/${chatId}/members`, ['created', 'deleted']));
-    promises.push(this.subscribeToResource(`/chats/${chatId}`, ['updated', 'deleted']));
+    const groupId = getOrGenerateGroupId(this.chatId);
+    promises.push(this.subscribeToResource(`/chats/${chatId}/messages`, groupId, ['created', 'updated', 'deleted']));
+    promises.push(this.subscribeToResource(`/chats/${chatId}/members`, groupId, ['created', 'deleted']));
+    promises.push(this.subscribeToResource(`/chats/${chatId}`, groupId, ['updated', 'deleted']));
     const results = await Promise.all(promises);
 
     // Cache the subscriptions in storage for re-hydration on page refreshes
@@ -338,6 +342,7 @@ export class GraphNotificationClient {
     const subscriptions: Subscription[] = (results as (Subscription | undefined)[]).filter(Boolean) as Subscription[];
     for (let subscription of subscriptions) {
       awaits.push(this.cacheSubscription(subscription));
+      this.subscriptionIds.push(subscription.id!);
     }
     await Promise.all(awaits);
 
@@ -349,6 +354,7 @@ export class GraphNotificationClient {
       log('Removing all chat subscriptions from cache for chatId:', chatId);
       await this.subscriptionCache.deleteCachedSubscriptions(chatId);
       log('Successfully removed all chat subscriptions from cache.');
+      this.subscriptionIds = [];
     } catch (e) {
       error(`Failed to remove chat subscription for ${chatId} from cache.`, e);
     }
