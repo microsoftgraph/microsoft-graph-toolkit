@@ -67,10 +67,10 @@ export class GraphNotificationClient {
   private previousChatId = '';
   private renewalTimerAccumulator = 0;
   /**
-  * Provides a stable sessionId for the lifetime of the browser tab.
-  * @returns a string that is either read from session storage or generated and placed in session storage
-  */
- // use session storage to store the session id so that it is stable for the lifetime of the browser tab
+   * Provides a stable sessionId for the lifetime of the browser tab.
+   * @returns a string that is either read from session storage or generated and placed in session storage
+   */
+  // use session storage to store the session id so that it is stable for the lifetime of the browser tab
   private sessionId = sessionStorage.getItem('mgt-chat-session-id') || uuid();
   private lastNotificationUrl = '';
   private subscriptionIds: string[] = [];
@@ -199,9 +199,9 @@ export class GraphNotificationClient {
     }
   }
 
-  private readonly cacheSubscription = async (subscriptionRecord: Subscription): Promise<void> => {
+  private readonly cacheSubscription = async (chatId: string, subscriptionRecord: Subscription): Promise<void> => {
     log(subscriptionRecord);
-    await this.subscriptionCache.cacheSubscription(this.chatId, subscriptionRecord);
+    await this.subscriptionCache.cacheSubscription(chatId, subscriptionRecord);
   };
 
   private async subscribeToResource(resourcePath: string, groupId: string, changeTypes: ChangeTypes[]) {
@@ -233,7 +233,7 @@ export class GraphNotificationClient {
     return subscription;
   }
 
-  public renewSubscription = async (subscriptionId: string): Promise<void> => {
+  public renewSubscription = async (chatId: string, subscriptionId: string): Promise<void> => {
     log(`Renewing Graph subscription for ChatId. RenewalCount: ${this.renewalCount}.`);
 
     const newExpirationTime = new Date(
@@ -246,7 +246,7 @@ export class GraphNotificationClient {
     })) as Subscription | undefined;
     if (renewedSubscription) {
       this.renewalCount++;
-      return this.cacheSubscription(renewedSubscription);
+      return this.cacheSubscription(chatId, renewedSubscription);
     }
   };
 
@@ -278,9 +278,9 @@ export class GraphNotificationClient {
 
   private async deleteSubscription(id: string) {
     try {
-      log(`Deleting subscription with id: ${id}...`)
+      log(`Deleting subscription with id: ${id}...`);
       await this.graph?.api(`${GraphConfig.subscriptionEndpoint}/${id}`).delete();
-      log(`Successfully deleted subscription with id: ${id}.`)
+      log(`Successfully deleted subscription with id: ${id}.`);
     } catch (e) {
       error(e);
     }
@@ -298,7 +298,7 @@ export class GraphNotificationClient {
 
   private createSubscriptions = async (chatId: string) => {
     const promises: Promise<Subscription | undefined>[] = [];
-    const groupId = getOrGenerateGroupId(this.chatId);
+    const groupId = getOrGenerateGroupId(chatId);
     promises.push(this.subscribeToResource(`/chats/${chatId}/messages`, groupId, ['created', 'updated', 'deleted']));
     promises.push(this.subscribeToResource(`/chats/${chatId}/members`, groupId, ['created', 'deleted']));
     promises.push(this.subscribeToResource(`/chats/${chatId}`, groupId, ['updated', 'deleted']));
@@ -308,7 +308,7 @@ export class GraphNotificationClient {
     const awaits: Promise<void>[] = [];
     const subscriptions: Subscription[] = (results as (Subscription | undefined)[]).filter(Boolean) as Subscription[];
     for (let subscription of subscriptions) {
-      awaits.push(this.cacheSubscription(subscription));
+      awaits.push(this.cacheSubscription(chatId, subscription));
       this.subscriptionIds.push(subscription.id!);
     }
     await Promise.all(awaits);
@@ -356,10 +356,10 @@ export class GraphNotificationClient {
   private readonly renewal = async () => {
     let nextRenewalTimeInSec = appSettings.renewalTimerInterval;
     try {
+      const chatId = this.chatId;
       // this allows us to renew on chatId change much faster than the normal renewal interval
       this.renewalTimerAccumulator += appSettings.fastRenewalInterval;
-      const chatId = this.chatId;
-      if (this.renewalTimerAccumulator < appSettings.renewalTimerInterval * 1000 && this.chatId === this.previousChatId) {
+      if (this.renewalTimerAccumulator < appSettings.renewalTimerInterval * 1000 && chatId === this.previousChatId) {
         return;
       }
       this.previousChatId = chatId;
@@ -376,11 +376,11 @@ export class GraphNotificationClient {
             if (diff <= 0) {
               log(`Renewing chat subscription ${subscription.id} that has already expired...`);
               this.trySwitchToDisconnected(true);
-              await this.renewSubscription(subscription.id!);
+              await this.renewSubscription(chatId, subscription.id!);
               log(`Successfully renewed chat subscription ${subscription.id}.`);
             } else if (diff <= appSettings.renewalThreshold) {
               log(`Renewing chat subscription ${subscription.id} that will expire in ${diff} seconds...`);
-              await this.renewSubscription(subscription.id!);
+              await this.renewSubscription(chatId, subscription.id!);
               log(`Successfully renewed chat subscription ${subscription.id}.`);
             }
           }
