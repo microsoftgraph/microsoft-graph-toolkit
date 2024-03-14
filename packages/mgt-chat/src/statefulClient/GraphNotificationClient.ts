@@ -450,6 +450,7 @@ export class GraphNotificationClient {
     } catch (e) {
       error('Error in chat subscription connection process.', e);
       this.trySwitchToDisconnected();
+      this?.emitter.graphNotificationClientError(e as Error);
     } finally {
       if (nextRenewalTimeInSec >= 0) {
         this.renewalTimeout = this.timer.setTimeout(
