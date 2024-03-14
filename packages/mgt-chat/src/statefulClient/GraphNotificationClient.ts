@@ -233,20 +233,41 @@ export class GraphNotificationClient {
     return subscription;
   }
 
-  public renewSubscription = async (chatId: string, subscriptionId: string): Promise<void> => {
+  public renewSubscriptions = async (chatId: string) => {
     log(`Renewing Graph subscription for ChatId. RenewalCount: ${this.renewalCount}.`);
 
     const newExpirationTime = new Date(
       new Date().getTime() + appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
-    );
+    ).toISOString();
 
-    const expirationDateTime = newExpirationTime.toISOString();
-    const renewedSubscription = (await this.graph?.api(`${GraphConfig.subscriptionEndpoint}/${subscriptionId}`).patch({
-      expirationDateTime
-    })) as Subscription | undefined;
-    if (renewedSubscription) {
-      this.renewalCount++;
-      return this.cacheSubscription(chatId, renewedSubscription);
+    let subscriptions = await this.getSubscriptions(chatId);
+    const awaits: Promise<unknown>[] = [];
+    for (const subscription of subscriptions || []) {
+      // the renewSubscription method caches the updated subscription to track the new expiration time
+      awaits.push(this.renewSubscription(chatId, subscription.id!, newExpirationTime));
+      log(`Invoked RenewSubscription ${subscription.id}`);
+    }
+    await Promise.all(awaits);
+  };
+
+  private renewSubscription = async (
+    chatId: string,
+    subscriptionId: string,
+    expirationDateTime: string
+  ): Promise<void> => {
+    // PATCH /subscriptions/{id}
+    try {
+      const renewedSubscription = (await this.graph
+        ?.api(`${GraphConfig.subscriptionEndpoint}/${subscriptionId}`)
+        .patch({
+          expirationDateTime
+        })) as Subscription | undefined;
+      if (renewedSubscription) {
+        this.renewalCount++;
+        return this.cacheSubscription(chatId, renewedSubscription);
+      }
+    } catch (e) {
+      return Promise.reject(e);
     }
   };
 
@@ -376,12 +397,14 @@ export class GraphNotificationClient {
             if (diff <= 0) {
               log(`Renewing chat subscription ${subscription.id} that has already expired...`);
               this.trySwitchToDisconnected(true);
-              await this.renewSubscription(chatId, subscription.id!);
+              await this.renewSubscriptions(chatId);
               log(`Successfully renewed chat subscription ${subscription.id}.`);
+              break;
             } else if (diff <= appSettings.renewalThreshold) {
               log(`Renewing chat subscription ${subscription.id} that will expire in ${diff} seconds...`);
-              await this.renewSubscription(chatId, subscription.id!);
+              await this.renewSubscriptions(chatId);
               log(`Successfully renewed chat subscription ${subscription.id}.`);
+              break;
             }
           }
         } catch (e) {
