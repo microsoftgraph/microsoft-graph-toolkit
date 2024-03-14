@@ -102,39 +102,6 @@ export class GraphNotificationClient {
     }
   }
 
-  // private startCleanupTimer() {
-  //   this.cleanupTimeout = this.timer.setTimeout(
-  //     'renewal:' + this.instanceId,
-  //     this.cleanupTimerSync,
-  //     appSettings.removalTimerInterval * 1000
-  //   );
-  // }
-
-  // private readonly cleanupTimerSync = () => {
-  //   void this.cleanupTimer();
-  // };
-
-  // // used to remove inactive chatId subscriptions (different from the renewal timer, which renews active subscriptions)
-  // private readonly cleanupTimer = async () => {
-  //   log(`running cleanup timer`);
-  //   const offset = Math.min(
-  //     appSettings.removalThreshold * 1000,
-  //     appSettings.defaultSubscriptionLifetimeInMinutes * 60 * 1000
-  //   );
-  //   const threshold = new Date(new Date().getTime() - offset).toISOString();
-  //   const inactiveSubs = await this.subscriptionCache.loadInactiveSubscriptions(threshold);
-  //   let tasks: Promise<unknown>[] = [];
-  //   for (const inactive of inactiveSubs) {
-  //     tasks.push(this.removeSubscriptions(inactive.subscriptions));
-  //   }
-  //   await Promise.all(tasks);
-  //   tasks = [];
-  //   for (const inactive of inactiveSubs) {
-  //     tasks.push(this.subscriptionCache.deleteCachedSubscriptions(inactive.chatId));
-  //   }
-  //   this.startCleanupTimer();
-  // };
-
   /**
    * Removes any active timers that may exist to prevent memory leaks and perf issues.
    * Call this method when the component that depends an instance of this class is being removed from the DOM
