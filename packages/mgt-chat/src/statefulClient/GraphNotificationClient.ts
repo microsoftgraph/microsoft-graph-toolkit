@@ -61,7 +61,6 @@ export class GraphNotificationClient {
   private connection?: HubConnection = undefined;
   private wasConnected?: boolean | undefined;
   private renewalTimeout?: string;
-  private cleanupTimeout?: string;
   private renewalCount = 0;
   private chatId = '';
   private previousChatId = '';
@@ -108,7 +107,6 @@ export class GraphNotificationClient {
    */
   public tearDown() {
     log('cleaning up graph notification resources');
-    if (this.cleanupTimeout) this.timer.clearTimeout(this.cleanupTimeout);
     if (this.renewalTimeout) this.timer.clearTimeout(this.renewalTimeout);
     this.timer.close();
   }
@@ -119,10 +117,8 @@ export class GraphNotificationClient {
     return token;
   };
 
-  // TODO: understand if this is needed under the native model
   private readonly onReconnect = (connectionId: string | undefined) => {
     log(`Reconnected. ConnectionId: ${connectionId || 'undefined'}`);
-    // void this.renewChatSubscriptions();
   };
 
   private readonly receiveNotificationMessage = (message: string) => {
@@ -132,7 +128,7 @@ export class GraphNotificationClient {
     const notification: ReceivedNotification = JSON.parse(message) as ReceivedNotification;
     // only process notifications for the current chat's subscriptions
     if (this.subscriptionIds.length > 0 && !this.subscriptionIds.includes(notification.subscriptionId)) {
-      log('Received notification for a different subscription', notification);
+      log('Received chat notification message for a different chat subscription', notification);
       return ackMessage;
     }
 
@@ -279,8 +275,7 @@ export class GraphNotificationClient {
       withCredentials: false
     };
     // log the notification url and session id
-    log(`Creating SignalR connection for notification url: ${notificationUrl}`);
-    log(`Session Id: ${this.sessionId}`);
+    log(`Creating SignalR connection for notification url: ${notificationUrl} with session id: ${this.sessionId}`);
     const connection = new HubConnectionBuilder()
       .withUrl(GraphConfig.adjustNotificationUrl(notificationUrl, this.sessionId), connectionOptions)
       .withAutomaticReconnect()
@@ -300,26 +295,6 @@ export class GraphNotificationClient {
     } catch (e) {
       error('An error occurred connecting to the notification web socket', e);
     }
-  }
-
-  private async deleteSubscription(id: string) {
-    try {
-      log(`Deleting subscription with id: ${id}...`);
-      await this.graph?.api(`${GraphConfig.subscriptionEndpoint}/${id}`).delete();
-      log(`Successfully deleted subscription with id: ${id}.`);
-    } catch (e) {
-      error(e);
-    }
-  }
-
-  private async removeSubscriptions(subscriptions: Subscription[]): Promise<unknown[]> {
-    const tasks: Promise<unknown>[] = [];
-    for (const s of subscriptions) {
-      // if there is no id or the subscription is expired, skip
-      if (!s.id || (s.expirationDateTime && new Date(s.expirationDateTime) <= new Date())) continue;
-      tasks.push(this.deleteSubscription(s.id));
-    }
-    return Promise.all(tasks);
   }
 
   private createSubscriptions = async (chatId: string) => {
@@ -409,7 +384,7 @@ export class GraphNotificationClient {
             }
           }
         } catch (e) {
-          error(`Failed to renew subscriptions for ${subscriptionIds}.`, e);
+          error(`Failed to renew chat subscriptions for ${subscriptionIds}.`, e);
           await this.deleteCachedSubscriptions(chatId);
           subscriptions = undefined;
         }
@@ -426,17 +401,17 @@ export class GraphNotificationClient {
             // if the limit is reached, back-off (NOTE: this should probably be a 429)
             nextRenewalTimeInSec = appSettings.renewalTimerInterval * 3;
             throw new Error(
-              `Failed to create new subscriptions due to a limitation; retrying in ${nextRenewalTimeInSec} seconds: ${err.message}.`
+              `Failed to create new chat subscriptions due to a limitation; retrying in ${nextRenewalTimeInSec} seconds: ${err.message}.`
             );
           } else if (err.statusCode === 403 || err.statusCode === 402) {
             // permanent error, stop renewal
-            error('Failed to create new subscriptions due to a permanent condition; stopping renewals.', e);
+            error('Failed to create new chat subscriptions due to a permanent condition; stopping renewals.', e);
             nextRenewalTimeInSec = -1;
             return; // exit and don't reschedule the next renewal
           } else {
             // transient error, retry
             throw new Error(
-              `Failed to create new subscriptions due to a transient condition; retrying in ${nextRenewalTimeInSec} seconds: ${err.message}.`
+              `Failed to create new chat subscriptions due to a transient condition; retrying in ${nextRenewalTimeInSec} seconds: ${err.message}.`
             );
           }
         }
@@ -450,23 +425,23 @@ export class GraphNotificationClient {
         await this.connection?.send('ping'); // ensure the connection is still alive
       }
       if (!this.connection) {
-        log(`Creating a new SignalR connection for subscriptions: ${subscriptionIds}...`);
+        log(`Creating a new SignalR connection for chat subscriptions: ${subscriptionIds}...`);
         this.trySwitchToDisconnected(true);
         this.lastNotificationUrl = subscriptions![0]?.notificationUrl!;
         await this.createSignalRConnection(subscriptions![0]?.notificationUrl!);
-        log(`Successfully created a new SignalR connection for subscriptions: ${subscriptionIds}`);
+        log(`Successfully created a new SignalR connection for chat subscriptions: ${subscriptionIds}`);
       } else if (this.connection.state !== HubConnectionState.Connected) {
-        log(`Reconnecting SignalR connection for subscriptions: ${subscriptionIds}...`);
+        log(`Reconnecting SignalR connection for chat subscriptions: ${subscriptionIds}...`);
         this.trySwitchToDisconnected(true);
         await this.connection.start();
-        log(`Successfully reconnected SignalR connection for subscriptions: ${subscriptionIds}`);
+        log(`Successfully reconnected SignalR connection for chat subscriptions: ${subscriptionIds}`);
       } else if (this.lastNotificationUrl !== subscriptions![0]?.notificationUrl) {
-        log(`Updating SignalR connection for subscriptions: ${subscriptionIds} due to new notification URL...`);
+        log(`Updating SignalR connection for chat subscriptions: ${subscriptionIds} due to new notification URL...`);
         this.trySwitchToDisconnected(true);
         await this.closeSignalRConnection();
         this.lastNotificationUrl = subscriptions![0]?.notificationUrl!;
         await this.createSignalRConnection(subscriptions![0]?.notificationUrl!);
-        log(`Successfully updated SignalR connection for subscriptions: ${subscriptionIds}`);
+        log(`Successfully updated SignalR connection for chat subscriptions: ${subscriptionIds}`);
       }
 
       // emit the new connection event if necessary
@@ -497,7 +472,7 @@ export class GraphNotificationClient {
   }
 
   public async subscribeToChatNotifications(chatId: string) {
-    log(`Chat subscription with chat id: ${chatId}`);
+    log(`Subscribing to chat notifications for chatId: ${chatId}`);
     this.wasConnected = undefined;
     this.chatId = chatId;
     // start the renewal timer only once
