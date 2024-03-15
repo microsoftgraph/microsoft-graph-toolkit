@@ -246,6 +246,7 @@ export class GraphNotificationClient {
       // the renewSubscription method caches the updated subscription to track the new expiration time
       awaits.push(this.renewSubscription(chatId, subscription.id!, newExpirationTime));
       log(`Invoked RenewSubscription ${subscription.id}`);
+      this.renewalCount++;
     }
     await Promise.all(awaits);
   };
@@ -263,7 +264,6 @@ export class GraphNotificationClient {
           expirationDateTime
         })) as Subscription | undefined;
       if (renewedSubscription) {
-        this.renewalCount++;
         return this.cacheSubscription(chatId, renewedSubscription);
       }
     } catch (e) {
@@ -383,8 +383,6 @@ export class GraphNotificationClient {
       if (this.renewalTimerAccumulator < appSettings.renewalTimerInterval * 1000 && chatId === this.previousChatId) {
         return;
       }
-      this.renewalTimerAccumulator = 0;
-      this.previousChatId = chatId;
 
       // if there are current subscriptions for this chat id...
       let subscriptions = await this.getSubscriptions(chatId);
@@ -471,6 +469,9 @@ export class GraphNotificationClient {
 
       // emit the new connection event if necessary
       this.trySwitchToConnected();
+      // set if renewal was successful
+      this.renewalTimerAccumulator = 0;
+      this.previousChatId = chatId;
     } catch (e) {
       error('Error in chat subscription connection process.', e);
       this.trySwitchToDisconnected();
