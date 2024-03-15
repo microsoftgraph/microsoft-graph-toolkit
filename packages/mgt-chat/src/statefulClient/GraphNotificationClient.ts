@@ -226,7 +226,9 @@ export class GraphNotificationClient {
     // send subscription POST to Graph
     let subscription: Subscription;
     subscription = (await subscriptionGraph.api(subscriptionEndpoint).post(subscriptionDefinition)) as Subscription;
-    if (!subscription?.notificationUrl) throw new Error('Subscription not created');
+    if (!subscription?.notificationUrl) {
+      throw new Error('Subscription not created');
+    }
     log(subscription);
 
     log('Invoked CreateSubscription');
@@ -443,28 +445,28 @@ export class GraphNotificationClient {
       // create or reconnect the SignalR connection
       // notificationUrl comes in the form of websockets:https://graph.microsoft.com/beta/subscriptions/notificationChannel/websockets/<Id>?groupid=<UserId>&sessionid=default
       // if <Id> changes, we need to create a new connection
-      this.subscriptionIds = subscriptions.map(s => s.id!);
+      const subscriptionIds = subscriptions.map(s => s.id!);
       if (this.connection?.state === HubConnectionState.Connected) {
         await this.connection?.send('ping'); // ensure the connection is still alive
       }
       if (!this.connection) {
-        log(`Creating a new SignalR connection for subscriptions: ${this.subscriptionIds}...`);
+        log(`Creating a new SignalR connection for subscriptions: ${subscriptionIds}...`);
         this.trySwitchToDisconnected(true);
         this.lastNotificationUrl = subscriptions![0]?.notificationUrl!;
         await this.createSignalRConnection(subscriptions![0]?.notificationUrl!);
-        log(`Successfully created a new SignalR connection for subscriptions: ${this.subscriptionIds}`);
+        log(`Successfully created a new SignalR connection for subscriptions: ${subscriptionIds}`);
       } else if (this.connection.state !== HubConnectionState.Connected) {
-        log(`Reconnecting SignalR connection for subscriptions: ${this.subscriptionIds}...`);
+        log(`Reconnecting SignalR connection for subscriptions: ${subscriptionIds}...`);
         this.trySwitchToDisconnected(true);
         await this.connection.start();
-        log(`Successfully reconnected SignalR connection for subscriptions: ${this.subscriptionIds}`);
+        log(`Successfully reconnected SignalR connection for subscriptions: ${subscriptionIds}`);
       } else if (this.lastNotificationUrl !== subscriptions![0]?.notificationUrl) {
-        log(`Updating SignalR connection for subscriptions: ${this.subscriptionIds} due to new notification URL...`);
+        log(`Updating SignalR connection for subscriptions: ${subscriptionIds} due to new notification URL...`);
         this.trySwitchToDisconnected(true);
         await this.closeSignalRConnection();
         this.lastNotificationUrl = subscriptions![0]?.notificationUrl!;
         await this.createSignalRConnection(subscriptions![0]?.notificationUrl!);
-        log(`Successfully updated SignalR connection for subscriptions: ${this.subscriptionIds}`);
+        log(`Successfully updated SignalR connection for subscriptions: ${subscriptionIds}`);
       }
 
       // emit the new connection event if necessary
@@ -472,6 +474,7 @@ export class GraphNotificationClient {
       // set if renewal was successful
       this.renewalTimerAccumulator = 0;
       this.previousChatId = chatId;
+      this.subscriptionIds = subscriptionIds
     } catch (e) {
       error('Error in chat subscription connection process.', e);
       this.trySwitchToDisconnected();
