@@ -467,12 +467,19 @@ export class GraphNotificationClient {
     }
   };
 
+  /**
+   * Closes the SignalR connection
+   */
   public async closeSignalRConnection() {
     // stop the connection and set it to undefined so it will reconnect when next subscription is created.
     await this.connection?.stop();
     this.connection = undefined;
   }
 
+  /**
+   * Subscribes to chat notifications for the given chatId
+   * @param chatId chat id to subscribe to
+   */
   public async subscribeToChatNotifications(chatId: string) {
     log(`Subscribing to chat notifications for chatId: ${chatId}`);
     this.wasConnected = undefined;
