@@ -355,7 +355,7 @@ export class GraphNotificationClient {
     let nextRenewalTimeInSec = appSettings.renewalTimerInterval;
     try {
       const chatId = this.chatId;
-      
+
       // this allows us to renew on chatId change much faster than the normal renewal interval
       const timeElapsed = new Date().getTime() - this.lastRenewalTime.getTime();
       if (timeElapsed < appSettings.renewalTimerInterval * 1000 && chatId === this.previousChatId) {
