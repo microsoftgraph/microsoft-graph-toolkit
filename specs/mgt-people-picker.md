@@ -46,16 +46,97 @@ The people picker components provides a way for developers to select users, grou
 <mgt-people-picker group-ids="02bd9fd6-8f93-4758-87c3-1fb73740a315,06f62f70-9827-4e6e-93ef-8e0f2d9b7b23"></mgt-people-picker>
 ```
 
-## Form-based validation Elements
-
-| Attribute                  | Implementation                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| -------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |                                                            
-| selected-people            | selectedPeople          | An array of selected people. Set this value to select people programmatically.                                 |                                                                                                                                                                                                                                            
-| selection-mode             | selectionMode           | Used to indicate whether to allow selecting multiple items (users or groups) or just a single item. Available options are: `single`, `multiple`. Default value is `multiple`.                         |
+## Form-associated custom elements
 
 
-| disabled                   | disabled                | Sets whether the people picker is disabled. When disabled, the user is not able to search or select people.                                                                                                                                                                                                                                                                     |  
-| required | required |                                                                                                                                            
+| Attribute          | Description                                                                                                 | Implementation                                                                                                      |
+| ------------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `required`         | Sets whether the input is required. The form is invalid if the required field is not populated.             | `<mgt-people-picker required></mgt-people-picker>`                                                                 |
+| `selected-people`  | Sets the selected people programmatically.                                                                 | `<mgt-people-picker selected-people="[{id: '48d31887-5fad-4d73-a9f5-3c356e68a038', displayName: 'John Doe'}]"></mgt-people-picker>` |
+| `selection-mode`   | Used to indicate whether to allow selecting multiple items (users or groups) or just a single item.         | `<mgt-people-picker selection-mode="single"></mgt-people-picker>`                                                  |
+| `disabled`         | Sets whether the people picker is disabled. When disabled, the user is not able to search or select people. | `<mgt-people-picker disabled></mgt-people-picker>`                                                                 |
+| `required`         | Sets whether the input is required. The form is invalid if the required field is not populated.             | `<mgt-people-picker required></mgt-people-picker>`                                                                 |
+
+## Implementing the form-associated behaviors
+
+The implementation of the form-associated custom elements will include the following:
+
+### Identify the element as a form-associated custom element
+
+The `mgt-people-picker` component is identified as a form-associated custom element by adding a static `formAssociated` property to the custom element class to tell the browser to treat the element like a form control.
+
+### Providing access to the form control's internals
+
+The component will implement the attachInternals() method on the element to get access to extra methods and properties for form controls, like setFormValue() and setValidity(). This method returns the `ElementInternals` object that provides access to the form control APIs.
+
+It will also set the internal value of the control.
+
+```javascript
+export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
+    constructor() {
+        super();
+        this._internals = this.attachInternals();
+        // internal value for this control
+        this.value_ = 0;
+    }
+    // ...
+}
+```
+
+### Managing the form control's value
+
+The mgt-people-picker will manage its form value through the value property. This value will be the selected people in the picker.
+
+```javascript
+export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
+    // ...
+    get value() {
+        return this.selectedPeople;
+    }
+
+    set value(val) {
+        this.selectedPeople = val;
+    }
+    // ...
+}
+```
+
+### Handling form control validation state
+
+The mgt-people-picker will handle validation by using the setValidity() and checkValidity() methods provided by the ElementInternals object.
+    
+```javascript
+export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
+    // ...
+    checkValidity() {
+        const isValid = this.selectedPeople && this.selectedPeople.length > 0;
+        this._internals.setValidity({
+            customError: !isValid
+        });
+        return isValid;
+    }
+    // ...
+}
+```
+
+### Manage Form Submission
+
+The mgt-people-picker will manage form submission by implementing the formDisabledCallback() and formResetCallback() methods.
+
+```javascript
+export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
+    // ...
+    formDisabledCallback(isDisabled) {
+        this.disabled = isDisabled;
+    }
+
+    formResetCallback() {
+        this.selectedPeople = [];
+    }
+    // ...
+}
+```
+This design allows the mgt-people-picker to fully participate in form submission, validation, and other form-related behaviors.
 
 ## Events
 
