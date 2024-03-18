@@ -62,9 +62,9 @@ export class GraphNotificationClient {
   private wasConnected?: boolean | undefined;
   private renewalTimeout?: string;
   private renewalCount = 0;
+  private lastRenewalTime = new Date();
   private chatId = '';
   private previousChatId = '';
-  private renewalTimerAccumulator = 0;
   /**
    * Provides a stable sessionId for the lifetime of the browser tab.
    * @returns a string that is either read from session storage or generated and placed in session storage
@@ -355,9 +355,11 @@ export class GraphNotificationClient {
     let nextRenewalTimeInSec = appSettings.renewalTimerInterval;
     try {
       const chatId = this.chatId;
+      
       // this allows us to renew on chatId change much faster than the normal renewal interval
-      this.renewalTimerAccumulator += appSettings.fastRenewalInterval;
-      if (this.renewalTimerAccumulator < appSettings.renewalTimerInterval * 1000 && chatId === this.previousChatId) {
+      const timeElapsed = new Date().getTime() - this.lastRenewalTime.getTime();
+      if (timeElapsed < appSettings.renewalTimerInterval * 1000 && chatId === this.previousChatId) {
+        this.lastRenewalTime = new Date();
         return;
       }
 
@@ -447,9 +449,9 @@ export class GraphNotificationClient {
       // emit the new connection event if necessary
       this.trySwitchToConnected();
       // set if renewal was successful
-      this.renewalTimerAccumulator = 0;
+      this.lastRenewalTime = new Date();
       this.previousChatId = chatId;
-      this.subscriptionIds = subscriptionIds
+      this.subscriptionIds = subscriptionIds;
     } catch (e) {
       error('Error in chat subscription connection process.', e);
       this.trySwitchToDisconnected();
