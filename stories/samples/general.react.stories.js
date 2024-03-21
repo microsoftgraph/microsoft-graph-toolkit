@@ -22,7 +22,7 @@ export const Hooks = () => html`
     const [isSignedIn] = useIsSignedIn();
 
     export default () => (
-      isSignedIn && <PersonCard personQuery="me"></PersonCard>
+      isSignedIn ? <PersonCard personQuery="me"></PersonCard> : null
     );
   </react>
 `;
