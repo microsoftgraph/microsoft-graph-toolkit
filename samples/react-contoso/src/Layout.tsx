@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Header } from './components/Header';
 import { SideNavigation } from './components/SideNavigation';
-import { useIsSignedIn } from './hooks/useIsSignedIn';
+import { useIsSignedIn } from '@microsoft/mgt-react';
 import { NavigationItem } from './models/NavigationItem';
 import { getNavigation } from './services/Navigation';
 import { FluentProvider, makeStyles, mergeClasses, shorthands } from '@fluentui/react-components';

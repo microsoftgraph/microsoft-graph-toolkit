@@ -9,7 +9,7 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Samples / General',
+  title: 'Samples / General / HTML',
   decorators: [withCodeEditor],
   parameters: {
     viewMode: 'story'
@@ -89,7 +89,7 @@ export const Localization = () => html`
   </script>
 `;
 
-export const cache = () => html`
+export const Cache = () => html`
 <fluent-button id="ClearCacheButton" appearance="accent">Clear Cache</fluent-button>
 <div id="status" class="notes"></div>
 <span class="notes"
@@ -169,7 +169,7 @@ clearCacheButton.addEventListener('click', onClearCacheButtonClick);
   </script>
 `;
 
-export const theme = () => html`
+export const Theme = () => html`
 <div>
   <p>This demonstrates how to set the theme globally without using a theme toggle and customize styling within specific scopes</p>
   <p>Please refer to the JS and CSS tabs in the editor for implentation details</p>
@@ -222,4 +222,18 @@ body {
   --channel-picker-placeholder-focus-color: #441540;
 }
 </style>
+`;
+
+export const IsSignedIn = () => html`
+  <p>This demonstrates how to use the <code>isSignedIn</code> utility function in JavaScript. If you're signed in, <code>mgt-person</code> is rendered below.</p>
+  <div id="person"></div>
+  <script>
+    import { isSignedIn } from '@microsoft/mgt-element';
+    const person = document.getElementById("person");
+    if(isSignedIn() && person){
+      const mgtPerson = document.createElement("mgt-person");
+      mgtPerson.setAttribute("person-query", "me");
+      person.appendChild(mgtPerson);
+    }
+</script>
 `;
