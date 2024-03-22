@@ -1,13 +1,11 @@
 import * as React from 'react';
-import { Login, SearchBox } from '@microsoft/mgt-react';
+import { Login, SearchBox, useIsSignedIn } from '@microsoft/mgt-react';
 import { PACKAGE_VERSION } from '@microsoft/mgt-element';
-import { InfoButton } from '@fluentui/react-components/unstable';
 import { SimpleLogin } from './SimpleLogin';
-import { useIsSignedIn } from '../hooks/useIsSignedIn';
 import { useNavigate } from 'react-router-dom';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { useAppContext } from '../AppContext';
-import { Label, makeStyles, mergeClasses, shorthands, tokens } from '@fluentui/react-components';
+import { Label, makeStyles, mergeClasses, shorthands, tokens, InfoLabel } from '@fluentui/react-components';
 import { GridDotsRegular } from '@fluentui/react-icons';
 import { useLocation } from 'react-router-dom';
 
@@ -149,11 +147,7 @@ const HeaderComponent: React.FunctionComponent = () => {
 
         <div className={styles.waffleTitle}>
           <Label className={styles.name}>{import.meta.env.VITE_SITE_NAME} </Label>
-          <InfoButton
-            className={styles.infoIcon}
-            size="medium"
-            info={<>Using the Graph Toolkit v{PACKAGE_VERSION}</>}
-          />
+          <InfoLabel className={styles.infoIcon} size="medium" info={<>Using the Graph Toolkit v{PACKAGE_VERSION}</>} />
         </div>
       </div>
       <div className={styles.search}>
