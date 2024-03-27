@@ -39,6 +39,7 @@ export * from './utils/LocalizationHelper';
 export * from './utils/mgtHtml';
 export * from './utils/CustomElement';
 export * from './utils/registerComponent';
+export * from './utils/isSignedIn';
 
 export { PACKAGE_VERSION } from './utils/version';
 
