@@ -93,6 +93,24 @@ const App = (props) => {
 
 The `template` prop allows you to specify which template to overwrite. In this case, the `MyEvent` component will be repeated for every event, and the `event` object will be passed as part of the `dataContext` prop.
 
+## Custom hooks
+
+`mgt-react` exposes some custom hooks that you can use in your app:
+
+### `useIsSignedIn`
+
+You can use this hook to check the signed in state:
+
+```tsx
+import { Agenda, useIsSignedIn } from '@microsoft/mgt-react';
+
+const App = (props) => {
+  const [isSignedIn] = useIsSignedIn();
+
+  return {isSignedIn && <Agenda></Agenda>}
+}
+```
+
 ## Why
 
 If you've used web components in React, you know that proper interop between web components and React components requires a bit of extra work.

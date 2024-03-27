@@ -5,9 +5,4 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from './Mgt';
-export * from './MgtTemplateProps';
-export * from './generated/react';
-export * from './hooks';
-export * from '@microsoft/mgt-components/dist/es6/exports';
-export * from '@microsoft/mgt-element';
+export * from './useIsSignedIn';
