@@ -48,11 +48,12 @@ $answer-padding: var(--answer-padding, 10px);
   }
 
   padding-top: 3px;
+  color: $color;
 }
 
 .search-result-summary {
   margin: 4px 0;
-  color: var(--body-subtle-text-color);
+  color: $color;
 }
 
 .search-result-thumbnail {
