@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.1](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.0...v4.2.1) (2024-03-27)
+
+
+### Bug Fixes
+
+* version bump ([#3146](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3146)) ([dadb0f3](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/dadb0f307f2dd2589cb58bf2e8955ef698aa0666))
+
+## [4.2.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.1.0...v4.2.0) (2024-03-27)
+
+
+### Features
+
+* add a useIsSignedIn custom hook for react ([#3093](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3093)) ([1e695aa](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/1e695aabb704563f0f511a5f014ed881dc3132c2))
+
+
+### Bug Fixes
+
+* **a11y:** fix forced colors for file upload button ([#3114](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3114)) ([81826d9](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/81826d967daad4bf60cc9e7018265c52445a3aeb))
+* add a custom font-size token to people-picker ([#3069](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3069)) ([bc8423c](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/bc8423c69eae0a3670d10289537497dad62cde99))
+* add a shimmer for the loading state of person component ([#3009](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3009)) ([daf0cf9](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/daf0cf95dfcb25bb5efe760a802ddfceb105f1a2))
+* add aria-label text string for teams chevrons ([#3129](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3129)) ([bc1fedf](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/bc1fedf605f91ba2d87f4cd2dd69b4817e117b38))
+* disable input in single select mode and default userIds and groupIds ([#3119](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3119)) ([948b078](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/948b078ef741676ca0b8a16bd67f5d6423205938))
+* prevent undefined account error when logging out ([#3082](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3082)) ([da77913](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/da779130aaeaf84df94eb79e7f982d210a66eee1))
+* theme colors for mgt-search-results ([#3116](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3116)) ([ae5e343](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/ae5e3438f04c184677d83dcbe2308c34e1b52afc))
+
 ## [4.1.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.0.1...v4.1.0) (2024-02-26)
 
 
