@@ -46,16 +46,19 @@ The people picker components provides a way for developers to select users, grou
 <mgt-people-picker group-ids="02bd9fd6-8f93-4758-87c3-1fb73740a315,06f62f70-9827-4e6e-93ef-8e0f2d9b7b23"></mgt-people-picker>
 ```
 
-## Form-associated custom elements
+## Form validation
+
+
+The mgt-people-picker component can be used as a form control in a form, and the form can be submitted with the attributes as part of the form data. It makes use of the form-associated custom elements API, which provides a new set of capabilities that make custom controls work like built-in form controls. The component will implement the form-associated behaviors to participate in form submission, validation, and other form-related behaviors. [Read more](https://docs.google.com/document/d/1JO8puctCSpW-ZYGU8lF-h4FWRIDQNDVexzHoOQ2iQmY/edit?pli=1#heading=h.2hgix04sc53t) about the form-associated custom elements API and [how to create custom form controls](https://css-tricks.com/creating-custom-form-controls-with-elementinternals/).
+
+The component can be used with the following attributes, which can then be validated as part of the form submission. 
 
 
 | Attribute          | Description                                                                                                 | Implementation                                                                                                      |
 | ------------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `required`         | Sets whether the input is required. The form is invalid if the required field is not populated.             | `<mgt-people-picker required></mgt-people-picker>`                                                                 |
-| `selected-people`  | Sets the selected people programmatically.                                                                 | `<mgt-people-picker selected-people="[{id: '48d31887-5fad-4d73-a9f5-3c356e68a038', displayName: 'John Doe'}]"></mgt-people-picker>` |
-| `selection-mode`   | Used to indicate whether to allow selecting multiple items (users or groups) or just a single item.         | `<mgt-people-picker selection-mode="single"></mgt-people-picker>`                                                  |
+| `selected-people`  | Sets the selected people programmatically.                                                                 | `<mgt-people-picker selected-people="[{id: '48d31887-5fad-4d73-a9f5-3c356e68a038', displayName: 'John Doe'}]"></mgt-people-picker>` |                                             |
 | `disabled`         | Sets whether the people picker is disabled. When disabled, the user is not able to search or select people. | `<mgt-people-picker disabled></mgt-people-picker>`                                                                 |
-| `required`         | Sets whether the input is required. The form is invalid if the required field is not populated.             | `<mgt-people-picker required></mgt-people-picker>`                                                                 |
 
 ## Implementing the form-associated behaviors
 
@@ -64,6 +67,14 @@ The implementation of the form-associated custom elements will include the follo
 ### Identify the element as a form-associated custom element
 
 The `mgt-people-picker` component is identified as a form-associated custom element by adding a static `formAssociated` property to the custom element class to tell the browser to treat the element like a form control.
+    
+```javascript
+export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
+    // ...
+    static formAssociated = true;
+    // ...
+}
+```
 
 ### Providing access to the form control's internals
 
@@ -76,10 +87,8 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
     constructor() {
         super();
         this._internals = this.attachInternals();
-        // internal value for this control
-        this.value_ = 0;
-    }
     // ...
+    }
 }
 ```
 
@@ -91,11 +100,7 @@ The mgt-people-picker will manage its form value through the value property. Thi
 export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
     // ...
     get value() {
-        return this.selectedPeople;
-    }
-
-    set value(val) {
-        this.selectedPeople = val;
+        return this.selectedPeople.join(',');
     }
     // ...
 }
@@ -103,7 +108,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
 
 ### Handling form control validation state
 
-The mgt-people-picker will handle validation by using the setValidity() and checkValidity() methods provided by the ElementInternals object.
+The mgt-people-picker will handle validation by using the setValidity() provided by the ElementInternals object, which you get by calling attachInternals() on your custom element, to indicate whether the element is currently valid or not.
     
 ```javascript
 export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
@@ -112,7 +117,8 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         const isValid = this.selectedPeople && this.selectedPeople.length > 0;
         this._internals.setValidity({
             customError: !isValid
-        });
+        }, isValid ? '' : 'At least one person must be selected.');
+        
         return isValid;
     }
     // ...
@@ -136,7 +142,17 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
     // ...
 }
 ```
-This design allows the mgt-people-picker to fully participate in form submission, validation, and other form-related behaviors.
+## Future Validation Enhancements
+
+In future versions of the `mgt-people-picker`, we plan to add more advanced validation features to give developers more control over the selection process and ensure that users select the correct number of people.
+
+### Range Validation
+
+We plan to add support for range validation. This will allow developers to specify a minimum and maximum number of people that can be selected. This will be useful in scenarios where there is a hard limit on the number of people that can be selected. For example, a developer could specify that at least 2 people and at most 5 people must be selected.
+
+```html
+<mgt-people-picker min-selected="2" max-selected="5"></mgt-people-picker>
+```
 
 ## Events
 
