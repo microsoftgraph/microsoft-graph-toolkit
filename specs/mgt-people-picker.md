@@ -53,32 +53,11 @@ The mgt-people-picker component can be used as a form control in a form, and the
 The properties here are listed as they are used as part of the validation of the control.
 
 
-| Property on the object          | Description                                                                                                 | Implementation                                                                                                      |
+| Property on the object          | Description                                                                                                 | Type of property                                                                                                      |
 | ------------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `required`         | Sets whether the input is required. The form is invalid if the required field is not populated.             | `<mgt-people-picker required></mgt-people-picker>`                                                                 |
-| `selectedPeople`  | Sets the selected people programmatically.                                                                 | `<mgt-people-picker id="myPeoplePicker"></mgt-people-picker>`. Check example implementation below. |                                             |
-| `disabled`         | Sets whether the people picker is disabled. When disabled, the user is not able to search or select people. | `<mgt-people-picker disabled></mgt-people-picker>`                                                                 |
-
-Example of implementation the `selectedPeople` property for validation in a form:
-
-```html
-<form id="myForm">
-  <mgt-people-picker id="myPeoplePicker" required></mgt-people-picker>
-  <input type="submit" value="Submit">
-</form>
-
-<script>
-  document.getElementById('myForm').addEventListener('submit', function(event) {
-    var peoplePicker = document.getElementById('myPeoplePicker');
-    
-    // Check if any people have been selected
-    if (!peoplePicker.selectedPeople || peoplePicker.selectedPeople.length === 0) {
-      event.preventDefault(); // Prevent form submission
-      alert('Please select at least one person.');
-    }
-  });
-</script>
-```
+| `required`         | Determines if the required field validation is to be executed. When `true` the field is invalid if the the selectedPeople property contains zero items.             | `boolean`                                                               |
+| `selectedPeople`  | Sets the selected people programmatically.                                                                 | `array` |                                             |
+| `disabled`         | Sets whether the people picker is disabled. When disabled, the user is not able to search or select people. | `boolean`                                                                 |
 
 ## Implementing the form-associated behaviors
 
