@@ -50,7 +50,7 @@ The people picker components provides a way for developers to select users, grou
 
 The mgt-people-picker component can be used as a form control in a form, and the form can be submitted with the attributes as part of the form data. It makes use of the form-associated custom elements API, which provides a new set of capabilities that make custom controls work like built-in form controls. The component will implement the form-associated behaviors to participate in form submission, validation, and other form-related behaviors. [Read more](https://docs.google.com/document/d/1JO8puctCSpW-ZYGU8lF-h4FWRIDQNDVexzHoOQ2iQmY/edit?pli=1#heading=h.2hgix04sc53t) about the form-associated custom elements API and [how to create custom form controls](https://css-tricks.com/creating-custom-form-controls-with-elementinternals/).
 
-The properties here are listed as they are used as part of the validation of the control.
+The following properties are used as part of the required field validation logic for the component.
 
 
 | Property on the object          | Description                                                                                                 | Type of property                                                                                                      |
