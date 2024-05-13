@@ -806,10 +806,10 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   protected renderLoading = (): TemplateResult => {
     return (
       this.renderTemplate('loading', null) ||
-      mgtHtml`
+      html`
          <div class="message-parent">
            <mgt-spinner></mgt-spinner>
-           <div aria-label="${this.strings.loadingMessage}" class="loading-text">
+           <div aria-label="${this.strings.loadingMessage}" aria-live="polite" class="loading-text">
              ${this.strings.loadingMessage}
            </div>
          </div>
@@ -833,7 +833,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       this.renderTemplate('no-data', null) ||
       html`
          <div class="message-parent">
-           <div aria-label=${this.strings.noResultsFound} class="search-error-text">
+           <div aria-label=${this.strings.noResultsFound} aria-live="polite" class="search-error-text">
              ${this.strings.noResultsFound}
            </div>
          </div>
