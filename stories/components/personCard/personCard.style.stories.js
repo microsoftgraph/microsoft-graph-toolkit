@@ -40,7 +40,7 @@ export const customCSSProperties = () => html`
       --person-card-fluent-background-color: yellow;
       --person-card-line1-text-color: purple;
       --person-card-line2-text-color: blue;
-      --person-card-line3-text-color: green;
+      --person-card-line3-text-color: blue;
       --person-card-fluent-background-color-hover: orange;
       --organization-active-org-member-target-background-color: blue;
       --file-list-background-color: pink;
