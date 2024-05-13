@@ -34,7 +34,7 @@ export const customCSSProperties = () => html`
 
     --people-picker-input-placeholder-focus-text-color: yellow;
     --people-picker-input-placeholder-hover-text-color: gold;
-    --people-picker-input-placeholder-text-color: white;
+    --people-picker-input-placeholder-text-color: black;
     --people-picker-search-icon-color: yellow;
     --people-picker-remove-selected-close-icon-color: blue;
     --people-picker-font-size: 16px;
