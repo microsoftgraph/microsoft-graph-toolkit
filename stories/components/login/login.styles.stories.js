@@ -18,10 +18,10 @@ export const customCSSProperties = () => html`
 <mgt-login class="login"></mgt-login>
 <style>
   .login {
-    --login-signed-out-button-background: red;
+    --login-signed-out-button-background: black;
     --login-signed-out-button-hover-background: orange;
-    --login-signed-out-button-text-color: purple;
-    --login-signed-in-background: red;
+    --login-signed-out-button-text-color: white;
+    --login-signed-in-background: black;
     --login-signed-in-hover-background: green;
     --login-button-padding:5px;
     --login-popup-background-color: blue;
