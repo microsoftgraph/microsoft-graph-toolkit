@@ -18,18 +18,18 @@ export const customCSSProperties = () => html`
 <mgt-login class="login"></mgt-login>
 <style>
   .login {
-    --login-signed-out-button-background: black;
+    --login-signed-out-button-background: yellow;
     --login-signed-out-button-hover-background: orange;
-    --login-signed-out-button-text-color: white;
-    --login-signed-in-background: black;
+    --login-signed-out-button-text-color: maroon;
+    --login-signed-in-background: yellow;
     --login-signed-in-hover-background: green;
     --login-button-padding:5px;
     --login-popup-background-color: blue;
     --login-popup-command-button-background-color: orange;
     --login-popup-padding: 8px;
-    --login-add-account-button-text-color: yellow;
-    --login-add-account-button-background-color: red;
-    --login-add-account-button-hover-background-color: purple;
+    --login-add-account-button-text-color: maroon;
+    --login-add-account-button-background-color: yellow;
+    --login-add-account-button-hover-background-color: white;
     --login-command-button-background-color: orange;
     --login-command-button-hover-background-color: purple;
     --login-command-button-text-color: black;
@@ -37,8 +37,8 @@ export const customCSSProperties = () => html`
     --login-flyout-command-text-color: maroon;
 
     /** person component tokens **/
-    --person-line1-text-color: whitesmoke;
-    --person-line2-text-color: white;
+    --person-line1-text-color: maroon;
+    --person-line2-text-color: maroon;
     --person-background-color: blue;
   }
 </style>
