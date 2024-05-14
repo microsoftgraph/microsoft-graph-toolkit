@@ -34,7 +34,7 @@ export const customCSSProperties = () => html`
       --file-margin: 3px 4px;
       --file-line1-font-size: 15px;
       --file-line1-font-weight: 500;
-      --file-line1-color: gray;
+      --file-line1-color: blue;
       --file-line1-text-transform: capitalize;
       --file-line2-font-size:14px;
       --file-line2-font-weight:300;
