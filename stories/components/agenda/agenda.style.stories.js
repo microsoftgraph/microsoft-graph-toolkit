@@ -18,27 +18,28 @@ export const customCSSProperties = () => html`
   <mgt-agenda class="agenda" group-by-day></mgt-agenda>
   <style>
     .agenda {
-      --agenda-background-color: #fcefef;
-      --agenda-event-box-shadow: 0px 2px 30px pink;
-      --agenda-event-margin: 0px 10px 40px 10px;
-      --agenda-event-padding: 8px 0px;
-      --agenda-event-background-color: #8d696f;
-      --agenda-event-border: dotted 2px white;
+  --agenda-background-color: gold;
+  --agenda-event-box-shadow: 0px 2px 30px;
+  --agenda-event-margin: 0px 10px 40px 10px;
+  --agenda-event-padding: 8px 0px;
+  --agenda-event-background-color: yellow;
+  --agenda-event-border: dotted 2px white;
 
-      --agenda-header-margin: 3px;
-      --agenda-header-font-size: 20px;
-      --agenda-header-color: #7b575d;
+  --agenda-header-margin: 3px;
+  --agenda-header-font-size: 20px;
+  --agenda-header-color: maroon;
 
-      --agenda-event-time-font-size: 20px;
-      --agenda-event-time-color: white;
+  --agenda-event-time-font-size: 20px;
+  --agenda-event-time-color: maroon;
 
-      --agenda-event-subject-font-size: 12px;
-      --agenda-event-subject-color: white;
+  --agenda-event-subject-font-size: 12px;
+  --agenda-event-subject-color: maroon;
 
-      --agenda-event-location-font-size: 20px;
-      --agenda-event-location-color: white;
+  --agenda-event-location-font-size: 20px;
+  --agenda-event-location-color: maroon;
+  --agenda-event-attendees-color: maroon;
 
-      --agenda-event-attendees-color: gold;
-    }
+  --people-overflow-font-color: maroon;
+}
   </style>
 `;
