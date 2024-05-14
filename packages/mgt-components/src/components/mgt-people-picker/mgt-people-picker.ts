@@ -806,7 +806,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   protected renderLoading = (): TemplateResult => {
     return (
       this.renderTemplate('loading', null) ||
-      html`
+      mgtHtml`
          <div class="message-parent">
            <mgt-spinner></mgt-spinner>
            <div aria-label="${this.strings.loadingMessage}" aria-live="polite" class="loading-text">
