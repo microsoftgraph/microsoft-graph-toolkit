@@ -24,7 +24,7 @@ export const customCSSProperties = () => html`
     --people-picker-dropdown-result-background-color: yellow;
     --people-picker-dropdown-result-hover-background-color: gold;
     --people-picker-dropdown-result-focus-background-color: green;
-    --people-picker-no-results-text-color: orange;
+    --people-picker-no-results-text-color: white;
     --people-picker-input-background: gray;
     --people-picker-input-border-color: yellow;
     --people-picker-input-hover-background: green;
@@ -34,7 +34,7 @@ export const customCSSProperties = () => html`
 
     --people-picker-input-placeholder-focus-text-color: yellow;
     --people-picker-input-placeholder-hover-text-color: gold;
-    --people-picker-input-placeholder-text-color: white;
+    --people-picker-input-placeholder-text-color: black;
     --people-picker-search-icon-color: yellow;
     --people-picker-remove-selected-close-icon-color: blue;
     --people-picker-font-size: 16px;
