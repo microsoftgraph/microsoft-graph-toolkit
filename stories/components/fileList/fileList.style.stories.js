@@ -20,7 +20,7 @@ export const customCSSProperties = () => html`
         /** mgt-file-upload custom styling */
         --file-upload-background-color-drag: rgb(255, 0, 0, 0.5);
         --file-upload-border-drag: 2px groove black;
-        --file-upload-button-background-color: orange;
+        --file-upload-button-background-color: purple;
         --file-upload-button-background-color-hover: green;
         --file-upload-button-text-color: whitesmoke;
         --file-upload-dialog-background-color: azure;
@@ -52,7 +52,7 @@ export const customCSSProperties = () => html`
         --file-margin: 3px 4px;
         --file-line1-font-size: 15px;
         --file-line1-font-weight: 500;
-        --file-line1-color: gray;
+        --file-line1-color: #727272;
         --file-line1-text-transform: capitalize;
         --file-line2-font-size:14px;
         --file-line2-font-weight:300;
