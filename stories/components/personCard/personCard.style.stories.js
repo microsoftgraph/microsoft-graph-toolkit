@@ -18,7 +18,7 @@ export const customCSSProperties = () => html`
   <style>
     .person-card {
       --person-card-nav-back-arrow-hover-color: green;
-      --person-card-icon-color: red;
+      --person-card-icon-color: black;
       --person-card-line1-font-size: 30px;
       --person-card-line1-font-weight: 800;
       --person-card-line1-line-height: 38px;
