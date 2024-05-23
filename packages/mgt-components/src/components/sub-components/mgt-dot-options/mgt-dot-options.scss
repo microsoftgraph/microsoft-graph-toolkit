@@ -50,7 +50,7 @@ $dot-options-translatey: var(--dot-options-translatey, translateY(32px));
       color: $dot-options-menu-item-color;
     }
 
-    &::part(content):hover {
+    &:hover {
       background: $dot-options-menu-item-hover-background-color;
     }
   }
