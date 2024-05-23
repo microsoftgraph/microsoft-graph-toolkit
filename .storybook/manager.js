@@ -27,7 +27,7 @@ const getClientId = () => {
 
 document.getElementById('mgt-version').innerText = PACKAGE_VERSION;
 
-// const mockProvider = new MockProvider(true);
+const mockProvider = new MockProvider(true);
 const msal2Provider = new Msal2Provider({
   clientId: getClientId(),
   redirectUri: window.location.origin + '/' + AUTH_PAGE,
@@ -68,7 +68,11 @@ const SignInPanel = () => {
   });
 
   const emitProvider = loginState => {
-    emit(SETPROVIDER_EVENT, { state: loginState, provider: msal2Provider, name: 'MgtMsal2Provider' });
+    if (Providers.globalProvider.state === ProviderState.SignedOut && Providers.globalProvider !== mockProvider) {
+      emit(SETPROVIDER_EVENT, { state: loginState, provider: mockProvider, name: 'MgtMockProvider' });
+    } else {
+      emit(SETPROVIDER_EVENT, { state: loginState, provider: msal2Provider, name: 'MgtMsal2Provider' });
+    }
   };
 
   Providers.onProviderUpdated(() => {

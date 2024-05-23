@@ -881,7 +881,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
   };
 
   handleFocus = () => {
-    // this.lostFocus();
     this.gainedFocus();
   };
 
