@@ -1,0 +1,16 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../styles/shared-styles';
+
+$dot-options-menu-background-color: var(--dot-options-menu-background-color, var(--fill-color));
+$dot-options-menu-shadow-color: var(--dot-options-menu-shadow-color, var(--fill-color));
+$dot-options-menu-item-color: var(--dot-options-menu-item-color, var(--neutral-foreground-hint));
+$dot-options-menu-item-hover-background-color: var(
+  --dot-options-menu-item-hover-background-color,
+  var(--neutral-fill-input-hover)
+);
