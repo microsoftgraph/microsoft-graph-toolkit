@@ -339,6 +339,17 @@ export class MgtFileUpload extends MgtBaseComponent {
   constructor() {
     super();
     this.filesToUpload = [];
+    this.addEventListener('__uploadfailed', this.focusOnUpload)
+    this.addEventListener('__uploadsuccess', this.focusOnUpload)
+  }
+
+  focusOnUpload() {
+    const uploadDom = this.renderRoot.querySelector('mgt-file[part="upload"]')
+    if(uploadDom) {
+      uploadDom.setAttribute("tabindex", "0")
+      uploadDom.classList.add("upload");
+      uploadDom.focus()
+    }
   }
 
   /**
@@ -466,12 +477,13 @@ export class MgtFileUpload extends MgtBaseComponent {
     const folder =
       folderTabStyle + (fileItem.fieldUploadResponse === 'lastModifiedDateTime' ? ' file-upload-dialog-success' : '');
 
+    const isDescription = fileItem.fieldUploadResponse === 'description'
     const description = classMap({
-      description: fileItem.fieldUploadResponse === 'description'
+      description: isDescription
     });
 
     const completedTemplate = !fileItem.completed ? this.renderFileUploadTemplate(fileItem) : html``;
-
+    const failOrSuccess = isDescription? strings.failUploadFile: strings.successUploadFile;
     return mgtHtml`
         <div class="${completed}">
           <div class="${folder}">
@@ -484,6 +496,7 @@ export class MgtFileUpload extends MgtBaseComponent {
                   .fileDetails=${fileItem.driveItem}
                   .view=${fileItem.view}
                   .line2Property=${fileItem.fieldUploadResponse}
+                  aria-label="${fileItem.driveItem.name} ${failOrSuccess}"
                   part="upload"
                   class="mgt-file-item">
                 </mgt-file>
@@ -1121,6 +1134,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       fileUpload.completed = true;
       void super.requestStateUpdate(true);
       void clearFilesCache();
+      this.fireCustomEvent('__uploadsuccess')
     }, 500);
   }
 
@@ -1137,6 +1151,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       fileUpload.fieldUploadResponse = 'description';
       fileUpload.completed = true;
       void super.requestStateUpdate(true);
+      this.fireCustomEvent('__uploadfailed')
     }, 500);
   }
 
