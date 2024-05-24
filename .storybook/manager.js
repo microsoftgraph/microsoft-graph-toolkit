@@ -156,10 +156,11 @@ const xmlns = 'http://www.w3.org/2000/svg';
 window.onload = () => {
   addUsefulLinks();
 };
-// Dirty hack. the screen size btns set the title on clicking it. Thus, when you
-// set the correct title, after clicking for full screen, the set title is 
-// overridden to the precious problematic value. This is a catch-all hack
-// to just ensure any clicks on the btn resets to the correct title.
+// Dirty hack. The screen sizing btn resets the title on clicking it. When you
+// set the correct title during the window loading event, after clicking the
+// button for a full screen or exit of a full screen, the set title is 
+// overridden to the previous problematic value. This is a catch-all hack on the
+// window click event to just ensure any clicks on the btn resets to the correct title.
 window.onclick = () =>{
   resetScreenSizingBtnTitles()
 }
