@@ -692,10 +692,8 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         appearance="outline"
         slot="anchor"
         id="people-picker-input"
-        aria-controls="suggestions-list"
         role="combobox"
         aria-live="assertive"
-        aria-atomic="true"
         placeholder=${this.hasMaxSelections ? this.strings.maxSelectionsPlaceHolder : placeholder}
         aria-label=${this.ariaLabel || maxSelectionsAriaLabel || placeholder || this.strings.selectContact}
         aria-expanded=${this.flyout?.isOpen ?? false}
@@ -1376,6 +1374,8 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         this.handleUserSearch();
       }
       this._setAnyEmail = false;
+    } else {
+      this._foundPeople = [];
     }
   };
 
