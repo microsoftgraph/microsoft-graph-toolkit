@@ -344,7 +344,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   }
 
   focusOnUpload() {
-    const uploadDom: HTMLElement | null = this.renderRoot.querySelector('mgt-file[part="upload"]');
+    const uploadDom = this.renderRoot.querySelector<HTMLElement>('mgt-file[part="upload"]');
     if(uploadDom) {
       uploadDom.setAttribute("tabindex", "0")
       uploadDom.classList.add("upload");
