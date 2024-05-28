@@ -5388,15 +5388,15 @@ const nd=1,sd=2,e$1=e=>(...t)=>({_$litDirective$:e,values:t});class i{constructo
             @click=${this.handleInputClick}
             @keydown=${this.handleInputKeydown}
           >
-            <div tabindex="0" slot="start" style="width: max-content;">${this.renderSelected()}</div>
-            <div tabindex="0" slot="end">${this.renderChevrons()}${this.renderCloseButton()}</div>
+            <div tabindex="0" slot="start" style="width: max-content;" @keydown=${this.handleStartSlotKeydown}>${this.renderSelected()}</div>
+            <div tabindex="0" slot="end" @keydown=${this.handleChevronKeydown}>${this.renderChevrons()}${this.renderCloseButton()}</div>
           </fluent-text-field>
           <fluent-card
             class=${ad(t)}
           >
             ${this.renderDropdown()}
           </fluent-card>
-        </div>`},this.handleInputClick=e=>{e.stopPropagation(),this.gainedFocus()},this.handleInputKeydown=e=>{const t=e.key;if(["ArrowDown","Enter"].includes(t))if(this._isDropdownVisible){this.renderRoot.querySelector("fluent-tree-item").focus()}else this.gainedFocus();else"Escape"===t&&this.lostFocus()},this.onClickCloseButton=()=>{this.removeSelectedChannel(null)},this.onKeydownCloseButton=e=>{"Enter"===e.key&&this.removeSelectedChannel(null)},this.renderError=()=>this.renderTemplate("error",null,"error")||vt`
+        </div>`},this.handleInputClick=e=>{e.stopPropagation(),this.gainedFocus()},this.handleInputKeydown=e=>{const t=e.key;if(["ArrowDown","Enter"].includes(t))if(this._isDropdownVisible){this.renderRoot.querySelector("fluent-tree-item").focus()}else this.gainedFocus();else"Escape"===t?this.lostFocus():"Tab"===t&&this.blurPicker()},this.onClickCloseButton=()=>{this.removeSelectedChannel(null)},this.onKeydownCloseButton=e=>{"Enter"===e.key&&this.removeSelectedChannel(null)},this.renderError=()=>this.renderTemplate("error",null,"error")||vt`
         <div class="message-parent">
           <div
             label="search-error-text"
@@ -5415,7 +5415,7 @@ const nd=1,sd=2,e$1=e=>(...t)=>({_$litDirective$:e,values:t});class i{constructo
             ${this.strings.loadingMessage}
           </div>
         </div>
-      `,this.onKeydownTreeView=e=>{"Escape"===e.key&&this.lostFocus()},this.handleTeamTreeItemClick=e=>{e.preventDefault(),e.stopImmediatePropagation();const t=e.target;if(t){t.getAttribute("expanded")?t.removeAttribute("expanded"):t.setAttribute("expanded","true"),t.removeAttribute("selected");t.getAttribute("id")&&t.setAttribute("selected","true")}},this.handleInputChanged=e=>{const t=e.target;this._inputValue!==(null==t?void 0:t.value)&&(this._inputValue=null==t?void 0:t.value,this.gainedFocus(),this.debouncedSearch||(this.debouncedSearch=debounce((()=>{this.filterList()}),400)),this.debouncedSearch())},this.loadTeamsIfNotLoaded=()=>{this.items||this._task.status===Gt||this._task.run()},this.handleWindowClick=e=>{e.target!==this&&this.lostFocus()},this.gainedFocus=()=>{const e=this._input;e&&e.focus(),this._isDropdownVisible=!0,this.toggleChevron(),this.resetFocusState(),this.requestUpdate()},this.lostFocus=()=>{this._inputValue="",this._input&&(this._input.value=this._inputValue,this._input.textContent="");const e=this._inputWrapper;e&&(e.value=""),this._isDropdownVisible=!1,this.filterList(),this.toggleChevron(),this.requestUpdate(),void 0!==this._selectedItemState&&this.showCloseIcon()},this.handleFocus=()=>{this.lostFocus(),this.gainedFocus()},this.handleUpChevronClick=e=>{e.stopPropagation(),this.lostFocus()},this._inputValue="",this._treeViewState=[],this._focusList=[],this._isDropdownVisible=!1}connectedCallback(){super.connectedCallback(),window.addEventListener("click",this.handleWindowClick),this.addEventListener("focus",this.loadTeamsIfNotLoaded),this.addEventListener("mouseover",this.loadTeamsIfNotLoaded),this.addEventListener("blur",this.lostFocus);const e=this.renderRoot.ownerDocument;e&&e.documentElement.setAttribute("dir",this.direction)}disconnectedCallback(){window.removeEventListener("click",this.handleWindowClick),this.removeEventListener("focus",this.loadTeamsIfNotLoaded),this.removeEventListener("mouseover",this.loadTeamsIfNotLoaded),this.removeEventListener("blur",this.lostFocus),super.disconnectedCallback()}args(){return[]}selectChannelById(e){return __awaiter$8(this,void 0,void 0,(function*(){const t=Providers.globalProvider;if(t&&t.state===A.SignedIn){this.items||(yield this._task.run());for(const t of this._treeViewState)for(const a of t.channels)if(a.item.id===e)return t.isExpanded=!0,this.selectChannel(a),this.markSelectedChannelInDropdown(e),!0}return!1}))}markSelectedChannelInDropdown(e){const t=this.renderRoot.querySelector(`[id='${e}']`);t&&(t.setAttribute("selected","true"),t.parentElement&&t.parentElement.setAttribute("expanded","true"))}renderSelected(){var e,t,a,l,c,p;if(!this._selectedItemState)return this.renderSearchIcon();let g;if(this._selectedItemState.parent.channels){const t=null===(e=this.teamsPhotos[this._selectedItemState.parent.item.id])||void 0===e?void 0:e.photo;g=vt`<img
+      `,this.onKeydownTreeView=e=>{"Escape"===e.key&&this.lostFocus()},this.handleTeamTreeItemClick=e=>{e.preventDefault(),e.stopImmediatePropagation();const t=e.target;if(t){t.getAttribute("expanded")?t.removeAttribute("expanded"):t.setAttribute("expanded","true"),t.removeAttribute("selected");t.getAttribute("id")&&t.setAttribute("selected","true")}},this.handleInputChanged=e=>{const t=e.target;this._inputValue!==(null==t?void 0:t.value)&&(this._inputValue=null==t?void 0:t.value,"Tab"!==e.key&&"Enter"!==e.key&&"Escape"!==e.key&&this.gainedFocus(),this.debouncedSearch||(this.debouncedSearch=debounce((()=>{this.filterList()}),400)),this.debouncedSearch())},this.loadTeamsIfNotLoaded=()=>{this.items||this._task.status===Gt||this._task.run()},this.handleWindowClick=e=>{e.target!==this&&this.lostFocus()},this.gainedFocus=()=>{const e=this._input;e&&e.focus(),this._isDropdownVisible=!0,this.toggleChevron(),this.resetFocusState(),this.requestUpdate()},this.lostFocus=()=>{this._inputValue="",this._input&&(this._input.value=this._inputValue,this._input.textContent="");const e=this._inputWrapper;e&&(e.value="",e.blur()),this._isDropdownVisible=!1,this.filterList(),this.toggleChevron(),this.requestUpdate(),void 0!==this._selectedItemState&&this.showCloseIcon()},this.handleFocus=()=>{this.gainedFocus()},this.handleUpChevronClick=e=>{e.stopPropagation(),this.lostFocus()},this.handleChevronKeydown=e=>{"Tab"===e.key&&this.blurPicker()},this.handleStartSlotKeydown=e=>{"Tab"===e.key&&e.shiftKey&&this.blurPicker()},this.blurPicker=()=>{const e=this._inputWrapper,t=this._input;null==e||e.blur(),null==t||t.blur()},this._inputValue="",this._treeViewState=[],this._focusList=[],this._isDropdownVisible=!1}connectedCallback(){super.connectedCallback(),window.addEventListener("click",this.handleWindowClick),this.addEventListener("focus",this.loadTeamsIfNotLoaded),this.addEventListener("mouseover",this.loadTeamsIfNotLoaded),this.addEventListener("blur",this.lostFocus);const e=this.renderRoot.ownerDocument;e&&e.documentElement.setAttribute("dir",this.direction)}disconnectedCallback(){window.removeEventListener("click",this.handleWindowClick),this.removeEventListener("focus",this.loadTeamsIfNotLoaded),this.removeEventListener("mouseover",this.loadTeamsIfNotLoaded),this.removeEventListener("blur",this.lostFocus),super.disconnectedCallback()}args(){return[]}selectChannelById(e){return __awaiter$8(this,void 0,void 0,(function*(){const t=Providers.globalProvider;if(t&&t.state===A.SignedIn){this.items||(yield this._task.run());for(const t of this._treeViewState)for(const a of t.channels)if(a.item.id===e)return t.isExpanded=!0,this.selectChannel(a),this.markSelectedChannelInDropdown(e),!0}return!1}))}markSelectedChannelInDropdown(e){const t=this.renderRoot.querySelector(`[id='${e}']`);t&&(t.setAttribute("selected","true"),t.parentElement&&t.parentElement.setAttribute("expanded","true"))}renderSelected(){var e,t,a,l,c,p;if(!this._selectedItemState)return this.renderSearchIcon();let g;if(this._selectedItemState.parent.channels){const t=null===(e=this.teamsPhotos[this._selectedItemState.parent.item.id])||void 0===e?void 0:e.photo;g=vt`<img
         class="team-photo"
         alt="${this._selectedItemState.parent.item.displayName}"
         role="img"
@@ -5428,7 +5428,7 @@ const nd=1,sd=2,e$1=e=>(...t)=>({_$litDirective$:e,values:t});class i{constructo
         </fluent-breadcrumb-item>
         <fluent-breadcrumb-item>${y}</fluent-breadcrumb-item>
       </fluent-breadcrumb>`}clearState(){this._inputValue="",this._treeViewState=[],this._focusList=[],this._isDropdownVisible=!1}renderSearchIcon(){return vt`
-      <div class="search-icon">
+      <div class="search-icon" @keydown=${this.handleStartSlotKeydown}>
         ${getSvg(Ad.Search,"#252424")}
       </div>
     `}renderCloseButton(){return vt`
@@ -5448,7 +5448,8 @@ const nd=1,sd=2,e$1=e=>(...t)=>({_$litDirective$:e,values:t});class i{constructo
         aria-label=${this.strings.downChevronButtonAriaLabel}
         appearance="stealth"
         class="down-chevron"
-        @click=${this.gainedFocus}>
+        @click=${this.gainedFocus}
+        @keydown=${this.handleChevronKeydown}>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2.21967 4.46967C2.51256 4.17678 2.98744 4.17678 3.28033 4.46967L6 7.18934L8.71967 4.46967C9.01256 4.17678 9.48744 4.17678 9.78033 4.46967C10.0732 4.76256 10.0732 5.23744 9.78033 5.53033L6.53033 8.78033C6.23744 9.07322 5.76256 9.07322 5.46967 8.78033L2.21967 5.53033C1.92678 5.23744 1.92678 4.76256 2.21967 4.46967Z" fill="#212121" />
         </svg>
@@ -5458,7 +5459,8 @@ const nd=1,sd=2,e$1=e=>(...t)=>({_$litDirective$:e,values:t});class i{constructo
         appearance="stealth"
         style="display:none"
         class="up-chevron"
-        @click=${this.handleUpChevronClick}>
+        @click=${this.handleUpChevronClick}
+        @keydown=${this.handleChevronKeydown}>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2.21967 7.53033C2.51256 7.82322 2.98744 7.82322 3.28033 7.53033L6 4.81066L8.71967 7.53033C9.01256 7.82322 9.48744 7.82322 9.78033 7.53033C10.0732 7.23744 10.0732 6.76256 9.78033 6.46967L6.53033 3.21967C6.23744 2.92678 5.76256 2.92678 5.46967 3.21967L2.21967 6.46967C1.92678 6.76256 1.92678 7.23744 2.21967 7.53033Z" fill="#212121" />
         </svg>
