@@ -337,6 +337,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   private _excludedFileType = false;
 
   constructor() {
+    /* eslint-disable @typescript-eslint/unbound-method */
     super();
     this.filesToUpload = [];
     this.addEventListener('__uploadfailed', this.focusOnUpload);
