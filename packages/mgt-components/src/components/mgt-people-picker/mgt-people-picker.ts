@@ -694,6 +694,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         id="people-picker-input"
         role="combobox"
         aria-live="assertive"
+        aria-atomic="true"
         placeholder=${this.hasMaxSelections ? this.strings.maxSelectionsPlaceHolder : placeholder}
         aria-label=${this.ariaLabel || maxSelectionsAriaLabel || placeholder || this.strings.selectContact}
         aria-expanded=${this.flyout?.isOpen ?? false}
@@ -810,7 +811,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       mgtHtml`
          <div class="message-parent">
            <mgt-spinner></mgt-spinner>
-           <div aria-label="${this.strings.loadingMessage}" aria-live="polite" class="loading-text">
+           <div aria-label="${this.strings.loadingMessage}" aria-live="polite" role="alert" class="loading-text">
              ${this.strings.loadingMessage}
            </div>
          </div>
@@ -834,7 +835,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       this.renderTemplate('no-data', null) ||
       html`
          <div class="message-parent">
-           <div aria-label=${this.strings.noResultsFound} aria-live="polite" class="search-error-text">
+           <div aria-label=${this.strings.noResultsFound} aria-live="polite" role="alert" class="search-error-text">
              ${this.strings.noResultsFound}
            </div>
          </div>
