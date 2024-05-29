@@ -31,6 +31,10 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
     margin-top: 30px;
   }
 
+  .focus,:focus {
+    outline: none;
+  }
+
   fluent-button {
     .upload-icon {
       path {
