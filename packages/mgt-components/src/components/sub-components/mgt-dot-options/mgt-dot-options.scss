@@ -8,6 +8,7 @@
 @import '../../../styles/shared-styles';
 @import '../../../styles/shared-sass-variables';
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import './mgt-dot-options.theme';
 
 $dot-options-translatey: var(--dot-options-translatey, translateY(32px));
 
@@ -26,8 +27,8 @@ $dot-options-translatey: var(--dot-options-translatey, translateY(32px));
 
   .menu {
     position: absolute;
-    box-shadow: var(--neutral-fill-rest) 0 0 40px 5px;
-    background: var(--neutral-fill-rest);
+    box-shadow: $dot-options-menu-shadow-color 0 0 40px 5px;
+    background: $dot-options-menu-background-color;
     z-index: 1;
     display: none;
     white-space: nowrap;
@@ -41,6 +42,16 @@ $dot-options-translatey: var(--dot-options-translatey, translateY(32px));
   fluent-button {
     &::part(control) {
       background: inherit;
+    }
+  }
+
+  fluent-menu > fluent-menu-item {
+    &::part(content) {
+      color: $dot-options-menu-item-color;
+    }
+
+    &:hover {
+      background: $dot-options-menu-item-hover-background-color;
     }
   }
 }

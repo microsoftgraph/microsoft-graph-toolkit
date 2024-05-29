@@ -32,6 +32,11 @@ export const registerMgtDotOptionsComponent = () => {
  * @export MgtDotOptions
  * @class MgtDotOptions
  * @extends {MgtBaseComponent}
+ *
+ * @cssprop --dot-options-menu-background-color - {Color} The color of the background of the menu.
+ * @cssprop --dot-options-menu-shadow-color - {Color} The color of the shadow of the menu.
+ * @cssprop --dot-options-menu-item-color - {Color} The color of the menu items.
+ * @cssprop --dot-options-menu-item-hover-background-color - {Color} The color of the menu items when hovered.
  */
 
 export class MgtDotOptions extends MgtBaseTaskComponent {
@@ -90,10 +95,11 @@ export class MgtDotOptions extends MgtBaseTaskComponent {
       <fluent-button
         appearance="stealth"
         aria-label=${this.strings.dotOptionsTitle}
+        aria-expanded=${this.open}
         @click=${this.onDotClick}
         @keydown=${this.onDotKeydown}
         class="dot-icon">${getSvg(SvgIcon.Dot)}</fluent-button>
-      <fluent-menu class=${classMap({ menu: true, open: this.open })}>
+      <fluent-menu class=${classMap({ menu: true, open: this.open })} aria-expanded=${this.open} aria-label=${this.strings.dotOptionsTitle}>
         ${menuOptions.map(opt => this.getMenuOption(opt, this.options[opt]))}
       </fluent-menu>`;
   };
