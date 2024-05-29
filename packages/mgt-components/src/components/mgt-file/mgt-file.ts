@@ -342,7 +342,7 @@ export class MgtFile extends MgtTemplatedTaskComponent {
     }
 
     let fileIconSrc;
-    let fileType: string;
+    let fileType: = "";
 
     if (this.fileIcon) {
       fileIconSrc = this.fileIcon;
