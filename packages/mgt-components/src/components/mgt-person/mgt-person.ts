@@ -1345,10 +1345,17 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
   };
 
   private readonly handleKeyDown = (e: KeyboardEvent) => {
+    const personEl = this.renderRoot.querySelector<HTMLElement>('.person-root');
     // enter activates person-card
     if (e) {
       if (e.key === 'Enter') {
         this.showPersonCard();
+      }
+      if (this.personCardInteraction !== 'none') {
+        if (e.key === 'Escape') {
+          this.hidePersonCard();
+          personEl.focus();
+        }
       }
     }
   };
