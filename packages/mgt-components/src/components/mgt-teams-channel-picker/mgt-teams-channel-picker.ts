@@ -282,8 +282,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
             @click=${this.handleInputClick}
             @keydown=${this.handleInputKeydown}
           >
-            <div tabindex="0" slot="start" style="width: max-content;">${this.renderSelected()}</div>
-            <div tabindex="0" slot="end">${this.renderChevrons()}${this.renderCloseButton()}</div>
+            <div tabindex="0" slot="start" style="width: max-content;" @keydown=${this.handleStartSlotKeydown}>${this.renderSelected()}</div>
+            <div tabindex="0" slot="end" @keydown=${this.handleChevronKeydown}>${this.renderChevrons()}${this.renderCloseButton()}</div>
           </fluent-text-field>
           <fluent-card
             class=${classMap(dropdownClasses)}
@@ -316,6 +316,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
       }
     } else if (keyName === 'Escape') {
       this.lostFocus();
+    } else if (keyName === 'Tab') {
+      this.blurPicker();
     }
   };
 
@@ -377,7 +379,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
    */
   protected renderSearchIcon() {
     return html`
-      <div class="search-icon">
+      <div class="search-icon" @keydown=${this.handleStartSlotKeydown}>
         ${getSvg(SvgIcon.Search, '#252424')}
       </div>
     `;
@@ -456,7 +458,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
         aria-label=${this.strings.downChevronButtonAriaLabel}
         appearance="stealth"
         class="down-chevron"
-        @click=${this.gainedFocus}>
+        @click=${this.gainedFocus}
+        @keydown=${this.handleChevronKeydown}>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2.21967 4.46967C2.51256 4.17678 2.98744 4.17678 3.28033 4.46967L6 7.18934L8.71967 4.46967C9.01256 4.17678 9.48744 4.17678 9.78033 4.46967C10.0732 4.76256 10.0732 5.23744 9.78033 5.53033L6.53033 8.78033C6.23744 9.07322 5.76256 9.07322 5.46967 8.78033L2.21967 5.53033C1.92678 5.23744 1.92678 4.76256 2.21967 4.46967Z" fill="#212121" />
         </svg>
@@ -477,7 +480,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
         appearance="stealth"
         style="display:none"
         class="up-chevron"
-        @click=${this.handleUpChevronClick}>
+        @click=${this.handleUpChevronClick}
+        @keydown=${this.handleChevronKeydown}>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2.21967 7.53033C2.51256 7.82322 2.98744 7.82322 3.28033 7.53033L6 4.81066L8.71967 7.53033C9.01256 7.82322 9.48744 7.82322 9.78033 7.53033C10.0732 7.23744 10.0732 6.76256 9.78033 6.46967L6.53033 3.21967C6.23744 2.92678 5.76256 2.92678 5.46967 3.21967L2.21967 6.46967C1.92678 6.76256 1.92678 7.23744 2.21967 7.53033Z" fill="#212121" />
         </svg>
@@ -731,7 +735,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
     }
 
     // shows list
-    this.gainedFocus();
+    if (e.key !== 'Tab' && e.key !== 'Enter' && e.key !== 'Escape') {
+      this.gainedFocus();
+    }
 
     if (!this.debouncedSearch) {
       this.debouncedSearch = debounce(() => {
@@ -859,7 +865,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
       this._input.textContent = '';
     }
     const wrapper = this._inputWrapper;
-    if (wrapper) wrapper.value = '';
+    if (wrapper) {
+      wrapper.value = '';
+      wrapper.blur();
+    }
 
     this._isDropdownVisible = false;
     this.filterList();
@@ -872,7 +881,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
   };
 
   handleFocus = () => {
-    this.lostFocus();
     this.gainedFocus();
   };
 
@@ -926,5 +934,24 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
   handleUpChevronClick = (e: Event) => {
     e.stopPropagation();
     this.lostFocus();
+  };
+
+  handleChevronKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Tab') {
+      this.blurPicker();
+    }
+  };
+
+  handleStartSlotKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Tab' && e.shiftKey) {
+      this.blurPicker();
+    }
+  };
+
+  blurPicker = () => {
+    const wrapper = this._inputWrapper;
+    const input = this._input;
+    wrapper?.blur();
+    input?.blur();
   };
 }

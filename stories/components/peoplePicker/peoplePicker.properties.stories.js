@@ -65,12 +65,15 @@ const closeModal = document.getElementById("close-modal")
 const modalContent = document.getElementById("modal-content")
 const modalPicker = document.getElementById("modal-picker")
 modal.addEventListener('click', () => {
-    modalContent.style.display = "flex"
-    modalPicker.selectedPeople = []
+  modalContent.style.display = "flex"
+  modalPicker.selectedPeople = []
+  const input = modalPicker.shadowRoot.querySelector('fluent-text-field').shadowRoot.querySelector('input');
+  input.focus();
 })
 
 closeModal.addEventListener('click', () => {
-    modalContent.style.display = "none"
+  modalContent.style.display = "none";
+  modal.focus();
 })
 </script>
 `;
