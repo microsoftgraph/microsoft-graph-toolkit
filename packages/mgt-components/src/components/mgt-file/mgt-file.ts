@@ -342,13 +342,14 @@ export class MgtFile extends MgtTemplatedTaskComponent {
     }
 
     let fileIconSrc;
+    let fileType: string;
 
     if (this.fileIcon) {
       fileIconSrc = this.fileIcon;
     } else {
       // get file type extension from file name
       const re = /(?:\.([^.]+))?$/;
-      const fileType =
+      fileType =
         this.driveItem.package === undefined && this.driveItem.folder === undefined
           ? re.exec(this.driveItem.name)[1]
             ? re.exec(this.driveItem.name)[1].toLowerCase()
@@ -368,7 +369,7 @@ export class MgtFile extends MgtTemplatedTaskComponent {
         ${
           fileIconSrc
             ? html`
-              <img src=${fileIconSrc} alt="File icon" />
+              <img src=${fileIconSrc} alt="${fileType.toUpperCase()} File icon" />
             `
             : html`
               ${getSvg(SvgIcon.File)}
