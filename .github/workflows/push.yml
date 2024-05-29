@@ -30,6 +30,9 @@ jobs:
           npm install -g yarn lerna
           yarn
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
       - name: Set Preview Version
         run: node scripts/setVersion.js --next
 
