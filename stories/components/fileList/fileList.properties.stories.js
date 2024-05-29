@@ -124,6 +124,7 @@ export const clearCacheAndReload = () => html`
     document.querySelector('button').addEventListener('click', () => {
       // passing true will clear file cache before reloading
       fileList.reload(true);
+      alert("Files Reloaded");
     })
   </script>
 `;
