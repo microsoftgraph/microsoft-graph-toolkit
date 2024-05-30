@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.2](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.1...v4.2.2) (2024-05-30)
+
+
+### Bug Fixes
+
+* **a11y:** alert files reloaded on mgt-file-list ([#3191](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3191)) ([3ac37de](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/3ac37def7f2389e55a3f9c9ed150e281523df696))
+* **a11y:** announce expanded/collapsed state of options menu in mgt-planner ([#3186](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3186)) ([6e51044](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/6e51044a0243976325e37df1cac566c38f1576f6))
+* **a11y:** announce when no matches are found in people-picker ([#3180](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3180)) ([bfa4af8](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/bfa4af827dda9e095dae0b05b650a567498f2748))
+* **a11y:** correct file upload button and file line-1 color contrast in mgt-file-list ([#3177](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3177)) ([ae31d26](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/ae31d260276eea1ebf0b3ac34040464758f37620))
+* **a11y:** correct luminosity contrast in mgt-agenda custom styles ([#3179](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3179)) ([b11f9c7](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/b11f9c714cbc23b0150dfefafb93dc210ecc7117))
+* **a11y:** correct luminosity contrast in mgt-file and mgt-login text colors ([#3178](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3178)) ([b42c743](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/b42c7432256424282670855b6060e9a304671a3f))
+* **a11y:** correct mgt-get email story ([#3194](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3194)) ([066e58c](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/066e58c29166dbe3a3797f0fceb5c35560bbef3c))
+* **a11y:** correct mgt-person-card line-3 text color contrast in custom styles ([#3176](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3176)) ([c5c1e53](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/c5c1e5337ae8ec9b587f0c025976c1567b53ce51))
+* **a11y:** correct people-picker placeholder luminosity contrast ([#3175](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3175)) ([6acfbe7](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/6acfbe7c43bd269a9dd2243ca7ed8b7f83e6dd6b))
+* **a11y:** focus on uploaded file and narrate status ([#3189](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3189)) ([7f9eac3](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/7f9eac318d4a80707d7b5ac6d38e03841d7e55aa))
+* **a11y:** person-card style contrast ([#3174](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3174)) ([8078496](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/80784967de073d685143654ed63003a659820e4c))
+* **a11y:** set the title and aria-label for the screen sizing buttons ([#3188](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3188)) ([6395096](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/63950967670ac13ff6799cabebc22b26ce1aee2a))
+* **a11y:** use descriptive alt text for file icon in mgt-file ([#3195](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3195)) ([9f0799e](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/9f0799eaaec59adc9a1870a1fa44a5864730c163))
+* adds color variable for date and summary in mgt-search-results ([#3153](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3153)) ([35b86ff](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/35b86ff34c3700cb7e0474028ad1896b596aa7ce))
+* mgt-channel-picker icons tab behavior ([#3185](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3185)) ([ef846d5](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/ef846d51682bc5b9ef2823cafb8c8c66c29bebea))
+
 ## [4.2.1](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.0...v4.2.1) (2024-03-27)
 
 
