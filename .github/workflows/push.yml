@@ -5,7 +5,7 @@ name: Release main
 
 on:
   push:
-    branches: [main, chore/**]
+    branches: [main]
     paths:
       - 'packages/**'
 
@@ -65,10 +65,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: coverage
-          path: coverage/lcov-report/index.html
+      - name: Download coverage artifacts with cli
+        run: |
+          gh run download ${{ github.event.workflow_run.id }} -n coverage
 
       - name: Run sonar cloud analysis
         uses: SonarSource/sonarcloud-github-action@master

@@ -7,7 +7,7 @@ name: Build pr
 
 on:
   pull_request:
-    branches: [main, release/**, next/**, chore/**]
+    branches: [main, release/**, next/**]
 
 permissions:
   pull-requests: write
@@ -94,10 +94,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: coverage
-          path: coverage/lcov.info
+      - name: Download coverage artifacts with cli
+        run: |
+          gh run download ${{ github.event.workflow_run.id }} -n coverage
 
       - name: Run sonar cloud analysis
         uses: SonarSource/sonarcloud-github-action@master
