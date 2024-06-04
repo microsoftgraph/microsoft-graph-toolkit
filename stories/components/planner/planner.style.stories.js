@@ -102,6 +102,12 @@ export const customCSSProperties = () => html`
 
         --task-new-person-icon-text-color: blue;
         --task-new-person-icon-color: blue;
+
+        /** affects the options menu */
+        --dot-options-menu-background-color: yellow;
+        --dot-options-menu-shadow-color: yellow;
+        --dot-options-menu-item-color: maroon;
+        --dot-options-menu-item-hover-background-color: white;
       }
   </style>
   <mgt-planner class="tasks"></mgt-planner>

@@ -156,6 +156,14 @@ const xmlns = 'http://www.w3.org/2000/svg';
 window.onload = () => {
   addUsefulLinks();
 };
+// Dirty hack. The screen sizing btn resets the title on clicking it. When you
+// set the correct title during the window loading event, after clicking the
+// button for a full screen or exit of a full screen, the set title is 
+// overridden to the previous problematic value. This is a catch-all hack on the
+// window click event to just ensure any clicks on the btn resets to the correct title.
+window.onclick = () =>{
+  resetScreenSizingBtnTitles()
+}
 
 function addUsefulLinks() {
   const linkStyle = 'color: black; text-decoration: none; text-align: center; cursor: pointer; padding-right: 0.5rem;';
@@ -266,6 +274,7 @@ function addUsefulLinks() {
   }
 
   setEventOnMenuClick();
+  resetScreenSizingBtnTitles();
 }
 
 function createSvg(svgPath) {
@@ -285,6 +294,23 @@ function createSvg(svgPath) {
 
   svgElem.appendChild(svgElemPath);
   return svgElem;
+}
+
+function resetScreenSizingBtnTitles () {
+  const titles = {
+    'Exit full screen [F]': 'Exit full screen',
+    'Go full screen [F]': 'Go full screen'
+  }
+
+  const screenSizingBtns = document.getElementsByClassName('css-6jc9zw');
+  for (let i = 0; i < screenSizingBtns.length; i++) {
+    const btn = screenSizingBtns[i];
+    const title = btn.getAttribute('title');
+    // zooming in/out btns share the same class, prefer their titles when they
+    // are not found in the titles object above.
+    btn.setAttribute('title', titles[title] ?? title);
+    btn.setAttribute('aria-label', titles[title] ?? title);
+  }
 }
 
 const injectScripts = () => {
