@@ -58,6 +58,8 @@ jobs:
   sonarcloud:
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     needs: build
     steps:
       - name: Checkout repository
