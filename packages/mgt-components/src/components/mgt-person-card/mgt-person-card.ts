@@ -1047,7 +1047,6 @@ export class MgtPersonCard extends MgtTemplatedTaskComponent implements IHistory
     this.loadSections();
 
     this._isStateLoading = false;
-    this.fireCustomEvent('person card loaded', null, true);
   }
 
   /**
