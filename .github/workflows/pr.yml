@@ -96,10 +96,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: coverage
-          path: coverage/lcov.info
+      - uses: actions/download-artifact@v4
+      - name: Display structure of downloaded files
+        run: ls -R
 
       - name: Run sonar cloud analysis
         uses: SonarSource/sonarcloud-github-action@master
