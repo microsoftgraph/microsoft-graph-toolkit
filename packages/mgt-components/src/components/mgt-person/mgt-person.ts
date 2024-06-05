@@ -1364,7 +1364,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
         personEl.blur();
       }
       if (this.personCardInteraction !== 'none') {
-        if (e.key === 'Escape') {
+        if (e.key === 'Escape' && personEl) {
           this.hidePersonCard();
           personEl.focus();
         }
