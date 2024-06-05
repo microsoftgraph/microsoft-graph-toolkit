@@ -51,10 +51,6 @@ jobs:
         with:
           name: coverage
           path: coverage/cobertura-coverage.xml
-      - name: Fix code coverage paths
-        run: |
-          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' coverage/lcov.info
-
       - name: Archive coverage lcov.info
         uses: actions/upload-artifact@v2 # upload coverage lcov.info
         if: always() # run this step even if previous step failed
