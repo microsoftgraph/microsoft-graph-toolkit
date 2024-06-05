@@ -9,13 +9,13 @@ on:
   push:
     branches: [main, chore/**]
   pull_request:
-    branches: [main, release/**, next/**, chore/**]
+    branches: [main, chore/**]
 
 permissions:
   pull-requests: write
 
 jobs:
-  setup:
+  build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -38,10 +38,6 @@ jobs:
       - run: yarn lint
       - run: yarn test
 
-  build:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
       - name: Archive test results
         uses: actions/upload-artifact@v2 # upload test results
         if: always() # run this step even if previous step failed
@@ -80,12 +76,32 @@ jobs:
         if: ${{ contains(needs.*.result, 'failure') }}
         run: exit 1
 
-  # Configuration to run a SonarCloud analysis on main, release and next branches
   sonarcloud:
-    needs: setup
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install -g lerna
+      - name: Install node_modules
+        run: yarn
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+      - run: node scripts/setVersion.js --next
+      - run: yarn build
+      - run: yarn lint
+      - run: yarn test
       - name: Archive coverage lcov.info
         uses: actions/upload-artifact@v2 # upload coverage lcov.info
         if: always() # run this step even if previous step failed
