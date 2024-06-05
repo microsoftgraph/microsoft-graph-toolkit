@@ -3,13 +3,13 @@
 # Tests are executed and coverage reports are emitted as to the action summary
 # A dependent workflow which uses workflow_run as a trigger reads the archived outputs and emits comments to the PR triggering this build
 
-name: Build pr
+name: Build and Test
 
 on:
   push:
-    branches: [main, chore/**]
+    branches: [main, release/**, next/**]
   pull_request:
-    branches: [main, chore/**]
+    branches: [main, release/**, next/**]
 
 permissions:
   pull-requests: write
@@ -87,9 +87,6 @@ jobs:
         with:
           name: coverage
           path: coverage/
-
-      - name: Display structure of downloaded files
-        run: ls -R
 
       - name: Run sonar cloud analysis
         uses: SonarSource/sonarcloud-github-action@master
