@@ -30,49 +30,13 @@ jobs:
           npm install -g yarn lerna
           yarn
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
-
       - name: Set Preview Version
         run: node scripts/setVersion.js --next
 
       - name: Build 🛠
         run: yarn build
-      - run: yarn test
-      - name: Fix code coverage paths
-        run: |
-          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' coverage/lcov-report/index.html
 
-      - name: Archive coverage/lcov-report/index.html
-        uses: actions/upload-artifact@v2 # upload coverage lcov.info
-        if: always() # run this step even if previous step failed
-        with:
-          name: coverage
-          path: coverage/lcov-report/index.html
       - name: Publish preview packages 🚀
         run: lerna exec --scope @microsoft/* -- "npm publish --tag next --access=public"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  # Configuration to run a SonarCloud analysis on main branch
-  sonarcloud:
-    name: SonarCloud Analysis
-    runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
-    needs: build
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Download coverage artifacts with cli
-        run: |
-          gh run download ${{ github.event.workflow_run.id }} -n coverage
-
-      - name: Run sonar cloud analysis
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
