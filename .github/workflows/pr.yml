@@ -7,18 +7,16 @@ name: Build pr
 
 on:
   push:
-    branches: [main]
+    branches: [main, chore/**]
   pull_request:
-    branches: [main, release/**, next/**]
+    branches: [main, release/**, next/**, chore/**]
 
 permissions:
   pull-requests: write
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
 
     strategy:
       matrix:
@@ -39,6 +37,11 @@ jobs:
       - run: yarn build
       - run: yarn lint
       - run: yarn test
+
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Archive test results
         uses: actions/upload-artifact@v2 # upload test results
         if: always() # run this step even if previous step failed
@@ -51,12 +54,6 @@ jobs:
         with:
           name: coverage
           path: coverage/cobertura-coverage.xml
-      - name: Archive coverage lcov.info
-        uses: actions/upload-artifact@v2 # upload coverage lcov.info
-        if: always() # run this step even if previous step failed
-        with:
-          name: coverage
-          path: coverage/lcov.info
 
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
@@ -85,18 +82,22 @@ jobs:
 
   # Configuration to run a SonarCloud analysis on main, release and next branches
   sonarcloud:
+    needs: setup
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
-    needs: build
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Archive coverage lcov.info
+        uses: actions/upload-artifact@v2 # upload coverage lcov.info
+        if: always() # run this step even if previous step failed
         with:
-          fetch-depth: 0
+          name: coverage
+          path: coverage/lcov.info
 
       - uses: actions/download-artifact@v4
+        with:
+          name: coverage
+          path: coverage/lcov.info
+
       - name: Display structure of downloaded files
         run: ls -R
 

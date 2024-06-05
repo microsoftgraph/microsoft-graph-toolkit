@@ -31,8 +31,6 @@ jobs:
       - name: Download coverage artifacts with cli
         run: |
           gh run download ${{ github.event.workflow_run.id }} -n coverage
-      - name: Display structure of downloaded files
-        run: ls -R
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
