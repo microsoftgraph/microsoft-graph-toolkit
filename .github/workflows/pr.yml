@@ -3,9 +3,11 @@
 # Tests are executed and coverage reports are emitted as to the action summary
 # A dependent workflow which uses workflow_run as a trigger reads the archived outputs and emits comments to the PR triggering this build
 
-name: Build pr
+name: Build and Test
 
 on:
+  push:
+    branches: [main, release/**, next/**]
   pull_request:
     branches: [main, release/**, next/**]
 
@@ -35,18 +37,19 @@ jobs:
       - run: yarn build
       - run: yarn lint
       - run: yarn test
+
       - name: Archive test results
         uses: actions/upload-artifact@v2 # upload test results
         if: always() # run this step even if previous step failed
         with:
           name: test-results
           path: testResults/junit.xml
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v2 # upload coverage report
+      - name: Archive coverage artifacts
+        uses: actions/upload-artifact@v3 # upload coverage rartifacts
         if: always() # run this step even if previous step failed
         with:
           name: coverage
-          path: coverage/cobertura-coverage.xml
+          path: coverage/
 
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
@@ -72,3 +75,21 @@ jobs:
       - name: One or more build matrix options failed
         if: ${{ contains(needs.*.result, 'failure') }}
         run: exit 1
+
+  sonarcloud:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage
+          path: coverage/
+
+      - name: Run sonar cloud analysis
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
