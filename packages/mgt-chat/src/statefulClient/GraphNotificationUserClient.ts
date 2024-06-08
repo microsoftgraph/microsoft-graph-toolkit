@@ -23,9 +23,12 @@ import type {
 } from '@microsoft/microsoft-graph-types';
 import { GraphConfig } from './GraphConfig';
 import { SubscriptionsCache, ComponentType } from './Caching/SubscriptionCache';
+import { ProxySubscriptionCache } from './Caching/ProxySubscriptionCache';
 import { Timer } from '../utils/Timer';
 import { getOrGenerateGroupId } from './getOrGenerateGroupId';
 import { v4 as uuid } from 'uuid';
+import { MGTProxyOperations, ProxySubscription } from './MGTProxyOperations';
+import { MGTProxyTokenManager } from './MGTProxyTokenManager';
 
 export const appSettings = {
   defaultSubscriptionLifetimeInMinutes: 10,
@@ -65,7 +68,9 @@ export class GraphNotificationUserClient {
   private lastNotificationUrl = '';
   private subscriptionId = '';
 
+  private readonly proxyTokenManager: MGTProxyTokenManager = new MGTProxyTokenManager();
   private readonly subscriptionCache: SubscriptionsCache = new SubscriptionsCache();
+  private readonly proxySubscriptionCache: ProxySubscriptionCache = new ProxySubscriptionCache();
   private readonly timer = new Timer();
   private get graph() {
     return this._graph;
@@ -183,7 +188,17 @@ export class GraphNotificationUserClient {
     await this.subscriptionCache.cacheSubscription(userId, ComponentType.User, subscriptionRecord);
   };
 
-  private async createSubscription(userId: string): Promise<Subscription> {
+  private readonly cacheProxySubscription = async (
+    userId: string,
+    proxySubscriptionRecord: ProxySubscription
+  ): Promise<void> => {
+    log(proxySubscriptionRecord);
+    await this.proxySubscriptionCache.cacheProxySubscription(userId, ComponentType.User, proxySubscriptionRecord);
+  };
+
+  private proxySubscription: ProxySubscription | undefined;
+
+  private async createSubscription(userId: string): Promise<Subscription | undefined> {
     const groupId = getOrGenerateGroupId(userId);
     log('Creating a new subscription with group Id:', groupId);
     const resourcePath = `/users/${userId}/chats/getAllmessages`;
@@ -201,21 +216,52 @@ export class GraphNotificationUserClient {
       includeResourceData: true,
       clientState: 'wsssecret'
     };
-
     log('subscribing to changes for ' + resourcePath);
+
+    if (Providers.globalProvider.isWebProxyEnabled) {
+      let proxySubscription = await this.getProxySubscription(this.userId);
+      if (proxySubscription) {
+        this.proxySubscription = proxySubscription;
+      } else {
+        proxySubscription = await this.createSubscriptionFromProxy(subscriptionDefinition);
+        this.proxySubscription = proxySubscription;
+      }
+
+      if (this.proxySubscription?.subscription) {
+        this.subscriptionId = this.proxySubscription.subscription.id!;
+        await this.cacheProxySubscription(this.userId, this.proxySubscription);
+      }
+      return this.proxySubscription?.subscription;
+    } else {
+      const subscription = await this.createSubscriptionFromGraph(subscriptionDefinition);
+      this.subscriptionId = subscription.id!;
+      await this.cacheSubscription(this.userId, subscription);
+      return subscription;
+    }
+  }
+
+  private async createSubscriptionFromProxy(
+    subscriptionDefinition: Subscription
+  ): Promise<ProxySubscription | undefined> {
+    const token = await this.proxyTokenManager.getProxyToken();
+    const proxySubscription: ProxySubscription | undefined = await MGTProxyOperations.PerformOperation(
+      Providers.globalProvider.webProxyURL + GraphConfig.subscriptionEndpoint,
+      'POST',
+      subscriptionDefinition,
+      token
+    );
+    log('Subscription created using web proxy.');
+    return proxySubscription;
+  }
+
+  private async createSubscriptionFromGraph(subscriptionDefinition: Subscription): Promise<Subscription> {
     const subscriptionEndpoint = GraphConfig.subscriptionEndpoint;
     // send subscription POST to Graph
     const subscription: Subscription = (await this.subscriptionGraph
       .api(subscriptionEndpoint)
       .post(subscriptionDefinition)) as Subscription;
     if (!subscription?.notificationUrl) throw new Error('Subscription not created');
-    log(subscription);
-
-    this.subscriptionId = subscription.id!;
-    await this.cacheSubscription(userId, subscription);
-
-    log('Subscription created.');
-
+    log('Subscription created using graph api.');
     return subscription;
   }
 
@@ -227,6 +273,17 @@ export class GraphNotificationUserClient {
       log('Successfully removed all user subscriptions from cache.');
     } catch (e) {
       error('Failed to remove all user subscriptions from cache.', e);
+    }
+  }
+
+  private async deleteCachedProxySubscriptions(userId: string) {
+    try {
+      log('Removing all user subscriptions from cache...');
+      await this.proxySubscriptionCache.deleteCachedProxySubscriptions(userId);
+      this.subscriptionId = '';
+      log('Successfully removed all proxy user subscriptions from cache.');
+    } catch (e) {
+      error('Failed to remove all proxy user subscriptions from cache.', e);
     }
   }
 
@@ -256,8 +313,14 @@ export class GraphNotificationUserClient {
     try {
       const currentUserId = this.userId;
 
-      // if there is a current subscription...
-      let subscription = await this.getSubscription(currentUserId);
+      // if there is a current subscription or a webproxy suscription...
+      let subscription;
+      if (Providers.globalProvider.isWebProxyEnabled) {
+        this.proxySubscription = await this.getProxySubscription(currentUserId);
+        subscription = this.proxySubscription?.subscription;
+      } else {
+        subscription = await this.getSubscription(currentUserId);
+      }
       if (subscription) {
         // attempt a renewal if necessary
         try {
@@ -306,6 +369,10 @@ export class GraphNotificationUserClient {
         }
       }
 
+      if (!subscription) {
+        throw new Error('Subscription not created');
+      }
+
       // create or reconnect the SignalR connection
       // notificationUrl comes in the form of websockets:https://graph.microsoft.com/beta/subscriptions/notificationChannel/websockets/<Id>?groupid=<UserId>&sessionid=default
       // if <Id> changes, we need to create a new connection
@@ -350,6 +417,12 @@ export class GraphNotificationUserClient {
     return subscriptions.length > 0 ? subscriptions[0] : undefined;
   }
 
+  private async getProxySubscription(userId: string): Promise<ProxySubscription | undefined> {
+    const proxySubscriptions =
+      (await this.proxySubscriptionCache.loadProxySubscriptions(userId))?.proxySubscriptions || [];
+    return proxySubscriptions.length > 0 ? proxySubscriptions[0] : undefined;
+  }
+
   // this is used to create a unique session id for the web socket connection
   private getSessionId(): string {
     return uuid();
@@ -365,20 +438,51 @@ export class GraphNotificationUserClient {
     // PATCH /subscriptions/{id}
     const subscriptionId = subscription.id;
     const expirationDateTime = newExpirationTime.toISOString();
-    const renewedSubscription = (await this.graph.api(`${GraphConfig.subscriptionEndpoint}/${subscriptionId}`).patch({
-      expirationDateTime
-    })) as Subscription;
-    return this.cacheSubscription(userId, renewedSubscription);
+
+    if (Providers.globalProvider.isWebProxyEnabled) {
+      const renewedSubscription = (await MGTProxyOperations.PerformOperation(
+        `${Providers.globalProvider.webProxyURL}/subscriptions/${subscriptionId}`,
+        'PATCH',
+        { expirationDateTime },
+        await this.proxyTokenManager.getProxyToken()
+      )) as Subscription;
+      return this.cacheSubscription(userId, renewedSubscription);
+    } else {
+      const renewedSubscription = (await this.graph.api(`${GraphConfig.subscriptionEndpoint}/${subscriptionId}`).patch({
+        expirationDateTime
+      })) as Subscription;
+      return this.cacheSubscription(userId, renewedSubscription);
+    }
   };
+
+  private readonly getAccessTokenForSignalRConnection = async () => {
+    if (Providers.globalProvider.isWebProxyEnabled) {
+      return this.proxySubscription?.negotiate?.accessToken ?? '';
+    }
+    return this.getToken();
+  };
+
+  private getNotificationUrlForSignalRConnection(notificationUrl: string) {
+    if (Providers.globalProvider.isWebProxyEnabled) {
+      return this.proxySubscription?.negotiate?.url ?? '';
+    }
+    return notificationUrl;
+  }
 
   private async createSignalRConnection(notificationUrl: string) {
     const connectionOptions: IHttpConnectionOptions = {
-      accessTokenFactory: this.getToken,
+      accessTokenFactory: () => this.getAccessTokenForSignalRConnection(),
       withCredentials: false
     };
 
     const connection = new HubConnectionBuilder()
-      .withUrl(GraphConfig.adjustNotificationUrl(notificationUrl, this.getSessionId()), connectionOptions)
+      .withUrl(
+        GraphConfig.adjustNotificationUrl(
+          this.getNotificationUrlForSignalRConnection(notificationUrl),
+          this.getSessionId()
+        ),
+        connectionOptions
+      )
       .configureLogging(LogLevel.Information)
       .build();
 

@@ -12,7 +12,9 @@ import {
   createFromProvider,
   IProviderAccount,
   GraphEndpoint,
-  error
+  error,
+  log,
+  ExtendedAuthenticationProviderOptions
 } from '@microsoft/mgt-element';
 import {
   Configuration,
@@ -28,7 +30,6 @@ import {
   BrowserAuthError,
   EventType
 } from '@azure/msal-browser';
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 
 /**
  * base config for MSAL 2.0 authentication
@@ -158,6 +159,24 @@ export interface Msal2Config extends Msal2ConfigBase {
    * @memberof Msal2Config
    */
   customHosts?: string[];
+
+  /**
+   * enable Web Proxy functionality
+   *
+   * @type {boolean}
+   * @memberof Msal2Config
+   */
+  isWebProxyEnabled?: boolean;
+
+  /**
+   * The Web Proxy URL for the graph client
+   */
+  webProxyURL?: string;
+
+  /**
+   * The Web Proxy API Scope for the graph client
+   */
+  webProxyAPIScope?: string;
 }
 
 /**
@@ -409,6 +428,10 @@ export class Msal2Provider extends IProvider {
       typeof msal2config.isMultiAccountEnabled !== 'undefined' ? msal2config.isMultiAccountEnabled : true;
     this.baseURL = typeof msal2config.baseURL !== 'undefined' ? msal2config.baseURL : this.baseURL;
     this.customHosts = msal2config.customHosts;
+    this.isWebProxyEnabled =
+      typeof msal2config.isWebProxyEnabled !== 'undefined' ? msal2config.isWebProxyEnabled : false;
+    this.webProxyURL = typeof msal2config.webProxyURL !== 'undefined' ? msal2config.webProxyURL : '';
+    this.webProxyAPIScope = typeof msal2config.webProxyAPIScope !== 'undefined' ? msal2config.webProxyAPIScope : '';
 
     this.graph = createFromProvider(this);
     try {
@@ -727,19 +750,22 @@ export class Msal2Provider extends IProvider {
   /**
    * Returns access token for scopes
    *
-   * @param {AuthenticationProviderOptions} [options]
+   * @param {ExtendedAuthenticationProviderOptions} [options]
    * @return {*}  {Promise<string>}
    * @memberof Msal2Provider
    */
-  public async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
+  public async getAccessToken(options?: ExtendedAuthenticationProviderOptions): Promise<string> {
     const scopes = options ? options.scopes || this.scopes : this.scopes;
+    const forceRefresh = options ? options.forceTokenRefresh || false : false;
     const accessTokenRequest: SilentRequest = {
       scopes,
-      account: this.getAccount()
+      account: this.getAccount(),
+      forceRefresh // Ensure fresh token is fetched when flag is set
     };
     try {
       const silentRequest: SilentRequest = accessTokenRequest;
       const response = await this._publicClientApplication.acquireTokenSilent(silentRequest);
+      log('response.accessToken', response.accessToken);
       return response.accessToken;
     } catch (e) {
       if (e instanceof InteractionRequiredAuthError) {

@@ -60,7 +60,8 @@ If you already have a function that returns `accessTokens`, you can use a Simple
 ```ts
 import {Providers, SimpleProvider} from '@microsoft/mgt-element';
 
-function getAccessToken(scopes: string[]) {
+//this will take an object with first item as scopes and second param is optional and is set to false by default
+function getAccessToken({scopes: string[], forceTokenRefresh?: boolean}) {
   // return a promise with accessToken string
 }
 

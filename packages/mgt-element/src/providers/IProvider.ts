@@ -5,10 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationProvider, AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
+import { AuthenticationProvider } from '@microsoft/microsoft-graph-client';
 import { validateBaseURL } from '../utils/validateBaseURL';
 import { GraphEndpoint, IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from '../IGraph';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
+import { ExtendedAuthenticationProviderOptions } from './ExtendedAuthenticationProviderOptions';
 
 /**
  * Provider Type to be extended for implementing new providers
@@ -139,6 +140,34 @@ export abstract class IProvider implements AuthenticationProvider {
   public get isMultiAccountSupported(): boolean {
     return this.isMultipleAccountSupported;
   }
+
+  /**
+   * get/set the value for WebProxyEnabled
+   *
+   * @protected
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  public isWebProxyEnabled = false;
+
+  /**
+   * get/set the value for webProxyURL
+   *
+   * @protected
+   * @memberof IProvider
+   * @type {string}
+   */
+  public webProxyURL = '';
+
+  /**
+   * get/set the value for webProxyAPIScope
+   *
+   * @protected
+   * @memberof IProvider
+   * @type {string}
+   */
+  public webProxyAPIScope = '';
+
   /**
    * returns state of Provider
    *
@@ -291,12 +320,12 @@ export abstract class IProvider implements AuthenticationProvider {
   /**
    * uses scopes to recieve access token
    *
-   * @param {...string[]} scopes
+   * @param {AuthenticationProviderOptions} [options]
    * @returns {Promise<string>}
    * @memberof IProvider
    */
-  public getAccessTokenForScopes(...scopes: string[]): Promise<string> {
-    return this.getAccessToken({ scopes });
+  public getAccessTokenForScopes(options: ExtendedAuthenticationProviderOptions): Promise<string> {
+    return this.getAccessToken(options);
   }
 
   /**
@@ -307,7 +336,7 @@ export abstract class IProvider implements AuthenticationProvider {
    * @returns {Promise<string>}
    * @memberof IProvider
    */
-  public abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
+  public abstract getAccessToken(options?: ExtendedAuthenticationProviderOptions): Promise<string>;
 }
 
 /**
