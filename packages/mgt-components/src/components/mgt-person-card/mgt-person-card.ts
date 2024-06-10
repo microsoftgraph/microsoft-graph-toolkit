@@ -593,7 +593,6 @@ export class MgtPersonCard extends MgtTemplatedTaskComponent implements IHistory
   protected renderPerson(): TemplateResult {
     return mgtHtml`
       <mgt-person
-        tabindex="0"
         class="person-image"
         .personDetails=${this.internalPersonDetails}
         .personImage=${this.getImage()}
