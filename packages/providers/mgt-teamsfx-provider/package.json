@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt-teamsfx-provider",
-  "version": "4.2.0",
+  "version": "4.2.2",
   "description": "The Microsoft Graph Toolkit TeamsFx Provider",
   "keywords": [
     "microsoft graph",

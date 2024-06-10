@@ -28,19 +28,28 @@ const getFiles = (filter, startPath = 'packages') => {
 };
 
 const updateMgtDependencyVersion = (packages, version) => {
-  for (let package of packages) {
-    console.log(`updating package ${package} with version ${version}`);
-    const data = fs.readFileSync(package, 'utf8');
+  for (let item of packages) {
+    console.log(`updating package ${item} with version ${version}`);
+    const data = fs.readFileSync(item, 'utf8');
 
-    let result;
-    if (package === 'sonar-project.properties') {
-      result = data.replace(/sonar.projectVersion=(.*)/g, `sonar.projectVersion=${version}`);
-    } else {
-      result = data.replace(/"(@microsoft\/mgt.*)": "(\*)"/g, `"$1": "${version}"`);
-      result = result.replace(/"version": "(.*)"/g, `"version": "${version}"`);
-    }
+    let result = data.replace(/"(@microsoft\/mgt.*)": "(\*)"/g, `"$1": "${version}"`);
+    result = result.replace(/"version": "(.*)"/g, `"version": "${version}"`);
 
-    fs.writeFileSync(package, result, 'utf8');
+    fs.writeFileSync(item, result, 'utf8');
+  }
+};
+
+const updateSonarProjectVersion = () => {
+  const rootDir = path.resolve(__dirname, '..');
+  const sonarFilePath = path.join(rootDir, 'sonar-project.properties');
+
+  if (fs.existsSync(sonarFilePath)) {
+    const data = fs.readFileSync(sonarFilePath, 'utf8');
+    const result = data.replace(/sonar.projectVersion=(.*)/g, `sonar.projectVersion=${version}`);
+    fs.writeFileSync(sonarFilePath, result, 'utf8');
+  } else {
+    console.log('sonar-project.properties file not found in root directory');
+    return null;
   }
 };
 
@@ -82,5 +91,4 @@ const packages = getFiles('package.json', '.');
 updateMgtDependencyVersion(packages, version);
 
 // include update to sonar-project.properties
-const sonarProperties = getFiles('sonar-project.properties', '.');
-updateMgtDependencyVersion(sonarProperties, version);
+updateSonarProjectVersion();
