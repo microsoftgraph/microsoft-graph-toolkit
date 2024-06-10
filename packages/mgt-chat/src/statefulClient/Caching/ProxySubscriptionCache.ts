@@ -49,7 +49,7 @@ export class ProxySubscriptionCache {
 
       let cacheEntry = (await store.get(chatId)) as CachedProxySubscriptionData | undefined;
       if (cacheEntry && cacheEntry.chatId === chatId) {
-        const subIndex = cacheEntry.proxySubscriptions.findIndex(
+        const subIndex = cacheEntry.proxySubscriptions?.findIndex(
           s => s.subscription?.resource === proxySubscriptionRecord.subscription?.resource
         );
         if (subIndex !== -1) {

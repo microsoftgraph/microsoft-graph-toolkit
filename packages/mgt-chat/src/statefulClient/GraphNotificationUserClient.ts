@@ -27,7 +27,7 @@ import { ProxySubscriptionCache } from './Caching/ProxySubscriptionCache';
 import { Timer } from '../utils/Timer';
 import { getOrGenerateGroupId } from './getOrGenerateGroupId';
 import { v4 as uuid } from 'uuid';
-import { MGTProxyOperations, ProxySubscription } from './MGTProxyOperations';
+import { MGTProxyOperations, ProxySubscription, RenewedProxySubscription } from './MGTProxyOperations';
 import { MGTProxyTokenManager } from './MGTProxyTokenManager';
 
 export const appSettings = {
@@ -445,8 +445,11 @@ export class GraphNotificationUserClient {
         'PATCH',
         { expirationDateTime },
         await this.proxyTokenManager.getProxyToken()
-      )) as Subscription;
-      return this.cacheSubscription(userId, renewedSubscription);
+      )) as RenewedProxySubscription;
+      if (this.proxySubscription && renewedSubscription) {
+        this.proxySubscription.subscription = renewedSubscription.subscription!;
+        await this.cacheProxySubscription(this.userId, this.proxySubscription);
+      }
     } else {
       const renewedSubscription = (await this.graph.api(`${GraphConfig.subscriptionEndpoint}/${subscriptionId}`).patch({
         expirationDateTime

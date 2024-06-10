@@ -12,6 +12,10 @@ export interface ProxySubscription {
   negotiate: NegotiateData | undefined;
 }
 
+export interface RenewedProxySubscription {
+  subscription: Subscription | undefined;
+}
+
 export class MGTProxyOperations {
   public static async PerformOperation(
     url: string,
