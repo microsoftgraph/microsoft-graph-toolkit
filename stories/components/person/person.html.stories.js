@@ -112,39 +112,24 @@ export const RTL = () => html`
 
 export const personVertical = () => html`
 
-<div class="row">
-  <mgt-person person-query="me" class="example" vertical-layout view="oneline" person-card="hover"></mgt-person>
-</div>
-<div class="row">
-  <mgt-person person-query="me" class="example" vertical-layout view="twolines" person-card="hover"></mgt-person>
-</div>
-<div class="row">
-  <mgt-person person-query="me" class="example" vertical-layout view="threelines" class="example"></mgt-person>
-</div>
-<div class="row">
-  <mgt-person person-query="me" class="example" vertical-layout view="fourlines" class="example"></mgt-person>
-</div>
+
+<mgt-person person-query="me" class="example" vertical-layout view="oneline" person-card="hover"></mgt-person>
+<mgt-person person-query="me" class="example" vertical-layout view="twolines" person-card="hover"></mgt-person>
+<mgt-person person-query="me" class="example" vertical-layout view="threelines"></mgt-person>
+<mgt-person person-query="me" class="example" vertical-layout view="fourlines"></mgt-person>
 
 <!-- With Presence; Check JS tab -->
 
-<div class="row">
-  <mgt-person person-query="me" class="example" vertical-layout id="online" show-presence view="oneline" person-card="hover"></mgt-person>
-</div>
-<div class="row">
-  <mgt-person person-query="me" class="example" vertical-layout id="online2" show-presence view="twolines" person-card="hover"></mgt-person>
-</div>
-<div class="row">
-  <mgt-person person-query="me" class="example" vertical-layout id="online3" show-presence view="threelines" class="example"></mgt-person>
-</div>
-<div class="row">
-  <mgt-person person-query="me" class="example" vertical-layout id="online4" show-presence view="fourlines" class="example"></mgt-person>
-</div>
+<mgt-person person-query="me" class="example" vertical-layout id="online" show-presence view="oneline" person-card="hover"></mgt-person>
+<mgt-person person-query="me" class="example" vertical-layout id="online2" show-presence view="twolines" person-card="hover"></mgt-person>
+<mgt-person person-query="me" class="example" vertical-layout id="online3" show-presence view="threelines"></mgt-person>
+<mgt-person person-query="me" class="example" vertical-layout id="online4" show-presence view="fourlines"></mgt-person>
 
 <!-- Person unauthenticated vertical layout-->
-<div class="row">
-	<mgt-person person-query="mbowen" vertical-layout view="twolines" fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'>
-	</mgt-person>
-</div>
+
+<mgt-person person-query="mbowen" vertical-layout view="twolines"
+fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'>
+</mgt-person>
 
 <script>
             const online = {

@@ -30,6 +30,7 @@ import { AvatarSize, IDynamicPerson, ViewType, viewTypeConverter } from '../../g
 import '../../styles/style-helper';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
+import { debounce } from '../../utils/Utils';
 import { IExpandable, IHistoryClearer } from '../mgt-person-card/types';
 import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout, registerMgtFlyoutComponent } from '../sub-components/mgt-flyout/mgt-flyout';
@@ -506,6 +507,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
 
   private _mouseLeaveTimeout = -1;
   private _mouseEnterTimeout = -1;
+  private _keyBoardFocus: { (): void; (): void };
 
   constructor() {
     super();
@@ -1345,10 +1347,27 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
   };
 
   private readonly handleKeyDown = (e: KeyboardEvent) => {
-    // enter activates person-card
+    const personEl = this.renderRoot.querySelector<HTMLElement>('.person-root');
+    // enter activates and focuses on person-card
     if (e) {
       if (e.key === 'Enter') {
         this.showPersonCard();
+        const flyout = this.flyout;
+        if (flyout?.isOpen) {
+          this._keyBoardFocus = debounce(() => {
+            const personCardEl = flyout.querySelector<HTMLElement>('.mgt-person-card');
+            personCardEl.setAttribute('tabindex', '0');
+            personCardEl.focus();
+          }, 500);
+          this._keyBoardFocus();
+        }
+        personEl.blur();
+      }
+      if (this.personCardInteraction !== 'none') {
+        if (e.key === 'Escape' && personEl) {
+          this.hidePersonCard();
+          personEl.focus();
+        }
       }
     }
   };
