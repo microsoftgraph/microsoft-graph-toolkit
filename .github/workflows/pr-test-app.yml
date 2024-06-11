@@ -58,3 +58,5 @@ jobs:
         with:
           message: '🚀 New react-contoso sample application deployed [here](https://mgt.dev/next/sample/pr/${{ github.event.number }})'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment_tag: '🚀 New react-contoso sample application deployed'
+          mode: recreate
