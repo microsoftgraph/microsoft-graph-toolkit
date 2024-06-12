@@ -36,8 +36,8 @@
     "compile": "tsc -p ./tsconfig.provider.json && tsc -p ./tsconfig.authenticator.json",
     "compile:watch": "tsc -w -p ./tsconfig.provider.json && tsc -w -p ./tsconfig.authenticator.json",
     "lint": "npm run lint:auth && npm run lint:provider",
-    "lint:auth": "eslint -c .eslintrc.auth.js 'src/Authenticator/**/*.ts'",
-    "lint:provider": "eslint -c .eslintrc.provider.js 'src/Provider/**/*.ts'",
+    "lint:auth": "eslint -c .eslintrc.auth.js \"src/Authenticator/**/*.ts\"",
+    "lint:provider": "eslint -c .eslintrc.provider.js \"src/Provider/**/*.ts\"",
     "postpack": "cpx *.tgz ../../../artifacts"
   },
   "sideEffects": false,

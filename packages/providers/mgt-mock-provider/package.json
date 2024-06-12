@@ -34,7 +34,7 @@
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
-    "lint": "eslint -c ../../../.eslintrc.js 'src/**/*.ts'",
+    "lint": "eslint -c ../../../.eslintrc.js \"src/**/*.ts\"",
     "postpack": "cpx *.tgz ../../../artifacts"
   },
   "sideEffects": [
