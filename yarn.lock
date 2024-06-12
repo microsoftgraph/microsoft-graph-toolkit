@@ -4549,18 +4549,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/eslint-config-msgraph@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@microsoft/eslint-config-msgraph@npm:2.0.0"
+"@microsoft/eslint-config-msgraph@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@microsoft/eslint-config-msgraph@npm:3.0.3"
   peerDependencies:
-    "@typescript-eslint/eslint-plugin": ^6.7.2
-    "@typescript-eslint/parser": ^6.7.2
-    eslint: ^8.49.0
-    eslint-config-prettier: ^9.0.0
+    "@typescript-eslint/eslint-plugin": ^7.10.0
+    "@typescript-eslint/parser": ^7.10.0
+    eslint: ^8.57.0
+    eslint-config-prettier: ^9.1.0
     eslint-plugin-prefer-arrow: ^1.2.3
-    eslint-plugin-react: ^7.32.2
-    prettier: ^3.0.3
-  checksum: 10/fd531f8210cafe687bba157db4fae000c4ab8e332795fbdf27c04262eaf1cd8fa57a65f1cc949c9e7d464ceaa6f951ba73159b2a9dcfe72d8beb23032d755608
+    eslint-plugin-react: ^7.34.1
+    prettier: ^3.2.5
+  checksum: 10/0a011465d4adadc82e2b54f2db319a4dc518a300f99e0b3b2f5cee93ddf718e70a9b0e1eec2a536be22f2a0cee7ba2ab9f9e3e79f2ded1180e647ac1100927f8
   languageName: node
   linkType: hard
 
@@ -20436,7 +20436,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.3"
     "@custom-elements-manifest/analyzer": "npm:^0.9.2"
     "@esm-bundle/chai": "npm:^4.3.4-fix.0"
-    "@microsoft/eslint-config-msgraph": "npm:^2.0.0"
+    "@microsoft/eslint-config-msgraph": "npm:^3.0.3"
     "@open-wc/testing": "npm:^4.0.0"
     "@open-wc/testing-helpers": "npm:^3.0.0"
     "@rollup/plugin-babel": "npm:^6.0.4"
