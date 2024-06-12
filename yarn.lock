@@ -2981,7 +2981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/react-components@npm:^9.46.5":
+"@fluentui/react-components@npm:^9.54.1":
   version: 9.54.1
   resolution: "@fluentui/react-components@npm:9.54.1"
   dependencies:
@@ -19706,7 +19706,7 @@ __metadata:
     "@fluentui/fluent2-theme": "npm:^8.107.65"
     "@fluentui/merge-styles": "npm:^8.5.15"
     "@fluentui/react": "npm:^8.115.6"
-    "@fluentui/react-components": "npm:^9.46.5"
+    "@fluentui/react-components": "npm:^9.54.1"
     "@fluentui/react-hooks": "npm:^8.6.36"
     "@fluentui/react-theme-provider": "npm:^0.18.7"
     "@microsoft/mgt-element": "npm:*"

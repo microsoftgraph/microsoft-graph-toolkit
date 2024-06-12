@@ -7,7 +7,7 @@
     "@fluentui/fluent2-theme": "^8.107.65",
     "@fluentui/merge-styles": "^8.5.15",
     "@fluentui/react": "^8.115.6",
-    "@fluentui/react-components": "^9.46.5",
+    "@fluentui/react-components": "^9.54.1",
     "@fluentui/react-hooks": "^8.6.36",
     "@fluentui/react-theme-provider": "^0.18.7",
     "@microsoft/mgt-element": "*",
