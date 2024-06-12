@@ -53,6 +53,21 @@ export class EditorElement extends LitElement {
 
       .tab-right {
         float: right;
+        @media (forced-colors: active) and (prefers-color-scheme: dark) {
+          svg,
+          svg>path {
+            fill: rgb(255, 255, 255) !important;
+            color: rgb(255, 255, 255) !important;
+          }
+        }
+
+        @media (forced-colors: active) and (prefers-color-scheme: light) {
+          svg,
+          svg>path {
+            fill: rgb(0, 0, 0) !important;
+            color: rgb(0, 0, 0) !important;
+          }
+        }
       }
 
       .tab[aria-selected='true'] {
