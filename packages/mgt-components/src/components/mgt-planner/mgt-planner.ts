@@ -597,7 +597,7 @@ export class MgtPlanner extends MgtTemplatedTaskComponent {
     if (!ts) {
       return;
     }
-    // check if e is a KEyboard Event
+    // check if e is a Keyboard Event
     if (e instanceof KeyboardEvent) {
       if (e.key !== 'Enter') {
         return;
