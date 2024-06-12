@@ -98,14 +98,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/msal-node@npm:^1.18.4":
-  version: 1.18.4
-  resolution: "@azure/msal-node@npm:1.18.4"
+"@azure/msal-common@npm:14.12.0":
+  version: 14.12.0
+  resolution: "@azure/msal-common@npm:14.12.0"
+  checksum: 10/5a0905beae17e20d66b352425dfd86d41ddf402f3c2c324aacf0590844e61c2c13ed439c3c63a1d7b4d3861b8d885ed11b7f257373facefe8fa3dc63455ee9c2
+  languageName: node
+  linkType: hard
+
+"@azure/msal-node@npm:^2.9.2":
+  version: 2.9.2
+  resolution: "@azure/msal-node@npm:2.9.2"
   dependencies:
-    "@azure/msal-common": "npm:13.3.1"
+    "@azure/msal-common": "npm:14.12.0"
     jsonwebtoken: "npm:^9.0.0"
     uuid: "npm:^8.3.0"
-  checksum: 10/8f46f4862de906216be0cb9672e7addb59593875a514786e15bccd94eec4ada4eed7231e6c3119e21ae068e886e1d87db241593ead128e48341069f50e620837
+  checksum: 10/0cbaa209291a300515ab94883b9920ba7fa66b11e34428214e46384c3ab12c6e159904ed0a3190e2babf6509780f855f8c4345c07af9bafca0a94d68ff838ba5
   languageName: node
   linkType: hard
 
@@ -4625,7 +4632,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@microsoft/mgt-electron-provider@workspace:packages/providers/mgt-electron-provider"
   dependencies:
-    "@azure/msal-node": "npm:^1.18.4"
+    "@azure/msal-node": "npm:^2.9.2"
     "@microsoft/mgt-element": "npm:*"
     "@microsoft/microsoft-graph-client": "npm:3.0.2"
     electron: "npm:^28.2.4"

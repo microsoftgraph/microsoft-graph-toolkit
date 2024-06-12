@@ -42,7 +42,7 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@azure/msal-node": "^1.18.4",
+    "@azure/msal-node": "^2.9.2",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "3.0.2"
   },
