@@ -56,16 +56,16 @@ export class EditorElement extends LitElement {
         @media (forced-colors: active) and (prefers-color-scheme: dark) {
           svg,
           svg>path {
-            fill: rgb(255, 255, 255) !important;
-            color: rgb(255, 255, 255) !important;
+            fill: rgb(255, 255, 255);
+            color: rgb(255, 255, 255);
           }
         }
 
         @media (forced-colors: active) and (prefers-color-scheme: light) {
           svg,
           svg>path {
-            fill: rgb(0, 0, 0) !important;
-            color: rgb(0, 0, 0) !important;
+            fill: rgb(0, 0, 0);
+            color: rgb(0, 0, 0);
           }
         }
       }
