@@ -237,3 +237,8 @@ export const IsSignedIn = () => html`
     }
 </script>
 `;
+
+export const Calendar = () => html`
+  <mgt-login></mgt-login></mgt-login>
+  <mgt-agenda group-by-day></mgt-agenda>
+`;
