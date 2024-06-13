@@ -205,10 +205,10 @@ export class EditorElement extends LitElement {
     }
   }
 
-  generateStackblitzProject() {
+  generateStackblitzProject = () => {
     this.currentType = 'stackblitz';
     generateProject(this.title, this.files);
-  }
+  };
 
   tabKeyDown = e => {
     const tabs = this.renderRoot.querySelectorAll('.tab');
@@ -256,7 +256,8 @@ export class EditorElement extends LitElement {
           )}
 
           <button
-            @click="${_ => this.generateStackblitzProject()}"
+            @click="${this.generateStackblitzProject}"
+            tabindex="${this.currentType === 'stackblitz' ? 0 : -1}"
             id="project"
             role="tab"
             class="tab tab-right"
