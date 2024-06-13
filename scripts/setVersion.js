@@ -32,13 +32,8 @@ const updateMgtDependencyVersion = (packages, version) => {
     console.log(`updating package ${package} with version ${version}`);
     const data = fs.readFileSync(package, 'utf8');
 
-    let result;
-    if (package === 'sonar-project.properties') {
-      result = data.replace(/sonar.projectVersion=(.*)/g, `sonar.projectVersion=${version}`);
-    } else {
-      result = data.replace(/"(@microsoft\/mgt.*)": "(\*)"/g, `"$1": "${version}"`);
-      result = result.replace(/"version": "(.*)"/g, `"version": "${version}"`);
-    }
+    var result = data.replace(/"(@microsoft\/mgt.*)": "(\*)"/g, `"$1": "${version}"`);
+    result = result.replace(/"version": "(.*)"/g, `"version": "${version}"`);
 
     fs.writeFileSync(package, result, 'utf8');
   }
@@ -80,7 +75,3 @@ if (process.argv.length > 2) {
 // include update to the root package.json
 const packages = getFiles('package.json', '.');
 updateMgtDependencyVersion(packages, version);
-
-// include update to sonar-project.properties
-const sonarProperties = getFiles('sonar-project.properties', '.');
-updateMgtDependencyVersion(sonarProperties, version);
