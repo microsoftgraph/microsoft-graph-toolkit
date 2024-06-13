@@ -280,7 +280,7 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
           maxPeople,
           p => (p.id ? p.id : p.displayName),
           p => html`
-            <li tabindex="-1" class="people-person">
+            <li class="people-person">
               ${this.renderPerson(p)}
             </li>
           `
@@ -306,7 +306,7 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
         people: this.people
       }) ||
       html`
-        <li tabindex="-1" aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}</span></li>
+        <li aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}</span></li>
       `
     );
   }
@@ -323,19 +323,22 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
     // Default all tabindex values in li nodes to -1
     for (const element of peopleElements) {
       const el: HTMLElement = element as HTMLElement;
-      el.setAttribute('tabindex', '-1');
+      el.removeAttribute('tabindex');
+      person = el.querySelector('.people-person');
+      person.shadowRoot.querySelector('.person-root').removeAttribute('tabindex');
       el.blur();
+    }
+    const keyName = event.key;
+    if (event.target === peopleContainer && (keyName === 'Tab' || keyName === 'Escape')) {
+      this._arrowKeyLocation = -1;
+      peopleContainer.blur();
     }
 
     const childElementCount = peopleContainer.childElementCount;
-    const keyName = event.key;
     if (keyName === 'ArrowRight') {
       this._arrowKeyLocation = (this._arrowKeyLocation + 1 + childElementCount) % childElementCount;
     } else if (keyName === 'ArrowLeft') {
       this._arrowKeyLocation = (this._arrowKeyLocation - 1 + childElementCount) % childElementCount;
-    } else if (keyName === 'Tab' || keyName === 'Escape') {
-      this._arrowKeyLocation = -1;
-      peopleContainer.blur();
     } else if (['Enter', 'space', ' '].includes(keyName)) {
       if (this.personCardInteraction !== 'none') {
         const personEl = peopleElements[this._arrowKeyLocation] as HTMLElement;
@@ -348,8 +351,10 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
 
     if (this._arrowKeyLocation > -1) {
       person = peopleElements[this._arrowKeyLocation] as HTMLElement;
-      person.setAttribute('tabindex', '1');
+      person.setAttribute('tabindex', '0');
       person.focus();
+      person = person.querySelector('.people-person');
+      person.shadowRoot.querySelector('.person-root').setAttribute('tabindex', '0');
     }
   };
 
