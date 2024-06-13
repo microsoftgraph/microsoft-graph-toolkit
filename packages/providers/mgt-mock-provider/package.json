@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt-mock-provider",
-  "version": "4.2.2",
+  "version": "4.2.0",
   "description": "The Microsoft Graph Toolkit Mock Provider",
   "keywords": [
     "microsoft graph",
