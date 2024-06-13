@@ -592,12 +592,17 @@ export class MgtPlanner extends MgtTemplatedTaskComponent {
     await this._task.run();
   }
 
-  private async removeTask(task: ITask) {
+  private async removeTask(task: ITask, e: Event) {
     const ts = this.getTaskSource();
     if (!ts) {
       return;
     }
-
+    // check if e is a Keyboard Event
+    if (e instanceof KeyboardEvent) {
+      if (e.key !== 'Enter') {
+        return;
+      }
+    }
     this._hiddenTasks = [...this._hiddenTasks, task.id];
     await ts.removeTask(task);
     this.fireCustomEvent('taskRemoved', task);
@@ -1004,7 +1009,7 @@ export class MgtPlanner extends MgtTemplatedTaskComponent {
             <mgt-dot-options
               class="dot-options"
               .options="${{
-                [this.strings.removeTaskSubtitle]: () => this.removeTask(task)
+                [this.strings.removeTaskSubtitle]: (e: Event) => this.removeTask(task, e)
               }}"
             ></mgt-dot-options>`;
 
