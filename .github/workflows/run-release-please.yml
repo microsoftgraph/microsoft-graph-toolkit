@@ -14,15 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Use Node.js 20.x
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
           registry-url: 'https://registry.npmjs.org'
-      - uses: google-github-actions/release-please-action@v3
+      - uses: googleapis/release-please-action@v4
         id: release
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
-          command: manifest
           token: ${{secrets.RELEASE_PLEASE_TOKEN}}
-          default-branch: main
