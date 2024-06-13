@@ -205,6 +205,11 @@ export class EditorElement extends LitElement {
     }
   }
 
+  generateStackblitzProject() {
+    this.currentType = 'stackblitz';
+    generateProject(this.title, this.files);
+  }
+
   tabKeyDown = e => {
     const tabs = this.renderRoot.querySelectorAll('.tab');
     // Move right
@@ -251,10 +256,11 @@ export class EditorElement extends LitElement {
           )}
 
           <button
-            @click="${_ => generateProject(this.title, this.files)}"
+            @click="${_ => this.generateStackblitzProject()}"
             id="project"
             role="tab"
             class="tab tab-right"
+            aria-selected="${this.currentType === 'stackblitz'}"
             title="Edit in StackBlitz"
           >
             <svg viewBox="0 0 14 14" width="14px" height="14px" class="css-149xqrd"><path d="M2 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7.5a.5.5 0 0 0-1 0V12H2V2h4.5a.5.5 0 0 0 0-1H2Z"></path><path d="M7.35 7.36 12 2.7v1.8a.5.5 0 0 0 1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 1 0 0 1h1.8L6.64 6.64a.5.5 0 1 0 .7.7Z"></path></svg>
