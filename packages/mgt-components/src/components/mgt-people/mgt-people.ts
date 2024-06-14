@@ -325,16 +325,16 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
       const el: HTMLElement = element as HTMLElement;
       el.removeAttribute('tabindex');
       person = el.querySelector('.people-person');
-      person.shadowRoot.querySelector('.person-root').removeAttribute('tabindex');
+      person?.shadowRoot.querySelector('.person-root').removeAttribute('tabindex');
       el.blur();
     }
     const keyName = event.key;
-    if (event.target === peopleContainer && (keyName === 'Tab' || keyName === 'Escape')) {
+    if ((event.target === peopleContainer && keyName === 'Tab') || keyName === 'Escape') {
       this._arrowKeyLocation = -1;
       peopleContainer.blur();
     }
 
-    const childElementCount = peopleContainer.childElementCount;
+    const childElementCount = peopleContainer.childElementCount - 1; // -1 to account for overflow
     if (keyName === 'ArrowRight') {
       this._arrowKeyLocation = (this._arrowKeyLocation + 1 + childElementCount) % childElementCount;
     } else if (keyName === 'ArrowLeft') {
@@ -354,7 +354,7 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
       person.setAttribute('tabindex', '0');
       person.focus();
       person = person.querySelector('.people-person');
-      person.shadowRoot.querySelector('.person-root').setAttribute('tabindex', '0');
+      person?.shadowRoot.querySelector('.person-root').setAttribute('tabindex', '0');
     }
   };
 
