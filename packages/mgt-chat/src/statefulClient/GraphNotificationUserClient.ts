@@ -253,11 +253,15 @@ export class GraphNotificationUserClient {
       result = await MGTProxyOperations.PerformOperation(url, method, operationData, token);
     }
 
-    if (result === undefined) {
+    if (!this.isProxySubscriptionType(result)) {
       throw new Error('Failed to create/renew subscription');
     }
 
     return result;
+  }
+
+  private isProxySubscriptionType(obj: unknown): obj is ProxySubscription {
+    return typeof obj === 'object' && obj !== null && 'subscription' in obj;
   }
 
   private async createSubscriptionFromProxy(
