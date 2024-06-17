@@ -240,11 +240,31 @@ export class GraphNotificationUserClient {
     }
   }
 
+  private async performOperationTokenSafe(
+    url: string,
+    method: string,
+    operationData: Subscription,
+    accesstoken: string
+  ): Promise<ProxySubscription | undefined> {
+    let result = await MGTProxyOperations.PerformOperation(url, method, operationData, accesstoken);
+    if (result === undefined) {
+      // undefined is the code for 401, so we need to get a new token and try again
+      const token = await this.proxyTokenManager.getProxyToken(true);
+      result = await MGTProxyOperations.PerformOperation(url, method, operationData, token);
+    }
+
+    if (result === undefined) {
+      throw new Error('Failed to create/renew subscription');
+    }
+
+    return result;
+  }
+
   private async createSubscriptionFromProxy(
     subscriptionDefinition: Subscription
   ): Promise<ProxySubscription | undefined> {
     const token = await this.proxyTokenManager.getProxyToken();
-    const proxySubscription: ProxySubscription | undefined = await MGTProxyOperations.PerformOperation(
+    const proxySubscription: ProxySubscription | undefined = await this.performOperationTokenSafe(
       Providers.globalProvider.webProxyURL + GraphConfig.subscriptionEndpoint,
       'POST',
       subscriptionDefinition,
@@ -440,7 +460,7 @@ export class GraphNotificationUserClient {
     const expirationDateTime = newExpirationTime.toISOString();
 
     if (Providers.globalProvider.isWebProxyEnabled) {
-      const renewedSubscription = (await MGTProxyOperations.PerformOperation(
+      const renewedSubscription = (await this.performOperationTokenSafe(
         `${Providers.globalProvider.webProxyURL}/subscriptions/${subscriptionId}`,
         'PATCH',
         { expirationDateTime },

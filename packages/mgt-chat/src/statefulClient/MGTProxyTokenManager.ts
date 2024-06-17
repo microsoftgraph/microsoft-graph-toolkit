@@ -23,8 +23,8 @@ export class MGTProxyTokenManager {
   };
 
   private proxyToken = '';
-  public getProxyToken = async () => {
-    if (this.proxyToken) {
+  public getProxyToken = async (refreshProxyToken = false) => {
+    if (this.proxyToken && !refreshProxyToken) {
       return this.proxyToken;
     }
 
