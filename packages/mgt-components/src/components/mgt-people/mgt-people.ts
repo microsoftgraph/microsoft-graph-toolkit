@@ -334,7 +334,14 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
       peopleContainer.blur();
     }
 
-    const childElementCount = peopleContainer.childElementCount - 1; // -1 to account for overflow
+    let childElementCount = peopleContainer.childElementCount;
+    let overflow = peopleContainer.querySelector('.overflow');
+    if (overflow) {
+      // account for overflow
+      overflow = overflow as HTMLElement;
+      overflow.removeAttribute('tabindex');
+      childElementCount--;
+    }
     if (keyName === 'ArrowRight') {
       this._arrowKeyLocation = (this._arrowKeyLocation + 1 + childElementCount) % childElementCount;
     } else if (keyName === 'ArrowLeft') {
