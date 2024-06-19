@@ -12,5 +12,16 @@
       "prerelease": false
     }
   },
+  "extra-files": [
+    {
+      "type": "json",
+      "path": "./packages/**/package.json",
+      "jsonpath": "$.version"
+    },
+    {
+      "type": "generic",
+      "path": "./sonar-project.properties"
+    }
+  ],
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
 }
