@@ -13,13 +13,18 @@ import { getPeople, getPeopleFromResource } from '../../graph/graph.people';
 import { getUsersPresenceByPeople } from '../../graph/graph.presence';
 import { findGroupMembers, getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedTaskComponent, mgtHtml } from '@microsoft/mgt-element';
+import {
+  Providers,
+  ProviderState,
+  MgtTemplatedTaskComponent,
+  registerComponent,
+  mgtHtml
+} from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { type PersonCardInteraction, personCardConverter } from './../PersonCardInteraction';
 
 import { styles } from './mgt-people-css';
 import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person';
-import { registerComponent } from '@microsoft/mgt-element';
 
 /**
  * web component to display a group of people or contacts by using their photos or initials.
@@ -249,6 +254,19 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
     return this.renderTemplate('default', { people: this.people, max: this.showMax }) || this.renderPeople();
   };
 
+  protected updated(changedProperties: Map<string | number | symbol, unknown>): void {
+    super.updated(changedProperties);
+    this.checkPeopleListAndFireEvent();
+  }
+
+  private checkPeopleListAndFireEvent(): void {
+    const peopleList = this.shadowRoot?.querySelector('.people-list');
+
+    if (peopleList?.childElementCount > 0) {
+      this.fireCustomEvent('people-rendered');
+    }
+  }
+
   /**
    * Render the loading state.
    *
@@ -331,11 +349,11 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
     const keyName = event.key;
     if ((event.target === peopleContainer && keyName === 'Tab') || keyName === 'Escape') {
       this._arrowKeyLocation = -1;
-      peopleContainer.blur();
+      peopleContainer?.blur();
     }
 
-    let childElementCount = peopleContainer.childElementCount;
-    let overflow = peopleContainer.querySelector('.overflow');
+    let childElementCount = peopleContainer?.childElementCount;
+    let overflow = peopleContainer?.querySelector('.overflow');
     if (overflow) {
       // account for overflow
       overflow = overflow as HTMLElement;
@@ -389,7 +407,6 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
       // query the image from the graph
       mgtHtml`
         <mgt-person
-          class="people-person"
           .personDetails=${person}
           .fetchImage=${true}
           .avatarSize=${avatarSize}
