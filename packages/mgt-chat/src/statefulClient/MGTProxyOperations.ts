@@ -12,6 +12,16 @@ export interface ProxySubscription {
   negotiate: NegotiateData | undefined;
 }
 
+export interface RenewedProxySubscription {
+  subscription: Subscription | undefined;
+}
+
+interface responseStatus {
+  response: {
+    status: number;
+  };
+}
+
 export class MGTProxyOperations {
   public static async PerformOperation(
     url: string,
@@ -33,6 +43,10 @@ export class MGTProxyOperations {
       return data;
     } catch (error) {
       console.error('Error:', error);
+      const errorData = error as responseStatus;
+      if (errorData && errorData?.response?.status === 401) {
+        return undefined;
+      }
     }
   }
 }
