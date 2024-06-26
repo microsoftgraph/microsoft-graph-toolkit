@@ -129,6 +129,39 @@ class MgtMsal2Provider extends MgtBaseProvider {
   public isMultiAccountDisabled;
 
   /**
+   * enables web proxy support for the provider
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'is-web-proxy-enabled',
+    type: Boolean
+  })
+  public isWebProxyEnabled: boolean;
+
+  /**
+   * url for the web proxy
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'web-proxy-url',
+    type: String
+  })
+  public webProxyURL: string;
+
+  /**
+   * API Scope for the web proxy
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'web-proxy-api-scope',
+    type: String
+  })
+  public webProxyAPIScope: string;
+
+  /**
    * Gets whether this provider can be used in this environment
    *
    * @readonly
@@ -200,6 +233,18 @@ class MgtMsal2Provider extends MgtBaseProvider {
 
       if (this.customHosts) {
         config.customHosts = this.customHosts;
+      }
+
+      if (this.isWebProxyEnabled) {
+        config.isWebProxyEnabled = this.isWebProxyEnabled;
+      }
+
+      if (this.webProxyURL) {
+        config.webProxyURL = this.webProxyURL;
+      }
+
+      if (this.webProxyAPIScope) {
+        config.webProxyAPIScope = this.webProxyAPIScope;
       }
 
       this.provider = new Msal2Provider(config);

@@ -20,6 +20,7 @@ export * from './components/customElementHelper';
 export * from './providers/IProvider';
 export * from './providers/Providers';
 export * from './providers/SimpleProvider';
+export * from './providers/ExtendedAuthenticationProviderOptions';
 
 export * from './utils/CacheService';
 export * from './utils/CacheStore';

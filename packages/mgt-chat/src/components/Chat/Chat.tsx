@@ -1,6 +1,12 @@
 import { FluentThemeProvider, MessageThread, SendBox, MessageThreadStyles } from '@azure/communication-react';
 import { FluentTheme } from '@fluentui/react';
 import { FluentProvider, makeStyles, shorthands, webLightTheme } from '@fluentui/react-components';
+import { v4 as uuid } from 'uuid';
+import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
+import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
+import { onRenderMessage } from '../../utils/chat';
+import { renderMGTMention } from '../../utils/mentions';
+import { registerAppIcons } from '../styles/registerIcons';
 import { Spinner } from '@microsoft/mgt-react';
 import { enableMapSet } from 'immer';
 import React, { useEffect, useState } from 'react';
@@ -12,12 +18,7 @@ import { LoadingMessagesErrorIcon } from '../Error/LoadingMessageErrorIcon';
 import { OpenTeamsLinkError } from '../Error/OpenTeams';
 import { RequireValidChatId } from '../Error/RequireAValidChatId';
 import { TypeANewMessage } from '../Error/TypeANewMessage';
-import { registerAppIcons } from '../styles/registerIcons';
 import { BotInfoClient } from '../../statefulClient/BotInfoClient';
-import { StatefulGraphChatClient } from '../../statefulClient/StatefulGraphChatClient';
-import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
-import { onRenderMessage } from '../../utils/chat';
-import { renderMGTMention } from '../../utils/mentions';
 
 registerAppIcons();
 
@@ -79,7 +80,7 @@ const useStyles = makeStyles({
  */
 const messageThreadStyles: MessageThreadStyles = {
   chatContainer: {
-    '& .ui-box': {
+    '& .uiBox': {
       zIndex: 'unset',
       '& div[data-ui-status]': {
         display: 'inline-flex',
@@ -89,7 +90,7 @@ const messageThreadStyles: MessageThreadStyles = {
     }
   },
   chatMessageContainer: {
-    '& p>.mgt-person-mention,msft-mention': {
+    '& p>.mgtPersonMention,msftMention': {
       display: 'inline-block',
       ...shorthands.marginInline('0px')
     },
@@ -99,7 +100,7 @@ const messageThreadStyles: MessageThreadStyles = {
     }
   },
   myChatMessageContainer: {
-    '& p>.mgt-person-mention,msft-mention': {
+    '& p>.mgtPersonMention,msftMention': {
       display: 'inline-block',
       ...shorthands.marginInline('0px')
     },
@@ -110,14 +111,25 @@ const messageThreadStyles: MessageThreadStyles = {
   }
 };
 
+/**
+ * Provides a stable sessionId for the lifetime of the browser tab.
+ * @returns a string that is either read from session storage or generated and placed in session storage
+ */
+const useSessionId = (): string => {
+  const [sessionId] = useState<string>(() => uuid());
+  return sessionId;
+};
+
 export const Chat = ({ chatId }: IMgtChatProps) => {
   useEffect(() => {
     enableMapSet();
   }, []);
   const styles = useStyles();
-  const chatClient: StatefulGraphChatClient = useGraphChatClient(chatId);
+  const chatClient: StatefulGraphChatClient = useGraphChatClient();
   const [botInfoClient] = useState(() => new BotInfoClient());
-  const [chatState, setChatState] = useState(() => chatClient.getState());
+  const [chatState, setChatState] = useState(chatClient.getState());
+  const sessionId = useSessionId();
+
   useEffect(() => {
     chatClient.onStateChange(setChatState);
     return () => {
@@ -125,9 +137,20 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
     };
   }, [chatClient]);
 
-  const isLoading = ['creating server connections', 'subscribing to notifications', 'loading messages'].includes(
-    chatState.status
-  );
+  // when chatId or sessionId changes this effect subscribes or unsubscribes
+  // the component to/from web socket based notifications for the given chatId
+  useEffect(() => {
+    // we must have both a chatId & sessionId to subscribe.
+    if (chatId && sessionId) chatClient.subscribeToChat(chatId, sessionId);
+    else chatClient.setStatus('no chat id');
+  }, [chatId, sessionId, chatClient]);
+
+  const isLoading = [
+    'initial',
+    'creating server connections',
+    'subscribing to notifications',
+    'loading messages'
+  ].includes(chatState.status);
 
   const disabled = !chatId || !!chatState.activeErrorMessages.length;
   const placeholderText = disabled ? 'You cannot send a message' : 'Type a message...';
@@ -191,7 +214,7 @@ export const Chat = ({ chatId }: IMgtChatProps) => {
                   <Error message="No chat id has been provided." subheading={RequireValidChatId}></Error>
                 )}
                 {chatState.status === 'error' && (
-                  <Error message="We're sorry—we've run into an issue.." subheading={OpenTeamsLinkError}></Error>
+                  <Error message="We're sorry—we've run into an issue." subheading={OpenTeamsLinkError}></Error>
                 )}
                 <div className={styles.chatInput}>
                   <SendBox disabled={disabled} onSendMessage={chatState.onSendMessage} strings={{ placeholderText }} />

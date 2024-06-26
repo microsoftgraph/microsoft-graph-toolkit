@@ -14,7 +14,7 @@ import {
 } from '@microsoft/mgt-components';
 import { BetaGraph, CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
-import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import { AadUserConversationMember, Chat, ChatMessage, Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import { chatOperationScopes } from './chatOperationScopes';
 import { TeamsAppInstallation } from '@microsoft/microsoft-graph-types-beta';
 
@@ -31,7 +31,7 @@ export interface GraphCollection<T = any> {
  * Object representing a collection of chat messages
  */
 export type MessageCollection = GraphCollection<ChatMessage>;
-
+export type ChatThreadCollection = GraphCollection<GraphChat>;
 export type AppCollection = GraphCollection<TeamsAppInstallation>;
 
 /**
@@ -44,6 +44,19 @@ export type AppCollection = GraphCollection<TeamsAppInstallation>;
 export const loadChat = async (graph: IGraph, chatId: string): Promise<Chat> =>
   (await graph
     .api(`/chats/${chatId}?$expand=members`)
+    .middlewareOptions(prepScopes(chatOperationScopes.loadChat))
+    .get()) as Chat;
+
+/**
+ * Load the specified chat from graph with the members and last message expanded
+ *
+ * @param graph authenticated graph client from mgt
+ * @param chatId the id of the chat to load
+ * @returns {Promise<Chat>}
+ */
+export const loadChatWithPreview = async (graph: IGraph, chatId: string): Promise<Chat> =>
+  (await graph
+    .api(`/chats/${chatId}?$expand=members,lastMessagePreview`)
     .middlewareOptions(prepScopes(chatOperationScopes.loadChat))
     .get()) as Chat;
 
@@ -161,6 +174,16 @@ export const loadMoreChatMessages = async (graph: IGraph, nextLink: string): Pro
   const response = (await graph.api(nextLink).get()) as MessageCollection;
   // split the nextLink on version to maintain a relative path
   response.nextLink = response['@odata.nextLink']?.split(graph.version)[1];
+  return response;
+};
+
+export const loadBotsInChat = async (graph: IGraph, chatId: string): Promise<AppCollection> => {
+  const response = (await graph
+    .api(`/chats/${chatId}/installedApps`)
+    .filter('teamsAppDefinition/bot/id ne null')
+    .expand('teamsAppDefinition($expand=bot)')
+    .middlewareOptions(prepScopes(chatOperationScopes.loadBotsInChat))
+    .get()) as AppCollection;
   return response;
 };
 
@@ -361,3 +384,27 @@ export const updateChatTopic = async (graph: IGraph, chatId: string, topic: stri
     .middlewareOptions(prepScopes(chatOperationScopes.updateChatMessage))
     .patch({ topic });
 };
+
+/**
+ * Load the chat threads from graph with the members and last message expanded
+ *
+ * @param graph authenticated graph client from mgt
+ * @returns {Promise<GraphChat>}
+ */
+export const loadChatThreads = async (graph: IGraph, maxPage: number): Promise<ChatThreadCollection> =>
+  (await graph
+    .api(`me/chats?$top=${maxPage}&$expand=members,lastMessagePreview&orderby=lastMessagePreview/createdDateTime desc`)
+    .middlewareOptions(prepScopes(chatOperationScopes.loadChat))
+    .get()) as ChatThreadCollection;
+
+/**
+ * Load the chat threads from graph with the members and last message expanded by next page link.
+ *
+ * @param graph authenticated graph client from mgt
+ * @returns {Promise<GraphChat>}
+ */
+export const loadChatThreadsByPage = async (graph: IGraph, filter: string): Promise<ChatThreadCollection> =>
+  (await graph
+    .api(`me/chats?${filter}`)
+    .middlewareOptions(prepScopes(chatOperationScopes.loadChat))
+    .get()) as ChatThreadCollection;
