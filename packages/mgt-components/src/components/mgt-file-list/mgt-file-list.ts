@@ -10,9 +10,10 @@ import {
   Providers,
   ProviderState,
   mgtHtml,
-  MgtTemplatedTaskComponent
+  MgtTemplatedTaskComponent,
+  registerComponent
 } from '@microsoft/mgt-element';
-import { DriveItem } from '@microsoft/microsoft-graph-types';
+import { DriveItem, SharedInsight } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -46,7 +47,8 @@ import { MgtFileUploadConfig, registerMgtFileUploadComponent } from './mgt-file-
 import { fluentProgressRing } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { CardSection } from '../BasePersonCardSection';
-import { registerComponent } from '@microsoft/mgt-element';
+import { getRelativeDisplayDate } from '../../utils/Utils';
+import { getFileTypeIconUri } from '../../styles/fluent-icons';
 
 export const registerMgtFileListComponent = () => {
   registerFluentComponents(fluentProgressRing);
@@ -95,6 +97,10 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
   protected get strings(): Record<string, string> {
     return strings;
   }
+
+  // files from the person card component
+  @state()
+  private _files: DriveItem[];
 
   /**
    * allows developer to provide query for a file list
@@ -369,8 +375,9 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
 
   @state() private _isLoadingMore: boolean;
 
-  constructor() {
+  constructor(files?: DriveItem[]) {
     super();
+    this._files = files;
   }
 
   /**
@@ -381,6 +388,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
   protected clearState(): void {
     super.clearState();
     this.files = null;
+    this._files = null;
   }
 
   /**
@@ -439,6 +447,9 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
   protected renderContent = () => {
     if (!this.files || this.files.length === 0) {
       return this.renderNoData();
+    }
+    if (this._files) {
+      this.files = this._files;
     }
     return this._isCompact ? this.renderCompactView() : this.renderFullView();
   };
@@ -542,12 +553,51 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
    */
   protected renderFile(file: DriveItem): TemplateResult {
     const view = this.itemView;
-    return (
-      this.renderTemplate('file', { file }, file.id) ||
-      mgtHtml`
+    // if file is type SharedInsight, render Shared Insight File
+    if ((file as SharedInsight).lastShared) {
+      return this.renderSharedInsightFile(file as SharedInsight);
+    } else {
+      return (
+        this.renderTemplate('file', { file }, file.id) ||
+        mgtHtml`
         <mgt-file class="mgt-file-item" .fileDetails=${file} .view=${view}></mgt-file>
       `
-    );
+      );
+    }
+  }
+
+  /**
+   * Render a file item of Shared Insight Type
+   *
+   * @protected
+   * @param {IFile} file
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
+  protected renderSharedInsightFile(file: SharedInsight): TemplateResult {
+    const lastModifiedTemplate = file.lastShared
+      ? html`
+          <div class="shared_insight_file__last-modified">
+            ${this.strings.sharedTextSubtitle} ${getRelativeDisplayDate(new Date(file.lastShared.sharedDateTime))}
+          </div>
+        `
+      : null;
+
+    return html`
+      <div class="shared_insight_file" @click=${e => this.handleFileClick(file)} tabindex="0">
+        <div class="shared_insight_file__icon">
+          <img alt="${file.resourceVisualization.title}" src=${getFileTypeIconUri(
+            file.resourceVisualization.type,
+            48,
+            'svg'
+          )} />
+        </div>
+        <div class="shared_insight_file__details">
+          <div class="shared_insight_file__name">${file.resourceVisualization.title}</div>
+          ${lastModifiedTemplate}
+        </div>
+      </div>
+    `;
   }
 
   /**
