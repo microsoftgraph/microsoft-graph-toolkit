@@ -120,7 +120,7 @@ $progress-ring-size: var(--progress-ring-size, 24px);
       width: 28px;
       min-width: 28px;
       height: 28px;
-      margin-right: 12px;
+      margin-inline-end: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -133,7 +133,7 @@ $progress-ring-size: var(--progress-ring-size, 24px);
 
     .shared_insight_file__details {
       min-width: 0;
-      margin-right: 40px;
+      margin-inline-end: 40px;
 
       .shared_insight_file__name {
         font-size: var(--file-line1-font-size, var(--size-font-size, #{$ms-font-size-12}));
@@ -142,7 +142,7 @@ $progress-ring-size: var(--progress-ring-size, 24px);
 
       .shared_insight_file__last-modified {
         font-size: var(--file-line3-font-size, var(--size-font-size, #{$ms-font-size-12}));
-        $line3-color: var(--file-line3-color, var(--secondary-text-color));
+        color: var(--file-line3-color, var(--secondary-text-color));
       }
 
       > div {

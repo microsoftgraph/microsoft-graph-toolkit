@@ -58,6 +58,10 @@ export const registerMgtFileListComponent = () => {
   registerComponent('file-list', MgtFileList);
 };
 
+const isSharedInsight = (sharedInsightFile: SharedInsight): sharedInsightFile is SharedInsight => {
+  return 'lastShared' in sharedInsightFile;
+};
+
 /**
  * The File List component displays a list of multiple folders and files by
  * using the file/folder name, an icon, and other properties specified by the developer.
@@ -551,17 +555,17 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
    * @returns {TemplateResult}
    * @memberof mgtFileList
    */
-  protected renderFile(file: DriveItem): TemplateResult {
+  protected renderFile(file: DriveItem | SharedInsight): TemplateResult {
     const view = this.itemView;
     // if file is type SharedInsight, render Shared Insight File
-    if ((file as SharedInsight).lastShared) {
-      return this.renderSharedInsightFile(file as SharedInsight);
+    if (isSharedInsight(file)) {
+      return this.renderSharedInsightFile(file);
     } else {
       return (
         this.renderTemplate('file', { file }, file.id) ||
         mgtHtml`
-        <mgt-file class="mgt-file-item" .fileDetails=${file} .view=${view}></mgt-file>
-      `
+      <mgt-file class="mgt-file-item" .fileDetails=${file} .view=${view}></mgt-file>
+    `
       );
     }
   }
@@ -584,7 +588,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
       : null;
 
     return html`
-      <div class="shared_insight_file" @click=${e => this.handleFileClick(file)} tabindex="0">
+      <div class="shared_insight_file" @click=${(e: MouseEvent) => this.handleFileClick(file, e)} tabindex="0">
         <div class="shared_insight_file__icon">
           <img alt="${file.resourceVisualization.title}" src=${getFileTypeIconUri(
             file.resourceVisualization.type,
@@ -891,11 +895,14 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
     this.requestUpdate();
   }
 
-  private handleFileClick(file: DriveItem) {
-    if (file?.webUrl && !this.disableOpenOnClick) {
+  private readonly handleFileClick = (file: DriveItem | SharedInsight, e?: MouseEvent) => {
+    if (e && isSharedInsight(file) && file.resourceReference?.webUrl && !this.disableOpenOnClick) {
+      e.preventDefault();
+      window.open(file.resourceReference.webUrl, '_blank', 'noreferrer');
+    } else if (!isSharedInsight(file) && file?.webUrl && !this.disableOpenOnClick) {
       window.open(file.webUrl, '_blank', 'noreferrer');
     }
-  }
+  };
 
   /**
    * Get file extension string from file name
