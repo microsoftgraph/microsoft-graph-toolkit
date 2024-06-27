@@ -104,7 +104,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
 
   // files from the person card component
   @state()
-  private personCardFiles: DriveItem[];
+  private _personCardFiles: DriveItem[];
 
   /**
    * allows developer to provide query for a file list
@@ -381,7 +381,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
 
   constructor(files?: DriveItem[]) {
     super();
-    this._files = files;
+    this._personCardFiles = files;
   }
 
   /**
@@ -392,7 +392,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
   protected clearState(): void {
     super.clearState();
     this.files = null;
-    this._files = null;
+    this._personCardFiles = null;
   }
 
   /**
@@ -452,8 +452,8 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
     if (!this.files || this.files.length === 0) {
       return this.renderNoData();
     }
-    if (this._files) {
-      this.files = this._files;
+    if (this._personCardFiles) {
+      this.files = this._personCardFiles;
     }
     return this._isCompact ? this.renderCompactView() : this.renderFullView();
   };
