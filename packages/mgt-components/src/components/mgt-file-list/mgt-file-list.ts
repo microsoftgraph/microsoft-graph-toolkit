@@ -104,7 +104,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
 
   // files from the person card component
   @state()
-  private _files: DriveItem[];
+  private personCardFiles: DriveItem[];
 
   /**
    * allows developer to provide query for a file list
