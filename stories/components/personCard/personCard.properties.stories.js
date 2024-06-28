@@ -53,3 +53,10 @@ export const inheritDetails = () => html`
 export const setUserId = () => html`
   <mgt-person-card user-id="2804bc07-1e1f-4938-9085-ce6d756a32d2"></mgt-person-card>
 `;
+
+export const personCardConfig = () => html`
+<mgt-person-card person-query="me" show-presence></mgt-person-card>
+<script>
+  import { MgtPersonCardConfig } from  '@microsoft/mgt-components';
+  MgtPersonCardConfig.sections.files = false;
+</script>`;
