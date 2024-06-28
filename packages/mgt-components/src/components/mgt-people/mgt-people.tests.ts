@@ -18,6 +18,7 @@ describe('mgt-people - tests', () => {
           people-queries="Lidia, Megan, Lynne, Brian, Joni">
         </mgt-people>
         `);
+    // @ts-expect-error TS2554 expects 3 arguments got 2 https://github.com/open-wc/open-wc/issues/2746
     await oneEvent(mgtPeople, 'people-rendered');
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expect(mgtPeople.shadowRoot.querySelector('.overflow')).to.not.be.null;

@@ -338,16 +338,17 @@ export class MgtPeople extends MgtTemplatedTaskComponent {
     const peopleContainer: HTMLElement = this.shadowRoot.querySelector('.people-list');
     let person: HTMLElement;
     const peopleElements: HTMLCollection = peopleContainer?.children;
+    const keyName = event.key;
     // Default all tabindex values in li nodes to -1
     for (const element of peopleElements) {
       const el: HTMLElement = element as HTMLElement;
       el.removeAttribute('tabindex');
-      person = el.querySelector('.people-person');
-      person?.shadowRoot.querySelector('.person-root').removeAttribute('tabindex');
+      person = el?.querySelector('mgt-person');
+      person = person?.shadowRoot.querySelector('.person-root');
+      person?.removeAttribute('tabindex');
       el.blur();
     }
-    const keyName = event.key;
-    if ((event.target === peopleContainer && keyName === 'Tab') || keyName === 'Escape') {
+    if (event.target === peopleContainer && (keyName === 'Tab' || keyName === 'Escape')) {
       this._arrowKeyLocation = -1;
       peopleContainer?.blur();
     }
