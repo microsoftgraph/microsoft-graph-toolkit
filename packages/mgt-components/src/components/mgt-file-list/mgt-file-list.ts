@@ -560,14 +560,13 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
     // if file is type SharedInsight, render Shared Insight File
     if (isSharedInsight(file)) {
       return this.renderSharedInsightFile(file);
-    } else {
-      return (
-        this.renderTemplate('file', { file }, file.id) ||
-        mgtHtml`
-      <mgt-file class="mgt-file-item" .fileDetails=${file} .view=${view}></mgt-file>
-    `
-      );
     }
+    return (
+      this.renderTemplate('file', { file }, file.id) ||
+      mgtHtml`
+        <mgt-file class="mgt-file-item" .fileDetails=${file} .view=${view}></mgt-file>
+      `
+    );
   }
 
   /**
