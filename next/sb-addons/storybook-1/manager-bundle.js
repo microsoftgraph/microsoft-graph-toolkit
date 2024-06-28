@@ -6001,13 +6001,13 @@ ${de("inline-block")} :host {
           @click=${this.chatUser}>
           ${Z(P.SmallChat)}
         </fluent-button>
-       `),o=`${this.strings.videoButtonLabel} ${e.displayName}`;let s=x`
-      <fluent-button class="icon"
-        aria-label=${o}
-        @click=${this.videoCallUser}>
-        ${Z(P.Video)}
-      </fluent-button>
-    `,a;return t.userPrincipalName&&(o=`${this.strings.callButtonLabel} ${e.displayName}`,a=x`
+       `);let s;t?.userPrincipalName&&(o=`${this.strings.videoButtonLabel} ${e.displayName}`,s=x`
+        <fluent-button class="icon"
+          aria-label=${o}
+          @click=${this.videoCallUser}>
+          ${Z(P.Video)}
+        </fluent-button>
+      `);let a;return this.hasPhone&&(o=`${this.strings.callButtonLabel} ${t.displayName}`,a=x`
          <fluent-button class="icon"
           aria-label=${o}
           @click=${this.callUser}>

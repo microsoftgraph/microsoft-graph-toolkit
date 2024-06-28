@@ -4982,7 +4982,7 @@ const nd=1,sd=2,e$1=e=>(...t)=>({_$litDirective$:e,values:t});class i{constructo
       ></mgt-person>
     `}renderPersonSubtitle(e){if(e=e||this.internalPersonDetails,isUser(e)&&e.department)return vt`
        <div class="department">${e.department}</div>
-     `}renderContactIcons(e){const t=e=e||this.internalPersonDetails;let a,l,c;getEmailFromGraphEntity(e)&&(a=`${this.strings.emailButtonLabel} ${e.displayName}`,l=vt`
+     `}renderContactIcons(e){const t=e=e||this.internalPersonDetails;let a,l,c,p,g;return getEmailFromGraphEntity(e)&&(a=`${this.strings.emailButtonLabel} ${e.displayName}`,l=vt`
         <fluent-button class="icon"
           aria-label=${a}
           @click=${this.emailUser}>
@@ -4994,13 +4994,13 @@ const nd=1,sd=2,e$1=e=>(...t)=>({_$litDirective$:e,values:t});class i{constructo
           @click=${this.chatUser}>
           ${getSvg(Ed.SmallChat)}
         </fluent-button>
-       `),a=`${this.strings.videoButtonLabel} ${e.displayName}`;const p=vt`
-      <fluent-button class="icon"
-        aria-label=${a}
-        @click=${this.videoCallUser}>
-        ${getSvg(Ed.Video)}
-      </fluent-button>
-    `;let g;return t.userPrincipalName&&(a=`${this.strings.callButtonLabel} ${e.displayName}`,g=vt`
+       `),(null==t?void 0:t.userPrincipalName)&&(a=`${this.strings.videoButtonLabel} ${e.displayName}`,p=vt`
+        <fluent-button class="icon"
+          aria-label=${a}
+          @click=${this.videoCallUser}>
+          ${getSvg(Ed.Video)}
+        </fluent-button>
+      `),this.hasPhone&&(a=`${this.strings.callButtonLabel} ${t.displayName}`,g=vt`
          <fluent-button class="icon"
           aria-label=${a}
           @click=${this.callUser}>
