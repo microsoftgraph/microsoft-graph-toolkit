@@ -127,7 +127,7 @@ See [provider usage documentation](https://learn.microsoft.com/graph/toolkit/pro
 
 Note : Make sure `nodeIntegration` is set to `false` under `webPreferences` while creating a new BrowserWindow instance. This is because we're using context bridge to communicate between the main and renderer processes.
 
-See [provider usage documentation](https://learn.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more. See [Electron provider documentation](https://learn.microsoft.com/graph/toolkit/providers/electron).
+See [provider usage documentation](https://learn.microsoft.com/graph/toolkit/providers/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more. See [Electron provider documentation](https://learn.microsoft.com/graph/toolkit/providers/electron).
 
 ### Cache Plugin
 
