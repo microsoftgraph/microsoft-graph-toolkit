@@ -15,7 +15,52 @@
   "extra-files": [
     {
       "type": "json",
-      "path": "./packages/**/package.json",
+      "path": "./packages/mgt-components/package.json",
+      "jsonpath": "$.version"
+    },
+    {
+      "type": "json",
+      "path": "./packages/mgt-element/package.json",
+      "jsonpath": "$.version"
+    },
+    {
+      "type": "json",
+      "path": "./packages/mgt-react/package.json",
+      "jsonpath": "$.version"
+    },
+    {
+      "type": "json",
+      "path": "./packages/mgt-spfx-utils/package.json",
+      "jsonpath": "$.version"
+    },
+    {
+      "type": "json",
+      "path": "./packages/providers/mgt-electron-provider/package.json",
+      "jsonpath": "$.version"
+    },
+    {
+      "type": "json",
+      "path": "./packages/providers/mgt-mock-provider/package.json",
+      "jsonpath": "$.version"
+    },
+    {
+      "type": "json",
+      "path": "./packages/providers/mgt-msal2-provider/package.json",
+      "jsonpath": "$.version"
+    },
+    {
+      "type": "json",
+      "path": "./packages/providers/mgt-sharepoint-provider/package.json",
+      "jsonpath": "$.version"
+    },
+    {
+      "type": "json",
+      "path": "./packages/providers/mgt-proxy-provider/package.json",
+      "jsonpath": "$.version"
+    },
+    {
+      "type": "json",
+      "path": "./packages/providers/mgt-teamsfx-provider/package.json",
       "jsonpath": "$.version"
     },
     {
