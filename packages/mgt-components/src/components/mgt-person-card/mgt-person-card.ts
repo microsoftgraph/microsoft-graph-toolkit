@@ -1242,7 +1242,7 @@ export class MgtPersonCard extends MgtTemplatedTaskComponent implements IHistory
     }
 
     if (MgtPersonCardConfig.sections.files && files?.length) {
-      this.sections.push(new MgtFileList());
+      this.sections.push(new MgtFileList(files));
     }
 
     if (MgtPersonCardConfig.sections.profile && profile) {
