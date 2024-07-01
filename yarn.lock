@@ -4788,7 +4788,7 @@ __metadata:
     "@microsoft/mgt-element": "npm:*"
     "@microsoft/microsoft-graph-client": "npm:3.0.2"
     "@microsoft/microsoft-graph-types": "npm:^2.40.0"
-    "@microsoft/microsoft-graph-types-beta": "npm:^0.29.0-preview"
+    "@microsoft/microsoft-graph-types-beta": "npm:^0.30.0-preview"
     lit: "npm:^3.1.2"
     office-ui-fabric-core: "npm:^11.1.0"
   languageName: unknown
@@ -4852,7 +4852,7 @@ __metadata:
     "@microsoft/mgt-components": "npm:*"
     "@microsoft/mgt-element": "npm:*"
     "@microsoft/microsoft-graph-types": "npm:^2.40.0"
-    "@microsoft/microsoft-graph-types-beta": "npm:^0.29.0-preview"
+    "@microsoft/microsoft-graph-types-beta": "npm:^0.30.0-preview"
     wc-react: "npm:^0.5.1"
   peerDependencies:
     react: ^17.0.1 || ^18.0.0
@@ -4920,10 +4920,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/microsoft-graph-types-beta@npm:^0.29.0-preview":
-  version: 0.29.0-preview
-  resolution: "@microsoft/microsoft-graph-types-beta@npm:0.29.0-preview"
-  checksum: 10/2fd29cfcd38f4b26976907fdf0566dc9b02b24b7d29ae7647167a1071a839bdfd419a6525a15272c7247dc19935f4bb09fa19a15a80bcbe88fa2ef832937b43a
+"@microsoft/microsoft-graph-types-beta@npm:^0.30.0-preview":
+  version: 0.30.0-preview
+  resolution: "@microsoft/microsoft-graph-types-beta@npm:0.30.0-preview"
+  checksum: 10/457f3845b531373bdd2484ac0eb7cc3a3b9d2dabd9537527666a949d33cc82cfc7102e65ef19a5a3d9fb429c52b422b6a7631ac1c5c3797f30e39c0c9ac37cca
   languageName: node
   linkType: hard
 
