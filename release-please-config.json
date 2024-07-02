@@ -64,6 +64,11 @@
       "jsonpath": "$.version"
     },
     {
+      "type": "json",
+      "path": "./packages/mgt/package.json",
+      "jsonpath": "$.version"
+    },
+    {
       "type": "generic",
       "path": "./sonar-project.properties"
     }
