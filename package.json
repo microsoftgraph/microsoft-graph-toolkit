@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "4.2.2",
+  "version": "4.2.3",
   "workspaces": {
     "packages": [
       "packages/*",
@@ -76,7 +76,7 @@
     "@esm-bundle/chai": "^4.3.4-fix.0",
     "@microsoft/eslint-config-msgraph": "^3.0.3",
     "@open-wc/testing": "^4.0.0",
-    "@open-wc/testing-helpers": "^3.0.0",
+    "@open-wc/testing-helpers": "3.0.1",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.1.0",
