@@ -242,10 +242,10 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
 
     const provider = Providers.globalProvider;
     if (provider?.logout) {
-      const activeAccount = provider.getActiveAccount();
       await provider.logout();
       this.userDetails = null;
       if (provider.isMultiAccountSupportedAndEnabled) {
+        const activeAccount = provider.getActiveAccount();
         localStorage.removeItem(activeAccount?.id + this._userDetailsKey);
       }
       this.hideFlyout();
@@ -726,7 +726,7 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
    * @memberof MgtLogin
    */
   private readonly onClick = (): void => {
-    if (this.userDetails && this._isFlyoutOpen) {
+    if (this.userDetails && this.flyout.isOpen) {
       this.hideFlyout();
     } else if (this.userDetails) {
       this.showFlyout();
