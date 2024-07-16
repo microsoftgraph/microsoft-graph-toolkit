@@ -261,7 +261,7 @@ export class ElectronAuthenticator {
       system: {
         loggerOptions: {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-          loggerCallback: (_loglevel, _message, _containsPii) => {},
+          loggerCallback: (_loglevel, _message, _containsPii) => { },
           piiLoggingEnabled: false,
           logLevel: LogLevel.Warning
         }
@@ -344,7 +344,7 @@ export class ElectronAuthenticator {
    */
   protected async getAccessToken(options?: AuthenticationProviderOptions): Promise<string | undefined> {
     let authResponse: AuthenticationResult | null = null;
-    const scopes = options?.scopes ? options.scopes : this.authCodeUrlParams.scopes;
+    const scopes = options?.scopes?.length ? options.scopes : this.authCodeUrlParams.scopes;
     const account = this.account || (await this.getAccount());
     if (account) {
       const request = {
