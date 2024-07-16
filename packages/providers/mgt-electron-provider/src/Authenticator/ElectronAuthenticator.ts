@@ -261,7 +261,7 @@ export class ElectronAuthenticator {
       system: {
         loggerOptions: {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-          loggerCallback: (_loglevel, _message, _containsPii) => { },
+          loggerCallback: (_loglevel, _message, _containsPii) => {},
           piiLoggingEnabled: false,
           logLevel: LogLevel.Warning
         }
