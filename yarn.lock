@@ -2726,11 +2726,11 @@ __metadata:
   linkType: hard
 
 "@fluentui/keyboard-key@npm:^0.4.14":
-  version: 0.4.14
-  resolution: "@fluentui/keyboard-key@npm:0.4.14"
+  version: 0.4.23
+  resolution: "@fluentui/keyboard-key@npm:0.4.23"
   dependencies:
     tslib: "npm:^2.1.0"
-  checksum: 10/4cb7b5c2f294af8422310dd67be4b1fe9099aaced9b6593292c4c99ccfff999c3195eb1cc384e947e77ad36da6da2e0b40ce61a0d6163e54572390a411ab2039
+  checksum: 10/1f707a98855fc601e7ffc27f70c89d9e195cba146e6bd3af8cce5eaf550fcaacf2b066212027b982a9afa6b45073580bd3d1f97b9eef9e3e49dd38a6aaf29a1e
   languageName: node
   linkType: hard
 
