@@ -733,8 +733,8 @@ export class Msal2Provider extends IProvider {
    * @return {*}  {Promise<string>}
    * @memberof Msal2Provider
    */
-  public async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
-    const scopes = options ? options.scopes || this.scopes : this.scopes;
+  public async getAccessToken(opts?: AuthenticationProviderOptions): Promise<string> {
+    const scopes = opts?.scopes?.length ? opts.scopes : this.scopes;
     const accessTokenRequest: SilentRequest = {
       scopes,
       account: this.getAccount()
