@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BatchResponse, IBatch, IGraph, prepScopes } from '@microsoft/mgt-element';
-import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import { BatchResponse, CacheItem, CacheService, CacheStore, IBatch, IGraph, prepScopes } from '@microsoft/mgt-element';
+import { Chat, ChatMessage, File, Message } from '@microsoft/microsoft-graph-types';
 import { Profile } from '@microsoft/microsoft-graph-types-beta';
 
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -15,6 +15,7 @@ import { MgtPersonCardState } from './mgt-person-card.types';
 import { MgtPersonCardConfig } from './MgtPersonCardConfig';
 import { validUserByIdScopes } from '../../graph/graph.user';
 import { validInsightScopes } from '../../graph/graph.files';
+import { schemas } from '../../graph/cacheStores';
 
 const userProperties =
   'businessPhones,companyName,department,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,accountEnabled';
@@ -26,6 +27,11 @@ const batchKeys = {
   people: 'people',
   person: 'person'
 };
+
+interface CacheCardState extends MgtPersonCardState, CacheItem { }
+
+export const getCardStateInvalidationTime = (): number =>
+  CacheService.config.users.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
 
 /**
  * Get data to populate the person card
@@ -44,6 +50,12 @@ export const getPersonCardGraphData = async (
 ): Promise<MgtPersonCardState> => {
   const userId = personDetails.id;
   const email = getEmailFromGraphEntity(personDetails);
+  const cache: CacheStore<CacheCardState> = CacheService.getCache<CacheCardState>(schemas.users, schemas.users.stores.cardState);
+  const cardState = await cache.getValue(userId)
+
+  if (cardState && getCardStateInvalidationTime() > Date.now() - cardState.timeCached) {
+    return cardState;
+  }
 
   const isContactOrGroup =
     'classification' in personDetails ||
@@ -100,6 +112,8 @@ export const getPersonCardGraphData = async (
   if (data.directReports && data.directReports.length > 0) {
     data.directReports = data.directReports.filter(report => report.accountEnabled);
   }
+
+  await cache.putValue(userId, data)
 
   return data;
 };
