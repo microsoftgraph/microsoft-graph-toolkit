@@ -470,7 +470,7 @@ export const findGroupMembers = async (
   const item = { maxResults: top, results: null };
 
   let cache: CacheStore<CacheUserQuery>;
-  const key = `${groupId || '*'}:${query || '*'}:${top}:${personType}:${transitive}:${userFilters}`;
+  const key = `${groupId || '*'}:${query || '*'}:${top}:${personType}:${transitive}:${userFilters || peopleFilters || ''}`.trim();
 
   if (getIsUsersCacheEnabled()) {
     cache = CacheService.getCache<CacheUserQuery>(schemas.users, schemas.users.stores.usersQuery);
@@ -506,15 +506,14 @@ export const findGroupMembers = async (
 
   const graphClient: GraphRequest = graph.api(apiUrl).top(top).filter(filter);
 
-  if (userFilters) {
+  if (userFilters || query) {
     graphClient.header('ConsistencyLevel', 'eventual').count(true);
   }
 
   const graphResult = (await graphClient
     .middlewareOptions(prepScopes(allValidScopes))
     .get()) as CollectionResponse<User>;
-
-  if (getIsUsersCacheEnabled() && graphResult) {
+  if (getIsUsersCacheEnabled() && graphResult?.value.length) {
     item.results = graphResult.value.map(userStr => JSON.stringify(userStr));
     await cache.putValue(key, item);
   }
