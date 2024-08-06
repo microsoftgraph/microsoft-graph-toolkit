@@ -18,7 +18,7 @@ export const TableNamer = ({ names }) => {
 };
 
 export const CopyButtonNamer = ({ names }) => {
-  const windowLoadHandler = () => {
+  const windowScrollHandler = () => {
     const buttons = document.getElementsByClassName('css-1fdphfk');
     if (buttons) {
       if (buttons.length !== names.length) {
@@ -33,7 +33,7 @@ export const CopyButtonNamer = ({ names }) => {
         buttons[i].setAttribute('aria-label', names[i]);
       }
       // avoid triggering the scroll event again if you keep scrolling.
-      window.removeEventListener('scroll', windowLoadHandler);
+      window.removeEventListener('scroll', windowScrollHandler);
     }
   };
 
@@ -43,7 +43,7 @@ export const CopyButtonNamer = ({ names }) => {
     // based on the fact that to reach the area the code needs an update,
     // you have to scroll - using a mouse or tabbing.
     window.addEventListener('scroll', windowLoadHandler);
-    return () => window.removeEventListener('scroll', windowLoadHandler);
+    return () => window.removeEventListener('scroll', windowScrollHandler);
   }, [names]);
   return <></>;
 };
