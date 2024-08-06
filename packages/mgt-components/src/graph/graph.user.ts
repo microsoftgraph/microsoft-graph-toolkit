@@ -85,7 +85,7 @@ export const getUsers = async (graph: IGraph, userFilters = '', top = 10): Promi
     }
     return response.value;
     // eslint-disable-next-line no-empty
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const allValidMeScopes = ['User.Read', 'User.ReadWrite'];
@@ -172,7 +172,7 @@ export const getUser = async (graph: IGraph, userPrincipleName: string, requeste
   try {
     response = (await graph.api(apiString).middlewareOptions(prepScopes(validUserByIdScopes)).get()) as User;
     // eslint-disable-next-line no-empty
-  } catch (_) {}
+  } catch (_) { }
 
   if (getIsUsersCacheEnabled()) {
     await cache.putValue(userPrincipleName, { user: JSON.stringify(response) });
@@ -431,7 +431,7 @@ export const findUsers = async (graph: IGraph, query: string, top = 10, userFilt
   try {
     graphResult = (await graphBuilder.top(top).middlewareOptions(prepScopes(scopes)).get()) as CollectionResponse<User>;
     // eslint-disable-next-line no-empty
-  } catch {}
+  } catch { }
 
   if (getIsUsersCacheEnabled() && graphResult) {
     item.results = graphResult.value.map(userStr => JSON.stringify(userStr));
@@ -481,9 +481,14 @@ export const findGroupMembers = async (
     }
   }
 
-  let filter = '';
+  const filter = userFilters || peopleFilters;
+  let searchQuery = ""
   if (query) {
-    filter = `startswith(displayName,'${query}') or startswith(givenName,'${query}') or startswith(surname,'${query}') or startswith(mail,'${query}') or startswith(userPrincipalName,'${query}')`;
+    searchQuery = [
+      // "displayName", "givenName", "surname", "mail", "userPrincipalName"
+      "displayName"
+    ].map(prop => `"${prop}:${query}"`).join(' OR ')
+    // filter = `startswith(displayName,'${query}') or startswith(givenName,'${query}') or startswith(surname,'${query}') or startswith(mail,'${query}') or startswith(userPrincipalName,'${query}')`;
   }
 
   let apiUrl = `/groups/${groupId}/${transitive ? 'transitiveMembers' : 'members'}`;
@@ -492,25 +497,30 @@ export const findGroupMembers = async (
   } else if (personType === 'group') {
     apiUrl += '/microsoft.graph.group';
     if (query) {
-      filter = `startswith(displayName,'${query}') or startswith(mail,'${query}')`;
+      searchQuery = `"displayName:${query}" OR "mail:${query}"`
+      // filter = `startswith(displayName,'${query}') or startswith(mail,'${query}')`;
     }
   }
+  console.log({ apiUrl, personType })
 
-  if (userFilters) {
-    filter += query ? ` and ${userFilters}` : userFilters;
-  }
+  // if (userFilters) {
+  //   filter += query ? ` and ${userFilters}` : userFilters;
+  // }
 
-  if (peopleFilters) {
-    filter += query ? ` and ${peopleFilters}` : peopleFilters;
-  }
+  // if (peopleFilters) {
+  //   filter += query ? ` and ${peopleFilters}` : peopleFilters;
+  // }
 
-  const graphClient: GraphRequest = graph.api(apiUrl).top(top).filter(filter);
+  const graphClient: GraphRequest = graph.api(apiUrl)
+  if (query) graphClient.search(searchQuery)
+  if (filter) graphClient.filter(filter).count(true)
 
   if (userFilters || query) {
-    graphClient.header('ConsistencyLevel', 'eventual').count(true);
+    graphClient.header('ConsistencyLevel', 'eventual');
   }
 
   const graphResult = (await graphClient
+    .top(top)
     .middlewareOptions(prepScopes(allValidScopes))
     .get()) as CollectionResponse<User>;
   if (getIsUsersCacheEnabled() && graphResult?.value.length) {

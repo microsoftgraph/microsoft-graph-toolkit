@@ -728,17 +728,16 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         aria-label="${this.strings.selected}"
         class="selected-list">
           ${repeat(
-            selectedPeople,
-            person => person?.id,
-            person => html`
+      selectedPeople,
+      person => person?.id,
+      person => html`
             <li class="selected-list-item">
-              ${
-                this.renderTemplate(
-                  'selected-person',
-                  { person },
-                  `selected-${person?.id ? person.id : person.displayName}`
-                ) || this.renderSelectedPerson(person)
-              }
+              ${this.renderTemplate(
+        'selected-person',
+        { person },
+        `selected-${person?.id ? person.id : person.displayName}`
+      ) || this.renderSelectedPerson(person)
+        }
 
               <div
                 role="button"
@@ -750,7 +749,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
                   ${getSvg(SvgIcon.Close)}
               </div>
           </li>`
-          )}
+    )}
       </ul>`;
   }
   /**
@@ -863,9 +862,9 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         title=${this.strings.suggestionsTitle}
       >
         ${repeat(
-          filteredPeople,
-          person => person.id,
-          person => html`
+      filteredPeople,
+      person => person.id,
+      person => html`
           <li
             id="${person.id}"
             class="searched-people-list-result"
@@ -874,7 +873,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
               ${this.renderPersonResult(person)}
           </li>
         `
-        )}
+    )}
       </ul>
      `;
   }
@@ -1062,6 +1061,11 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         people = [];
 
         if (this.groupId) {
+          console.log({
+            input, gid: this.groupId, sm: this.showMax,
+            typ: this.type, ts: this.transitiveSearch, uf: this.userFilters,
+            pf: this.peopleFilters
+          })
           people =
             (await findGroupMembers(
               graph,
@@ -1586,7 +1590,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
                   }
                 }
                 // eslint-disable-next-line no-empty
-              } catch (_) {}
+              } catch (_) { }
             }
           }
         }
