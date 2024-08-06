@@ -6,7 +6,7 @@
  */
 
 import { BatchResponse, CacheItem, CacheService, CacheStore, IBatch, IGraph, prepScopes } from '@microsoft/mgt-element';
-import { Chat, ChatMessage, File, Message } from '@microsoft/microsoft-graph-types';
+import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { Profile } from '@microsoft/microsoft-graph-types-beta';
 
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
