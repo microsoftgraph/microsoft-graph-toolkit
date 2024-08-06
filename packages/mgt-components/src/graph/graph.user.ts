@@ -506,7 +506,7 @@ export const findGroupMembers = async (
 
   const graphClient: GraphRequest = graph.api(apiUrl).top(top).filter(filter);
 
-  if (userFilters) {
+  if (userFilters || query) {
     graphClient.header('ConsistencyLevel', 'eventual').count(true);
   }
 
