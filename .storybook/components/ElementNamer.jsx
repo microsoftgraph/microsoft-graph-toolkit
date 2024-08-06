@@ -19,7 +19,6 @@ export const TableNamer = ({ names }) => {
 
 export const CopyButtonNamer = ({ names }) => {
   const windowLoadHandler = () => {
-    console.log('handling window click');
     const buttons = document.getElementsByClassName('css-1fdphfk');
     if (buttons) {
       if (buttons.length !== names.length) {
@@ -33,7 +32,7 @@ export const CopyButtonNamer = ({ names }) => {
       for (let i = 0; i < buttons.length; i++) {
         buttons[i].setAttribute('aria-label', names[i]);
       }
-      // avoid calling scroll again if you keep scrolling.
+      // avoid triggering the scroll event again if you keep scrolling.
       window.removeEventListener('scroll', windowLoadHandler);
     }
   };
