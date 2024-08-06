@@ -28,7 +28,7 @@ const batchKeys = {
   person: 'person'
 };
 
-interface CacheCardState extends MgtPersonCardState, CacheItem { }
+interface CacheCardState extends MgtPersonCardState, CacheItem {}
 
 export const getCardStateInvalidationTime = (): number =>
   CacheService.config.users.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
@@ -50,8 +50,11 @@ export const getPersonCardGraphData = async (
 ): Promise<MgtPersonCardState> => {
   const userId = personDetails.id;
   const email = getEmailFromGraphEntity(personDetails);
-  const cache: CacheStore<CacheCardState> = CacheService.getCache<CacheCardState>(schemas.users, schemas.users.stores.cardState);
-  const cardState = await cache.getValue(userId)
+  const cache: CacheStore<CacheCardState> = CacheService.getCache<CacheCardState>(
+    schemas.users,
+    schemas.users.stores.cardState
+  );
+  const cardState = await cache.getValue(userId);
 
   if (cardState && getCardStateInvalidationTime() > Date.now() - cardState.timeCached) {
     return cardState;
@@ -113,7 +116,7 @@ export const getPersonCardGraphData = async (
     data.directReports = data.directReports.filter(report => report.accountEnabled);
   }
 
-  await cache.putValue(userId, data)
+  await cache.putValue(userId, data);
 
   return data;
 };

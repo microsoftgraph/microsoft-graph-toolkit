@@ -939,14 +939,14 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
       const template = this.renderTemplate('line1', { person });
       details.push(html`
            <div class="line1" part="detail-line" @click=${() =>
-          this.handleLine1Clicked()} role="presentation" aria-label="${line1text}">${template}</div>
+             this.handleLine1Clicked()} role="presentation" aria-label="${line1text}">${template}</div>
          `);
     } else {
       // Render the line1 property value
       if (line1text) {
         details.push(html`
              <div class="line1" part="detail-line" @click=${() =>
-            this.handleLine1Clicked()} role="presentation" aria-label="${line1text}">${line1text}</div>
+               this.handleLine1Clicked()} role="presentation" aria-label="${line1text}">${line1text}</div>
            `);
       }
     }
@@ -959,14 +959,14 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
         const template = this.renderTemplate('line2', { person });
         details.push(html`
            <div class="line2" part="detail-line" @click=${() =>
-            this.handleLine2Clicked()} role="presentation" aria-label="${text}">${template}</div>
+             this.handleLine2Clicked()} role="presentation" aria-label="${text}">${template}</div>
          `);
       } else {
         // Render the line2 property value
         if (text) {
           details.push(html`
              <div class="line2" part="detail-line" @click=${() =>
-              this.handleLine2Clicked()} role="presentation" aria-label="${text}">${text}</div>
+               this.handleLine2Clicked()} role="presentation" aria-label="${text}">${text}</div>
            `);
         }
       }
@@ -980,14 +980,14 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
         const template = this.renderTemplate('line3', { person });
         details.push(html`
            <div class="line3" part="detail-line" @click=${() =>
-            this.handleLine3Clicked()} role="presentation" aria-label="${text}">${template}</div>
+             this.handleLine3Clicked()} role="presentation" aria-label="${text}">${template}</div>
          `);
       } else {
         // Render the line3 property value
         if (text) {
           details.push(html`
              <div class="line3" part="detail-line" @click=${() =>
-              this.handleLine3Clicked()} role="presentation" aria-label="${text}">${text}</div>
+               this.handleLine3Clicked()} role="presentation" aria-label="${text}">${text}</div>
            `);
         }
       }
@@ -1206,7 +1206,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
     // load card data at this point
     if (this.personCardInteraction !== 'none') {
       // perform the batch requests and cache
-      void getPersonCardGraphData(graph, details, this.personQuery === 'me')
+      void getPersonCardGraphData(graph, details, this.personQuery === 'me');
     }
 
     // populate presence
