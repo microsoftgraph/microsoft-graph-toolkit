@@ -1,3 +1,4 @@
+import { use } from '@esm-bundle/chai';
 import React, { useEffect } from 'react';
 
 export const TableNamer = ({ names }) => {
@@ -17,21 +18,33 @@ export const TableNamer = ({ names }) => {
 };
 
 export const CopyButtonNamer = ({ names }) => {
-  useEffect(() => {
-    const onWindowLoadHander = () => {
-      const buttons = document.getElementsByClassName('css-3ltsna');
+  const windowLoadHandler = () => {
+    console.log('handling window click');
+    const buttons = document.getElementsByClassName('css-1fdphfk');
+    if (buttons) {
       if (buttons.length !== names.length) {
         console.error(
           '🦒: CopyButtonNamer: number of buttons does not match number of names',
           `Found ${buttons?.length ?? 0} buttons and was provided ${names?.length ?? 0} names`
         );
+        return;
       }
+
       for (let i = 0; i < buttons.length; i++) {
         buttons[i].setAttribute('aria-label', names[i]);
       }
-    };
-    window.addEventListener('load', onWindowLoadHander);
-    return () => window.removeEventListener('load', onWindowLoadHander);
+      // avoid calling scroll again if you keep scrolling.
+      window.removeEventListener('scroll', windowLoadHandler);
+    }
+  };
+
+  useEffect(() => {
+    // NOTE: a good event here is load or DOMContentLoaded BUT for unknown
+    // reasons, they don't trigger on the page. The scroll event is a hack
+    // based on the fact that to reach the area the code needs an update,
+    // you have to scroll - using a mouse or tabbing.
+    window.addEventListener('scroll', windowLoadHandler);
+    return () => window.removeEventListener('scroll', windowLoadHandler);
   }, [names]);
   return <></>;
 };
