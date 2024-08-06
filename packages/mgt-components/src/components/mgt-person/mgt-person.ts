@@ -38,6 +38,7 @@ import { personCardConverter, type PersonCardInteraction } from './../PersonCard
 import { styles } from './mgt-person-css';
 import { AvatarType, MgtPersonConfig, avatarTypeConverter } from './mgt-person-types';
 import { strings } from './strings';
+import { getPersonCardGraphData } from '../mgt-person-card/mgt-person-card.graph';
 
 /**
  * Person properties part of original set provided by graph by default
@@ -1201,6 +1202,12 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
     }
 
     details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
+
+    // load card data at this point
+    if (this.personCardInteraction !== 'none') {
+      // perform the batch requests and cache
+      void getPersonCardGraphData(graph, details, this.personQuery === 'me');
+    }
 
     // populate presence
     const defaultPresence: Presence = {
