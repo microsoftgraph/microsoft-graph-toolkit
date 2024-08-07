@@ -4322,16 +4322,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/web-components@npm:^2.5.16":
-  version: 2.5.16
-  resolution: "@fluentui/web-components@npm:2.5.16"
+"@fluentui/web-components@npm:^2.6.1":
+  version: 2.6.1
+  resolution: "@fluentui/web-components@npm:2.6.1"
   dependencies:
     "@microsoft/fast-colors": "npm:^5.3.0"
-    "@microsoft/fast-element": "npm:^1.11.1"
-    "@microsoft/fast-foundation": "npm:^2.48.1"
+    "@microsoft/fast-element": "npm:^1.13.0"
+    "@microsoft/fast-foundation": "npm:^2.49.6"
     "@microsoft/fast-web-utilities": "npm:^5.4.0"
     tslib: "npm:^2.1.0"
-  checksum: 10/0e386e160082de04179877c1ceb53109a79a894bd1a68917f0d5202fa02c1cec1aceeef9b6fbe4e1f3e3d6e679b05afde44cff2908ff3761f2e08e72e2c87627
+  checksum: 10/86620b937d1f777ffabadee0458bd1d00011be97cc92a1296d120c6b421f124c37d663d75568e4394ca7a49fa112c4638efbb7e058f24991da0e06ff018bbb8e
   languageName: node
   linkType: hard
 
@@ -4744,22 +4744,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/fast-element@npm:^1.11.1, @microsoft/fast-element@npm:^1.12.0":
-  version: 1.12.0
-  resolution: "@microsoft/fast-element@npm:1.12.0"
-  checksum: 10/57ac8198a735b0f638f618019bfd0572f357bb80e2d5f1d7e07febe9d2f976c1fb5f069ba870c0f00b3312789455007e2691a72872ddf96c748adc522eb74878
+"@microsoft/fast-element@npm:^1.13.0":
+  version: 1.13.0
+  resolution: "@microsoft/fast-element@npm:1.13.0"
+  checksum: 10/95be5e1e1a4ceeb74589268a3e7f7e41991459b2efa7bb28ecf4cda46d5ba3992f0fd6bbfa5df1aa5316ccd183846649d900525f199f56acaf3f3f1a269981fb
   languageName: node
   linkType: hard
 
-"@microsoft/fast-foundation@npm:^2.48.1":
-  version: 2.49.5
-  resolution: "@microsoft/fast-foundation@npm:2.49.5"
+"@microsoft/fast-foundation@npm:^2.49.6":
+  version: 2.49.6
+  resolution: "@microsoft/fast-foundation@npm:2.49.6"
   dependencies:
-    "@microsoft/fast-element": "npm:^1.12.0"
+    "@microsoft/fast-element": "npm:^1.13.0"
     "@microsoft/fast-web-utilities": "npm:^5.4.1"
     tabbable: "npm:^5.2.0"
     tslib: "npm:^1.13.0"
-  checksum: 10/1f24fb9a1e9f2629b55a99f341e982b74b00a8b417a2d85d61b7b5a1a0517dfa453da6bb86be7011ad523f5623bf424538840c317aa06b9249ba0498b19d1770
+  checksum: 10/9225b46b32463e5f646a73c94857e8fac9ec5c3924916f540196bf08274a7ca0187d941dd561585236fbf57e36374cb0d51d5ab728b100f05a61845f7d3a790a
   languageName: node
   linkType: hard
 
@@ -4783,7 +4783,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@microsoft/mgt-components@workspace:packages/mgt-components"
   dependencies:
-    "@fluentui/web-components": "npm:^2.5.16"
+    "@fluentui/web-components": "npm:^2.6.1"
     "@lit/task": "npm:^1.0.0"
     "@microsoft/mgt-element": "npm:*"
     "@microsoft/microsoft-graph-client": "npm:3.0.2"

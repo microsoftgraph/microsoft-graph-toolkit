@@ -37,7 +37,7 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@fluentui/web-components": "^2.5.16",
+    "@fluentui/web-components": "^2.6.1",
     "@lit/task": "^1.0.0",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "3.0.2",
