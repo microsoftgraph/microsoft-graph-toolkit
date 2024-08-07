@@ -42,7 +42,7 @@ export const CopyButtonNamer = ({ names }) => {
     // reasons, they don't trigger on the page. The scroll event is a hack
     // based on the fact that to reach the area the code needs an update,
     // you have to scroll - using a mouse or tabbing.
-    window.addEventListener('scroll', windowLoadHandler);
+    window.addEventListener('scroll', windowScrollHandler);
     return () => window.removeEventListener('scroll', windowScrollHandler);
   }, [names]);
   return <></>;
