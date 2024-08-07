@@ -41,7 +41,7 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@azure/core-auth": "^1.6.0",
+    "@azure/core-auth": "^1.7.2",
     "@microsoft/mgt-element": "*"
   },
   "publishConfig": {
