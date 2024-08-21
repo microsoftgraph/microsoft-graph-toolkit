@@ -649,7 +649,7 @@ export class MgtPersonCard extends MgtTemplatedTaskComponent implements IHistory
 
     // Chat
     let chat: TemplateResult;
-    if (userPerson?.userPrincipalName) {
+    if (userPerson?.userPrincipalName || userPerson?.mail) {
       ariaLabel = `${this.strings.chatButtonLabel} ${person.displayName}`;
       chat = html`
         <fluent-button class="icon"
@@ -662,7 +662,7 @@ export class MgtPersonCard extends MgtTemplatedTaskComponent implements IHistory
 
     // Video
     let video: TemplateResult;
-    if (userPerson?.userPrincipalName) {
+    if (userPerson?.userPrincipalName || userPerson?.mail) {
       ariaLabel = `${this.strings.videoButtonLabel} ${person.displayName}`;
       video = html`
         <fluent-button class="icon"
@@ -1163,8 +1163,8 @@ export class MgtPersonCard extends MgtTemplatedTaskComponent implements IHistory
    */
   protected videoCallUser = () => {
     const user = this.personDetails as User;
-    if (user?.userPrincipalName) {
-      const users: string = user.userPrincipalName;
+    if (user?.userPrincipalName || user?.mail) {
+      const users: string = user.userPrincipalName || user.mail;
 
       const url = `https://teams.microsoft.com/l/call/0/0?users=${users}&withVideo=true`;
 
