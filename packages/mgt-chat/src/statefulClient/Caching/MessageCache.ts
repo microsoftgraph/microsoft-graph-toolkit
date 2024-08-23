@@ -52,8 +52,14 @@ export class MessageCache {
       await this.cache.putValue(chatId, data);
       return data;
     } else {
+      // console.log('cachedData', cachedData);
+      // console.log('messages', messages);
       // need to iterate through the messages and either push or splice them into the array.
-      messages.forEach(m => this.addMessageToCacheData(m, cachedData));
+      messages.forEach(m => {
+        // if (m.chatId === chatId) {
+        this.addMessageToCacheData(m, cachedData);
+        // }
+      });
       if (updateNextLink) {
         cachedData.nextLink = nextLink;
       }
