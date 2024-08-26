@@ -1096,7 +1096,7 @@ export class MgtPersonCard extends MgtTemplatedTaskComponent implements IHistory
 
   private get hasPhone(): boolean {
     const user = this.internalPersonDetails as User;
-    const person = this.internalPersonDetails as microsoftgraph.Person;
+    const person = this.internalPersonDetails as Person;
     return Boolean(user?.businessPhones?.length) || Boolean(person?.phones?.length);
   }
 
@@ -1108,7 +1108,7 @@ export class MgtPersonCard extends MgtTemplatedTaskComponent implements IHistory
    */
   protected callUser = () => {
     const user = this.internalPersonDetails as User;
-    const person = this.internalPersonDetails as microsoftgraph.Person;
+    const person = this.internalPersonDetails as Person;
 
     if (user?.businessPhones?.length) {
       const phone = user.businessPhones[0];
