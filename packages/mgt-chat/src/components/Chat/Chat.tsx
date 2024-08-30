@@ -19,6 +19,8 @@ import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { onRenderMessage } from '../../utils/chat';
 import { mentionLookupOptionsWrapper, renderMGTMention } from '../../utils/mentions';
 
+// comment to remove, testing GitOps and license git status validation
+
 registerAppIcons();
 
 interface IMgtChatProps {
