@@ -99,7 +99,8 @@ We are providing simple apps that provides all the necessary elements to have a 
 
 ### Known issues
 
-* When using the chat components, users need to login twice because it requires to acquire tokens to both Microsoft Graph and the Graph Notification Broker
+* When using the chat components, users need to login twice because it requires to acquire tokens to both Microsoft Graph and the Graph Notification Broker.
+* Some messages are duplicating.
 
 ## Contribute
 
