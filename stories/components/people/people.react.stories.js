@@ -24,3 +24,15 @@ export const People = () => html`
     );
   </react>
 `;
+
+export const PeopleQueries = () => html`
+  <mgt-people></mgt-people>
+  <react>
+    import { People } from '@microsoft/mgt-react';
+    const peopleDisplay: string[] = ['LidiaH', 'Megan Bowen', 'Lynne Robbins', 'JoniS'];
+
+    export default () => (
+      <People peopleQueries={peopleDisplay}></People>
+    );
+  </react>
+`;
