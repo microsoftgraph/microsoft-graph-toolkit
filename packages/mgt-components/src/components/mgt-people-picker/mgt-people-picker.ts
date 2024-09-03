@@ -526,7 +526,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    * Enable the inner input of the fluent-text-field.
    */
   private enableTextInput() {
-    console.log('enabling text input');
     const inputControl = this.input.shadowRoot.querySelector<HTMLInputElement>('input');
     if (inputControl) {
       inputControl.removeAttribute('disabled');
