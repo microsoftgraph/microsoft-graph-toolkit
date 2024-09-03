@@ -1269,7 +1269,9 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         this._foundPeople = [];
         this._arrowSelectionCount = -1;
       }
-      this.enableTextInput();
+      if (this._isFocused) {
+        this.enableTextInput();
+      }
     }
   }
 
