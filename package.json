@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "4.2.3",
+  "version": "4.2.5",
   "workspaces": {
     "packages": [
       "packages/*",
@@ -74,7 +74,7 @@
     "@babel/preset-typescript": "^7.23.3",
     "@custom-elements-manifest/analyzer": "^0.9.2",
     "@esm-bundle/chai": "^4.3.4-fix.0",
-    "@microsoft/eslint-config-msgraph": "^3.0.3",
+    "@microsoft/eslint-config-msgraph": "^4.1.1",
     "@open-wc/testing": "^4.0.0",
     "@open-wc/testing-helpers": "3.0.1",
     "@rollup/plugin-babel": "^6.0.4",
@@ -148,5 +148,8 @@
     "webpack": "^5.90.3",
     "whatwg-fetch": "^3.6.20"
   },
-  "packageManager": "yarn@4.1.0"
+  "packageManager": "yarn@4.1.0",
+  "resolutions": {
+    "ws": "8.17.1"
+  }
 }

@@ -52,14 +52,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/core-auth@npm:^1.6.0":
-  version: 1.6.0
-  resolution: "@azure/core-auth@npm:1.6.0"
+"@azure/core-auth@npm:^1.7.2":
+  version: 1.7.2
+  resolution: "@azure/core-auth@npm:1.7.2"
   dependencies:
     "@azure/abort-controller": "npm:^2.0.0"
     "@azure/core-util": "npm:^1.1.0"
-    tslib: "npm:^2.2.0"
-  checksum: 10/227747bc790c8d73c2910d0982e459fb33a2bfffee297c12b230fadd7a4f2cf8ad6cdcc1d56bbf4b9ef8b18558deca8f5af301ee7930123e7b1153f039340644
+    tslib: "npm:^2.6.2"
+  checksum: 10/c85325c5977490554e1cdc9acbb6f8e309ab68935919900ff59cb6b125833848e082347c5ed454d1fcfa028c75e42ecd16e982f7f1eada76a17a76751f689261
   languageName: node
   linkType: hard
 
@@ -4313,16 +4313,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/web-components@npm:^2.5.16":
-  version: 2.5.16
-  resolution: "@fluentui/web-components@npm:2.5.16"
+"@fluentui/web-components@npm:^2.6.1":
+  version: 2.6.1
+  resolution: "@fluentui/web-components@npm:2.6.1"
   dependencies:
     "@microsoft/fast-colors": "npm:^5.3.0"
-    "@microsoft/fast-element": "npm:^1.11.1"
-    "@microsoft/fast-foundation": "npm:^2.48.1"
+    "@microsoft/fast-element": "npm:^1.13.0"
+    "@microsoft/fast-foundation": "npm:^2.49.6"
     "@microsoft/fast-web-utilities": "npm:^5.4.0"
     tslib: "npm:^2.1.0"
-  checksum: 10/0e386e160082de04179877c1ceb53109a79a894bd1a68917f0d5202fa02c1cec1aceeef9b6fbe4e1f3e3d6e679b05afde44cff2908ff3761f2e08e72e2c87627
+  checksum: 10/86620b937d1f777ffabadee0458bd1d00011be97cc92a1296d120c6b421f124c37d663d75568e4394ca7a49fa112c4638efbb7e058f24991da0e06ff018bbb8e
   languageName: node
   linkType: hard
 
@@ -4713,18 +4713,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/eslint-config-msgraph@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "@microsoft/eslint-config-msgraph@npm:3.0.3"
+"@microsoft/eslint-config-msgraph@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "@microsoft/eslint-config-msgraph@npm:4.1.1"
   peerDependencies:
-    "@typescript-eslint/eslint-plugin": ^7.10.0
-    "@typescript-eslint/parser": ^7.10.0
-    eslint: ^8.57.0
+    "@typescript-eslint/eslint-plugin": ^8.0.0-alpha.54
+    "@typescript-eslint/parser": ^8.0.0-alpha.54
+    eslint: ^9.7.0
     eslint-config-prettier: ^9.1.0
     eslint-plugin-prefer-arrow: ^1.2.3
     eslint-plugin-react: ^7.34.1
     prettier: ^3.2.5
-  checksum: 10/0a011465d4adadc82e2b54f2db319a4dc518a300f99e0b3b2f5cee93ddf718e70a9b0e1eec2a536be22f2a0cee7ba2ab9f9e3e79f2ded1180e647ac1100927f8
+  checksum: 10/6189a2be3185263e076373b9cd39f49495b0dcdda781fdd2229ce8505421315785db475c44655c876b01dedf7301b58c541b82da78577a9cc848ed639343c8aa
   languageName: node
   linkType: hard
 
@@ -4735,22 +4735,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/fast-element@npm:^1.11.1, @microsoft/fast-element@npm:^1.12.0":
-  version: 1.12.0
-  resolution: "@microsoft/fast-element@npm:1.12.0"
-  checksum: 10/57ac8198a735b0f638f618019bfd0572f357bb80e2d5f1d7e07febe9d2f976c1fb5f069ba870c0f00b3312789455007e2691a72872ddf96c748adc522eb74878
+"@microsoft/fast-element@npm:^1.13.0":
+  version: 1.13.0
+  resolution: "@microsoft/fast-element@npm:1.13.0"
+  checksum: 10/95be5e1e1a4ceeb74589268a3e7f7e41991459b2efa7bb28ecf4cda46d5ba3992f0fd6bbfa5df1aa5316ccd183846649d900525f199f56acaf3f3f1a269981fb
   languageName: node
   linkType: hard
 
-"@microsoft/fast-foundation@npm:^2.48.1":
-  version: 2.49.5
-  resolution: "@microsoft/fast-foundation@npm:2.49.5"
+"@microsoft/fast-foundation@npm:^2.49.6":
+  version: 2.49.6
+  resolution: "@microsoft/fast-foundation@npm:2.49.6"
   dependencies:
-    "@microsoft/fast-element": "npm:^1.12.0"
+    "@microsoft/fast-element": "npm:^1.13.0"
     "@microsoft/fast-web-utilities": "npm:^5.4.1"
     tabbable: "npm:^5.2.0"
     tslib: "npm:^1.13.0"
-  checksum: 10/1f24fb9a1e9f2629b55a99f341e982b74b00a8b417a2d85d61b7b5a1a0517dfa453da6bb86be7011ad523f5623bf424538840c317aa06b9249ba0498b19d1770
+  checksum: 10/9225b46b32463e5f646a73c94857e8fac9ec5c3924916f540196bf08274a7ca0187d941dd561585236fbf57e36374cb0d51d5ab728b100f05a61845f7d3a790a
   languageName: node
   linkType: hard
 
@@ -4774,12 +4774,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@microsoft/mgt-components@workspace:packages/mgt-components"
   dependencies:
-    "@fluentui/web-components": "npm:^2.5.16"
+    "@fluentui/web-components": "npm:^2.6.1"
     "@lit/task": "npm:^1.0.0"
     "@microsoft/mgt-element": "npm:*"
     "@microsoft/microsoft-graph-client": "npm:3.0.2"
     "@microsoft/microsoft-graph-types": "npm:^2.40.0"
-    "@microsoft/microsoft-graph-types-beta": "npm:^0.29.0-preview"
+    "@microsoft/microsoft-graph-types-beta": "npm:^0.42.0-preview"
     lit: "npm:^3.1.2"
     office-ui-fabric-core: "npm:^11.1.0"
   languageName: unknown
@@ -4843,7 +4843,7 @@ __metadata:
     "@microsoft/mgt-components": "npm:*"
     "@microsoft/mgt-element": "npm:*"
     "@microsoft/microsoft-graph-types": "npm:^2.40.0"
-    "@microsoft/microsoft-graph-types-beta": "npm:^0.29.0-preview"
+    "@microsoft/microsoft-graph-types-beta": "npm:^0.42.0-preview"
     wc-react: "npm:^0.5.1"
   peerDependencies:
     react: ^17.0.1 || ^18.0.0
@@ -4873,7 +4873,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@microsoft/mgt-teamsfx-provider@workspace:packages/providers/mgt-teamsfx-provider"
   dependencies:
-    "@azure/core-auth": "npm:^1.6.0"
+    "@azure/core-auth": "npm:^1.7.2"
     "@microsoft/mgt-element": "npm:*"
   languageName: unknown
   linkType: soft
@@ -4911,10 +4911,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/microsoft-graph-types-beta@npm:^0.29.0-preview":
-  version: 0.29.0-preview
-  resolution: "@microsoft/microsoft-graph-types-beta@npm:0.29.0-preview"
-  checksum: 10/2fd29cfcd38f4b26976907fdf0566dc9b02b24b7d29ae7647167a1071a839bdfd419a6525a15272c7247dc19935f4bb09fa19a15a80bcbe88fa2ef832937b43a
+"@microsoft/microsoft-graph-types-beta@npm:^0.42.0-preview":
+  version: 0.42.0-preview
+  resolution: "@microsoft/microsoft-graph-types-beta@npm:0.42.0-preview"
+  checksum: 10/d09a232ebb095780bb5c62bc5d97a3942cde07e2d08b356bf7a011cbf903d579d22f1613f50f90515f32dcdd2710d5ea1156c5e6bc0a8d44236694201b9d27f5
   languageName: node
   linkType: hard
 
@@ -9639,13 +9639,6 @@ __metadata:
   version: 2.0.0
   resolution: "astral-regex@npm:2.0.0"
   checksum: 10/876231688c66400473ba505731df37ea436e574dd524520294cc3bbc54ea40334865e01fa0d074d74d036ee874ee7e62f486ea38bc421ee8e6a871c06f011766
-  languageName: node
-  linkType: hard
-
-"async-limiter@npm:~1.0.0":
-  version: 1.0.1
-  resolution: "async-limiter@npm:1.0.1"
-  checksum: 10/2b849695b465d93ad44c116220dee29a5aeb63adac16c1088983c339b0de57d76e82533e8e364a93a9f997f28bbfc6a92948cefc120652bd07f3b59f8d75cf2b
   languageName: node
   linkType: hard
 
@@ -21077,7 +21070,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.3"
     "@custom-elements-manifest/analyzer": "npm:^0.9.2"
     "@esm-bundle/chai": "npm:^4.3.4-fix.0"
-    "@microsoft/eslint-config-msgraph": "npm:^3.0.3"
+    "@microsoft/eslint-config-msgraph": "npm:^4.1.1"
     "@open-wc/testing": "npm:^4.0.0"
     "@open-wc/testing-helpers": "npm:3.0.1"
     "@rollup/plugin-babel": "npm:^6.0.4"
@@ -24372,9 +24365,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.13.0":
-  version: 8.13.0
-  resolution: "ws@npm:8.13.0"
+"ws@npm:8.17.1":
+  version: 8.17.1
+  resolution: "ws@npm:8.17.1"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -24383,46 +24376,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10/1769532b6fdab9ff659f0b17810e7501831d34ecca23fd179ee64091dd93a51f42c59f6c7bb4c7a384b6c229aca8076fb312aa35626257c18081511ef62a161d
-  languageName: node
-  linkType: hard
-
-"ws@npm:^6.1.0":
-  version: 6.2.2
-  resolution: "ws@npm:6.2.2"
-  dependencies:
-    async-limiter: "npm:~1.0.0"
-  checksum: 10/bb791ac02ad7e59fd4208cc6dd3a5bf7a67dff4611a128ed33365996f9fc24fa0d699043559f1798b4bc8045639fd21a1fd3ceca81de560124444abd8e321afc
-  languageName: node
-  linkType: hard
-
-"ws@npm:^7.4.2":
-  version: 7.5.9
-  resolution: "ws@npm:7.5.9"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ^5.0.2
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 10/171e35012934bd8788150a7f46f963e50bac43a4dc524ee714c20f258693ac4d3ba2abadb00838fdac42a47af9e958c7ae7e6f4bc56db047ba897b8a2268cf7c
-  languageName: node
-  linkType: hard
-
-"ws@npm:^8.2.3":
-  version: 8.16.0
-  resolution: "ws@npm:8.16.0"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ">=5.0.2"
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 10/7c511c59e979bd37b63c3aea4a8e4d4163204f00bd5633c053b05ed67835481995f61a523b0ad2b603566f9a89b34cb4965cb9fab9649fbfebd8f740cea57f17
+  checksum: 10/4264ae92c0b3e59c7e309001e93079b26937aab181835fb7af79f906b22cd33b6196d96556dafb4e985742dd401e99139572242e9847661fdbc96556b9e6902d
   languageName: node
   linkType: hard
 

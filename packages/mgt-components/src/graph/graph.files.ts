@@ -254,7 +254,8 @@ const getIterator = async (
 
   // get iterator from cached values
   const cache: CacheStore<CacheFileList> = CacheService.getCache<CacheFileList>(schemas.fileLists, storeName);
-  const fileList = await getFileListFromCache(cache, storeName, `${endpoint}:${top}`);
+  const cacheKey = `${endpoint}:${top}`;
+  const fileList = await getFileListFromCache(cache, storeName, cacheKey);
   if (fileList) {
     filesPageIterator = getFilesPageIteratorFromCache(graph, fileList.files, fileList.nextLink);
 
@@ -272,7 +273,7 @@ const getIterator = async (
 
     if (getIsFileListsCacheEnabled()) {
       const nextLink = filesPageIterator.nextLink;
-      await cache.putValue(endpoint, {
+      await cache.putValue(cacheKey, {
         files: filesPageIterator.value.map(v => JSON.stringify(v)),
         nextLink
       });

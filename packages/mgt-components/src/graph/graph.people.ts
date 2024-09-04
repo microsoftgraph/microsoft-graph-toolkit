@@ -216,7 +216,7 @@ export const getEmailFromGraphEntity = (entity: IDynamicPerson): string => {
   const user = entity as User;
   const contact = entity as Contact;
 
-  if (user.mail) {
+  if (user?.mail) {
     return extractEmailAddress(user.mail);
   } else if (person.scoredEmailAddresses?.length) {
     return extractEmailAddress(person.scoredEmailAddresses[0].address);
