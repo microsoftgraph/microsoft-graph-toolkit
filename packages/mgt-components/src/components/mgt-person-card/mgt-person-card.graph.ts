@@ -48,7 +48,7 @@ export const getPersonCardGraphData = async (
   personDetails: IDynamicPerson,
   isMe: boolean
 ): Promise<MgtPersonCardState> => {
-  const userId: string = personDetails.id || (personDetails as Person).userPrincipalName;
+  const userId: string = personDetails?.id || (personDetails as Person)?.userPrincipalName;
   const email = getEmailFromGraphEntity(personDetails);
   const cache: CacheStore<CacheCardState> = CacheService.getCache<CacheCardState>(
     schemas.users,
