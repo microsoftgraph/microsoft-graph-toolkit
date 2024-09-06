@@ -494,8 +494,13 @@ class StatefulGraphChatClient extends BaseStatefulClient<GraphChatClient> {
       const deltaMessages = await this.loadDeltaData(this._chatId, cachedMessages.lastModifiedDateTime);
       // add delta messages to cache
       const updatedState = await this._cache.cacheMessages(this._chatId, deltaMessages);
+      // Filters the delta messages based on whether their IDs exist in the updated state.
+      const filteredDeltaMessages = deltaMessages.filter(
+        deltaMessage =>
+          !updatedState.value.some(message => message.id === deltaMessage.id && message.chatId === deltaMessage.chatId)
+      );
       // writeMessagesToState concats with existing state, need to be careful not to create duplicate messages
-      updatedState.value = deltaMessages;
+      updatedState.value = filteredDeltaMessages;
       // update state
       await this.writeMessagesToState(updatedState);
     } else {
