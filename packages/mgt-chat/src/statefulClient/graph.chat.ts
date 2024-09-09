@@ -6,15 +6,15 @@
  */
 
 import {
-  schemas,
   CachePhoto,
+  blobToBase64,
   getPhotoInvalidationTime,
-  storePhotoInCache,
-  blobToBase64
+  schemas,
+  storePhotoInCache
 } from '@microsoft/mgt-components';
 import { BetaGraph, CacheService, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
-import { AadUserConversationMember, Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import { AadUserConversationMember, Chat, ChatMessage, ChatMessageMention } from '@microsoft/microsoft-graph-types';
 import { chatOperationScopes } from './chatOperationScopes';
 import { TeamsAppInstallation } from '@microsoft/microsoft-graph-types-beta';
 
@@ -170,19 +170,23 @@ export const loadMoreChatMessages = async (graph: IGraph, nextLink: string): Pro
  * @param graph authenticated graph client from mgt
  * @param chatId id of the chat to send the message to
  * @param content content of the message to send
+ * @param mentions chat message mentioned users list
  * @returns {Promise<ChatMessage>} the newly created message
  */
-export const sendChatMessage = async (graph: IGraph, chatId: string, content: string): Promise<ChatMessage> => {
-  // TODO: remove this code that lets me simulate a failure during debugging
-  // let fail = false;
-
-  // debugger;
-  // if (fail) throw new Error('fail');
-
+export const sendChatMessage = async (
+  graph: IGraph,
+  chatId: string,
+  content: string,
+  mentions: ChatMessageMention[] = []
+): Promise<ChatMessage> => {
+  const payload = { body: { content, contentType: 'text' }, mentions };
+  if (mentions) {
+    payload.body = { content, contentType: 'html' };
+  }
   return (await graph
     .api(`/chats/${chatId}/messages`)
     .middlewareOptions(prepScopes(chatOperationScopes.sendChatMessage))
-    .post({ body: { content } })) as ChatMessage;
+    .post(payload)) as ChatMessage;
 };
 
 /**

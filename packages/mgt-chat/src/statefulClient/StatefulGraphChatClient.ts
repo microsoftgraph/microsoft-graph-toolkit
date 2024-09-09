@@ -28,15 +28,18 @@ import {
   Chat,
   ChatMessage,
   ChatMessageAttachment,
+  ChatMessageMention,
   ChatRenamedEventMessageDetail,
   MembersAddedEventMessageDetail,
   MembersDeletedEventMessageDetail,
-  ChatMessageMention,
   NullableOption
 } from '@microsoft/microsoft-graph-types';
 import { v4 as uuid } from 'uuid';
 import { currentUserId, currentUserName } from '../utils/currentUser';
 import { graph } from '../utils/graph';
+import { rewriteEmojiContentToHTML } from '../utils/rewriteEmojiContent';
+import { GraphChatClientStatus, isChatMessage } from '../utils/types';
+import { updateMessageContentWithImage } from '../utils/updateMessageContentWithImage';
 import { MessageCache } from './Caching/MessageCache';
 import { GraphConfig } from './GraphConfig';
 import { GraphNotificationClient } from './GraphNotificationClient';
@@ -55,9 +58,6 @@ import {
   updateChatMessage,
   updateChatTopic
 } from './graph.chat';
-import { updateMessageContentWithImage } from '../utils/updateMessageContentWithImage';
-import { GraphChatClientStatus, isChatMessage } from '../utils/types';
-import { rewriteEmojiContentToHTML } from '../utils/rewriteEmojiContent';
 import { buildBotId } from './buildBotId';
 import { BaseStatefulClient } from './BaseStatefulClient';
 
@@ -730,7 +730,6 @@ detail: ${JSON.stringify(eventDetail)}`);
    */
   public sendMessage = async (content: string) => {
     if (!content) return;
-
     if (!this.graph) {
       this.notifyStateChange((draft: GraphChatClient) => {
         draft.status = 'error';
@@ -739,41 +738,80 @@ detail: ${JSON.stringify(eventDetail)}`);
       return;
     }
 
-    const pendingId = uuid();
+    const msftMentionRegex = /<msft-mention\s+id=["'](\w*[^"']*)["']>(\w*[^"']*)<\/msft-mention>/;
+    let updatedContent = content;
+    const teamsMention = `<at id="$1">$2</at>`;
+    // used to temporarily display the name of the selected user instead of
+    // <msft-mention>Display Name</msft-mention> in a newly sent message with mentions
+    const tmpDisplayName = `$2`;
+    let tmpMentionView = content;
+    let match = content.match(msftMentionRegex);
+    const chatState = this.getState();
+    const participants = chatState?.participants;
+    const mentions: NullableOption<ChatMessageMention[]> = [];
+    // Change the message from <msft-mention> to <at>. Teams will process and
+    // send back the same which we process back to <msft-mention>. Fun, right?
+    while (match) {
+      const id = match[1];
+      const displayText = match[2];
+      const user = participants.find(u => u.displayName === displayText);
+      if (user) {
+        const mention: ChatMessageMention = {
+          id: parseInt(id, 10),
+          mentionText: displayText,
+          mentioned: {
+            user: {
+              id: user?.userId,
+              displayName: displayText
+            }
+          }
+        };
+        mentions.push(mention);
+      }
+      updatedContent = updatedContent.replace(msftMentionRegex, teamsMention);
+      tmpMentionView = tmpMentionView.replace(msftMentionRegex, tmpDisplayName);
+      match = updatedContent.match(msftMentionRegex);
 
-    // add a pending message to the state.
-    this.notifyStateChange((draft: GraphChatClient) => {
-      const pendingMessage: Message = {
-        clientMessageId: pendingId,
-        messageId: pendingId,
-        contentType: 'text',
-        messageType: 'chat',
-        content,
-        senderDisplayName: this._userDisplayName,
-        createdOn: new Date(),
-        senderId: this.userId,
-        mine: true,
-        status: 'sending'
-      };
-      draft.messages.push(pendingMessage);
-    });
-    try {
-      // send message
-      const chat: ChatMessage = await sendChatMessage(this.graph, this.chatId, content);
-      // emit new state
+      const pendingId = uuid();
+
+      // add a pending message to the state.
       this.notifyStateChange((draft: GraphChatClient) => {
-        const draftIndex = draft.messages.findIndex(m => m.messageId === pendingId);
-        const message = this.graphChatMessageToAcsChatMessage(chat, this.userId).currentValue;
-        // we only need use the current value of the message
-        // this message can't have a future value as it's not been sent yet
-        if (message) draft.messages.splice(draftIndex, 1, message);
+        const pendingMessage: Message = {
+          clientMessageId: pendingId,
+          messageId: pendingId,
+          contentType: 'text',
+          messageType: 'chat',
+          content: tmpMentionView,
+          senderDisplayName: this._userDisplayName,
+          createdOn: new Date(),
+          senderId: this.userId,
+          mine: true,
+          status: 'sending'
+        };
+        draft.messages.push(pendingMessage);
       });
-    } catch (e) {
-      this.notifyStateChange((draft: GraphChatClient) => {
-        const draftMessage = draft.messages.find(m => m.messageId === pendingId);
-        (draftMessage as AcsChatMessage).status = 'failed';
-      });
-      throw new Error('Failed to send message');
+      try {
+        // send message
+        const chat: ChatMessage = await sendChatMessage(this.graph, this.chatId, updatedContent, mentions);
+        // emit new state
+        this.notifyStateChange((draft: GraphChatClient) => {
+          const draftIndex = draft.messages.findIndex(m => m.messageId === pendingId);
+          const message = this.graphChatMessageToAcsChatMessage(chat, this.userId).currentValue;
+          // we only need use the current value of the message
+          // this message can't have a future value as it's not been sent yet
+          if (message) draft.messages.splice(draftIndex, 1, message);
+          const updatedMentions = chat?.mentions ?? [];
+          draft.mentions = draft.mentions?.concat(
+            ...Array.from(updatedMentions as Iterable<ChatMessageMention>)
+          ) as NullableOption<ChatMessageMention[]>;
+        });
+      } catch (e) {
+        this.notifyStateChange((draft: GraphChatClient) => {
+          const draftMessage = draft.messages.find(m => m.messageId === pendingId);
+          (draftMessage as AcsChatMessage).status = 'failed';
+        });
+        throw new Error('Failed to send message');
+      }
     }
   };
 
