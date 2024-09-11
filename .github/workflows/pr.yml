@@ -42,16 +42,14 @@ jobs:
         uses: actions/upload-artifact@v4 # upload test results
         if: always() # run this step even if previous step failed
         with:
-          name: test-results
+          name: test-results-${{ matrix.node-version }}
           path: testResults/junit.xml
-          overwrite: true
       - name: Archive coverage artifacts
         uses: actions/upload-artifact@v4 # upload coverage rartifacts
         if: always() # run this step even if previous step failed
         with:
-          name: coverage
+          name: coverage-${{ matrix.node-version }}
           path: coverage/
-          overwrite: true
 
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
@@ -87,6 +85,8 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
+          pattern: coverage-*
+          merge-multiple: true
           name: coverage
           path: coverage/
 
