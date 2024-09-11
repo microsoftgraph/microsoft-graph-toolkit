@@ -39,16 +39,16 @@ jobs:
       - run: yarn test
 
       - name: Archive test results
-        uses: actions/upload-artifact@v2 # upload test results
+        uses: actions/upload-artifact@v4 # upload test results
         if: always() # run this step even if previous step failed
         with:
-          name: test-results
+          name: test-results-${{ matrix.node-version }}
           path: testResults/junit.xml
       - name: Archive coverage artifacts
-        uses: actions/upload-artifact@v3 # upload coverage rartifacts
+        uses: actions/upload-artifact@v4 # upload coverage rartifacts
         if: always() # run this step even if previous step failed
         with:
-          name: coverage
+          name: coverage-${{ matrix.node-version }}
           path: coverage/
 
       - name: Code Coverage Summary Report
@@ -81,11 +81,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: coverage
+          pattern: coverage-*
+          merge-multiple: true
           path: coverage/
 
       - name: Run sonar cloud analysis
