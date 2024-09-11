@@ -87,7 +87,6 @@ jobs:
         with:
           pattern: coverage-*
           merge-multiple: true
-          name: coverage
           path: coverage/
 
       - name: Run sonar cloud analysis
