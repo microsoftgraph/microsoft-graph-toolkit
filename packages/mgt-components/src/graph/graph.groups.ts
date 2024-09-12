@@ -149,7 +149,8 @@ export const findGroups = async (
 
     filterQuery = filterQuery ? `${filterQuery} and ` : '';
     for (const filter of filterGroups) {
-      batch.get(filter, `/groups?$filter=${filterQuery + filter}`, validGroupQueryScopes);
+      const fullUrl = `/groups?$filter=${filterQuery + filter}&$top=${top}`;
+      batch.get(filter, fullUrl, validGroupQueryScopes);
     }
 
     try {

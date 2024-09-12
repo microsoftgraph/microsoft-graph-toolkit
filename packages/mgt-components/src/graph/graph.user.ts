@@ -420,7 +420,7 @@ export const findUsers = async (graph: IGraph, query: string, top = 10, userFilt
   const encodedQuery = `${query.replace(/#/g, '%2523')}`;
   const graphBuilder = graph
     .api('users')
-    .search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}" OR "userPrincipalName: ${encodedQuery}"`)
+    .search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}" OR "userPrincipalName:${encodedQuery}"`)
     .header('ConsistencyLevel', 'eventual')
     .count(true);
   let graphResult: CollectionResponse<User>;
@@ -506,7 +506,7 @@ export const findGroupMembers = async (
 
   const graphClient: GraphRequest = graph.api(apiUrl).top(top).filter(filter);
 
-  if (userFilters) {
+  if (userFilters || query) {
     graphClient.header('ConsistencyLevel', 'eventual').count(true);
   }
 
