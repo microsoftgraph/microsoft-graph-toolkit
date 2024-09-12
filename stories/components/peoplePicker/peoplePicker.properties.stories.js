@@ -187,6 +187,11 @@ export const pickMultipleGroups = () => html`
   <!-- group-type can be "any", "unified", "security", "mailenabledsecurity", "distribution" -->
 `;
 
+export const pickMultipleGroupsShowMax = () => html`
+  <mgt-people-picker type="group" group-type="unified,security,mailenabledsecurity" show-max="3"></mgt-people-picker>
+  <!-- group-type can be "any", "unified", "security", "mailenabledsecurity", "distribution" -->
+`;
+
 export const pickPeople = () => html`
   <mgt-people-picker type="person"></mgt-people-picker>
   <!-- type can be "any", "person", "group" -->
