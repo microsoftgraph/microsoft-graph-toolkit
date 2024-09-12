@@ -43,15 +43,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@azure/abort-controller@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "@azure/abort-controller@npm:1.1.0"
-  dependencies:
-    tslib: "npm:^2.2.0"
-  checksum: 10/1efe8735cfe6411f42ab9dda86be627073e0e3345a89bd5d0560175523ab3939db2c82fd17965a49fc70513377866539c91a5c73c871b5a0d771329ffae87dda
-  languageName: node
-  linkType: hard
-
 "@azure/abort-controller@npm:^2.0.0":
   version: 2.0.0
   resolution: "@azure/abort-controller@npm:2.0.0"
@@ -73,12 +64,12 @@ __metadata:
   linkType: hard
 
 "@azure/core-util@npm:^1.1.0":
-  version: 1.6.1
-  resolution: "@azure/core-util@npm:1.6.1"
+  version: 1.9.2
+  resolution: "@azure/core-util@npm:1.9.2"
   dependencies:
-    "@azure/abort-controller": "npm:^1.0.0"
-    tslib: "npm:^2.2.0"
-  checksum: 10/e6baec71813ca7f759e35311bdbcc9ac474db66b480658231575366dac5a7e1653a26b2bd4a7637ddc561d8751117b76eed51ab129b7985e6d5f46561d116072
+    "@azure/abort-controller": "npm:^2.0.0"
+    tslib: "npm:^2.6.2"
+  checksum: 10/341d9ed642fc290569ba7a6d7f4d6d0c11678d96fc8cdf32b25bfe75d4bef3c57a1bebbf1d4cd0451d700c3821d86e288112d478c1f5874ce9e957841dc3cbf5
   languageName: node
   linkType: hard
 
