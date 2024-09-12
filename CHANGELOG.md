@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.5](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.4...v4.2.5) (2024-09-04)
+
+
+### Bug Fixes
+
+* dialog content z-index ([#3285](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3285)) ([3e8b0f5](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/3e8b0f5a581fe7992b3eed285c03dee8d5814c74))
+* display contact icons with personDetails ([#3276](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3276)) ([e685aee](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/e685aee075a31887238caea824981d28c6548b5f))
+* display default selected users and groups while disabling suggestions ([#3279](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3279)) ([dfccd65](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/dfccd650277799c4d728906c486b0dc063353baa))
+* remove picker focus when using selectUsersById ([#3282](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3282)) ([440211b](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/440211bb330928ba071202eb82f168e22c6a1ceb))
+* update the css query and events used to rename copy button aria-labels ([#3271](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3271)) ([439d0fc](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/439d0fcf2ad115af683f0713d854c551a1883e5a))
+
 ## [4.2.4](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.3...v4.2.4) (2024-08-06)
 
 

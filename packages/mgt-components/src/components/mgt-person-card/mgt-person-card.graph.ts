@@ -6,7 +6,7 @@
  */
 
 import { BatchResponse, CacheItem, CacheService, CacheStore, IBatch, IGraph, prepScopes } from '@microsoft/mgt-element';
-import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import { Chat, ChatMessage, Person } from '@microsoft/microsoft-graph-types';
 import { Profile } from '@microsoft/microsoft-graph-types-beta';
 
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -48,7 +48,7 @@ export const getPersonCardGraphData = async (
   personDetails: IDynamicPerson,
   isMe: boolean
 ): Promise<MgtPersonCardState> => {
-  const userId = personDetails.id;
+  const userId: string = personDetails?.id || (personDetails as Person)?.userPrincipalName;
   const email = getEmailFromGraphEntity(personDetails);
   const cache: CacheStore<CacheCardState> = CacheService.getCache<CacheCardState>(
     schemas.users,

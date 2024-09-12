@@ -944,6 +944,39 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
       const graph = provider.graph.forComponent(this);
 
       if (!input.length) {
+        if (
+          (this.defaultSelectedUserIds.length > 0 || this.defaultSelectedGroupIds.length > 0) &&
+          !this.selectedPeople.length &&
+          !this.defaultSelectedUsers.length &&
+          !this.defaultSelectedGroups.length
+        ) {
+          this.defaultSelectedUsers = await getUsersForUserIds(
+            graph,
+            this.defaultSelectedUserIds,
+            '',
+            this.userFilters
+          );
+          this.defaultSelectedGroups = await getGroupsForGroupIds(
+            graph,
+            this.defaultSelectedGroupIds,
+            this.peopleFilters
+          );
+
+          this.defaultSelectedGroups = this.defaultSelectedGroups.filter(group => {
+            return group !== null;
+          });
+
+          this.defaultSelectedUsers = this.defaultSelectedUsers.filter(user => {
+            return user !== null;
+          });
+
+          this.selectedPeople = [...this.defaultSelectedUsers, ...this.defaultSelectedGroups];
+
+          if (this.hasMaxSelections) {
+            this.disableTextInput();
+          }
+          this.requestUpdate();
+        }
         if (this.disableSuggestions) {
           this._foundPeople = [];
           return;
@@ -1027,35 +1060,6 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
           }
           this.defaultPeople = people;
         }
-      }
-
-      if (
-        (this.defaultSelectedUserIds.length > 0 || this.defaultSelectedGroupIds.length > 0) &&
-        !this.selectedPeople.length &&
-        !this.defaultSelectedUsers.length &&
-        !this.defaultSelectedGroups.length
-      ) {
-        this.defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds, '', this.userFilters);
-        this.defaultSelectedGroups = await getGroupsForGroupIds(
-          graph,
-          this.defaultSelectedGroupIds,
-          this.peopleFilters
-        );
-
-        this.defaultSelectedGroups = this.defaultSelectedGroups.filter(group => {
-          return group !== null;
-        });
-
-        this.defaultSelectedUsers = this.defaultSelectedUsers.filter(user => {
-          return user !== null;
-        });
-
-        this.selectedPeople = [...this.defaultSelectedUsers, ...this.defaultSelectedGroups];
-
-        if (this.hasMaxSelections) {
-          this.disableTextInput();
-        }
-        this.requestUpdate();
       }
 
       if (input) {
@@ -1265,7 +1269,9 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
         this._foundPeople = [];
         this._arrowSelectionCount = -1;
       }
-      this.enableTextInput();
+      if (this._isFocused) {
+        this.enableTextInput();
+      }
     }
   }
 
