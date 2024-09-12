@@ -3542,14 +3542,14 @@ __metadata:
   linkType: hard
 
 "@fluentui/react-positioning@npm:^9.15.3":
-  version: 9.15.3
-  resolution: "@fluentui/react-positioning@npm:9.15.3"
+  version: 9.15.8
+  resolution: "@fluentui/react-positioning@npm:9.15.8"
   dependencies:
     "@floating-ui/devtools": "npm:0.2.1"
     "@floating-ui/dom": "npm:^1.2.0"
-    "@fluentui/react-shared-contexts": "npm:^9.19.0"
+    "@fluentui/react-shared-contexts": "npm:^9.20.0"
     "@fluentui/react-theme": "npm:^9.1.19"
-    "@fluentui/react-utilities": "npm:^9.18.10"
+    "@fluentui/react-utilities": "npm:^9.18.14"
     "@griffel/react": "npm:^1.5.22"
     "@swc/helpers": "npm:^0.5.1"
   peerDependencies:
@@ -3557,7 +3557,7 @@ __metadata:
     "@types/react-dom": ">=16.9.0 <19.0.0"
     react: ">=16.14.0 <19.0.0"
     react-dom: ">=16.14.0 <19.0.0"
-  checksum: 10/6b595d091dedfa482a8c9966fa9e932ed27552a9790de6cde9449273ad15dcb95a9b0bd40530ce292cae0bd1ded4adbe77b4765c5986491482a9ea5b39ae2d48
+  checksum: 10/f6c31e0c1ff2bbd898596a21473bfd4f100a79c1f883464f38257286af06235c6e6cba63d5d9da6a6ae213b32b808682fe7b9bc51fde4e55263621992d0ce773
   languageName: node
   linkType: hard
 
@@ -3696,6 +3696,19 @@ __metadata:
     "@types/react": ">=16.14.0 <19.0.0"
     react: ">=16.14.0 <19.0.0"
   checksum: 10/4933f26659c54154d649de830855ced38fc59f4eb8a9dca83085280a4166e24cc1edf74d47c0ff09309e04a1f8a5b43a177b51c760b31d5b55ceb8bf00738b9e
+  languageName: node
+  linkType: hard
+
+"@fluentui/react-shared-contexts@npm:^9.20.0":
+  version: 9.20.0
+  resolution: "@fluentui/react-shared-contexts@npm:9.20.0"
+  dependencies:
+    "@fluentui/react-theme": "npm:^9.1.19"
+    "@swc/helpers": "npm:^0.5.1"
+  peerDependencies:
+    "@types/react": ">=16.14.0 <19.0.0"
+    react: ">=16.14.0 <19.0.0"
+  checksum: 10/c6af9caa70f40ace231aca6a497b992d583afb886a0319b243fe190b850b37ed633274a332af710151f42d04a4ab943662776d3d35066813b4b18f3a110f936c
   languageName: node
   linkType: hard
 
@@ -4168,6 +4181,20 @@ __metadata:
     "@types/react": ">=16.14.0 <19.0.0"
     react: ">=16.14.0 <19.0.0"
   checksum: 10/ab782785ef5e771778b9165253ddd47700f8eee56a962572a00a21fda246d4810b86c28a594ee0944c85615bee0ecec9156b5229e85d02c82eee3e18431498e9
+  languageName: node
+  linkType: hard
+
+"@fluentui/react-utilities@npm:^9.18.14":
+  version: 9.18.14
+  resolution: "@fluentui/react-utilities@npm:9.18.14"
+  dependencies:
+    "@fluentui/keyboard-keys": "npm:^9.0.7"
+    "@fluentui/react-shared-contexts": "npm:^9.20.0"
+    "@swc/helpers": "npm:^0.5.1"
+  peerDependencies:
+    "@types/react": ">=16.14.0 <19.0.0"
+    react: ">=16.14.0 <19.0.0"
+  checksum: 10/f30cd8470a4217157185ee2ba9255097b04b2d8d7267acbafb649028d7cd14258a6e6ab721a49e3edd5fbd5b76cc45f66d937091f848ede5961200fa34188adc
   languageName: node
   linkType: hard
 
