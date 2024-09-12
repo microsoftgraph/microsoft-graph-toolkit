@@ -3077,10 +3077,10 @@ __metadata:
   linkType: hard
 
 "@fluentui/react-context-selector@npm:^9.1.61":
-  version: 9.1.61
-  resolution: "@fluentui/react-context-selector@npm:9.1.61"
+  version: 9.1.66
+  resolution: "@fluentui/react-context-selector@npm:9.1.66"
   dependencies:
-    "@fluentui/react-utilities": "npm:^9.18.10"
+    "@fluentui/react-utilities": "npm:^9.18.14"
     "@swc/helpers": "npm:^0.5.1"
   peerDependencies:
     "@types/react": ">=16.14.0 <19.0.0"
@@ -3088,7 +3088,7 @@ __metadata:
     react: ">=16.14.0 <19.0.0"
     react-dom: ">=16.14.0 <19.0.0"
     scheduler: ">=0.19.0 <=0.23.0"
-  checksum: 10/11e01e78959636c56dc30a4c8023d80bf2397e1494e14ac1e4da3235b28d94484dcbdc975edf854f1e91a9e073867d9706af1fac100eb8dcb40c33b329b6ca31
+  checksum: 10/cd130150d178d1251324a4aaf312f7e1d4fb71005f1a7bfd8e3413bb7c1cb399b5570a4fb0cf87516330940a27327ca6998b2142d646e4b8775290579d05a8db
   languageName: node
   linkType: hard
 
@@ -3699,6 +3699,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fluentui/react-shared-contexts@npm:^9.20.0":
+  version: 9.20.0
+  resolution: "@fluentui/react-shared-contexts@npm:9.20.0"
+  dependencies:
+    "@fluentui/react-theme": "npm:^9.1.19"
+    "@swc/helpers": "npm:^0.5.1"
+  peerDependencies:
+    "@types/react": ">=16.14.0 <19.0.0"
+    react: ">=16.14.0 <19.0.0"
+  checksum: 10/c6af9caa70f40ace231aca6a497b992d583afb886a0319b243fe190b850b37ed633274a332af710151f42d04a4ab943662776d3d35066813b4b18f3a110f936c
+  languageName: node
+  linkType: hard
+
 "@fluentui/react-skeleton@npm:^9.1.6":
   version: 9.1.6
   resolution: "@fluentui/react-skeleton@npm:9.1.6"
@@ -4168,6 +4181,20 @@ __metadata:
     "@types/react": ">=16.14.0 <19.0.0"
     react: ">=16.14.0 <19.0.0"
   checksum: 10/ab782785ef5e771778b9165253ddd47700f8eee56a962572a00a21fda246d4810b86c28a594ee0944c85615bee0ecec9156b5229e85d02c82eee3e18431498e9
+  languageName: node
+  linkType: hard
+
+"@fluentui/react-utilities@npm:^9.18.14":
+  version: 9.18.14
+  resolution: "@fluentui/react-utilities@npm:9.18.14"
+  dependencies:
+    "@fluentui/keyboard-keys": "npm:^9.0.7"
+    "@fluentui/react-shared-contexts": "npm:^9.20.0"
+    "@swc/helpers": "npm:^0.5.1"
+  peerDependencies:
+    "@types/react": ">=16.14.0 <19.0.0"
+    react: ">=16.14.0 <19.0.0"
+  checksum: 10/f30cd8470a4217157185ee2ba9255097b04b2d8d7267acbafb649028d7cd14258a6e6ab721a49e3edd5fbd5b76cc45f66d937091f848ede5961200fa34188adc
   languageName: node
   linkType: hard
 
