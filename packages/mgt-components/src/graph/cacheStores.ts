@@ -21,9 +21,10 @@ export const schemas = {
     stores: {
       users: 'users',
       usersQuery: 'usersQuery',
-      userFilters: 'userFilters'
+      userFilters: 'userFilters',
+      cardState: 'cardState'
     },
-    version: 3
+    version: 4
   },
   photos: {
     name: 'photos',

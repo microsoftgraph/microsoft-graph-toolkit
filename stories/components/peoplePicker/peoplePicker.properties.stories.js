@@ -79,7 +79,15 @@ closeModal.addEventListener('click', () => {
 `;
 
 export const disableSuggestions = () => html`
-  <mgt-people-picker disable-suggestions></mgt-people-picker>
+<h1>Disable suggestions</h1>
+<mgt-people-picker disable-suggestions></mgt-people-picker>
+<h1>Disable suggestions with default selected user Ids</h1>
+<mgt-people-picker
+default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85, 40079818-3808-4585-903b-02605f061225" disable-suggestions>
+</mgt-people-picker>
+
+
+  
 `;
 
 export const dynamicGroupId = () => html`
@@ -176,6 +184,11 @@ export const pickDistributionGroups = () => html`
 
 export const pickMultipleGroups = () => html`
   <mgt-people-picker type="group" group-type="unified,distribution,security"></mgt-people-picker>
+  <!-- group-type can be "any", "unified", "security", "mailenabledsecurity", "distribution" -->
+`;
+
+export const pickMultipleGroupsShowMax = () => html`
+  <mgt-people-picker type="group" group-type="unified,security,mailenabledsecurity" show-max="3"></mgt-people-picker>
   <!-- group-type can be "any", "unified", "security", "mailenabledsecurity", "distribution" -->
 `;
 

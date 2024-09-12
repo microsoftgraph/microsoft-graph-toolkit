@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.5](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.4...v4.2.5) (2024-09-04)
+
+
+### Bug Fixes
+
+* dialog content z-index ([#3285](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3285)) ([3e8b0f5](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/3e8b0f5a581fe7992b3eed285c03dee8d5814c74))
+* display contact icons with personDetails ([#3276](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3276)) ([e685aee](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/e685aee075a31887238caea824981d28c6548b5f))
+* display default selected users and groups while disabling suggestions ([#3279](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3279)) ([dfccd65](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/dfccd650277799c4d728906c486b0dc063353baa))
+* remove picker focus when using selectUsersById ([#3282](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3282)) ([440211b](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/440211bb330928ba071202eb82f168e22c6a1ceb))
+* update the css query and events used to rename copy button aria-labels ([#3271](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3271)) ([439d0fc](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/439d0fcf2ad115af683f0713d854c551a1883e5a))
+
+## [4.2.4](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.3...v4.2.4) (2024-08-06)
+
+
+### Bug Fixes
+
+* add headers when people-picker has input ([#3269](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3269)) ([ba87c32](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/ba87c324f33f4b0fe193b26d97cfec1d63797914))
+* add padding to the list of direct reports in person-card ([#3265](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3265)) ([8036278](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/80362782c01d419f3f47c5820d1cfc9bd909333c))
+* check the options scopes are not empty when getting access token ([#3256](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3256)) ([432d8ce](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/432d8ce574aebd1ae9ddaf7bc53b5d4f4e4164c6))
+* implement caching on the card state for person card ([#3266](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3266)) ([06cd925](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/06cd925f485f49c9a0534778378301b11dad8136))
+* remove space in findUsers query ([#3267](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3267)) ([096a50d](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/096a50d64290289504cc0af99bd671f7336c343a))
+* show login component flyout on after login ([#3250](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3250)) ([62b1ed4](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/62b1ed4a924d9b407c2749ee8b093f98fa6e8050))
+* use a consistent cachekey in file list cache ([#3257](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3257)) ([5551351](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/55513513146ea43a965da3e5cd5de8712d773321))
+
+## [4.2.3](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.2...v4.2.3) (2024-07-02)
+
+
+### Bug Fixes
+
+* **a11y:** add stackblitz button styling for high contrast theming ([#3213](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3213)) ([cb7621a](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/cb7621a2539fddcde62d04ce19bca9b8a3c42dd1))
+* **a11y:** correctly narrate tab status in storybook editor ([#3220](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3220)) ([7932f55](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/7932f554e43af16c7dfc39b863bb2663e12e1646))
+* **a11y:** narrate person list position in mgt-agenda ([#3221](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3221)) ([463687d](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/463687deac80c4cacdfd215c15cab020a222e62f))
+* add userPrincipalName as an option in findPeople query ([#3206](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3206)) ([97fe1c0](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/97fe1c077bee635abedde392d775df373ba5d812))
+* correct storybook overview component links ([#3223](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3223)) ([5a94bfa](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/5a94bfaf8b38c7127ec201d68e3af6358e5eb94e))
+* display only a person's shared files in mgt-person-card ([#3238](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3238)) ([da90c5b](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/da90c5bf2cf6c293aea3b2b1f065858ba345aae1))
+* display only available person-card contact icons on mgt-person-card ([#3237](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3237)) ([1f080d9](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/1f080d95b1097cdf34d0793bd3b2e49a0c21dd07))
+* mgt-planner task deletion on keyboard interaction ([#3214](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3214)) ([0ef8dd7](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/0ef8dd7496bd2d6c0159be0fc867a1a380bb7119))
+* update tabbing behavior on person when closing person-card ([#3193](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3193)) ([6a93c6e](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/6a93c6e51e677a28bad58ba5ea6931fc14763291))
+
 ## [4.2.2](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.1...v4.2.2) (2024-05-30)
 
 

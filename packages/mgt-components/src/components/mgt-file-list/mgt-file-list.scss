@@ -101,4 +101,55 @@ $progress-ring-size: var(--progress-ring-size, 24px);
       font-size: $show-more-button-font-size;
     }
   }
+
+  .shared_insight_file {
+    display: flex;
+    align-items: center;
+    padding: 11px 20px;
+
+    &:hover {
+      background-color: var(--file-item-background-color, var(--neutral-layer-1));
+      cursor: pointer;
+    }
+
+    &:last-child {
+      margin-bottom: unset;
+    }
+
+    .shared_insight_file__icon {
+      width: 28px;
+      min-width: 28px;
+      height: 28px;
+      margin-inline-end: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        height: 28px;
+        width: 28px;
+      }
+    }
+
+    .shared_insight_file__details {
+      min-width: 0;
+      margin-inline-end: 40px;
+
+      .shared_insight_file__name {
+        font-size: var(--file-line1-font-size, var(--size-font-size, #{$ms-font-size-12}));
+        color: var(--file-line1-color, var(--neutral-foreground-rest));
+      }
+
+      .shared_insight_file__last-modified {
+        font-size: var(--file-line3-font-size, var(--size-font-size, #{$ms-font-size-12}));
+        color: var(--file-line3-color, var(--secondary-text-color));
+      }
+
+      > div {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 }
