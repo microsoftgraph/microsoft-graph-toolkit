@@ -66,6 +66,12 @@ export class ThreadEventEmitter {
   notificationsSubscribedForResource(resouce: string) {
     this.emitter.emit('notificationsSubscribedForResource', resouce);
   }
+  disconnected() {
+    this.emitter.emit('disconnected');
+  }
+  connected() {
+    this.emitter.emit('connected');
+  }
   graphNotificationClientError(error: Error) {
     this.emitter.emit('graphNotificationClientError', error);
   }

@@ -405,16 +405,13 @@ class StatefulGraphChatClient extends BaseStatefulClient<GraphChatClient> {
       return;
     }
     this._chatId = value;
-    if (this._chatId && this._sessionId) {
+    if (this._chatId) {
       void this.updateFollowedChat();
     }
   }
 
-  private _sessionId: string | undefined;
-
-  public subscribeToChat(chatId: string, sessionId: string) {
-    if (chatId && sessionId) {
-      this._sessionId = sessionId;
+  public subscribeToChat(chatId: string) {
+    if (chatId) {
       this.chatId = chatId;
     }
   }
@@ -434,7 +431,7 @@ class StatefulGraphChatClient extends BaseStatefulClient<GraphChatClient> {
    */
   private async updateFollowedChat() {
     // avoid subscribing to a resource with an empty chatId
-    if (this.chatId && this._sessionId) {
+    if (this.chatId) {
       // reset state to initial
       this.notifyStateChange((draft: GraphChatClient) => {
         draft.status = 'initial';
@@ -456,7 +453,7 @@ class StatefulGraphChatClient extends BaseStatefulClient<GraphChatClient> {
         // subscribing to notifications will trigger the chatMessageNotificationsSubscribed event
         // this client will then load the chat and messages when that event listener is called
         if (this._notificationClient) {
-          tasks.push(this._notificationClient.subscribeToChatNotifications(this._chatId, this._sessionId));
+          tasks.push(this._notificationClient.subscribeToChatNotifications(this._chatId));
           await Promise.all(tasks);
         }
       } catch (e) {

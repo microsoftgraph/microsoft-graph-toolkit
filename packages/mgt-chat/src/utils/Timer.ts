@@ -5,7 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { v4 as uuid } from 'uuid';
 import { TimerWork } from './timerWorker';
 
 export interface Work {
@@ -21,10 +20,12 @@ export class Timer {
     this.worker.port.onmessage = this.onMessage;
   }
 
-  public setTimeout(callback: () => void, delay: number): string {
+  // NOTE: this.work was increasing in size every time there was a new timeout because id was uuid()
+  // but clearTimeout was only being called on teardown.
+  public setTimeout(id: string, callback: () => void, delay: number): string {
     const timeoutWork: TimerWork = {
       type: 'setTimeout',
-      id: uuid(),
+      id,
       delay
     };
 
@@ -46,6 +47,8 @@ export class Timer {
     }
   }
 
+  /*
+  // NOTE: setInterval is not used in the library, but it is here for reference
   public setInterval(callback: () => void, delay: number): string {
     const intervalWork: TimerWork = {
       type: 'setInterval',
@@ -70,6 +73,7 @@ export class Timer {
       this.work.delete(id);
     }
   }
+  */
 
   private readonly onMessage = (event: MessageEvent<TimerWork>): void => {
     const intervalWork = event.data;
