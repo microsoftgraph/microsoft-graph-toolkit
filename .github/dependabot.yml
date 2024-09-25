@@ -7,8 +7,9 @@ version: 2
 updates:
   - package-ecosystem: 'npm' # See documentation for possible values
     directory: '/' # Location of package manifests
+    target-branch: 'dependabot-upgrades'
     schedule:
-      interval: 'daily'
+      interval: 'monthly'
     allow:
       - dependency-name: '@microsoft/*'
       - dependency-name: '@azure/*'
