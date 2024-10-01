@@ -40,7 +40,7 @@
     "@fluentui/web-components": "^2.6.1",
     "@lit/task": "^1.0.0",
     "@microsoft/mgt-element": "*",
-    "@microsoft/microsoft-graph-client": "3.0.2",
+    "@microsoft/microsoft-graph-client": "3.0.7",
     "@microsoft/microsoft-graph-types": "^2.40.0",
     "@microsoft/microsoft-graph-types-beta": "^0.43.0-preview",
     "lit": "^3.1.2",
