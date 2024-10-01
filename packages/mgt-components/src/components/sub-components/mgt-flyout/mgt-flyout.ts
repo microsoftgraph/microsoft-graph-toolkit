@@ -357,8 +357,15 @@ export class MgtFlyout extends MgtBaseTaskComponent {
             height = anchorRectTopToWindowTop;
           }
         } else {
-          top = anchorRect.bottom;
-          height = anchorRectBottomToWindowBottom;
+          if (anchorRectTopToWindowTop >= flyoutRect.height) {
+            // render above anchor
+            bottom = windowRect.height - anchorRect.top;
+            height = anchorRectTopToWindowTop;
+          } else {
+            // render below anchor
+            top = anchorRect.bottom;
+            height = anchorRectBottomToWindowBottom;
+          }
         }
       } else {
         if (flyoutRect.height + 2 * this._edgePadding > windowRect.height) {
