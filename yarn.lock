@@ -3077,10 +3077,10 @@ __metadata:
   linkType: hard
 
 "@fluentui/react-context-selector@npm:^9.1.61":
-  version: 9.1.61
-  resolution: "@fluentui/react-context-selector@npm:9.1.61"
+  version: 9.1.67
+  resolution: "@fluentui/react-context-selector@npm:9.1.67"
   dependencies:
-    "@fluentui/react-utilities": "npm:^9.18.10"
+    "@fluentui/react-utilities": "npm:^9.18.15"
     "@swc/helpers": "npm:^0.5.1"
   peerDependencies:
     "@types/react": ">=16.14.0 <19.0.0"
@@ -3088,7 +3088,7 @@ __metadata:
     react: ">=16.14.0 <19.0.0"
     react-dom: ">=16.14.0 <19.0.0"
     scheduler: ">=0.19.0 <=0.23.0"
-  checksum: 10/11e01e78959636c56dc30a4c8023d80bf2397e1494e14ac1e4da3235b28d94484dcbdc975edf854f1e91a9e073867d9706af1fac100eb8dcb40c33b329b6ca31
+  checksum: 10/6dbd91e8ff7eb28a0e85ece25dfd6bc5874f9aa4e08b32ee7845d5494819fa3b4e890b4fd304e91ec272db11ba08e31f44b83e2f46bb68fc569d3b35c3a4e48a
   languageName: node
   linkType: hard
 
