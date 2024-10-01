@@ -2734,17 +2734,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fluentui/merge-styles@npm:^8.5.15":
-  version: 8.5.15
-  resolution: "@fluentui/merge-styles@npm:8.5.15"
-  dependencies:
-    "@fluentui/set-version": "npm:^8.2.14"
-    tslib: "npm:^2.1.0"
-  checksum: 10/6dc345dd85b982c5e14bec90cb8552e8a584c25f57787192011d756c00819340e77f7cd2ade15ece573b6b54892050f8636f8166cec5408bfc7f683c822b5ef8
-  languageName: node
-  linkType: hard
-
-"@fluentui/merge-styles@npm:^8.6.13":
+"@fluentui/merge-styles@npm:^8.5.15, @fluentui/merge-styles@npm:^8.6.13":
   version: 8.6.13
   resolution: "@fluentui/merge-styles@npm:8.6.13"
   dependencies:
