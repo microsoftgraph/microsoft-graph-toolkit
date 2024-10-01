@@ -529,6 +529,7 @@ export class MgtPersonCard extends MgtTemplatedTaskComponent implements IHistory
 
     if (this._windowHeight < 250) {
       this._smallView = true;
+      this.fireCustomEvent('smallView', null, true);
     }
     const tabLocker = this.lockTabNavigation
       ? html`<div @keydown=${this.handleEndOfCard} aria-label=${this.strings.endOfCard} tabindex="0" id="end-of-container"></div>`

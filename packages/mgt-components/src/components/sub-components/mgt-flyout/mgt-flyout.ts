@@ -134,6 +134,13 @@ export class MgtFlyout extends MgtBaseTaskComponent {
         this.updateFlyout();
       });
     });
+
+    // handling when person-card is rendered in a smaller window
+    this.addEventListener('smallView', () => {
+      window.requestAnimationFrame(() => {
+        this.updateFlyout();
+      });
+    });
   }
 
   /**
@@ -372,7 +379,7 @@ export class MgtFlyout extends MgtBaseTaskComponent {
           }
         } else {
           if (anchorRect.top + anchorRect.height + flyoutRect.height + this._edgePadding > windowRect.height) {
-            // it will render offscreen bellow, move it up a bit
+            // it will render offscreen below, move it up a bit
             top = windowRect.height - flyoutRect.height - this._edgePadding;
           } else {
             top = Math.max(anchorRect.top + anchorRect.height, this._edgePadding);
