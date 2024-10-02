@@ -630,14 +630,19 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
     }
 
     const selectedPeopleTemplate = this.renderSelectedPeople(this.selectedPeople);
-    const inputTemplate = this.renderInput(selectedPeopleTemplate);
-    const flyoutTemplate = this.renderFlyout(inputTemplate);
 
-    return html`
+    if (this.selectionMode === 'single' && this.selectedPeople.length === 1) {
+      return selectedPeopleTemplate;
+    } else {
+      const inputTemplate = this.renderInput(selectedPeopleTemplate);
+      const flyoutTemplate = this.renderFlyout(inputTemplate);
+
+      return html`
       <div>
         ${flyoutTemplate}
       </div>
     `;
+    }
   }
 
   protected args(): unknown[] {
