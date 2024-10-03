@@ -21,6 +21,7 @@ $people-picker-font-size: var(--people-picker-font-size, 14px);
   fluent-text-field {
     width: 100%;
     font-size: $people-picker-font-size;
+    margin-block-end: 4px;
 
     &::part(root) {
       display: flex;
@@ -123,7 +124,6 @@ $people-picker-font-size: var(--people-picker-font-size, 14px);
   }
 
   fluent-card {
-    margin-top: 4px;
     background-color: $dropdown-card-color;
   }
 
