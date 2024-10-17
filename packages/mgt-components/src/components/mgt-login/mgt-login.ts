@@ -243,6 +243,12 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
     const provider = Providers.globalProvider;
     if (provider?.logout) {
       await provider.logout();
+    }
+  };
+
+  private readonly completeLogout = () => {
+    const provider = Providers.globalProvider;
+    if (provider.state === ProviderState.SignedOut) {
       this.userDetails = null;
       if (provider.isMultiAccountSupportedAndEnabled) {
         const activeAccount = provider.getActiveAccount();
@@ -297,6 +303,9 @@ export class MgtLogin extends MgtTemplatedTaskComponent {
         }
         this.fireCustomEvent('loginCompleted');
       } else {
+        if (provider.logout) {
+          this.completeLogout();
+        }
         this.userDetails = null;
       }
     }
