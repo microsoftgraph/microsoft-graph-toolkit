@@ -667,10 +667,17 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
    * @param event
    */
   private readonly onFileListKeyDown = (event: KeyboardEvent): void => {
-    const fileList = this.renderRoot.querySelector('.file-list');
+    console.log(event.target);
+    let fileList: HTMLElement;
+    if (!event.target.classList) {
+      fileList = this.renderRoot.querySelector('.file-list-children');
+    } else {
+      fileList = this.renderRoot.querySelector('.file-list');
+    }
     let focusedItem: HTMLElement;
 
     if (!fileList?.children.length) {
+      console.log('no children for ', fileList);
       return;
     }
 
@@ -926,27 +933,47 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
 
   private readonly showChildren = (file: DriveItem | SharedInsight, e?: MouseEvent) => {
     const itemDOM = this.renderRoot.querySelector(`#file-list-item-${file.id}`);
-    if (itemDOM) {
-      this.renderChildren(file, itemDOM);
-    }
+    this.renderChildren(file, itemDOM);
   };
 
   private readonly renderChildren = (file: DriveItem | SharedInsight, itemDOM: Element) => {
-    const container = document.createElement('div');
-    const itemListDOM = document.createElement('ul');
-    container.appendChild(itemListDOM);
-    const children = file?.children ?? [];
-    for (const f of children) {
-      const itemDOM = document.createElement('li');
-      // TODO: fix for disambiguation
-      const fileDOM = document.createElement('mgt-file');
-      fileDOM.setAttribute('fileDetails', JSON.stringify(f));
-      fileDOM.setAttribute('view', this.itemView);
-      itemDOM.appendChild(fileDOM);
-      itemListDOM.appendChild(itemDOM);
+    const childrenContainer = this.renderRoot.querySelector(`#file-list-children-${file?.id}`);
+    if (!childrenContainer) {
+      // create and show the children container
+      const container = document.createElement('div');
+      container.setAttribute('id', `file-list-children-${file?.id}`);
+      container.setAttribute('class', 'file-list-children-show');
+
+      const itemListDOM = document.createElement('ul');
+      itemListDOM.setAttribute('class', 'file-list-children');
+      container.appendChild(itemListDOM);
+      const children = file?.children ?? [];
+      for (const f of children) {
+        const li = document.createElement('li');
+        // TODO: fix for disambiguation
+        const fileDOM = document.createElement('mgt-file');
+        fileDOM.setAttribute('fileDetails', JSON.stringify(f));
+        fileDOM.setAttribute('view', this.itemView);
+        // add key down/up on the list
+        li.addEventListener('keydown', this.onFileListKeyDown);
+        li.setAttribute('class', 'file-item');
+        li.appendChild(fileDOM);
+        itemListDOM.appendChild(li);
+      }
+
+      // a11y -  set tabindex on first element
+      itemListDOM.firstElementChild.setAttribute('tabindex', '0');
+      itemListDOM.firstElementChild.setAttribute('focus', '0');
+      this._focusedItemIndex = 0;
+      itemDOM.after(container);
+    } else {
+      // toggle to show/hide the children container
+      if (childrenContainer.classList.contains('file-list-children-hide')) {
+        childrenContainer.setAttribute('class', 'file-list-children-show');
+      } else {
+        childrenContainer.setAttribute('class', 'file-list-children-hide');
+      }
     }
-    // TODO: fix for display and hiding
-    itemDOM.appendChild(container);
   };
 
   /**
