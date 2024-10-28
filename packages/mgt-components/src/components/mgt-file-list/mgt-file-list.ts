@@ -516,6 +516,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
           class="file-list"
         >
           <li
+            id="file-list-item-${this.files[0].id}"
             tabindex="0"
             class="file-item"
             @keydown="${this.onFileListKeyDown}"
@@ -528,6 +529,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
             f => f.id,
             f => html`
               <li
+                id="file-list-item-${f.id}"
                 class="file-item"
                 @keydown="${this.onFileListKeyDown}"
                 @click=${(e: UIEvent) => this.handleItemSelect(f, e)}>
@@ -822,6 +824,18 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
         this.files = files;
       }
     }
+    for (const file of this.files) {
+      if (file?.folder?.childCount > 0) {
+        // expand the file with children
+        const driveId = file?.parentReference?.driveId;
+        const itemId = file?.id;
+        const iterator = await getDriveFilesByIdIterator(graph, driveId, itemId, 5);
+        if (iterator) {
+          const children = [...iterator.value];
+          file.children = children;
+        }
+      }
+    }
   }
 
   /**
@@ -895,12 +909,44 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
   }
 
   private readonly handleFileClick = (file: DriveItem | SharedInsight, e?: MouseEvent) => {
+    const hasChildFolders = file?.folder?.childCount > 0 && file?.children;
+    // the item has child folders, on click should get the child folders and render them
+    if (hasChildFolders) {
+      this.showChildren(file, e);
+      return;
+    }
+
     if (e && isSharedInsight(file) && file.resourceReference?.webUrl && !this.disableOpenOnClick) {
       e.preventDefault();
       window.open(file.resourceReference.webUrl, '_blank', 'noreferrer');
     } else if (!isSharedInsight(file) && file?.webUrl && !this.disableOpenOnClick) {
       window.open(file.webUrl, '_blank', 'noreferrer');
     }
+  };
+
+  private readonly showChildren = (file: DriveItem | SharedInsight, e?: MouseEvent) => {
+    const itemDOM = this.renderRoot.querySelector(`#file-list-item-${file.id}`);
+    if (itemDOM) {
+      this.renderChildren(file, itemDOM);
+    }
+  };
+
+  private readonly renderChildren = (file: DriveItem | SharedInsight, itemDOM: Element) => {
+    const container = document.createElement('div');
+    const itemListDOM = document.createElement('ul');
+    container.appendChild(itemListDOM);
+    const children = file?.children ?? [];
+    for (const f of children) {
+      const itemDOM = document.createElement('li');
+      // TODO: fix for disambiguation
+      const fileDOM = document.createElement('mgt-file');
+      fileDOM.setAttribute('fileDetails', JSON.stringify(f));
+      fileDOM.setAttribute('view', this.itemView);
+      itemDOM.appendChild(fileDOM);
+      itemListDOM.appendChild(itemDOM);
+    }
+    // TODO: fix for display and hiding
+    itemDOM.appendChild(container);
   };
 
   /**
