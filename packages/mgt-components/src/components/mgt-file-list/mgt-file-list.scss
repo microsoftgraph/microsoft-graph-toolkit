@@ -26,6 +26,10 @@ $show-more-button-border-bottom-left-radius: var(
 );
 $progress-ring-size: var(--progress-ring-size, 24px);
 
+@mixin nested-file-list($margin: 0) {
+  margin-inline-start: calc(#{$margin} * 2);
+}
+
 :host {
   font-size: $font-size;
 
@@ -61,7 +65,7 @@ $progress-ring-size: var(--progress-ring-size, 24px);
     .file-list-children {
       &-show {
         display: block;
-        margin-inline-start: calc($file-list-margin + 32px);
+        @include nested-file-list(16px);
 
         ul {
           list-style: none;

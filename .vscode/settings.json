@@ -19,7 +19,7 @@
   "stylelint.packageManager": "yarn",
   "stylelint.snippet": ["css", "less", "postcss", "scss"],
   "stylelint.validate": ["css", "less", "postcss", "scss"],
-  "cSpell.words": ["mailenabledsecurity"],
+  "cSpell.words": ["mailenabledsecurity", "noreferrer"],
   "liveServer.settings.root": "storybook-static",
   "liveServer.settings.port": 6006
 }

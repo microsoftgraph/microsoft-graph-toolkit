@@ -11,7 +11,8 @@ import {
   ProviderState,
   mgtHtml,
   MgtTemplatedTaskComponent,
-  registerComponent
+  registerComponent,
+  customElementHelper
 } from '@microsoft/mgt-element';
 import { DriveItem, SharedInsight } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
@@ -589,7 +590,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
       : null;
 
     return html`
-      <div class="shared_insight_file" @click=${(e: MouseEvent) => this.handleFileClick(file, e)} tabindex="0">
+      <div class="shared_insight_file" @click=${(e: MouseEvent) => this.handleSharedInsightClick(file, e)} tabindex="0">
         <div class="shared_insight_file__icon">
           <img alt="${file.resourceVisualization.title}" src=${getFileTypeIconUri(
             file.resourceVisualization.type,
@@ -667,9 +668,9 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
    * @param event
    */
   private readonly onFileListKeyDown = (event: KeyboardEvent): void => {
-    console.log(event.target);
+    const target = event.target as HTMLElement;
     let fileList: HTMLElement;
-    if (!event.target.classList) {
+    if (!target.classList) {
       fileList = this.renderRoot.querySelector('.file-list-children');
     } else {
       fileList = this.renderRoot.querySelector('.file-list');
@@ -677,7 +678,6 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
     let focusedItem: HTMLElement;
 
     if (!fileList?.children.length) {
-      console.log('no children for ', fileList);
       return;
     }
 
@@ -915,57 +915,42 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
     this.requestUpdate();
   }
 
-  private readonly handleFileClick = (file: DriveItem | SharedInsight, e?: MouseEvent) => {
+  private readonly handleSharedInsightClick = (file: SharedInsight, e?: MouseEvent) => {
+    if (file.resourceReference?.webUrl && !this.disableOpenOnClick) {
+      e.preventDefault();
+      window.open(file.resourceReference.webUrl, '_blank', 'noreferrer');
+    }
+  };
+
+  private readonly handleFileClick = (file: DriveItem) => {
     const hasChildFolders = file?.folder?.childCount > 0 && file?.children;
     // the item has child folders, on click should get the child folders and render them
     if (hasChildFolders) {
-      this.showChildren(file, e);
+      this.showChildren(file.id);
       return;
     }
 
-    if (e && isSharedInsight(file) && file.resourceReference?.webUrl && !this.disableOpenOnClick) {
-      e.preventDefault();
-      window.open(file.resourceReference.webUrl, '_blank', 'noreferrer');
-    } else if (!isSharedInsight(file) && file?.webUrl && !this.disableOpenOnClick) {
+    if (file?.webUrl && !this.disableOpenOnClick) {
       window.open(file.webUrl, '_blank', 'noreferrer');
     }
   };
 
-  private readonly showChildren = (file: DriveItem | SharedInsight, e?: MouseEvent) => {
-    const itemDOM = this.renderRoot.querySelector(`#file-list-item-${file.id}`);
-    this.renderChildren(file, itemDOM);
+  private readonly showChildren = (fileId: string) => {
+    const itemDOM = this.renderRoot.querySelector(`#file-list-item-${fileId}`);
+    this.renderChildren(fileId, itemDOM);
   };
 
-  private readonly renderChildren = (file: DriveItem | SharedInsight, itemDOM: Element) => {
-    const childrenContainer = this.renderRoot.querySelector(`#file-list-children-${file?.id}`);
+  private readonly renderChildren = (itemId: string, itemDOM: Element) => {
+    const fileListName = customElementHelper.isDisambiguated
+      ? `${customElementHelper.prefix}-file-list`
+      : 'mgt-file-list';
+    const childrenContainer = this.renderRoot.querySelector(`#file-list-children-${itemId}`);
     if (!childrenContainer) {
-      // create and show the children container
-      const container = document.createElement('div');
-      container.setAttribute('id', `file-list-children-${file?.id}`);
-      container.setAttribute('class', 'file-list-children-show');
-
-      const itemListDOM = document.createElement('ul');
-      itemListDOM.setAttribute('class', 'file-list-children');
-      container.appendChild(itemListDOM);
-      const children = file?.children ?? [];
-      for (const f of children) {
-        const li = document.createElement('li');
-        // TODO: fix for disambiguation
-        const fileDOM = document.createElement('mgt-file');
-        fileDOM.setAttribute('fileDetails', JSON.stringify(f));
-        fileDOM.setAttribute('view', this.itemView);
-        // add key down/up on the list
-        li.addEventListener('keydown', this.onFileListKeyDown);
-        li.setAttribute('class', 'file-item');
-        li.appendChild(fileDOM);
-        itemListDOM.appendChild(li);
-      }
-
-      // a11y -  set tabindex on first element
-      itemListDOM.firstElementChild.setAttribute('tabindex', '0');
-      itemListDOM.firstElementChild.setAttribute('focus', '0');
-      this._focusedItemIndex = 0;
-      itemDOM.after(container);
+      const fl = document.createElement(fileListName);
+      fl.setAttribute('item-id', itemId);
+      fl.setAttribute('id', `file-list-children-${itemId}`);
+      fl.setAttribute('class', 'file-list-children-show');
+      itemDOM.after(fl);
     } else {
       // toggle to show/hide the children container
       if (childrenContainer.classList.contains('file-list-children-hide')) {
