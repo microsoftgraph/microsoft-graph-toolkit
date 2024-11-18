@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.3.0...v4.4.0) (2024-11-18)
+
+
+### Features
+
+* display the children in a folder for a file list ([#3339](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3339)) ([1afd741](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/1afd7417d511ac8ef394eabc2181a1721d31ae4c))
+
+
+### Bug Fixes
+
+* fire logout completed on logout ([#3332](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3332)) ([e2edc88](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/e2edc883103c50a99b5acfc8d2f7d8f44028adf3))
+
 ## [4.3.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.5...v4.3.0) (2024-10-03)
 
 
