@@ -26,6 +26,10 @@ $show-more-button-border-bottom-left-radius: var(
 );
 $progress-ring-size: var(--progress-ring-size, 24px);
 
+@mixin nested-file-list($margin: 0) {
+  margin-inline-start: calc(#{$margin} * 2);
+}
+
 :host {
   font-size: $font-size;
 
@@ -58,6 +62,25 @@ $progress-ring-size: var(--progress-ring-size, 24px);
     flex-direction: column;
     list-style: none;
 
+    .file-list-children {
+      &-show {
+        display: block;
+        @include nested-file-list(16px);
+
+        ul {
+          list-style: none;
+
+          li {
+            padding: 8px 0;
+          }
+        }
+      }
+
+      &-hide {
+        display: none;
+      }
+    }
+
     .file-item {
       cursor: pointer;
       border-radius: var(--file-border-radius);
@@ -76,6 +99,10 @@ $progress-ring-size: var(--progress-ring-size, 24px);
         --file-padding-inline-start: 24px;
         --file-border-radius: 2px;
         --file-background-color: var(--file-item-background-color, var(--neutral-layer-1));
+      }
+
+      .file-list-children {
+        background-color: beige;
       }
     }
   }

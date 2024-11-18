@@ -102,60 +102,38 @@ export const openFolderBreadcrumbs = () => html`
     <ul class="breadcrumb" id="nav">
       <li><a id="home">Files</a></li>
     </ul>
-    <mgt-file-list></mgt-file-list>
+    <mgt-file-list id="parent-file-list"></mgt-file-list>
 
     <script type="module">
-      const fileList = document.querySelector('mgt-file-list');
+      const fileList = document.getElementById('parent-file-list');
       const nav = document.getElementById('nav');
-      const home = document.getElementById('home');
-
-      let homeListId;
-      if (fileList.itemId) {
-        homeListId = fileList.itemId;
-      } else {
-        homeListId = null;
-      }
-
-      // handle default file list menu item
-      home.addEventListener('click', e => {
-        fileList.itemId = homeListId;
-        removeListItems(1);
-      });
 
       // handle create and remove menu items
       fileList.addEventListener('itemClick', e => {
         if (e.detail && e.detail.folder) {
           const id = e.detail.id;
           const name = e.detail.name;
+          const breadcrumbId = "breadcrumb-"+ id;
 
-          // render new file list
-          fileList.itemId = id;
-
-          // create breadcrumb menu item
-          const li = document.createElement('li');
-          const a = document.createElement('a');
-          li.setAttribute('id', id);
-          a.appendChild(document.createTextNode(name));
-          li.appendChild(a);
-          nav.appendChild(li);
-
-          // remove breadcrumb menu items and render file list based on clicked item
-          a.addEventListener('click', e => {
-            const nodes = Array.from(nav.children);
-            const index = nodes.indexOf(li);
-            if (e.target) {
-              removeListItems(index + 1);
-              fileList.itemId = li.id;
+          // check if it is set
+          const breadcrumbSet = document.getElementById(breadcrumbId);
+          if (!breadcrumbSet) {
+            // create breadcrumb menu item
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            li.setAttribute('id', breadcrumbId);
+            a.appendChild(document.createTextNode(name));
+            li.appendChild(a);
+            if (nav.children.length > 1){
+              const firstBreadcrumb = nav.children[0];
+              nav.replaceChildren(firstBreadcrumb);
             }
-          });
+            nav.appendChild(li);
+          } else {
+            breadcrumbSet.remove();
+            
+          }
         }
       });
-
-      // remove li of ul where index is larger than n
-      function removeListItems(n) {
-        while (nav.getElementsByTagName('li').length > n) {
-          nav.removeChild(nav.lastChild);
-        }
-      }
     </script>
   `;

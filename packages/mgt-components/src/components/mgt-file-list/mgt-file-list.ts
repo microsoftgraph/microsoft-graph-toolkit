@@ -11,7 +11,8 @@ import {
   ProviderState,
   mgtHtml,
   MgtTemplatedTaskComponent,
-  registerComponent
+  registerComponent,
+  customElementHelper
 } from '@microsoft/mgt-element';
 import { DriveItem, SharedInsight } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
@@ -516,6 +517,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
           class="file-list"
         >
           <li
+            id="file-list-item-${this.files[0].id}"
             tabindex="0"
             class="file-item"
             @keydown="${this.onFileListKeyDown}"
@@ -528,6 +530,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
             f => f.id,
             f => html`
               <li
+                id="file-list-item-${f.id}"
                 class="file-item"
                 @keydown="${this.onFileListKeyDown}"
                 @click=${(e: UIEvent) => this.handleItemSelect(f, e)}>
@@ -587,7 +590,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
       : null;
 
     return html`
-      <div class="shared_insight_file" @click=${(e: MouseEvent) => this.handleFileClick(file, e)} tabindex="0">
+      <div class="shared_insight_file" @click=${(e: MouseEvent) => this.handleSharedInsightClick(file, e)} tabindex="0">
         <div class="shared_insight_file__icon">
           <img alt="${file.resourceVisualization.title}" src=${getFileTypeIconUri(
             file.resourceVisualization.type,
@@ -665,7 +668,13 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
    * @param event
    */
   private readonly onFileListKeyDown = (event: KeyboardEvent): void => {
-    const fileList = this.renderRoot.querySelector('.file-list');
+    const target = event.target as HTMLElement;
+    let fileList: HTMLElement;
+    if (!target.classList) {
+      fileList = this.renderRoot.querySelector('.file-list-children');
+    } else {
+      fileList = this.renderRoot.querySelector('.file-list');
+    }
     let focusedItem: HTMLElement;
 
     if (!fileList?.children.length) {
@@ -822,6 +831,18 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
         this.files = files;
       }
     }
+    for (const file of this.files) {
+      if (file?.folder?.childCount > 0) {
+        // expand the file with children
+        const driveId = file?.parentReference?.driveId;
+        const itemId = file?.id;
+        const iterator = await getDriveFilesByIdIterator(graph, driveId, itemId, 5);
+        if (iterator) {
+          const children = [...iterator.value];
+          file.children = children;
+        }
+      }
+    }
   }
 
   /**
@@ -894,12 +915,49 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
     this.requestUpdate();
   }
 
-  private readonly handleFileClick = (file: DriveItem | SharedInsight, e?: MouseEvent) => {
-    if (e && isSharedInsight(file) && file.resourceReference?.webUrl && !this.disableOpenOnClick) {
+  private readonly handleSharedInsightClick = (file: SharedInsight, e?: MouseEvent) => {
+    if (file.resourceReference?.webUrl && !this.disableOpenOnClick) {
       e.preventDefault();
       window.open(file.resourceReference.webUrl, '_blank', 'noreferrer');
-    } else if (!isSharedInsight(file) && file?.webUrl && !this.disableOpenOnClick) {
+    }
+  };
+
+  private readonly handleFileClick = (file: DriveItem) => {
+    const hasChildFolders = file?.folder?.childCount > 0 && file?.children;
+    // the item has child folders, on click should get the child folders and render them
+    if (hasChildFolders) {
+      this.showChildren(file.id);
+      return;
+    }
+
+    if (file?.webUrl && !this.disableOpenOnClick) {
       window.open(file.webUrl, '_blank', 'noreferrer');
+    }
+  };
+
+  private readonly showChildren = (fileId: string) => {
+    const itemDOM = this.renderRoot.querySelector(`#file-list-item-${fileId}`);
+    this.renderChildren(fileId, itemDOM);
+  };
+
+  private readonly renderChildren = (itemId: string, itemDOM: Element) => {
+    const fileListName = customElementHelper.isDisambiguated
+      ? `${customElementHelper.prefix}-file-list`
+      : 'mgt-file-list';
+    const childrenContainer = this.renderRoot.querySelector(`#file-list-children-${itemId}`);
+    if (!childrenContainer) {
+      const fl = document.createElement(fileListName);
+      fl.setAttribute('item-id', itemId);
+      fl.setAttribute('id', `file-list-children-${itemId}`);
+      fl.setAttribute('class', 'file-list-children-show');
+      itemDOM.after(fl);
+    } else {
+      // toggle to show/hide the children container
+      if (childrenContainer.classList.contains('file-list-children-hide')) {
+        childrenContainer.setAttribute('class', 'file-list-children-show');
+      } else {
+        childrenContainer.setAttribute('class', 'file-list-children-hide');
+      }
     }
   };
 
