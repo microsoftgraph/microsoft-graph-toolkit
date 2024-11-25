@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt-element",
-  "version": "4.2.5",
+  "version": "4.4.0",
   "description": "Microsoft Graph Toolkit base classes",
   "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
   "bugs": {
@@ -33,7 +33,7 @@
   "sideEffects": false,
   "dependencies": {
     "@lit/task": "^1.0.0",
-    "@microsoft/microsoft-graph-client": "3.0.2",
+    "@microsoft/microsoft-graph-client": "3.0.7",
     "idb": "8.0.0",
     "lit": "^3.1.2"
   },

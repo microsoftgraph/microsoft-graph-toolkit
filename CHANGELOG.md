@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.3.0...v4.4.0) (2024-11-18)
+
+
+### Features
+
+* display the children in a folder for a file list ([#3339](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3339)) ([1afd741](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/1afd7417d511ac8ef394eabc2181a1721d31ae4c))
+
+
+### Bug Fixes
+
+* fire logout completed on logout ([#3332](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3332)) ([e2edc88](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/e2edc883103c50a99b5acfc8d2f7d8f44028adf3))
+
+## [4.3.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.5...v4.3.0) (2024-10-03)
+
+
+### Features
+
+* display only selected person in people-picker single selection mode ([#3327](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3327)) ([b4d8c0c](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/b4d8c0c7dae7cb01e3091a84a346e4fe8f2835e3))
+
+
+### Bug Fixes
+
+* handle popup login errors ([#3290](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3290)) ([76a013d](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/76a013d7d1f5fb095b4e5387b7215356fdf811be))
+* mgt-people-picker flyout protruding issue ([#3330](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3330)) ([ea37cbf](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/ea37cbfd65b53082fe19c3fef7bfc088499bb85e))
+* render people-picker flyout inside window ([#3326](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3326)) ([5a11252](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/5a112522c55cbea3622a611aad319a384af2bf1e))
+* render person-card inside parent container ([#3324](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3324)) ([ae49332](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/ae49332876d428b3b2da53147f8ceaeaa7a8b3c5))
+* show max while picking multiple groups ([#3289](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3289)) ([d2add09](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/d2add09ae110247d421034cb86d0186342ea2c71))
+
 ## [4.2.5](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.2.4...v4.2.5) (2024-09-04)
 
 
