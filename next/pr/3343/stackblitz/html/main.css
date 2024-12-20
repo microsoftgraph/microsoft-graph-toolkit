@@ -1,0 +1,13 @@
+body {
+  background-color: var(--fill-color);
+  color: var(--neutral-foreground-rest);
+  font-family: var(--body-font);
+  padding: 0 12px;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 0 0 12px 0;
+}
