@@ -150,6 +150,7 @@
   },
   "packageManager": "yarn@4.1.0",
   "resolutions": {
-    "ws": "8.17.1"
+    "ws": "8.17.1",
+    "@microsoft/fast-foundation": "2.49.6"
   }
 }

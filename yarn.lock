@@ -5041,7 +5041,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/fast-foundation@npm:^2.49.6":
+"@microsoft/fast-foundation@npm:2.49.6":
   version: 2.49.6
   resolution: "@microsoft/fast-foundation@npm:2.49.6"
   dependencies:
