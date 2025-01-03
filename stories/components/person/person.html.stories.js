@@ -36,6 +36,10 @@ export const events = () => html`
 
   <script>
   const person = document.querySelector('mgt-person');
+  person.addEventListener('updated', e => {
+      console.log('updated', e);
+  });
+
   person.addEventListener('line1clicked', e => {
       const output = document.querySelector('.output');
 

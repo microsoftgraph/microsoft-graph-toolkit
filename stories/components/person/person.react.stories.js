@@ -82,6 +82,10 @@ export const events = () => html`
     import { Person, IDynamicPerson } from '@microsoft/mgt-react';
 
     export default () => {
+      const onUpdated = useCallback((e: CustomEvent<null>) => {
+        console.log('component updated', e);
+      }, []);
+
       const onLineClicked = useCallback((e: CustomEvent<IDynamicPerson>) => {
         console.log(e.detail);
       }, []);
@@ -90,6 +94,7 @@ export const events = () => html`
         <Person
           personQuery="me"
           view="fourlines"
+          updated={onUpdated}
           line1clicked={onLineClicked}
           line2clicked={onLineClicked}
           line3clicked={onLineClicked}
