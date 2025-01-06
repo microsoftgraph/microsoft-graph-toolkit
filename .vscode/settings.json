@@ -21,5 +21,8 @@
   "stylelint.validate": ["css", "less", "postcss", "scss"],
   "cSpell.words": ["mailenabledsecurity", "noreferrer"],
   "liveServer.settings.root": "storybook-static",
-  "liveServer.settings.port": 6006
+  "liveServer.settings.port": 6006,
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }

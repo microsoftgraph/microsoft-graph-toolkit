@@ -22,9 +22,10 @@ export const schemas = {
       users: 'users',
       usersQuery: 'usersQuery',
       userFilters: 'userFilters',
-      cardState: 'cardState'
+      cardState: 'cardState',
+      hashedUsers: 'hashedUsers',
     },
-    version: 4
+    version: 5
   },
   photos: {
     name: 'photos',

@@ -85,7 +85,7 @@ export const getUsers = async (graph: IGraph, userFilters = '', top = 10): Promi
     }
     return response.value;
     // eslint-disable-next-line no-empty
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const allValidMeScopes = ['User.Read', 'User.ReadWrite'];
@@ -172,7 +172,7 @@ export const getUser = async (graph: IGraph, userPrincipleName: string, requeste
   try {
     response = (await graph.api(apiString).middlewareOptions(prepScopes(validUserByIdScopes)).get()) as User;
     // eslint-disable-next-line no-empty
-  } catch (_) {}
+  } catch (_) { }
 
   if (getIsUsersCacheEnabled()) {
     await cache.putValue(userPrincipleName, { user: JSON.stringify(response) });
@@ -431,7 +431,7 @@ export const findUsers = async (graph: IGraph, query: string, top = 10, userFilt
   try {
     graphResult = (await graphBuilder.top(top).middlewareOptions(prepScopes(scopes)).get()) as CollectionResponse<User>;
     // eslint-disable-next-line no-empty
-  } catch {}
+  } catch { }
 
   if (getIsUsersCacheEnabled() && graphResult) {
     item.results = graphResult.value.map(userStr => JSON.stringify(userStr));
