@@ -6,7 +6,7 @@
     "sourceRoot": "src",
     "rootDir": "src",
     "composite": true,
-    "lib": ["dom", "es5", "DOM.Iterable"]
+    "lib": ["dom", "es5", "DOM.Iterable", "WebWorker"]
   },
   "references": [{ "path": "../mgt-element" }],
   "include": ["src"],
