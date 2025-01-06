@@ -57,6 +57,7 @@ import { registerComponent } from '@microsoft/mgt-element';
 import { registerMgtSpinnerComponent } from '../sub-components/mgt-spinner/mgt-spinner';
 import { isGraphError } from '../../graph/isGraphError';
 import { type PersonCardInteraction, personCardConverter } from './../PersonCardInteraction';
+import { GraphWeb } from '../../utils/GraphWeb';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType, UserType } from '../../graph/graph.people';
@@ -501,6 +502,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    * List of people found from the graph calls.
    */
   @state() private _foundPeople: IDynamicPerson[];
+  private readonly webWorker = new GraphWeb();
 
   constructor() {
     super();
@@ -509,6 +511,12 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
     this.addEventListener('cut', this.handleCut);
     this.addEventListener('paste', this.handlePaste);
     this.addEventListener('selectionChanged', this.handleSelectionChanged);
+  }
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    console.log('userIds', this.userIds);
+    this.webWorker.getUsersForUserIds(this.userIds, this.userFilters);
   }
 
   /**
