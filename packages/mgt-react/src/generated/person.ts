@@ -37,12 +37,12 @@ export type PersonProps = {
 	line4Property?: string;
 	view?: ViewType;
 	templateContext?: TemplateContext;
-	updated?: (e: CustomEvent<null>) => void;
 	line1clicked?: (e: CustomEvent<IDynamicPerson>) => void;
 	line2clicked?: (e: CustomEvent<IDynamicPerson>) => void;
 	line3clicked?: (e: CustomEvent<IDynamicPerson>) => void;
 	line4clicked?: (e: CustomEvent<IDynamicPerson>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const Person = wrapMgt<PersonProps>('person', registerMgtPersonComponent);

@@ -27,6 +27,7 @@ export type LoginProps = {
 	logoutInitiated?: (e: CustomEvent<undefined>) => void;
 	logoutCompleted?: (e: CustomEvent<undefined>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const Login = wrapMgt<LoginProps>('login', registerMgtLoginComponent);

@@ -26,6 +26,7 @@ export type AgendaProps = {
 	preferredTimezone?: string;
 	templateContext?: TemplateContext;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const Agenda = wrapMgt<AgendaProps>('agenda', registerMgtAgendaComponent);

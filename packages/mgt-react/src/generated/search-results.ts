@@ -34,6 +34,7 @@ export type SearchResultsProps = {
 	templateContext?: TemplateContext;
 	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const SearchResults = wrapMgt<SearchResultsProps>('search-results', registerMgtSearchResultsComponent);

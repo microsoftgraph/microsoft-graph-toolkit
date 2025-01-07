@@ -30,6 +30,7 @@ export type PersonCardProps = {
 	templateContext?: TemplateContext;
 	expanded?: (e: CustomEvent<null>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const PersonCard = wrapMgt<PersonCardProps>('person-card', registerMgtPersonCardComponent);

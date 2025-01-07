@@ -39,6 +39,7 @@ export type FileListProps = {
 	templateContext?: TemplateContext;
 	itemClick?: (e: CustomEvent<MicrosoftGraph.DriveItem>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const FileList = wrapMgt<FileListProps>('file-list', registerMgtFileListComponent);

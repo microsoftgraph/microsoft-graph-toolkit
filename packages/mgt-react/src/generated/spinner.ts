@@ -14,7 +14,9 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
 
-type SpinnerProps = Record<string, never>
+export type SpinnerProps = {
+	updated?: (e: CustomEvent<undefined>) => void;
+}
 
 export const Spinner = wrapMgt<SpinnerProps>('spinner', registerMgtSpinnerComponent);
 

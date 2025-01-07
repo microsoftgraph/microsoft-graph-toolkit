@@ -33,6 +33,7 @@ export type PlannerProps = {
 	taskClick?: (e: CustomEvent<ITask>) => void;
 	taskRemoved?: (e: CustomEvent<ITask>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const Planner = wrapMgt<PlannerProps>('planner', registerMgtPlannerComponent);

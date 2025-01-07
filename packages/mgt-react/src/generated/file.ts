@@ -36,6 +36,7 @@ export type FileProps = {
 	view?: ViewType;
 	templateContext?: TemplateContext;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const File = wrapMgt<FileProps>('file', registerMgtFileComponent);

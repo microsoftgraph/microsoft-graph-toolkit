@@ -19,6 +19,7 @@ export type SearchBoxProps = {
 	searchTerm?: string;
 	debounceDelay?: number;
 	searchTermChanged?: (e: CustomEvent<string>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const SearchBox = wrapMgt<SearchBoxProps>('search-box', registerMgtSearchBoxComponent);
