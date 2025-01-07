@@ -28,8 +28,8 @@ export type PickerProps = {
 	selectedValue?: string;
 	templateContext?: TemplateContext;
 	selectionChanged?: (e: CustomEvent<any>) => void;
-	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 	updated?: (e: CustomEvent<undefined>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export const Picker = wrapMgt<PickerProps>('picker', registerMgtPickerComponent);

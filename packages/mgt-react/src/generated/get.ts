@@ -27,9 +27,9 @@ export type GetProps = {
 	cacheInvalidationPeriod?: number;
 	response?: any;
 	templateContext?: TemplateContext;
+	updated?: (e: CustomEvent<undefined>) => void;
 	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
-	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const Get = wrapMgt<GetProps>('get', registerMgtGetComponent);

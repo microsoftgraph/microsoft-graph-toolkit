@@ -42,9 +42,9 @@ export type PeoplePickerProps = {
 	ariaLabel?: string;
 	disableSuggestions?: boolean;
 	templateContext?: TemplateContext;
+	updated?: (e: CustomEvent<undefined>) => void;
 	selectionChanged?: (e: CustomEvent<IDynamicPerson[]>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
-	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const PeoplePicker = wrapMgt<PeoplePickerProps>('people-picker', registerMgtPeoplePickerComponent);

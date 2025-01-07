@@ -30,8 +30,8 @@ export type TaxonomyPickerProps = {
 	cacheInvalidationPeriod?: number;
 	templateContext?: TemplateContext;
 	selectionChanged?: (e: CustomEvent<MicrosoftGraph.TermStore.Term>) => void;
-	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 	updated?: (e: CustomEvent<undefined>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export const TaxonomyPicker = wrapMgt<TaxonomyPickerProps>('taxonomy-picker', registerMgtTaxonomyPickerComponent);

@@ -28,12 +28,12 @@ export type PlannerProps = {
 	groupId?: string;
 	taskFilter?: TaskFilter;
 	templateContext?: TemplateContext;
+	updated?: (e: CustomEvent<undefined>) => void;
 	taskAdded?: (e: CustomEvent<ITask>) => void;
 	taskChanged?: (e: CustomEvent<ITask>) => void;
 	taskClick?: (e: CustomEvent<ITask>) => void;
 	taskRemoved?: (e: CustomEvent<ITask>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
-	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const Planner = wrapMgt<PlannerProps>('planner', registerMgtPlannerComponent);

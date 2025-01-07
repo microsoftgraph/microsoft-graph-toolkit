@@ -21,13 +21,13 @@ export type LoginProps = {
 	showPresence?: boolean;
 	loginView?: LoginViewType;
 	templateContext?: TemplateContext;
+	updated?: (e: CustomEvent<undefined>) => void;
 	loginInitiated?: (e: CustomEvent<undefined>) => void;
 	loginCompleted?: (e: CustomEvent<undefined>) => void;
 	loginFailed?: (e: CustomEvent<undefined>) => void;
 	logoutInitiated?: (e: CustomEvent<undefined>) => void;
 	logoutCompleted?: (e: CustomEvent<undefined>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
-	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const Login = wrapMgt<LoginProps>('login', registerMgtLoginComponent);
