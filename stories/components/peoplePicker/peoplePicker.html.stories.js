@@ -24,13 +24,16 @@ export const RTL = () => html`
    </body>
  `;
 
-export const selectionChangedEvent = () => html`
+export const events = () => html`
    <mgt-people-picker></mgt-people-picker>
    <!-- Check the console tab for results -->
    <script>
    document.querySelector('mgt-people-picker').addEventListener('selectionChanged', e => {
      console.log(e.detail)
    });
+   document.querySelector('mgt-people-picker').addEventListener('updated', e => {
+      console.log('updated', e);
+    });
    </script>
  `;
 
