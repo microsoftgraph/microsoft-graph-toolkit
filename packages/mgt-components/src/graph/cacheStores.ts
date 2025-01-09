@@ -24,7 +24,7 @@ export const schemas = {
       userFilters: 'userFilters',
       cardState: 'cardState'
     },
-    version: 4
+    version: 5
   },
   photos: {
     name: 'photos',
@@ -43,7 +43,7 @@ export const schemas = {
       groupPeople: 'groupPeople',
       peopleQuery: 'peopleQuery'
     },
-    version: 3
+    version: 4
   },
   groups: {
     name: 'groups',
@@ -51,7 +51,7 @@ export const schemas = {
       groups: 'groups',
       groupsQuery: 'groupsQuery'
     },
-    version: 5
+    version: 6
   },
   get: {
     name: 'responses',
@@ -65,7 +65,7 @@ export const schemas = {
     stores: {
       responses: 'responses'
     },
-    version: 2
+    version: 3
   },
   files: {
     name: 'files',
