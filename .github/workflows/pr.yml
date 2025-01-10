@@ -28,13 +28,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: OS build details
-        run: lsb_release -a
       - run: npm install -g lerna
       - name: Install node_modules
         run: yarn
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
+        run: sudo apt -y install libasound2 && npx playwright install --with-deps chromium
       - run: node scripts/setVersion.js --next
       - run: yarn build
       - run: yarn lint
