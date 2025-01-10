@@ -28,6 +28,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+      - name: OS build details
+        run: lsb_release -a
       - run: npm install -g lerna
       - name: Install node_modules
         run: yarn
