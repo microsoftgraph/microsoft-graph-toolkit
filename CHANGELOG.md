@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.1](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.4.0...v4.4.1) (2025-01-10)
+
+
+### Bug Fixes
+
+* change group type handling and cache key construction ([#3359](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3359)) ([5e1e4fc](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/5e1e4fc34601e811f79ae860b5a955165293f7aa))
+
 ## [4.4.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.3.0...v4.4.0) (2024-11-18)
 
 
