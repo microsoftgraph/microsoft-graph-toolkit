@@ -6,13 +6,13 @@
  */
 
 import {
-  IGraph,
-  prepScopes,
+  BatchResponse,
   CacheItem,
   CacheService,
   CacheStore,
-  BatchResponse,
-  CollectionResponse
+  CollectionResponse,
+  IGraph,
+  prepScopes
 } from '@microsoft/mgt-element';
 import { Group } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
@@ -26,8 +26,8 @@ const groupTypeValues = ['any', 'unified', 'security', 'mailenabledsecurity', 'd
  * @enum {string}
  */
 export type GroupType = (typeof groupTypeValues)[number];
-export const isGroupType = (value: unknown): value is GroupType =>
-  typeof value === 'string' && groupTypeValues.includes(value as GroupType);
+export const isGroupType = (groupType: string): groupType is (typeof groupTypeValues)[number] =>
+  groupTypeValues.includes(groupType as GroupType);
 export const groupTypeConverter = (value: string, defaultValue: GroupType = 'any'): GroupType =>
   isGroupType(value) ? value : defaultValue;
 
@@ -99,8 +99,9 @@ export const findGroups = async (
   groupTypes: GroupType[] = ['any'],
   groupFilters = ''
 ): Promise<Group[]> => {
+  const groupTypesString = Array.isArray(groupTypes) ? groupTypes.join('+') : JSON.stringify(groupTypes);
   let cache: CacheStore<CacheGroupQuery>;
-  const key = `${query ? query : '*'}*${groupTypes.join('+')}*${groupFilters}:${top}`;
+  const key = `${query ? query : '*'}*${groupTypesString}*${groupFilters}:${top}`;
 
   if (getIsGroupsCacheEnabled()) {
     cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery);
@@ -227,7 +228,8 @@ export const findGroupsFromGroup = async (
   groupTypes: GroupType[] = ['any']
 ): Promise<Group[]> => {
   let cache: CacheStore<CacheGroupQuery>;
-  const key = `${groupId}:${query || '*'}:${groupTypes.join('+')}:${transitive}`;
+  const groupTypesString = Array.isArray(groupTypes) ? groupTypes.join('+') : JSON.stringify(groupTypes);
+  const key = `${groupId}:${query || '*'}:${groupTypesString}:${transitive}`;
 
   if (getIsGroupsCacheEnabled()) {
     cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery);
