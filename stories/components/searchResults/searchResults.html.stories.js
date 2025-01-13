@@ -40,3 +40,23 @@ export const localization = () => html`
   }
   </script>
 `;
+
+export const events = () => html`
+  <mgt-search-results
+    entity-types="driveItem"
+    fetch-thumbnail="true"
+    query-string="contoso">
+  </mgt-search-results>
+  <script>
+    const searchResults = document.querySelector('mgt-search-results');
+    searchResults.addEventListener('updated', (e) => {
+      console.log('updated', e);
+    });
+    searchResults.addEventListener('dataChange', (e) => {
+      console.log('dataChange', e);
+    });
+    searchResults.addEventListener('templateRendered', (e) => {
+      console.log('templateRendered', e);
+    });
+  </script>
+`;

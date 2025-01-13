@@ -25,3 +25,34 @@ export const plannerWithGroupId = () => html`
     Group.ReadWrite.All permissions. Test this component in your tenant.
   -->
 `;
+
+export const events = () => html`
+  <mgt-planner></mgt-planner>
+  <script>
+    const planner = document.querySelector('mgt-planner');
+    planner.addEventListener('updated', (e) => {
+      console.log("Updated", e);
+    });
+
+    planner.addEventListener('taskAdded', (e) => {
+      console.log("Tasks added", e);
+    });
+
+    planner.addEventListener('taskChanged', (e) => {
+      console.log("Tasks changed", e);
+    });
+
+    planner.addEventListener('taskClick', (e) => {
+      console.log("Task clicked", e);
+    });
+
+    planner.addEventListener('taskRemoved', (e) => {
+      console.log("Tasks removed", e);
+    });
+
+    planner.addEventListener('templateRendered', (e) => {
+      console.log("Template Rendered", e);
+    });
+    
+  </script>
+`;

@@ -29,3 +29,16 @@ export const tasksWithInitialId = () => html`
 export const ReadOnly = () => html`
   <mgt-todo read-only></mgt-todo>
 `;
+
+export const events = () => html`
+  <mgt-todo></mgt-todo>
+  <script>
+    const todo = document.querySelector('mgt-todo');
+    todo.addEventListener('updated', (e) => {
+      console.log('updated', e);
+    });
+    todo.addEventListener('templateRendered', (e) => {
+      console.log('templateRendered', e);
+    });
+  </script>
+`;

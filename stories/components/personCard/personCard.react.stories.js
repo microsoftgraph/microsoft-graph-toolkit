@@ -36,15 +36,29 @@ export const events = () => html`
     import { PersonCard } from '@microsoft/mgt-react';
 
     export default () => {
+      const onUpdated = useCallback((e: CustomEvent<undefined>) => {
+        console.log('updated', e);
+      }, []);
+
       const onExpanded = useCallback((e: CustomEvent<null>) => {
         console.log("expanded");
       }, []);
 
-      return <PersonCard personQuery="me" expanded={onExpanded}></PersonCard>;
+      return (
+        <PersonCard 
+        personQuery="me" 
+        updated={onUpdated}
+        expanded={onExpanded}>
+    </PersonCard>
+      );
     };
   </react>
   <script>
     const personCard = document.querySelector('mgt-person-card');
+    personCard.addEventListener('updated', (e) => {
+      console.log("updated", e);
+    });
+
     personCard.addEventListener('expanded', () => {
       console.log("expanded");
     })

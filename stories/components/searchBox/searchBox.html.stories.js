@@ -40,6 +40,9 @@ export const events = () => html`
   <mgt-search-box></mgt-search-box>
   <script>
     const searchBox = document.querySelector('mgt-search-box');
+    searchBox.addEventListener('updated', (e) => {
+      console.log('updated', e);
+    });
     searchBox.addEventListener('searchTermChanged', (e) => {
       console.log(e.detail);
     });

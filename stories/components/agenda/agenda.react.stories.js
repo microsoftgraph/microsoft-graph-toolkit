@@ -90,3 +90,35 @@ export default () => (
 );
 </react>
 `;
+
+export const events = () => html`
+  <mgt-agenda></mgt-agenda>
+  <react>
+    import { Agenda } from '@microsoft/mgt-react';
+
+    export default () => (
+      const onUpdated = (e) => {
+        console.log('updated', e);
+      };
+
+      const onEventClick = (e) => {
+        console.log(e.detail);
+      };
+
+      return(
+        <Agenda
+          updated={onUpdated}
+          eventClick={onEventClick}>
+        </Agenda>
+      );
+    );
+  </react>
+  <script>
+    document.querySelector('mgt-agenda').addEventListener('updated', e => {
+      console.log('updated', e);
+    });
+    document.querySelector('mgt-agenda').addEventListener('eventClick', e => {
+      console.log(e.detail);
+    });
+  </script>
+`;

@@ -205,3 +205,24 @@ softRefreshButton.addEventListener('click', softRefresh)
 hardRefreshButton.addEventListener('click', hardRefresh)
 </script>
 `;
+
+export const events = () => html`
+  <mgt-get resource="/me/messages" scopes="mail.read">
+    <template>
+      <pre>{{ JSON.stringify(value, null, 2) }}</pre>
+    </template>
+  </mgt-get>
+
+  <script>
+    const get = document.querySelector('mgt-get');
+    get.addEventListener('updated', e => {
+      console.log('updated', e);
+    });
+    get.addEventListener('dataChange', e => {
+      console.log('dataChange', e);
+    });
+    get.addEventListener('templateRendered', e => {
+      console.log('templateRendered', e);
+    });
+  </script>
+`;

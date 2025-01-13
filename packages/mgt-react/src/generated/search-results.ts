@@ -32,6 +32,7 @@ export type SearchResultsProps = {
 	cacheInvalidationPeriod?: number;
 	currentPage?: number;
 	templateContext?: TemplateContext;
+	updated?: (e: CustomEvent<undefined>) => void;
 	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }

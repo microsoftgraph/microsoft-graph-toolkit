@@ -51,3 +51,43 @@ export const SetMode = () => html`
     }
   </style>
 `;
+
+export const Events = () => html`
+  <mgt-theme-toggle></mgt-theme-toggle>
+  <react>
+    // Check the console tab for the event to fire
+    import { useCallback } from 'react';
+    import { ThemeToggle } from '@microsoft/mgt-react';
+
+    export default () => {
+      const onUpdated = useCallback((e) => {
+        console.log('updated', e); 
+      });
+
+      const onDarkModeChanged = useCallback((e: CustomEvent<boolean>) => {
+        console.log('darkModeChanged', e); 
+      }
+
+      return (
+        <ThemeToggle
+        updated={onUpdated}
+        darkmodechanged={onDarkModeChanged}>
+      </ThemeToggle>
+      );
+    };
+  </react>
+  <style>
+    body {
+      background-color: var(--fill-color);
+    }
+  </style>
+  <script>
+    const themeToggle = document.querySelector('mgt-theme-toggle');
+    themeToggle.addEventListener('updated', (e) => {
+      console.log('updated', e);
+    });
+    themeToggle.addEventListener('darkmodechanged', (e) => {
+      console.log('darkModeChanged', e);
+    });
+  </script>
+`;

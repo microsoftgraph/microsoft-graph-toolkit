@@ -75,6 +75,7 @@ export const registerMgtPersonComponent = () => {
  * @class MgtPerson
  * @extends {MgtTemplatedComponent}
  *
+ * @fires {CustomEvent<undefined>} updated - Fired when the component is updated
  * @fires {CustomEvent<IDynamicPerson>} line1clicked - Fired when line1 is clicked
  * @fires {CustomEvent<IDynamicPerson>} line2clicked - Fired when line2 is clicked
  * @fires {CustomEvent<IDynamicPerson>} line3clicked - Fired when line3 is clicked
@@ -952,7 +953,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
     }
 
     // if we have more than one line we add the second line
-    if (this.view !== 'oneline') {
+    if (!this.isOneLine()) {
       const text = this.getTextFromProperty(person, this.line2Property);
       if (this.hasTemplate('line2')) {
         // Render the line2 template
@@ -973,7 +974,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
     }
 
     // if we have a third or fourth line we add the third line
-    if (this.view === 'threelines' || this.view === 'fourlines') {
+    if (this.isThreeLines() || this.isFourLines()) {
       const text = this.getTextFromProperty(person, this.line3Property);
       if (this.hasTemplate('line3')) {
         // Render the line3 template
@@ -994,7 +995,7 @@ export class MgtPerson extends MgtTemplatedTaskComponent {
     }
 
     // add the fourth line if necessary
-    if (this.view === 'fourlines') {
+    if (this.isFourLines()) {
       const text = this.getTextFromProperty(person, this.line4Property);
       if (this.hasTemplate('line4')) {
         // Render the line4 template

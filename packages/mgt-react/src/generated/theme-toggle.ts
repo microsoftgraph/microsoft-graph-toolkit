@@ -17,6 +17,7 @@ import {wrapMgt} from '../Mgt';
 export type ThemeToggleProps = {
 	darkModeActive?: boolean;
 	darkmodechanged?: (e: CustomEvent<boolean>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const ThemeToggle = wrapMgt<ThemeToggleProps>('theme-toggle', registerMgtThemeToggleComponent);

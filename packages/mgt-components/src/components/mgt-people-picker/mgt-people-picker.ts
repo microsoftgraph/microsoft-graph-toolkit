@@ -77,6 +77,7 @@ export const registerMgtPeoplePickerComponent = () => {
  * @class MgtPicker
  * @extends {MgtTemplatedTaskComponent}
  *
+ * @fires {CustomEvent<undefined>} updated - Fired when the component is updated
  * @fires {CustomEvent<IDynamicPerson[]>} selectionChanged - Fired when set of selected people changes
  *
  * @cssprop --people-picker-selected-option-background-color - {Color} the background color of the selected person.

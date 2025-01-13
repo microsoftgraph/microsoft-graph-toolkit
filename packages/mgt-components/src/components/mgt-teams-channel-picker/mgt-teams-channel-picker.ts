@@ -51,6 +51,7 @@ export const registerMgtTeamsChannelPickerComponent = () => {
  * @class MgtTeamsChannelPicker
  * @extends {MgtTemplatedTaskComponent}
  *
+ * @fires {CustomEvent<undefined>} updated - Fired when the component is updated
  * @fires {CustomEvent<SelectedChannel | null>} selectionChanged - Fired when the selection changes
  *
  * @cssprop --channel-picker-input-border-color - {Color} Input border color

@@ -42,6 +42,8 @@ export const registerMgtFileComponent = () => registerComponent('file', MgtFile)
  * @class MgtFile
  * @extends {MgtTemplatedComponent}
  *
+ * @fires {CustomEvent<undefined>} updated - Fired when the component is updated
+ *
  * @cssprop --file-type-icon-height - {Length} file type icon height. Default value is 28px.
  * @cssprop --file-border - {String} file item border style. Default value is "1px solid transparent".
  * @cssprop --file-border-radius - {String} the border radius of the file component. Default value is 4px.

@@ -40,13 +40,17 @@ export const getSelectedChannel = () => html`
   </script>
 `;
 
-export const selectionChangedEvent = () => html`
+export const events = () => html`
   <mgt-teams-channel-picker></mgt-teams-channel-picker>
 
   <div class="output">no channel selected</div>
 
   <script>
     const picker = document.querySelector('mgt-teams-channel-picker');
+    picker.addEventListener('updated', e => {
+      console.log('updated', e);
+    });
+    
     picker.addEventListener('selectionChanged', e => {
       const output = document.querySelector('.output');
 

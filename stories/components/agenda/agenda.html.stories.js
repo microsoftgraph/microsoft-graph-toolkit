@@ -25,6 +25,10 @@ export const events = () => html`
   <mgt-agenda></mgt-agenda>
   <script>
     const agenda = document.querySelector('mgt-agenda');
+    agenda.addEventListener('updated', e => {
+      console.log('updated', e);
+    });
+
     agenda.addEventListener('eventClick', (e) => {
       console.log(e.detail);
     })

@@ -33,11 +33,20 @@ export const Events = () => html`
     import { TeamsChannelPicker, SelectedChannel } from '@microsoft/mgt-react';
 
     export default () => {
+      const onUpdated = useCallback((e: CustomEvent<undefined>) => {
+        console.log('updated', e);
+      });
+
       const onSelectionChanged = useCallback((e: CustomEvent<SelectedChannel | null>) => {
         console.log(e.detail);
       }, []);
 
-      return <TeamsChannelPicker selectionChanged={onSelectionChanged}></TeamsChannelPicker>;
+      return (
+        <TeamsChannelPicker 
+        updated={onUpdated}
+        selectionChanged={onSelectionChanged}>
+    </TeamsChannelPicker>
+      );
     };
   </react>
   <script>

@@ -21,6 +21,7 @@ export type LoginProps = {
 	showPresence?: boolean;
 	loginView?: LoginViewType;
 	templateContext?: TemplateContext;
+	updated?: (e: CustomEvent<undefined>) => void;
 	loginInitiated?: (e: CustomEvent<undefined>) => void;
 	loginCompleted?: (e: CustomEvent<undefined>) => void;
 	loginFailed?: (e: CustomEvent<undefined>) => void;

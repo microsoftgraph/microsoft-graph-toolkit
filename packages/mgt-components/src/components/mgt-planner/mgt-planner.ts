@@ -73,6 +73,7 @@ export const registerMgtPlannerComponent = () => {
  * @class MgtPlanner
  * @extends {MgtBaseComponent}
  *
+ * @fires {CustomEvent<undefined>} updated - Fired when the component is updated
  * @fires {CustomEvent<ITask>} taskAdded - Fires when a new task has been created.
  * @fires {CustomEvent<ITask>} taskChanged - Fires when task metadata has been changed, such as marking completed.
  * @fires {CustomEvent<ITask>} taskClick - Fires when the user clicks or taps on a task.

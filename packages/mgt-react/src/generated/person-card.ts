@@ -28,6 +28,7 @@ export type PersonCardProps = {
 	showPresence?: boolean;
 	personPresence?: MicrosoftGraph.Presence;
 	templateContext?: TemplateContext;
+	updated?: (e: CustomEvent<undefined>) => void;
 	expanded?: (e: CustomEvent<null>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }

@@ -41,5 +41,8 @@ export const events = () => html`
     document.querySelector('mgt-picker').addEventListener('selectionChanged', e => {
       console.log('selectedItem:', e.detail);
     });
+    document.querySelector('mgt-picker').addEventListener('updated', e => {
+      console.log('updated', e);
+    });
   </script>
 `;

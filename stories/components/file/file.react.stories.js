@@ -24,3 +24,32 @@ export const file = () => html`
     );
   </react>
 `;
+
+export const events = () => html`
+  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
+ 
+  <react>
+    import { useCallback } from 'react';
+    import { File } from '@microsoft/mgt-react';
+
+    export default () => {
+      const onUpdated = useCallback((e) => {
+        console.log('updated', e);
+      }, []);
+
+      return (
+        <File 
+        fileQuery='/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2' 
+        updated={onUpdated}>
+    </File>
+      );
+    };
+  </react>
+
+  <script>
+    const file = document.querySelector('mgt-file');
+    file.addEventListener('updated', e => {
+      console.log('updated', e);
+    });
+  </script>
+`;
