@@ -151,6 +151,7 @@
   "packageManager": "yarn@4.1.0",
   "resolutions": {
     "ws": "8.17.1",
-    "@microsoft/fast-foundation": "2.49.6"
+    "@microsoft/fast-foundation": "2.49.6",
+    "playwright": "1.49.1"
   }
 }
