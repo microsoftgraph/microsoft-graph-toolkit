@@ -32,7 +32,7 @@ jobs:
       - name: Install node_modules
         run: yarn
       - name: Install Playwright Browsers
-        run: yarn playwright install --with-deps --no-shell chromium
+        run: yarn playwright install --with-deps chromium
       - name: Show playwright installs
         run: ls /home/runner/.cache/ms-playwright
       - run: node scripts/setVersion.js --next
