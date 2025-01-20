@@ -33,6 +33,8 @@ jobs:
         run: yarn
       - name: Install Playwright Browsers
         run: yarn playwright install --with-deps --no-shell chromium
+      - name: Show playwright installs
+        run: ls /home/runner/.cache/ms-playwright
       - run: node scripts/setVersion.js --next
       - run: yarn build
       - run: yarn lint
