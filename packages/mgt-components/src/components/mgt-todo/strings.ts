@@ -24,5 +24,6 @@ export const strings = {
   newTaskDateInputLabel: 'New Task Date Input',
   changeTaskDateInputLabel: 'Change Task Date Input',
   newTaskNameInputLabel: 'New Task Name Input',
-  cancelAddingTask: 'Cancel adding a new task'
+  cancelAddingTask: 'Cancel adding a new task',
+  taskNameCheckboxLabel: 'Task Name Checkbox'
 };

@@ -206,6 +206,7 @@ export class MgtTodo extends MgtTasksBase {
       ? html`
         <fluent-checkbox
           class="task-add-icon"
+          aria-label="${this.strings.newTaskPlaceholder}"
           @click="${this.addTask}">
         </fluent-checkbox>
       `
@@ -393,6 +394,7 @@ export class MgtTodo extends MgtTasksBase {
           id=${task.id} 
           class=${checkboxClasses}
           ?checked=${isCompleted}
+          aria-label=${this.strings.taskNameCheckboxLabel}
           @click="${() => this.handleTaskCheckClick(task)}"
           @keydown="${(e: KeyboardEvent) => this.handleTaskCheckKeydown(e, task)}"
         >
