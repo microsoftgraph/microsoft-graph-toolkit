@@ -40,6 +40,9 @@ export const events = () => html`
     personCard.addEventListener('expanded', () => {
       console.log("expanded");
     })
+    personCard.addEventListener('updated', (e) => {
+      console.log("updated", e);
+    });
   </script>
 `;
 

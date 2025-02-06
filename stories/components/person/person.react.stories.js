@@ -82,19 +82,42 @@ export const events = () => html`
     import { Person, IDynamicPerson } from '@microsoft/mgt-react';
 
     export default () => {
+      const onUpdated = useCallback((e: CustomEvent<undefined>) => {
+        console.log('component updated', e);
+      }, []);
+
       const onLineClicked = useCallback((e: CustomEvent<IDynamicPerson>) => {
         console.log(e.detail);
       }, []);
 
       return (
         <Person
-          personQuery="me"
-          view="fourlines"
-          line1clicked={onLineClicked}
-          line2clicked={onLineClicked}
-          line3clicked={onLineClicked}
-          line4clicked={onLineClicked}></Person>
+        personQuery="me"
+        view="fourlines"
+        updated={onUpdated}
+        line1clicked={onLineClicked}
+        line2clicked={onLineClicked}
+        line3clicked={onLineClicked}
+        line4clicked={onLineClicked}>
+    </Person>
       );
     };
   </react>
+  <script>
+    person.addEventListener('updated', e => {
+        console.log('updated', e);
+    });
+    person.addEventListener('line1clicked', e => {
+        console.log(e.detail);
+    });
+    person.addEventListener('line2clicked', e => {
+        console.log(e.detail);
+    });
+    person.addEventListener('line3clicked', e => {
+        console.log(e.detail);
+    });
+    person.addEventListener('line4clicked', e => {
+        console.log(e.detail);
+    });
+  </script>
 `;

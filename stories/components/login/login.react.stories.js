@@ -71,13 +71,18 @@ export const Events = () => html`
         console.log("Logout Completed");
       }, []);
 
+      const onUpdated = useCallback((e: CustomEvent<undefined>) => {
+        console.log('updated', e);
+      }, []);
+
       return (
         <Login
-          loginInitiated={onLoginInitiated}
-          loginCompleted={onLoginCompleted}
-          logoutInitiated={onLogoutInitiated}
-          logoutCompleted={onLogoutCompleted}>
-        </Login>
+        loginInitiated={onLoginInitiated}
+        loginCompleted={onLoginCompleted}
+        logoutInitiated={onLogoutInitiated}
+        logoutCompleted={onLogoutCompleted}
+        updated={onUpdated}>
+    </Login>
       );
     };
   </react>
@@ -94,6 +99,9 @@ export const Events = () => html`
     })
     login.addEventListener('logoutCompleted', (e) => {
       console.log("Logout Completed");
+    })
+    login.addEventListener('updated', (e) => {
+      console.log("Updated");
     })
   </script>
 `;

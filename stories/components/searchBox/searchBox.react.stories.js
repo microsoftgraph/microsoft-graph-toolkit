@@ -35,15 +35,26 @@ export const events = () => html`
     import { SearchBox } from '@microsoft/mgt-react';
 
     export default () => {
+      const onUpdated = useCallback((e) => {
+        console.log('updated', e); 
+      });
+
       const onSearchTermChanged = useCallback((e: CustomEvent<string>) => {
         console.log(e.detail);
       }, []);
 
-      return <SearchBox searchTermChanged={onSearchTermChanged}></SearchBox>;
+      return (
+        <SearchBox 
+        updated={onUpdated}
+        searchTermChanged={onSearchTermChanged}>
+    </SearchBox>;
     };
   </react>
   <script>
     const searchBox = document.querySelector('mgt-search-box');
+    searchBox.addEventListener('updated', (e) => {
+      console.log('updated', e);
+    });
     searchBox.addEventListener('searchTermChanged', (e) => {
       console.log(e.detail);
     });

@@ -33,6 +33,8 @@ import { MgtPerson, registerMgtPersonComponent } from '../mgt-person/mgt-person'
  * @class MgtPeople
  * @extends {MgtTemplatedTaskComponent}
  *
+ * @fires {CustomEvent<undefined>} updated - Fired when the component is updated
+ *
  * @cssprop --people-list-margin- {String} the margin around the list of people. Default is 8px 4px 8px 8px.
  * @cssprop --people-avatar-gap - {String} the gap between the people in the list. Default is 4px.
  * @cssprop --people-overflow-font-color - {Color} the color of the overflow text.
