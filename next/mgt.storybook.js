@@ -4055,15 +4055,15 @@ const ld=1,cd=2,e$1=e=>(...t)=>({_$litDirective$:e,values:t});class i{constructo
            <div class="line1" part="detail-line" @click=${()=>this.handleLine1Clicked()} role="presentation" aria-label="${c}">${e}</div>
          `)}else c&&l.push(vt`
              <div class="line1" part="detail-line" @click=${()=>this.handleLine1Clicked()} role="presentation" aria-label="${c}">${c}</div>
-           `);if("oneline"!==this.view){const e=this.getTextFromProperty(a,this.line2Property);if(this.hasTemplate("line2")){const t=this.renderTemplate("line2",{person:a});l.push(vt`
+           `);if(!this.isOneLine()){const e=this.getTextFromProperty(a,this.line2Property);if(this.hasTemplate("line2")){const t=this.renderTemplate("line2",{person:a});l.push(vt`
            <div class="line2" part="detail-line" @click=${()=>this.handleLine2Clicked()} role="presentation" aria-label="${e}">${t}</div>
          `)}else e&&l.push(vt`
              <div class="line2" part="detail-line" @click=${()=>this.handleLine2Clicked()} role="presentation" aria-label="${e}">${e}</div>
-           `)}if("threelines"===this.view||"fourlines"===this.view){const e=this.getTextFromProperty(a,this.line3Property);if(this.hasTemplate("line3")){const t=this.renderTemplate("line3",{person:a});l.push(vt`
+           `)}if(this.isThreeLines()||this.isFourLines()){const e=this.getTextFromProperty(a,this.line3Property);if(this.hasTemplate("line3")){const t=this.renderTemplate("line3",{person:a});l.push(vt`
            <div class="line3" part="detail-line" @click=${()=>this.handleLine3Clicked()} role="presentation" aria-label="${e}">${t}</div>
          `)}else e&&l.push(vt`
              <div class="line3" part="detail-line" @click=${()=>this.handleLine3Clicked()} role="presentation" aria-label="${e}">${e}</div>
-           `)}if("fourlines"===this.view){const e=this.getTextFromProperty(a,this.line4Property);if(this.hasTemplate("line4")){const t=this.renderTemplate("line4",{person:a});l.push(vt`
+           `)}if(this.isFourLines()){const e=this.getTextFromProperty(a,this.line4Property);if(this.hasTemplate("line4")){const t=this.renderTemplate("line4",{person:a});l.push(vt`
           <div class="line4" part="detail-line" @click=${()=>this.handleLine4Clicked()} role="presentation" aria-label="${e}">${t}</div>
         `)}else e&&l.push(vt`
             <div class="line4" part="detail-line" @click=${()=>this.handleLine4Clicked()} role="presentation" aria-label="${e}">${e}</div>
