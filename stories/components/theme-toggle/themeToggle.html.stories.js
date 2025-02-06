@@ -130,3 +130,21 @@ body {
   }
   </script>
 `;
+
+export const events = () => html`
+  <mgt-theme-toggle></mgt-theme-toggle>
+  <style>
+body {
+    background-color: var(--fill-color);
+}
+  </style>
+  <script>
+    const themeToggle = document.querySelector('mgt-theme-toggle');
+    themeToggle.addEventListener('updated', (e) => {
+      console.log('updated', e);
+    });
+    themeToggle.addEventListener('darkmodechanged', (e) => {
+      console.log('darkmodechanged', e);
+    });
+  </script>
+`;

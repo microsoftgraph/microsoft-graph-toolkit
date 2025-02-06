@@ -22,6 +22,8 @@ import { ComponentMediaQuery } from './baseComponent';
  * @abstract
  * @class MgtBaseTaskComponent
  * @extends {LitElement}
+ *
+ * @fires {CustomEvent<undefined>} updated - Fired when the component is updated
  */
 export abstract class MgtBaseTaskComponent extends LitElement {
   /**
