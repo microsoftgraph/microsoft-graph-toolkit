@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.5.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.4.0...v4.5.0) (2025-02-19)
+
+
+### Features
+
+* expose updated event on mgt components ([#3357](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3357)) ([0069c83](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/0069c83fdb74b43b7819929eb2b2e8f97aab5bf6))
+
+
+### Bug Fixes
+
+* **a11y:** add checkbox name in mgt-todo ([#3393](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3393)) ([9cd4c7b](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/9cd4c7be8b691d30121ab21845d0eee5233e1da5))
+* change group type handling and cache key construction ([#3359](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3359)) ([5e1e4fc](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/5e1e4fc34601e811f79ae860b5a955165293f7aa))
+
 ## [4.4.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.3.0...v4.4.0) (2024-11-18)
 
 
