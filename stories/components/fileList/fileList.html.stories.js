@@ -50,6 +50,10 @@ export const events = () => html`
       const file = document.querySelector('mgt-file');
       file.fileDetails = e.detail;
     });
+
+    document.querySelector('mgt-file-list').addEventListener('updated', e => {
+      console.log('updated', e);
+    });
   </script>
   <style>
     body {

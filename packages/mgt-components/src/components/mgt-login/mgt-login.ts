@@ -54,6 +54,7 @@ export const registerMgtLoginComponent = () => {
  * @class MgtLogin
  * @extends {MgtTemplatedTaskComponent}
  *
+ * @fires {CustomEvent<undefined>} updated - Fired when the component is updated
  * @fires {CustomEvent<undefined>} loginInitiated - Fired when login is initiated by the user
  * @fires {CustomEvent<undefined>} loginCompleted - Fired when login completes
  * @fires {CustomEvent<undefined>} loginFailed - Fired when login fails

@@ -35,6 +35,7 @@ export type FileProps = {
 	line3Property?: string;
 	view?: ViewType;
 	templateContext?: TemplateContext;
+	updated?: (e: CustomEvent<undefined>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 

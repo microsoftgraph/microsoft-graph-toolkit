@@ -38,3 +38,13 @@ export const localization = () => html`
   }
   </script>
 `;
+
+export const events = () => html`
+  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
+  <script>
+    const file = document.querySelector('mgt-file');
+    file.addEventListener('updated', e => {
+      console.log('updated', e);
+    });
+  </script>
+`;

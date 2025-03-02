@@ -37,6 +37,7 @@ export type FileListProps = {
 	maxUploadFile?: number;
 	excludedFileExtensions?: string[];
 	templateContext?: TemplateContext;
+	updated?: (e: CustomEvent<undefined>) => void;
 	itemClick?: (e: CustomEvent<MicrosoftGraph.DriveItem>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }

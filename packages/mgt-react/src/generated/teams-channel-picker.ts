@@ -18,6 +18,7 @@ import {wrapMgt} from '../Mgt';
 
 export type TeamsChannelPickerProps = {
 	templateContext?: TemplateContext;
+	updated?: (e: CustomEvent<undefined>) => void;
 	selectionChanged?: (e: CustomEvent<SelectedChannel | null>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }

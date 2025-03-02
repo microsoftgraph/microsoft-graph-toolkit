@@ -47,6 +47,8 @@ export const registerMgtTodoComponent = () => {
  * @class MgtTodo
  * @extends {MgtTasksBase}
  *
+ * @fires {CustomEvent<undefined>} updated - Fired when the component is updated
+ *
  * @cssprop --task-color - {Color} - Task text color
  * @cssprop --task-background-color - {Color} - Task background color
  * @cssprop --task-complete-background - {Color} - Task background color when completed
@@ -206,6 +208,7 @@ export class MgtTodo extends MgtTasksBase {
       ? html`
         <fluent-checkbox
           class="task-add-icon"
+          aria-label="${this.strings.newTaskPlaceholder}"
           @click="${this.addTask}">
         </fluent-checkbox>
       `
@@ -393,6 +396,7 @@ export class MgtTodo extends MgtTasksBase {
           id=${task.id} 
           class=${checkboxClasses}
           ?checked=${isCompleted}
+          aria-label=${this.strings.taskNameCheckboxLabel}
           @click="${() => this.handleTaskCheckClick(task)}"
           @keydown="${(e: KeyboardEvent) => this.handleTaskCheckKeydown(e, task)}"
         >

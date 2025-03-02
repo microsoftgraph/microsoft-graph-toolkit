@@ -36,3 +36,36 @@ export const PeopleQueries = () => html`
     );
   </react>
 `;
+
+export const Events = () => html`
+  <mgt-people></mgt-people>
+  <react>
+    import { useCallback } from 'react';
+    import { People } from '@microsoft/mgt-react';
+
+    export default () => {
+      const onUpdated = useCallback((e: CustomEvent<undefined>) => {
+        console.log('updated', e);
+      }, []);
+
+      const onPeopleLoaded = useCallback((e: CustomEvent<undefined>) => {
+        console.log('People loaded', e);
+      }, []);
+
+      return (
+        <People 
+        updated={onUpdated}>
+        onPeopleLoaded={onPeopleLoaded}>
+    </People>
+      );
+    };
+  </react>
+  <script>
+    document.querySelector('mgt-people').addEventListener('updated', e => {
+      console.log('updated', e);
+    });
+    document.querySelector('mgt-people').addEventListener('people-loaded', e => {
+      console.log('People loaded', e);
+    });
+  </script>
+`;
