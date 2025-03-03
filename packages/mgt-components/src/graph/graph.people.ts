@@ -244,7 +244,7 @@ export const findContactsByEmail = async (graph: IGraph, email: string): Promise
     }
   }
 
-  const encodedEmail = `${email.replace(/#/g, '%2523')}`;
+  const encodedEmail = encodeURIComponent(email);
 
   const result = (await graph
     .api('/me/contacts')

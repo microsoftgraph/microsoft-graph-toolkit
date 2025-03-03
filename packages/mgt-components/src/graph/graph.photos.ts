@@ -120,7 +120,7 @@ export const getUserPhoto = async (graph: IGraph, userId: string): Promise<strin
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
 
-  const encodedUser = `${userId.replace(/#/g, '%2523')}`;
+  const encodedUser = encodeURIComponent(userId);
 
   if (getIsPhotosCacheEnabled()) {
     cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.users);
