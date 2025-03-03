@@ -120,6 +120,8 @@ export const getUserPhoto = async (graph: IGraph, userId: string): Promise<strin
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
 
+  const encodedUser = encodeURIComponent(userId);
+
   if (getIsPhotosCacheEnabled()) {
     cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.users);
     photoDetails = await cache.getValue(userId);
@@ -144,7 +146,7 @@ export const getUserPhoto = async (graph: IGraph, userId: string): Promise<strin
     }
   }
   // if there is a photo in the cache, we got here because it was stale
-  photoDetails = photoDetails || (await getPhotoForResource(graph, `users/${userId}`, anyUserValidPhotoScopes));
+  photoDetails = photoDetails || (await getPhotoForResource(graph, `users/${encodedUser}`, anyUserValidPhotoScopes));
   if (getIsPhotosCacheEnabled() && photoDetails) {
     await cache.putValue(userId, photoDetails);
   }
