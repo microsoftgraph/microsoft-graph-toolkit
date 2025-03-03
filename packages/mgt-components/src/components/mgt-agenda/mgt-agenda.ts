@@ -27,6 +27,7 @@ import { registerComponent } from '@microsoft/mgt-element';
  * @class MgtAgenda
  * @extends {MgtTemplatedComponent}
  *
+ * @fires {CustomEvent<undefined>} updated - Fired when the component is updated
  * @fires {CustomEvent<MicrosoftGraph.Event>} eventClick - Fired when user click an event
  *
  * @cssprop --event-box-shadow - {String} Event box shadow color and size

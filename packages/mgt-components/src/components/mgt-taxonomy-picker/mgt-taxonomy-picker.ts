@@ -39,6 +39,8 @@ export const registerMgtTaxonomyPickerComponent = () => {
  * @class MgtTaxonomyPicker
  * @extends {MgtTemplatedTaskComponent}
  *
+ * @fires {CustomEvent<undefined>} updated - Fired when the component is updated
+ *
  * @cssprop --taxonomy-picker-background-color - {Color} Picker component background color
  * @cssprop --taxonomy-picker-list-max-height - {String} max height for options list. Default value is 380px.
  * @cssprop --taxonomy-picker-placeholder-color - {Color} Text color for the placeholder in the picker

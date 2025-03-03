@@ -105,6 +105,9 @@ export const Events = () => html`
   login.addEventListener('logoutCompleted', (e) => {
     console.log("Logout Completed");
   })
+  login.addEventListener('updated', (e) => {
+    console.log("Updated");
+  })
 </script>
 `;
 

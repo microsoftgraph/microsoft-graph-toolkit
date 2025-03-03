@@ -35,36 +35,39 @@ export const events = () => html`
   <div class="output">no line clicked</div>
 
   <script>
-  const person = document.querySelector('mgt-person');
-  person.addEventListener('line1clicked', e => {
-      const output = document.querySelector('.output');
+    const person = document.querySelector('mgt-person');
+    person.addEventListener('updated', e => {
+        console.log('updated', e);
+    });
 
-      if (e && e.detail && e.detail.displayName) {
-          output.innerHTML = '<b>line1clicked:</b> ' + e.detail.displayName;
-      }
-  });
-  person.addEventListener('line2clicked', e => {
-      const output = document.querySelector('.output');
+    person.addEventListener('line1clicked', e => {
+        const output = document.querySelector('.output');
 
-      if (e && e.detail && e.detail.jobTitle) {
-          output.innerHTML = '<b>line2clicked:</b> ' + e.detail.jobTitle;
-      }
-  });
-  person.addEventListener('line3clicked', e => {
-      const output = document.querySelector('.output');
+        if (e && e.detail && e.detail.displayName) {
+            output.innerHTML = '<b>line1clicked:</b> ' + e.detail.displayName;
+        }
+    });
+    person.addEventListener('line2clicked', e => {
+        const output = document.querySelector('.output');
 
-      if (e && e.detail && e.detail.department) {
-          output.innerHTML = '<b>line3clicked:</b> ' + e.detail.department;
-      }
-  });
-  person.addEventListener('line4clicked', e => {
-      const output = document.querySelector('.output');
+        if (e && e.detail && e.detail.jobTitle) {
+            output.innerHTML = '<b>line2clicked:</b> ' + e.detail.jobTitle;
+        }
+    });
+    person.addEventListener('line3clicked', e => {
+        const output = document.querySelector('.output');
 
-      if (e && e.detail && e.detail.mail) {
-          output.innerHTML = '<b>line4clicked:</b> ' + e.detail.mail;
-      }
-  });
+        if (e && e.detail && e.detail.department) {
+            output.innerHTML = '<b>line3clicked:</b> ' + e.detail.department;
+        }
+    });
+    person.addEventListener('line4clicked', e => {
+        const output = document.querySelector('.output');
 
+        if (e && e.detail && e.detail.mail) {
+            output.innerHTML = '<b>line4clicked:</b> ' + e.detail.mail;
+        }
+    });
   </script>
 
   <style>

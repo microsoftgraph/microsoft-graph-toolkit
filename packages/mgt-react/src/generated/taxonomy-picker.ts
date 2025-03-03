@@ -30,6 +30,7 @@ export type TaxonomyPickerProps = {
 	cacheInvalidationPeriod?: number;
 	templateContext?: TemplateContext;
 	selectionChanged?: (e: CustomEvent<MicrosoftGraph.TermStore.Term>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 

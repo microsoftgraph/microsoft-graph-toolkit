@@ -30,6 +30,7 @@ export type PeopleProps = {
 	fallbackDetails?: IDynamicPerson[];
 	templateContext?: TemplateContext;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+	updated?: (e: CustomEvent<undefined>) => void;
 }
 
 export const People = wrapMgt<PeopleProps>('people', registerMgtPeopleComponent);

@@ -25,7 +25,7 @@ export const peoplePicker = () => html`
   </react>
  `;
 
-export const selectionChangedEvent = () => html`
+export const events = () => html`
   <mgt-people-picker></mgt-people-picker>
   <react>
     // Check the console tab for the event to fire
@@ -33,11 +33,29 @@ export const selectionChangedEvent = () => html`
     import { PeoplePicker, IDynamicPerson } from '@microsoft/mgt-react';
 
     export default () => {
+      const onUpdated = useCallback((e: CustomEvent<undefined>) => {
+        console.log('updated', e);
+      }, []);
+
       const onSelectionChanged = useCallback((e: CustomEvent<IDynamicPerson[]>) => {
         console.log(e.detail);
       }, []);
 
-      return <PeoplePicker selectionChanged={onSelectionChanged}></PeoplePicker>;
+      return (
+        <PeoplePicker 
+        updated={onUpdated}
+        selectionChanged={onSelectionChanged}>
+    </PeoplePicker>
+
+      );
     };
   </react>
+  <script>
+    document.querySelector('mgt-people-picker').addEventListener('updated', e => {
+      console.log('updated', e);
+    });
+    document.querySelector('mgt-people-picker').addEventListener('selectionChanged', e => {
+      console.log('selectionChanged', e);
+    });
+  </script>
 `;
