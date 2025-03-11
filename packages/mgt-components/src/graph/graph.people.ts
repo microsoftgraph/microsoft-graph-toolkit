@@ -218,9 +218,9 @@ export const getEmailFromGraphEntity = (entity: IDynamicPerson): string => {
 
   if (user?.mail) {
     return extractEmailAddress(user.mail);
-  } else if (person.scoredEmailAddresses?.length) {
+  } else if (person?.scoredEmailAddresses?.length) {
     return extractEmailAddress(person.scoredEmailAddresses[0].address);
-  } else if (contact.emailAddresses?.length) {
+  } else if (contact?.emailAddresses?.length) {
     return extractEmailAddress(contact.emailAddresses[0].address);
   }
   return null;
@@ -244,7 +244,7 @@ export const findContactsByEmail = async (graph: IGraph, email: string): Promise
     }
   }
 
-  const encodedEmail = `${email.replace(/#/g, '%2523')}`;
+  const encodedEmail = encodeURIComponent(email);
 
   const result = (await graph
     .api('/me/contacts')
