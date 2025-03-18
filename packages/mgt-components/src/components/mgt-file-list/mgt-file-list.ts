@@ -807,9 +807,14 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
       if (this.fileExtensions?.length > 0) {
         // retrive all pages before filtering
         if (this.pageIterator?.value) {
-          while (this.pageIterator.hasNext) {
-            await fetchNextAndCacheForFilesPageIterator(this.pageIterator);
+          // Since we're fetching all results, we max out the page size
+          // instead of using the user-specified page size.
+          const maxPageSizeFileIterator = await getFilesIterator(graph, 1000);
+          while (maxPageSizeFileIterator.hasNext) {
+            await fetchNextAndCacheForFilesPageIterator(maxPageSizeFileIterator);
           }
+          // Recreate iterator with all results
+          this.pageIterator = GraphPageIterator.createFromValue(graph, maxPageSizeFileIterator.value);
           files = this.pageIterator.value;
           this._preloadedFiles = [];
         }
@@ -820,6 +825,7 @@ export class MgtFileList extends MgtTemplatedTaskComponent implements CardSectio
             }
           }
         });
+        this._preloadedFiles = [...filteredByFileExtension];
       }
 
       if (filteredByFileExtension?.length >= 0) {
