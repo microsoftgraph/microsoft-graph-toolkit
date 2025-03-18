@@ -461,7 +461,7 @@ export class MgtSearchResults extends MgtTemplatedTaskComponent {
 
     if (this.response && this.hasTemplate('default')) {
       renderedTemplate = this.renderTemplate('default', this.response) || html``;
-    } else if (this.response?.value[0]?.hitsContainers[0]) {
+    } else if (this.response?.value[0]?.hitsContainers[0]?.hits) {
       renderedTemplate = html`${this.response?.value[0]?.hitsContainers[0]?.hits?.map(result =>
         this.renderResult(result)
       )}`;
