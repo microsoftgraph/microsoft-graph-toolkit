@@ -74,14 +74,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Notify TeamsFx Repo
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.TEAMSFX_REPO_ACCESS_TOKEN }}
-          repository: OfficeDev/TeamsFx
-          event-type: graph-toolkit-released
-          client-payload: '{"version": "${{ needs.version.outputs.package-version }}"}'
-
   storybook:
     runs-on: ubuntu-latest
 
