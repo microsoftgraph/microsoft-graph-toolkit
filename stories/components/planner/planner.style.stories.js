@@ -108,6 +108,9 @@ export const customCSSProperties = () => html`
         --dot-options-menu-shadow-color: yellow;
         --dot-options-menu-item-color: maroon;
         --dot-options-menu-item-hover-background-color: white;
+
+        /** affects the assignments dropdown **/
+        --arrow-options-button-font-color: #004074;
       }
   </style>
   <mgt-planner class="tasks"></mgt-planner>
