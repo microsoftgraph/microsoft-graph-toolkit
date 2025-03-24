@@ -58,7 +58,7 @@ export const customCSSProperties = () => html`
 
         --task-title-text-font-size: large;
         --task-title-text-font-weight: 500;
-        --task-complete-title-text-color: green;
+        --task-complete-title-text-color: #066406;
         --task-incomplete-title-text-color: purple;
 
         --task-icons-width: 32px;
@@ -70,7 +70,7 @@ export const customCSSProperties = () => html`
 
         --task-complete-background-color: powderblue;
         --task-incomplete-background-color: salmon;
-        --task-complete-border: 2px dashed green;
+        --task-complete-border: 2px dashed #066406;
         --task-incomplete-border: 2px double red;
         --task-complete-border-radius: 8px;
         --task-incomplete-border-radius: 12px;
