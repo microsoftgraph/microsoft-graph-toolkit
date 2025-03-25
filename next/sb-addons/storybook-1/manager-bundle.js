@@ -6191,21 +6191,37 @@ ${de("inline-block")} :host {
         ${n}
       </div>
     `}handleLine1Clicked(){this.fireCustomEvent("line1clicked",this.personDetailsInternal)}handleLine2Clicked(){this.fireCustomEvent("line2clicked",this.personDetailsInternal)}handleLine3Clicked(){this.fireCustomEvent("line3clicked",this.personDetailsInternal)}handleLine4Clicked(){this.fireCustomEvent("line4clicked",this.personDetailsInternal)}renderDetails(e,t){if(!e||this.view==="image")return x``;let o=e;t&&(o.presenceActivity=t?.activity,o.presenceAvailability=t?.availability);let i=[],n=this.getTextFromProperty(o,this.line1Property);if(this.hasTemplate("line1")){let a=this.renderTemplate("line1",{person:o});i.push(x`
-           <div class="line1" part="detail-line" @click=${()=>this.handleLine1Clicked()} role="presentation" aria-label="${n}">${a}</div>
+           <div class="line1" part="detail-line" @click=${()=>this.handleLine1Clicked()}
+            @keydown=${u=>u.key==="Enter"&&this.handleLine1Clicked()}
+            role="presentation" aria-label="${n}">${a}</div>
          `)}else n&&i.push(x`
-             <div class="line1" part="detail-line" @click=${()=>this.handleLine1Clicked()} role="presentation" aria-label="${n}">${n}</div>
+             <div class="line1" part="detail-line" @click=${()=>this.handleLine1Clicked()}
+               @keydown=${a=>a.key==="Enter"&&this.handleLine1Clicked()}
+              role="presentation" aria-label="${n}">${n}</div>
            `);if(!this.isOneLine()){let a=this.getTextFromProperty(o,this.line2Property);if(this.hasTemplate("line2")){let u=this.renderTemplate("line2",{person:o});i.push(x`
-           <div class="line2" part="detail-line" @click=${()=>this.handleLine2Clicked()} role="presentation" aria-label="${a}">${u}</div>
+           <div class="line2" part="detail-line" @click=${()=>this.handleLine2Clicked()}
+             @keydown=${h=>h.key==="Enter"&&this.handleLine2Clicked()}
+              role="presentation" aria-label="${a}">${u}</div>
          `)}else a&&i.push(x`
-             <div class="line2" part="detail-line" @click=${()=>this.handleLine2Clicked()} role="presentation" aria-label="${a}">${a}</div>
+             <div class="line2" part="detail-line" @click=${()=>this.handleLine2Clicked()}
+               @keydown=${u=>u.key==="Enter"&&this.handleLine2Clicked()}
+                role="presentation" aria-label="${a}">${a}</div>
            `)}if(this.isThreeLines()||this.isFourLines()){let a=this.getTextFromProperty(o,this.line3Property);if(this.hasTemplate("line3")){let u=this.renderTemplate("line3",{person:o});i.push(x`
-           <div class="line3" part="detail-line" @click=${()=>this.handleLine3Clicked()} role="presentation" aria-label="${a}">${u}</div>
+           <div class="line3" part="detail-line" @click=${()=>this.handleLine3Clicked()}
+             @keydown=${h=>h.key==="Enter"&&this.handleLine3Clicked()}
+              role="presentation" aria-label="${a}">${u}</div>
          `)}else a&&i.push(x`
-             <div class="line3" part="detail-line" @click=${()=>this.handleLine3Clicked()} role="presentation" aria-label="${a}">${a}</div>
+             <div class="line3" part="detail-line" @click=${()=>this.handleLine3Clicked()}
+               @keydown=${u=>u.key==="Enter"&&this.handleLine3Clicked()}
+                role="presentation" aria-label="${a}">${a}</div>
            `)}if(this.isFourLines()){let a=this.getTextFromProperty(o,this.line4Property);if(this.hasTemplate("line4")){let u=this.renderTemplate("line4",{person:o});i.push(x`
-          <div class="line4" part="detail-line" @click=${()=>this.handleLine4Clicked()} role="presentation" aria-label="${a}">${u}</div>
+          <div class="line4" part="detail-line" @click=${()=>this.handleLine4Clicked()}
+            @keydown=${h=>h.key==="Enter"&&this.handleLine4Clicked()}
+            role="presentation" aria-label="${a}">${u}</div>
         `)}else a&&i.push(x`
-            <div class="line4" part="detail-line" @click=${()=>this.handleLine4Clicked()} role="presentation" aria-label="${a}">${a}</div>
+            <div class="line4" part="detail-line" @click=${()=>this.handleLine4Clicked()}
+              @keydown=${u=>u.key==="Enter"&&this.handleLine4Clicked()}
+              role="presentation" aria-label="${a}">${a}</div>
           `)}let s=ze({"details-wrapper":!0,vertical:this.isVertical()});return x`
       <div class="${s}">
         ${i}
