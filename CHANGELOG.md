@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.5.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.4.0...v4.5.0) (2025-03-25)
+
+
+### Features
+
+* expose updated event on mgt components ([#3357](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3357)) ([0069c83](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/0069c83fdb74b43b7819929eb2b2e8f97aab5bf6))
+
+
+### Bug Fixes
+
+* **a11y:** add checkbox name in mgt-todo ([#3393](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3393)) ([9cd4c7b](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/9cd4c7be8b691d30121ab21845d0eee5233e1da5))
+* **a11y:** add keyboard accessibility in mgt-person line event story ([3bfb0a4](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/3bfb0a46ffa4687137472cb8dbc4f66957121c0d))
+* **a11y:** improve contrast ratio on component style stories ([#3421](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3421)) ([b69872a](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/b69872a285449d7258d7e2c86588454bb1d876bd))
+* **a11y:** improve keyboard accessibility in mgt-teams-channel-picker ([#3419](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3419)) ([c796563](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/c79656399f028d83379fd338e0124a9a6b39c539))
+* change group type handling and cache key construction ([#3359](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3359)) ([5e1e4fc](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/5e1e4fc34601e811f79ae860b5a955165293f7aa))
+* correct file pagination when filtering file extensions ([#3414](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3414)) ([90b8537](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/90b8537a523c710af854822ecde50d58bf17e3b6))
+* **deps:** revert to @microsoft/microsoft-graph-client version 3.0.2 fix SPFx ([e89be34](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/e89be34a721c9b80880c26bba4a0f285de54cf2d))
+* encode hash on getUserPhoto ([#3408](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3408)) ([9bb59d1](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/9bb59d19243bdc229c4dfcc6dbbbc4bfa3516919))
+* **search-results:** add search-results templating story ([#3416](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3416)) ([81d38a4](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/81d38a46cc6db32ae35f62d7dda9eb87cc05711c))
+* **search-results:** no-data template now gets rendered when no hits are present ([#3409](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3409)) ([f185d90](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/f185d9038572045806b984c6a1c5b1763859d3c6))
+
 ## [4.4.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.3.0...v4.4.0) (2024-11-18)
 
 
