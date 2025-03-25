@@ -27,11 +27,32 @@ export const person = () => html`
 `;
 
 export const events = () => html`
+  <!-- Check JS tab to see event listeners -->
   <div style="margin-bottom: 10px">Click on each line</div>
   <div class="example">
-    <mgt-person person-query="me" view="fourlines"></mgt-person>
+    <mgt-person person-query="me" view="fourlines">
+      <template data-type="line1">
+        <div tabindex="0">
+          Hello, my name is: {{person.displayName}}
+        </div>
+      </template>
+      <template data-type="line2">
+        <div tabindex="0">
+          ✨ {{person.jobTitle}}
+        </div>
+      </template>
+      <template data-type="line3">
+        <div tabindex="0">
+          👀 {{person.department}}
+        </div>
+      </template>
+      <template data-type="line4">
+        <div tabindex="0">
+          📍{{person.mail}}
+        </div>
+      </template>
+    </mgt-person>
   </div>
-
   <div class="output">no line clicked</div>
 
   <script>

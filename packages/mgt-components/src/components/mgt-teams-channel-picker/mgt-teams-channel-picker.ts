@@ -283,8 +283,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
             @click=${this.handleInputClick}
             @keydown=${this.handleInputKeydown}
           >
-            <div tabindex="0" slot="start" style="width: max-content;" @keydown=${this.handleStartSlotKeydown}>${this.renderSelected()}</div>
-            <div tabindex="0" slot="end" @keydown=${this.handleChevronKeydown}>${this.renderChevrons()}${this.renderCloseButton()}</div>
+            <div slot="start" style="width: max-content;" @keydown=${this.handleStartSlotKeydown}>${this.renderSelected()}</div>
+            <div slot="end" @keydown=${this.handleChevronKeydown}>${this.renderChevrons()}${this.renderCloseButton()}</div>
           </fluent-text-field>
           <fluent-card
             class=${classMap(dropdownClasses)}
@@ -380,9 +380,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
    */
   protected renderSearchIcon() {
     return html`
-      <div class="search-icon" @keydown=${this.handleStartSlotKeydown}>
-        ${getSvg(SvgIcon.Search, '#252424')}
-      </div>
+      <fluent-button 
+        appearance="outline" 
+        class="search-icon" 
+        aria-label=${this.strings.searchButtonAriaLabel} 
+        @click=${this.handleStartSlotKeydown}>
+        ${getSvg(SvgIcon.Search)}
+      </fluent-button>
     `;
   }
 
@@ -940,6 +944,16 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
   handleChevronKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Tab') {
       this.blurPicker();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+
+      // Determine which chevron was pressed and handle accordingly
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('down-chevron')) {
+        this.gainedFocus();
+      } else if (target.classList.contains('up-chevron')) {
+        this.lostFocus();
+      }
     }
   };
 
