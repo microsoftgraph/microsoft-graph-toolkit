@@ -44,7 +44,7 @@
   "dependencies": {
     "@azure/msal-node": "^1.18.4",
     "@microsoft/mgt-element": "*",
-    "@microsoft/microsoft-graph-client": "3.0.7"
+    "@microsoft/microsoft-graph-client": "3.0.2"
   },
   "peerDependencies": {
     "electron": ">=11.0.2 <29.0.0"

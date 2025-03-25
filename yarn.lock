@@ -5076,7 +5076,7 @@ __metadata:
     "@fluentui/web-components": "npm:^2.6.1"
     "@lit/task": "npm:^1.0.0"
     "@microsoft/mgt-element": "npm:*"
-    "@microsoft/microsoft-graph-client": "npm:3.0.7"
+    "@microsoft/microsoft-graph-client": "npm:3.0.2"
     "@microsoft/microsoft-graph-types": "npm:^2.40.0"
     "@microsoft/microsoft-graph-types-beta": "npm:^0.43.0-preview"
     lit: "npm:^3.1.2"
@@ -5090,7 +5090,7 @@ __metadata:
   dependencies:
     "@azure/msal-node": "npm:^1.18.4"
     "@microsoft/mgt-element": "npm:*"
-    "@microsoft/microsoft-graph-client": "npm:3.0.7"
+    "@microsoft/microsoft-graph-client": "npm:3.0.2"
     electron: "npm:^28.2.4"
   peerDependencies:
     electron: ">=11.0.2 <29.0.0"
@@ -5102,7 +5102,7 @@ __metadata:
   resolution: "@microsoft/mgt-element@workspace:packages/mgt-element"
   dependencies:
     "@lit/task": "npm:^1.0.0"
-    "@microsoft/microsoft-graph-client": "npm:3.0.7"
+    "@microsoft/microsoft-graph-client": "npm:3.0.2"
     idb: "npm:8.0.0"
     lit: "npm:^3.1.2"
   languageName: unknown
@@ -5122,7 +5122,7 @@ __metadata:
   dependencies:
     "@azure/msal-browser": "npm:^2.38.3"
     "@microsoft/mgt-element": "npm:*"
-    "@microsoft/microsoft-graph-client": "npm:3.0.7"
+    "@microsoft/microsoft-graph-client": "npm:3.0.2"
   languageName: unknown
   linkType: soft
 
@@ -5131,7 +5131,7 @@ __metadata:
   resolution: "@microsoft/mgt-proxy-provider@workspace:packages/providers/mgt-proxy-provider"
   dependencies:
     "@microsoft/mgt-element": "npm:*"
-    "@microsoft/microsoft-graph-client": "npm:3.0.7"
+    "@microsoft/microsoft-graph-client": "npm:3.0.2"
   languageName: unknown
   linkType: soft
 
@@ -5191,9 +5191,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@microsoft/microsoft-graph-client@npm:3.0.7":
-  version: 3.0.7
-  resolution: "@microsoft/microsoft-graph-client@npm:3.0.7"
+"@microsoft/microsoft-graph-client@npm:3.0.2":
+  version: 3.0.2
+  resolution: "@microsoft/microsoft-graph-client@npm:3.0.2"
   dependencies:
     "@babel/runtime": "npm:^7.12.5"
     tslib: "npm:^2.2.0"
@@ -5206,7 +5206,7 @@ __metadata:
       optional: true
     stream-browserify:
       optional: true
-  checksum: 10/4486c5071c71bffe564828966bce3748e3d6e890abf1cd1c8ea685cafca3bb30913d7731a18c9e9ae04c91c3d3eeed9505ecae7d225b626a0acc57842de4e76a
+  checksum: 10/65e2389af7bcae2c8068249a5f935fd8a697d26c5a633be2413bb1946245f75282cc9d4ef372ba7b38a82770dadf20cdc31d9ba50c7d5688ab29ce97958681a3
   languageName: node
   linkType: hard
 
