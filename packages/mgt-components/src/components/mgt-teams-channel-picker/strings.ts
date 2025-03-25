@@ -19,6 +19,7 @@ export const strings = {
   photoFor: 'Teams photo for',
   teamsChannels: 'Teams and channels results',
   closeButtonAriaLabel: 'remove the selected channel',
-  downChevronButtonAriaLabel: 'Teams show results button',
-  upChevronButtonAriaLabel: 'Teams hide results button'
+  downChevronButtonAriaLabel: 'Teams show results',
+  upChevronButtonAriaLabel: 'Teams hide results',
+  searchButtonAriaLabel: 'Search icon'
 };
