@@ -91,6 +91,7 @@
       word-spacing: inherit;
       text-indent: inherit;
       letter-spacing: inherit;
+      padding: 0;
 
       &::placeholder {
         color: $placeholder-text-color;
@@ -115,6 +116,10 @@
         path {
           fill: var(--channel-picker-search-icon-color, currentColor);
         }
+      }
+
+      &::part(control) {
+        border-color: transparent;
       }
     }
 
