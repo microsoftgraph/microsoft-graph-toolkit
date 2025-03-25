@@ -351,7 +351,7 @@ export const moreExamples = () => html`
 
      .styled-person {
        --default-font-family: 'Comic Sans MS', cursive, sans-serif;
-       --person-line1-text-color: red;
+       --person-line1-text-color: #CB1919;
        --person-avatar-size: 60px;
        --default-font-size: 20px;
        --person-line2-text-color: green;
@@ -361,7 +361,7 @@ export const moreExamples = () => html`
 
     .person-initials {
       --person-initials-text-color: yellow;
-      --person-initials-background-color: red;
+      --person-initials-background-color: #CB1919;
       --person-avatar-size: 60px;
       --person-avatar-border-radius: 10% 35%;
     }
