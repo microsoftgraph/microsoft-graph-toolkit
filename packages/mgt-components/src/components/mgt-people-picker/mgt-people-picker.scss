@@ -131,6 +131,8 @@ $people-picker-font-size: var(--people-picker-font-size, 14px);
     list-style: none;
     padding: 4px;
     margin: auto;
+    max-height: var(--people-picker-dropdown-max-height, 300px);
+    overflow-y: var(--people-picker-dropdown-scrollbar, auto);
 
     &-result {
       padding: 4px;
