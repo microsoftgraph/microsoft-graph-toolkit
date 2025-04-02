@@ -5,168 +5,171 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../../styles/shared-styles';
-@import './mgt-people-picker.theme';
-
-$people-picker-result-person-avatar-size: var(--people-picker-result-person-avatar-size, 40px);
-$people-picker-selected-person-avatar-size: var(--people-picker-selected-person-avatar-size, 24px);
-$people-picker-font-size: var(--people-picker-font-size, 14px);
-
-:host {
-  --person-details-wrapper-width: 0;
-
-  width: auto;
-
-  fluent-text-field {
-    width: 100%;
-    font-size: $people-picker-font-size;
-    margin-block-end: 4px;
-
-    &::part(root) {
-      display: flex;
-      flex-wrap: wrap;
-      height: auto;
-      background: $input-background;
-
-      &:hover {
-        background: $input-hover-background;
-      }
-
-      &:focus,
-      &:focus-within {
-        background: $input-focus-background;
-      }
-    }
-
-    &::part(start) {
-      margin: unset;
-    }
-
-    &::part(control) {
-      width: auto;
-      flex-grow: 1;
-      min-width: 25%;
-      height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
-      word-spacing: inherit;
-      text-indent: inherit;
-      letter-spacing: inherit;
-
-      &::placeholder {
-        color: $placeholder-text-color;
-      }
-
-      &:hover {
-        &::placeholder {
-          color: $placeholder-hover-text-color;
-        }
-      }
-
-      &:focus,
-      &:focus-within {
-        &::placeholder {
-          color: $placeholder-focus-text-color;
-        }
-      }
-    }
-
-    .search-icon {
-      display: flex;
-      padding-top: 10px;
-      padding-inline-start: 10px;
-
-      svg {
-        path {
-          fill: var(--people-picker-search-icon-color, currentColor);
-        }
-      }
-    }
-  }
-
-  .selected-list {
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: 5px;
-    padding: unset;
-    margin: 0 5px;
-
-    &-item {
-      display: flex;
-      column-gap: 5px;
-      border-radius: 100px;
-      margin-top: 3px;
-      background-color: $selected-option-bg;
-
-      &.highlighted {
-        background-color: $selected-option-highlight-bg;
-      }
-
-      &-close-icon {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-inline-end: 8px;
-        cursor: pointer;
-
-        svg {
-          path {
-            fill: var(--people-picker-remove-selected-close-icon-color, currentColor);
-          }
-        }
-      }
-
-      .person-image-selected {
-        width: max-content;
-
-        --person-avatar-size: #{$people-picker-selected-person-avatar-size};
-      }
-    }
-  }
-
-  fluent-card {
-    background-color: $dropdown-card-color;
-  }
-
-  .searched-people-list {
-    list-style: none;
-    padding: 4px;
-    margin: auto;
-
-    &-result {
-      padding: 4px;
-      border-radius: 4px;
-      background: $dropdown-result-bg-color;
-
-      &:hover {
-        background: $dropdown-result-hover-bg-color;
-      }
-
-      &:focus,
-      &:focus-within {
-        background: $dropdown-result-focus-bg-color;
-      }
-
-      .person-image-result {
-        --person-avatar-size: #{$people-picker-result-person-avatar-size};
-      }
-    }
-  }
-
-  .message-parent {
-    display: flex;
-    place-content: center;
-    flex-direction: row;
-    padding: 10px 15px;
-    column-gap: 5px;
-
-    .search-error-text,
-    .loading-text {
-      font-style: normal;
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 19px;
-      text-align: center;
-      color: $no-results-color;
-    }
-  }
-}
+ @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+ @import '../../styles/shared-styles';
+ @import './mgt-people-picker.theme';
+ 
+ $people-picker-result-person-avatar-size: var(--people-picker-result-person-avatar-size, 40px);
+ $people-picker-selected-person-avatar-size: var(--people-picker-selected-person-avatar-size, 24px);
+ $people-picker-font-size: var(--people-picker-font-size, 14px);
+ 
+ :host {
+   --person-details-wrapper-width: 0;
+ 
+   width: auto;
+ 
+   fluent-text-field {
+     width: 100%;
+     font-size: $people-picker-font-size;
+     margin-block-end: 4px;
+ 
+     &::part(root) {
+       display: flex;
+       flex-wrap: wrap;
+       height: auto;
+       background: $input-background;
+ 
+       &:hover {
+         background: $input-hover-background;
+       }
+ 
+       &:focus,
+       &:focus-within {
+         background: $input-focus-background;
+       }
+     }
+ 
+     &::part(start) {
+       margin: unset;
+     }
+ 
+     &::part(control) {
+       width: auto;
+       flex-grow: 1;
+       min-width: 25%;
+       height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
+       word-spacing: inherit;
+       text-indent: inherit;
+       letter-spacing: inherit;
+ 
+       &::placeholder {
+         color: $placeholder-text-color;
+       }
+ 
+       &:hover {
+         &::placeholder {
+           color: $placeholder-hover-text-color;
+         }
+       }
+ 
+       &:focus,
+       &:focus-within {
+         &::placeholder {
+           color: $placeholder-focus-text-color;
+         }
+       }
+     }
+ 
+     .search-icon {
+       display: flex;
+       padding-top: 10px;
+       padding-inline-start: 10px;
+ 
+       svg {
+         path {
+           fill: var(--people-picker-search-icon-color, currentColor);
+         }
+       }
+     }
+   }
+ 
+   .selected-list {
+     display: flex;
+     flex-wrap: wrap;
+     column-gap: 5px;
+     padding: unset;
+     margin: 0 5px;
+ 
+     &-item {
+       display: flex;
+       column-gap: 5px;
+       border-radius: 100px;
+       margin-top: 3px;
+       background-color: $selected-option-bg;
+ 
+       &.highlighted {
+         background-color: $selected-option-highlight-bg;
+       }
+ 
+       &-close-icon {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         padding-inline-end: 8px;
+         cursor: pointer;
+ 
+         svg {
+           path {
+             fill: var(--people-picker-remove-selected-close-icon-color, currentColor);
+           }
+         }
+       }
+ 
+       .person-image-selected {
+         width: max-content;
+ 
+         --person-avatar-size: #{$people-picker-selected-person-avatar-size};
+       }
+     }
+   }
+ 
+   fluent-card {
+     background-color: $dropdown-card-color;
+   }
+ 
+   .searched-people-list {
+     list-style: none;
+     padding: 4px;
+     margin: auto;
+     max-height: var(--people-picker-dropdown-max-height, 300px);
+     overflow-y: var(--people-picker-dropdown-scrollbar, auto);
+ 
+     &-result {
+       padding: 4px;
+       border-radius: 4px;
+       background: $dropdown-result-bg-color;
+ 
+       &:hover {
+         background: $dropdown-result-hover-bg-color;
+       }
+ 
+       &:focus,
+       &:focus-within {
+         background: $dropdown-result-focus-bg-color;
+       }
+ 
+       .person-image-result {
+         --person-avatar-size: #{$people-picker-result-person-avatar-size};
+       }
+     }
+   }
+ 
+   .message-parent {
+     display: flex;
+     place-content: center;
+     flex-direction: row;
+     padding: 10px 15px;
+     column-gap: 5px;
+ 
+     .search-error-text,
+     .loading-text {
+       font-style: normal;
+       font-weight: 600;
+       font-size: 14px;
+       line-height: 19px;
+       text-align: center;
+       color: $no-results-color;
+     }
+   }
+ }
+ 
