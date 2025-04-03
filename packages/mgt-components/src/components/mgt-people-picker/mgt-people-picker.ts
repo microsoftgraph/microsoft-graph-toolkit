@@ -835,7 +835,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderNoData(): TemplateResult {
-    if (!this._isFocused) {
+    if (!this._isFocused || this.userInput.trim().length === 0) {
       return;
     }
     return (
