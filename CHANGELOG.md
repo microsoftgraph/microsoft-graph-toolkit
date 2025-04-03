@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.6.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.5.0...v4.6.0) (2025-04-03)
+
+
+### Features
+
+* adds max height and scrollbar to people picker ([#3429](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3429)) ([26694da](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/26694daa413f2475eb828b51163060d34395fca9))
+
 ## [4.5.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.4.0...v4.5.0) (2025-03-25)
 
 
