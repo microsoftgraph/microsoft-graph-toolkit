@@ -4627,7 +4627,7 @@ const ld=1,cd=2,e$1=e=>(...t)=>({_$litDirective$:e,values:t});class i{constructo
            ${this.renderFlyoutContent()}
          </fluent-card>
        </mgt-flyout>
-     `}renderFlyoutContent(){if(this._task.status===Gt)return this.renderLoading();const e=this._foundPeople;return e&&0!==e.length&&0!==this.showMax?this.renderSearchResults(e):this.renderNoData()}renderNoData(){if(this._isFocused)return this.renderTemplate("error",null)||this.renderTemplate("no-data",null)||vt`
+     `}renderFlyoutContent(){if(this._task.status===Gt)return this.renderLoading();const e=this._foundPeople;return e&&0!==e.length&&0!==this.showMax?this.renderSearchResults(e):this.renderNoData()}renderNoData(){if(this._isFocused&&0!==this.userInput.trim().length)return this.renderTemplate("error",null)||this.renderTemplate("no-data",null)||vt`
          <div class="message-parent">
            <div aria-label=${this.strings.noResultsFound} aria-live="polite" role="alert" class="search-error-text">
              ${this.strings.noResultsFound}

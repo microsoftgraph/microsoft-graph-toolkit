@@ -6712,7 +6712,7 @@ Error Description: `+h.message)),[2,null];case 4:return i||(this.logger.warning(
            ${this.renderFlyoutContent()}
          </fluent-card>
        </mgt-flyout>
-     `}renderFlyoutContent(){if(this._task.status===Js.PENDING)return this.renderLoading();let e=this._foundPeople;return!e||e.length===0||this.showMax===0?this.renderNoData():this.renderSearchResults(e)}renderNoData(){if(this._isFocused)return this.renderTemplate("error",null)||this.renderTemplate("no-data",null)||x`
+     `}renderFlyoutContent(){if(this._task.status===Js.PENDING)return this.renderLoading();let e=this._foundPeople;return!e||e.length===0||this.showMax===0?this.renderNoData():this.renderSearchResults(e)}renderNoData(){if(!(!this._isFocused||this.userInput.trim().length===0))return this.renderTemplate("error",null)||this.renderTemplate("no-data",null)||x`
          <div class="message-parent">
            <div aria-label=${this.strings.noResultsFound} aria-live="polite" role="alert" class="search-error-text">
              ${this.strings.noResultsFound}
