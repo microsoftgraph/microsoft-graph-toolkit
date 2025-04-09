@@ -101,6 +101,8 @@ export const registerMgtPeoplePickerComponent = () => {
  * @cssprop --people-picker-result-person-avatar-size - {Length} the avatar size of the person in the result. Default is 40px.
  * @cssprop --people-picker-selected-person-avatar-size - {Length} the avatar size of the selected person. Default is 24px.
  * @cssprop --people-picker-font-size - {Length} the font size of the text in the people picker input. Default is 14px.
+ * @cssprop --people-picker-dropdown-max-height - {Length} the maximum height of the dropdown. Default is 300px.
+ * @cssprop --people-picker-dropdown-scrollbar - {String} the scrollbar behavior for the dropdown. Default is auto.
  */
 export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
   /**
@@ -833,7 +835,7 @@ export class MgtPeoplePicker extends MgtTemplatedTaskComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderNoData(): TemplateResult {
-    if (!this._isFocused) {
+    if (!this._isFocused || this.userInput.trim().length === 0) {
       return;
     }
     return (
