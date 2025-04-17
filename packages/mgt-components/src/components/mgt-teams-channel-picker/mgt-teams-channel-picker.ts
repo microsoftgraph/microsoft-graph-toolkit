@@ -716,17 +716,19 @@ export class MgtTeamsChannelPicker extends MgtTemplatedTaskComponent {
     event.stopImmediatePropagation();
     const element = event.target as HTMLElement;
     if (element) {
-      const expanded = element.getAttribute('expanded');
-
-      if (expanded) {
+      const isExpanded = element.hasAttribute('expanded');
+      if (isExpanded) {
         element.removeAttribute('expanded');
       } else {
         element.setAttribute('expanded', 'true');
       }
-      element.removeAttribute('selected');
-      const hasId = element.getAttribute('id');
+
+      // Only set selected attribute for channels (items with IDs)
+      const hasId = element.hasAttribute('id');
       if (hasId) {
         element.setAttribute('selected', 'true');
+      } else {
+        element.removeAttribute('selected');
       }
     }
   };
