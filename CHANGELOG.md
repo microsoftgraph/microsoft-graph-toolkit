@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.6.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.5.0...v4.6.0) (2025-04-17)
+
+
+### Features
+
+* adds max height and scrollbar to people picker ([#3429](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3429)) ([26694da](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/26694daa413f2475eb828b51163060d34395fca9))
+
+
+### Bug Fixes
+
+* removed noResultsFound error for no user input ([#3431](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3431)) ([50314d7](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/50314d71b4d6ae93db91f829ada98d3479dab469))
+* tree item collapse in mgt-teams-channel-picker ([#3437](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3437)) ([dbabb93](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/dbabb93a0fc13c1eef7520fd8b7b8b97b69fdbf6))
+
 ## [4.5.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.4.0...v4.5.0) (2025-03-25)
 
 
