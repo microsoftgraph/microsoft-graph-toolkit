@@ -39,7 +39,7 @@
   "dependencies": {
     "@microsoft/mgt-components": "*",
     "@types/react": "17.0.45",
-    "react": "17.0.1"
+    "react": "^18.0.0"
   },
   "publishConfig": {
     "access": "public"
