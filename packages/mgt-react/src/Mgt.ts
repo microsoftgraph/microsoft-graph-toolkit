@@ -6,7 +6,7 @@
  */
 
 import React, { ReactNode, ReactElement } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Wc, WcProps, WcTypeProps } from 'wc-react';
 import { customElementHelper, TemplateRenderedData } from '@microsoft/mgt-element';
 
@@ -103,7 +103,8 @@ export class Mgt extends Wc {
 
     if (template) {
       template = React.cloneElement(template, { dataContext });
-      ReactDOM.render(template, element);
+      const root = createRoot(element);
+      root.render(template);
     }
   };
 
