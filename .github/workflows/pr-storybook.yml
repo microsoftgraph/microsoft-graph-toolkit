@@ -40,7 +40,7 @@ jobs:
         env:
           BRANCH_REF: ${{ github.event.pull_request.head.ref }}
         run: |
-          tag=$(branch=$BRANCH_REF; echo ${branch/\//.})
+          tag=$(echo ${BRANCH_REF/\//.})
           if [[ $tag == next.* ]];
           then
             echo "##[set-output name=tag;]$tag"
