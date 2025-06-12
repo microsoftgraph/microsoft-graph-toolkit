@@ -37,8 +37,10 @@ jobs:
           yarn
       - name: Extract tag name
         shell: bash
+        env:
+          BRANCH_REF: ${{ github.event.pull_request.head.ref }}
         run: |
-          tag=$(branch=${{ github.event.pull_request.head.ref }}; echo ${branch/\//.})
+          tag=$(echo ${BRANCH_REF/\//.})
           if [[ $tag == next.* ]];
           then
             echo "##[set-output name=tag;]$tag"
