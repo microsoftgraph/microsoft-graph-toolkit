@@ -24,6 +24,8 @@ export const customCSSProperties = () => html`
     --people-picker-dropdown-result-background-color: yellow;
     --people-picker-dropdown-result-hover-background-color: gold;
     --people-picker-dropdown-result-focus-background-color: green;
+    --people-picker-dropdown-max-height: 100px;
+    --people-picker-dropdown-scrollbar: auto;
     --people-picker-no-results-text-color: white;
     --people-picker-input-background: gray;
     --people-picker-input-border-color: yellow;
