@@ -1,0 +1,43 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+name: Deploy storybook to production
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Build 🛠
+        run: |
+          npm install -g yarn lerna
+          yarn
+          yarn build
+          yarn storybook:build
+
+      - name: Deploy mgt.dev 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          branch: gh-pages
+          folder: storybook-static
+          target-folder: .
+          clean-exclude: next
+          token: ${{ secrets.GITHUB_TOKEN }}

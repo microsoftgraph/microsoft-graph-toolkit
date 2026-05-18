@@ -4,6 +4,7 @@ import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/
 import { EditorElement } from './editor';
 import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from '../../env';
 import { beautifyContent } from '../../utils/beautifyContent';
+import { isValidManifestUrl } from '../../utils/isValidManifestUrl';
 
 const mgtScriptName = './mgt.storybook.js';
 
@@ -140,9 +141,7 @@ export const withCodeEditor = makeDecorator({
       }
     };
 
-    const isValid = manifestUrl => {
-      return manifestUrl && manifestUrl.startsWith('https://raw.githubusercontent.com/pnp/mgt-samples/main/');
-    };
+    const isValid = isValidManifestUrl;
 
     if (context.name === 'Editor') {
       // If the editor is not iframed (Docs, GE, etc.)
@@ -152,6 +151,11 @@ export const withCodeEditor = makeDecorator({
 
         if (isValid(manifestUrl)) {
           getContent(manifestUrl, true).then(manifest => {
+            const contentUrls = [manifest[0].preview.html, manifest[0].preview.js, manifest[0].preview.css];
+            if (contentUrls.some(u => u && !isValid(u))) {
+              console.warn(`🦒: Manifest contains untrusted URLs`);
+              return;
+            }
             Promise.all([
               getContent(manifest[0].preview.html),
               getContent(manifest[0].preview.js),
