@@ -5091,7 +5091,7 @@ __metadata:
     "@azure/msal-node": "npm:^1.18.4"
     "@microsoft/mgt-element": "npm:*"
     "@microsoft/microsoft-graph-client": "npm:3.0.2"
-    electron: "npm:^28.2.4"
+    electron: "npm:^35.7.5"
   peerDependencies:
     electron: ">=11.0.2 <29.0.0"
   languageName: unknown
@@ -8181,12 +8181,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.11.18":
-  version: 18.19.15
-  resolution: "@types/node@npm:18.19.15"
+"@types/node@npm:^22.7.7":
+  version: 22.18.1
+  resolution: "@types/node@npm:22.18.1"
   dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 10/cbd4bf49f6aa0e5e9b9d3dafd0f83cc21475f6fe846c8b59a264e508608aaad8cd48dfce95ee48cdf81d3139c35c03a9d4fcd613bf98cae7b61c7dc36bb6b195
+    undici-types: "npm:~6.21.0"
+  checksum: 10/da67f3c3fa4107fbca704e7a71fee36c27f3b6f44af1c466cd5c71eab76a9ffcd6a16f3b97d1e757b9763f1fa1085eebb60cb648c272e36794aca7305b2a15d9
   languageName: node
   linkType: hard
 
@@ -12401,16 +12401,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^28.2.4":
-  version: 28.2.4
-  resolution: "electron@npm:28.2.4"
+"electron@npm:^35.7.5":
+  version: 35.7.5
+  resolution: "electron@npm:35.7.5"
   dependencies:
     "@electron/get": "npm:^2.0.0"
-    "@types/node": "npm:^18.11.18"
+    "@types/node": "npm:^22.7.7"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10/6179c1359a756c7ab13bbac1518f7c1a8a7670cdb53abcf3a9bb4b09fa6f398605543141659ad32bce86649fc21ddf920d72fc2f346b8e3cfd83010414ac2ca0
+  checksum: 10/f3757f0b6f21ddd5ebf8b83becdaa3e47dc13473e5375e6e6aee638d7029e73d08d6a4170b37ad8c594057da139e7cdf4c8b82b70c2c1ad0306abdcc274c5fee
   languageName: node
   linkType: hard
 
@@ -23986,6 +23986,13 @@ __metadata:
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
   checksum: 10/0097779d94bc0fd26f0418b3a05472410408877279141ded2bd449167be1aed7ea5b76f756562cb3586a07f251b90799bab22d9019ceba49c037c76445f7cddd
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 10/ec8f41aa4359d50f9b59fa61fe3efce3477cc681908c8f84354d8567bb3701fafdddf36ef6bff307024d3feb42c837cf6f670314ba37fc8145e219560e473d14
   languageName: node
   linkType: hard
 
