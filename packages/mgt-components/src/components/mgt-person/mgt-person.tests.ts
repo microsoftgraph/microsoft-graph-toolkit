@@ -14,7 +14,6 @@ describe('mgt-person - tests', () => {
   Providers.globalProvider = new MockProvider(true);
   it('should render', async () => {
     const person = await fixture(html`<mgt-person person-query="me" view="twolines"></mgt-person>`);
-    // @ts-expect-error TS2554 expects 3 arguments got 2 https://github.com/open-wc/open-wc/issues/2746
     await oneEvent(person, 'person-image-rendered');
     await expect(person).shadowDom.to.equal(
       `<div class=" person-root twolines " dir="ltr">
@@ -33,7 +32,6 @@ describe('mgt-person - tests', () => {
 
   it('should pop up a flyout on click', async () => {
     const person = await fixture(html`<mgt-person person-query="me" view="twolines" person-card="click"></mgt-person>`);
-    // @ts-expect-error TS2554 expects 3 arguments got 2 https://github.com/open-wc/open-wc/issues/2746
     await oneEvent(person, 'person-image-rendered');
     await expect(person).shadowDom.to.equal(
       `<div class=" person-root twolines " dir="ltr"tabindex="0">
@@ -70,7 +68,6 @@ describe('mgt-person - tests', () => {
     person.shadowRoot.querySelector('img').click();
     // need to use wait until here because of the dynamic import of the person card
     // this can be flaky due to the dynamic import and timing variance
-    // @ts-expect-error TS2554 expects 3 arguments got 2 https://github.com/open-wc/open-wc/issues/2746
     await oneEvent(person, 'flyout-content-rendered');
     const flyout = person.shadowRoot.querySelector('div[data-testid="flyout-slot"]');
     await expect(flyout).dom.to.be.equal(`
@@ -196,7 +193,6 @@ describe('mgt-person - localization', () => {
       }
     };
     const person = await fixture(html`<mgt-person person-query="me" view="twolines"></mgt-person>`);
-    // @ts-expect-error TS2554 expects 3 arguments got 2 https://github.com/open-wc/open-wc/issues/2746
     await oneEvent(person, 'person-image-rendered');
     await expect(person).shadowDom.to.equal(
       `<div class=" person-root twolines " dir="ltr">

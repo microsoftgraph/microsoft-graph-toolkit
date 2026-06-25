@@ -5,28 +5,30 @@
  * -------------------------------------------------------------------------------------------
  */
 
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 import { expect } from '@open-wc/testing';
 import { sanitizeSummary } from './Utils';
 
 describe('sanitizeSummary', () => {
-  it('should return falsy values unchanged', () => {
+  it('should return falsy values unchanged', async () => {
     expect(sanitizeSummary(null)).to.be.null;
     expect(sanitizeSummary(undefined)).to.be.undefined;
-    expect(sanitizeSummary('')).to.equal('');
+    await expect(sanitizeSummary('')).to.equal('');
   });
 
-  it('should convert <ddd/> to ellipsis', () => {
-    expect(sanitizeSummary('hello<ddd/>world')).to.equal('hello...world');
+  it('should convert <ddd/> to ellipsis', async () => {
+    await expect(sanitizeSummary('hello<ddd/>world')).to.equal('hello...world');
   });
 
-  it('should convert <c0> and </c0> to <b> and </b>', () => {
-    expect(sanitizeSummary('a <c0>match</c0> b')).to.equal('a <b>match</b> b');
+  it('should convert <c0> and </c0> to <b> and </b>', async () => {
+    await expect(sanitizeSummary('a <c0>match</c0> b')).to.equal('a <b>match</b> b');
   });
 
-  it('should handle all proprietary tags together', () => {
+  it('should handle all proprietary tags together', async () => {
     const input = 'Result <c0>keyword</c0> in document<ddd/>';
     const expected = 'Result <b>keyword</b> in document...';
-    expect(sanitizeSummary(input)).to.equal(expected);
+    await expect(sanitizeSummary(input)).to.equal(expected);
   });
 
   it('should strip <script> tags', () => {
@@ -60,9 +62,9 @@ describe('sanitizeSummary', () => {
     expect(result).to.not.contain('onclick');
   });
 
-  it('should preserve allowed tags (b, em, strong, span)', () => {
+  it('should preserve allowed tags (b, em, strong, span)', async () => {
     const input = '<b>bold</b> <em>italic</em> <strong>strong</strong> <span>span</span>';
-    expect(sanitizeSummary(input)).to.equal(input);
+    await expect(sanitizeSummary(input)).to.equal(input);
   });
 
   it('should handle mixed proprietary tags and XSS payloads', () => {
