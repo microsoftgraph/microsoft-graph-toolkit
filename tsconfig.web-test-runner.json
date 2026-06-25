@@ -1,6 +1,12 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    // The @web/dev-server-esbuild plugin passes this file to esbuild as `tsconfigRaw`, which does NOT
+    // resolve `extends`. These decorator options must therefore be declared here (not just inherited from
+    // tsconfig.base.json) so esbuild emits legacy decorators that Lit's @property expects, rather than
+    // standard (TC39) decorators which throw "Unsupported decorator location: field/getter".
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     // Needed to mix class fields and reactive properties in Lit elements https://lit.dev/docs/components/properties/#avoiding-issues-with-class-fields
     "useDefineForClassFields": false,
     // Needed to ensure that string union types work as expected in tests
