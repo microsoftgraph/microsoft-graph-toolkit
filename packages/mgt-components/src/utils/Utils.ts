@@ -6,6 +6,7 @@
  */
 
 import { CacheService } from '@microsoft/mgt-element';
+import DOMPurify from 'dompurify';
 
 export const getRelativeDisplayDate = (date: Date): string => {
   const now = new Date();
@@ -274,16 +275,23 @@ export const formatBytes = (bytes: number, decimals = 2) => {
 };
 
 /**
- * Formats the a provided summary to valid html
+ * Formats a provided summary to valid html, sanitizing any potentially dangerous content.
  *
  * @param summary
  * @returns string
  */
 export const sanitizeSummary = (summary: string) => {
   if (summary) {
+    // Convert proprietary Graph API tags to standard HTML
     summary = summary?.replace(/<ddd\/>/gi, '...');
     summary = summary?.replace(/<c0>/gi, '<b>');
     summary = summary?.replace(/<\/c0>/gi, '</b>');
+
+    // Sanitize to prevent XSS - only allow safe formatting tags
+    summary = DOMPurify.sanitize(summary, {
+      ALLOWED_TAGS: ['b', 'em', 'strong', 'span'],
+      ALLOWED_ATTR: []
+    });
   }
 
   return summary;
