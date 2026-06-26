@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.6.1](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.6.0...v4.6.1) (2026-06-26)
+
+
+### Bug Fixes
+
+* add sandbox and CSP to playground preview iframe ([#3489](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3489)) ([3bd07b9](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/3bd07b92df309d9628966f19dffcd2c3708f9b6f)), closes [#3488](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3488)
+* **deps:** bump form-data from 4.0.0 to 4.0.4 [#3458](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3458) ([8bb6e94](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/8bb6e942862629da3a0236c585c8bb6c06ff9109))
+* **deps:** bump tar-fs from 2.1.2 to 2.1.3 ([#3450](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3450)) ([1cdb54a](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/1cdb54a4d27887bdb10d89ea674996d7fd411dd5))
+* **deps:** bump web test runner tools ([#3464](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3464)) ([383520c](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/383520caea43a50350744615da1373a2bf8b38fc))
+* **mgt-components:** sanitize search result summaries with DOMPurify to prevent XSS ([#3493](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3493)) ([9d0cd98](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/9d0cd9868c247f45d7a60f2e55f328a627eeca89))
+* prevent path traversal in playground manifest URL validation ([#3487](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/3487)) ([d0f7f32](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/d0f7f32a4d16aff3b1d96f225d9db6232e9a7e8c))
+* **test:** set experimentalDecorators in web-test-runner tsconfig ([9d0cd98](https://github.com/microsoftgraph/microsoft-graph-toolkit/commit/9d0cd9868c247f45d7a60f2e55f328a627eeca89))
+
 ## [4.6.0](https://github.com/microsoftgraph/microsoft-graph-toolkit/compare/v4.5.0...v4.6.0) (2025-04-17)
 
 
