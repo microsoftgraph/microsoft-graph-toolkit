@@ -254,7 +254,7 @@ export const withCodeEditor = makeDecorator({
                   content="default-src 'self';
                     script-src 'self' 'unsafe-inline';
                     style-src 'self' 'unsafe-inline';
-                    connect-src https://graph.microsoft.com https://graph.microsoft.us https://dod-graph.microsoft.us https://graph.microsoft.de https://microsoftgraph.chinacloudapi.cn https://canary.graph.microsoft.com https://login.microsoftonline.com https://cdn.graph.office.net 'self';
+                    connect-src https://graph.microsoft.com https://graph.microsoft.us https://dod-graph.microsoft.us https://graph.microsoft.de https://microsoftgraph.chinacloudapi.cn https://canary.graph.microsoft.com https://login.microsoftonline.com https://cdn.graph.office.net https://graph.office.net 'self';
                     img-src 'self' data: blob: https://*.microsoft.com https://*.microsoftonline.com https://*.sharepoint.com https://*.office.com https://*.office365.com https://*.windows.net;
                     font-src 'self' https://static2.sharepointonline.com;
                     frame-src https://login.microsoftonline.com 'self';
