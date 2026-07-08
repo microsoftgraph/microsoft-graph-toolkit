@@ -6,7 +6,6 @@
  */
 
 import { Context, Middleware } from '@microsoft/microsoft-graph-client';
-import { SessionCache, storageAvailable } from '../utils/SessionCache';
 
 /**
  * Implements Middleware for the Mock Client to escape
@@ -23,14 +22,6 @@ export class MockMiddleware implements Middleware {
   private _nextMiddleware: Middleware;
 
   private static _baseUrl: string;
-
-  private static _cache: SessionCache;
-  private static get _sessionCache(): SessionCache {
-    if (!this._cache && storageAvailable('sessionStorage')) {
-      this._cache = new SessionCache();
-    }
-    return this._cache;
-  }
 
   public async execute(context: Context): Promise<void> {
     try {
@@ -52,7 +43,7 @@ export class MockMiddleware implements Middleware {
   }
 
   /**
-   * Gets the base url for the mock graph, either from the session cache or from the endpoint service
+   * Gets the base url for the mock graph.
    *
    * @static
    * @return {string} the base url for the mock graph to use.
@@ -60,31 +51,9 @@ export class MockMiddleware implements Middleware {
    */
   public static async getBaseUrl() {
     if (!this._baseUrl) {
-      const sessionEndpoint = this._sessionCache?.getItem('endpointURL');
-      if (sessionEndpoint) {
-        this._baseUrl = sessionEndpoint;
-      } else {
-        try {
-          // get the url we should be using from the endpoint service
-          const response = await fetch('https://cdn.graph.office.net/en-us/graph/api/proxy/endpoint');
-          const base: unknown = await response.json();
-          if (typeof base !== 'string') {
-            MockMiddleware.setBaseFallbackUrl();
-          } else {
-            this._baseUrl = base + '?url=';
-          }
-        } catch {
-          // fallback to hardcoded value
-          MockMiddleware.setBaseFallbackUrl();
-        }
-        this._sessionCache?.setItem('endpointURL', this._baseUrl);
-      }
+      this._baseUrl = 'https://graphexplorer.microsoft.com/api/proxy?url=';
     }
 
-    return this._baseUrl;
-  }
-
-  private static setBaseFallbackUrl() {
-    this._baseUrl = 'https://graph.office.net/en-us/graph/api/proxy?url=';
+    return await Promise.resolve(this._baseUrl);
   }
 }
