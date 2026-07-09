@@ -151,7 +151,9 @@ export class MgtArrowOptions extends MgtBaseTaskComponent {
         class="header"
         @click=${this.onHeaderClick}
         @keydown=${this.onHeaderKeyDown}
-        appearance="lightweight">
+        appearance="lightweight"
+        aria-haspopup="true"
+        aria-expanded=${this.open}>
           ${this.value}
       </fluent-button>
       <fluent-menu
