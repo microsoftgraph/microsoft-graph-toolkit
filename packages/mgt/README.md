@@ -1,5 +1,13 @@
 # Microsoft Graph Toolkit
 
+> ## ⚠️ Microsoft Graph Toolkit has been retired
+>
+> As of **August 28, 2026**, the Microsoft Graph Toolkit project has been retired and is no longer maintained. This package will receive no further updates.
+>
+> Thank you to everyone who built with MGT, filed issues, contributed code, and helped others along the way. This project would not have been possible without your support.
+>
+> The source code remains available under its existing license. If you would like to continue using or maintaining MGT, you are welcome to [fork the repository](https://github.com/microsoftgraph/microsoft-graph-toolkit) and maintain your own version.
+
 <a href="https://www.npmjs.com/package/@microsoft/mgt"><img src="https://img.shields.io/npm/v/@microsoft/mgt.svg"></a> <a href="https://github.com/microsoftgraph/msgraph-sdk-javascript"><img src="https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg"></a>
 
 The Microsoft Graph Toolkit is a collection of reusable, framework-agnostic components and authentication providers for accessing and working with Microsoft Graph. The components are fully functional right of out of the box, with built in providers that authenticate with and fetch data from Microsoft Graph.

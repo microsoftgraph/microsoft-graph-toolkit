@@ -1,5 +1,13 @@
 # Microsoft Graph Toolkit Base package
 
+> ## ⚠️ Microsoft Graph Toolkit has been retired
+>
+> As of **August 28, 2026**, the Microsoft Graph Toolkit project has been retired and is no longer maintained. This package will receive no further updates.
+>
+> Thank you to everyone who built with MGT, filed issues, contributed code, and helped others along the way. This project would not have been possible without your support.
+>
+> The source code remains available under its existing license. If you would like to continue using or maintaining MGT, you are welcome to [fork the repository](https://github.com/microsoftgraph/microsoft-graph-toolkit) and maintain your own version.
+
 [![npm](https://img.shields.io/npm/v/@microsoft/mgt-element?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-element)
 
 The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph.
