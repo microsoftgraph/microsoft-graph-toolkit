@@ -11,6 +11,7 @@ import { ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
 import { PACKAGE_VERSION } from '../utils/version';
+import { emitDeprecationWarning } from '../utils/deprecationWarning';
 
 /**
  * Defines media query based on component width
@@ -128,6 +129,7 @@ export abstract class MgtBaseComponent extends LitElement {
 
   constructor() {
     super();
+    emitDeprecationWarning();
     this.handleDirectionChanged();
     this.handleLocalizationChanged();
   }

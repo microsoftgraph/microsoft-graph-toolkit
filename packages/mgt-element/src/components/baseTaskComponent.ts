@@ -13,6 +13,7 @@ import { ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
 import { PACKAGE_VERSION } from '../utils/version';
+import { emitDeprecationWarning } from '../utils/deprecationWarning';
 import { ComponentMediaQuery } from './baseComponent';
 
 /**
@@ -96,6 +97,7 @@ export abstract class MgtBaseTaskComponent extends LitElement {
 
   constructor() {
     super();
+    emitDeprecationWarning();
     this.handleDirectionChanged();
     this.handleLocalizationChanged();
   }
