@@ -6,10 +6,14 @@
 
 <h4 align="center">UI Components and Authentication Providers for <a href="https://graph.microsoft.com">Microsoft Graph</a></h4>
 
-<p align="center">
-  <a href="https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit" target="_blank" rel="noreferrer noopener"><img src="https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg"></a>
-  <img src="https://github.com/microsoftgraph/microsoft-graph-toolkit/workflows/Build%20CI/badge.svg" /> <a href="https://mgt.dev" target="_blank" rel="noreferrer noopener"><img src="https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg"></a> <a href="https://github.com/microsoftgraph/microsoft-graph-toolkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22" target="_blank" rel="noreferrer noopener"><img src="https://img.shields.io/github/issues/microsoftgraph/microsoft-graph-toolkit/good%20first%20issue?color=brightgreen"></a>
-</p>
+> [!IMPORTANT]
+> ## Microsoft Graph Toolkit has been retired
+>
+> As of **August 28, 2026**, the Microsoft Graph Toolkit project has been retired and is no longer maintained.
+>
+> To everyone who built with MGT, filed issues, contributed code, and helped others along the way — **thank you**. This project would not have been possible without your support, feedback, and enthusiasm over the years. We are deeply grateful to the community that grew around it.
+>
+> The source code remains available here under its existing license. If you would like to continue using or maintaining MGT, you are welcome to [**fork the repository**](https://github.com/microsoftgraph/microsoft-graph-toolkit/fork) and maintain your own version.
 
 <h3 align="center"><a href="https://aka.ms/mgt/docs" target="_blank" rel="noreferrer noopener">Documentation</a></h3>
 
