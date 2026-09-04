@@ -17,5 +17,7 @@ export const strings = {
   plansSelfAssigned: 'All Plans',
   bucketNotFound: 'Bucket not found',
   bucketsSelfAssigned: 'All Tasks',
-  baseSelfAssigned: 'Assigned to Me'
+  baseSelfAssigned: 'Assigned to Me',
+  selectPlan: 'Select plan',
+  selectBucket: 'Select bucket'
 };

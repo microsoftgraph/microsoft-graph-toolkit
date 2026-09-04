@@ -824,7 +824,7 @@ export class MgtPlanner extends MgtTemplatedTaskComponent {
             <span>${this.getPlanTitle(this._currentGroup)}</span>
           </span>`
       : html`
-            <fluent-select>
+            <fluent-select aria-label="${this.strings.selectPlan}">
               <span slot="start">${this.renderPlannerIcon(iconColor)}</span>
               ${this._groups.length > 0 ? groupOptions : html`<fluent-option selected>No groups found</fluent-option>`}
             </fluent-select>`;
@@ -853,7 +853,7 @@ export class MgtPlanner extends MgtTemplatedTaskComponent {
           </span>
         `
       : html`
-         <fluent-select>
+         <fluent-select aria-label="${this.strings.selectBucket}">
           <span slot="start">${this.renderBucketIcon(iconColor)}</span>
           ${folders.length > 0 ? folderOptions : html`<fluent-option selected>No folders found</fluent-option>`}
         </fluent-select>`;
