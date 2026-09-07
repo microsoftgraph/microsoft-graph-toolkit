@@ -98,7 +98,9 @@ export class MgtDotOptions extends MgtBaseTaskComponent {
         aria-expanded=${this.open}
         @click=${this.onDotClick}
         @keydown=${this.onDotKeydown}
-        class="dot-icon">${getSvg(SvgIcon.Dot)}</fluent-button>
+        class="dot-icon"
+        aria-haspopup="true"
+        aria-expanded=${this.open}>${getSvg(SvgIcon.Dot)}</fluent-button>
       <fluent-menu class=${classMap({ menu: true, open: this.open })} aria-expanded=${this.open} aria-label=${this.strings.dotOptionsTitle}>
         ${menuOptions.map(opt => this.getMenuOption(opt, this.options[opt]))}
       </fluent-menu>`;
